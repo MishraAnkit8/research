@@ -1,0 +1,305 @@
+<%- include('./partials/head') %>
+    <!-- Navbar section -->
+    <%- include('./partials/header') %>
+        <!-- This is left sidebar  -->
+        <%- include('./partials/left-side-bar') %>
+
+
+            <!-- This is right side section -->
+            <main class="main" id="mainContent">
+                <div class="base-section coustom-section mt-4">
+                    <!--DASHBOARD CONTENT START-->
+                    <div class="breadcrumbs-container">
+                        <ul class="breadcrumb">
+                            <li><a href="../html/dashboard.html">ADMIN</a></li>
+                            <li><a href="">Research Seminars at NMIMS</a></li>
+                        </ul>
+                    </div>
+                    <div class="errorHtml"></div>
+                    <div class="card table-card">
+                        <div
+                            class="card-header table-card-header text-uppercase d-flex align-items-center justify-content-between">
+                            <div>
+                                <h5>PROGRAM LIST</h5>
+                            </div>
+                            <div class="me-2">
+                                <a class="btn btn-danger" href="/admin/programs/download"><i
+                                        class="fas fa-download"></i>
+                                    Download </a>
+                                <button type="button" class="btn btn-primary" data-toggle="modal"
+                                    data-target="#exampleModal">
+                                    <i class="fas fa-plus"></i></button>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body table-responsive">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <label>Show Entries</label>
+                                    <select class="form-select" id="changeEntry">
+                                        <option value="10">10</option>
+                                        <option value="25">25</option>
+                                        <option value="50">50</option>
+                                        <option value="100">100</option>
+                                        <option value="150">150</option>
+                                        <option value="200">200</option>
+                                        <option value="250">250</option>
+                                        <option value="300">300</option>
+                                        <option value="350">350</option>
+                                        <option value="400">400</option>
+                                        <option value="500">500</option>
+                                        <option value="800">800</option>
+                                        <option value="1000">1000</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <div class="table-searchbar-container"><button type="button"><i
+                                                class="fas fa-search"></i>
+                                        </button><input type="search" id="searchkeyword" placeholder="Enter keywords"
+                                            class="table-searchbar">
+                                    </div>
+                                </div>
+                            </div>
+                            <table class="table custom-table" id="researchSeminar">
+                                <thead>
+                                    <th>#</th>
+                                    <th>Date</th>
+                                    <th>Journal Name</th>
+                                    <th>Title of Paper/Seminar</th>
+                                    <th>NMIMS Campus - Author</th>
+                                    <th>Action</th>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>8051</td>
+                                        <td>MASTER OF BUSINESS ADMINISTRATION-8051</td>
+                                        <td>Full Time</td>
+                                        <td>SBM-NM-M</td>
+                                        <td> <a class="view-program" data-id="6"><i class="fa-solid fa-eye"></i></a>
+                                            <a class="edit-program" data-id="6"><i class="fa fa-edit"></i></a>
+                                            <a class="delete-program" data-id="6"><i class="fa-solid fa-trash"></i></a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <p>Total entries:1
+                                    </p>
+                                </div>
+                                <div>
+                                    <p id="pagination" class="pagination-search"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--Import Modal -->
+                    <div class="modal fade" id="open-program-modal" tabindex="-1" aria-labelledby="open-program-modal"
+                        aria-hidden="true">
+                    </div>
+                    <!-- EDIT PROGRAM AND UPDATE -->
+                    <div class="modal fade" id="edit-program-modal" tabindex="-1" aria-labelledby="editModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="editModalLabel">Update Program</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div id="errorHtml"></div>
+                                <div class="modal-body">
+                                    <div class="mb-3">
+                                        <label for="exampleInputEmail1" class="form-label">Program Name</label>
+                                        <input type="text" class="form-control" id="program_name" name="program_name">
+                                        <input type="hidden" class="form-control" id="hidden_id" name="hidden_id">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="exampleInputPassword1" class="form-label">Program Type</label>
+                                        <select class="form-control" name="program_type_lid" id="program_type_lid">
+                                            <option value="1">Full Time</option>
+                                            <option value="2">Part Time</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="abbr" class="form-label">Program Abbr</label>
+                                        <input type="text" class="form-control" id="abbr" name="abbr">
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-primary updateProgram">Update</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </main>
+            <!-- Modal  form -->
+            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-xl modal-fullscreen" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Research Seminars at NMIMS</h5>
+                            <div class="close" data-dismiss="modal" aria-label="Close" id="close">
+                                <i class="fas fa-times fa-2x"></i>
+                            </div>
+                        </div>
+                        <!-- modal body -->
+
+                        <div class="base-section coustom-section mt-4">
+                            <h3 class="text-center mb-5">Research Seminars at NMIMS</h3>
+                            <div class="row">
+                                <!-- Date -->
+                                <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="date" class="form-label fw-bold">Date</label>
+                                    <input type="date" name="todaydate" id="date" class="form-control" />
+                                </div>
+                                <!-- school -->
+                                <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="school" class="form-label fw-bold">School</label>
+                                    <input type="text" name="nameofschool" id="school" class="form-control"
+                                        placeholder="Name of school">
+                                </div>
+                                <!-- Campus -->
+                                <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="campus" class="form-label fw-bold">Campus</label>
+                                    <input type="text" name="nameofCampus" id="campus" class="form-control"
+                                        placeholder="Name of Campus">
+                                </div>
+
+                                <!-- Name of NMIMS Faculty -->
+                                <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="nameOfFaculty" class="form-label fw-bold">Name of NMIMS Faculty</label>
+                                    <input type="text" name="faculty-name" id="nameOfFaculty" class="form-control"
+                                        placeholder="Name of NMIMS Faculty   " />
+                                </div>
+                                <!-- Title of Paper/Seminar -->
+                                <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="titelOfSeminar" class="form-label fw-bold">Title of
+                                        Paper/Seminar</label>
+                                    <input type="text" name="saminar-title" id="titelOfSeminar" class="form-control"
+                                        placeholder="Title of Paper/Seminar" />
+                                </div>
+                                <!-- Journal Name -->
+                                <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="nameOfJournal" class="form-label fw-bold">Journal Name</label>
+                                    <input type="text" name="jornal-name" id="nameOfJournal" class="form-control"
+                                        placeholder="Journal Name">
+                                </div>
+                                <!-- Publisher -->
+                                <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="publisher" class="form-label fw-bold">Publisher</label>
+                                    <input type="text" name="nameofPublisher" id="publisher" class="form-control"
+                                        placeholder="Name of Publisher">
+                                </div>
+                                <!-- Volume(vol) -->
+                                <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="volume" class="form-label fw-bold">Volume (Vol)</label>
+                                    <input type="text" name="volumes" id="volume" class="form-control"
+                                        placeholder="Enter Volume">
+                                </div>
+
+                                <!-- Issue -->
+                                <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="issue" class="form-label fw-bold">Issue (ISS)</label>
+                                    <input type="text" name="issues" id="issue" class="form-control"
+                                        placeholder="Enter Issue">
+                                </div>
+
+                                <!-- Pages -->
+                                <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="pages" class="form-label fw-bold">Pages</label>
+                                    <input type="text" name="page" id="pages" class="form-control"
+                                        placeholder="Enter Pages">
+                                </div>
+                                <!-- ISSN No. -->
+                                <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="issnNo" class="form-label fw-bold">ISSN No.</label>
+                                    <input type="text" name="page" id="issnNo" class="form-control"
+                                        placeholder="ISSN No.">
+                                </div>
+                                <!-- Date of Publishing -->
+                                <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="dateOfPublishing" class="form-label fw-bold">
+                                        Date of Publishing
+                                    </label>
+                                    <input type="date" name="date" id="dateOfPublishing" class="form-control" />
+                                </div>
+                                <!-- Impact Factor -->
+                                <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="impactFactor" class="form-label fw-bold">Impact Factor</label>
+                                    <input type="text" name="impact" id="impactFactor" class="form-control"
+                                        placeholder="Impact Factor">
+                                </div>
+                                <!-- SCS Cite Score -->
+                                <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="citeScore" class="form-label fw-bold">SCS Cite Score</label>
+                                    <input type="text" name="impact" id="citeScore" class="form-control"
+                                        placeholder="SCS Cite Score">
+                                </div>
+                                <!-- SCS Indexed -->
+                                <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="scsIndex" class="form-label fw-bold">SCS Indexed</label>
+                                    <input type="text" name="impact" id="scsIndex" class="form-control"
+                                        placeholder="SCS Indexed">
+                                </div>
+                                <!-- WoS Indexed -->
+                                <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="wosIndex" class="form-label fw-bold">WoS Indexed</label>
+                                    <input type="text" name="impact" id="wosIndex" class="form-control"
+                                        placeholder="WoS Indexed">
+                                </div>
+                                <!-- GS Indexed -->
+                                <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="gsIndex" class="form-label fw-bold">GS Indexed</label>
+                                    <input type="text" name="impact" id="gsIndex" class="form-control"
+                                        placeholder="GS Indexed">
+                                </div>
+                                <!-- ABDC Indexed -->
+                                <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="abdcIndex" class="form-label fw-bold">ABDC Indexed</label>
+                                    <input type="text" name="impact" id="abdcIndex" class="form-control"
+                                        placeholder="ABDC Indexed">
+                                </div>
+                                <!-- UGC Indexed -->
+                                <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="ugcIndex" class="form-label fw-bold">UGC Indexed</label>
+                                    <input type="text" name="impact" id="ugcIndex" class="form-control"
+                                        placeholder="ABDC Indexed">
+                                </div>
+                                <!-- Weblink-DOI Number -->
+                                <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="webDoiNumber" class="form-label fw-bold">Weblink-DOI Number</label>
+                                    <input type="text" name="impact" id="webDoiNumber" class="form-control"
+                                        placeholder="Weblink-DOI Number">
+                                </div>
+                                <!-- UID -->
+                                <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="uidNumber" class="form-label fw-bold">UID</label>
+                                    <input type="text" name="impact" id="uidNumber" class="form-control"
+                                        placeholder="Enter UID">
+                                </div>
+                                <!-- submit button -->
+                                <!-- Add your modal footer buttons if needed -->
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button class="btn btn-md btn-success" id="submitBtn">Submit</button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+            <script src="../js/script.js"></script>
+            </body>
+
+            </html>

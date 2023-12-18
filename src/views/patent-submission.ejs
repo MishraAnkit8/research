@@ -1,0 +1,311 @@
+<%- include('./partials/head') %>
+<!-- inline css -->
+<!-- Navbar section -->
+<%- include('./partials/header') %>
+<!-- This is left sidebar  -->
+<%- include('./partials/left-sidebar') %>
+<!-- This is right side section -->
+<main class="main" id="mainContent">
+    <div class="base-section custom-section mt-5 p-5 ">
+        <!--DASHBOARD CONTENT START-->
+        <div class="breadcrumbs-container">
+            <ul class="breadcrumb">
+                <li><a href="../html/dashboard.html">ADMIN</a></li>
+                <li><a href="">Patent submission</a></li>
+            </ul>
+        </div>
+        <div class="errorHtml"></div>
+        <div class="card table-card">
+            <div class="card-header table-card-header text-upperpatent d-flex align-items-center justify-content-between">
+                <div>
+                    <h5>PROGRAM LIST</h5>
+                </div>
+                <div class="me-2">
+                    <a class="btn btn-danger" href="/admin/programs/download"><i class="fas fa-download"></i>
+                        Download </a>
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#patent-submission-modal">
+                        <i class="fas fa-plus"></i></button>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body table-responsive">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <label>Show Entries</label>
+                        <select class="form-select" id="changeEntry">
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                            <option value="150">150</option>
+                            <option value="200">200</option>
+                            <option value="250">250</option>
+                            <option value="300">300</option>
+                            <option value="350">350</option>
+                            <option value="400">400</option>
+                            <option value="500">500</option>
+                            <option value="800">800</option>
+                            <option value="1000">1000</option>
+                        </select>
+                    </div>
+                    <div>
+                        <div class="table-searchbar-container"><button type="button"><i class="fas fa-search"></i>
+                            </button><input type="search" id="searchkeyword" placeholder="Enter keywords"
+                                class="table-searchbar">
+                        </div>
+                    </div>
+                </div>
+                <table class="table custom-table" id="patent-submisson-list">
+                    <thead>
+                        <th>#</th>
+                        <th>Type of Invention</th>
+                        <th>Title of Invention</th>
+                        <th>Patent Stage</th>
+                        <th>Application Number</th>
+                        <th>Date</th>
+                        <th>Are you the Presenter</th>
+                        <th>Are you achieve SDG ?</th>
+                        <th>Action</th>
+                    </thead>
+                    <% patentList.forEach(function(patent) {%>
+                        <tr>
+                            <td data-patent-id="patent.id"><%- patent.id %></td>
+                            <td class="type-of-invention"><%- patent.type_of_invention %></td>
+                            <td class="title-of-invention"><%- patent.title_of_invention %></td>
+                            <td class="patent-stage"><%- patent.patent_stage %></td>
+                            <td class="application-no"><%- patent.application_no %></td>
+                            <td class="date"><%- patent.date %></td>
+                            <td class="is-presenter"><%- patent.is_presenter %></td>
+                            <td class="achive-sdg"><%- patent.achive_sdg %></td>
+                            <td class="cell ">
+                                <a class="view" data-patent-id="<%- patent.id %>"><i class="fa-solid fa-eye view"
+                                    data-patent-id="<%- patent.id %>"></i></a>
+                                <a class="edit" data-patent-id="<%- patent.id %>"><i class="fa fa-edit edit"
+                                    data-patent-id="<%- patent.id %>"></i></a>
+                                <a class="delete" data-patent-id="<%- patent.id %>"><i class="fa-solid fa-trash delete"
+                                    data-patent-id="<%- patent.id %>"></i></a>
+                            </td>
+                        </tr>
+                    <% }); %>
+                </table>
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <p>Total entries:1
+                        </p>
+                    </div>
+                    <div>
+                        <p id="pagination" class="pagination-search"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--Import Modal -->
+        <div class="modal fade" id="open-program-modal" tabindex="-1" aria-labelledby="open-program-modal"
+            aria-hidden="true">
+        </div>
+        <!-- EDIT PROGRAM AND UPDATE -->
+        <div class="modal fade" id="edit-program-modal" tabindex="-1" aria-labelledby="editModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editModalLabel">Update Program</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div id="errorHtml"></div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="exampleInputEmail1" class="form-label">Program Name</label>
+                            <input type="text" class="form-control" id="program_name" name="program_name">
+                            <input type="hidden" class="form-control" id="hidden_id" name="hidden_id">
+                        </div>
+                        <div class="mb-3">
+                            <label for="exampleInputPassword1" class="form-label">Program Type</label>
+                            <select class="form-control" name="program_type_lid" id="program_type_lid">
+
+                                <option value="1">Full Time</option>
+
+                                <option value="2">Part Time</option>
+
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="abbr" class="form-label">Program Abbr</label>
+                            <input type="text" class="form-control" id="abbr" name="abbr">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary updateProgram">Update</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+</main>
+<!-- Modal  form -->
+<div class="modal fade " id="patent-submission-modal" tabindex="-1" role="dialog" aria-labelledby="patent-submission-modal"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg modal-fullscreen p-5" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="patent-study">Patent Submission </h5>
+                <div class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"><i class="fas fa-times fa-2x"></i></span>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <div class="form-group col">
+                            <label for="Invention" class="form-label  fw-bold">Type of Invention
+                                (IPR)</label>
+                            <select class="form-control gap-10" id="type-of-invention">
+                                <option selected>Select option</option>
+                                <option value="Patent">Patent</option>
+                                <option value="Copy Right">Copy Right</option>
+                                <option value="Design Registration">Design Registration</option>
+                                <option value="Trade mark">Trade mark</option>
+                                <option value="Trade Secret">Trade Secret</option>
+                            </select>
+                        </div>
+                    </div>
+                    <!-- Title of Invention -->
+                    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="title" class="form-label fw-bold">Title of Invention</label>
+                        <input type="text" name="titleInvention" id="title-of-invention" class="form-control" placeholder="Title of Invention">
+                    </div>
+                    <!-- Patent Stage -->
+                    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="patent" class="form-label fw-bold">Patent Stage</label>
+                        <select class="form-control gap-10" id="patent-stage">
+                            <option selected>Select option</option>
+                            <option value="Filied">Filied</option>
+                            <option value="Published">Published</option>
+                            <option value="Granted">Granted</option>
+                        </select>
+                    </div>
+                    <!-- Are you achieve SDG ? -->
+                    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="sdg" class="mb-2 fw-bold">Are you achieve SDG ?</label><br>
+            
+                        <input type="radio" name="achive-sdg" id="yes">
+                        <label for="yes">Yes</label>
+            
+                        <input type="radio" name="achive-sdg" id="no">
+                        <label for="no">No</label>
+                    </div>
+            
+                    <!-- Application Number -->
+                    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="applicationNumbar" class="form-label fw-bold">Application
+                            Number</label>
+                        <input type="text" name="titleInvention" id="application-no" class="form-control"
+                            placeholder="Application Number">
+                    </div>
+            
+                    <!-- Date of Filing/Grant/Published -->
+                    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="applicationNumbar" class="form-label fw-bold">
+                            Date of Filing/Grant/Published
+                        </label>
+                        <input type="text" name="titleInvention" id="date" class="form-control" min='2000-01-01'
+                            max="2023-10-02">
+                    </div>
+            
+                    <!-- Inventor -->
+                    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="isPresenter" class="form-label fw-bold mb-3">Are you the Presenter
+                            ?</label><br>
+                        <div class="form-check-inline">
+                            <label for="internal" class="form-check-label">
+                                <input type="radio" class="form-check-input" id="internal" name="inventor" value="Internal">
+                                Internal
+                            </label>
+                        </div>
+                        <div class="form-check-inline">
+                            <label for="External" class="form-check-label">
+                                <input type="radio" class="form-check-input" id="External" name="inventor" value="External">
+                                External
+                            </label>
+                        </div>
+                    </div>
+                    <!-- Upload Supporting Documents-->
+                    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="" class="form-label fw-bold mb-3">Upload Data </h5>
+                        <% if (docuploadStatus && errorMsg === undefined) { %>
+                            <div class="alert alert-success" role="alert">
+                                Doc Upload successfully
+                            </div>
+                        <% } %>
+                        <% if (!docuploadStatus && errorMsg !== undefined) { %>
+                            <div class="alert alert-danger" role="alert">
+                                <%= errorMsg %>
+                            </div>
+                        <% } %>
+                        <form id="docUploadForm" class="upload-form" method="POST" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <input type="file" name="myfile" class="form-control" />
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- Add your modal footer buttons if needed -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button class="btn btn-md btn-success" id="submitBtn">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    const submitBtn = document.getElementById('submitBtn');
+    
+    const insertPatentforms = async (url, formId, messageDivId) => {
+        const form = document.getElementById(formId);
+        const messageDiv = document.getElementById(messageDivId);
+        const fileInput = form.querySelector('input[type="file"]');
+
+        const formData = new FormData();
+        formData.append('myfile', fileInput.files[0]);
+
+        const patentData = {
+            title_of_invention: document.getElementById('title-of-invention').value,
+            patent_stage: document.getElementById('patent-stage').value,
+        };
+
+        const selectedAchive_sdg = document.querySelector('input[name="achive-sdg"]:checked');
+        if (selectedAchive_sdg) {
+            patentData.selectedAchive_sdg = selectedAchive_sdg.value;
+        }
+
+        for (const key in patentData) {
+            formData.append(key, patentData[key]);
+        }
+
+        fetch(url, {
+            method: 'POST',
+            body: formData
+        })
+        .then((result) => result.json())
+        .then((data) => {
+            if (data.status === 'done') {
+                console.log('data >>>', data);
+            }
+        })
+        .catch((error) => {
+            console.error('ERROR ::', error);
+        });
+    };
+    
+    submitBtn.addEventListener('click', async () => {
+        await insertPatentforms('/research/patent-submission/fileupload', 'docUploadForm', 'docMessage');
+        await insertPatentforms('/reasarch/convert');
+    });
+</script>
+<!-- inline script -->
+<!-- footer section -->
+<%- include('./partials/footer') %>
+<%- include('./partials/footer-end') %>
+          

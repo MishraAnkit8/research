@@ -1,0 +1,291 @@
+<%- include('./partials/head') %>
+<!-- inline css -->
+ <!-- Navbar section -->
+<%- include('./partials/header') %>
+<!-- This is left sidebar  -->
+<%- include('./partials/left-side-bar') %>
+<!-- reserch project form -->
+<main class="main" id="mainContent">
+                <div class="base-section coustom-section mt-4">
+                    <!--DASHBOARD CONTENT START-->
+                    <div class="breadcrumbs-container">
+                        <ul class="breadcrumb">
+                            <li><a href="../html/dashboard.html">ADMIN</a></li>
+                            <li><a href="">Research Project Consultant</a></li>
+                        </ul>
+                    </div>
+                    <div class="errorHtml"></div>
+                    <div class="card table-card">
+                        <div class="card-header table-card-header text-uppercase d-flex align-items-center justify-content-between">
+                            <div>
+                                <h5>PROGRAM LIST</h5>
+                            </div>
+                            <div class="me-2">
+                                <a class="btn btn-danger" href="/admin/programs/download"><i class="fas fa-download"></i>
+                                    Download </a>
+                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                                    <i class="fas fa-plus"></i></button>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body table-responsive">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <label>Show Entries</label>
+                                    <select class="form-select" id="changeEntry">
+                                        <option value="10">10</option>
+                                        <option value="25">25</option>
+                                        <option value="50">50</option>
+                                        <option value="100">100</option>
+                                        <option value="150">150</option>
+                                        <option value="200">200</option>
+                                        <option value="250">250</option>
+                                        <option value="300">300</option>
+                                        <option value="350">350</option>
+                                        <option value="400">400</option>
+                                        <option value="500">500</option>
+                                        <option value="800">800</option>
+                                        <option value="1000">1000</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <div class="table-searchbar-container"><button type="button"><i class="fas fa-search"></i>
+                                        </button><input type="search" id="searchkeyword" placeholder="Enter keywords"
+                                            class="table-searchbar">
+                                    </div>
+                                </div>
+                            </div>
+                            <table class="table custom-table" id="researchProject">
+                                <thead>
+                                    <th>#</th>
+                                    <th>Grant Proposal</th>
+                                    <th>Title of Project</th>
+                                    <th>Funding Amount</th>
+                                    <th>Thrust area of Research</th>
+                                    <th>Action</th>
+                                </thead>
+            
+            
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>8051</td>
+                                        <td>MASTER OF BUSINESS ADMINISTRATION-8051</td>
+                                        <td>Full Time</td>
+                                        <td>SBM-NM-M</td>
+                                        <td> <a class="view-program" data-id="6"><i class="fa-solid fa-eye"></i></a>
+                                            <a class="edit-program" data-id="6"><i class="fa fa-edit"></i></a>
+                                            <a class="delete-program" data-id="6"><i class="fa-solid fa-trash"></i></a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <p>Total entries:1
+                                    </p>
+                                </div>
+                                <div>
+                                    <p id="pagination" class="pagination-search"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--Import Modal -->
+                    <div class="modal fade" id="open-program-modal" tabindex="-1" aria-labelledby="open-program-modal"
+                        aria-hidden="true">
+                    </div>
+                    <!-- EDIT PROGRAM AND UPDATE -->
+                    <div class="modal fade" id="edit-program-modal" tabindex="-1" aria-labelledby="editModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="editModalLabel">Update Program</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div id="errorHtml"></div>
+                                <div class="modal-body">
+                                    <div class="mb-3">
+                                        <label for="exampleInputEmail1" class="form-label">Program Name</label>
+                                        <input type="text" class="form-control" id="program_name" name="program_name">
+                                        <input type="hidden" class="form-control" id="hidden_id" name="hidden_id">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="exampleInputPassword1" class="form-label">Program Type</label>
+                                        <select class="form-control" name="program_type_lid" id="program_type_lid">
+            
+                                            <option value="1">Full Time</option>
+            
+                                            <option value="2">Part Time</option>
+            
+                                        </select>
+                                    </div>
+            
+                                    <div class="mb-3">
+                                        <label for="abbr" class="form-label">Program Abbr</label>
+                                        <input type="text" class="form-control" id="abbr" name="abbr">
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-primary updateProgram">Update</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+</main>
+<!-- Modal  form -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-xl modal-fullscreen" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Research incentive </h5>
+                            <div class="close" data-dismiss="modal" aria-label="Close" id="close">
+                                <i class="fas fa-times fa-2x"></i>
+                            </div>
+                        </div>
+                        <!-- modal body -->
+                        <div class="modal-body">
+            
+                            <div class="base-section coustom-section mt-5">
+                                <h3 class="text-center mb-4">
+                                    Research Project, Consultancy</h3>
+                                <div class="row">
+                                    <!-- Grant Proposal -->
+                                    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                                        <label for="publisherCatergory" class="form-label fw-bold mb-3">Grant
+                                            Proposal</label><br>
+                                        <div class="form-check-inline">
+                                            <label for="goverment" class="form-check-label">
+                                                <input type="radio" class="form-check-input" id="goverment" name="radio"
+                                                    value="Goverment"> Goverment
+                                            </label>
+                                        </div>
+                                        <div class="form-check-inline">
+                                            <label for="nonGoverment" class="form-check-label">
+                                                <input type="radio" class="form-check-input" id="nonGoverment" name="radio"
+                                                    value="Non-government"> Non-government
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <!-- Type of Grant -->
+                                    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                                        <label for="typeOfGrant" class="form-label fw-bold mb-3">Type of
+                                            Grant</label><br>
+                                        <div class="form-check-inline">
+                                            <label for="researchProject" class="form-check-label">
+                                                <input type="radio" class="form-check-input" id="researchProject" name="grant"
+                                                    value="Research Project"> Research Project
+                                            </label>
+                                        </div>
+                                        <div class="form-check-inline">
+                                            <label for="consultancy" class="form-check-label">
+                                                <input type="radio" class="form-check-input" id="consultancy" name="grant"
+                                                    value="Consultancy"> Consultancy
+                                            </label>
+                                        </div>
+                                        <div class="form-check-inline">
+                                            <label for="capacityBuilding" class="form-check-label">
+                                                <input type="radio" class="form-check-input" id="capacityBuilding" name="grant"
+                                                    value="Capacity Building"> Capacity Building
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <!-- Title of Project -->
+                                    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                                        <label for="title" class="form-label fw-bold">Title of Project</label>
+                                        <input type="text" name="titleInvention" id="title" class="form-control"
+                                            placeholder="Title of Project">
+                                    </div>
+                                    <!-- Thrust area of Research -->
+                                    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                                        <label for="title" class="form-label fw-bold">Thrust area of Research</label>
+                                        <input type="text" name="titleInvention" id="title" class="form-control"
+                                            placeholder="Thrust area of Research">
+                                    </div>
+                                    <!-- Name of Funding Agency -->
+                                    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                                        <label for="title" class="form-label fw-bold">Name of Funding Agency</label>
+                                        <input type="text" name="titleInvention" id="title" class="form-control"
+                                            placeholder="Name of Funding Agency">
+                                    </div>
+                                    <!-- Funding Amount -->
+                                    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                                        <label for="title" class="form-label fw-bold">Funding Amount</label>
+                                        <input type="text" name="titleInvention" id="title" class="form-control"
+                                            placeholder="Funding Amount">
+                                    </div>
+                                    <!-- Status of Research Project -->
+                                    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                                        <label for="Status" class="form-label fw-bold mb-3">Status of Research
+                                            Project</label><br>
+                                        <div class="form-check-inline">
+                                            <label for="submited" class="form-check-label">
+                                                <input type="radio" class="form-check-input" id="submited" name="research"
+                                                    value="Submitted"> Submitted
+                                            </label>
+                                        </div>
+                                        <div class="form-check-inline">
+                                            <label for="presentation" class="form-check-label">
+                                                <input type="radio" class="form-check-input" id="presentation" name="research"
+                                                    value="Presentation held"> Presentation held
+                                            </label>
+                                        </div>
+                                        <div class="form-check-inline">
+                                            <label for="granted" class="form-check-label">
+                                                <input type="radio" class="form-check-input" id="granted" name="research"
+                                                    value="Granted"> Granted
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <!-- Submission/Grant date-->
+                                    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                                        <label for="applicationNumbar" class="form-label fw-bold">
+                                            Submission/Grant date
+                                        </label>
+                                        <input type="date" name="titleInvention" id="applicationNumbar" class="form-control">
+                                    </div>
+                                    <!-- if faculty choose internal Authors then show search bar -->
+                                    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                                        <label for="coo-pi" class="form-label fw-bold mb-3">Grant Proposal</label><br>
+                                        <div class="form-check-inline">
+                                            <label for="Internal" class="form-check-label">
+                                                <input type="radio" class="form-check-input" id="Internal" name="co-pi"
+                                                    value="Internal"> Internal
+                                            </label>
+                                        </div>
+                                        <div class="form-check-inline">
+                                            <label for="External" class="form-check-label">
+                                                <input type="radio" class="form-check-input" id="External" name="co-pi"
+                                                    value="External"> External
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <!-- Upload Supporting Documents-->
+                                    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                                        <label for="upload" class="form-label fw-bold">
+                                            Upload Supporting Documents
+                                        </label>
+                                        <input type="file" name="uploadFile" id="upload" class="form-control" min='2000-01-01'
+                                            max="2023-10-02">
+                                    </div>
+            
+                                    <!-- Add your modal footer buttons if needed -->
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button class="btn btn-md btn-success" id="submitBtn">Submit</button>
+                                    </div>
+            
+            
+                                </div>
+            
+                            </div>
+                        </div>
+                    </div>
+                </div>
+</div>
+<%- include('./partials/footer') %>
+<%- include('./partials/footer-end') %>
+        
