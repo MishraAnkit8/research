@@ -7,59 +7,18 @@ module.exports.fetchConferencePublication = async() => {
     return conferencePublicationData.rows;
 };
 
-module.exports.viewConferencePublication = async(conferenceId) => {
-    console.log('ID For View : ==>>' , conferenceId);
-    const conferenceDetails = await conferencePublicationModels.viewConferenceData(conferenceId);
-    console.log('Data in  service  ==>>', conferenceDetails.rows);
-    if(conferenceDetails.rowCount === 1){
-        return conferenceDetails.rows;
+module.exports.insertConferenceData = async(body , files) => {
+    console.log('data in service' , body);
+    const conferencePublications = body;
+    console.log('files in service ==>' , files);
+    const conferenceDocument = files.conferenceDocument[0].filename;
+    const conferenceProof = files.conferenceProof[0].filename
+    console.log('conferenceDocument:' , conferenceDocument);
+    console.log('conferenceProof:' , conferenceProof);
+    const insertConferencePublication = await conferencePublicationModels.insertConferencePublication(conferencePublications, conferenceDocument, conferenceProof);
+    if(insertConferencePublication && insertConferencePublication.rows[0].id){
+        return insertConferencePublication
     }
-    else{
-        return {
-            status : 'failed',
-            massage : 'Error in View '
-        }
-    }
-};
-
-module.exports.insertConferencePublicationData = async(body) => {
-    const {conferencePublications} = body;
-    console.log('Data For insert ', body);
-    const conferenceData = await conferencePublicationModels.insertConferencePublication({conferencePublications});
-    return  conferenceData;
+    
 }
 
-module.exports.deleteConferencePublication = async(conferenceId) => {
-    const conferencePubForDelete = await conferencePublicationModels.DeleteConference({conferenceId});
-    console.log('for  id for delet ==>>', conferenceId );
-    if(conferencePubForDelete.rowCount === 1){
-        return {
-            status : 'done',
-            massage : 'daat deleted successfully'
-        }
-    }
-    else{
-        return{
-            status : 'failed',
-            massage : 'error in deleting'
-        }
-    }
-};
-
-module.exports.updatedConference = async({conferenceId , upadtedConference}) => {
-    const upadtedConferencePublication = await conferencePublicationModels.updateConferencePublication({conferenceId, upadtedConference});
-    console.log('ID In Service ::', conferenceId);
-    console.log('Data In Service ==>>', upadtedConferencePublication.rows);
-    if(upadtedConferencePublication.rowCount === 1){
-        return {
-            status : 'done',
-            massage : "Data Updated SuccessFully"
-        }
-    }
-    else{
-        return {
-            status : 'Failed',
-            massage : 'Unable to update Data'
-        }
-    }
-};

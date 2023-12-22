@@ -28,7 +28,7 @@ router.get('/', asyncErrorHandler(researchController.renderResearch));
 
 //journal paper 
 router.get('/journal-paper', asyncErrorHandler(journalController.renderJournalPaper));
-router.post('/journal-paper/create', asyncErrorHandler(journalController.createJournalPaper));
+router.post('/journal-paper/insert', asyncErrorHandler(journalController.createJournalPaper));
 router.post('/journal-paper/update', asyncErrorHandler(journalController.updateJournalPaper));
 router.post('/journal-paper/delete', asyncErrorHandler(journalController.delJournalPaper));
 router.post('/journal-paper/view', asyncErrorHandler(journalController.viewJournalPaper));
@@ -44,8 +44,11 @@ router.post('/case-study/update', asyncErrorHandler(caseStudyController.updatedC
 
 //conference-publication
 router.get('/conference-publication', asyncErrorHandler(conferenceController.renderConferencePage));
+router.post('/conference-publication/insert', upload.fields([
+    { name: 'conferenceDocument', maxCount: 1 },
+    { name: 'conferenceProof', maxCount: 1 },
+]),asyncErrorHandler(conferenceController.insertConferencePublicationSData));
 router.post('/conference-publication/view', asyncErrorHandler(conferenceController.viewconferencePublication));
-router.post('/conference-publication/insert', asyncErrorHandler(conferenceController.insertConferencePublicationSData));
 router.post('/conference-publication/delete', asyncErrorHandler(conferenceController.deleteConference));
 
 //patent submission form
