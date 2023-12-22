@@ -1,0 +1,607 @@
+<%- include('./partials/head') %>
+<!-- inline css -->
+<style>
+    .custom-modal {
+     max-width: 1000px;
+     max-height: 800px;
+ }
+ .sub-title-text{
+     font-size: 15px;
+     font-weight:500;
+ }
+</style>
+<!-- Navbar section -->
+<%- include('./partials/header') %>
+
+<!-- This is left sidebar  -->
+<%- include('./partials/left-sidebar') %>
+
+<!-- This is right side section -->
+<main class="main" id="mainContent">
+    <div class="base-section custom-section mt-5 p-5 ">
+        <!--DASHBOARD CONTENT START-->
+        <div class="breadcrumbs-container">
+        </div>
+        <div class="errorHtml"></div>
+        <div class="card table-card">
+            <div class="card-header table-card-header text-upperpatent d-flex align-items-center justify-content-between">
+                <div>
+                    <h5>PATENT SUBMISSION LIST</h5>
+                </div>
+                <div class="me-2">
+                    <button id="add-patent-submission" type="button" class="btn btn-primary" data-toggle="modal" data-target="#patent-submission-modal">
+                        <i class="fas fa-plus plus"></i>
+                    </button>
+                  
+                </div>
+            </div>
+            <div class="card-body table-responsive">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <label>Show Entries</label>
+                        <select class="form-select" id="changeEntry">
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                            <option value="150">150</option>
+                            <option value="200">200</option>
+                            <option value="250">250</option>
+                            <option value="300">300</option>
+                            <option value="350">350</option>
+                            <option value="400">400</option>
+                            <option value="500">500</option>
+                            <option value="800">800</option>
+                            <option value="1000">1000</option>
+                        </select>
+                    </div>
+                    <div>
+                        <div class="table-searchbar-container"><button type="button"><i class="fas fa-search"></i>
+                            </button><input type="search" id="searchkeyword" placeholder="Enter keywords"
+                                class="table-searchbar">
+                        </div>
+                    </div>
+                </div>
+                <table class="table custom-table" id="patent-submisson-list">
+                    <thead>
+                        <th>#</th>
+                        <th>Type of Invention</th>
+                        <th>Title of Invention</th>
+                        <th>Patent Stage</th>
+                        <th>Application Number</th>
+                        <th>Date</th>
+                        <th>Are you the Presenter</th>
+                        <th>Are you achieve SDG ?</th>
+                        <th>upload documents</th>
+                        <th>Action</th>
+                    </thead>
+                    <% patentList.forEach(function(patent) {%>
+                        <tr>
+                            <td data-patent-id="patent.id"><%- patent.id %></td>
+                            <td class="type-of-invention"><%- patent.type_of_invention %></td>
+                            <td class="title-of-invention"><%- patent.title_of_invention %></td>
+                            <td class="patent-stage"><%- patent.patent_stage %></td>
+                            <td class="application-no"><%- patent.application_no %></td>
+                            <td class="date"><%- patent.date %></td>
+                            <td class="is-presenter"><%- patent.is_presenter %></td>
+                            <td class="achive-sdg"><%- patent.achive_sdg %></td>
+                            <td class="patent-file"><%- patent.patent_file %></td>
+                            <td class="cell ">
+                                <a class="view" data-patent-id="<%- patent.id %>"><i class="fa-solid fa-eye view"
+                                    data-patent-id="<%- patent.id %>"></i></a>
+                                <a class="edit" data-patent-id="<%- patent.id %>"><i class="fa fa-edit edit"
+                                    data-patent-id="<%- patent.id %>"></i></a>
+                                <a class="delete" data-patent-id="<%- patent.id %>"><i class="fa-solid fa-trash delete"
+                                    data-patent-id="<%- patent.id %>"></i></a>
+                            </td>
+                        </tr>
+                    <% }); %>
+                </table>
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <p>Total entries:1
+                        </p>
+                    </div>
+                    <div>
+                        <p id="pagination" class="pagination-search"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--Import Modal -->
+        <div class="modal fade" id="open-program-modal" tabindex="-1" aria-labelledby="open-program-modal"
+            aria-hidden="true">
+        </div>
+        <!-- EDIT PROGRAM AND UPDATE -->
+        <div class="modal fade" id="edit-program-modal" tabindex="-1" aria-labelledby="editModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editModalLabel">Update Program</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div id="errorHtml"></div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="exampleInputEmail1" class="form-label">Program Name</label>
+                            <input type="text" class="form-control" id="program_name" name="program_name">
+                            <input type="hidden" class="form-control" id="hidden_id" name="hidden_id">
+                        </div>
+                        <div class="mb-3">
+                            <label for="exampleInputPassword1" class="form-label">Program Type</label>
+                            <select class="form-control" name="program_type_lid" id="program_type_lid">
+
+                                <option value="1">Full Time</option>
+
+                                <option value="2">Part Time</option>
+
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="abbr" class="form-label">Program Abbr</label>
+                            <input type="text" class="form-control" id="abbr" name="abbr">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary updateProgram">Update</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+</main>
+<!--Patent  Modal  form -->
+<div class="modal fade " id="patent-submission-modal" tabindex="-1" role="dialog" aria-labelledby="patent-submission-modal"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg modal-fullscreen p-5" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="patent-study">Patent Submission </h5>
+                <div class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"><i class="fas fa-times fa-2x"></i></span>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <div class="form-group col">
+                            <label for="type-of-invention" class="form-label  fw-bold">Type of Invention
+                                (IPR)</label>
+                            <select class="form-control gap-10" id="type-of-invention">
+                                <option selected>Select option</option>
+                                <option value="Patent">Patent</option>
+                                <option value="Copy Right">Copy Right</option>
+                                <option value="Design Registration">Design Registration</option>
+                                <option value="Trade mark">Trade mark</option>
+                                <option value="Trade Secret">Trade Secret</option>
+                            </select>
+                        </div>
+                    </div>
+                    <!-- Title of Invention -->
+                    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="title" class="form-label fw-bold">Title of Invention</label>
+                        <input type="text" name="titleInvention" id="title-of-invention" class="form-control" placeholder="Title of Invention">
+                    </div>
+                    <!-- Patent Stage -->
+                    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="patent-stage" class="form-label fw-bold">Patent Stage</label>
+                        <select class="form-control gap-10" id="patent-stage">
+                            <option selected>Select option</option>
+                            <option value="Filied">Filied</option>
+                            <option value="Published">Published</option>
+                            <option value="Granted">Granted</option>
+                        </select>
+                    </div>
+                    <!-- Are you achieve SDG ? -->
+                    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="achive-sdg" class="mb-2 fw-bold">Are you achieve SDG ?</label><br>
+                        <label for="yes">
+                            <input type="radio" name="achive-sdg" id="yes" value="yes">
+                            Yes
+                        </label>
+                        <label for="no">
+                            <input type="radio" name="achive-sdg" id="no" value="no">
+                            No
+                        </label>
+                    </div>
+            
+                    <!-- Application Number -->
+                    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="application-no" class="form-label fw-bold">Application
+                            Number</label>
+                        <input type="text" name="application-no" id="application-no" class="form-control"
+                            placeholder="Application Number">
+                    </div>
+            
+                    <!-- Date of Filing/Grant/Published -->
+                    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="date" class="form-label fw-bold">
+                            Date of Filing/Grant/Published
+                        </label>
+                        <input type="text" name="date" id="date" class="form-control" min='2000-01-01'
+                            max="2023-10-02">
+                    </div>
+            
+                    <!-- Inventor -->
+                    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="is-presenter" class="form-label fw-bold mb-3">Are you the Presenter
+                            ?</label><br>
+                        <div class="form-check-inline">
+                            <label for="internal" class="form-check-label">
+                                <input type="radio" class="form-check-input" id="yes1" name="is-presenter" value="yes">
+                                yes
+                            </label>
+                        </div>
+                        <div class="form-check-inline">
+                            <label for="no" class="form-check-label">
+                                <input type="radio" class="form-check-input" id="no1" name="is-presenter" value="no">
+                                no
+                            </label>
+                        </div>
+                    </div>
+                    <!-- Upload Supporting Documents-->
+                    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="" class="form-label fw-bold mb-3">Upload Data </label>
+                            <div class="form-group">
+                                <input id="patent-file" type="file" name="patentFile" class="form-control" />
+                            </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Add your modal footer buttons if needed -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button class="btn btn-md btn-success d-none" id="submit-btn">Submit</button>
+                <button class="btn btn-md btn-success d-none" id="update-btn">update</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--  Patent Modal form For View -->
+<div class="modal fade" id="patent-submission-modal-view" tabindex="-1" role="dialog"
+    aria-labelledby="patent-submission-modal-view" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered custom-modal " role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-center" id="exampleModalLongTitle">PATENT SUBMISSION</h5>
+                <div type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"><i class="fas fa-times fa"></i></span>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <!-- title of invention -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="sub-title-text sub-title">TITLE OF INVETION :</div>
+                            <label id="view-title-of-invetion"></label>
+                        </div>
+                    </div>
+                    <!-- type of invetion -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="sub-title-text sub-title">TYPE OF INVETION :</div>
+                            <label id="view-type-of-invetion"></label>
+                        </div>
+                    </div>
+                    <!-- PATENT STAGE -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="sub-title-text sub-title">PATENT STAGE :</div>
+                            <label id="view-patent-stage"></label>
+                        </div>
+                    </div>
+                    <!-- Are you achieve SDG -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="sub-title-text sub-title">ARE YOU ACHIVE SDG :</div>
+                            <label id="view-achive-sdg"></label>
+                        </div>
+                    </div>
+                    <!-- APPLICATION NUMBER -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="sub-title-text sub-title"> APPLICATION NUMBER :</div>
+                            <label id="view-application-number"></label>
+                        </div>
+                    </div>
+                    <!-- Date of Filing/Grant/Published -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="sub-title-text sub-title"> DATE OF FILING/GRANT/PUBLISHED :</div>
+                            <label id="view-date"></label>
+                        </div>
+                    </div>
+                    <!-- Are you the Presenter -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="sub-title-text sub-title"> ARE YOU THE PRESENTER :</div>
+                            <label id="view-is-presenter"></label>
+                        </div>
+                    </div>
+                    <!-- Upload Data -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="sub-title-text sub-title"> UPLOADED DOCUMENT :</div>
+                            <label id="view-patent-file"></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const addNewPatentSubmission = document.getElementById('add-patent-submission');
+    const submitBtn = document.getElementById('submit-btn');
+    const updatetBtn = document.getElementById('update-btn');
+    addNewPatentSubmission.addEventListener('click' , function(){
+            submitBtn.classList.remove('d-none');
+            updatetBtn.classList.add('d-none');
+
+            const typeOfInvention = document.getElementById('type-of-invention');
+            const titleOfInvention = document.getElementById('title-of-invention');
+            const patentStage = document.getElementById('patent-stage');
+            const applicationNum = document.getElementById('application-no');
+            const date = document.getElementById('date');
+            const patentSubmissionDocument = document.querySelector('input[type="file"]');
+            
+
+            typeOfInvention.value = '';
+            titleOfInvention.value = '';
+            patentStage.value = '';
+            applicationNum.value = '';
+            patentSubmissionDocument.value = '';
+            date.value = '';
+    })
+    const patenetSubMissionList = document.getElementById('patent-submisson-list');
+    let patentId, rowToBeUpdated;
+    const insertPatentforms = async (url) => {
+        const patentData = new FormData();
+        
+        const patentSubmissionDocument = document.querySelector('input[type="file"]');
+        
+        patentData.append('patentFile', patentSubmissionDocument.files[0]);
+        const selectedTypeOfInvention = document.getElementById('type-of-invention').value;
+        patentData.append('typeOfInvention', selectedTypeOfInvention);
+        
+        const titleOfInvention = document.getElementById('title-of-invention').value;
+        patentData.append('titleOfInvention', titleOfInvention);
+
+        const selectAchiveSdg = document.querySelector('input[name="achive-sdg"]:checked').value;
+        patentData.append('achiveSdg', selectAchiveSdg);
+        
+        const selectPatentStage = document.getElementById('patent-stage').value;
+        patentData.append('patentStage', selectPatentStage);
+
+        const applicationNum= document.getElementById('application-no').value;
+        patentData.append('applicationNum', applicationNum);
+
+        const date = document.getElementById('date').value;
+        patentData.append('date', date);
+
+        const selectIsPresentor = document.querySelector('input[name="is-presenter"]:checked').value;
+        patentData.append('isPresentor', selectIsPresentor);
+
+        fetch(url, {
+            method: 'POST',
+            body: patentData
+        })
+        .then((result) => {
+           return  result.json()
+        })
+        .then((data) => {
+            if (data.status === 'done') {
+                console.log('data >>>', data);
+                patentId = data.patentId;
+                const newPatentRow = document.createElement('tr');
+                newPatentRow.innerHTML = `
+                    <td>${patentId}</td>
+                    <td class="type-of-invention">${data.patentData.typeOfInvention}</td>
+                            <td class="title-of-invention">${data.patentData.typeOfInvention}</td>
+                            <td class="patent-stage">${data.patentData.patentStage}</td>
+                            <td class="application-no">${data.patentData.applicationNum}</td>
+                            <td class="date">${data.patentData.date}</td>
+                            <td class="is-presenter">${data.patentData.isPresentor}</td>
+                            <td class="achive-sdg">${data.patentData.achiveSdg}</td>
+                            <td class="patent-file">${data.filename}</td>
+                            <td class="cell ">
+                                <a class="view" data-patent-id="${patentId}"><i class="fa-solid fa-eye view"
+                                    data-patent-id="${patentId}"></i></a>
+                                <a class="edit" data-patent-id="${patentId}"><i class="fa fa-edit edit"
+                                    data-patent-id="${patentId}"></i></a>
+                                <a class="delete" data-patent-id="${patentId}"><i class="fa-solid fa-trash delete"
+                                    data-patent-id="${patentId}"></i></a>
+                           </td> `;
+
+                patenetSubMissionList.appendChild(newPatentRow);
+                $('#patent-submission-modal').modal('hide');
+                    alert('data is inserted  successFully');
+                    
+            }
+        })
+        .catch((error) => {
+            console.error('ERROR ::', error);
+        });
+    };
+    
+    submitBtn.addEventListener('click', async () => {
+        console.log('clickedd');
+
+        await insertPatentforms('/research/patent-submission/insert');
+    });
+
+    patenetSubMissionList.addEventListener('click' , function(event) {
+      if(event.target.classList.contains('edit')){
+        submitBtn.classList.add('d-none');
+        updatetBtn.classList.remove('d-none');
+        rowToBeUpdated = event.target.closest('tr');
+        patentId = event.target.getAttribute('data-patent-id');
+        console.log('Id For Updation', patentId);
+        $('#patent-submission-modal').modal('show');
+        const typeOfInvention = document.getElementById('type-of-invention');
+        const titleOfInvention = document.getElementById('title-of-invention');
+        const patentStage = document.getElementById('patent-stage');
+        const achiveSdgYes = document.getElementById('yes'); 
+        const achiveSdgNo = document.getElementById('no');
+        const applicationNum = document.getElementById('application-no');
+        const date = document.getElementById('date');
+        const isPresenterYes = document.getElementById('yes1'); 
+        const isPresenterNo = document.getElementById('no1');
+
+        typeOfInvention.value = rowToBeUpdated.querySelector('.type-of-invention').innerText;
+        titleOfInvention.value = rowToBeUpdated.querySelector('.title-of-invention').innerText;
+        patentStage.value = rowToBeUpdated.querySelector('.patent-stage').innerText;
+        if (rowToBeUpdated.querySelector('.achive-sdg').innerText === 'yes') {
+            achiveSdgYes.checked = true;
+        } else {
+            achiveSdgNo.checked = true;
+        }
+        applicationNum.value = rowToBeUpdated.querySelector('.application-no').innerText;
+        date.value = rowToBeUpdated.querySelector('.date').innerText;
+        if (rowToBeUpdated.querySelector('.is-presenter').innerText === 'yes') {
+            isPresenterYes.checked = true;
+        } else {
+            isPresenterNo.checked = true;
+        } 
+      }
+
+    //   for delete patent submission form
+    if(event.target.classList.contains('delete')){
+        const patentSubMissionDataToBeDelete = event.target.closest('tr');
+        patentId = event.target.getAttribute('data-patent-id');
+
+        fetch('/research/patent-submission/delete' , {
+          method : 'POST',
+          headers : {
+            'content-type' : 'application/json'
+          },
+          body : JSON.stringify({patentId})
+        })
+         .then((result) => {
+             return result.json();
+          })
+         .then((data) => {
+             if(data.status === 'done'){
+                patentSubMissionDataToBeDelete.remove();
+            }
+         })
+         .catch((error) => {
+            console.error('ERRORR ::', error)
+         })
+    }
+
+    if(event.target.classList.contains('view')){
+        console.log('data ready for view');
+        const patentSubmissionDataToBeViewed = event.target.closest('tr');
+        console.log('row to be viewed', patentSubmissionDataToBeViewed);
+        patentId = event.target.getAttribute('data-patent-id')
+        $('#patent-submission-modal-view').modal('show');
+        const viewTypeOfInvetion = document.getElementById('view-type-of-invetion');
+        const viewTitleOfinvetion = document.getElementById('view-title-of-invetion');
+        const viewDate = document.getElementById('view-date');
+        const viewAchiveSdg = document.getElementById('view-achive-sdg');
+        const viewIsPresenter = document.getElementById('view-is-presenter');
+        const viewUploadedDoc = document.getElementById('view-patent-file');
+        const viewApplicationNum = document.getElementById('view-application-number');
+        const viewPatentStage = document.getElementById('view-patent-stage');
+
+        fetch('/research/patent-submission/view' , {
+            method : 'POST',
+            headers : {
+                'content-type' : 'application/json'
+            },
+            body : JSON.stringify({
+                patentId
+            })
+        })
+        .then((result) => {
+            return result.json();
+        })
+        .then((data) => {
+            if(data.status === 'done'){
+                console.log('data' , data)
+                viewTitleOfinvetion.innerText = data.patentData[0].title_of_invention;
+                viewTypeOfInvetion.innerText = data.patentData[0].type_of_invention;
+                viewApplicationNum.innerText = data.patentData[0].application_no;
+                viewAchiveSdg.innerText = data.patentData[0].achive_sdg;
+                viewDate.innerText = data.patentData[0].date;
+                viewPatentStage.innerText = data.patentData[0].patent_stage;
+                viewIsPresenter.innerText = data.patentData[0].is_presenter;
+                viewUploadedDoc.innerText = data.patentData[0].patent_file;
+            }
+        })  
+    }
+            
+    })
+
+    updatetBtn.addEventListener('click' , function() {
+        console.log('clickedd');
+        const updatedTypeOfInvention = document.getElementById('type-of-invention').value;
+        console.log('Type ==>>', updatedTypeOfInvention);
+        const updatedTitleOfInvention = document.getElementById('title-of-invention').value;
+        const updatedPatentStage = document.getElementById('patent-stage').value;
+        const updatedAchiveSdg =  document.querySelector('input[name="achive-sdg"]:checked').value
+        console.log('value for checked ::',updatedAchiveSdg )
+        const updatedApplicationNum = document.getElementById('application-no').value;
+        const updatedDate = document.getElementById('date').value;
+        const updatedIs_Presenter = document.querySelector('input[name="is-presenter"]:checked').value; 
+
+        const updatedPatentData = new FormData();
+        // Append the updated values to FormData
+        updatedPatentData.append('patentId' , patentId) ;
+        updatedPatentData.append('typeOfInvention', updatedTypeOfInvention);
+        updatedPatentData.append('titleOfInvention', updatedTitleOfInvention);
+        updatedPatentData.append('patentStage', updatedPatentStage);
+        updatedPatentData.append('achiveSdg', updatedAchiveSdg);
+        updatedPatentData.append('applicationNum', updatedApplicationNum);
+        updatedPatentData.append('date', updatedDate);
+        updatedPatentData.append('isPresentor', updatedIs_Presenter);
+        const updatedPatentFileInput = document.querySelector('input[type="file"]');
+        if (updatedPatentFileInput.files.length > 0) {
+            updatedPatentData.append('patentFile', updatedPatentFileInput.files[0]);
+        }
+
+
+        // fetch api
+        fetch('/research/patent-submission/update' , {
+            method : 'POST',
+            body : updatedPatentData
+        })
+        .then((result) => {
+            return result.json();
+
+        })
+        .then((data) => {
+            if(data.status === 'done'){
+                console.log('Updated Data ==> ', data)
+                console.log('updated data title ===>', data.updatedPatentData.typeOfInvention);
+                rowToBeUpdated.querySelector('.title-of-invention').innerText = data.updatedPatentData.titleOfInvention;
+                rowToBeUpdated.querySelector('.type-of-invention').innerText = data.updatedPatentData.typeOfInvention;
+                rowToBeUpdated.querySelector('.achive-sdg').innerText = data.updatedPatentData.achiveSdg;
+                rowToBeUpdated.querySelector('.application-no').innerText = data.updatedPatentData.applicationNum;
+                rowToBeUpdated.querySelector('.patent-stage').innerText = data.updatedPatentData.patentStage;
+                rowToBeUpdated.querySelector('.date').innerText = data.updatedPatentData.date;
+                rowToBeUpdated.querySelector('.is-presenter').innerText = data.updatedPatentData.isPresentor;
+                document.querySelector('.patent-file').innerText = data.patentDocument;
+            
+            }
+        })
+        .catch((error) => {
+            console.error('ERROR:', error);
+        })
+        $('#patent-submission-modal').modal('hide');
+    })
+</script>
+<!-- inline script -->
+<!-- footer section -->
+<%- include('./partials/footer') %>
+<%- include('./partials/footer-end') %>
+          

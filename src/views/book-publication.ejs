@@ -1,0 +1,302 @@
+<%- include('./partials/head') %>
+
+<!-- Navbar section -->
+<%- include('./partials/header') %>
+<!-- This is left sidebar  -->
+
+<%- include('./partials/left-side-bar') %> 
+    <!-- This is right side section -->
+    <main class="main" id="mainContent">
+        <div class="base-section coustom-section mt-5 p-5">
+            <!--DASHBOARD CONTENT START-->
+            <div class="breadcrumbs-container">
+                <ul class="breadcrumb">
+                    <li><a href="/dashboard">ADMIN</a></li>
+                    <li><a href="">Book Publication</a></li>
+                </ul>
+            </div>
+            <div class="errorHtml"></div>
+            <div class="card table-card">
+                <div
+                    class="card-header table-card-header text-uppercase d-flex align-items-center justify-content-between">
+                    <div>
+                        <h5>PROGRAM LIST</h5>
+                    </div>
+                    <div class="me-2">
+                        <a class="btn btn-danger" href="/admin/programs/download"><i class="fas fa-download"></i>
+                            Download </a>
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                            <i class="fas fa-plus"></i></button>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body table-responsive">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <label>Show Entries</label>
+                            <select class="form-select" id="changeEntry">
+                                <option value="10">10</option>
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                                <option value="150">150</option>
+                                <option value="200">200</option>
+                                <option value="250">250</option>
+                                <option value="300">300</option>
+                                <option value="350">350</option>
+                                <option value="400">400</option>
+                                <option value="500">500</option>
+                                <option value="800">800</option>
+                                <option value="1000">1000</option>
+                            </select>
+                        </div>
+                        <div>
+                            <div class="table-searchbar-container"><button type="button"><i class="fas fa-search"></i>
+                                </button><input type="search" id="searchkeyword" placeholder="Enter keywords"
+                                    class="table-searchbar">
+                            </div>
+                        </div>
+                    </div>
+                    <table class="table custom-table " id="bookPubTable">
+                        <thead>
+                            <th>#</th>
+                            <th>Author's name</th>
+                            <th>Publication year</th>
+                            <th>Book title</th>
+                            <th>ISBN Number</th>
+                            <th>Action</th>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>8051</td>
+                                <td>MASTER OF BUSINESS ADMINISTRATION-8051</td>
+                                <td>Full Time</td>
+                                <td>SBM-NM-M</td>
+                                <td> <a class="view-program" data-id="6"><i class="fa-solid fa-eye"></i></a>
+                                    <a class="edit-program" data-id="6"><i class="fa fa-edit"></i></a>
+                                    <a class="delete-program" data-id="6"><i class="fa-solid fa-trash"></i></a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <p>Total entries:1
+                            </p>
+                        </div>
+                        <div>
+                            <p id="pagination" class="pagination-search"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Import Modal -->
+            <div class="modal fade" id="open-program-modal" tabindex="-1" aria-labelledby="open-program-modal"
+                aria-hidden="true">
+            </div>
+            <!-- EDIT PROGRAM AND UPDATE -->
+            <div class="modal fade" id="edit-program-modal" tabindex="-1" aria-labelledby="editModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editModalLabel">Update Program</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div id="errorHtml"></div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="exampleInputEmail1" class="form-label">Program Name</label>
+                                <input type="text" class="form-control" id="program_name" name="program_name">
+                                <input type="hidden" class="form-control" id="hidden_id" name="hidden_id">
+                            </div>
+                            <div class="mb-3">
+                                <label for="exampleInputPassword1" class="form-label">Program Type</label>
+                                <select class="form-control" name="program_type_lid" id="program_type_lid">
+
+                                    <option value="1">Full Time</option>
+
+                                    <option value="2">Part Time</option>
+
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="abbr" class="form-label">Program Abbr</label>
+                                <input type="text" class="form-control" id="abbr" name="abbr">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary updateProgram">Update</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </main>
+
+    <!-- modal form for Book Publication -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl modal-fullscreen" role="document">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Book Publication</h5>
+
+                    <div class="close" data-dismiss="modal" aria-label="Close" id="close">
+                        <i class="fas fa-times fa-2x"></i>
+                    </div>
+                </div>
+
+                <!-- model form body -->
+                <div class="modal-body">
+                    <h3 class="text-center mb-5">Book Publication</h3>
+                    <div class="row">
+                        <!-- Author's last name, first initial -->
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="lastNameOfAuthor" class="form-label fw-bold">Author's last name, first
+                                initial</label>
+                            <input type="text" name="lastname" id="lastNameOfAuthor" class="form-control"
+                                placeholder="Author's last name, first initial">
+                        </div>
+                        <!-- Publication year -->
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="publicationYear" class="form-label fw-bold">Publication year</label>
+                            <input type="number" name="year" id="publicationYear" class="form-control"
+                                placeholder="Publication year" min="1945" max="2024">
+                        </div>
+                        <!-- Book title -->
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="bookTitle" class="form-label fw-bold">Book title</label>
+                            <input type="text" name="title-book" id="bookTitle" class="form-control"
+                                placeholder="Book title">
+                        </div>
+                        <!-- Edition -->
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="titleOfBookSeries" class="form-label fw-bold">Edition</label>
+                            <input type="text" name="BookSeries" id="titleOfBookSeries" class="form-control"
+                                placeholder="Edition" min="1945" max="2024">
+                        </div>
+                        <!-- Page number -->
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="pageNumber" class="form-label fw-bold">Page number</label>
+                            <input type="text" name="page-number" id="pageNumber" class="form-control"
+                                placeholder="Page number">
+                        </div>
+                        <!-- ISBN Number -->
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="ISBNNumber" class="form-label fw-bold">
+                                ISBN Number
+                            </label>
+                            <input type="text" name="ISBN-Number" id="ISBNNumber" class="form-control"
+                                placeholder="ISBN Number">
+                        </div>
+                        <!-- Volume Number-->
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="volumeNumber" class="form-label fw-bold">
+                                Volume Number
+                            </label>
+                            <input type="text" name="vol-number" id="volumeNumber" class="form-control"
+                                placeholder="Volume Number">
+                        </div>
+                        <!-- Publisher name -->
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <div class="form-group">
+                                <label for="publisherName" class="form-label  fw-bold">
+                                    Publisher Name
+                                </label>
+                                <input type="text" name="publisher-name" id="publisherName" placeholder="Publisher Name"
+                                    class="form-control  " />
+                            </div>
+                        </div>
+                        <!-- Place of Publication -->
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <div class="form-group">
+                                <label for="placeOfPublication" class="form-label  fw-bold">
+                                    Place of Publication
+                                </label>
+                                <input type="text" name="publication-place" id="placeOfPublication"
+                                    placeholder="Place of Publication" class="form-control" />
+                            </div>
+                        </div>
+                        <!-- Publisher Category-->
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="publisherCatergory" class="form-label fw-bold mb-3">Publisher
+                                Category</label><br>
+                            <div class="form-check-inline">
+                                <label for="international" class="form-check-label">
+                                    <input type="radio" class="form-check-input" id="international" name="radio"
+                                        value="International"> International
+                                </label>
+                            </div>
+                            <div class="form-check-inline">
+                                <label for="national" class="form-check-label">
+                                    <input type="radio" class="form-check-input" id="national" name="radio"
+                                        value="National"> National
+                                </label>
+                            </div>
+                        </div>
+                        <!-- Upload the supporting documents -->
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="upload" class="form-label fw-bold ">Upload the supporting documents</label>
+                            <input type="file" name="upload-file" class="form-control " id="upload"
+                                placeholder="upload-file">
+                        </div>
+
+                        <!-- DOI of book -->
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="Weblink" class="form-label fw-bold ">DOI of Book</label>
+                            <input type="url" name="web-link" id="Weblink" placeholder="DOI -Unique ID"
+                                class="form-control " />
+                        </div>
+                        <!-- URL of book -->
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="urlOfBook" class="form-label fw-bold ">URL of book</label>
+                            <input type="url" name="book-url" id="urlOfBook" placeholder="URL of book"
+                                class="form-control " />
+                        </div>
+                        <!-- No. of NMIMS Authors -->
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="NMIMSAuthors" class="form-label fw-bold ">No. of NMIMS Authors</label>
+                            <input type="text" name="nmims-authors" id="NMIMSAuthors" placeholder="No. of NMIMS Authors"
+                                class="form-control " />
+                        </div>
+                        <!-- Name of NMIMS Authors -->
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="nameOfAuthors" class="form-label fw-bold ">Name of NMIMS Authors</label>
+                            <input type="text" name="web-link" id="nameOfAuthors" placeholder="Name of NMIMS Authors"
+                                class="form-control " />
+                        </div>
+                        <!-- NMIMS Campus - Author -->
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="campusAuthors" class="form-label fw-bold ">Name of NMIMS Campus Authors</label>
+                            <input type="url" name="web-link" id="campusAuthors"
+                                placeholder="Name of NMIMS Campus Authors" class="form-control " />
+                        </div>
+                        <!--NMIMS School - Author-->
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="campusAuthors" class="form-label fw-bold ">Name of NMIMS School Authors</label>
+                            <input type="url" name="web-link" id="campusAuthors"
+                                placeholder="Name of NMIMS School Authors" class="form-control " />
+                        </div>
+                    </div>
+                </div>
+                <!-- Add your modal footer buttons if needed -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button class="btn btn-md btn-success" id="submitBtn">Submit</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="../js/script.js"></script>
+</body>
+
+</html>
