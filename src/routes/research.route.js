@@ -64,7 +64,7 @@ router.post('/patent-submission/delete', asyncErrorHandler(patentSubmission.dele
 router.post('/patent-submission/view', asyncErrorHandler(patentSubmission.viewPatentSubmissionData));
 
 //research project consultancy
-
 router.get('/research-project-consultancy', asyncErrorHandler(researchConsultancyController.renderResearchProjectConsultancy));
 router.post('/research-project-consultancy/insert', upload.single('researchSupportingDocument'), asyncErrorHandler(researchConsultancyController.insertResearchConsultancyData));
+router.post('/research-project-consultancy/update', upload.single('researchSupportingDocument'), asyncErrorHandler(researchConsultancyController.updatedConsultantData));
 module.exports = router;

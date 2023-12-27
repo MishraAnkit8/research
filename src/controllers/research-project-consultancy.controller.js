@@ -43,3 +43,8 @@ module.exports.insertResearchConsultancyData = async(req, res, next) => {
     }
 
 }
+
+module.exports.updatedConsultantData = async(req, res, next) => {
+    console.log('data comming from templates ==>>', req.body);
+    console.log()
+}

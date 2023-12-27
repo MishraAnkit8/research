@@ -153,9 +153,9 @@
     <div class="modal-dialog modal-dialog-scrollable modal-lg modal-fullscreen p-5" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="patent-study">RESEARCH PROJECT CONSULTANCY </h5>
+                <h3 class="text-center">RESEARCH PROJECT CONSULTANCY </h3>
                 <div class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true"><i class="fas fa-times fa-2x"></i></span>
+                    <button class="border-0 " aria-hidden="true"><i class="fas fa-times fa-2x text-danger"></i></button>
                 </div>
             </div>
             <div class="modal-body">
@@ -229,13 +229,13 @@
                             Project</label><br>
                         <div class="form-check-inline">
                             <label for="submited" class="form-check-label">
-                                <input type="radio" class="form-check-input" id="submited" name="research-project-status"
+                                <input type="radio" class="form-check-input" id="submitted" name="research-project-status"
                                     value="Submitted"> Submitted
                             </label>
                         </div>
                         <div class="form-check-inline">
                             <label for="presentation" class="form-check-label">
-                                <input type="radio" class="form-check-input" id="presentation" name="research-project-status"
+                                <input type="radio" class="form-check-input" id="presentation-held" name="research-project-status"
                                     value="Presentation held"> Presentation held
                             </label>
                         </div>
@@ -255,16 +255,16 @@
                     </div>
                     <!-- if faculty choose internal Authors then show search bar -->
                     <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="faculty-type" class="form-label fw-bold mb-3">Grant Proposal</label><br>
+                        <label for="faculty-type" class="form-label fw-bold mb-3">Faculty Type</label><br>
                         <div class="form-check-inline">
                             <label for="Internal" class="form-check-label">
-                                <input type="radio" class="form-check-input" id="Internal" name="faculty-type"
+                                <input type="radio" class="form-check-input" id="internal" name="faculty-type"
                                     value="Internal"> Internal
                             </label>
                         </div>
                         <div class="form-check-inline">
                             <label for="External" class="form-check-label">
-                                <input type="radio" class="form-check-input" id="External" name="faculty-type"
+                                <input type="radio" class="form-check-input" id="external" name="faculty-type"
                                     value="External"> External
                             </label>
                         </div>
@@ -292,6 +292,7 @@
     const researchProjectConsultancyList = document.getElementById('consultancy-list');
     const submitBtn = document.getElementById('submit-btn');
     const updateBtn = document.getElementById('update-btn');
+    let consultantId ;
     const addResearchConsultancyModal = document.getElementById('add-research-project-consultancy');
     addResearchConsultancyModal.addEventListener('click', function(event) {
         if(event.target.classList.contains('plus')){
@@ -380,7 +381,7 @@
                 $('#consultancy-modal').modal('show');
                 const consultantRowToBeUpdated = event.target.closest('tr');
                 console.log('constantRowToBeUpdated ==>>', consultantRowToBeUpdated);
-                const consultantId = event.target.getAttribute('data-consultancy-id');
+                consultantId = event.target.getAttribute('data-consultancy-id');
                 console.log('consultantId ==>>', consultantId)
                 const researchConsultancyData = new FormData();
                 const isGrantProposalCategoryGoverement = document.getElementById('goverment');
@@ -414,7 +415,7 @@
                     if(grantType === 'Research Project'){
                         grantResearchProject.checked = true;
                         grantConsultancy.checked = false;
-                        grantCapacityBuilding = false;
+                        grantCapacityBuilding.checked = false;
                     }
                     if(grantType === 'Consultancy'){
                             grantConsultancy.checked = true;
@@ -427,12 +428,83 @@
                         grantConsultancy.checked = false;
                     }
             }
-    
                 titleOfProject.value = document.querySelector('.title-of-project').innerText;
                 thurstAreaOfResearch.value = document.querySelector('.thurst-area').innerText;
                 fundingAgency.value = document.querySelector('.funding-agency').innerText;
-                const statusOfProject = document.querySelector('.')
+                fundingAmount.value = consultantRowToBeUpdated.getAttribute('data-funding-amount');
+                const projectStatus = consultantRowToBeUpdated.querySelector('.research-project-status').innerText;
+                if(projectStatus){
+                    if(projectStatus === 'Presentation held'){
+                        statusPresentationHeld.checked = true;
+                        statusGranted.checked = false;
+                        statusSubmitted.checked = false;
+                    }
+                    if(projectStatus === 'Submitted'){
+                        statusPresentationHeld.checked = false;
+                        statusGranted.checked = false;
+                        statusSubmitted.checked = true;
+                    }
+                    if(projectStatus === 'Granted'){
+                        statusPresentationHeld.checked = false;
+                        statusGranted.checked = true;
+                        statusSubmitted.checked = false;
+                    }
+                }
+                submissionGrantDate.value = consultantRowToBeUpdated.getAttribute('data-submission-date');
+                const facultyType = consultantRowToBeUpdated.getAttribute('data-faulty-type');
+                console.log('facultyType ==>>', facultyType);
+                if(facultyType === 'External'){
+                    facultyTypeExternal.checked = true;
+                }
+                else{
+                    facultyTypeInternal.checked = true;
+                }
+                const supportingDocuments = consultantRowToBeUpdated.getAttribute('data-supports-document');
+                console.log('supportingDocuments ==>>', supportingDocuments)
+                if(supportingDocuments){
+                    supportingDocument.textContent = supportingDocuments;
+                }
             }
+    })
+
+    updateBtn.addEventListener('click' , () => {
+        console.log('clickeddd')
+        const updatedConsultantData = new FormData();
+        const updatedGrantProposalCategory = document.querySelector('input[name="grant-proposal"]:checked').value;
+        const updatedTypeOfGrant = document.querySelector('input[name="type-of-grant"]:checked').value;
+        const updatedTitleOfProject = document.getElementById('title-of-project').value;
+        const updatedThurstAreaOfResearch = document.getElementById('thurst-area').value;
+        const updatedFundingAgency = document.getElementById('funding-agency').value;
+        const updatedFundingAmount = document.getElementById('funding-amount').value;
+        const updatedStatusOfResearchProject = document.querySelector('input[name="research-project-status"]:checked').value;
+        const updatedSubmissionGrantDate = document.getElementById('submission-grant-date').value;
+        const updatedFacultyType = document.querySelector('input[name="faculty-type"]:checked').value;
+        const updatedSupportingDocument = document.querySelector('input[type="file"]');
+
+        updatedConsultantData.append('consultantId' , consultantId);
+        updatedConsultantData.append('grantProposalCategory' ,updatedGrantProposalCategory);
+        updatedConsultantData.append('typeOfGrant' , updatedTypeOfGrant);
+        updatedConsultantData.append('titleOfProject' , updatedTitleOfProject);
+        updatedConsultantData.append('thurstAreaOfResearch' , updatedThurstAreaOfResearch);
+        updatedConsultantData.append('fundingAgency' , updatedFundingAgency);
+        updatedConsultantData.append('fundingAmount' , updatedFundingAmount);
+        updatedConsultantData.append('statusOfResearchProject' , updatedStatusOfResearchProject);
+        updatedConsultantData.append('submissionGrantDate' , updatedSubmissionGrantDate);
+        updatedConsultantData.append('facultyType' , updatedFacultyType);
+        if(updatedSupportingDocument && updatedSupportingDocument.files && updatedSupportingDocument.files.length > 0){
+            updatedConsultantData.append('researchSupportingDocument' , updatedSupportingDocument.files[0]);
+        }
+        
+        fetch('/research/research-project-consultancy/update' , {
+            method : 'POST',
+            body : updatedConsultantData
+        })
+        .then((result) => {
+                return result.json()
+        })
+        .then((data) => {
+            console.log('data' , data)
+        })
     })
     
 </script>
