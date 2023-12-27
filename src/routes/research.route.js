@@ -22,6 +22,7 @@ const journalController = require('../controllers/journal-paper.controller');
 const conferenceController = require('../controllers/conference-publication.controller');
 const patentSubmission = require('../controllers/patent-submission.controller');
 const researchConsultancyController = require('../controllers/research-project-consultancy.controller');
+const bookPublicationRoutes = require('./book-publication-main.routes');
 
 const router = express.Router();
 
@@ -67,4 +68,8 @@ router.post('/patent-submission/view', asyncErrorHandler(patentSubmission.viewPa
 router.get('/research-project-consultancy', asyncErrorHandler(researchConsultancyController.renderResearchProjectConsultancy));
 router.post('/research-project-consultancy/insert', upload.single('researchSupportingDocument'), asyncErrorHandler(researchConsultancyController.insertResearchConsultancyData));
 router.post('/research-project-consultancy/update', upload.single('researchSupportingDocument'), asyncErrorHandler(researchConsultancyController.updatedConsultantData));
+
+// book publication
+router.use('/book-publication-main', bookPublicationRoutes);
+
 module.exports = router;
