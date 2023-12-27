@@ -22,3 +22,47 @@ module.exports.insertConferenceData = async(body , files) => {
     
 }
 
+module.exports.deleteConferencePublicationData = async(body) => {
+    const conferenceId = body;
+    const deleteConferencePublication = await conferencePublicationModels.DeleteConference(conferenceId);
+    if(deleteConferencePublication && deleteConferencePublication.rowCount === 1){
+        return {
+            status : 'done',
+            massage : 'data deleted successfully'
+        }
+    }
+    else{
+        return {
+            status : 'failed ',
+            massage : 'failed to delete the data'
+        }
+    }
+}
+
+module.exports.updatedConferencePublication = async (body, conferenceProof, conferenceDocument) => {
+    console.log('data in service' , body);
+    const upadtedConferenceData = body
+    const conferenceId =  body.conferenceId;
+    const updateConferencePublicationData = await conferencePublicationModels.updateConferencePublication(upadtedConferenceData, conferenceId, conferenceProof, conferenceDocument);
+    if(updateConferencePublicationData && updateConferencePublicationData.rowCount === 1){
+        console.log('updateConferencePublicationData in service ==>>', updateConferencePublicationData);
+        return {
+            status : 'done',
+            massage : 'data updated successfully'
+        }
+    }
+    else{
+        return {
+            status : 'failed',
+            massage : 'failed to update'
+        }
+    }
+     
+}
+
+module.exports.viewConferencePublication = async(conferenceId) => {
+    const viewConferenceData  = await conferencePublicationModels.viewConferencePublication(conferenceId);
+    if(viewConferenceData && viewConferenceData.rowCount === 1){
+        return viewConferenceData
+    }
+}

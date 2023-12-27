@@ -45,3 +45,59 @@ module.exports.insertConferencePublicationSData = async (req, res, next) => {
   
 }
 
+module.exports.deleteConferencePublication = async(req, res, next) => {
+    const conferenceId = req.body;
+    console.log('conferenceId in controller' , conferenceId);
+    const deleteConferenceRequest = await conferencePublicationServices.deleteConferencePublicationData(conferenceId);
+    if(deleteConferenceRequest){
+        res.status(200).send({
+            status : 'done',
+            massage : 'data deleted successfully'
+        })
+    }
+    else{
+        res.status(500).send({
+            status : 'failed',
+            massage : 'failed to delete'
+        })
+    }
+}
+
+module.exports.updateConferencePublication = async(req, res, next) => {
+    const conferenceId = req.body.id;
+    console.log('id for updation', conferenceId)
+    console.log('data in controller for updation ==>>', req.body);
+    const upadtedConferenceData = req.body;
+    console.log('fi;es in controller :', req.files);
+    const {conferenceProof , conferenceDocument} = req.files;
+    const updateConference = await conferencePublicationServices.updatedConferencePublication(req.body, conferenceProof, conferenceDocument);
+    if(updateConference){
+        res.status(200).send({
+            status : updateConference.status,
+            masssage : updateConference.massage,
+            upadtedConferenceData,
+            ConferenceDocument : conferenceDocument[0].filename,
+            ConferenceProof : conferenceProof[0].filename
+        })
+    }
+    else{
+        res.status(500).send({
+            status : 'failed',
+            massage : 'failed to update data',
+
+        })
+    }
+   
+}
+
+module.exports.viewConferencePublication = async(req, res, next) => {
+    console.log('data Id in Controller', req.body);
+    const {conferenceId} = req.body
+    const viewConferencePublicationData = await conferencePublicationServices.viewConferencePublication(conferenceId);
+    if(viewConferencePublicationData){
+        res.status(200).send({
+            status : 'done',
+            viewConferenceData : viewConferencePublicationData.rows
+        })
+    }
+}

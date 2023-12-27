@@ -21,6 +21,7 @@ const caseStudyController = require('../controllers/case-study.controller');
 const journalController = require('../controllers/journal-paper.controller');
 const conferenceController = require('../controllers/conference-publication.controller');
 const patentSubmission = require('../controllers/patent-submission.controller');
+const researchConsultancyController = require('../controllers/research-project-consultancy.controller');
 
 const router = express.Router();
 
@@ -48,8 +49,12 @@ router.post('/conference-publication/insert', upload.fields([
     { name: 'conferenceDocument', maxCount: 1 },
     { name: 'conferenceProof', maxCount: 1 },
 ]),asyncErrorHandler(conferenceController.insertConferencePublicationSData));
-router.post('/conference-publication/view', asyncErrorHandler(conferenceController.viewconferencePublication));
-router.post('/conference-publication/delete', asyncErrorHandler(conferenceController.deleteConference));
+router.post('/conference-publication/view', asyncErrorHandler(conferenceController.viewConferencePublication));
+router.post('/conference-publication/delete', asyncErrorHandler(conferenceController.deleteConferencePublication));
+router.post('/conference-publication/update', upload.fields([
+    { name: 'conferenceDocument', maxCount: 1 },
+    { name: 'conferenceProof', maxCount: 1 },
+]),asyncErrorHandler(conferenceController.updateConferencePublication));
 
 //patent submission form
 router.get('/patent-submission', asyncErrorHandler(patentSubmission.renderPatentSubMissionAndGrant));
@@ -58,5 +63,8 @@ router.post('/patent-submission/update', upload.single('patentFile'), asyncError
 router.post('/patent-submission/delete', asyncErrorHandler(patentSubmission.deletePatentData));
 router.post('/patent-submission/view', asyncErrorHandler(patentSubmission.viewPatentSubmissionData));
 
+//research project consultancy
 
+router.get('/research-project-consultancy', asyncErrorHandler(researchConsultancyController.renderResearchProjectConsultancy));
+router.post('/research-project-consultancy/insert', upload.single('researchSupportingDocument'), asyncErrorHandler(researchConsultancyController.insertResearchConsultancyData));
 module.exports = router;

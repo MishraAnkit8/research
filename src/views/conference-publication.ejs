@@ -185,7 +185,7 @@
                         <label for="publisher-category" class="form-label fw-bold mb-3">Publisher Category</label><br>
                         <div class="form-check-inline">
                             <label for="international" class="form-check-label">
-                                <input type="radio" class="form-check-input" id="international" name="publisher-category" value="International"> International
+                                <input type="radio" class="form-check-input" id="inter-national" name="publisher-category" value="International"> International
                             </label>
                         </div>
                         <div class="form-check-inline">
@@ -265,7 +265,8 @@
                     <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
                         <div class="form-group">
                             <label for="upload" class="form-label fw-bold ">Upload Files</label>
-                            <input type="file" id="upload-conference-file" name="upload-confere-file" class="form-control "  placeholder="upload-conference-file">
+                            <input type="file" id="conference-file" name="conferenceDocument" class="form-control" placeholder="conference-file-name">
+                            <span id="conference-file-name"></span>
                         </div>
                     </div>
                     <!-- Any award for presentation -->
@@ -273,13 +274,13 @@
                         <label for="award-for-presentation" class="form-label fw-bold mb-3">Any award for presentation</label><br>
                         <div class="form-check-inline">
                             <label for="award-yes" class="form-check-label">
-                                <input type="radio" class="form-check-input" id="yes" name="award-for-presentation" value="Yes">
+                                <input type="radio" class="form-check-input" id="is-award-yes" name="award-for-presentation" value="Yes">
                                 Yes
                             </label>
                         </div>
                         <div class="form-check-inline">
                             <label for="award-no" class="form-check-label">
-                                <input type="radio" class="form-check-input" id="no" name="award-for-presentation" value="No">
+                                <input type="radio" class="form-check-input" id="is-award-no" name="award-for-presentation" value="No">
                                 No
                             </label>
                         </div>
@@ -289,7 +290,8 @@
                     <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
                         <div class="form-group">
                             <label for="upload" class="form-label fw-bold ">Upload Proof</label>
-                            <input type="file" id="upload-conference-proofe" name="upload-conference-proof" class="form-control " id="upload-proof"
+                            <span id="conference-proof-name"></span>
+                            <input type="file" id="conference-proof" name="conferenceProof" class="form-control " 
                                 placeholder="upload-conference-proofe">
                         </div>
                     </div>
@@ -310,7 +312,7 @@
     <div class="modal-dialog modal-dialog-centered custom-modal " role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title text-center" id="exampleModalLongTitle">CONFERENCE PUBLICATION</h5>
+          <h5 class="modal-title text-center" id="conference-publication">CONFERENCE PUBLICATION</h5>
           <div type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true"><i class="fas fa-times fa"></i></span>
           </div>
@@ -394,7 +396,7 @@
                 <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                     <div class="box">
                         <div class="task-sub-title sub-title-text">UPLOAD FILES:</div>
-                        <label id="view-upload-files"></label>
+                        <label id="view-conference-document"></label>
                     </div>
                 </div>
                 <!-- Any award for presentation -->
@@ -408,7 +410,7 @@
                 <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                     <div class="box">
                         <div class="task-sub-title sub-title-text">UPLOAD PROOF:</div>
-                        <label id="view-upload-proof"></label>
+                        <label id="view-conference-proof"></label>
                     </div>
                 </div>
                
@@ -424,7 +426,7 @@
 <script>
    
     const conferencePublicationList = document.getElementById('conference-publication-list');
-    let conferenceId;
+    let conferenceId, conferenceRowToBeUpdated;
     const conferenceAddModal = document.getElementById('confrence-modal-form');
     const submitBtn = document.getElementById('submit-btn');
     const updateBtn = document.getElementById('update-btn');
@@ -433,13 +435,44 @@
         if(event.target.classList.contains('plus')){
             updateBtn.classList.add('d-none');
             submitBtn.classList.remove('d-none');
+            const titleOfPaper = document.getElementById('title-of-paper');      
+            const nameAndPlace = document.getElementById('name-and-place');
+            const procedingDetail = document.getElementById('proceedings-detail');
+            const publicationDetails = document.getElementById('publication-details');
+            const volAndIssueNo = document.getElementById('vol-and-issue-no');
+            const issnIsbnNo = document.getElementById('issn-isbn-no');
+            const doiWebLink = document.getElementById('doi-weblink');
+            const isPublisherCategoryNational = document.getElementById('national');
+            const isPublisherCategoryInterNational = document.getElementById('inter-national');
+            const isPresenterYes = document.getElementById('yes');
+            const isPresenterNo = document.getElementById('no');
+            const isAuthorEnternal = document.getElementById('internal');
+            const isAuthorExternal = document.getElementById('external');
+            const isAwardYes = document.getElementById('is-award-yes');
+            const isAwardno = document.getElementById('is-award-no');
+            const conferenceDocument = document.getElementById('conference-file'); 
+            titleOfPaper.value = '';   
+            nameAndPlace.value = ''; 
+            procedingDetail.value = ''; 
+            publicationDetails.value = ''; 
+            volAndIssueNo.value = ''; 
+            issnIsbnNo.value = '';
+            doiWebLink.value = ''; 
+            isPublisherCategoryNational.checked = false; 
+            isPublisherCategoryInterNational.checked = false; 
+            isPresenterYes.checked = false; 
+            isPresenterNo.checked = false; 
+            isAuthorEnternal.checked = false; 
+            isAuthorExternal.checked = false; 
+            isAwardYes.checked = false; 
+            isAwardno.checked = false; 
+            conferenceDocument.value = ''; 
         }
     })
-
     const insertConferencePublicationForm = async (url) => {
         const conferenceData = new FormData();
-        const conferenceDocument = document.querySelector('input[name="upload-confere-file"]');
-        const conferenceProof = document.querySelector('input[name="upload-conference-proof"]');
+        const conferenceDocument = document.querySelector('input[name="conferenceDocument"]');
+        const conferenceProof = document.querySelector('input[name="conferenceProof"]');
         const titleOfPaper = document.getElementById('title-of-paper').value;       
         const nameAndPlace = document.getElementById('name-and-place').value;
         const procedingDetail = document.getElementById('proceedings-detail').value;
@@ -514,6 +547,225 @@
     submitBtn.addEventListener('click', async () => {
         await insertConferencePublicationForm('/research/conference-publication/insert');
     });
+
+    // for delete
+    conferencePublicationList.addEventListener('click' , (event) => {
+        if(event.target.classList.contains('delete')){
+        conferenceId = event.target.getAttribute('data-conference-id');
+        console.log('id for deletion ==>', conferenceId);
+        conferenceRowToBeDelete = event.target.closest('tr');
+
+        fetch('/research/conference-publication/delete' , {
+            method : 'POST',
+            headers : {
+                'content-type' : 'application/json'
+            },
+            body : JSON.stringify({conferenceId})
+        })
+        .then((result) => {
+            return result.json()
+        })
+        .then((data) => {
+            if(data.status === 'done'){
+                conferenceRowToBeDelete.remove();
+            }
+        })
+        }
+      
+        // for view
+        if(event.target.classList.contains('view')){
+            console.log('clickeddd');
+            const conferenceRowToBeViewed = event.target.closest('tr');
+            console.log('conferenceRowToBeViewed' , conferenceRowToBeViewed);
+            conferenceId = conferenceRowToBeViewed.getAttribute('data-conference-id');
+            console.log('ID For View', conferenceRowToBeViewed);
+            const viewConferenceDocument = document.getElementById('view-conference-document');
+            const viewConferenceProof = document.getElementById('view-conference-proof');
+            const viewTitleOfPaper = document.getElementById('view-title-of-paper');     
+            const viewNameAndPlace = document.getElementById('view-name-and-place');
+            const viewProcedingDetail = document.getElementById('view-proceedings-detail');
+            const viewPublicationDetails = document.getElementById('view-publication-details');
+            const viewVolAndIssueNo = document.getElementById('vol-and-issue-no');
+            const viewIssnIsbnNo = document.getElementById('view-issn-isbn-no');
+            const viewDoiWebLink = document.getElementById('view-doi-weblink');
+            const viewPublisherCategory = document.getElementById('view-publisher-category');
+            const viewIsPresenter = document.getElementById('view-is-presenter');
+            const viewAuthortype = document.getElementById('view-author-type');
+            const viewAward = document.getElementById('view-award-for-presentation');
+            $('#conference-publication-view-modal').modal('show');
+
+            fetch('/research/conference-publication/view' , {
+                method : 'POST',
+                headers : {
+                    'content-type' : 'application/json'
+                },
+                body : JSON.stringify({conferenceId})
+            })
+            .then((result) => {
+                return result.json()
+            })
+            .then((data) => {
+                if(data.status === 'done'){
+                    console.log('data ==>>', data);
+                    viewTitleOfPaper.innerText = data.viewConferenceData[0].title_of_paper;
+                    viewConferenceDocument.innerText = data.viewConferenceData[0].upload_files;
+                    viewConferenceProof.innerText = data.viewConferenceData[0].upload_proof;    
+                    viewNameAndPlace.innerText = data.viewConferenceData[0].name_and_place;
+                    viewProcedingDetail.innerText = data.viewConferenceData[0].proceedings_detail;
+                    viewPublicationDetails.innerText = data.viewConferenceData[0].publication_details;
+                    viewVolAndIssueNo.innerText = data.viewConferenceData[0].vol_and_issue_no;
+                    viewIssnIsbnNo.innerText = data.viewConferenceData[0].issn_isbn_no;
+                    viewDoiWebLink.innerText = data.viewConferenceData[0].doi_weblink;
+                    viewPublisherCategory.innerText = data.viewConferenceData[0].publisher_category;
+                    viewIsPresenter.innerText = data.viewConferenceData[0].is_presenter;
+                    viewAuthortype.innerText = data.viewConferenceData[0]. author_type;
+                    viewAward.innerText = data.viewConferenceData[0].award_for_presentation;
+
+                }
+            })
+        }
+        // for update
+        if(event.target.classList.contains('edit')){
+            console.log('clickedddd');
+            conferenceId = event.target.getAttribute('data-conference-id');
+            conferenceRowToBeUpdated = event.target.closest('tr');
+            console.log('ID ==>>', conferenceId);
+            $('#conference-publication-modal').modal('show');
+            updateBtn.classList.remove('d-none');
+            submitBtn.classList.add('d-none');
+            const titleOfPaper = document.getElementById('title-of-paper');      
+            const nameAndPlace = document.getElementById('name-and-place');
+            const procedingDetail = document.getElementById('proceedings-detail');
+            const publicationDetails = document.getElementById('publication-details');
+            const volAndIssueNo = document.getElementById('vol-and-issue-no');
+            const issnIsbnNo = document.getElementById('issn-isbn-no');
+            const doiWebLink = document.getElementById('doi-weblink');
+            const isPublisherCategoryNational = document.getElementById('national');
+            const isPublisherCategoryInterNational = document.getElementById('inter-national');
+            const isPresenterYes = document.getElementById('yes');
+            const isPresenterNo = document.getElementById('no');
+            const isAuthorEnternal = document.getElementById('internal');
+            const isAuthorExternal = document.getElementById('external');
+            const isAwardYes = document.getElementById('is-award-yes');
+            const isAwardno = document.getElementById('is-award-no');
+            const conferenceDocument = document.getElementById('conference-file'); 
+        
+            // assigning value which already stored
+            titleOfPaper.value = conferenceRowToBeUpdated.querySelector('.title-of-paper').innerText;
+            nameAndPlace.value = conferenceRowToBeUpdated.querySelector('.name-and-place').innerText;
+            procedingDetail.value = conferenceRowToBeUpdated.querySelector('.proceedings-detail').innerText
+            const publisherCategoryValue = conferenceRowToBeUpdated.getAttribute('data-publisher-category');
+            if(publisherCategoryValue === 'National'){
+                isPublisherCategoryNational.checked = true
+            }
+            else{
+               isPublisherCategoryInterNational.checked = true
+            }
+            const isPresentervalue = conferenceRowToBeUpdated.getAttribute('data-is-presenter');
+            if(isPresentervalue === 'Yes'){
+                isPresenterYes.checked = true
+            }
+            else{
+                isPresenterNo.checked = true
+            }
+            const authorType = conferenceRowToBeUpdated.getAttribute('data-author-type');
+            if(authorType === 'External'){
+                isAuthorExternal.checked = true
+            }
+            else{
+                isAuthorEnternal.checked = true
+            }
+            publicationDetails.value = conferenceRowToBeUpdated.getAttribute('data-publication-details');
+            volAndIssueNo.value = conferenceRowToBeUpdated.getAttribute('data-vol-and-issue-no');
+            issnIsbnNo.value = conferenceRowToBeUpdated.querySelector('.issn-isbn-no').innerText;
+            doiWebLink.value = conferenceRowToBeUpdated.getAttribute('data-doi-weblink');
+            const isPresentaionAward = conferenceRowToBeUpdated.getAttribute('data-award-for-presentation');
+            if(isPresentaionAward === 'Yes'){
+                isAwardYes.checked = true
+            }
+            else{
+                isAwardno.checked = true
+            }
+           const conferenceDocumentData = conferenceRowToBeUpdated.getAttribute('data-upload-files');
+           const conferenceFileName = document.getElementById('conference-file-name');
+           if(conferenceFileName && conferenceDocumentData){
+            conferenceFileName.textContent = conferenceDocumentData
+            console.log('conferenceFileName', conferenceFileName.textContent)
+           }
+           const conferenceProof = conferenceRowToBeUpdated.getAttribute('data-upload-proof');
+           const conferenceProofName = document.getElementById('conference-proof-name');
+           if(conferenceProofName && conferenceProof){
+            conferenceProofName.textContent = conferenceProof
+           }
+            
+        }
+    })
+
+    updateBtn.addEventListener('click' , () => {
+        console.log('clickedddd')
+        const updatedConferenceData = new FormData();
+        const updatedTitleOfPaper = document.getElementById('title-of-paper').value;
+        const updatedNameAndPlace = document.getElementById('name-and-place').value;
+        const updatedProceedingDetails = document.getElementById('proceedings-detail').value;
+        const updatedPublisherCategory = document.querySelector('input[name="publisher-category"]:checked').value;
+        const updatedIsPresenter = document.querySelector('input[name="is-presenter"]:checked').value;
+        const updatedAuthortype = document.querySelector('input[name="author-type"]:checked').value;
+        const updatedPublicationDetails = document.getElementById('publication-details').value;
+        const updatedVolAndIssueNo = document.getElementById('vol-and-issue-no').value;
+        const updatedIssnIsbnNo = document.getElementById('issn-isbn-no').value;
+        const updatedDoiWebLink = document.getElementById('doi-weblink').value;
+        const updatedAward = document.querySelector('input[name="award-for-presentation"]:checked').value;
+        const updatedConferenceFile = document.getElementById('conference-file');
+        const updatedConferenceProof = document.getElementById('conference-proof');
+        
+        // appending currely updated value 
+        updatedConferenceData.append('conferenceId', conferenceId)
+        if (updatedConferenceFile && updatedConferenceFile.files && updatedConferenceFile.files.length > 0) {
+            updatedConferenceData.append('conferenceDocument', updatedConferenceFile.files[0]);
+        }
+        if (updatedConferenceProof && updatedConferenceProof.files && updatedConferenceProof.files.length > 0) {
+            updatedConferenceData.append('conferenceProof', updatedConferenceProof.files[0])
+        }
+        updatedConferenceData.append('titleOfPaper' , updatedTitleOfPaper);
+        updatedConferenceData.append('nameAndPlace' ,updatedNameAndPlace);
+        updatedConferenceData.append('procedingDetail' , updatedProceedingDetails);
+        updatedConferenceData.append('publicationDetails' , updatedPublicationDetails);
+        updatedConferenceData.append('volAndIssueNo' , updatedVolAndIssueNo);
+        updatedConferenceData.append('issnIsbnNo' , updatedIssnIsbnNo);
+        updatedConferenceData.append('doiWebLink' , updatedDoiWebLink);
+        updatedConferenceData.append('publisherCategory' , updatedPublisherCategory);
+        updatedConferenceData.append('isPresenter' , updatedIsPresenter);
+        updatedConferenceData.append('authorType' , updatedAuthortype);
+        updatedConferenceData.append('awardForPresentation' , updatedAward);
+
+        fetch('/research/conference-publication/update' , {
+            method : 'POST',
+            body : updatedConferenceData
+        })
+        .then((result) => {
+            return result.json()
+        })
+        .then((data) => {
+            if(data.status === 'done'){
+                console.log('updated Data ==>>', data);
+                conferenceRowToBeUpdated.querySelector('.title-of-paper').innerText = data.upadtedConferenceData.titleOfPaper;
+                conferenceRowToBeUpdated.querySelector('.name-and-place').innerText = data.upadtedConferenceData.nameAndPlace;
+                conferenceRowToBeUpdated.querySelector('.proceedings-detail').innerText = data.upadtedConferenceData.procedingDetail;
+                conferenceRowToBeUpdated.querySelector('.issn-isbn-no').innerText = data.upadtedConferenceData.issnIsbnNo;
+                conferenceRowToBeUpdated.setAttribute('data-publisher-category' , data.upadtedConferenceData.publisherCategory);
+                conferenceRowToBeUpdated.setAttribute('data-is-presenter' , data.upadtedConferenceData.isPresenter);
+                conferenceRowToBeUpdated.setAttribute('data-author-type' , data.upadtedConferenceData.authorType);
+                conferenceRowToBeUpdated.setAttribute('data-publication-details' , data.upadtedConferenceData.publicationDetails);
+                conferenceRowToBeUpdated.setAttribute('data-vol-and-issue-no' , data.upadtedConferenceData.volAndIssueNo);
+                conferenceRowToBeUpdated.setAttribute('data-doi-weblink' , data.upadtedConferenceData.doiWebLink);
+                conferenceRowToBeUpdated.setAttribute('data-upload-files' , data.ConferenceDocument);
+                conferenceRowToBeUpdated.setAttribute('data-award-for-presentation' , data.upadtedConferenceData.isPresenter);
+                conferenceRowToBeUpdated.setAttribute('data-upload-proof' , data.upadtedConferenceData.ConferenceProof);
+            }
+        })
+        $('#conference-publication-modal').modal('hide');
+        alert('data updated succesfully');
+    })
 
 </script>
 <!-- inline script -->
