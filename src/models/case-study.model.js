@@ -7,7 +7,7 @@ const autoDbW = dbPoolManager.get('autoDbW', autoriders_write_db);
 
 module.exports.fetchCaseStudy = async() =>{
     const sql = {
-        text : `SELECT * FROM case_studies  ORDER BY id`,
+        text : `SELECT * FROM case_studies ORDER BY id`,
 
     }
     return autoDbR.query(sql);

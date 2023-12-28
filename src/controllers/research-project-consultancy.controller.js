@@ -46,5 +46,48 @@ module.exports.insertResearchConsultancyData = async(req, res, next) => {
 
 module.exports.updatedConsultantData = async(req, res, next) => {
     console.log('data comming from templates ==>>', req.body);
-    console.log()
+    console.log(' updated file name ==>', req.file);
+    const consultantId = req.body.consultantId
+    const updatedConsultant = req.body;
+    const updateFileName = req.file.filename;
+    const updateResearchConstantData = await researchConsultancyService.updateResearchConstant(consultantId, updatedConsultant, updateFileName);
+    if(updateResearchConstantData){
+        res.status(200).send({
+            status : 'done',
+            massage : 'updated successfully',
+            updatedConsultant,
+            updateFileName
+        })
+    }
+}
+
+module.exports.deleteResearchConsultant = async(req, res, next) => {
+    console.log('body' , req.body);
+    const consultantId = req.body;
+    const deleteConstantData = await researchConsultancyService.deleteResearchConsultant(consultantId);
+    if(deleteConstantData.status === 'done'){
+        res.status(200).send({
+            status : 'done',
+            massage : 'deleted successfully'
+        })
+    }
+    else{
+        res.status(500).send({
+            status : 'failed',
+            massage : 'internal server issue'
+        })
+    }
+}
+
+module.exports.viewResearchProjectConsultancy = async(req, res, next) => {
+    const consultantId = req.body;
+    const viewResearchConsultantData = await researchConsultancyService.viewReseachProjectData(consultantId);
+    console.log('viewResearchConsultantData in controller ===>>', viewResearchConsultantData)
+    if(viewResearchConsultantData){
+        res.status(200).send({
+            status : 'done',
+            massage : 'successfull',
+            consultantData : viewResearchConsultantData
+        })
+    }
 }

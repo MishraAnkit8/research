@@ -28,8 +28,8 @@
                     <h5>RESEARCH PROJECT CONSULTANCY</h5>
                 </div>
                 <div class="me-2">
-                    <button id="add-research-project-consultancy" type="button" class="btn btn-primary" data-toggle="modal" data-target="#consultancy-modal">
-                        <i class="fas fa-plus plus"></i>
+                    <button id="add-research-project-consultancy" type="button" class="btn btn-primary add-modal" data-toggle="modal" data-target="#consultancy-modal">
+                        <i class="fas fa-plus "></i>
                     </button>
                   
                 </div>
@@ -68,28 +68,26 @@
                             <th>Thrust area of Research</th>
                             <th>Name of Funding Agency</th>
                             <th>Funding Amount</th>
-                            <th>Status of Research Project</th>
+                            <th> Project Status</th>
                             <th>Action</th>
                     </thead>
                 <% reseachConsultancyDataList.forEach(function(consultancy)  { %>
-                    <tr data-consultancy-id="<%- consultancy.id %>" data-grant-type="<%- consultancy.type_of_grant %>"
-                        data-grant-proposal="<%- consultancy.grant_proposal_category %>"
-                        data-funding-amount="<%- consultancy.funding_amount %>" data-submission-date="<%- consultancy.submission_grant_date %>"
+                    <tr scope="row" data-consultancy-id="<%- consultancy.id %>" data-grant-type="<%- consultancy.type_of_grant %>"
+                        data-grant-proposal="<%- consultancy.grant_proposal_category %>" data-submission-date="<%- consultancy.submission_grant_date %>"
                         data-faulty-type="<%- consultancy.faculty_type %>" data-supports-document="<%- consultancy.supporting_documents %>">
                         <td data-consultancy-id="<%- consultancy.id %>"><%- consultancy.id %></td>
                         <td class="title-of-project"><%- consultancy.title_of_project %> </td>
                         <td class="thurst-area"><%- consultancy.thrust_area_of_research %></td>
-                        <td class="funding-agency"><%- consultancy.funding_amount %></td>
+                        <td class="funding-agency"><%- consultancy.name_of_funding_agency %></td>
+                        <td class="funding-amount"><%- consultancy.funding_amount %></td>
                         <td class="research-project-status"><%- consultancy.status_of_research_project %></td>
                         <td>
-                            <td class="cell ">
-                                <a class="view" data-consultancy-id="<%- consultancy.id %>"><i class="fa-solid fa-eye view"
+                            <a class="view" data-consultancy-id="<%- consultancy.id %>"><i class="fa-solid fa-eye view"
                                      data-consultancy-id="<%- consultancy.id %>"></i></a>
-                                <a class="edit" data-consultancy-id="<%- consultancy.id %>"><i class="fa fa-edit edit"
+                            <a class="edit" data-consultancy-id="<%- consultancy.id %>"><i class="fa fa-edit edit"
                                      data-consultancy-id="<%- consultancy.id %>"></i></a>
-                                <a class="delete" data-consultancy-id="<%- consultancy.id %>"><i class="fa-solid fa-trash delete"
+                            <a class="delete" data-consultancy-id="<%- consultancy.id %>"><i class="fa-solid fa-trash delete"
                                      data-consultancy-id="<%- consultancy.id %>"></i></a>
-                            </td>
                         </td>
                     </tr>
                <% }); %>
@@ -148,6 +146,7 @@
             </div>
         </div>
 </main>
+<!-- research consultancy modal form -->
 <div class="modal fade " id="consultancy-modal" tabindex="-1" role="dialog" aria-labelledby="consultancy-modal"
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable modal-lg modal-fullscreen p-5" role="document">
@@ -183,7 +182,7 @@
                         <div class="form-check-inline">
                             <label for="research" class="form-check-label">
                                 <input type="radio" class="form-check-input" id="research" name="type-of-grant"
-                                    value="Research"> Research Project
+                                    value="Research Project"> Research Project
                             </label>
                         </div>
                         <div class="form-check-inline">
@@ -195,7 +194,7 @@
                         <div class="form-check-inline">
                             <label for="capacity" class="form-check-label">
                                 <input type="radio" class="form-check-input" id="capacity" name="type-of-grant"
-                                    value="Capacity"> Capacity Building
+                                    value="Capacity Building"> Capacity Building
                             </label>
                         </div>
                     </div>
@@ -281,23 +280,148 @@
             </div>
             <!-- Add your modal footer buttons if needed -->
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                 <button class="btn btn-md btn-success d-none" id="submit-btn">Submit</button>
                 <button class="btn btn-md btn-success d-none" id="update-btn">update</button>
             </div>
         </div>
     </div>
 </div>
+<!-- research consultancy modal for view -->
+<div class="modal fade" id="research-consultancy-view" tabindex="-1" role="dialog" aria-labelledby="research-consultancy-view" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered custom-modal " role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-center" id="exampleModalLongTitle">RESEARCH PROJECT CONSULTANCY </h5>
+                <div type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"><i class="fas fa-times fa"></i></span>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <!-- Grant Proposal -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text">GRANT PROPOSA : </div>
+                            <label id="view-grant-proposal"></label>
+                        </div>
+                    </div>
+                    <!-- Type of Grant -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text">TYPE OF GRANT : </div>
+                            <label id="view-grant-type"></label>
+                        </div>
+                    </div>
+                    <!-- Title of Project -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text"> TYPE OF PROJECT : </div>
+                            <label id="view-project-title"></label>
+                        </div>
+                    </div>
+                     <!-- Thrust area of Research -->
+                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text"> THRUST AREA OF RESEARCH : </div>
+                            <label id="view-thurst-aria"></label>
+                        </div>
+                    </div>
+                     <!-- Name of Funding Agency -->
+                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text"> NAME OF FUNDING AGENCY : </div>
+                            <label id="view-funding-agency"></label>
+                        </div>
+                    </div>
+                     <!-- Funding Amount -->
+                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text"> FUNDING AMOUNT: </div>
+                            <label id="view-funding-amount"></label>
+                        </div>
+                    </div>
+                     <!-- Status of Research Project -->
+                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text"> RESEARCH PROJECT STATUS: </div>
+                            <label id="view-project-status"></label>
+                        </div>
+                    </div>
+                    <!-- Submission/Grant date -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text"> SUBMISSION /GRANT DATE: </div>
+                            <label id="view-date"></label>
+                        </div>
+                    </div>
+                    <!-- Faculty Type -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text"> FACULTY TYPE: </div>
+                            <label id="view-faculty-type"></label>
+                        </div>
+                    </div>
+                     <!-- Upload Supporting Documents -->
+                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text"> SUPPORTING DOCUMENTS: </div>
+                            <label id="view-supporting-document"></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     const researchProjectConsultancyList = document.getElementById('consultancy-list');
     const submitBtn = document.getElementById('submit-btn');
     const updateBtn = document.getElementById('update-btn');
-    let consultantId ;
+    let consultantId, consultantRowToBeUpdated ;
     const addResearchConsultancyModal = document.getElementById('add-research-project-consultancy');
     addResearchConsultancyModal.addEventListener('click', function(event) {
-        if(event.target.classList.contains('plus')){
+        if(event.target.tagName === 'BUTTON' && event.target.classList.contains('add-modal')){
             submitBtn.classList.remove('d-none');
             updateBtn.classList.add('d-none');
+            const isGrantProposalCategoryGoverement = document.getElementById('goverment');
+            const isGrantProposalCategoryNonGoverement = document.getElementById('non-goverment');
+            const grantResearchProject = document.getElementById('research');
+            const grantConsultancy = document.getElementById('consultancy');
+            const grantCapacityBuilding = document.getElementById('capacity');
+            const titleOfProject = document.getElementById('title-of-project');
+            const thurstAreaOfResearch = document.getElementById('thurst-area');
+            const fundingAgency = document.getElementById('funding-agency');
+            const fundingAmount = document.getElementById('funding-amount');
+            const statusSubmitted = document.getElementById('submitted');
+            const statusPresentationHeld = document.getElementById('presentation-held');
+            const statusGranted = document.getElementById('granted');
+            const submissionGrantDate = document.getElementById('submission-grant-date');
+            const facultyTypeInternal = document.getElementById('internal');
+            const facultyTypeExternal = document.getElementById('external');
+            const supportingDocument = document.getElementById('supporting-documents');
+
+            // making input fields empty
+            isGrantProposalCategoryGoverement.checked = false;
+            isGrantProposalCategoryNonGoverement.checked = false;
+            grantResearchProject.checked = false; 
+            grantConsultancy.checked = false; 
+            grantCapacityBuilding.checked = false; 
+            titleOfProject.value = '';
+            thurstAreaOfResearch.value = '';
+            fundingAgency.value = '';
+            fundingAmount.value = '';
+            statusSubmitted.checked = false; 
+            statusPresentationHeld.checked = false; 
+            statusGranted.checked = false; 
+            submissionGrantDate.value = '';
+            facultyTypeInternal.checked = false; 
+            facultyTypeExternal.checked = false; 
+            supportingDocument.value = '';     
         }
     })
 
@@ -340,7 +464,6 @@
                 console.log('id ==', consultantId)
                 const newResearchConsultant = document.createElement('tr');
                 newResearchConsultant.setAttribute('data-grant-type' , data.researchConsultantData.typeOfGrant);
-                newResearchConsultant.setAttribute('data-funding-amount' , data.researchConsultantData.fundingAmount);
                 newResearchConsultant.setAttribute('data-grant-proposal' , data.researchConsultantData.grantProposalCategory)
                 newResearchConsultant.setAttribute('data-submission-date' , data.researchConsultantData.submissionGrantDate);
                 newResearchConsultant.setAttribute('data-faulty-type' , data.researchConsultantData.facultyType);
@@ -350,16 +473,15 @@
                         <td class="title-of-project">${data.researchConsultantData.titleOfProject}</td>
                         <td class="thurst-area">${data.researchConsultantData.thurstAreaOfResearch}</td>
                         <td class="funding-agency">${data.researchConsultantData.fundingAgency}</td>
+                        <td class="funding-amount">${data.researchConsultantData.fundingAmount}</td>
                         <td class="research-project-status">${data.researchConsultantData.statusOfResearchProject}</td>
                         <td>
-                            <td class="cell ">
-                                <a class="view" data-consultancy-id="${consultantId}"><i class="fa-solid fa-eye view"
-                                     data-consultancy-id="${consultantId}"></i></a>
-                                <a class="edit" data-consultancy-id="${consultantId}"><i class="fa fa-edit edit"
-                                     data-consultancy-id="${consultantId}"></i></a>
-                                <a class="delete" data-consultancy-id="${consultantId}"><i class="fa-solid fa-trash delete"
-                                     data-consultancy-id="${consultantId}"></i></a>
-                            </td>
+                            <a class="view" data-consultancy-id="${consultantId}"><i class="fa-solid fa-eye view"
+                                    data-consultancy-id="${consultantId}"></i></a>
+                            <a class="edit" data-consultancy-id="${consultantId}"><i class="fa fa-edit edit"
+                                    data-consultancy-id="${consultantId}"></i></a>
+                            <a class="delete" data-consultancy-id="${consultantId}"><i class="fa-solid fa-trash delete"
+                                    data-consultancy-id="${consultantId}"></i></a>
                         </td>`;
 
                         researchProjectConsultancyList.appendChild(newResearchConsultant);
@@ -375,24 +497,21 @@
     // for updating 
     researchProjectConsultancyList.addEventListener('click' , function(event) {
             if(event.target.classList.contains('edit')){
-                console.log('clicked');
                 submitBtn.classList.add('d-none');
                 updateBtn.classList.remove('d-none');
                 $('#consultancy-modal').modal('show');
-                const consultantRowToBeUpdated = event.target.closest('tr');
-                console.log('constantRowToBeUpdated ==>>', consultantRowToBeUpdated);
+                consultantRowToBeUpdated = event.target.closest('tr');
                 consultantId = event.target.getAttribute('data-consultancy-id');
-                console.log('consultantId ==>>', consultantId)
-                const researchConsultancyData = new FormData();
+                console.log('consultantId ==>>', consultantId);
                 const isGrantProposalCategoryGoverement = document.getElementById('goverment');
                 const isGrantProposalCategoryNonGoverement = document.getElementById('non-goverment');
                 const grantResearchProject = document.getElementById('research');
                 const grantConsultancy = document.getElementById('consultancy');
                 const grantCapacityBuilding = document.getElementById('capacity');
-                const titleOfProject = document.getElementById('title-of-project');
-                const thurstAreaOfResearch = document.getElementById('thurst-area');
-                const fundingAgency = document.getElementById('funding-agency');
-                const fundingAmount = document.getElementById('funding-amount');
+                const titleOfProject = consultantRowToBeUpdated.querySelector('.title-of-project');
+                const thurstAreaOfResearch = consultantRowToBeUpdated.querySelector('.thurst-area');
+                const fundingAgency = consultantRowToBeUpdated.querySelector('.funding-agency');
+                const fundingAmount = consultantRowToBeUpdated.querySelector('.funding-amount');
                 const statusSubmitted = document.getElementById('submitted');
                 const statusPresentationHeld = document.getElementById('presentation-held');
                 const statusGranted = document.getElementById('granted');
@@ -405,46 +524,47 @@
                 const GrantProposalCategory = consultantRowToBeUpdated.getAttribute('data-grant-proposal');
                 if(GrantProposalCategory === 'Goverment'){
                     isGrantProposalCategoryGoverement.checked = true;
-
                 }
                 else{
                     isGrantProposalCategoryNonGoverement.checked = true;
                 }
                 const grantType = consultantRowToBeUpdated.getAttribute('data-grant-type');
+                console.log('grantType', grantType)
                 if(grantType){
                     if(grantType === 'Research Project'){
                         grantResearchProject.checked = true;
                         grantConsultancy.checked = false;
                         grantCapacityBuilding.checked = false;
                     }
-                    if(grantType === 'Consultancy'){
+                    else if(grantType === 'Consultancy'){
                             grantConsultancy.checked = true;
                             grantResearchProject.checked = false;
                             grantCapacityBuilding.checked = false;
                         }
-                    if(grantType === ' Capacity Building'){
+                    else if (grantType === 'Capacity Building'){
                         grantCapacityBuilding.checked = true;
                         grantResearchProject.checked = false;
                         grantConsultancy.checked = false;
                     }
             }
-                titleOfProject.value = document.querySelector('.title-of-project').innerText;
-                thurstAreaOfResearch.value = document.querySelector('.thurst-area').innerText;
-                fundingAgency.value = document.querySelector('.funding-agency').innerText;
-                fundingAmount.value = consultantRowToBeUpdated.getAttribute('data-funding-amount');
-                const projectStatus = consultantRowToBeUpdated.querySelector('.research-project-status').innerText;
+                
+                document.getElementById('title-of-project').value = titleOfProject.textContent;
+                document.getElementById('thurst-area').value = thurstAreaOfResearch.textContent;
+                document.getElementById('funding-agency').value = fundingAgency.textContent;
+                document.getElementById('funding-amount').value = fundingAmount.textContent;
+                const projectStatus = consultantRowToBeUpdated.querySelector('.research-project-status');
                 if(projectStatus){
-                    if(projectStatus === 'Presentation held'){
+                    if(projectStatus.innerText === 'Presentation held'){
                         statusPresentationHeld.checked = true;
                         statusGranted.checked = false;
                         statusSubmitted.checked = false;
                     }
-                    if(projectStatus === 'Submitted'){
+                    if(projectStatus.innerText === 'Submitted'){
                         statusPresentationHeld.checked = false;
                         statusGranted.checked = false;
                         statusSubmitted.checked = true;
                     }
-                    if(projectStatus === 'Granted'){
+                    if(projectStatus.innerText === 'Granted'){
                         statusPresentationHeld.checked = false;
                         statusGranted.checked = true;
                         statusSubmitted.checked = false;
@@ -452,7 +572,6 @@
                 }
                 submissionGrantDate.value = consultantRowToBeUpdated.getAttribute('data-submission-date');
                 const facultyType = consultantRowToBeUpdated.getAttribute('data-faulty-type');
-                console.log('facultyType ==>>', facultyType);
                 if(facultyType === 'External'){
                     facultyTypeExternal.checked = true;
                 }
@@ -465,7 +584,74 @@
                     supportingDocument.textContent = supportingDocuments;
                 }
             }
-    })
+            if(event.target.classList.contains('delete')){
+                console.log('clekeddddd');
+                const consultantRowToBEDeleted = event.target.closest('tr');
+                console.log('consultantRowToBEDeleted  ==>>', consultantRowToBEDeleted);
+                consultantId = consultantRowToBEDeleted.getAttribute('data-consultancy-id');
+                console.log('consultantId ===>>', consultantId);
+                
+                fetch('/research/research-project-consultancy/delete' , {
+                    method : 'POST',
+                    headers : {
+                        'content-type' : 'application/json'
+                    },
+                    body : JSON.stringify({consultantId})
+                })
+                .then((result) => {
+                    return result.json()
+                })
+                .then((data) => {
+                    if(data.status === 'done'){
+                        consultantRowToBEDeleted.remove();
+                    }
+                })
+            }
+            if(event.target.classList.contains('view')){
+                console.log('clickeddddd');
+                const consultantRowToBeViewed = event.target.closest('tr');
+                consultantId = consultantRowToBeViewed.getAttribute('data-consultancy-id');
+                console.log('ID ==>>', consultantId);
+                const viewGrantProposalCategory = document.getElementById('view-grant-proposal');
+                const viewTypeOfGrant = document.getElementById('view-grant-type');
+                const viewTitleOfProject = document.getElementById('view-project-title');
+                const viewThurstAreaOfResearch = document.getElementById('view-thurst-aria');
+                const viewFundingAgency = document.getElementById('view-funding-agency');
+                const viewFundingAmount = document.getElementById('view-funding-amount');
+                const viewStatusOfResearchProject = document.getElementById('view-project-status');
+                const viewSubmissionGrantDate = document.getElementById('view-date');
+                const viewFacultyType = document.getElementById('view-faculty-type');
+                const viewSupportingDocument = document.getElementById('view-supporting-document');
+                fetch('/research/research-project-consultancy/view' , {
+                    method : 'POST',
+                    headers : {
+                        'content-type' : 'application/json'
+                    },
+                    body : JSON.stringify({consultantId})
+                })
+                .then((result) => {
+                    return result.json()
+                })
+                .then((data) => {
+                    if(data.status === 'done'){
+                        console.log('data ==>>' , data)
+                        viewGrantProposalCategory.innerText = data.consultantData.grant_proposal_category;
+                        viewTypeOfGrant.innerText = data.consultantData.type_of_grant;
+                        viewTitleOfProject.innerText = data.consultantData.title_of_project;
+                        viewThurstAreaOfResearch.innerText = data.consultantData.thrust_area_of_research; 
+                        viewFundingAgency.innerText = data.consultantData.name_of_funding_agency; 
+                        viewFundingAmount.innerText = data.consultantData.funding_amount;
+                        viewStatusOfResearchProject.innerText = data.consultantData.status_of_research_project;
+                        viewSubmissionGrantDate.innerText = data.consultantData.submission_grant_date;               
+                        viewFacultyType.innerText = data.consultantData.faculty_type;
+                        viewSupportingDocument.innerText = data.consultantData.supporting_documents; 
+                    }
+                })
+
+                $('#research-consultancy-view').modal('show');
+
+            }
+        })
 
     updateBtn.addEventListener('click' , () => {
         console.log('clickeddd')
@@ -503,9 +689,24 @@
                 return result.json()
         })
         .then((data) => {
-            console.log('data' , data)
+           if(data.status === 'done'){
+            console.log('data ==>', data);
+            consultantRowToBeUpdated.setAttribute('data-grant-type' , data.updatedConsultant.typeOfGrant);
+            consultantRowToBeUpdated.setAttribute('data-grant-proposal' , data.updatedConsultant.grantProposalCategory)
+            consultantRowToBeUpdated.setAttribute('data-submission-date' , data.updatedConsultant.submissionGrantDate);
+            consultantRowToBeUpdated.setAttribute('data-faulty-type' , data.updatedConsultant.facultyType);
+            consultantRowToBeUpdated.setAttribute('data-supports-document' , data.updateFileName);
+            consultantRowToBeUpdated.setAttribute('data-funding-amount' , data.updatedConsultant.fundingAmount);
+            consultantRowToBeUpdated.querySelector('.title-of-project').innerText = data.updatedConsultant.titleOfProject;
+            consultantRowToBeUpdated.querySelector('.thurst-area').innerText = data.updatedConsultant.thurstAreaOfResearch;
+            consultantRowToBeUpdated.querySelector('.funding-agency').innerText = data.updatedConsultant.fundingAgency;
+            consultantRowToBeUpdated.querySelector('.research-project-status').innerText = data.updatedConsultant.statusOfResearchProject;
+           }
         })
+        $('#consultancy-modal').modal('hide');
+        alert('data updated successfully');
     })
+
     
 </script>
   <!-- inline javascript -->

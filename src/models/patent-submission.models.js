@@ -52,7 +52,7 @@ module.exports.deletePatentSubmissionData = async(patentId) => {
 module.exports.viewPatentSubmission = async(patentId) => {
     console.log('id' , patentId)
     let sql = {
-        text : `SELECT * FROM patent_submissions WHERE ID = $1`,
+        text : `SELECT * FROM patent_submissions WHERE id = $1`,
         values : [patentId]
     }
     console.log('sql qury for view', sql);
