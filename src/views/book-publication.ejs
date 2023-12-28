@@ -41,8 +41,8 @@
                 <div class="me-2">
                     <a class="btn btn-danger" href="/admin/programs/download"><i class="fas fa-download"></i>
                         Download </a>
-                    <button type="button" class="btn btn-primary add-modal" data-toggle="modal" data-target="#book-publication">
-                        <i class="fas fa-plus"></i></button>
+                    <button type="button" id="book-publication-form" class="btn btn-primary add-modal" data-toggle="modal" data-target="#book-publication-modal">
+                        <i class="fas fa-plus plus"></i></button>
                     </button>
                 </div>
             </div>
@@ -73,28 +73,35 @@
                         </div>
                     </div>
                 </div>
-                <table class="table custom-table " id="bookPubTable">
+                <table class="table custom-table " id="book-Publication-list">
                     <thead>
                         <th>#</th>
                         <th>Author's name</th>
                         <th>Publication year</th>
                         <th>Book title</th>
                         <th>ISBN Number</th>
+                        <th>Publisher Name</th>
                         <th>Action</th>
                     </thead>
-                    <tbody>
+                    <% bookPublicationList.forEach(function(publication) { %>
                         <tr>
-                            <td>1</td>
-                            <td>8051</td>
-                            <td>MASTER OF BUSINESS ADMINISTRATION-8051</td>
-                            <td>Full Time</td>
-                            <td>SBM-NM-M</td>
-                            <td> <a class="view-program" data-id="6"><i class="fa-solid fa-eye"></i></a>
-                                <a class="edit-program" data-id="6"><i class="fa fa-edit"></i></a>
-                                <a class="delete-program" data-id="6"><i class="fa-solid fa-trash"></i></a>
+                            <td data-publication-id="<%- publication.id %>"><%- publication.id %></td>
+                            <td class="author-first-name"><%- publication.author_first_name %></td>
+                            <td class="publication-year"><%- publication.publication_year %></td>
+                            <td class="book-title"><%- publication.book_title %></td>
+                            <td class="isbn-no"><%- publication.isbn %></td>
+                            <td class="publisher-name"><%- publication.publisher_name %></td>
+                            <td>
+                                <a class="view" data-publication-id="<%- publication.id %>"><i class="fa-solid fa-eye view"
+                                    data-publication-id="<%- publication.id %>"></i></a>
+                                 <a class="edit"data-publication-id="<%- publication.id %>"><i class="fa fa-edit edit"
+                                    data-publication-id="<%- publication.id %>"></i></a>
+                                 <a class="delete"data-publication-id="<%- publication.id %>"><i class="fa-solid fa-trash delete"
+                                    data-publication-id="<%- publication.id %>"></i></a>
                             </td>
                         </tr>
-                    </tbody>
+                   <% }); %>
+                    
                 </table>
                 <div class="d-flex justify-content-between">
                     <div>
@@ -152,9 +159,8 @@
         </div>
     </div>
 </main>
-
 <!-- modal form for Book Publication -->
-<div class="modal fade " id="book-publication" tabindex="-1" role="dialog" aria-labelledby="book-publication"
+<div class="modal fade " id="book-publication-modal" tabindex="-1" role="dialog" aria-labelledby="book-publication-modal"
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable modal-lg modal-fullscreen p-5" role="document">
         <div class="modal-content">
@@ -184,7 +190,7 @@
                     <!-- Title of case study -->
                     <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="caseStudy" class="form-label fw-bold">Title of book</label>
-                        <input type="text" name="titleOfBook" id="title-of-book" class="form-control"
+                        <input type="text" name="titleOfBook" id="book-title" class="form-control"
                             placeholder="Title of Book">
                     </div>
                     <!-- Edition -->
@@ -290,6 +296,73 @@
         </div>
     </div>
 </div>
+<script>
+    const bookPublicationList = document.getElementById('book-Publication-list');
+    const submitBtn = document.getElementById('submit-btn');
+    const updateBtn = document.getElementById('update-btn');
+    const addNewBookPublication = document.getElementById('book-publication-form');
+    addNewBookPublication.addEventListener('click' , function(event) {
+        console.log('clikeddd')
+        if(event.target.tagName === 'BUTTON' && event.target.classList.contains('add-modal') || event.target.classList.contains('plus')){
+            updateBtn.classList.add('d-none');
+            submitBtn.classList.remove('d-none');
+        }
+    })
+    const  insertBookPublication = async(url) =>{
+        const bookPublicationData = new FormData();
+        const authorFirstName = document.getElementById('author-first-name').value;
+        const authorLastName = document.getElementById('author-last-name').value;
+        const booktitle = document.getElementById('book-title').value;
+        const edition = document.getElementById('edition').value;
+        const isbnNo = document.getElementById('isbn-no').value;
+        const publicationPlace = document.getElementById('publication-place').value;
+        const publisherCategory = document.querySelector('input[name="publisher-category"]:checked').value;
+        const volumeNumber = document.getElementById('volume-number').value;
+        const publisherName = document.getElementById('publisher-name').value;
+        const publicationYear = document.getElementById('publication-year').value;
+        const bookUrl = document.getElementById('book-url').value;
+        const doiBookId = document.getElementById('doi-book-id').value;
+        const numberOfNmimsAuthors = document.getElementById('number-of-nmims-authors').value;
+        const nmimsAuthors = document.getElementById('nmims-authors').value;
+        const nmimsCampusAuthors = document.getElementById('nmims-campus-authors').value;
+        const nmimsSchoolAuthors = document.getElementById('nmims-school-authors').value;
+        const supportingDocuments = document.querySelector('input[type="file"]')
+
+        // appending value
+        bookPublicationData.append('authorFirstName' , authorFirstName);
+        bookPublicationData.append('authorLastName' , authorLastName);
+        bookPublicationData.append('booktitle' , booktitle);
+        bookPublicationData.append('edition' , edition);
+        bookPublicationData.append('booktitle booktitle' , booktitle);
+        bookPublicationData.append('isbnNo' , isbnNo);
+        bookPublicationData.append('publicationPlace' , publicationPlace);
+        bookPublicationData.append('publisherCategory' , publisherCategory);
+        bookPublicationData.append('volumeNumber' , volumeNumber);
+        bookPublicationData.append('publisherName' , publisherName);
+        bookPublicationData.append('publicationYear' , publicationYear);
+        bookPublicationData.append('bookUrl' , bookUrl);
+        bookPublicationData.append('doiBookId' , doiBookId);
+        bookPublicationData.append('numberOfNmimsAuthors' , numberOfNmimsAuthors);
+        bookPublicationData.append('nmimsAuthors' , nmimsAuthors);
+        bookPublicationData.append('nmimsCampusAuthors' , nmimsCampusAuthors);
+        bookPublicationData.append('nmimsSchoolAuthors' , nmimsSchoolAuthors);
+        bookPublicationData.append('researchSupportingDocument' , supportingDocuments.files[0]);
+
+        fetch(url , {
+            method : 'POST',
+            body : bookPublicationData
+        })
+        .then((result) => {
+            return result.json()
+        })
+        .then((data) => {
+            console.log('data ==>>', data)
+        })
+    }
+    submitBtn.addEventListener('click' , async function() {
+       await insertBookPublication('/research/book-publication-main/edited-book-publication/insert')
+    })
+</script>
 
 <!-- footer section -->
 <%- include('./partials/footer') %>
