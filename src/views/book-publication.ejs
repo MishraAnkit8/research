@@ -84,7 +84,11 @@
                         <th>Action</th>
                     </thead>
                     <% bookPublicationList.forEach(function(publication) { %>
-                        <tr>
+                        <tr row="scope" data-publication-id="<%- publication.id %>" data-author-last-name="<%-publication.author_last_name %>" data-volume-number="<%- publication.volume_number %>"
+                            data-edition="<%- publication.edition %>" data-publication-place="<%-publication.publication_place %>" data-publisher-category="<%- publication.publisher_category %>"
+                            data-publication-year="<%- publication.publication_year %>" data-book-url="<%- publication.book_url %>" data-doi-book-id="<%-publication.doi_id %>"
+                            data-number-of-nmims-authors="<%- publication.number_of_nmims_authors %>" data-nmims-authors="<%- publication.nmims_authors %>" data-nmims-campus-authors="<%- publication.nmims_campus_authors %>"
+                            data-nmims-school-authors="<%- publication.nmims_school_authors %>" data-supporting-documents="<%- publication.supporting_documents %>">
                             <td data-publication-id="<%- publication.id %>"><%- publication.id %></td>
                             <td class="author-first-name"><%- publication.author_first_name %></td>
                             <td class="publication-year"><%- publication.publication_year %></td>
@@ -211,9 +215,9 @@
                     </div>
                     <!-- Publisher Category  -->
                     <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="publisher-category" class="form-label fw-bold mb-3">Publisher Category</label><br>
+                        <label for="publisher-category" id="publisher-category" class="form-label fw-bold mb-3">Publisher Category</label><br>
                         <div class="form-check-inline">
-                            <label for="international" class="form-check-label">
+                            <label for="inter-national" class="form-check-label">
                                 <input type="radio" class="form-check-input" id="inter-national" name="publisher-category" value="International"> International
                             </label>
                         </div>
@@ -301,6 +305,7 @@
     const submitBtn = document.getElementById('submit-btn');
     const updateBtn = document.getElementById('update-btn');
     const addNewBookPublication = document.getElementById('book-publication-form');
+    let BookpublicationId , bookPublicationRowToBeUpdated;
     addNewBookPublication.addEventListener('click' , function(event) {
         console.log('clikeddd')
         if(event.target.tagName === 'BUTTON' && event.target.classList.contains('add-modal') || event.target.classList.contains('plus')){
@@ -312,7 +317,7 @@
         const bookPublicationData = new FormData();
         const authorFirstName = document.getElementById('author-first-name').value;
         const authorLastName = document.getElementById('author-last-name').value;
-        const booktitle = document.getElementById('book-title').value;
+        const bookTitle = document.getElementById('book-title').value;
         const edition = document.getElementById('edition').value;
         const isbnNo = document.getElementById('isbn-no').value;
         const publicationPlace = document.getElementById('publication-place').value;
@@ -331,9 +336,9 @@
         // appending value
         bookPublicationData.append('authorFirstName' , authorFirstName);
         bookPublicationData.append('authorLastName' , authorLastName);
-        bookPublicationData.append('booktitle' , booktitle);
+        bookPublicationData.append('booktitle' , bookTitle);
         bookPublicationData.append('edition' , edition);
-        bookPublicationData.append('booktitle booktitle' , booktitle);
+        bookPublicationData.append('bookTitle' , booktitle);
         bookPublicationData.append('isbnNo' , isbnNo);
         bookPublicationData.append('publicationPlace' , publicationPlace);
         bookPublicationData.append('publisherCategory' , publisherCategory);
@@ -356,14 +361,185 @@
             return result.json()
         })
         .then((data) => {
+           if(data.status === 'done'){
             console.log('data ==>>', data)
+            const newBookPublication = document.createElement('tr');
+            newBookPublication.setAttribute('data-volume-number' , data.bookPublicationData.volumeNumber);
+            newBookPublication.setAttribute('data-edition' , data.bookPublicationData.edition);
+            newBookPublication.setAttribute('data-publication-place' , data.bookPublicationData.edition);
+            newBookPublication.setAttribute('data-publisher-category' , data.bookPublicationData.publisherCategory);
+            newBookPublication.setAttribute('data-publication-year' , data.bookPublicationData.publicationYear);
+            newBookPublication.setAttribute('data-book-url' , data.bookPublicationData.bookUrl);
+            newBookPublication.setAttribute('data-doi-book-id' , data.bookPublicationData.doiBookId);
+            newBookPublication.setAttribute('data-number-of-nmims-authors' , data.bookPublicationData.numberOfNmimsAuthors);
+            newBookPublication.setAttribute('data-nmims-authors' , data.bookPublicationData.nmimsAuthors);
+            newBookPublication.setAttribute('data-nmims-campus-authors' , data.bookPublicationData.nmimsCampusAuthors);
+            newBookPublication.setAttribute('data-nmims-school-authors' , data.bookPublicationData.nmimsSchoolAuthors);
+            newBookPublication.setAttribute('data-supporting-documents' , data.bookPublicationData.supportingDocuments);
+            newBookPublication.innerHTML = `
+                        <td >${data.BookpublicationId}</td>
+                            <td class="author-first-name">${data.bookPublicationData.authorFirstName}</td>
+                            <td class="publication-year">${data.bookPublicationData.publicationYear}</td>
+                            <td class="book-title">${data.bookPublicationData.bookTitle}</td>
+                            <td class="isbn-no">${data.bookPublicationData.isbnNo}</td>
+                            <td class="publisher-name">${data.bookPublicationData.publisherName}</td>
+                            <td>
+                                <a class="view" data-publication-id="${data.BookpublicationId}"><i class="fa-solid fa-eye view"
+                                    data-publication-id="${data.BookpublicationId}"></i></a>
+                                 <a class="edit"data-publication-id="${data.BookpublicationId}"><i class="fa fa-edit edit"
+                                    data-publication-id="${data.BookpublicationId}"></i></a>
+                                 <a class="delete"data-publication-id="${data.BookpublicationId}"><i class="fa-solid fa-trash delete"
+                                    data-publication-id="${data.BookpublicationId}"></i></a>
+                            </td> `;
+            bookPublicationList.append(newBookPublication);
+            $('#book-publication-modal').modal('hide');
+            alert('data inserted successfully');
+           }
         })
     }
     submitBtn.addEventListener('click' , async function() {
        await insertBookPublication('/research/book-publication-main/edited-book-publication/insert')
     })
-</script>
 
+    bookPublicationList.addEventListener('click' , (event) => {
+        // for updation
+        if(event.target.classList.contains('edit')){
+            console.log('clickeddd');
+            bookPublicationRowToBeUpdated = event.target.closest('tr');
+            console.log('bookPublicationRowToBeUpdated ==>>', bookPublicationRowToBeUpdated);
+            BookpublicationId = bookPublicationRowToBeUpdated.getAttribute('data-publication-id');
+            console.log('BookpublicationId ==>>', BookpublicationId);
+            $('#book-publication-modal').modal('show');
+            updateBtn.classList.remove('d-none');
+            submitBtn.classList.add('d-none');
+            const authorFirstName = document.getElementById('author-first-name');
+            const authorLastName = document.getElementById('author-last-name');
+            const bookTitle = document.getElementById('book-title');
+            const edition = document.getElementById('edition');
+            const isbnNo = document.getElementById('isbn-no');
+            const publicationPlace = document.getElementById('publication-place');
+            const publisherCategoryNational = document.getElementById('national');
+            const publisherCategoryInternational = document.getElementById('inter-national');
+            const volumeNumber = document.getElementById('volume-number');
+            const publisherName = document.getElementById('publisher-name');
+            const publicationYear = document.getElementById('publication-year');
+            const bookUrl = document.getElementById('book-url');
+            const doiBookId = document.getElementById('doi-book-id');
+            const numberOfNmimsAuthors = document.getElementById('number-of-nmims-authors');
+            const nmimsAuthors = document.getElementById('nmims-authors');
+            const nmimsCampusAuthors = document.getElementById('nmims-campus-authors');
+            const nmimsSchoolAuthors = document.getElementById('nmims-school-authors');
+            const supportingDocuments = document.getElementById('supporting-documents');
+            // assigning related row data value
+            authorFirstName.value = bookPublicationRowToBeUpdated.querySelector('.author-first-name').innerText;
+            authorLastName.value = bookPublicationRowToBeUpdated.getAttribute('data-author-last-name');
+            bookTitle.value = bookPublicationRowToBeUpdated.querySelector('.book-title').innerText;
+            edition.value = bookPublicationRowToBeUpdated.getAttribute('data-edition');
+            publisherName.value = bookPublicationRowToBeUpdated.querySelector('.publisher-name').innerText;
+            isbnNo.value = bookPublicationRowToBeUpdated.querySelector('.isbn-no').innerText;
+            publicationPlace.value = bookPublicationRowToBeUpdated.getAttribute('data-publication-place');
+            const publisherCategory = bookPublicationRowToBeUpdated.getAttribute('data-publisher-category');
+            if(publisherCategory === 'National'){
+                publisherCategoryNational.checked = true;
+            }
+            else{
+                publisherCategoryInternational.checked = true;
+            }
+            volumeNumber.value = bookPublicationRowToBeUpdated.getAttribute('data-volume-number');
+            publicationYear.value = bookPublicationRowToBeUpdated.querySelector('.publication-year').innerText;
+            bookUrl.value = bookPublicationRowToBeUpdated.getAttribute('data-book-url');
+            doiBookId.value = bookPublicationRowToBeUpdated.getAttribute('data-doi-book-id');
+            numberOfNmimsAuthors.value = bookPublicationRowToBeUpdated.getAttribute('data-number-of-nmims-authors');
+            nmimsAuthors.value = bookPublicationRowToBeUpdated.getAttribute('data-nmims-authors');
+            nmimsCampusAuthors.value = bookPublicationRowToBeUpdated.getAttribute('data-nmims-campus-authors');
+            nmimsSchoolAuthors.value = bookPublicationRowToBeUpdated.getAttribute('data-nmims-school-authors');
+            supportingDocuments.textContent = bookPublicationRowToBeUpdated.getAttribute('data-supporting-documents');
+            }
+        
+        //  for delete   
+        if(event.target.classList.contains('delete')){
+            console.log('clickedddd');
+            const bookPublicatRowToBeDeleted = event.target.closest('tr');
+            console.log('bookPublicatRowToBeDeleted  ==>>', bookPublicatRowToBeDeleted);
+            BookpublicationId = bookPublicatRowToBeDeleted.getAttribute('data-publication-id');
+        }
+    })
+
+    updateBtn.addEventListener('click' , () => {
+        const updatedBookPublicationData = new FormData();
+        const updatedAuthorFirstName = document.getElementById('author-first-name').value;
+        const updatedaAuthorLastName = document.getElementById('author-last-name').value;
+        const updatedBookTitle = document.getElementById('book-title').value;
+        const updatedEdition = document.getElementById('edition').value;
+        const updatedIsbnNo = document.getElementById('isbn-no').value;
+        const updatedPublicationPlace = document.getElementById('publication-place').value;
+        const updatedPublisherCategory = document.querySelector('input[name="publisher-category"]:checked').value;
+        const updatedVolumeNumber = document.getElementById('volume-number').value;
+        const updatedPublisherName = document.getElementById('publisher-name').value;
+        const updatedPublicationYear = document.getElementById('publication-year').value;
+        const updatedBookUrl = document.getElementById('book-url').value;
+        const updatedDoiBookId = document.getElementById('doi-book-id').value;
+        const updatedNumberOfNmimsAuthors = document.getElementById('number-of-nmims-authors').value;
+        const updatedNmimsAuthors = document.getElementById('nmims-authors').value;
+        const updatedNmimsCampusAuthors = document.getElementById('nmims-campus-authors').value;
+        const updatedNmimsSchoolAuthors = document.getElementById('nmims-school-authors').value;
+        const updatedDocuments = document.getElementById('supporting-documents');
+        updatedBookPublicationData.append('BookpublicationId' , BookpublicationId);
+        updatedBookPublicationData.append('authorFirstName' , updatedAuthorFirstName);
+        updatedBookPublicationData.append('authorLastName' , updatedaAuthorLastName);
+        updatedBookPublicationData.append('bookTitle' , updatedBookTitle);
+        updatedBookPublicationData.append('edition' , updatedEdition);
+        updatedBookPublicationData.append('isbnNo' , updatedIsbnNo);
+        updatedBookPublicationData.append('publicationPlace' , updatedPublicationPlace);
+        updatedBookPublicationData.append('publisherCategory' , updatedPublisherCategory);
+        updatedBookPublicationData.append('volumeNumber' , updatedVolumeNumber);
+        updatedBookPublicationData.append('publisherName' , updatedPublisherName);
+        updatedBookPublicationData.append('publicationYear' , updatedPublicationYear);
+        updatedBookPublicationData.append('bookUrl' , updatedBookUrl);
+        updatedBookPublicationData.append('doiBookId' , updatedDoiBookId);
+        updatedBookPublicationData.append('numberOfNmimsAuthors' , updatedNumberOfNmimsAuthors);
+        updatedBookPublicationData.append('nmimsAuthors' , updatedNmimsAuthors);
+        updatedBookPublicationData.append('nmimsCampusAuthors' , updatedNmimsCampusAuthors);
+        updatedBookPublicationData.append('nmimsSchoolAuthors' , updatedNmimsSchoolAuthors);
+        if(updatedDocuments && updatedDocuments.files && updatedDocuments.files.length > 0){
+            updatedBookPublicationData.append('researchSupportingDocument' , updatedDocuments.files[0]);
+         }
+        fetch('/research/book-publication-main/edited-book-publication/update' , {
+            method : 'POST',
+            body : updatedBookPublicationData
+        })
+        .then((result) => {
+            return result.json()
+        })
+        .then((data) => {
+            if(data.status === 'done'){
+                console.log('data ==>>', data);
+                bookPublicationRowToBeUpdated.setAttribute('data-volume-number' , data.updatedBookPublication.volumeNumber);
+                bookPublicationRowToBeUpdated.setAttribute('data-edition' , data.updatedBookPublication.edition);
+                bookPublicationRowToBeUpdated.setAttribute('data-publication-place' , data.updatedBookPublication.edition);
+                bookPublicationRowToBeUpdated.setAttribute('data-publisher-category' , data.updatedBookPublication.publisherCategory);
+                bookPublicationRowToBeUpdated.setAttribute('data-publication-year' , data.updatedBookPublication.publicationYear);
+                bookPublicationRowToBeUpdated.setAttribute('data-book-url' , data.updatedBookPublication.bookUrl);
+                bookPublicationRowToBeUpdated.setAttribute('data-doi-book-id' , data.updatedBookPublication.doiBookId);
+                bookPublicationRowToBeUpdated.setAttribute('data-number-of-nmims-authors' , data.updatedBookPublication.numberOfNmimsAuthors);
+                bookPublicationRowToBeUpdated.setAttribute('data-nmims-authors' , data.updatedBookPublication.nmimsAuthors);
+                bookPublicationRowToBeUpdated.setAttribute('data-nmims-campus-authors' , data.updatedBookPublication.nmimsCampusAuthors);
+                bookPublicationRowToBeUpdated.setAttribute('data-nmims-school-authors' , data.updatedBookPublication.nmimsSchoolAuthors);
+                bookPublicationRowToBeUpdated.setAttribute('data-supporting-documents' , data.updatedBookPublication.supportingDocuments);
+                bookPublicationRowToBeUpdated.querySelector('.author-first-name').innerText = data.updatedBookPublication.authorFirstName;
+                bookPublicationRowToBeUpdated.querySelector('.book-title').innerText = data.updatedBookPublication.bookTitle;
+                bookPublicationRowToBeUpdated.querySelector('.publisher-name').innerText = data.updatedBookPublication.publisherName;
+                bookPublicationRowToBeUpdated.querySelector('.isbn-no').innerText = data.updatedBookPublication.isbnNo;
+                bookPublicationRowToBeUpdated.querySelector('.publication-year').innerText = data.updatedBookPublication.publicationYear;
+                }
+            })
+            .catch((error) => {
+                console.log('Eroor ::', error);
+            })
+            $('#book-publication-modal').modal('hide');
+            alert('data updated successfully');
+    })
+</script>
 <!-- footer section -->
 <%- include('./partials/footer') %>
 <%- include('./partials/footer-end') %>

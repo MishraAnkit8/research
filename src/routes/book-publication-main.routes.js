@@ -29,6 +29,7 @@ router.get('/book-publication', asyncErrorHandler(bookPublicationController.rend
 
 //edited book
 router.get('/edited-book-publication', asyncErrorHandler(editedBookPublication.renderEditedBook));
-router.post('/edited-book-publication/insert',  upload.single('researchSupportingDocument'), asyncErrorHandler(bookPublicationController.insertBookPublication))
+router.post('/edited-book-publication/insert',  upload.single('researchSupportingDocument'), asyncErrorHandler(bookPublicationController.insertBookPublication));
+router.post('/edited-book-publication/update',  upload.single('researchSupportingDocument'), asyncErrorHandler(bookPublicationController.updateBookPublication));
 
 module.exports = router;
