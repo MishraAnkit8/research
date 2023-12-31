@@ -23,6 +23,7 @@ const conferenceController = require('../controllers/conference-publication.cont
 const patentSubmission = require('../controllers/patent-submission.controller');
 const researchConsultancyController = require('../controllers/research-project-consultancy.controller');
 const bookPublicationRoutes = require('./book-publication-main.routes');
+const researchSeminarController = require('../controllers/research-seminar.controller')
 
 const router = express.Router();
 
@@ -73,5 +74,9 @@ router.post('/research-project-consultancy/view', asyncErrorHandler(researchCons
 
 // book publication
 router.use('/book-publication-main', bookPublicationRoutes);
+
+//research-seminar
+
+router.get('/research-seminar', asyncErrorHandler(researchSeminarController.renderResearchSeminar))
 
 module.exports = router;

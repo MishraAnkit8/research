@@ -6,6 +6,7 @@ const { asyncErrorHandler } = require('../middleware/error.middleware');
 const bookPublicationMainController = require('../controllers/book-publication-main.controller');
 const bookPublicationController = require('../controllers/book-publication.controller');
 const editedBookPublication = require('../controllers/edited-book.controller');
+const bookChapterController = require('../controllers/book-chapter.controller')
 
  // Set up multer for handling file uploads
 const storage = multer.diskStorage({
@@ -26,10 +27,26 @@ router.get('/', asyncErrorHandler(bookPublicationMainController.renderBookPublic
 
 // book publication
 router.get('/book-publication', asyncErrorHandler(bookPublicationController.renderBookPublication));
+router.post('/book-publication/insert',  upload.single('researchSupportingDocument'), asyncErrorHandler(bookPublicationController.insertBookPublication));
+router.post('/book-publication/update',  upload.single('researchSupportingDocument'), asyncErrorHandler(bookPublicationController.updateBookPublication));
+router.post('/book-publication/delete', asyncErrorHandler(bookPublicationController.deleteBookPublication));
+router.post('/book-publication/view', asyncErrorHandler(bookPublicationController.viewBookPublication));
 
-//edited book
-router.get('/edited-book-publication', asyncErrorHandler(editedBookPublication.renderEditedBook));
-router.post('/edited-book-publication/insert',  upload.single('researchSupportingDocument'), asyncErrorHandler(bookPublicationController.insertBookPublication));
-router.post('/edited-book-publication/update',  upload.single('researchSupportingDocument'), asyncErrorHandler(bookPublicationController.updateBookPublication));
+//edited book publication
+
+router.get('/edited-book-publication', asyncErrorHandler(editedBookPublication.renderEdietedBookPublication));
+router.post('/edited-book-publication/insert',  upload.single('researchSupportingDocument'), asyncErrorHandler(editedBookPublication.insertEditedBookPublication));
+router.post('/edited-book-publication/update',  upload.single('researchSupportingDocument'), asyncErrorHandler(editedBookPublication.updateEditedBookPublication));
+router.post('/edited-book-publication/view',  asyncErrorHandler(editedBookPublication.viewEditedBookPublication));
+router.post('/edited-book-publication/delete', asyncErrorHandler(editedBookPublication.deleteEditedBookPublication));
+
+//book chapter
+
+router.get('/book-chapter-publication', asyncErrorHandler(bookChapterController.renderEdietedBookPublication));
+router.post('/book-chapter-publication/insert',  upload.single('researchSupportingDocument'), asyncErrorHandler(bookChapterController.insertEditedBookPublication));
+router.post('/book-chapter-publication/update',  upload.single('researchSupportingDocument'), asyncErrorHandler(bookChapterController.updateEditedBookPublication));
+router.post('/book-chapter-publication/view',  asyncErrorHandler(bookChapterController.viewEditedBookPublication));
+router.post('/book-chapter-publication/delete', asyncErrorHandler(bookChapterController.deleteEditedBookPublication));
+
 
 module.exports = router;

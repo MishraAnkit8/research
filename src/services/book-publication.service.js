@@ -13,8 +13,8 @@ module.exports.insertBookPublication = async(bookPublicationData , filename) => 
     }
 }
 
-module.exports.updateBookPublication = async(BookpublicationId, updatedBookPublicationData, updatedFile) => {
-    const updatedBookPublication = await bookPublicationModel.updatedBookPublication(BookpublicationId, updatedBookPublicationData, updatedFile);
+module.exports.updateBookPublication = async(bookPublicationId , updatedBookPublicationData, updatedFile) => {
+    const updatedBookPublication = await bookPublicationModel.updatedBookPublication(bookPublicationId , updatedBookPublicationData, updatedFile);
     if(updatedBookPublication && updatedBookPublication.rowCount === 1) {
         return {
             status : 'done',
@@ -22,4 +22,23 @@ module.exports.updateBookPublication = async(BookpublicationId, updatedBookPubli
         }
     }
     
+}
+
+module.exports.deleteBookPublicationData = async({bookPublicationId}) => {
+    const deleteBookPublication = await bookPublicationModel.deleteBookPublicationData(bookPublicationId);
+    if(deleteBookPublication.rowCount === 1){
+        return {
+            status : 'done',
+            massage : 'deleted successfully'
+        }
+    }
+}
+
+module.exports.viewBookPublication = async(bookPublicationId) => {
+    console.log('id IN service ==>>', bookPublicationId);
+    const bookPublicationDataViw = await bookPublicationModel.viewBookPublicationData(bookPublicationId);
+    console.log('bookPublicationDataViw ==>>', bookPublicationDataViw.rows[0]);
+    if(bookPublicationDataViw.rows[0] && bookPublicationDataViw.rowCount === 1){
+        return bookPublicationDataViw.rows[0]
+    }
 }

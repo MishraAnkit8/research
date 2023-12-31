@@ -27,121 +27,131 @@
 <%- include('./partials/header') %>
 <!-- This is left sidebar  -->
 <%- include('./partials/left-sidebar') %>
-    <!-- This is right side section -->
+<!-- This is right side section -->
 <main class="main" id="mainContent">
-    <div class="base-section coustom-section mt-5 p-5">
-        <div class="breadcrumbs-container">
-        </div>
-        <div class="errorHtml"></div>
-        <div class="card table-card">
-            <div class="card-header table-card-header text-uppercase d-flex align-items-center justify-content-between">
-                <div>
-                    <h5>PROGRAM LIST</h5>
+                <div class="base-section coustom-section mt-5 p-5">
+                    <!--DASHBOARD CONTENT START-->
+                    <div class="breadcrumbs-container">
+                    </div>
+                    <div class="errorHtml"></div>
+                    <div class="card table-card">
+                        <div
+                            class="card-header table-card-header text-uppercase d-flex align-items-center justify-content-between">
+                            <div>
+                                <h3>CASE STUDY LIST</h3>
+                            </div>
+                            <div class="me-2">
+                                <button id="edited-book-add-modal" type="button" class="btn btn-primary add-modal" data-toggle="modal"
+                                    data-target="#edited-book-modal">
+                                    <i  class="fas fa-plus plus"></i></button>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body table-responsive">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <label>Show Entries</label>
+                                    <select class="form-select" id="changeEntry">
+                                        <option value="10">10</option>
+                                        <option value="25">25</option>
+                                        <option value="50">50</option>
+                                        <option value="100">100</option>
+                                        <option value="150">150</option>
+                                        <option value="200">200</option>
+                                        <option value="250">250</option>
+                                        <option value="300">300</option>
+                                        <option value="350">350</option>
+                                        <option value="400">400</option>
+                                        <option value="500">500</option>
+                                        <option value="800">800</option>
+                                        <option value="1000">1000</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <div class="table-searchbar-container"><button type="button"><i
+                                                class="fas fa-search"></i>
+                                        </button><input type="search" id="searchkeyword" placeholder="Enter keywords"
+                                            class="table-searchbar">
+                                    </div>
+                                </div>
+                            </div>
+                            <table class="table custom-table " id="edited-book-list">
+                                <thead>
+                                    <th>#</th>
+                                    <th>Author's name</th>
+                                    <th>Publication year</th>
+                                    <th>Book title</th>
+                                    <th>ISBN Number</th>
+                                    <th>Publisher Name</th>
+                                    <th>Action</th>
+                                </thead>
+                                <% editedBookList.forEach(function(editedBook) { %>
+                                    <tr row="scope" data-editedBook-id="<%- editedBook.id %>" data-author-last-name="<%-editedBook.author_last_name %>" data-page-number="<%- editedBook.page_number %>"
+                                        data-edition="<%- editedBook.edition %>" data-publication-place="<%-editedBook.publication_place %>" data-publisher-category="<%- editedBook.publisher_category %>"
+                                        data-book-url="<%- editedBook.book_url %>" data-doi-book-id="<%-editedBook.doi_id %>"
+                                        data-number-of-nmims-authors="<%- editedBook.number_of_nmims_authors %>" data-nmims-authors="<%- editedBook.nmims_authors %>" data-nmims-campus-authors="<%- editedBook.nmims_campus_authors %>"
+                                        data-nmims-school-authors="<%- editedBook.nmims_school_authors %>" data-supporting-documents="<%- editedBook.supporting_documents %>"
+                                        data-chapter-title="<%- editedBook.chapter_title %>" data-editor-name="<%-editedBook.editor_name %>">
+                                        <td data-editedBook-id="<%- editedBook.id %>"><%- editedBook.id %></td>
+                                        <td class="author-first-name"><%- editedBook.author_first_name %></td>
+                                        <td class="publication-year"><%- editedBook.publication_year %></td>
+                                        <td class="book-title"><%- editedBook.book_title %></td>
+                                        <td class="isbn-no"><%- editedBook.isbn_no %></td>
+                                        <td class="publisher-name"><%- editedBook.publisher_name %></td>
+                                        <td>
+                                            <a class="view" data-editedBook-id="<%- editedBook.id %>"><i class="fa-solid fa-eye view"
+                                                data-editedBook-id="<%- editedBook.id %>"></i></a>
+                                             <a class="edit"data-editedBook-id="<%- editedBook.id %>"><i class="fa fa-edit edit"
+                                                data-editedBook-id="<%- editedBook.id %>"></i></a>
+                                             <a class="delete"data-editedBook-id="<%- editedBook.id %>"><i class="fa-solid fa-trash delete"
+                                                data-editedBook-id="<%- editedBook.id %>"></i></a>
+                                        </td>
+                                    </tr>
+                                <% }); %>  
+                            </table>
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <p>Total entries:1
+                                    </p>
+                                </div>
+                                <div>
+                                    <p id="pagination" class="pagination-search"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--Import Modal -->
+    <div class="modal fade" id="open-program-modal" tabindex="-1" aria-labelledby="open-program-modal"
+                        aria-hidden="true">
+    </div>
+    <!-- EDIT PROGRAM AND UPDATE -->
+    <div class="modal fade" id="edit-program-modal" tabindex="-1" aria-labelledby="editModalLabel"
+                        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">Update Program</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="me-2">
-                    <a class="btn btn-danger" href="/admin/programs/download"><i class="fas fa-download"></i>
-                        Download </a>
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#edited-book-publication">
-                        <i class="fas fa-plus"></i></button>
-                    </button>
-                </div>
-            </div>
-            <div class="card-body table-responsive">
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <label>Show Entries</label>
-                        <select class="form-select" id="changeEntry">
-                            <option value="10">10</option>
-                            <option value="25">25</option>
-                            <option value="50">50</option>
-                            <option value="100">100</option>
-                            <option value="150">150</option>
-                            <option value="200">200</option>
-                            <option value="250">250</option>
-                            <option value="300">300</option>
-                            <option value="350">350</option>
-                            <option value="400">400</option>
-                            <option value="500">500</option>
-                            <option value="800">800</option>
-                            <option value="1000">1000</option>
+                <div id="errorHtml"></div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="exampleInputEmail1" class="form-label">Program Name</label>
+                        <input type="text" class="form-control" id="program_name" name="program_name">
+                        <input type="hidden" class="form-control" id="hidden_id" name="hidden_id">
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleInputPassword1" class="form-label">Program Type</label>
+                        <select class="form-control" name="program_type_lid" id="program_type_lid">
+                            <option value="1">Full Time</option>
+                            <option value="2">Part Time</option>
                         </select>
                     </div>
-                    <div>
-                        <div class="table-searchbar-container"><button type="button"><i class="fas fa-search"></i>
-                            </button><input type="search" id="searchkeyword" placeholder="Enter keywords"
-                                class="table-searchbar">
-                        </div>
-                    </div>
-                </div>
-                <table class="table custom-table " id="editedBookTable">
-                    <thead>
-                        <th>#</th>
-                        <th>Author's name</th>
-                        <th>Publication Year</th>
-                        <th>Title of Chapter</th>
-                        <th>Book title</th>
-                        <th>Action</th>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>8051</td>
-                            <td>MASTER OF BUSINESS ADMINISTRATION-8051</td>
-                            <td>Full Time</td>
-                            <td>SBM-NM-M</td>
-                            <td> <a class="view-program" data-id="6"><i class="fa-solid fa-eye"></i></a>
-                                <a class="edit-program" data-id="6"><i class="fa fa-edit"></i></a>
-                                <a class="delete-program" data-id="6"><i class="fa-solid fa-trash"></i></a>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <p>Total entries:1
-                        </p>
-                    </div>
-                    <div>
-                        <p id="pagination" class="pagination-search"></p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!--Import Modal -->
-        <div class="modal fade" id="open-program-modal" tabindex="-1" aria-labelledby="open-program-modal"
-            aria-hidden="true">
-        </div>
-        <!-- EDIT PROGRAM AND UPDATE -->
-        <div class="modal fade" id="edit-program-modal" tabindex="-1" aria-labelledby="editModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="editModalLabel">Update Program</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div id="errorHtml"></div>
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label for="exampleInputEmail1" class="form-label">Program Name</label>
-                            <input type="text" class="form-control" id="program_name" name="program_name">
-                            <input type="hidden" class="form-control" id="hidden_id" name="hidden_id">
-                        </div>
-                        <div class="mb-3">
-                            <label for="exampleInputPassword1" class="form-label">Program Type</label>
-                            <select class="form-control" name="program_type_lid" id="program_type_lid">
 
-                                <option value="1">Full Time</option>
-
-                                <option value="2">Part Time</option>
-
-                            </select>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="abbr" class="form-label">Program Abbr</label>
-                            <input type="text" class="form-control" id="abbr" name="abbr">
-                        </div>
+                    <div class="mb-3">
+                        <label for="abbr" class="form-label">Program Abbr</label>
+                        <input type="text" class="form-control" id="abbr" name="abbr">
+                    </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -150,157 +160,143 @@
                 </div>
             </div>
         </div>
-    </div>
 </main>
-<!-- modal form -->
-<div class="modal fade " id="edited-book-publication" tabindex="-1" role="dialog" aria-labelledby="edited-book-publication"
+<!-- Modal  form -->
+<div class="modal fade " id="edited-book-modal" tabindex="-1" role="dialog" aria-labelledby="case-study"
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable modal-lg modal-fullscreen p-5" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="case-study">case study </h5>
+                <h5 class="modal-title" id="case-study">EDITED BOOK </h5>
                 <div class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true"><i class="fas fa-times fa-2x"></i></span>
                 </div>
             </div>
             <div class="modal-body">
                 <div class="row">
-                    <h3 class="text-center mb-5">Edited Book publication</h3>
-                    <!-- Author's name -->
+                    <!-- author's first name -->
                     <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="authorName" class="form-label fw-bold">Author's name</label>
-                        <input type="text" name="author-name" id="authorName" class="form-control"
-                            placeholder="Author's name">
+                        <div class="form-group col">
+                            <label for="firstname" class="form-label  fw-bold">Author's first name</label>
+                            <input type="text" name="author-first-name" id="author-first-name" class="form-control"
+                                placeholder="First name">
+                        </div>
                     </div>
-                    <!-- Publication year -->
+                    <!-- Author's last name -->
                     <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="publicationYear" class="form-label fw-bold">Publication year</label>
-                        <input type="number" name="year" id="publicationYear" class="form-control"
-                            placeholder="Publication year" min="1945" max="2024" />
+                        <div class="form-group col">
+                            <label for="lastname" class="form-label  fw-bold">Author's last name</label>
+                            <input type="text" name="lname" id="author-last-name" class="form-control" placeholder="Last name">
+                        </div>
                     </div>
-                    <!-- Title of Chapter -->
+                    <!-- Title of case study -->
                     <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="chapterTitle" class="form-label fw-bold">Title of Chapter</label>
-                        <input type="text" name="chapter-title" id="chapterTitle" class="form-control"
-                            placeholder="Title of Chapter" />
+                        <label for="caseStudy" class="form-label fw-bold">Title of chapeter</label>
+                        <input type="text" name="titleOfBook" id="chapter-title" class="form-control"
+                            placeholder="Title of Book">
                     </div>
-                    <!-- Editor name -->
+                    <!-- Title of BOOK -->
                     <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="editorName" class="form-label fw-bold">Editor name</label>
-                        <input type="text" name="editor-name" id="editorName" class="form-control"
-                            placeholder="Editor name" />
-                    </div>
-                    <!-- Book title -->
-                    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="bookTitle" class="form-label fw-bold">Book Title</label>
-                        <input type="text" name="book-title" id="bookTitle" class="form-control"
-                            placeholder="Book title" />
-                    </div>
-                    <!-- Page numbers/ Page Range -->
-                    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="pageRange" class="form-label fw-bold">Page numbers/ Page Range</label>
-                        <input type="text" name="page-range" id="pageRange" class="form-control"
-                            placeholder="Page numbers" />
+                        <label for="caseStudy" class="form-label fw-bold">Title of book</label>
+                        <input type="text" name="titleOfBook" id="book-title" class="form-control"
+                            placeholder="Title of Book">
                     </div>
                     <!-- Edition -->
                     <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="titleOfBookSeries" class="form-label fw-bold">Edition</label>
-                        <input type="text" name="BookSeries" id="titleOfBookSeries" class="form-control"
-                            placeholder="Edition" />
+                        <label for="edition" class="form-label fw-bold">Edition (if it isn't the first)</label>
+                        <input type="text" name="case-study" id="edition" class="form-control" placeholder="Optional">
                     </div>
-                    <!-- Editor(s) of the book -->
+                    <!-- EDITOR NAME -->
                     <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="editorOfBook" class="form-label fw-bold">Editor(s) of the book</label>
-                        <input type="text" name="book-editor" id="editorOfBook" class="form-control"
-                            placeholder="Editor(s) of the book" />
+                        <label for="edition" class="form-label fw-bold">EDITOR</label>
+                        <input type="text" name="editor" id="editor-name" class="form-control" placeholder="Optional">
                     </div>
-                    <!-- ISBN Number -->
+                    <!-- PAGE number -->
                     <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="ISBNNumber" class="form-label fw-bold">
-                            ISBN Number
-                        </label>
-                        <input type="text" name="ISBN-Number" id="ISBNNumber" class="form-control"
-                            placeholder="ISBN Number">
+                        <label for="Volume" class="form-label fw-bold">Page number</label>
+                        <input type="text" name="vol" id="page-number" class="form-control" placeholder="Optional">
                     </div>
-                    <!-- Publisher name -->
+                    <!-- Publisher Name -->
                     <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <div class="form-group">
-                            <label for="publisherName" class="form-label  fw-bold">
-                                Publisher Name
-                            </label>
-                            <input type="text" name="publisher-name" id="publisherName" placeholder="Publisher Name"
-                                class="form-control  " />
-                        </div>
+                        <label for="publisherName" class="form-label fw-bold">Publisher Name</label>
+                        <input type="text" name="vol" id="publisher-name" class="form-control"
+                            placeholder="Pulisher name">
                     </div>
-                    <!-- Place of Publication -->
+                    <!-- Publisher Category  -->
                     <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <div class="form-group">
-                            <label for="placeOfPublication" class="form-label  fw-bold">
-                                Place of Publication
-                            </label>
-                            <input type="text" name="publication-place" id="placeOfPublication"
-                                placeholder="Place of Publication" class="form-control" />
-                        </div>
-                    </div>
-                    <!-- Publisher Category-->
-                    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="publisherCatergory" class="form-label fw-bold mb-3">Publisher
-                            Category</label><br>
+                        <label for="publisher-category" id="publisher-category" class="form-label fw-bold mb-3">Publisher Category</label><br>
                         <div class="form-check-inline">
-                            <label for="international" class="form-check-label">
-                                <input type="radio" class="form-check-input" id="international" name="radio"
-                                    value="International"> International
+                            <label for="inter-national" class="form-check-label">
+                                <input type="radio" class="form-check-input" id="inter-national" name="publisher-category" value="International"> International
                             </label>
                         </div>
                         <div class="form-check-inline">
                             <label for="national" class="form-check-label">
-                                <input type="radio" class="form-check-input" id="national" name="radio"
-                                    value="National"> National
+                                <input type="radio" class="form-check-input" id="national" name="publisher-category" value="National"> National
                             </label>
                         </div>
                     </div>
-                    <!-- Upload the supporting documents -->
+                    <!-- Publication Year -->
                     <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="upload" class="form-label fw-bold ">Upload the supporting documents</label>
-                        <input type="file" name="upload-file" class="form-control " id="upload"
-                            placeholder="upload-file">
+                        <label for="publicationYear" class="form-label fw-bold">Publication Year</label>
+                        <input type="text" name="Year" id="publication-year" class="form-control"
+                            placeholder="Publication Year">
                     </div>
-
-                    <!-- DOI of book -->
+                    <!-- URL of the book publication -->
                     <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="Weblink" class="form-label fw-bold ">DOI of Book</label>
-                        <input type="url" name="web-link" id="Weblink" placeholder="DOI -Unique ID"
-                            class="form-control " />
+                        <label for="URL of book" class="form-label fw-bold">URL of book</label>
+                        <input type="url" name="URL" id="book-url" class="form-control"
+                            placeholder="URL">
                     </div>
-                    <!-- URL of book -->
-                    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="urlOfBook" class="form-label fw-bold ">URL of book</label>
-                        <input type="url" name="book-url" id="urlOfBook" placeholder="URL of book"
-                            class="form-control " />
+                     <!-- ISBN Number -->
+                     <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="caseStudy" class="form-label fw-bold">ISBN Number</label>
+                        <input type="ISBN Number" name="ISBN-Number" id="isbn-no" class="form-control"
+                            placeholder="ISBN Number">
+                    </div>
+                     <!-- DOI of book -->
+                     <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="doi-book-id" class="form-label fw-bold">DOI of book</label>
+                        <input type="text" name="doi-book-id" id="doi-book-id" class="form-control"
+                            placeholder="DOI BOOK ">
+                    </div>
+                     <!-- Place of Publication -->
+                     <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="publication-place" class="form-label fw-bold">Place of Publication</label>
+                        <input type="text" name="publication-place" id="publication-place" class="form-control"
+                            placeholder="publication Place ">
                     </div>
                     <!-- No. of NMIMS Authors -->
                     <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="NMIMSAuthors" class="form-label fw-bold ">No. of NMIMS Authors</label>
-                        <input type="text" name="nmims-authors" id="NMIMSAuthors" placeholder="No. of NMIMS Authors"
-                            class="form-control " />
+                        <input type="text" name="nmims-authors" id="number-of-nmims-authors"
+                            placeholder="No. of NMIMS Authors" class="form-control " />
                     </div>
                     <!-- Name of NMIMS Authors -->
                     <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="nameOfAuthors" class="form-label fw-bold ">Name of NMIMS Authors</label>
-                        <input type="text" name="web-link" id="nameOfAuthors" placeholder="Name of NMIMS Authors"
+                        <input type="text" name="web-link" id="nmims-authors" placeholder="Name of NMIMS Authors"
                             class="form-control " />
                     </div>
                     <!-- NMIMS Campus - Author -->
                     <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="campusAuthors" class="form-label fw-bold ">Name of NMIMS Campus Authors</label>
-                        <input type="url" name="web-link" id="campusAuthors" placeholder="Name of NMIMS Campus Authors"
+                        <label for="campusAuthors" class="form-label fw-bold ">NMIMS Campus Author</label>
+                        <input type="url" name="web-link" id="nmims-campus-authors" placeholder="NMIMS Campus Author"
                             class="form-control " />
                     </div>
                     <!--NMIMS School - Author-->
                     <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="campusAuthors" class="form-label fw-bold ">Name of NMIMS School Authors</label>
-                        <input type="url" name="web-link" id="campusAuthors" placeholder="Name of NMIMS School Authors"
+                        <label for="campusAuthors" class="form-label fw-bold ">NMIMS School Author</label>
+                        <input type="url" name="web-link" id="nmims-school-authors" placeholder="NMIMS School Author"
                             class="form-control " />
+                    </div>
+                      <!-- Upload Supporting Documents-->
+                      <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="supporting-documents" class="form-label fw-bold">
+                            Upload Supporting Documents
+                        </label>
+                        <input type="file" name="researchSupportingDocument" id="supporting-documents" class="form-control" min='2000-01-01'
+                            max="2023-10-02">
                     </div>
                 </div>
             </div>
@@ -313,6 +309,500 @@
         </div>
     </div>
 </div>
+<!--  edited book publication view modal -->
+<div class="modal fade" id="edited-book-view-modal" tabindex="-1" role="dialog" aria-labelledby="edited-book-view-modal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered custom-modal " role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-center" id="exampleModalLongTitle"> EDITED BOOK PUBLICATION</h5>
+                <div type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"><i class="fas fa-times fa"></i></span>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="row">
+                        <!-- author's first name -->
+                        <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                            <div class="box">
+                                <div class="task-sub-title sub-title-text">AUTHOR'S FIRST NAME :</div>
+                                <label id="view-first-name"></label>
+                            </div>
+                        </div>
+            
+                        <!-- Author's last name -->
+                        <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                            <div class="box">
+                                <div class="task-sub-title sub-title-text">AUTHOR'S LAST NAME :</div>
+                                <label id="view-last-name"></label>
+                            </div>
+                        </div>
+                        <!-- Title of case study -->
+                        <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                            <div class="box">
+                                <div class="task-sub-title sub-title-text">TITLE OF BOOK  :</div>
+                                <label id="view-book-title"></label>
+                            </div>
+                        </div>
+                        <!-- Publication place -->
+                        <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                            <div class="box">
+                                <div class="task-sub-title sub-title-text"> PLACE OF PUBLICATION :</div>
+                                <label id="view-publication-place"></label>
+                            </div>
+                        </div>
+                        <!-- Edition -->
+                        <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                            <div class="box">
+                                <div class="task-sub-title sub-title-text">EDITION :</div>
+                                <label id="view-edition"></label>
+                            </div>
+                        </div>
+                          <!-- Editor name -->
+                          <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                            <div class="box">
+                                <div class="task-sub-title sub-title-text">EDITOR NAME :</div>
+                                <label id="view-editor-name"></label>
+                            </div>
+                        </div>
+                          <!-- chapter title -->
+                          <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                            <div class="box">
+                                <div class="task-sub-title sub-title-text">CHAPTER TITLE :</div>
+                                <label id="view-chapter-title"></label>
+                            </div>
+                        </div>
+                          <!-- publisher category -->
+                          <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                            <div class="box">
+                                <div class="task-sub-title sub-title-text">PUBLISHER CATEGORY :</div>
+                                <label id="view-publisher-category"></label>
+                            </div>
+                        </div>
+                        <!-- page number -->
+                        <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                            <div class="box">
+                                <div class="task-sub-title sub-title-text">PAGE NUMBER :</div>
+                                <label id="view-page-number"></label>
+                            </div>
+                        </div>
+                        <!-- doi book id -->
+                        <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                            <div class="box">
+                                <div class="task-sub-title sub-title-text">DOI OF BOOK  :</div>
+                                <label id="view-doi-book-id"></label>
+                            </div>
+                        </div>
+                        <!-- Publisher Name -->
+                        <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                            <div class="box">
+                                <div class="task-sub-title sub-title-text">PUBLISHER NAME :</div>
+                                <label id="view-publisher-name"></label>
+                            </div>
+                        </div>
+            
+                        <!-- Publication Year -->
+                        <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                            <div class="box">
+                                <div class="task-sub-title sub-title-text">PUBLICATION YEAR :</div>
+                                <label id="view-publication-year"></label>
+                            </div>
+                        </div>
+                        <!-- Publication Year -->
+                        <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                            <div class="box">
+                                <div class="task-sub-title sub-title-text">ISBN NUMBER :</div>
+                                <label id="view-isbn-no"></label>
+                            </div>
+                        </div>
+                        <!-- Publication Year -->
+                        <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                            <div class="box">
+                                <div class="task-sub-title sub-title-text">URL OF BOOK:</div>
+                                <label id="view-book-url"></label>
+                            </div>
+                        </div>
+                        <!-- Number of nmims authors -->
+                        <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                            <div class="box">
+                                <div class="task-sub-title sub-title-text"> NO. OF NMIMS AUTHORS :</div>
+                                <label id="view-no-of-nmims-authors"></label>
+                            </div>
+                        </div>
+                        <!-- Publication Year -->
+                        <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                            <div class="box">
+                                <div class="task-sub-title sub-title-text"> NAME OF NMIMS AUTHORS :</div>
+                                <label id="view-nmims-authors"></label>
+                            </div>
+                        </div>
+                        <!-- NMIMS CAMPUS AUTHOR -->
+                        <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                            <div class="box">
+                                <div class="task-sub-title sub-title-text">NMIMS CAMPUS AUTHOR:</div>
+                                <label id="view-nmims-campus-authors"></label>
+                            </div>
+                        </div>
+                        <!-- NMIMS SCHOOL AUTHOR -->
+                        <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                            <div class="box">
+                                <div class="task-sub-title sub-title-text">NMIMS SCHOOL AUTHOR :</div>
+                                <label id="view-nmims-school-authors"></label>
+                            </div>
+                        </div>
+                         <!-- Supporting Document -->
+                         <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                            <div class="box">
+                                <div class="task-sub-title sub-title-text">SUPPORTING DOCUMENT:</div>
+                                <label id="view-support-document"></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- inline javascript -->
+<script>
+    const editedBookList = document.getElementById('edited-book-list');
+    const submitBtn = document.getElementById('submit-btn');
+    const updateBtn = document.getElementById('update-btn');
+    const addnewEditedBook = document.getElementById('edited-book-add-modal');
+    let editedBookId , editedBookRowToBeUpdated;
+    addnewEditedBook.addEventListener('click' , function(event) {
+        console.log('clikeddd')
+        if(event.target.tagName === 'BUTTON' && event.target.classList.contains('add-modal') || event.target.classList.contains('plus')){
+            updateBtn.classList.add('d-none');
+            submitBtn.classList.remove('d-none');
+        }
+    })
+    const  insertEditedBook = async(url) =>{
+        const editedBook = new FormData();
+        const authorFirstName = document.getElementById('author-first-name').value;
+        const authorLastName = document.getElementById('author-last-name').value;
+        const bookTitle = document.getElementById('book-title').value;
+        const edition = document.getElementById('edition').value;
+        const isbnNo = document.getElementById('isbn-no').value;
+        const editorName = document.getElementById('editor-name').value;
+        const chapterTitle = document.getElementById('chapter-title').value;
+        const publicationPlace = document.getElementById('publication-place').value;
+        const publisherCategory = document.querySelector('input[name="publisher-category"]:checked').value;
+        const pageNumber = document.getElementById('page-number').value;
+        const publisherName = document.getElementById('publisher-name').value;
+        const publicationYear = document.getElementById('publication-year').value;
+        const bookUrl = document.getElementById('book-url').value;
+        const doiBookId = document.getElementById('doi-book-id').value;
+        const numberOfNmimsAuthors = document.getElementById('number-of-nmims-authors').value;
+        const nmimsAuthors = document.getElementById('nmims-authors').value;
+        const nmimsCampusAuthors = document.getElementById('nmims-campus-authors').value;
+        const nmimsSchoolAuthors = document.getElementById('nmims-school-authors').value;
+        const supportingDocuments = document.querySelector('input[type="file"]')
+
+        // appending value
+        editedBook.append('authorFirstName' , authorFirstName);
+        editedBook.append('authorLastName' , authorLastName);
+        editedBook.append('bookTitle' , bookTitle);
+        editedBook.append('edition' , edition);
+        editedBook.append('isbnNo' , isbnNo);
+        editedBook.append('editorName' , editorName);
+        editedBook.append('chapterTitle' , chapterTitle);
+        editedBook.append('publicationPlace' , publicationPlace);
+        editedBook.append('publisherCategory' , publisherCategory);
+        editedBook.append('pageNumber' , pageNumber);
+        editedBook.append('publisherName' , publisherName);
+        editedBook.append('publicationYear' , publicationYear);
+        editedBook.append('bookUrl' , bookUrl);
+        editedBook.append('doiBookId' , doiBookId);
+        editedBook.append('numberOfNmimsAuthors' , numberOfNmimsAuthors);
+        editedBook.append('nmimsAuthors' , nmimsAuthors);
+        editedBook.append('nmimsCampusAuthors' , nmimsCampusAuthors);
+        editedBook.append('nmimsSchoolAuthors' , nmimsSchoolAuthors);
+        editedBook.append('researchSupportingDocument' , supportingDocuments.files[0]);
+
+        fetch(url , {
+            method : 'POST',
+            body : editedBook
+        })
+        .then((result) => {
+            return result.json()
+        })
+        .then((data) => {
+           if(data.status === 'done'){
+            console.log('data ==>>', data)
+            const newEditedBook = document.createElement('tr');
+            newEditedBook.setAttribute('data-page-number' , data.editedBooData.pageNumber);
+            newEditedBook.setAttribute('data-edition' , data.editedBooData.edition);
+            newEditedBook.setAttribute('data-editor-name' , data.editedBooData.editorName);
+            newEditedBook.setAttribute('data-chapter-title' , data.editedBooData.chapterTitle);
+            newEditedBook.setAttribute('data-publication-place' , data.editedBooData.publicationPlace);
+            newEditedBook.setAttribute('data-publisher-category' , data.editedBooData.publisherCategory);
+            newEditedBook.setAttribute('data-book-url' , data.editedBooData.bookUrl);
+            newEditedBook.setAttribute('data-doi-book-id' , data.editedBooData.doiBookId);
+            newEditedBook.setAttribute('data-number-of-nmims-authors' , data.editedBooData.numberOfNmimsAuthors);
+            newEditedBook.setAttribute('data-nmims-authors' , data.editedBooData.nmimsAuthors);
+            newEditedBook.setAttribute('data-nmims-campus-authors' , data.editedBooData.nmimsCampusAuthors);
+            newEditedBook.setAttribute('data-nmims-school-authors' , data.editedBooData.nmimsSchoolAuthors);
+            newEditedBook.setAttribute('data-supporting-documents' , data.editedBooData.supportingDocuments);
+            newEditedBook.innerHTML = `
+                        <td >${data.editedBookId}</td>
+                            <td class="author-first-name">${data.editedBooData.authorFirstName}</td>
+                            <td class="publication-year">${data.editedBooData.publicationYear}</td>
+                            <td class="book-title">${data.editedBooData.bookTitle}</td>
+                            <td class="isbn-no">${data.editedBooData.isbnNo}</td>
+                            <td class="publisher-name">${data.editedBooData.publisherName}</td>
+                            <td>
+                                <a class="view" data-publication-id="${data.editedBookId}"><i class="fa-solid fa-eye view"
+                                    data-publication-id="${data.editedBookId}"></i></a>
+                                 <a class="edit"data-publication-id="${data.editedBookId}"><i class="fa fa-edit edit"
+                                    data-publication-id="${data.editedBookId}"></i></a>
+                                 <a class="delete"data-publication-id="${data.editedBookId}"><i class="fa-solid fa-trash delete"
+                                    data-publication-id="${data.editedBookId}"></i></a>
+                            </td> `;
+            editedBookList.append(newEditedBook);
+            $('#edited-book-modal').modal('hide');
+            alert('data inserted successfully');
+           }
+        })
+    }
+    submitBtn.addEventListener('click' , async function() {
+       await insertEditedBook('/research/book-publication-main/edited-book-publication/insert')
+    })
+
+    editedBookList.addEventListener('click' , (event) => {
+        // for updation
+        if(event.target.classList.contains('edit')){
+            console.log('clickeddd');
+            editedBookRowToBeUpdated = event.target.closest('tr');
+            console.log('editedBookRowToBeUpdated ==>>', editedBookRowToBeUpdated);
+            editedBookId = editedBookRowToBeUpdated.getAttribute('data-editedbook-id');
+            console.log('editedBookId ==>>', editedBookId);
+            $('#edited-book-modal').modal('show');
+            updateBtn.classList.remove('d-none');
+            submitBtn.classList.add('d-none');
+            const authorFirstName = document.getElementById('author-first-name');
+            const authorLastName = document.getElementById('author-last-name');
+            const bookTitle = document.getElementById('book-title');
+            const edition = document.getElementById('edition');
+            const editorName = document.getElementById('editor-name');
+            const chapterTitle= document.getElementById('chapter-title');
+            const isbnNo = document.getElementById('isbn-no');
+            const publicationPlace = document.getElementById('publication-place');
+            const publisherCategoryNational = document.getElementById('national');
+            const publisherCategoryInternational = document.getElementById('inter-national');
+            const pageNumber = document.getElementById('page-number');
+            const publisherName = document.getElementById('publisher-name');
+            const publicationYear = document.getElementById('publication-year');
+            const bookUrl = document.getElementById('book-url');
+            const doiBookId = document.getElementById('doi-book-id');
+            const numberOfNmimsAuthors = document.getElementById('number-of-nmims-authors');
+            const nmimsAuthors = document.getElementById('nmims-authors');
+            const nmimsCampusAuthors = document.getElementById('nmims-campus-authors');
+            const nmimsSchoolAuthors = document.getElementById('nmims-school-authors');
+            const supportingDocuments = document.getElementById('supporting-documents');
+            // assigning related row data value
+            authorFirstName.value = editedBookRowToBeUpdated.querySelector('.author-first-name').innerText;
+            authorLastName.value = editedBookRowToBeUpdated.getAttribute('data-author-last-name');
+            bookTitle.value = editedBookRowToBeUpdated.querySelector('.book-title').innerText;
+            edition.value = editedBookRowToBeUpdated.getAttribute('data-edition');
+            editorName.value = editedBookRowToBeUpdated.getAttribute('data-editor-name');
+            chapterTitle.value = editedBookRowToBeUpdated.getAttribute('data-chapter-title');
+            publisherName.value = editedBookRowToBeUpdated.querySelector('.publisher-name').innerText;
+            isbnNo.value = editedBookRowToBeUpdated.querySelector('.isbn-no').innerText;
+            publicationPlace.value = editedBookRowToBeUpdated.getAttribute('data-publication-place');
+            const publisherCategory = editedBookRowToBeUpdated.getAttribute('data-publisher-category');
+            if(publisherCategory === 'National'){
+                publisherCategoryNational.checked = true;
+            }
+            else{
+                publisherCategoryInternational.checked = true;
+            }
+            pageNumber.value = editedBookRowToBeUpdated.getAttribute('data-page-number');
+            publicationYear.value = editedBookRowToBeUpdated.querySelector('.publication-year').innerText;
+            bookUrl.value = editedBookRowToBeUpdated.getAttribute('data-book-url');
+            doiBookId.value = editedBookRowToBeUpdated.getAttribute('data-doi-book-id');
+            numberOfNmimsAuthors.value = editedBookRowToBeUpdated.getAttribute('data-number-of-nmims-authors');
+            nmimsAuthors.value = editedBookRowToBeUpdated.getAttribute('data-nmims-authors');
+            nmimsCampusAuthors.value = editedBookRowToBeUpdated.getAttribute('data-nmims-campus-authors');
+            nmimsSchoolAuthors.value = editedBookRowToBeUpdated.getAttribute('data-nmims-school-authors');
+            supportingDocuments.textContent = editedBookRowToBeUpdated.getAttribute('data-supporting-documents');
+            }
+        
+        //  for delete   
+        if(event.target.classList.contains('delete')){
+            console.log('clickedddd');
+            const editedBookPublicatRowToBeDeleted = event.target.closest('tr');
+            editedBookId = editedBookPublicatRowToBeDeleted.getAttribute('data-editedbook-id');
+            console.log('ID ==>>', editedBookId);
+
+            fetch('/research/book-publication-main/edited-book-publication/delete' , {
+                method : 'POST',
+                headers : {
+                    'content-type' : 'application/json'
+                },
+                body : JSON.stringify({editedBookId})
+            })
+            .then((result) => {
+                return result.json()
+            })
+            .then((data) => {
+                if(data.status === 'done'){
+                    console.log('data ==>>', data);
+                    editedBookPublicatRowToBeDeleted.remove();
+                }
+            })
+        }
+        
+        // for view
+        if(event.target.classList.contains('view')){
+            console.log('clickedddd');
+            const editedBookRowToBeViewed = event.target.closest('tr');
+            editedBookId = editedBookRowToBeViewed.getAttribute('data-editedbook-id');
+            console.log('ID ==>>', editedBookId);
+            $('#edited-book-view-modal').modal('show');
+            const viewAuthorFirstName = document.getElementById('view-first-name');
+            const viewAuthorLastName = document.getElementById('view-last-name');
+            const viewBookTitle = document.getElementById('view-book-title');
+            const viewEditorName = document.getElementById('view-editor-name');
+            const viewChapterTitle = document.getElementById('view-chapter-title');
+            const viewEdition = document.getElementById('view-edition');
+            const viewIsbnNo = document.getElementById('view-isbn-no');
+            const viewPublicationPlace = document.getElementById('view-publication-place');
+            const viewPublisherCategory = document.getElementById('view-publisher-category');
+            const viewPageNumber = document.getElementById('view-page-number');
+            const viewPublisherName = document.getElementById('view-publisher-name');
+            const viewPublicationYear = document.getElementById('view-publication-year');
+            const viewBookUrl = document.getElementById('view-book-url');
+            const viewDoiBookId = document.getElementById('view-doi-book-id');
+            const viewNumberOfNmimsAuthors = document.getElementById('view-no-of-nmims-authors');
+            const viewNmimsAuthors = document.getElementById('view-nmims-authors');
+            const viewNmimsCampusAuthors = document.getElementById('view-nmims-campus-authors');
+            const viewNmimsSchoolAuthors = document.getElementById('view-nmims-school-authors');
+            const viewSupportingDocuments = document.getElementById('view-support-document');
+
+            fetch('/research/book-publication-main/edited-book-publication/view' , {
+                method : 'POST',
+                headers : {
+                    'content-type' : 'application/json'
+                },
+                body : JSON.stringify({editedBookId})
+            })
+            .then((result) => {
+                return result.json()
+            })
+            .then((data) => {
+                if(data.status === 'done'){
+                    console.log('data ==>>', data);
+                    viewAuthorFirstName.innerText = data.editedBookView.author_first_name;
+                    viewAuthorLastName.innerText = data.editedBookView.author_last_name;
+                    viewBookTitle.innerText = data.editedBookView.book_title; 
+                    viewEdition.innerText = data.editedBookView.edition;
+                    viewEditorName.innerText = data.editedBookView.editor_name; 
+                    viewChapterTitle.innerText = data.editedBookView.chapter_title;  
+                    viewIsbnNo.innerText = data.editedBookView.isbn_no; 
+                    viewPublicationPlace.innerText = data.editedBookView.publication_place;
+                    viewPublisherCategory.innerText = data.editedBookView.publisher_category 
+                    viewPageNumber .innerText = data.editedBookView.page_number; 
+                    viewPublisherName.innerText = data.editedBookView.publisher_name; 
+                    viewPublicationYear.innerText = data.editedBookView.publication_year; 
+                    viewBookUrl.innerText = data.editedBookView.book_url; 
+                    viewDoiBookId.innerText = data.editedBookView.doi_id; 
+                    viewNumberOfNmimsAuthors.innerText = data.editedBookView.number_of_nmims_authors; 
+                    viewNmimsAuthors.innerText = data.editedBookView.nmims_authors;
+                    viewNmimsCampusAuthors.innerText = data.editedBookView.nmims_campus_authors; 
+                    viewNmimsSchoolAuthors.innerText = data.editedBookView.nmims_school_authors; 
+                    viewSupportingDocuments.innerText = data.editedBookView.supporting_documents;
+                }
+
+            })
+        }
+    })
+
+    updateBtn.addEventListener('click' , () => {
+        const updatededitedBook = new FormData();
+        const updatedAuthorFirstName = document.getElementById('author-first-name').value;
+        const updatedaAuthorLastName = document.getElementById('author-last-name').value;
+        const updatedBookTitle = document.getElementById('book-title').value;
+        const updatedEdition = document.getElementById('edition').value;
+        const updatedIsbnNo = document.getElementById('isbn-no').value;
+        const updatedEditorName = document.getElementById('editor-name').value;
+        const updatedChapterTitle = document.getElementById('chapter-title').value;
+        const updatedPublicationPlace = document.getElementById('publication-place').value;
+        const updatedPublisherCategory = document.querySelector('input[name="publisher-category"]:checked').value;
+        const updatedPageNumber = document.getElementById('page-number').value;
+        const updatedPublisherName = document.getElementById('publisher-name').value;
+        const updatedPublicationYear = document.getElementById('publication-year').value;
+        const updatedBookUrl = document.getElementById('book-url').value;
+        const updatedDoiBookId = document.getElementById('doi-book-id').value;
+        const updatedNumberOfNmimsAuthors = document.getElementById('number-of-nmims-authors').value;
+        const updatedNmimsAuthors = document.getElementById('nmims-authors').value;
+        const updatedNmimsCampusAuthors = document.getElementById('nmims-campus-authors').value;
+        const updatedNmimsSchoolAuthors = document.getElementById('nmims-school-authors').value;
+        const updatedDocuments = document.getElementById('supporting-documents');
+        updatededitedBook.append('editedBookId' , editedBookId);
+        updatededitedBook.append('authorFirstName' , updatedAuthorFirstName);
+        updatededitedBook.append('authorLastName' , updatedaAuthorLastName);
+        updatededitedBook.append('bookTitle' , updatedBookTitle);
+        updatededitedBook.append('edition' , updatedEdition);
+        updatededitedBook.append('editorName' ,updatedEditorName);
+        updatededitedBook.append('chapterTitle' , updatedChapterTitle);
+        updatededitedBook.append('isbnNo' , updatedIsbnNo);
+        updatededitedBook.append('publicationPlace' , updatedPublicationPlace);
+        updatededitedBook.append('publisherCategory' , updatedPublisherCategory);
+        updatededitedBook.append('pageNumber' , updatedPageNumber);
+        updatededitedBook.append('publisherName' , updatedPublisherName);
+        updatededitedBook.append('publicationYear' , updatedPublicationYear);
+        updatededitedBook.append('bookUrl' , updatedBookUrl);
+        updatededitedBook.append('doiBookId' , updatedDoiBookId);
+        updatededitedBook.append('numberOfNmimsAuthors' , updatedNumberOfNmimsAuthors);
+        updatededitedBook.append('nmimsAuthors' , updatedNmimsAuthors);
+        updatededitedBook.append('nmimsCampusAuthors' , updatedNmimsCampusAuthors);
+        updatededitedBook.append('nmimsSchoolAuthors' , updatedNmimsSchoolAuthors);
+        if(updatedDocuments && updatedDocuments.files && updatedDocuments.files.length > 0){
+            updatededitedBook.append('researchSupportingDocument' , updatedDocuments.files[0]);
+         }
+        fetch('/research/book-publication-main/edited-book-publication/update' , {
+            method : 'POST',
+            body : updatededitedBook
+        })
+        .then((result) => {
+            return result.json()
+        })
+        .then((data) => {
+            if(data.status === 'done'){
+                console.log('data ==>>', data);
+                editedBookRowToBeUpdated.setAttribute('data-page-number' , data.updatedEditedBook.pageNumber );
+                editedBookRowToBeUpdated.setAttribute('data-edition' , data.updatedEditedBook.edition);
+                editedBookRowToBeUpdated.setAttribute('data-publication-place' , data.updatedEditedBook.publicationPlace);
+                editedBookRowToBeUpdated.setAttribute('data-publisher-category' , data.updatedEditedBook.publisherCategory);
+                editedBookRowToBeUpdated.setAttribute('data-editot-name' , data.updatedEditedBook.editorName);
+                editedBookRowToBeUpdated.setAttribute('data-chapter-title' , data.updatedEditedBook.chapterTitle);
+                editedBookRowToBeUpdated.setAttribute('data-book-url' , data.updatedEditedBook.bookUrl);
+                editedBookRowToBeUpdated.setAttribute('data-doi-book-id' , data.updatedEditedBook.doiBookId);
+                editedBookRowToBeUpdated.setAttribute('data-number-of-nmims-authors' , data.updatedEditedBook.numberOfNmimsAuthors);
+                editedBookRowToBeUpdated.setAttribute('data-nmims-authors' , data.updatedEditedBook.nmimsAuthors);
+                editedBookRowToBeUpdated.setAttribute('data-nmims-campus-authors' , data.updatedEditedBook.nmimsCampusAuthors);
+                editedBookRowToBeUpdated.setAttribute('data-nmims-school-authors' , data.updatedEditedBook.nmimsSchoolAuthors);
+                editedBookRowToBeUpdated.setAttribute('data-supporting-documents' , data.updatedEditedBook.supportingDocuments);
+                editedBookRowToBeUpdated.querySelector('.author-first-name').innerText = data.updatedEditedBook.authorFirstName;
+                editedBookRowToBeUpdated.querySelector('.book-title').innerText = data.updatedEditedBook.bookTitle;
+                editedBookRowToBeUpdated.querySelector('.publisher-name').innerText = data.updatedEditedBook.publisherName;
+                editedBookRowToBeUpdated.querySelector('.isbn-no').innerText = data.updatedEditedBook.isbnNo;
+                editedBookRowToBeUpdated.querySelector('.publication-year').innerText = data.updatedEditedBook.publicationYear;
+                }
+            })
+            .catch((error) => {
+                console.log('Eroor ::', error);
+            })
+            $('#edited-book-modal').modal('hide');
+            alert('data updated successfully');
+    })
+</script>
 <!-- footer section -->
 <%- include('./partials/footer') %>
 <%- include('./partials/footer-end') %>
+           
