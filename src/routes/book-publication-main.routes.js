@@ -42,11 +42,11 @@ router.post('/edited-book-publication/delete', asyncErrorHandler(editedBookPubli
 
 //book chapter
 
-router.get('/book-chapter-publication', asyncErrorHandler(bookChapterController.renderEdietedBookPublication));
-router.post('/book-chapter-publication/insert',  upload.single('researchSupportingDocument'), asyncErrorHandler(bookChapterController.insertEditedBookPublication));
-router.post('/book-chapter-publication/update',  upload.single('researchSupportingDocument'), asyncErrorHandler(bookChapterController.updateEditedBookPublication));
-router.post('/book-chapter-publication/view',  asyncErrorHandler(bookChapterController.viewEditedBookPublication));
-router.post('/book-chapter-publication/delete', asyncErrorHandler(bookChapterController.deleteEditedBookPublication));
+router.get('/book-chapter-publication', asyncErrorHandler(bookChapterController.renderBookChapterPublication));
+router.post('/book-chapter-publication/insert',  upload.single('researchSupportingDocument'), asyncErrorHandler(bookChapterController.insertBookChapterPublication));
+router.post('/book-chapter-publication/update',  upload.single('researchSupportingDocument'), asyncErrorHandler(bookChapterController.updateBookChapterData));
+router.post('/book-chapter-publication/view',  asyncErrorHandler(bookChapterController.viewBookChapterData));
+router.post('/book-chapter-publication/delete', asyncErrorHandler(bookChapterController.deleteBookChapterData));
 
 
 module.exports = router;

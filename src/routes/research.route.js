@@ -78,5 +78,8 @@ router.use('/book-publication-main', bookPublicationRoutes);
 //research-seminar
 
 router.get('/research-seminar', asyncErrorHandler(researchSeminarController.renderResearchSeminar))
-
+router.post('/journal-paper/insert', asyncErrorHandler(researchSeminarController.createJournalPaper));
+router.post('/journal-paper/update', asyncErrorHandler(researchSeminarController.updateJournalPaper));
+router.post('/journal-paper/delete', asyncErrorHandler(researchSeminarController.delJournalPaper));
+router.post('/journal-paper/view', asyncErrorHandler(researchSeminarController.viewJournalPaper));
 module.exports = router;

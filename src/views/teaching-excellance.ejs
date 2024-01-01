@@ -1,77 +1,604 @@
 <%- include('./partials/head') %>
-  
-  <!-- Navbar section -->
-  <%- include('./partials/header') %>
-    <!-- This is left sidebar  -->
-    <%- include('./partials/left-side-bar') %>
-    <!-- This is right side section -->
-    <!-- Bootstrap and jQuery scripts -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <!-- custom javascript -->
-    <script src="../js/script.js"></script>
-    <script>
-        // adding data into the table row
-        document.addEventListener('DOMContentLoaded', function () {
-            const tableBody = document.getElementById('teachingExecellence').getElementsByTagName('tbody')[0];
+<!-- inline css -->
+<style>
+.case-study-row.flex-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; 
+}
 
-            // Function to update data-id attributes
-            function updateDataIds() {
-                const deleteButtons = tableBody.querySelectorAll('.delete-program');
-                console.log('detelet button clicked in id ==>>>', deleteButtons);
-                deleteButtons.forEach((button, index) => {
-                    button.setAttribute('data-id', index + 1);
-                    console.log('index>>>>>>>>>>>',index);
-                });
+.case-study-row .cell {
+    flex: 1; 
+    margin: 5px; 
+}
 
-                console.log('detelet button  id after each ==>>>', deleteButtons);
+.custom-modal {
+     max-width: 1000px;
+     max-height: 800px;
+ }
+ .sub-title-text{
+     font-size: 15px;
+     font-weight:500;
+ }
 
+</style>
+
+<!-- Navbar section -->
+<%- include('./partials/header') %>
+<!-- This is left sidebar  -->
+<%- include('./partials/left-sidebar') %>
+<!-- This is right side section -->
+<main class="main" id="mainContent">
+                <div class="base-section coustom-section mt-5 p-5">
+                    <!--DASHBOARD CONTENT START-->
+                    <div class="breadcrumbs-container">
+                    </div>
+                    <div class="errorHtml"></div>
+                    <div class="card table-card">
+                        <div
+                            class="card-header table-card-header text-uppercase d-flex align-items-center justify-content-between">
+                            <div>
+                                <h3>TEACHING EXECELLANCE</h3>
+                            </div>
+                            <div class="me-2">
+                                <button id="teaching-execellance-add-modal" type="button" class="btn btn-primary add-modal" data-toggle="modal"
+                                    data-target="#teaching-execellance-modal">
+                                    <i  class="fas fa-plus plus"></i></button>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body table-responsive">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <label>Show Entries</label>
+                                    <select class="form-select" id="changeEntry">
+                                        <option value="10">10</option>
+                                        <option value="25">25</option>
+                                        <option value="50">50</option>
+                                        <option value="100">100</option>
+                                        <option value="150">150</option>
+                                        <option value="200">200</option>
+                                        <option value="250">250</option>
+                                        <option value="300">300</option>
+                                        <option value="350">350</option>
+                                        <option value="400">400</option>
+                                        <option value="500">500</option>
+                                        <option value="800">800</option>
+                                        <option value="1000">1000</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <div class="table-searchbar-container"><button type="button"><i
+                                                class="fas fa-search"></i>
+                                        </button><input type="search" id="searchkeyword" placeholder="Enter keywords"
+                                            class="table-searchbar">
+                                    </div>
+                                </div>
+                            </div>
+                            <table class=" table" id="teaching-execellance-data-list">
+                                <thead>
+                                    <th>#</th>
+                                    <th>Pedagogy innovation</th>
+                                    <th>FDP Program on academic</th>
+                                    <th>Workshop for Students</th>
+                                    <th>Inviting visiting faculty from the industry to handle  workshops</th>
+                                    <th>Program Orientation</th>
+                                    <th>Action</th>
+                                </thead>
+                                <% teachingExecellance.forEach(function(teaching) { %>
+                                <tr scope="row" data-teaching-id="<%- teaching.id %>" data-pedagogy-innovation-file="<%- teaching.pedagogy_innovation_file %>"
+                                    data-fdp-program-file="<%- teaching.fdp_program_file %>" data-workshop-file="<%- teaching.workshop_file %>"
+                                    data-pedagogy-innovation-link="<%- teaching.pedagogy_innovation_link %>" data-fdp-program-link="<%- teaching.fdp_program_link %>"
+                                    data-workshop-link="<%- teaching.workshop_link %>" data-inviting-faculty-file="<%- teaching.inviting_faculty_file %>"
+                                    data-inviting-faculty-link="<%- teaching.inviting_faculty_link %>" data-program-orientation-file="<%- teaching.program_orientation_file %>" 
+                                    data-program-orientation-link="<%- teaching.program_orientation_link %>">
+                                    <td data-teaching-id="<%- teaching.id %>"><%- teaching.id %></td>
+                                    <td class="pedagogy-innovation"><%- teaching.pedagogy_innovation %></td>
+                                    <td class="fdp-program"><%- teaching.fdp_program %></td>
+                                    <td class="workshop-details"><%- teaching.workshop_details %></td>
+                                    <td class="inviting-faculty"><%- teaching.inviting_faculty %></td>
+                                    <td class="program-orientation"><%- teaching.program_orientation %></td>
+                                    <td class="cell ">
+                                        <a class="view" data-teaching-id="<%- teaching.id %>"><i class="fa-solid fa-eye view"
+                                            data-teaching-id="<%- teaching.id %>"></i></a>
+                                        <a class="edit" data-teaching-id="<%- teaching.id %>"><i class="fa fa-edit edit"
+                                            data-teaching-id="<%- teaching.id %>"></i></a>
+                                        <a class="delete" data-teaching-id="<%- teaching.id %>"><i class="fa-solid fa-trash delete"
+                                            data-teaching-id="<%- teaching.id %>"></i></a>
+                                    </td>
+                                </tr>
+                                <% }); %>
+                        </table>    
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <p>Total entries:1
+                                    </p>
+                                </div>
+                                <div>
+                                    <p id="pagination" class="pagination-search"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--Import Modal -->
+    <div class="modal fade" id="open-program-modal" tabindex="-1" aria-labelledby="open-program-modal"
+                        aria-hidden="true">
+    </div>
+    <!-- EDIT PROGRAM AND UPDATE -->
+    <div class="modal fade" id="edit-program-modal" tabindex="-1" aria-labelledby="editModalLabel"
+                        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">Update Program</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div id="errorHtml"></div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="exampleInputEmail1" class="form-label">Program Name</label>
+                        <input type="text" class="form-control" id="program_name" name="program_name">
+                        <input type="hidden" class="form-control" id="hidden_id" name="hidden_id">
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleInputPassword1" class="form-label">Program Type</label>
+                        <select class="form-control" name="program_type_lid" id="program_type_lid">
+                            <option value="1">Full Time</option>
+                            <option value="2">Part Time</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="abbr" class="form-label">Program Abbr</label>
+                        <input type="text" class="form-control" id="abbr" name="abbr">
+                    </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary updateProgram">Update</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+</main>
+<!-- Modal  form -->
+<div class="modal fade " id="teaching-execellance-modal" tabindex="-1" role="dialog" aria-labelledby="teaching-execellance"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg modal-fullscreen p-5" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="teaching-execellance">TEACHING EXECELLANCE </h5>
+                <div class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"><i class="fas fa-times fa-2x"></i></span>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <!-- Pedagogy innovation -->
+                    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="padagogy" class="form-label fw-bold">Pedagogy innovation</label>
+                        <input type="text" name="pada" id="pedagogy-innovation" class="form-control" />
+                    </div>
+
+                    <!-- file upload -->
+                    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="upload" class="form-label fw-bold ">Upload documents</label>
+                        <input type="file" name="pedagogyInnovationFile" id="pedagogy-innovation-file" class="form-control " 
+                            placeholder="upload-file">
+                    </div>
+                    <!-- link -->
+                    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="link" class="form-label fw-bold">Link</label>
+                        <input type="text" name="pada" id="pedagogy-innovation-link" class="form-control" placeholder="https://" />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <!-- FDP Program on academic processes (pedagogy, case teaching, simulations) -->
+                    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="fdp" class="form-label fw-bold">FDP Program on academic processes (pedagogy,
+                            case teaching, simulations)</label>
+                        <input type="text" name="fdp-program" id="fdp-program" class="form-control">
+                    </div>
+
+                    <!-- file upload -->
+                    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="upload" class="form-label fw-bold  mb-4">Upload documents</label>
+                        <input type="file" name="fdpProgramFile" fdpProgramFile="fdp-program-file" class="form-control " 
+                            placeholder="upload-file">
+                    </div>
+                    <!-- link -->
+                    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="link" class="form-label fw-bold mb-4">Link</label>
+                        <input type="text" name="pada" id="fdp-program-link" class="form-control" placeholder="https://" />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <!-- Workshop for Students -->
+                    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="Workshop" class="form-label fw-bold">Workshop for Students</label>
+                        <input type="text" name="workshop-details" id="workshop-details" class="form-control ">
+                    </div>
+                    <!-- file upload -->
+                    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="upload" class="form-label fw-bold ">Upload documents</label>
+                        <input type="file" name="workShopFile" id="work-shop-file" class="form-control " 
+                            placeholder="upload-file">
+                    </div>
+                    <!-- link -->
+                    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="link" class="form-label fw-bold">Link</label>
+                        <input type="text" name="pada" id="workshop-details-link" class="form-control" placeholder="https://" />
+                    </div>
+                </div>
+                <div class="row">
+                    <!-- Inviting visiting faculty from the industry to handle niche workshops  -->
+                    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="invitingFaculty" class="form-label fw-bold">Inviting visiting faculty from
+                            the industry to handle niche workshops</label>
+                        <input type="text" name="inviting-faculty" id="inviting-faculty" class="form-control ">
+                    </div>
+                    <!-- file upload -->
+                    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="upload" class="form-label fw-bold mb-4">Upload documents</label>
+                        <input type="file" name="invitingFacultyFile" id="inviting-faculty-file" class="form-control " 
+                            placeholder="upload-file">
+                    </div>
+                    <!-- link -->
+                    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="link" class="form-label fw-bold mb-4">Link</label>
+                        <input type="text" name="pada" id="inviting-faculty-link" class="form-control" placeholder="https://" />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <!-- Program Orientation -->
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <label for="programOrientation" class="form-label fw-bold ">Program Orientation</label>
+                        <input type="text" name="program-orientation" id="program-orientation"
+                            class="form-control">
+                    </div>
+                    <!-- file upload -->
+                    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="upload" class="form-label fw-bold ">Upload documents</label>
+                        <input type="file" name="programOrientationFile" class="form-control " id="program-orientation-file"
+                            placeholder="upload-file">
+                    </div>
+                    <!-- link -->
+                    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="link" class="form-label fw-bold">Link</label>
+                        <input type="text" name="pada" id="program-orientation-link" class="form-control" placeholder="https://" />
+                    </div>
+                </div>
+            </div>
+            <!-- footer button -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary d-none" id="submit-btn">Submit</button>
+                <button type="button" class="btn btn-primary d-none" id="update-btn">update</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- case-view-modal -->
+<div class="modal fade" id="case-view-modal" tabindex="-1" role="dialog" aria-labelledby="case-view-modal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered custom-modal " role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-center" id="exampleModalLongTitle">CASE STUDY </h5>
+                <div type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"><i class="fas fa-times fa"></i></span>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <!-- author's first name -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text">AUTHOR'S FIRST NAME :</div>
+                            <label id="view-first-name"></label>
+                        </div>
+                    </div>
+        
+                    <!-- Author's last name -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text">AUTHOR'S LAST NAME :</div>
+                            <label id="view-last-name"></label>
+                        </div>
+                    </div>
+                    <!-- Title of case study -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text">TITLE OF CAES STUDY :</div>
+                            <label id="view-title-of-case-study"></label>
+                        </div>
+                    </div>
+        
+                    <!-- Edition -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text">EDITION :</div>
+                            <label id="view-edition"></label>
+                        </div>
+                    </div>
+                    <!-- Volume number -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text">VOLUME NUMBER :</div>
+                            <label id="view-volume-number"></label>
+                        </div>
+                    </div>
+        
+                    <!-- Publisher Name -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text">PUBLISHER NAME :</div>
+                            <label id="view-publisher-name"></label>
+                        </div>
+                    </div>
+        
+                    <!-- Publication Year -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text">PUBLICATION YEAR :</div>
+                            <label id="view-publication-year"></label>
+                        </div>
+                    </div>
+                    <!-- Publication Year -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text">PAGE NUMBER :</div>
+                            <label id="view-page-number"></label>
+                        </div>
+                    </div>
+                    <!-- Publication Year -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text">URL OF THE CASE STUDY :</div>
+                            <label id="view-url-of-case-study"></label>
+                        </div>
+                    </div>
+                    <!-- Publication Year -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text"> NO. OF NMIMS AUTHORS :</div>
+                            <label id="view-no-of-nmims-authors"></label>
+                        </div>
+                    </div>
+                    <!-- Publication Year -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text"> NAME OF NMIMS AUTHORS :</div>
+                            <label id="view-nmims-authors"></label>
+                        </div>
+                    </div>
+                    <!-- Publication Year -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text">NMIMS CAMPUS AUTHOR:</div>
+                            <label id="view-nmims-campus-authors"></label>
+                        </div>
+                    </div>
+                    <!-- Publication Year -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text">NMIMS SCHOOL AUTHOR :</div>
+                            <label id="view-nmims-school-authors"></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    const teachingExecellanceAddModal = document.getElementById('teaching-execellance-add-modal');
+    const teachingExecellanceList = document.getElementById('teaching-execellance-data-list');
+    const submitBtn = document.getElementById('submit-btn');
+    const updateBtn = document.getElementById('update-btn');
+    let teachingRowToBeUpdated , teachingId;
+    teachingExecellanceAddModal.addEventListener('click' , (event) => {
+        if(event.target.tagName === 'BUTTON' && event.target.classList.contains('add-modal') || event.target.classList.contains('plus')){
+            // for button visualization
+            submitBtn.classList.remove('d-none');
+            updateBtn.classList.add('d-none');
+        }
+    });
+
+    const insertTeachingExecellance = async (url) => {
+        const teachingExecellanceData = new FormData();
+        const pedagogyInnovation = document.getElementById('pedagogy-innovation').value;
+        const pedagogyInnovationFile = document.querySelector('input[name="pedagogyInnovationFile"]');
+        const pedagogyLink = document.getElementById('pedagogy-innovation-link').value;
+        const fdpProgram = document.getElementById('fdp-program').value;
+        const fdpProgramFile = document.querySelector('input[name="fdpProgramFile"]');
+        const fdpProgramLink = document.getElementById('fdp-program-link').value;
+        const workShopDetails = document.getElementById('workshop-details').value;
+        const workShopFile = document.querySelector('input[name="workShopFile"]');
+        const workShopLink = document.getElementById('workshop-details-link').value;
+        const invitingFaculty = document.getElementById('inviting-faculty').value;
+        const invitingFacultyFile = document.querySelector('input[name="invitingFacultyFile"]');
+        const invitingFacultyLink = document.getElementById('inviting-faculty-link').value;
+        const programOrientation = document.getElementById('program-orientation').value;
+        const programOrientationFile = document.querySelector('input[name="programOrientationFile"]');
+        const programOrientationLink = document.getElementById('program-orientation-link').value;
+
+        teachingExecellanceData.append('pedagogyInnovation' , pedagogyInnovation);
+        teachingExecellanceData.append('pedagogyInnovationFile' , pedagogyInnovationFile.files[0]); 
+        teachingExecellanceData.append('pedagogyLink' , pedagogyLink);
+        teachingExecellanceData.append('fdpProgram' , fdpProgram);
+        teachingExecellanceData.append('fdpProgramFile' , fdpProgramFile.files[0]); 
+        teachingExecellanceData.append('fdpProgramLink' , fdpProgramLink);
+        teachingExecellanceData.append('workShopDetails' , workShopDetails); 
+        teachingExecellanceData.append('workShopFile' , workShopFile.files[0]); 
+        teachingExecellanceData.append('workShopLink' , workShopLink); 
+        teachingExecellanceData.append('invitingFaculty' , invitingFaculty); 
+        teachingExecellanceData.append('invitingFacultyFile' , invitingFacultyFile.files[0]); 
+        teachingExecellanceData.append('invitingFacultyLink' , invitingFacultyLink);
+        teachingExecellanceData.append('programOrientation' , programOrientation) 
+        teachingExecellanceData.append('programOrientationFile' , programOrientationFile.files[0]); 
+        teachingExecellanceData.append('programOrientationLink' , programOrientationLink); 
+
+        fetch(url , {
+            method : 'POST', 
+            body : teachingExecellanceData
+        })
+        .then((result) => {
+            return result.json()
+        })
+        .then((data) => {
+            if(data.status === 'done'){
+                console.log('data ==>>', data)
+                const newTeachingExecellance = document.createElement('tr');
+                newTeachingExecellance.setAttribute('data-pedagogy-innovation-file' , data.pedagogyInnovationFile[0].filename);
+                newTeachingExecellance.setAttribute('data-fdp-program-file' , data.fdpProgramFile[0].filename); 
+                newTeachingExecellance.setAttribute('data-workshop-file' , data.workShopFile[0].filename); 
+                newTeachingExecellance.setAttribute('data-pedagogy-innovation-link' , data.teachingData.pedagogyLink);
+                newTeachingExecellance.setAttribute('data-fdp-program-link' , data.teachingData.fdpProgramLink); 
+                newTeachingExecellance.setAttribute('data-workshop-link' , data.teachingData); 
+                newTeachingExecellance.setAttribute('data-inviting-faculty-file' , data.invitingFacultyFile[0].filename); 
+                newTeachingExecellance.setAttribute('data-inviting-faculty-link' , data.teachingData.invitingFacultyLink); 
+                newTeachingExecellance.setAttribute('data-program-orientation-file' , data.pedagogyInnovationFile[0].filename); 
+                newTeachingExecellance.setAttribute('data-program-orientation-link' , data.teachingData.programOrientationLink);
+                newTeachingExecellance.innerHTML = `
+                                    <td >${data.teachingId}</td>
+                                    <td class="pedagogy-innovation">${data.teachingData.pedagogyInnovation}</td>
+                                    <td class="fdp-program">${data.teachingData.fdpProgram}</td>
+                                    <td class="workshop-details">${data.teachingData.workShopDetails}</td>
+                                    <td class="inviting-faculty">${data.teachingData.invitingFaculty}</td>
+                                    <td class="program-orientation">${data.teachingData.programOrientation}td>
+                                    <td class="cell ">
+                                        <a class="view" data-teaching-id=${data.teachingId}><i class="fa-solid fa-eye view"
+                                            data-teaching-id=${data.teachingId}></i></a>
+                                        <a class="edit" data-teaching-id=${data.teachingId}><i class="fa fa-edit edit"
+                                            data-teaching-id=${data.teachingId}></i></a>
+                                        <a class="delete" data-teaching-id=${data.teachingId}><i class="fa-solid fa-trash delete"
+                                            data-teaching-id=${data.teachingId}></i></a>
+                                    </td>`;
             }
+            $('#teaching-execellance-modal').modal('hide');
+            alert('data inserted successfully')
+        })
+    }
+    submitBtn.addEventListener('click' , async() => {
+        console.log('clcikeddd');
+        await insertTeachingExecellance('/teaching-excellance/insert')
+    })
+    teachingExecellanceList.addEventListener('click' , (event) => {
+        if(event.target.classList.contains('edit')){
+            console.log('clickeddddd')
+            submitBtn.classList.add('d-none');
+            updateBtn.classList.remove('d-none');
+            teachingRowToBeUpdated = event.target.closest('tr');
+            teachingId = teachingRowToBeUpdated.getAttribute('data-teaching-id');
+            console.log('id for updated ==>>', teachingId);
 
-            // Add an event listener to the submit button
-            document.getElementById('submitBtn').addEventListener('click', function () {
-                // Create a new row and populate it with form data
-                console.log('data added when i click >>>>')
-                const newRow = tableBody.insertRow(tableBody.rows.length);
-                const cells = [
-                    newRow.insertCell(0),
-                    newRow.insertCell(1),
-                    newRow.insertCell(2),
-                    newRow.insertCell(3),
-                    newRow.insertCell(4),
-                    newRow.insertCell(5),
-                ];
+            const pedagogyInnovation = document.getElementById('pedagogy-innovation');
+            const pedagogyLink = document.getElementById('pedagogy-innovation-link');
+            const fdpProgram = document.getElementById('fdp-program');
+            const fdpProgramLink = document.getElementById('fdp-program-link');
+            const workShopDetails = document.getElementById('workshop-details');
+            const workShopLink = document.getElementById('workshop-details-link');
+            const invitingFaculty = document.getElementById('inviting-faculty');
+            const invitingFacultyLink = document.getElementById('inviting-faculty-link');
+            const programOrientation = document.getElementById('program-orientation');
+            const programOrientationLink = document.getElementById('program-orientation-link');
 
-                cells[0].textContent = tableBody.rows.length; // Incremental number
-                cells[1].textContent = document.getElementById('padagogy').value;
-                cells[2].textContent = document.getElementById('fdp').value;
-                cells[3].textContent = document.getElementById('Workshop').value;
-                cells[4].textContent = document.getElementById('programOrientation').value;
-                cells[5].innerHTML = `
-            <a class="view-program" data-id="${tableBody.rows.length}"><i class="fa-solid fa-eye"></i></a>
-            <a class="edit-program" data-id="${tableBody.rows.length}"><i class="fa fa-edit"></i></a>
-            <a class="delete-program" data-id="${tableBody.rows.length}"><i class="fa-solid fa-trash"></i></a>
-        `;
-                // Add an event listener to the delete button in the newly added row
-                cells[5].querySelector('.delete-program').addEventListener('click', function () {
-                    const rowNumber = this.getAttribute('data-id');
-                    // Check if the row index is within the valid range
-                    if (rowNumber <= tableBody.rows.length) {
-                        // Remove the corresponding row from the table
-                        console.log('row number ===>>>>', rowNumber);
-                        tableBody.deleteRow(rowNumber - 1);
-                        // Update data-id attributes after deletion
-                        updateDataIds();
-                    }
-                });
+            // assigning actually value
+            pedagogyInnovation.value = teachingRowToBeUpdated.querySelector('.pedagogy-innovation').innerText;
+            const pedagogyInnovationFile  = teachingRowToBeUpdated.getAttribute('data-pedagogy-innovation-file');
+            pedagogyLink.value = teachingRowToBeUpdated.getAttribute('data-pedagogy-innovation-link');
+            fdpProgram.value = teachingRowToBeUpdated.querySelector('.fdp-program').innerText;
+            const fdpProgramFile  = teachingRowToBeUpdated.getAttribute('data-fdp-program-file');
+            fdpProgramLink.value = teachingRowToBeUpdated.getAttribute('data-fdp-program-link');
+            workShopDetails.value = teachingRowToBeUpdated.querySelector('.workshop-details').innerText;
+            const workShopFile  = teachingRowToBeUpdated.getAttribute('data-work-shop-file');
+            workShopLink.value = teachingRowToBeUpdated.getAttribute('data-workshop-link');
+            invitingFaculty.value = teachingRowToBeUpdated.querySelector('.inviting-faculty').innerText;
+            const invitingFacultyFile  = teachingRowToBeUpdated.getAttribute('data-inviting-faculty-file');
+            invitingFacultyLink.value = teachingRowToBeUpdated.getAttribute('data-inviting-faculty-link');
+            programOrientation.value = teachingRowToBeUpdated.querySelector('.program-orientation').innerText;
+            const programOrientationFile = teachingRowToBeUpdated.getAttribute('data-program-orientation-file');
+            programOrientationLink.value = teachingRowToBeUpdated.getAttribute('data-program-orientation-link');
 
-                // Close the modal
-                $('#exampleModal').modal('hide');
-            });
-        });
+            $('#teaching-execellance-modal').modal('show');
+        }
+    })
+    updateBtn.addEventListener('click' , () => {
+        const updatedTeachingData = new FormData();
+        const updatedPedagogyInnovation = document.getElementById('pedagogy-innovation').value;
+        const updatedPedagogyInnovationFile = document.querySelector('input[name="pedagogyInnovationFile"]');
+        const updatedPedagogyLink = document.getElementById('pedagogy-innovation-link').value;
+        const updatedFdpProgram = document.getElementById('fdp-program').value;
+        const updatedFdpProgramFile = document.querySelector('input[name="fdpProgramFile"]');
+        const updatedFdpProgramLink = document.getElementById('fdp-program-link').value;
+        const updatedWorkShopDetails = document.getElementById('workshop-details').value;
+        const updatedWorkShopFile = document.querySelector('input[name="workShopFile"]');
+        const updatedWorkShopLink = document.getElementById('workshop-details-link').value;
+        const updatedInvitingFaculty = document.getElementById('inviting-faculty').value;
+        const updatedInvitingFacultyFile = document.querySelector('input[name="invitingFacultyFile"]');
+        const updatedInvitingFacultyLink = document.getElementById('inviting-faculty-link').value;
+        const updatedProgramOrientation = document.getElementById('program-orientation').value;
+        const updatedProgramOrientationFile = document.querySelector('input[name="programOrientationFile"]');
+        const updatedProgramOrientationLink = document.getElementById('program-orientation-link').value;
 
-    </script>
-</body>
+        updatedTeachingData.append('teachingId' , teachingId)
+        updatedTeachingData.append('pedagogyInnovation' , updatedPedagogyInnovation);
+        updatedTeachingData.append('pedagogyInnovationFile' , updatedPedagogyInnovationFile.files[0]); 
+        updatedTeachingData.append('pedagogyLink' , updatedPedagogyLink);
+        updatedTeachingData.append('fdpProgram' , updatedFdpProgram);
+        updatedTeachingData.append('fdpProgramFile' , updatedFdpProgramFile.files[0]); 
+        updatedTeachingData.append('fdpProgramLink' , updatedFdpProgramLink);
+        updatedTeachingData.append('workShopDetails' , updatedWorkShopDetails); 
+        updatedTeachingData.append('workShopFile' , updatedWorkShopFile.files[0]); 
+        updatedTeachingData.append('workShopLink' , updatedWorkShopLink); 
+        updatedTeachingData.append('invitingFaculty' , updatedInvitingFaculty); 
+        updatedTeachingData.append('invitingFacultyFile' , updatedInvitingFacultyFile.files[0]); 
+        updatedTeachingData.append('invitingFacultyLink' , updatedInvitingFacultyLink);
+        updatedTeachingData.append('programOrientation' , updatedProgramOrientation) 
+        updatedTeachingData.append('programOrientationFile' , updatedProgramOrientationFile.files[0]); 
+        updatedTeachingData.append('programOrientationLink' , updatedProgramOrientationLink);
 
-</html>
+        fetch('/teaching-excellance/update' , {
+            method : 'POST',
+            body : updatedTeachingData
+        })
+        .then((result) => {
+            return result.json()
+        })
+        .then((data) => {
+            if(data.status === 'done'){
+                console.log('data ==>>', data);
+                teachingRowToBeUpdated.querySelector('.pedagogy-innovation').innerText = data.updatedTeachingExecellance.pedagogyInnovation;
+                teachingRowToBeUpdated.querySelector('.fdp-program').innerText = data.updatedTeachingExecellance.fdpProgram;
+                teachingRowToBeUpdated.querySelector('.workshop-details').innerText = data.updatedTeachingExecellance.workShopDetails;
+                teachingRowToBeUpdated.querySelector('.inviting-faculty').innerText = data.updatedTeachingExecellance.invitingFaculty;
+                teachingRowToBeUpdated.querySelector('.program-orientation').innerText = data.updatedTeachingExecellance.programOrientation;
+                teachingRowToBeUpdated.setAttribute('data-pedagogy-innovation-file' , data.pedagogyInnovationFile[0].filename);
+                teachingRowToBeUpdated.setAttribute('data-fdp-program-file' , data.fdpProgramFile[0].filename); 
+                teachingRowToBeUpdated.setAttribute('data-workshop-file' , data.workShopFile[0].filename); 
+                teachingRowToBeUpdated.setAttribute('data-pedagogy-innovation-link' , data.updatedTeachingExecellance.updatedPedagogyInnovation);
+                teachingRowToBeUpdated.setAttribute('data-fdp-program-link' , data.updatedTeachingExecellance.updatedFdpProgramLink); 
+                teachingRowToBeUpdated.setAttribute('data-workshop-link' , data.updatedTeachingExecellance.updatedWorkShopLink); 
+                teachingRowToBeUpdated.setAttribute('data-inviting-faculty-file' , data.invitingFacultyFile[0].filename); 
+                teachingRowToBeUpdated.setAttribute('data-inviting-faculty-link' , data.updatedTeachingExecellance.updatedInvitingFacultyLink); 
+                teachingRowToBeUpdated.setAttribute('data-program-orientation-file' , data.programOrientationFile[0].filename); 
+                teachingRowToBeUpdated.setAttribute('data-program-orientation-link' , data.updatedTeachingExecellance.updatedProgramOrientationLink);
+            }
+            $('#teaching-execellance-modal').modal('hide');
+            alert('data updated SuccessFully')
+        })
+
+    })
+</script>   
+<!-- inline javascript -->
+
+<!-- footer section -->
+<%- include('./partials/footer') %>
+<%- include('./partials/footer-end') %>
+           

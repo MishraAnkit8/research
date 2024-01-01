@@ -1,21 +1,21 @@
-const editedBookPublicationModel = require('../models/book-chapter.model');
+const bookChapterModels = require('../models/book-chapter.model');
 
-module.exports.fetchEditedBookPublicationData = async() => {
-    const editedBookPublicationdata = await editedBookPublicationModel.fetchEditedBookPublication();
-    console.log(editedBookPublicationdata.rows[0]);
-    return editedBookPublicationdata.rows
+module.exports.fetchBookChapter= async() => {
+    const BookChapterData = await bookChapterModels.fetchEditedBookPublication();
+    console.log(BookChapterData.rows[0]);
+    return BookChapterData.rows
 }
 
-module.exports.insertEditedBookPublication = async(editedBook , filename) => {
-    const insertEditedBookData = await editedBookPublicationModel.insertEditedBook(editedBook, filename);
-    if(insertEditedBookData){
-        return insertEditedBookData.rows[0].id;
+module.exports.insertBookChapter = async(bookChapter , filename) => {
+    const bookChapterInsertedData = await bookChapterModels.insertBookChapterData(bookChapter, filename);
+    if(bookChapterInsertedData){
+        return bookChapterInsertedData.rows[0].id;
     }
 }
 
-module.exports.updateEditedBook = async(editedBookId , updatedEditedBookPublication, updatedFile) => {
-    const updatedEditedBookData = await editedBookPublicationModel.updatedEditedBookPublication(editedBookId , updatedEditedBookPublication, updatedFile);
-    if(updatedEditedBookData && updatedEditedBookData.rowCount === 1) {
+module.exports.updatedBookChapter = async(bookChapterId, updatedBookChapterPublication, updatedFile) => {
+    const updatedBookChapterData = await bookChapterModels.updatedBookChapter(bookChapterId , updatedBookChapterPublication, updatedFile);
+    if(updatedBookChapterData && updatedBookChapterData.rowCount === 1) {
         return {
             status : 'done',
             massage : 'date updated successfully'
@@ -24,9 +24,9 @@ module.exports.updateEditedBook = async(editedBookId , updatedEditedBookPublicat
     
 }
 
-module.exports.deleteEditedBookPublication = async({editedBookId}) => {
-    const deleteEditedBook = await editedBookPublicationModel.deleteEditedBookPublicationData(editedBookId);
-    if(deleteEditedBook.rowCount === 1){
+module.exports.deleteBookChapterPublication = async({bookChapterId}) => {
+    const bookChapterPublication = await bookChapterModels.deleteBookChapter(bookChapterId);
+    if(bookChapterPublication.rowCount === 1){
         return {
             status : 'done',
             massage : 'deleted successfully'
@@ -34,11 +34,11 @@ module.exports.deleteEditedBookPublication = async({editedBookId}) => {
     }
 }
 
-module.exports.editedBookPublicationView = async(editedBookId) => {
-    console.log('id IN service ==>>', editedBookId);
-    const editedbookPublicationDataView = await editedBookPublicationModel.viewEditedBookPublicationData(editedBookId);
-    console.log('editedbookPublicationData ==>>', editedbookPublicationDataView.rows[0]);
-    if(editedbookPublicationDataView.rows[0] && editedbookPublicationDataView.rowCount === 1){
-        return editedbookPublicationDataView.rows[0]
+module.exports.viewBookChapterData = async(bookChapterId) => {
+    console.log('id IN service ==>>', bookChapterId);
+    const viewBookChapterPublication = await bookChapterModels.viewBookChapterData(bookChapterId);
+    console.log('viewBookChapterPublication ==>>', viewBookChapterPublication.rows[0]);
+    if(viewBookChapterPublication.rows[0] && viewBookChapterPublication.rowCount === 1){
+        return viewBookChapterPublication.rows[0]
     }
 }
