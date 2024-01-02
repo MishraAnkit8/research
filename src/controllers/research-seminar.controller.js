@@ -1,23 +1,23 @@
 
-const journalPaperService = require('../services/research-seminar.service');
+const researchSeminarServices = require('../services/research-seminar.service');
 
 // controller for fetching
 module.exports.renderResearchSeminar = async (req, res, next) => {
-    const journalList = await journalPaperService.renderJournalPaper();
+    const seminarList = await researchSeminarServices.renderResearchSeminar();
     res.render('research-seminar', {
-        journalData : journalList
+        seminarList : seminarList
     });
 };
 
 // controller for inserting
-module.exports.createJournalPaper = async (req, res, next) => {
+module.exports.createResearchSeminar = async (req, res, next) => {
     console.log('data in controller', req.body);
-    const journalPaperData = await journalPaperService.insertJournalPapper(req.body) ;
-    console.log(" journalPaperData ===>" , journalPaperData);
-    if(journalPaperData && journalPaperData.rows[0].id) {
+    const researchSeminarData = await researchSeminarServices.insertResearchSeminar(req.body) ;
+    console.log(" researchSeminarData ===>" , researchSeminarData);
+    if(researchSeminarData && researchSeminarData.rows[0].id) {
         res.status(200).send({
             status : 'done',
-            journalPaperId : journalPaperData.rows[0].id
+            seminarId: researchSeminarData.rows[0].id
         });
     }
     else {
@@ -29,60 +29,60 @@ module.exports.createJournalPaper = async (req, res, next) => {
 };
 
 // controller for deleting
-module.exports.delJournalPaper = async (req, res, next) => {
-    const journalPaperId = req.body.journalPaperId;
-    console.log('controller journalPaperId', journalPaperId) 
-    const delJournalData = await journalPaperService.deleteJournalPaper(journalPaperId);
-    if( delJournalData.status ===  'done'){
+module.exports.delResearchSeminar = async (req, res, next) => {
+    const seminarId= req.body.seminarId;
+    console.log('controller seminarId', seminarId) 
+    const delSeminarData = await researchSeminarServices.deleteResearchSeminar(seminarId);
+    if( delSeminarData.status ===  'done'){
         res.status(200).send({
             status : 'done' ,
-            massage : delJournalData.massage
+            massage : delSeminarData.massage
         });
     }
     else{
         res.status(500).send({
             status : 'failed' ,
-            massage : delJournalData.massage
+            massage : delSeminarData.massage
         })
 
     };
 };
  
 // controller for updating 
-module.exports.updateJournalPaper = async (req, res, next) => {
-    const updateJournalDetails = req.body;
-    const journalPaperId = req.body.journalPaperId;
-    console.log('journalPaperId for updation in controller', journalPaperId)
-    console.log('updateJournalDetails ==>>' , updateJournalDetails);
-    const updatePaper = await journalPaperService.updateJournalPaper({journalPaperId, updateJournalDetails});
-    console.log('id for updation', updatePaper);
-    if(updatePaper.status === 'done'){
+module.exports.updateResearchSeminar = async (req, res, next) => {
+    const updateResearchSeminar = req.body;
+    const seminarId= req.body.seminarId;
+    console.log('seminarIdfor updation in controller', seminarId)
+    console.log('updateResearchSeminar ==>>', updateResearchSeminar);
+    const updatedSeminar = await researchSeminarServices.updateResearchSeminar({seminarId, updateResearchSeminar});
+   
+    if(updatedSeminar.status === 'done'){
         res.status(200).send({
             status : 'done',
-            massage : updatePaper.massage
+            massage : updatedSeminar.massage
         });
     }
     else{
         res.status(500).send({
             status  : 'failed',
-            massage : updatePaper.massage
+            massage : updatedSeminar.massage
         });
     };
 };
 
-module.exports.viewJournalPaper = async(req, res, next) => {
-    const journalPaperId = req.body.journalPaperId;
-    console.log('journalPaperId for View ', journalPaperId);
+module.exports.viewResearchSeminar = async(req, res, next) => {
+    const seminarId= req.body.seminarId;
+    console.log('seminar Id for View ', seminarId);
     console.log('viewDataDetails ==>', req.body);
-    const viewJournalDetails = await journalPaperService.viewJournalPaper({journalPaperId});
-    console.log(' view data=>>', viewJournalDetails)
-    if(viewJournalDetails){
-        res.status(200).send(viewJournalDetails)
+    const viewSeminarDetails = await researchSeminarServices.viewResearchSeminar({seminarId});
+    console.log(' view data=>>', viewSeminarDetails)
+    if(viewSeminarDetails){
+        res.status(200).send(viewSeminarDetails)
     }
     else{
         res.status(500).send({
             status : 'failed',
-            massage : viewJournalDetails.masssage   
+            massage : viewSeminarDetails.masssage   
         })
     }   
 }

@@ -1,3 +1,53 @@
+const meetingServices = require('../services/meeting-stackholders.service')
+
+
+
 module.exports.renderMeetingStackholders = async(req, res, next) => {
-    res.render('meeting-stackholders')
+    const meetingData = await meetingServices.fetchMeetingData();
+    res.render('meeting-stackholders' , {
+        meetingData : meetingData
+    })
+}
+
+module.exports.insertMeetingStackholders = async(req, res, next) => {
+    console.log('data in controller ==>>>', req.body);
+    const meetingData = req.body;
+    console.log('files ==>>', req.files);
+    const {rankingDocuments, accreditationFile, achievementsFile, convocationFile, inauguralProgramFile, eventFile} = req.files
+    const meetingStackholdersData = await meetingServices.insertMeetingStackholder(req.body, req.files);
+    if(meetingStackholdersData) {
+        res.status(200).send({
+            status : 'done',
+            meetingData : meetingData,
+            meetingId : meetingStackholdersData,
+            rankingDocuments,
+            accreditationFile, 
+            achievementsFile, 
+            convocationFile, 
+            inauguralProgramFile, 
+            eventFile
+        })
+    }
+}
+
+module.exports.updateMeetingStackholders = async(req, res, next) => {
+    console.log('updated data ==>>', req.body);
+    const updateMeetingData = req.body;
+    console.log('updateMeetingData ==>>', updateMeetingData)
+    const meetingId = req.body.meetingId;
+    const {rankingDocuments, accreditationFile, achievementsFile, convocationFile, inauguralProgramFile, eventFile} = req.files;
+    const updateMeetingStackholdersData = await meetingServices.updateMeetingStackholders(meetingId, req.body, req.files);
+    if(updateMeetingStackholdersData.status === 'done'){
+        res.status(200).send({
+            status : 'done',
+            updateMeetingData : updateMeetingData,
+            rankingDocuments,
+            accreditationFile, 
+            achievementsFile, 
+            convocationFile, 
+            inauguralProgramFile, 
+            eventFile,
+            massage : 'data updated successfully'
+        })
+    }
 }

@@ -35,3 +35,22 @@ module.exports.updatedTeachingExecellance = async(teachingId, updatedTeachingExe
     }    
 
 }
+
+module.exports.deleteTeachingExecellance = async (teachingId) => {
+    console.log('Id in Service ==>', teachingId);
+    const teachingExecellance = await teachingExecellanceModel.deleteTeachingExecellance(teachingId);
+    if(teachingExecellance.rowCount === 1 && teachingExecellance){
+        return{
+            status : 'done',
+            massage : 'deleted successfully'
+        }
+    }
+}
+
+module.exports.viewTeachingExecellance = async(teachingId) => {
+    const teachingExecellanceViewData = await teachingExecellanceModel.teachingExecellanceView(teachingId);
+    console.log('teachingExecellanceViewData' , teachingExecellanceViewData.rows[0]);
+    if(teachingExecellanceViewData && teachingExecellanceViewData.rowCount === 1){
+        return teachingExecellanceViewData.rows[0]
+    }
+}

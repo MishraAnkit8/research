@@ -1,20 +1,20 @@
-const journalPaperModel = require('../models/research-seminar.model');
+const researchSeminarModel = require('../models/research-seminar.model');
 // service for fetch
-module.exports.renderJournalPaper = async () => {
-    let result = await journalPaperModel.fetchJournalPaper(); 
+module.exports.renderResearchSeminar = async () => {
+    let result = await researchSeminarModel.fetchResearchSeminar(); 
     return result.rows  
 };
 
 // service for insert
-module.exports.insertJournalPapper = async (body) => {
-    const {journalDetails} =  body;
-    const newJournalPaper = await journalPaperModel.createJournalPaper(journalDetails);
-    return newJournalPaper ;
+module.exports.insertResearchSeminar = async (body) => {
+    const {seminarDetails} =  body;
+    const newResearchSeminar = await researchSeminarModel.createResearchSeminar(seminarDetails);
+    return newResearchSeminar ;
 };
 
 // service for delete
-module.exports.deleteJournalPaper = async (journalPaperId) => {
-    const result = await journalPaperModel.deleteJournalPaper({ journalPaperId });
+module.exports.deleteResearchSeminar = async (seminarId) => {
+    const result = await researchSeminarModel.deleteRsearchSeminar({ seminarId });
     if(result.rowCount === 1){
         return {
             status : 'done' ,
@@ -30,11 +30,10 @@ module.exports.deleteJournalPaper = async (journalPaperId) => {
 };
 
 // service for update
-module.exports.updateJournalPaper = async ({journalPaperId, updateJournalDetails}) => {
-    const updateJournalData = await journalPaperModel.updateJournalPaperData({journalPaperId, updateJournalDetails});
-    console.log('id for  updation in service', journalPaperId);
-    console.log('data is service ==>>>', updateJournalData.rows);
-    if(updateJournalData.rowCount == 1){
+module.exports.updateResearchSeminar = async ({seminarId, updateResearchSeminar}) => {
+    const updatedResearchSeminarData = await researchSeminarModel.updateRsearchSeminar({seminarId, updateResearchSeminar});
+    console.log('id for  updation in service', seminarId);
+    if( updatedResearchSeminarData.rowCount === 1){
         return {
             status : 'done' ,
             massage : 'data updated successfully'
@@ -49,10 +48,11 @@ module.exports.updateJournalPaper = async ({journalPaperId, updateJournalDetails
 }
 
 // service for view
-module.exports.viewJournalPaper = async ({journalPaperId}) => {
-    const viewJournalPaperData = await journalPaperModel.viewJournalPaperData({journalPaperId});
-    if(viewJournalPaperData.rowCount === 1){
-        return  viewJournalPaperData.rows;
+module.exports.viewResearchSeminar = async ({seminarId}) => {
+    const viewRsearchSeminarData = await researchSeminarModel.viewRsearchSeminarData({seminarId});
+    console.log('viewRsearchSeminarData ==>>', viewRsearchSeminarData.rows)
+    if(viewRsearchSeminarData.rowCount === 1){
+        return  viewRsearchSeminarData.rows;
     } 
     else{
         return {

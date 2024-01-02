@@ -35,5 +35,7 @@ router.post('/update', upload.fields([
     { name: 'invitingFacultyFile', maxCount: 1 },
     { name: 'programOrientationFile', maxCount: 1 }
 ]),asyncErrorHandler(teachingExecellanceController.updatTeachingData));
+router.post('/delete', asyncErrorHandler(teachingExecellanceController.deleteTeachingExecellance));
+router.post('/view', asyncErrorHandler(teachingExecellanceController.viewTeachingExecellance));
 
 module.exports = router;

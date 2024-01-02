@@ -1,11 +1,690 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1> hello ankit</h1>
-</body>
-</html>
+<%- include('./partials/head') %>
+<!-- inline css -->
+<style>
+.case-study-row.flex-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; 
+}
+
+.case-study-row .cell {
+    flex: 1; 
+    margin: 5px; 
+}
+
+.custom-modal {
+     max-width: 1000px;
+     max-height: 800px;
+ }
+ .sub-title-text{
+     font-size: 15px;
+     font-weight:500;
+ }
+
+</style>
+
+<!-- Navbar section -->
+<%- include('./partials/header') %>
+<!-- This is left sidebar  -->
+<%- include('./partials/left-sidebar') %>
+<!-- This is right side section -->
+<main class="main" id="mainContent">
+                <div class="base-section coustom-section mt-5 p-5">
+                    <!--DASHBOARD CONTENT START-->
+                    <div class="breadcrumbs-container">
+                    </div>
+                    <div class="errorHtml"></div>
+                    <div class="card table-card">
+                        <div
+                            class="card-header table-card-header text-uppercase d-flex align-items-center justify-content-between">
+                            <div>
+                                <h3>meeting EXECELLANCE</h3>
+                            </div>
+                            <div class="me-2">
+                                <button id="meeting-stackholders-add-modal" type="button" class="btn btn-primary add-modal" data-toggle="modal"
+                                    data-target="#meeting-stackholders-modal">
+                                    <i  class="fas fa-plus plus"></i></button>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body table-responsive">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <label>Show Entries</label>
+                                    <select class="form-select" id="changeEntry">
+                                        <option value="10">10</option>
+                                        <option value="25">25</option>
+                                        <option value="50">50</option>
+                                        <option value="100">100</option>
+                                        <option value="150">150</option>
+                                        <option value="200">200</option>
+                                        <option value="250">250</option>
+                                        <option value="300">300</option>
+                                        <option value="350">350</option>
+                                        <option value="400">400</option>
+                                        <option value="500">500</option>
+                                        <option value="800">800</option>
+                                        <option value="1000">1000</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <div class="table-searchbar-container"><button type="button"><i
+                                                class="fas fa-search"></i>
+                                        </button><input type="search" id="searchkeyword" placeholder="Enter keywords"
+                                            class="table-searchbar">
+                                    </div>
+                                </div>
+                            </div>
+                            <table class="table custom-table " id="meeting-stackholders-list">
+                                <thead>
+                                    <th>#</th>
+                                    <th>Ranking Description</th>
+                                    <th>Accreditation</th>
+                                    <th>Convocation at NMIMS</th>
+                                    <th>School/Campus Achievements</th>
+                                    <th>Inaugural Program at NMIMS</th>
+                                    <th>Events at NMIMS</th>
+                                    <th>Action</th>
+                                </thead>
+                              <% meetingData.forEach(function(meeting) { %>
+                                <tr scope="row" data-meeting-id="<%- meeting.id %>" data-ranking-document="<%- meeting.ranking_documents %>" data-ranking-link="<%- meeting.ranking_link %>"
+                                    data-accreditation-documents="<%- meeting.accreditation_documents %>" data-accreditation-link="<%- meeting.accreditation_link %>" 
+                                    data-achievements-documents="<%- meeting.achievements_documents %>" data-achievements-link="<%- meeting.achievements_link %>" data-convocation-documents="<%- meeting.convocation_documents %>"
+                                    data-convocation-link="<%- meeting.convocation_link %>" data-inaugural-program-documents="<%- meeting.inaugural_program_documents %>" data-inaugural-program-link="<%- meeting.inaugural_program_link %>"
+                                    data-events-documents="<%- meeting.events_documents %>" data-events-link="<%- meeting.events_link %>" >
+                                    <td data-meeting-id="<%- meeting.id %>"><%- meeting.id %></td>
+                                    <td class="ranking"><%- meeting.ranking %></td>
+                                    <td class="accreditation"><%- meeting.accreditation %></td>
+                                    <td class="convocation"><%- meeting.convocation %></td>
+                                    <td class="achievements"><%- meeting.school_campus_achievements %></td>
+                                    <td class="inaugural-program"><%- meeting.inaugural_program %></td>
+                                    <td class="events"><%- meeting.events %></td>
+                                    <td>
+                                        <a class="view" data-meeting-id="<%- meeting.id %>"><i class="fa-solid fa-eye view"
+                                            data-meeting-id="<%- meeting.id %>"></i></a>
+                                        <a class="edit" data-meeting-id="<%- meeting.id %>"><i class="fa fa-edit edit"
+                                            data-meeting-id="<%- meeting.id %>"></i></a>
+                                        <a class="delete" data-meeting-id="<%- meeting.id %>"><i class="fa-solid fa-trash delete"
+                                            data-meeting-id="<%- meeting.id %>"></i></a>
+                                    </td>
+                                </tr>
+
+                            <% }); %>
+                            </table>
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <p>Total entries:1
+                                    </p>
+                                </div>
+                                <div>
+                                    <p id="pagination" class="pagination-search"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--Import Modal -->
+    <div class="modal fade" id="open-program-modal" tabindex="-1" aria-labelledby="open-program-modal"
+                        aria-hidden="true">
+    </div>
+    <!-- EDIT PROGRAM AND UPDATE -->
+    <div class="modal fade" id="edit-program-modal" tabindex="-1" aria-labelledby="editModalLabel"
+                        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">Update Program</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div id="errorHtml"></div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="exampleInputEmail1" class="form-label">Program Name</label>
+                        <input type="text" class="form-control" id="program_name" name="program_name">
+                        <input type="hidden" class="form-control" id="hidden_id" name="hidden_id">
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleInputPassword1" class="form-label">Program Type</label>
+                        <select class="form-control" name="program_type_lid" id="program_type_lid">
+                            <option value="1">Full Time</option>
+                            <option value="2">Part Time</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="abbr" class="form-label">Program Abbr</label>
+                        <input type="text" class="form-control" id="abbr" name="abbr">
+                    </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                       
+                    </div>
+                </div>
+            </div>
+        </div>
+</main>
+<!-- Modal  form -->
+<div class="modal fade " id="meeting-stackholders-modal" tabindex="-1" role="dialog" aria-labelledby="meeting-execellance"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg modal-fullscreen p-5" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="meeting-stackholders">MEETING STACKHOLDERS </h5>
+                <div type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"><i class="fas fa-times fa-2x"></i></span>
+                </div>
+            </div>
+            <div class="modal-body">
+                    <!-- Ranking -->
+                    <div class="row">
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="ranking" class="form-label fw-bold">Ranking</label>
+                            <input type="text" name="rank" id="ranking" class="form-control" />
+                        </div>
+                        <!-- file upload -->
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="upload" class="form-label fw-bold ">Upload documents</label>
+                            <input type="file" name="rankingDocuments" id="ranking-documents" class="form-control " id="upload"
+                                placeholder="upload-file">
+                        </div>
+                        <!-- link -->
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="link" class="form-label fw-bold">Link</label>
+                            <input type="text" name="pada" id="ranking-link" class="form-control" placeholder="https://" />
+                        </div>
+
+                    </div>
+
+                    <!-- Accreditation -->
+                    <div class="row">
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="Accreditation" class="form-label fw-bold">Accreditation</label>
+                            <input type="text" name="Accreditation" id="accreditation" class="form-control" />
+                        </div>
+                        <!-- file upload -->
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="upload" class="form-label fw-bold ">Upload documents</label>
+                            <input type="file" name="accreditationFile" id="accreditation-file" class="form-control " id="upload"
+                                placeholder="upload-file">
+                        </div>
+                        <!-- link -->
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="link" class="form-label fw-bold">Link</label>
+                            <input type="text" name="pada" id="accreditation-link" class="form-control" placeholder="https://" />
+                        </div>
+
+                    </div>
+
+                    <!-- School/Campus Achievements -->
+                    <div class="row">
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="achievements" class="form-label fw-bold">School/Campus
+                                Achievements</label>
+                            <input type="text" name="school-campus" id="achievements" class="form-control">
+                        </div>
+                        <!-- file upload -->
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="upload" class="form-label fw-bold ">Upload documents</label>
+                            <input type="file" name="achievementsFile" id="achievements-file" class="form-control " id="upload"
+                                placeholder="upload-file">
+                        </div>
+                        <!-- link -->
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="link" class="form-label fw-bold">Link</label>
+                            <input type="text" name="pada" id="achievements-link" class="form-control" placeholder="https://" />
+                        </div>
+
+                    </div>
+
+                    <!-- Convocation at NMIMS  -->
+                    <div class="row">
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="convocation" class="form-label fw-bold">Convocation at
+                                NMIMS</label>
+                            <input type="text" name="con" id="convocation" class="form-control" />
+                        </div>
+                        <!-- file upload -->
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="upload" class="form-label fw-bold ">Upload documents</label>
+                            <input type="file" name="convocationFile"  id="convocation-file" class="form-control " id="upload"
+                                placeholder="upload-file">
+                        </div>
+                        <!-- link -->
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="link" class="form-label fw-bold">Link</label>
+                            <input type="text" name="pada" id="convocation-link" class="form-control" placeholder="https://" />
+                        </div>
+
+                    </div>
+
+                    <!-- Inaugural Program at NMIMS-->
+
+                    <div class="row">
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="inaugural" class="form-label fw-bold">Inaugural Program at
+                                NMIMS</label>
+                            <input type="text" name="inu" id="inaugural-program" class="form-control">
+                        </div>
+                        <!-- file upload -->
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="upload" class="form-label fw-bold ">Upload documents</label>
+                            <input type="file" name="inauguralFile" id="inaugural-file"  class="form-control " id="upload"
+                                placeholder="upload-file">
+                        </div>
+                        <!-- link -->
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="link" class="form-label fw-bold">Link</label>
+                            <input type="text" name="pada" id="inaugural-program-link" class="form-control" placeholder="https://" />
+                        </div>
+
+                    </div>
+
+                    <!-- Events at NMIMS -->
+                    <div class="row">
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="event" class="form-label fw-bold">Events at NMIMS</label>
+                            <input type="text" name="evnt" id="event" class="form-control" />
+                        </div>
+                        <!-- file upload -->
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="upload" class="form-label fw-bold ">Upload documents</label>
+                            <input type="file" name="eventFile" id="event-file" class="form-control " id="upload"
+                                placeholder="upload-file">
+                        </div>
+                        <!-- link -->
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="link" class="form-label fw-bold">Link</label>
+                            <input type="text" name="eventLink" id="event-link" class="form-control" placeholder="https://" />
+                        </div>
+                    </div>
+            </div>
+            <!-- footer button -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary d-none" id="submit-btn">Submit</button>
+                <button type="button" class="btn btn-primary d-none" id="update-btn">update</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- case-view-modal -->
+<div class="modal fade" id="meeting-excellance-view-modal" tabindex="-1" role="dialog" aria-labelledby="case-view-modal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered custom-modal " role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-center" id="meeting-title">MEETING STACKHOLDERS</h5>
+                <div type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"><i class="fas fa-times fa"></i></span>
+                </div>
+            </div>
+            <div class="modal-body">
+                <!-- Pedagogy Innovation -->
+                <div class="row">
+                    <!-- pedagogy_innovation -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text"> OEDAGOGY INNOVATION :</div>
+                            <label id="view-pedagogy-innovation"></label>
+                        </div>
+                    </div>
+                    <!-- pedagogy_innovation_file -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text">UPLOAD DOCUMENTS :</div>
+                            <label id="view-pedagogy-innovation-file"></label>
+                        </div>
+                    </div>
+                    <!-- pedagogy innovation link -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text">LINK :</div>
+                            <label id="view-pedagogy-innovation-link"></label>
+                        </div>
+                    </div>
+                </div>
+                <!-- fdp_program -->
+                <div class="row">
+                    <!-- fdp_program -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text"> FDP PROGRAM ON ACADEMIC PROCESSES (PEDAGOGY, CASE meeting, SIMULATIONS):</div>
+                            <label id="view-fdp-program"></label>
+                        </div>
+                    </div>
+                    <!-- fdp_program_file -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text">UPLOAD DOCUMENTS :</div>
+                            <label id="view-fdp-program-file"></label>
+                        </div>
+                    </div>
+        
+                    <!-- fdp_program_link -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text">LINK :</div>
+                            <label id="view-fdp-program-link"></label>
+                        </div>
+                    </div>
+                </div>
+                <!-- WORKSHOP DETAILS -->
+                <div class="row">
+                    <!-- workshop_details -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text">WORKSHOP FOR STUDENT:</div>
+                            <label id="view-workshop-details"></label>
+                        </div>
+                    </div>
+                    <!-- workshop_file -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text">UPLOADS DOCUMENTS :</div>
+                            <label id="view-workshop-file"></label>
+                        </div>
+                    </div>
+                    <!-- LINK -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text">LINK :</div>
+                            <label id="view-workshop-link"></label>
+                        </div>
+                    </div>
+                </div>
+                <!-- inviting_faculty -->
+                <div class="row">
+                    <!-- inviting_faculty -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text"> INVITING VISITING FACULTY FROM THE INDUSTRY TO HANDLE NICHE  :</div>
+                            <label id="view-inviting-faculty"></label>
+                        </div>
+                    </div>
+                    <!--inviting_faculty_file -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text"> UPLOADES DOCUMENTS :</div>
+                            <label id="view-inviting-faculty-file"></label>
+                        </div>
+                    </div>
+                    <!-- inviting_faculty_link -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text">LINK:</div>
+                            <label id="view-inviting-faculty-link"></label>
+                        </div>
+                    </div>
+                </div>
+                <!-- program_orientation -->
+                <div class="row">
+                    <!-- program_orientation -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text">Program Orientation :</div>
+                            <label id="view-program-orientation"></label>
+                        </div>
+                    </div>
+                    <!-- program_orientation_file -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text">UPLOADES DOCUMENTS :</div>
+                            <label id="view-program-orientation-file"></label>
+                        </div>
+                    </div>
+                    <!-- program_orientation_link -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text">LINK :</div>
+                            <label id="view-program-orientation-link"></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+const meetingSatckholdersAddModal = document.getElementById('meeting-stackholders-add-modal');
+const meetingStackholdersList = document.getElementById('meeting-stackholders-list')
+const submitBtn = document.getElementById('submit-btn');
+const updateBtn = document.getElementById('update-btn');
+let meetingId , meetingRowToBeUpdated;
+meetingSatckholdersAddModal.addEventListener('click' , (event) => {
+    if(event.target.tagName === 'BUTTON' && event.target.classList.contains('add-modal') || event.target.classList.contains('plus')){
+            // for button visualization
+            submitBtn.classList.remove('d-none');
+            updateBtn.classList.add('d-none');
+        }
+})
+
+const insertMeetingStackholders = async (url) => {
+    const meetingStackholdersData = new FormData();
+    const rankingDocuments = document.querySelector('input[name="rankingDocuments"]');
+    const accreditationFile = document.querySelector('input[name="accreditationFile"]');
+    const achievementsFile = document.querySelector('input[name="achievementsFile"]');
+    const convocationFile = document.querySelector('input[name="convocationFile"]');
+    const inauguralProgramFile = document.querySelector('input[name="inauguralFile"]');
+    const eventFile = document.querySelector('input[name="eventFile"]');
+    const ranking = document.getElementById('ranking').value;
+    const rankingLink = document.getElementById('ranking-link').value;
+    const accreditation = document.getElementById('accreditation').value;
+    const accreditationLink = document.getElementById('accreditation-link').value;
+    const achievements = document.getElementById('achievements').value;
+    const achievementsLink = document.getElementById('achievements-link').value;
+    const convocation = document.getElementById('convocation').value;
+    const convocationLink = document.getElementById('convocation-link').value;
+    const inauguralProgram = document.getElementById('inaugural-program').value;
+    const inauguralProgramLink = document.getElementById('inaugural-program-link').value;
+    const events = document.getElementById('event').value;
+    const eventsLink = document.getElementById('event-link').value;
+
+    meetingStackholdersData.append('rankingDocuments' , rankingDocuments.files[0]); 
+    meetingStackholdersData.append('accreditationFile' , accreditationFile.files[0]);
+    meetingStackholdersData.append('achievementsFile' , achievementsFile.files[0]); 
+    meetingStackholdersData.append('convocationFile' , convocationFile.files[0]); 
+    meetingStackholdersData.append('inauguralProgramFile' , inauguralProgramFile.files[0]);
+    meetingStackholdersData.append('eventFile' , eventFile.files[0]); 
+    meetingStackholdersData.append('ranking' , ranking); 
+    meetingStackholdersData.append('rankingLink' , rankingLink);
+    meetingStackholdersData.append('accreditation' ,accreditation) 
+    meetingStackholdersData.append('accreditationLink' , accreditationLink); 
+    meetingStackholdersData.append('achievements' , achievements); 
+    meetingStackholdersData.append('achievementsLink' , achievementsLink); 
+    meetingStackholdersData.append('convocation' , convocation) 
+    meetingStackholdersData.append('convocationLink' , convocationLink);
+    meetingStackholdersData.append('inauguralProgram' , inauguralProgram) 
+    meetingStackholdersData.append('inauguralProgramLink' , inauguralProgramLink);
+    meetingStackholdersData.append('events' , events);
+    meetingStackholdersData.append('eventsLink' , eventsLink);
+
+    fetch(url , {
+        method : 'POST',
+        body : meetingStackholdersData
+    })
+    .then((result) => {
+        return result.json()
+    })
+    .then((data) => {
+        if(data.status === 'done'){
+            console.log('data ==>', data);
+            const newMeeting = document.createElement('tr');
+            newMeeting.setAttribute('data-ranking-document' , data.rankingDocuments[0].filename); 
+            newMeeting.setAttribute('data-accreditation-documents' , data.accreditationFile[0].filename);
+            newMeeting.setAttribute('data-achievements-documents' , data.achievementsFile[0].filename); 
+            newMeeting.setAttribute('data-convocation-documents' , data.convocationFile[0].filename); 
+            newMeeting.setAttribute('data-inaugural-program-documents' , data.inauguralProgramFile[0].filename);
+            newMeeting.setAttribute('data-events-documents' , data.eventFile[0].filename); 
+            newMeeting.setAttribute('data-ranking-link' , data.meetingData.rankingLink);
+            newMeeting.setAttribute('data-accreditation-link' , data.meetingData.accreditationLink); 
+            newMeeting.setAttribute('data-achievement-link' , data.meetingData.achievementsLink); 
+            newMeeting.setAttribute('data-convocation-link' , data.meetingData.convocationLink);
+            newMeeting.setAttribute('data-inaugural-program-link' , data.meetingData.inauguralProgramLink);
+            newMeeting.setAttribute('data-events-link' , data.meetingData.eventsLink);
+
+            newMeeting.innerHTML = `
+                    <td >${data.meetingId}</td>
+                    <td class="ranking">${data.meetingData.ranking }</td>
+                    <td class="accreditation">${data.meetingData.accreditation}</td>
+                    <td class="convocation">${data.meetingData.convocation}</td>
+                    <td class="achievements">${data.meetingData.achievements}</td>
+                    <td class="inaugural-program">${data.meetingData.inauguralProgram}</td>
+                    <td class="events">${data.meetingData.events}</td>
+                    <td>
+                        <a class="view" data-meeting-id="${data.meetingId}"><i class="fa-solid fa-eye view"
+                            data-meeting-id="${data.meetingId}"></i></a>
+                        <a class="edit" data-meeting-id="${data.meetingId}"><i class="fa fa-edit edit"
+                            data-meeting-id="${data.meetingId}"></i></a>
+                        <a class="delete" data-meeting-id="${data.meetingId}"><i class="fa-solid fa-trash delete"
+                            data-meeting-id="${data.meetingId}"></i></a>
+                    </td>`;
+
+                    meetingStackholdersList.appendChild(newMeeting);
+        }
+        $('#meeting-stackholders-modal').modal('hide');
+        alert('data inserted successfully');
+    })
+}
+
+submitBtn.addEventListener('click' , async() => {
+    await insertMeetingStackholders('/meeting-stackholders/insert');
+})
+
+meetingStackholdersList.addEventListener('click' , (event) => {
+    if(event.target.classList.contains('edit')){
+        console.log('clcikeddd');
+        submitBtn.classList.add('d-none');
+        updateBtn.classList.remove('d-none');
+        meetingRowToBeUpdated = event.target.closest('tr');
+        meetingId = meetingRowToBeUpdated.getAttribute('data-meeting-id');
+        console.log('meetingId ::', meetingId);
+        const ranking = document.getElementById('ranking');
+        const rankingLink = document.getElementById('ranking-link');
+        const accreditation = document.getElementById('accreditation');
+        const accreditationLink = document.getElementById('accreditation-link');
+        const achievements = document.getElementById('achievements');
+        const achievementsLink = document.getElementById('achievements-link');
+        const convocation = document.getElementById('convocation');
+        const convocationLink = document.getElementById('convocation-link');
+        const inauguralProgram = document.getElementById('inaugural-program');
+        const inauguralProgramLink = document.getElementById('inaugural-program-link');
+        const events = document.getElementById('event');
+        const eventsLink = document.getElementById('event-link');
+        const rankingDocuments = document.getElementById('ranking-documents');
+        const accreditationFile = document.getElementById('accreditation-file');
+        const achievementsFile = document.getElementById('achievements-file');
+        const convocationFile = document.getElementById('convocation-file');
+        const inauguralProgramFile = document.getElementById('inaugural-file');
+        const eventFile = document.getElementById('event-file');
+        
+        
+        // assigning with acutual value
+        ranking.value = meetingRowToBeUpdated.querySelector('.ranking').innerText;
+        accreditation.value = meetingRowToBeUpdated.querySelector('.accreditation').innerText;
+        achievements.value = meetingRowToBeUpdated.querySelector('.achievements').innerText;
+        convocation.value = meetingRowToBeUpdated.querySelector('.convocation').innerText;
+        inauguralProgram.value = meetingRowToBeUpdated.querySelector('.inaugural-program').innerText;
+        events.value = meetingRowToBeUpdated.querySelector('.events').innerText;
+        rankingLink.value = meetingRowToBeUpdated.getAttribute('data-ranking-link');
+        accreditationLink.value = meetingRowToBeUpdated.getAttribute('data-accreditation-link');
+        convocationLink.value = meetingRowToBeUpdated.getAttribute('data-convocation-link');
+        achievementsLink.value = meetingRowToBeUpdated.getAttribute('data-achievement-link');
+        inauguralProgramLink.value = meetingRowToBeUpdated.getAttribute('data-inaugural-program-link');
+        eventsLink.value = meetingRowToBeUpdated.getAttribute('data-events-link');
+        rankingDocuments.value = meetingRowToBeUpdated.getAttribute('data-ranking-documents');
+        accreditationFile.value = meetingRowToBeUpdated.getAttribute('data-accreditation-file');
+        achievementsFile.value = meetingRowToBeUpdated.getAttribute('data-achievements-file');
+        convocationFile.value = meetingRowToBeUpdated.getAttribute('data-convocation-file');
+        inauguralProgramFile.value = meetingRowToBeUpdated.getAttribute('data-inaugural-file');
+        eventFile.value = meetingRowToBeUpdated.getAttribute('data-event-file');
+        $('#meeting-stackholders-modal').modal('show');
+
+    }
+})
+
+updateBtn.addEventListener('click' , () => {
+    const updatedMeetingData = new FormData();
+    const updatedRankingDocuments = document.querySelector('input[name="rankingDocuments"]');
+    const updatedAccredItationFile = document.querySelector('input[name="accreditationFile"]');
+    const updatedAchievementsFile = document.querySelector('input[name="achievementsFile"]');
+    const updatedConvocationFile = document.querySelector('input[name="convocationFile"]');
+    const updatedInauguralProgramFile = document.querySelector('input[name="inauguralFile"]');
+    const updatedEventFile = document.querySelector('input[name="eventFile"]');
+    const updatedRanking = document.getElementById('ranking').value;
+    const updatedRankingLink = document.getElementById('ranking-link').value;
+    const updatedAccredItation = document.getElementById('accreditation').value;
+    const updatedAccredItationLink = document.getElementById('accreditation-link').value;
+    const updatedAchievements = document.getElementById('achievements').value;
+    const updatedAchievementsLink = document.getElementById('achievements-link').value;
+    const updatedConvocation = document.getElementById('convocation').value;
+    const updatedConvocationLink = document.getElementById('convocation-link').value;
+    const updatedInauguralProgram = document.getElementById('inaugural-program').value;
+    const updatedInauguralProgramLink = document.getElementById('inaugural-program-link').value;
+    const updatedEvents = document.getElementById('event').value;
+    const updatedEventsLink = document.getElementById('event-link').value;
+
+    updatedMeetingData.append('meetingId' , meetingId); 
+    updatedMeetingData.append('rankingDocuments' , updatedRankingDocuments.files[0]); 
+    updatedMeetingData.append('accreditationFile' , updatedAccredItationFile.files[0]);
+    updatedMeetingData.append('achievementsFile' , updatedAchievementsFile.files[0]); 
+    updatedMeetingData.append('convocationFile' , updatedConvocationFile.files[0]); 
+    updatedMeetingData.append('inauguralProgramFile' , updatedInauguralProgramFile.files[0]);
+    updatedMeetingData.append('eventFile' , updatedEventFile.files[0]); 
+    updatedMeetingData.append('ranking' , updatedRanking); 
+    updatedMeetingData.append('rankingLink' , updatedRankingLink);
+    updatedMeetingData.append('accreditation' , updatedAccredItation) 
+    updatedMeetingData.append('accreditationLink' , updatedAccredItationLink); 
+    updatedMeetingData.append('achievements' , updatedAchievements); 
+    updatedMeetingData.append('achievementsLink' , updatedAchievementsLink); 
+    updatedMeetingData.append('convocation' , updatedConvocation) 
+    updatedMeetingData.append('convocationLink' , updatedConvocationLink);
+    updatedMeetingData.append('inauguralProgram' , updatedInauguralProgram) 
+    updatedMeetingData.append('inauguralProgramLink' , updatedInauguralProgramLink);
+    updatedMeetingData.append('events' , updatedEvents);
+    updatedMeetingData.append('eventsLink' , updatedEventsLink);
+
+    fetch('/meeting-stackholders/update' , {
+        method : 'POST', 
+        body : updatedMeetingData
+    })
+    .then((result) => {
+        return result.json()
+    })
+    .then((data) => {
+
+        if(data.status === 'done'){
+            console.log('data ==>>', data);
+            meetingRowToBeUpdated.setAttribute('data-ranking-document' , data.rankingDocuments[0].filename); 
+            meetingRowToBeUpdated.setAttribute('data-accreditation-documents' , data.accreditationFile[0].filename);
+            meetingRowToBeUpdated.setAttribute('data-achievements-documents' , data.achievementsFile[0].filename); 
+            meetingRowToBeUpdated.setAttribute('data-convocation-documents' , data.convocationFile[0].filename); 
+            meetingRowToBeUpdated.setAttribute('data-inaugural-program-documents' , data.inauguralProgramFile[0].filename);
+            meetingRowToBeUpdated.setAttribute('data-events-documents' , data.eventFile[0].filename); 
+            meetingRowToBeUpdated.setAttribute('data-ranking-link' , data.meetingData.rankingLink);
+            meetingRowToBeUpdated.setAttribute('data-accreditation-link' , data.meetingData.accreditationLink); 
+            meetingRowToBeUpdated.setAttribute('data-achievement-link' , data.meetingData.achievementsLink); 
+            meetingRowToBeUpdated.setAttribute('data-convocation-link' , data.meetingData.convocationLink);
+            meetingRowToBeUpdated.setAttribute('data-inaugural-program-link' , data.meetingData.inauguralProgramLink);
+            meetingRowToBeUpdated.setAttribute('data-events-link' , data.meetingData.eventsLink);
+            meetingRowToBeUpdated.querySelector('.ranking').innerText = data.updateMeetingData.ranking;
+            meetingRowToBeUpdated.querySelector('.accreditation').innerText = data.updateMeetingData.accreditation;
+            meetingRowToBeUpdated.querySelector('.achievements').innerText = data.updateMeetingData.achievements;
+            meetingRowToBeUpdated.querySelector('.convocation').innerText = data.updateMeetingData.convocation;
+            meetingRowToBeUpdated.querySelector('.inaugural-program').innerText = data.updateMeetingData.inauguralProgram;
+            meetingRowToBeUpdated.querySelector('.events').innerText = data.updateMeetingData.events;
+        }
+        $('#meeting-stackholders-modal').modal('hide');
+        alert('updated successfully');
+    })
+
+    
+})
+</script>
+<!-- inline javascript -->
+
+<!-- footer section -->
+<%- include('./partials/footer') %>
+<%- include('./partials/footer-end') %>
+           

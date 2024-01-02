@@ -14,10 +14,11 @@ module.exports.insertTeachingExecellance = async(req, res, next) => {
     const {pedagogyInnovationFile, fdpProgramFile, workShopFile, invitingFacultyFile, programOrientationFile} = req.files
     console.log('pedagogyInnovationFile',  pedagogyInnovationFile[0].filename);
     const teachingExecellanceData = await teachingExecellanceService.insertTeachingExecellance(teachingExecellance, req.files);
+    console.log('ID in controller ==>>', teachingExecellanceData);
     if(teachingExecellanceData){
         res.status(200).send({
             status : 'done',
-            teachingId : teachingExecellanceData,
+            teachingId : teachingExecellanceData.teachingId,
             pedagogyInnovationFile : pedagogyInnovationFile,
             fdpProgramFile : fdpProgramFile,
             workShopFile : workShopFile, 
@@ -48,4 +49,29 @@ module.exports.updatTeachingData = async(req, res, next) => {
 
         })
     }
+}
+
+module.exports.deleteTeachingExecellance = async(req, res, next) => {
+    const {teachingId} = req.body;
+    console.log('teachingId ==>', teachingId);
+    const teachingExecellance = await teachingExecellanceService.deleteTeachingExecellance(teachingId);
+    if(teachingExecellance){
+        res.status(200).send({
+            status : 'done',
+            massage : 'deleted successfully'
+        })
+    }
+}
+
+module.exports.viewTeachingExecellance = async(req, res, next) => {
+    console.log('Id ==>>', req.body);
+    const {teachingId} = req.body;
+    const teachingExecellanceView = await teachingExecellanceService.viewTeachingExecellance(teachingId);
+    if(teachingExecellanceView){
+        res.status(200).send({
+            status : 'done',
+            teachingExecellanceView : teachingExecellanceView
+        })
+    }
+
 }
