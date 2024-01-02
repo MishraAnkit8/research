@@ -33,5 +33,7 @@ router.post('/update', upload.fields([
     { name: 'inauguralProgramFile', maxCount: 1 },
     { name: 'eventFile', maxCount: 1 }
 ]),asyncErrorHandler(meetingStackholderController.updateMeetingStackholders));
+router.post('/view' , asyncErrorHandler(meetingStackholderController.viewMeetingData));
+router.post('/delete' , asyncErrorHandler(meetingStackholderController.viewMeetingData));
 
 module.exports = router;

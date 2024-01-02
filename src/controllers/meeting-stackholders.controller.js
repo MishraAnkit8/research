@@ -51,3 +51,25 @@ module.exports.updateMeetingStackholders = async(req, res, next) => {
         })
     }
 }
+
+module.exports.viewMeetingData = async(req, res, next) => {
+    const {meetingId} = req.body
+    const meetingStackholderView = await meetingServices.viewMeetingStackholders(meetingId);
+    if(meetingStackholderView){
+        res.status(200).send({
+            status : 'done',
+            meetingStackholderView : meetingStackholderView
+        })
+    }
+}
+
+module.exports.deleteMeetingStackholders = async(req, res, next) => {
+    const {meetingId} = req.body;
+    const deleteMeetingStackholdersData = await meetingServices.deleteMeetingData(meetingId);
+    if(deleteMeetingStackholdersData.status === 'done'){
+        res.status(200).send({
+            status : 'done',
+            massage : 'deleted successfully'
+        })
+    }
+}

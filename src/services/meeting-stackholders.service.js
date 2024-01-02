@@ -41,6 +41,19 @@ module.exports.updateMeetingStackholders = async(meetingId, updateMeetingData, f
             massage : 'data updated successfully'
         }
     }
+}
 
-    
+module.exports.viewMeetingStackholders = async(meetingId) => {
+    const viewMeetingData = await meetingModels.viewMeeting(meetingId);
+    return viewMeetingData.rows[0]
+}
+
+module.exports.deleteMeetingData = async(meetingId) => {
+    const deletMeeting = await meetingModels(meetingId);
+    if(deletMeeting.rowCount === 1){
+        return{
+            status : 'done',
+            massage : 'deleted successfully'
+        }
+    } 
 }

@@ -42,3 +42,21 @@ module.exports.updateMeetingData = async(meetingId, updateMeetingData, rankingDo
     console.log('sql ==>>', sql);
     return autoDbW.query(sql);
 }
+
+module.exports.viewMeeting = async(meetingId) => {
+    let sql = {
+        text : `SELECT * FROM meeting_stackholders WHERE id = $1`,
+        values : [meetingId]
+    }
+    console.log('sql ==>>', sql);
+    return autoDbR.query(sql)
+}
+
+module.exports.deleteMeetingStackholders = async(meetingId) => {
+    let sql = {
+        text : `DELETE FROM meeting_stackholders WHERE id = $1`,
+        values : [meetingId]
+    }
+
+    return autoDbW.query(sql)
+}
