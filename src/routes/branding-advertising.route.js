@@ -47,6 +47,8 @@ router.post('/update', upload.fields([
 ]), asyncErrorHandler(brandingAndAdvertisingController.updateBrandingAdvertising));
 
 router.post('/view' , asyncErrorHandler(brandingAndAdvertisingController.viewBrandingadvertising));
+router.post('/delete' , asyncErrorHandler(brandingAndAdvertisingController.deleteBrandingAdvertising));
+
 
 
 

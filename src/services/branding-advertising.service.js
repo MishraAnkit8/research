@@ -63,3 +63,13 @@ module.exports.viewBrandingadvertising = async(advertisingId) => {
     console.log('data in service ==>>', viewAdvertisingData.rows)
     return viewAdvertisingData.rows
 }
+
+module.exports.deleteAdvertising = async(advertisingId) => {
+    const deleteBrandingAdvertising = await brandingAndAdvertisingModels.brandingAndadvertisingDelete(advertisingId);
+    if(deleteBrandingAdvertising && deleteBrandingAdvertising.rowCount === 1){
+        return{
+            status : 'done',
+            massage : 'deleted successfully'
+        }
+    }
+}

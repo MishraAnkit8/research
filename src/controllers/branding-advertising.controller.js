@@ -77,3 +77,15 @@ module.exports.viewBrandingadvertising = async(req, res, next) => {
         })
     }
 }
+
+module.exports.deleteBrandingAdvertising = async(req, res, next) => {
+    console.log('id ==>>', req.body);
+    const {advertisingId} = req.body;
+    const brandingAndadvertisingDelete = await brandingAndAdvertisingServices.deleteAdvertising(advertisingId);
+    if(brandingAndadvertisingDelete.status === 'done'){
+        res.status(200).send({
+            status : 'done',
+            massage : 'deleted successfully'
+        })
+    }
+}
