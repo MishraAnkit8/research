@@ -49,8 +49,9 @@ module.exports.viewMeetingStackholders = async(meetingId) => {
 }
 
 module.exports.deleteMeetingData = async(meetingId) => {
-    const deletMeeting = await meetingModels(meetingId);
-    if(deletMeeting.rowCount === 1){
+    
+    const deletMeeting = await meetingModels.deleteMeetingStackholders(meetingId);
+    if(deletMeeting.rowCount === 1  && deletMeeting){
         return{
             status : 'done',
             massage : 'deleted successfully'

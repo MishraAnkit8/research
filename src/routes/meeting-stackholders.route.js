@@ -1,7 +1,6 @@
 const express = require('express');
 const multer = require('multer');
 
- // Set up multer for handling file uploads
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, 'uploads/'); 
@@ -13,9 +12,13 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-const meetingStackholderController = require('../controllers/meeting-stackholders.controller');
 const { asyncErrorHandler } = require('../middleware/error.middleware');
+const meetingStackholderController = require('../controllers/meeting-stackholders.controller');
+
+
 const router = express.Router();
+
+
 router.get('/' , asyncErrorHandler(meetingStackholderController.renderMeetingStackholders));
 router.post('/insert', upload.fields([
     { name: 'rankingDocuments', maxCount: 1 },
@@ -34,6 +37,6 @@ router.post('/update', upload.fields([
     { name: 'eventFile', maxCount: 1 }
 ]),asyncErrorHandler(meetingStackholderController.updateMeetingStackholders));
 router.post('/view' , asyncErrorHandler(meetingStackholderController.viewMeetingData));
-router.post('/delete' , asyncErrorHandler(meetingStackholderController.viewMeetingData));
+router.post('/delete' , asyncErrorHandler(meetingStackholderController.deleteMeetingStackholders));
 
 module.exports = router;

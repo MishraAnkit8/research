@@ -1,0 +1,1073 @@
+<%- include('./partials/head') %>
+<!-- inline css -->
+<style>
+.case-study-row.flex-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; 
+}
+
+.case-study-row .cell {
+    flex: 1; 
+    margin: 5px; 
+}
+
+.custom-modal {
+     max-width: 1000px;
+     max-height: 800px;
+ }
+ .sub-title-text{
+     font-size: 15px;
+     font-weight:500;
+ }
+
+</style>
+
+<!-- Navbar section -->
+<%- include('./partials/header') %>
+<!-- This is left sidebar  -->
+<%- include('./partials/left-sidebar') %>
+<!-- This is right side section -->
+<main class="main" id="mainContent">
+                <div class="base-section coustom-section mt-5 p-5">
+                    <!--DASHBOARD CONTENT START-->
+                    <div class="breadcrumbs-container">
+                    </div>
+                    <div class="errorHtml"></div>
+                    <div class="card table-card">
+                        <div
+                            class="card-header table-card-header text-uppercase d-flex align-items-center justify-content-between">
+                            <div>  
+                                <h3>BRANDING AND ADVERTISING</h3>
+                            </div>
+                            <div class="me-2">
+                                <button id="branding-advertising-add-modal" type="button" class="btn btn-primary add-modal" data-toggle="modal"
+                                    data-target="#branding-advertising-modal">
+                                    <i  class="fas fa-plus plus"></i></button>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body table-responsive">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <label>Show Entries</label>
+                                    <select class="form-select" id="changeEntry">
+                                        <option value="10">10</option>
+                                        <option value="25">25</option>
+                                        <option value="50">50</option>
+                                        <option value="100">100</option>
+                                        <option value="150">150</option>
+                                        <option value="200">200</option>
+                                        <option value="250">250</option>
+                                        <option value="300">300</option>
+                                        <option value="350">350</option>
+                                        <option value="400">400</option>
+                                        <option value="500">500</option>
+                                        <option value="800">800</option>
+                                        <option value="1000">1000</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <div class="table-searchbar-container"><button type="button"><i
+                                                class="fas fa-search"></i>
+                                        </button><input type="search" id="searchkeyword" placeholder="Enter keywords"
+                                            class="table-searchbar">
+                                    </div>
+                                </div>
+                            </div>
+                            <table class="table custom-table " id="branding-advertising-list">
+                                <thead>
+                                    <th>#</th>
+                                    <th>Faculty Recognition</th>
+                                    <th>Faculty Awards</th>
+                                    <th>Staff Awards</th>
+                                    <th>Alumni awards</th>
+                                    <th>Student Awards</th>
+                                    <th>International Linkage Ventures</th>
+                                    <th>Conference Participation</th>
+                                    <th>Organising Conference at NMIMS</th>
+                                    <th>Student Event Participation</th>
+                                    <th>Newspaper Article</th>
+                                    <th>Action</th>
+                                </thead>
+                            <% advertisingData.forEach(function(advertising) { %>
+                                <tr scope="row" data-advertising-id="<%- advertising.id %>" data-faculty-recognition-documents="<%- advertising.faculty_recognition_documents %>"
+                                    data-faculty-recognition-link="<%- advertising.faculty_recognition_link %>" data-faculty-award-documents="<%- advertising.faculty_award_documents %>" 
+                                    data-faculty-award-link="<%- advertising.faculty_award_link %>" data-staff-award-documents="<%- advertising.staff_award_documents %>"
+                                    data-staff-award-link="<%- advertising.staff_award_link %>" data-student-award-documents="<%- advertising.student_award_documents %>" 
+                                    data-alumni-award-documents="<%- advertising.alumni_award_documents %>"  data-alumni-award-link="<%- advertising.alumni_award_link %>"
+                                    data-student-award-link="<%- advertising.student_award_link %>" data-international-linkage-documents="<%- advertising.international_linkage_documents %>"
+                                    data-international-linkage-link="<%- advertising.international_linkage_link %>" data-conference-participation-documents="<%- advertising.conference_participation_documents %>"
+                                    data-conference-participation-link="<%- advertising.conference_participation_link %>" data-organising-conference-documents="<%- advertising.organising_conference_documents %>"
+                                    data-organising-conference-link="<%- advertising.organising_conference_link %>" data-student-event-participation-documents="<%- advertising.student_event_participation_documents %>"
+                                    data-student-event-participation-link="<%- advertising.student_event_participation_link %>" data-newspaper-article-documents="<%- advertising.newspaper_article_documents %>"
+                                    data-newspaper-article-link="<%- advertising.newspaper_article_link %>">
+                                    <td data-advertising-id="<%- advertising.id %>"><%- advertising.id %></td>
+                                    <td class="faculty-recognition"><%- advertising.faculty_recognition %></td>
+                                    <td class="faculty-award"><%- advertising.faculty_award %></td>
+                                    <td class="staff-award"><%- advertising.staff_award %></td>
+                                    <td class="alumni-award"><%- advertising.alumni_award %></td>
+                                    <td class="student-award"><%- advertising.student_award %></td>
+                                    <td class="international-linkage"><%- advertising.international_linkage %></td>
+                                    <td class="conference-participation"><%- advertising.conference_participation %></td>
+                                    <td class="organising-conference"><%- advertising.organising_conference %></td>
+                                    <td class="student-event-participation"><%- advertising.student_event_participation %></td>
+                                    <td class="newspaper-article"><%- advertising.newspaper_article %></td>
+                                    <td>
+                                            <a class="view" data-advertising-id="<%- advertising.id %>"><i class="fa-solid fa-eye view"
+                                                data-advertising-id="<%- advertising.id %>"></i></a>
+                                            <a class="edit" data-advertising-id="<%- advertising.id %>"><i class="fa fa-edit edit"
+                                                data-advertising-id="<%- advertising.id %>"></i></a>
+                                            <a class="delete" data-advertising-id="<%- advertising.id %>"><i class="fa-solid fa-trash delete"
+                                                data-advertising-id="<%- advertising.id %>"></i></a>
+                                    </td>
+                                </tr>
+                            <% }); %>
+                            </table>
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <p>Total entries:1
+                                    </p>
+                                </div>
+                                <div>
+                                    <p id="pagination" class="pagination-search"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--Import Modal -->
+    <div class="modal fade" id="open-program-modal" tabindex="-1" aria-labelledby="open-program-modal"
+                        aria-hidden="true">
+    </div>
+    <!-- EDIT PROGRAM AND UPDATE -->
+    <div class="modal fade" id="edit-program-modal" tabindex="-1" aria-labelledby="editModalLabel"
+                        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">Update Program</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div id="errorHtml"></div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="exampleInputEmail1" class="form-label">Program Name</label>
+                        <input type="text" class="form-control" id="program_name" name="program_name">
+                        <input type="hidden" class="form-control" id="hidden_id" name="hidden_id">
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleInputPassword1" class="form-label">Program Type</label>
+                        <select class="form-control" name="program_type_lid" id="program_type_lid">
+                            <option value="1">Full Time</option>
+                            <option value="2">Part Time</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="abbr" class="form-label">Program Abbr</label>
+                        <input type="text" class="form-control" id="abbr" name="abbr">
+                    </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                       
+                    </div>
+                </div>
+            </div>
+        </div>
+</main>
+<!-- Modal  form -->
+<div class="modal fade " id="branding-advertising-modal" tabindex="-1" role="dialog" aria-labelledby="advertising-execellance"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg modal-fullscreen p-5" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="branding-advertising"> BRANDING AND branding-advertising-modal </h5>
+                <div type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"><i class="fas fa-times fa-2x"></i></span>
+                </div>
+            </div>
+            <div class="modal-body">
+                    <div class="row">
+                        <!-- Faculty Recognition -->
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="faculty-recognition" class="form-label fw-bold">Faculty Recognition</label>
+                            <input type="text" name="faculty-recognition" id="faculty-recognition"
+                                class="form-control">
+                        </div>
+                        <!-- file upload -->
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="faculty-recognition-documents" class="form-label fw-bold ">Upload documents</label>
+                            <input type="file" name="facultyRecognitionDocuments" class="form-control " id="faculty-recognition-documents"
+                                placeholder="upload-file">
+                        </div>
+                        <!-- link -->
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="faculty-recognition-link" class="form-label fw-bold">Link</label>
+                            <input type="text" name="pada" id="faculty-recognition-link" class="form-control" placeholder="https://" />
+                        </div>
+                    </div>
+                    <!-- Faculty Awards -->
+                    <div class="row">
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="faculty-award" class="form-label fw-bold">Faculty Awards</label>
+                            <input type="text" name="faculty" id="faculty-award" class="form-control" />
+                        </div>
+                        <!-- file upload -->
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="facultyAwardDocuments" class="form-label fw-bold ">Upload documents</label>
+                            <input type="file" name="facultyAwardDocuments" class="form-control " id="faculty-award-documents"
+                                placeholder="upload-file">
+                        </div>
+                        <!-- link -->
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="faculty-award-link" class="form-label fw-bold">Link</label>
+                            <input type="text" name="pada" id="faculty-award-link" class="form-control" placeholder="https://" />
+                        </div>
+                    </div>
+                    <!-- Staff Awards -->
+                    <div class="row">
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="staff-award" class="form-label fw-bold">Staff Awards</label>
+                            <input type="text" name="staff" id="staff-award" class="form-control">
+                        </div>
+                        <!-- file upload -->
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="staffAwardDocuments" class="form-label fw-bold ">Upload documents</label>
+                            <input type="file" name="staffAwardDocuments" class="form-control " id="staff-award-documents"
+                                placeholder="upload-file">
+                        </div>
+                        <!-- link -->
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="staff-award-link" class="form-label fw-bold">Link</label>
+                            <input type="text" name="pada" id="staff-award-link" class="form-control" placeholder="https://" />
+                        </div>
+                    </div>
+                    <!-- Alumni awards  -->
+                    <div class="row">
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="alumni-award" class="form-label fw-bold">Alumni Awards</label>
+                            <input type="text" name="alumni" id="alumni-award" class="form-control">
+                        </div>
+                        <!-- file upload -->
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="alumniAwardDocuments" class="form-label fw-bold ">Upload documents</label>
+                            <input type="file" name="alumniAwardDocuments" class="form-control " id="alumni-award-documents"
+                                placeholder="upload-file">
+                        </div>
+                        <!-- link -->
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="link" class="form-label fw-bold">Link</label>
+                            <input type="text" name="pada" id="alumni-award-link" class="form-control" placeholder="https://" />
+                        </div>
+                    </div>
+                    <!-- Student Awards -->
+                    <div class="row">
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="student-award" class="form-label fw-bold">Student Awards</label>
+                            <input type="text" name="student-award" id="student-award" class="form-control"></input>
+                        </div>
+                        <!-- file upload -->
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="studentAwardDocuments" class="form-label fw-bold ">Upload documents</label>
+                            <input type="file" name="studentAwardDocuments" class="form-control " id="student-award-documents"
+                                placeholder="upload-file">
+                        </div>
+                        <!-- link -->
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="student-award-link" class="form-label fw-bold">Link</label>
+                            <input type="text" name="pada" id="student-award-link" class="form-control" placeholder="https://" />
+                        </div>
+                    </div>
+                    <!-- International Linkage Ventures -->
+                    <div class="row">
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="InternationalLinkage" class="form-label fw-bold">International Linkage
+                                Ventures</label>
+                            <input type="text" name="international" id="international-linkage"
+                                class="form-control"></input>
+                        </div>
+                        <!-- file upload -->
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="internationalLinkageDocuments" class="form-label fw-bold ">Upload documents</label>
+                            <input type="file" name="internationalLinkageDocuments" class="form-control " id="international-linkage-documents"
+                                placeholder="upload-file">
+                        </div>
+                        <!-- link -->
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="international-linkage-link" class="form-label fw-bold">Link</label>
+                            <input type="text" name="pada" id="international-linkage-link" class="form-control" placeholder="https://" />
+                        </div>
+                    </div>
+                    <!-- Conference Participation -->
+                    <div class="row">
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="conferencePrep" class="form-label fw-bold">Conference Participation</label>
+                            <input type="text" name="conference-prep" id="conference-participation"
+                                class="form-control"></input>
+                        </div>
+                        <!-- file upload -->
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="conferenceParticipationDocuments" class="form-label fw-bold ">Upload documents</label>
+                            <input type="file" name="conferenceParticipationDocuments" class="form-control " id="conference-participation-documents"
+                                placeholder="upload-file">
+                        </div>
+                        <!-- link -->
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="conference-participation-link" class="form-label fw-bold">Link</label>
+                            <input type="text" name="pada" id="conference-participation-link" class="form-control" placeholder="https://" />
+                        </div>
+
+                    </div>
+
+                    <!-- Organising Conference at NMIMS -->
+                    <div class="row">
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="organising-conference" class="form-label fw-bold">Organising Conference at
+                                NMIMS</label>
+                            <input type="text" name="org"  id="organising-conference" class="form-control">
+                        </div>
+                        <!-- file upload -->
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="organisingConferenceDocuments" class="form-label fw-bold ">Upload documents</label>
+                            <input type="file" name="organisingConferenceDocuments" class="form-control " id="organising-conference-documents"
+                                placeholder="upload-file">
+                        </div>
+                        <!-- link -->
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="organising-conference-link" class="form-label fw-bold">Link</label>
+                            <input type="text" name="pada" id="organising-conference-link" class="form-control" placeholder="https://" />
+                        </div>
+
+                    </div>
+                    <!-- Student Event Participation -->
+                    <div class="row">
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="student-event-participation" class="form-label fw-bold">Student Event Participation</label>
+                            <input type="text" name="student-event" id="student-event-participation" class="form-control">
+                        </div>
+                        <!-- file upload -->
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="studentEventParticipationDocuments" class="form-label fw-bold ">Upload documents</label>
+                            <input type="file" name="studentEventParticipationDocuments" class="form-control " id="studentEvent-participation-documents"
+                                placeholder="upload-file">
+                        </div>
+                        <!-- link -->
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="student-event-participation-link" class="form-label fw-bold">Link</label>
+                            <input type="text" name="pada" id="student-event-participation-link" class="form-control" placeholder="https://" />
+                        </div>
+                    </div>
+                    <!-- Newspaper Article -->
+                    <div class="row">
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="newspaper-article" class="form-label fw-bold">Newspaper Article</label>
+                            <input type="text" name="news-paper" id="newspaper-article" class="form-control" />
+                        </div>
+                        <!-- file upload -->
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="newspaperArticleDocuments" class="form-label fw-bold ">Upload documents</label>
+                            <input type="file" name="newspaperArticleDocuments" class="form-control " id="newspaper-article-documents"
+                                placeholder="upload-file">
+                        </div>
+                        <!-- link -->
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="newspaper-article-link" class="form-label fw-bold">Link</label>
+                            <input type="text" name="pada" id="newspaper-article-link" class="form-control" placeholder="https://" />
+                        </div>
+                    </div>
+            </div>
+            <!-- footer button -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary d-none" id="submit-btn">Submit</button>
+                <button type="button" class="btn btn-primary d-none" id="update-btn">update</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- branding -view-modal -->
+<div class="modal fade" id="branding-advertising-view-modal" tabindex="-1" role="dialog" aria-labelledby="case-view-modal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered custom-modal " role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-center" id="advertising-title">BRANDING  AND ADVERTISING</h5>
+                <div type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"><i class="fas fa-times fa"></i></span>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <!-- Faculty Recognition -->
+                    <div class="row">
+                        <!-- Faculty Recognition -->
+                        <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                            <div class="box">
+                                <div class="task-sub-title sub-title-text"> Faculty Recognition:</div>
+                                <label id="view-faculty-recognition"></label>
+                            </div>
+                        </div>
+                        <!-- Faculty Recognition-->
+                        <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                            <div class="box">
+                                <div class="task-sub-title sub-title-text">UPLOAD DOCUMENTS :</div>
+                                <label id="view-faculty-recognition-file"></label>
+                            </div>
+                        </div>
+                        <!-- Faculty Recognition -->
+                        <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                            <div class="box">
+                                <div class="task-sub-title sub-title-text">LINK :</div>
+                                <label id="view-faculty-recognition-link"></label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--Faculty Awards -->
+                    <div class="row">
+                        <!-- Faculty Awards -->
+                        <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                            <div class="box">
+                                <div class="task-sub-title sub-title-text"> Faculty Awards :</div>
+                                <label id="view-faculty-awards"></label>
+                            </div>
+                        </div>
+                        <!-- Faculty Awards -->
+                        <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                            <div class="box">
+                                <div class="task-sub-title sub-title-text">UPLOAD DOCUMENTS :</div>
+                                <label id="view-faculty-awards-file"></label>
+                            </div>
+                        </div>
+            
+                        <!-- Faculty Awards -->
+                        <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                            <div class="box">
+                                <div class="task-sub-title sub-title-text">LINK :</div>
+                                <label id="view-faculty-awards-link"></label>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Staff Awards -->
+                    <div class="row">
+                        <!--Staff Awards -->
+                        <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                            <div class="box">
+                                <div class="task-sub-title sub-title-text">Staff Awards:</div>
+                                <label id="view-staff-awards"></label>
+                            </div>
+                        </div>
+                        <!-- workshop_file -->
+                        <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                            <div class="box">
+                                <div class="task-sub-title sub-title-text">UPLOADS DOCUMENTS :</div>
+                                <label id="view-staff-awards-file"></label>
+                            </div>
+                        </div>
+                        <!-- LINK -->
+                        <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                            <div class="box">
+                                <div class="task-sub-title sub-title-text">LINK :</div>
+                                <label id="view-staff-awards-link"></label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Alumni Awards -->
+                    <div class="row">
+                        <!-- Alumni Awards-->
+                        <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                            <div class="box">
+                                <div class="task-sub-title sub-title-text"> Alumni Awards :</div>
+                                <label id="view-alumni-awards"></label>
+                            </div>
+                        </div>
+                        <!--iAlumni Awards_file -->
+                        <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                            <div class="box">
+                                <div class="task-sub-title sub-title-text"> UPLOADES DOCUMENTS :</div>
+                                <label id="view-alumni-awards-file"></label>
+                            </div>
+                        </div>
+                        <!-- Alumni Awards_link -->
+                        <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                            <div class="box">
+                                <div class="task-sub-title sub-title-text">LINK:</div>
+                                <label id="view-alumni-awards-link"></label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Student Awards -->
+                    <div class="row">
+                        <!-- Student Awards -->
+                        <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                            <div class="box">
+                                <div class="task-sub-title sub-title-text">Student Awards :</div>
+                                <label id="view-student-awards"></label>
+                            </div>
+                        </div>
+                        <!-- Student Awards file -->
+                        <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                            <div class="box">
+                                <div class="task-sub-title sub-title-text">UPLOADES DOCUMENTS :</div>
+                                <label id="view-student-awards-file"></label>
+                            </div>
+                        </div>
+                        <!--  Student Awardslink -->
+                        <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                            <div class="box">
+                                <div class="task-sub-title sub-title-text">LINK :</div>
+                                <label id="view-student-awards-link"></label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- International Linkage Ventures -->
+                    <div class="row">
+                        <!--International Linkage Ventures-->
+                        <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                            <div class="box">
+                                <div class="task-sub-title sub-title-text">International Linkage Ventures :</div>
+                                <label id="view-international-linkage"></label>
+                            </div>
+                        </div>
+                        <!-- view-international-linkage-file -->
+                        <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                            <div class="box">
+                                <div class="task-sub-title sub-title-text">UPLOADES DOCUMENTS :</div>
+                                <label id="view-international-linkage-file"></label>
+                            </div>
+                        </div>
+                        <!-- view-international-linkage-link -->
+                        <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                            <div class="box">
+                                <div class="task-sub-title sub-title-text">LINK :</div>
+                                <label id="view-international-linkage-link"></label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Conference Participation -->
+                    <div class="row">
+                        <!--Conference Participation-->
+                        <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                            <div class="box">
+                                <div class="task-sub-title sub-title-text">Conference Participation :</div>
+                                <label id="view-conference-participation"></label>
+                            </div>
+                        </div>
+                        <!-- view-conference-participation-file -->
+                        <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                            <div class="box">
+                                <div class="task-sub-title sub-title-text">UPLOADES DOCUMENTS :</div>
+                                <label id="view-conference-participation-file"></label>
+                            </div>
+                        </div>
+                        <!-- view-conference-participation-link -->
+                        <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                            <div class="box">
+                                <div class="task-sub-title sub-title-text">LINK :</div>
+                                <label id="view-conference-participation-link"></label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Organising Conference at NMIMS -->
+                    <div class="row">
+                        <!--International Linkage Ventures-->
+                        <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                            <div class="box">
+                                <div class="task-sub-title sub-title-text">Organising Conference at NMIMS :</div>
+                                <label id="view-organising-conference"></label>
+                            </div>
+                        </div>
+                        <!-- Organising Conference at NMIMS-file -->
+                        <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                            <div class="box">
+                                <div class="task-sub-title sub-title-text">UPLOADES DOCUMENTS :</div>
+                                <label id="view-organising-conference-file"></label>
+                            </div>
+                        </div>
+                        <!-- Organising Conference at NMIMS-link -->
+                        <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                            <div class="box">
+                                <div class="task-sub-title sub-title-text">LINK :</div>
+                                <label id="view-organising-conference-link"></label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Student Event Participation -->
+                    <div class="row">
+                        <!--International Linkage Ventures-->
+                        <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                            <div class="box">
+                                <div class="task-sub-title sub-title-text">Student Event Participation:</div>
+                                <label id="view-student-event-participation"></label>
+                            </div>
+                        </div>
+                        <!-- view-student-event-participatione-file -->
+                        <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                            <div class="box">
+                                <div class="task-sub-title sub-title-text">UPLOADES DOCUMENTS :</div>
+                                <label id="view-student-event-participation-file"></label>
+                            </div>
+                        </div>
+                        <!-- view-student-event-participation-link -->
+                        <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                            <div class="box">
+                                <div class="task-sub-title sub-title-text">LINK :</div>
+                                <label id="view-student-event-participation-link"></label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Newspaper Article-->
+                    <div class="row">
+                        <!--Newspaper Article-->
+                        <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                            <div class="box">
+                                <div class="task-sub-title sub-title-text">Newspaper Article:</div>
+                                <label id="view-newspaper-article"></label>
+                            </div>
+                        </div>
+                        <!-- view-newspaper-article"-file -->
+                        <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                            <div class="box">
+                                <div class="task-sub-title sub-title-text">UPLOADES DOCUMENTS :</div>
+                                <label id="view-newspaper-article-file"></label>
+                            </div>
+                        </div>
+                        <!-- view-newspaper-article -->
+                        <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                            <div class="box">
+                                <div class="task-sub-title sub-title-text">LINK :</div>
+                                <label id="view-newspaper-article-link"></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+                
+        </div>
+    </div>
+</div>
+
+<!-- inline javascript -->
+<script>
+    const brandingAdvertisingAddModal = document.getElementById('branding-advertising-add-modal');
+    const brandingAdvertisingList = document.getElementById('branding-advertising-list')
+    const submitBtn= document.getElementById('submit-btn');
+    const updateBtn = document.getElementById('update-btn');
+    let advertisingId , advertisingRowToBeUpdated;
+    brandingAdvertisingAddModal.addEventListener('click' , (event) => {
+        if(event.target.tagName === 'BUTTON' && event.target.classList.contains('add-modal') || event.target.classList.contains('plus')){
+            // for button visualization
+            submitBtn.classList.remove('d-none');
+            updateBtn.classList.add('d-none');
+        }
+    })
+
+    const insertBrandingAndAdvertising = async(url) => {
+        const brandingAdvertisingData = new FormData();
+        const facultyRecognitionDocuments = document.querySelector('input[name="facultyRecognitionDocuments"]');
+        const facultyAwardDocuments = document.querySelector('input[name="facultyAwardDocuments"]');
+        const staffAwardDocuments = document.querySelector('input[name="staffAwardDocuments"]');
+        const alumniAwardDocuments = document.querySelector('input[name="alumniAwardDocuments"]');
+        const studentAwardDocuments = document.querySelector('input[name="studentAwardDocuments"]');
+        const internationalLinkageDocuments = document.querySelector('input[name="internationalLinkageDocuments"]');
+        const conferenceParticipationDocuments = document.querySelector('input[name="conferenceParticipationDocuments"]');
+        const organisingConferenceDocuments = document.querySelector('input[name="organisingConferenceDocuments"]');
+        const studentEventParticipationDocuments = document.querySelector('input[name="studentEventParticipationDocuments"]');
+        const newspaperArticleDocuments = document.querySelector('input[name="newspaperArticleDocuments"]');
+        const facultyRecognition = document.getElementById('faculty-recognition').value;
+        const facultyRecognitionLink = document.getElementById('faculty-recognition-link').value;
+        const facultyAward = document.getElementById('faculty-award').value;
+        const facultyAwardLink = document.getElementById('faculty-award-link').value;
+        const staffAward = document.getElementById('staff-award').value;
+        const staffAwardLink = document.getElementById('staff-award-link').value;
+        const alumniAward = document.getElementById('alumni-award').value;
+        const alumniAwardLink = document.getElementById('alumni-award-link').value;
+        const studentAward = document.getElementById('student-award').value;
+        const studentAwardLink = document.getElementById('student-award-link').value;
+        const internationalLinkage = document.getElementById('international-linkage').value;
+        const internationalLinkageLink = document.getElementById('international-linkage-link').value;
+        const conferenceParticipation = document.getElementById('conference-participation').value;
+        const conferenceParticipationLink = document.getElementById('conference-participation-link').value;
+        const organisingConference = document.getElementById('organising-conference').value;
+        const organisingConferenceLink = document.getElementById('organising-conference-link').value;
+        const studentEventParticipation = document.getElementById('student-event-participation').value;
+        const studentEventParticipationLink = document.getElementById('student-event-participation-link').value;
+        const newsPaperArticle = document.getElementById('newspaper-article').value;
+        const newsPaperArticleLink = document.getElementById('newspaper-article-link').value;
+        //appending key and value in form 
+        brandingAdvertisingData.append('facultyRecognitionDocuments' , facultyRecognitionDocuments.files[0]);
+        brandingAdvertisingData.append('facultyAwardDocuments' , facultyAwardDocuments.files[0]);
+        brandingAdvertisingData.append('staffAwardDocuments' , staffAwardDocuments.files[0]);
+        brandingAdvertisingData.append('alumniAwardDocuments' , alumniAwardDocuments.files[0]);
+        brandingAdvertisingData.append('studentAwardDocuments' , studentAwardDocuments.files[0]);
+        brandingAdvertisingData.append('internationalLinkageDocuments' , internationalLinkageDocuments.files[0]);
+        brandingAdvertisingData.append('conferenceParticipationDocuments' , conferenceParticipationDocuments.files[0]);
+        brandingAdvertisingData.append('organisingConferenceDocuments' , organisingConferenceDocuments.files[0]);
+        brandingAdvertisingData.append('studentEventParticipationDocuments' , studentEventParticipationDocuments.files[0]);
+        brandingAdvertisingData.append('newspaperArticleDocuments' , newspaperArticleDocuments.files[0]);
+        brandingAdvertisingData.append('facultyRecognition' , facultyRecognition);
+        brandingAdvertisingData.append('facultyRecognitionLink' , facultyRecognitionLink);
+        brandingAdvertisingData.append('facultyAward' , facultyAward);
+        brandingAdvertisingData.append('facultyAwardLink' , facultyAwardLink);
+        brandingAdvertisingData.append('staffAward' , staffAward);
+        brandingAdvertisingData.append('staffAwardLink' , staffAwardLink);
+        brandingAdvertisingData.append('alumniAward' , alumniAward);
+        brandingAdvertisingData.append('alumniAwardLink' , alumniAwardLink);
+        brandingAdvertisingData.append('studentAward' , studentAward);
+        brandingAdvertisingData.append('studentAwardLink' , studentAwardLink);
+        brandingAdvertisingData.append('internationalLinkage' , internationalLinkage);
+        brandingAdvertisingData.append('internationalLinkageLink' , internationalLinkageLink);
+        brandingAdvertisingData.append('conferenceParticipation' , conferenceParticipation);
+        brandingAdvertisingData.append('conferenceParticipationLink' , conferenceParticipationLink);
+        brandingAdvertisingData.append('organisingConference' , organisingConference);
+        brandingAdvertisingData.append('organisingConferenceLink' , organisingConferenceLink);
+        brandingAdvertisingData.append('studentEventParticipation' , studentEventParticipation);
+        brandingAdvertisingData.append('studentEventParticipationLink' , studentEventParticipationLink);
+        brandingAdvertisingData.append('newspaperArticle' , newsPaperArticle);
+        brandingAdvertisingData.append('newspaperArticleLink' , newsPaperArticleLink);
+
+        //api fetching 
+        fetch(url , {
+            method : 'POST',
+            body : brandingAdvertisingData
+        })
+        .then((result) => {
+            return result.json()
+        })
+        .then((data) => {
+            if(data.status === 'done'){
+                console.log('data ==>>', data);
+                const newBrandingAdvertisingRow = document.createElement('tr');
+                newBrandingAdvertisingRow.setAttribute('data-faculty-recognition-documents' , data.facultyRecognitionDocuments[0].filename);
+                newBrandingAdvertisingRow.setAttribute('data-faculty-recognition-link' , data.advertisingData.facultyRecognitionLink);
+                newBrandingAdvertisingRow.setAttribute('data-faculty-award-documents' , data.facultyAwardDocuments[0].filename);
+                newBrandingAdvertisingRow.setAttribute('data-faculty-award-link' , data.advertisingData.facultyAwardLink);
+                newBrandingAdvertisingRow.setAttribute('data-alumni-award-documents' , data.alumniAwardDocuments[0].filename);
+                newBrandingAdvertisingRow.setAttribute('data-alumni-award-link' , data.advertisingData.alumniAwardLink);
+                newBrandingAdvertisingRow.setAttribute('data-staff-award-documents' , data.staffAwardDocuments[0].filename);
+                newBrandingAdvertisingRow.setAttribute('data-staff-award-link' , data.advertisingData.staffAwardLink); 
+                newBrandingAdvertisingRow.setAttribute('data-student-award-documents' , data.studentAwardDocuments[0].filename);
+                newBrandingAdvertisingRow.setAttribute('data-student-award-link' , data.advertisingData.studentAwardLink); 
+                newBrandingAdvertisingRow.setAttribute('data-international-linkage-documents' , data.internationalLinkageDocuments[0].filename);
+                newBrandingAdvertisingRow.setAttribute('data-international-linkage-link' , data.advertisingData.internationalLinkageLink); 
+                newBrandingAdvertisingRow.setAttribute('data-conference-participation-documents' , data.conferenceParticipationDocuments[0].filename);
+                newBrandingAdvertisingRow.setAttribute('data-conference-participation-link' , data.advertisingData.conferenceParticipationLink); 
+                newBrandingAdvertisingRow.setAttribute('data-organising-conference-documents' , data.organisingConferenceDocuments[0].filename);
+                newBrandingAdvertisingRow.setAttribute('data-organising-conference-link' , data.advertisingData.organisingConferenceLink);
+                newBrandingAdvertisingRow.setAttribute('data-student-event-participation-documents' , data.studentEventParticipationDocuments[0].filename);
+                newBrandingAdvertisingRow.setAttribute('data-student-event-participation-link' , data.advertisingData.studentEventParticipationLink); 
+                newBrandingAdvertisingRow.setAttribute('data-newspaper-article-documents' , data.newspaperArticleDocuments[0].filename);
+                newBrandingAdvertisingRow.setAttribute('data-newspaper-article-link' , data.advertisingData.newsPaperArticleLink);
+                console.log('data.advertisingData ==>', data.advertisingData);
+                newBrandingAdvertisingRow.innerHTML = `
+                                    <td >${data.advertisingId}</td>
+                                    <td class="faculty-recognition">${data.advertisingData.facultyRecognition}</td>
+                                    <td class="faculty-award">${ data.advertisingDatafacultyAward}</td>
+                                    <td class="staff-award">${ data.advertisingData.staffAward}</td>
+                                    <td class="alumni-award">${ data.advertisingData.alumniAward}</td>
+                                    <td class="student-award">${ data.advertisingData.studentAward}</td>
+                                    <td class="international-linkage">${ data.advertisingData.internationalLinkage}</td>
+                                    <td class="conference-participation">${ data.advertisingData.conferenceParticipation}</td>
+                                    <td class="organising-conference">${ data.advertisingData.organisingConference}</td>
+                                    <td class="student-event-participation">${ data.advertisingData.studentEventParticipation}</td>
+                                    <td class="newspaper-article">${ data.advertisingData.newspaperArticle}</td>
+                                    <td>
+                                        <a class="view" data-advertising-id=${data.advertisingId}><i class="fa-solid fa-eye view"
+                                            data-advertising-id=${data.advertisingId}></i></a>
+                                        <a class="edit" data-advertising-id=${data.advertisingId}><i class="fa fa-edit edit"
+                                            data-advertising-id=${data.advertisingId}></i></a>
+                                        <a class="delete" data-advertising-id=${data.advertisingId}><i class="fa-solid fa-trash delete"
+                                            data-advertising-id=${data.advertisingId}></i></a>
+                                    </td> `;
+                                    brandingAdvertisingList.appendChild(newBrandingAdvertisingRow);
+            }
+            $('#branding-advertising-modal').modal('hide');
+            alert('data insetrtde successfull');
+        })
+    }
+    submitBtn.addEventListener('click' , async() => {
+        await insertBrandingAndAdvertising('/branding-advertising/insert');
+    }) 
+
+    brandingAdvertisingList.addEventListener('click' , (event) => {
+        // view
+        if(event.target.classList.contains('view')){
+            console.log('clcikedd');
+            const viewFacultyRecognitionDocuments = document.getElementById('view-faculty-recognition-file');
+            const viewFacultyAwardDocuments = document.getElementById('view-faculty-award-file');
+            const viewStaffAwardDocuments = document.getElementById('view-staff-award-file');
+            const viewalumniAwardDocuments = document.getElementById('view-alumn-award-file');
+            const viewStudentAwardDocuments = document.getElementById('view-student-award-file');
+            const viewInternationalLinkagedOcuments = document.getElementById('view-international-linkage-file');
+            const viewConferenceParticipationDocuments = document.getElementById('view-conference-participation-file');
+            const viewOrganisingConferencedOcuments = document.getElementById('view-organising-conference-file');
+            const viewStudentEventParticipationDocuments = document.getElementById('view-student-event-participation-file');
+            const viewNewspaperArticledOcuments = document.getElementById('view-newspaper-article-file');
+            const viewFacultyRecognition = document.getElementById('view-faculty-recognition');
+            const viewFacultyRecognitionLink = document.getElementById('view-faculty-recognition-link');
+            const viewFacultyAward = document.getElementById('view-faculty-award');
+            const viewFacultyAwardLink = document.getElementById('view-faculty-award-link');
+            const viewStaffAward = document.getElementById('view-staff-award');
+            const viewStaffAwardLink = document.getElementById('view-staff-award-link');
+            const viewAlumniAward = document.getElementById('view-alumni-award');
+            const viewAlumniAwardLink = document.getElementById('view-alumni-award-link');
+            const viewStudentAward = document.getElementById('view-student-award');
+            const viewStudentAwardLink = document.getElementById('view-student-award-link');
+            const viewInternationalLinkage = document.getElementById('view-international-linkage');
+            const viewInternationalLinkageLink = document.getElementById('view-international-linkage-link');
+            const viewConferenceParticipation = document.getElementById('view-conference-participation');
+            const viewConferenceParticipationLink = document.getElementById('view-conference-participation-link');
+            const viewOrganisingConference = document.getElementById('view-organising-conference');
+            const viewOrganisingConferenceLink = document.getElementById('view-organising-conference-link');
+            const viewStudentEventParticipation = document.getElementById('view-student-event-participation');
+            const viewStudentEventParticipationLink = document.getElementById('view-student-event-participation-link');
+            const viewNewsPaperArticle = document.getElementById('view-newspaper-article');
+            const viewNewsPaperArticleLink = document.getElementById('view-newspaper-article-link');
+
+            const advertisingRowToBeViewed = event.target.closest('tr');
+            advertisingId = advertisingRowToBeViewed.getAttribute('data-advertising-id');
+
+            fetch('/branding-advertising/view' , {
+                method : 'POST',
+                headers : {
+                    'content-type' : 'application/json'
+                },
+                body : JSON.stringify({advertisingId})
+            })
+            .then((result) => {
+                return result.json()
+            })
+            .then((data) => {
+                if(data.status === 'done'){
+                    console.log('data ==>>', data);
+                    viewFacultyRecognitionDocuments.value = data.brandingAndAdvertisingview[0].faculty_recognition_documents;
+                    // viewFacultyAwardDocuments = ;
+                    // viewStaffAwardDocuments = ;
+                    // viewalumniAwardDocuments = ;
+                    // viewStudentAwardDocuments = ;
+                    // viewInternationalLinkagedOcuments = ;
+                    // viewConferenceParticipationDocuments = ;
+                    // viewOrganisingConferencedOcuments = ;
+                    // viewStudentEventParticipationDocuments = ('view-student-event-participation-file');
+                    // viewNewspaperArticledOcuments = ('view-newspaper-article-file');
+                    // viewFacultyRecognition = ('view-faculty-recognition');
+                    // viewFacultyRecognitionLink = ('view-faculty-recognition-link');
+                    // viewFacultyAward = ('view-faculty-award');
+                    // viewFacultyAwardLink = ('view-faculty-award-link');
+                    // viewStaffAward = ('view-staff-award');
+                    // viewStaffAwardLink = ('view-staff-award-link');
+                    // viewAlumniAward = ('view-alumni-award');
+                    // viewAlumniAwardLink = ('view-alumni-award-link');
+                    // viewStudentAward = ('view-student-award');
+                    // viewStudentAwardLink = ('view-student-award-link');
+                    // viewInternationalLinkage = ('view-international-linkage');
+                    // viewInternationalLinkageLink = ('view-international-linkage-link');
+                    // viewConferenceParticipation = ('view-conference-participation');
+                    // viewConferenceParticipationLink = ('view-conference-participation-link');
+                    // viewOrganisingConference = ('view-organising-conference');
+                    // viewOrganisingConferenceLink = ('view-organising-conference-link');
+                    // viewStudentEventParticipation = ('view-student-event-participation');
+                    // viewStudentEventParticipationLink = ('view-student-event-participation-link');
+                    // viewNewsPaperArticle = ('view-newspaper-article');
+                    // viewNewsPaperArticleLink = ('view-newspaper-article-link');
+
+
+                }
+            })
+            $('#branding-advertising-view-modal').modal('show');
+
+        }
+        if(event.target.classList.contains('edit')){
+            console.log('clickeddddd');
+            submitBtn.classList.add('d-none');
+            updateBtn.classList.remove('d-none');
+
+            advertisingRowToBeUpdated = event.target.closest('tr');
+            advertisingId = advertisingRowToBeUpdated.getAttribute('data-advertising-id');
+            console.log('advertisingId ===>>', advertisingId);
+            const facultyRecognition = document.getElementById('faculty-recognition');
+            const facultyRecognitionLink = document.getElementById('faculty-recognition-link');
+            const facultyAward = document.getElementById('faculty-award');
+            const facultyAwardLink = document.getElementById('faculty-award-link');
+            const staffAward = document.getElementById('staff-award');
+            const staffAwardLink = document.getElementById('staff-award-link');
+            const alumniAward = document.getElementById('alumni-award');
+            const alumniAwardLink = document.getElementById('alumni-award-link');
+            const studentAward = document.getElementById('student-award')
+            const studentAwardLink = document.getElementById('student-award-link');
+            const internationalLinkage = document.getElementById('international-linkage');
+            const internationalLinkageLink = document.getElementById('international-linkage-link');
+            const conferenceParticipation = document.getElementById('conference-participation');
+            const conferenceParticipationLink = document.getElementById('conference-participation-link');
+            const organisingConference = document.getElementById('organising-conference');
+            const organisingConferenceLink = document.getElementById('organising-conference-link');
+            const studentEventParticipation = document.getElementById('student-event-participation');
+            const studentEventParticipationLink = document.getElementById('student-event-participation-link');
+            const newsPaperArticle = document.getElementById('newspaper-article');
+            const newsPaperArticleLink = document.getElementById('newspaper-article-link');
+
+            //assigning with  value
+            
+            facultyRecognition.value = advertisingRowToBeUpdated.querySelector('.faculty-recognition').innerText;
+            facultyRecognitionLink.value = advertisingRowToBeUpdated.getAttribute('data-faculty-recognition-link');
+            facultyAward.value = advertisingRowToBeUpdated.querySelector('.faculty-award').innerText;
+            facultyAwardLink.value = advertisingRowToBeUpdated.getAttribute('data-faculty-award-link');
+            staffAward.value = advertisingRowToBeUpdated.querySelector('.staff-award').innerText;
+            staffAwardLink.value = advertisingRowToBeUpdated.getAttribute('data-staff-award-link');
+            alumniAward.value = advertisingRowToBeUpdated.querySelector('.alumni-award').innerText;
+            alumniAwardLink.value = advertisingRowToBeUpdated.getAttribute('data-alumni-award-link');
+            studentAward.value = advertisingRowToBeUpdated.querySelector('.student-award').innerText;
+            studentAwardLink.value = advertisingRowToBeUpdated.getAttribute('data-student-award-link');
+            internationalLinkage.value = advertisingRowToBeUpdated.querySelector('.international-linkage').innerText;
+            internationalLinkageLink.value = advertisingRowToBeUpdated.getAttribute('data-international-linkage-link');
+            conferenceParticipation.value = advertisingRowToBeUpdated.querySelector('.conference-participation').innerText;
+            conferenceParticipationLink.value = advertisingRowToBeUpdated.getAttribute('data-conference-participation-link');
+            organisingConference.value = advertisingRowToBeUpdated.querySelector('.organising-conference').innerText;
+            organisingConferenceLink.value = advertisingRowToBeUpdated.getAttribute('data-organising-conference-link');
+            studentEventParticipation.value = advertisingRowToBeUpdated.querySelector('.student-event-participation').innerText;
+            studentEventParticipationLink.value = advertisingRowToBeUpdated.getAttribute('data-student-event-participation-link');
+            newsPaperArticle.value = advertisingRowToBeUpdated.querySelector('.newspaper-article').innerText;
+            newsPaperArticleLink.value = advertisingRowToBeUpdated.getAttribute('data-newspaper-article-link');
+            const facultyRecognitionDocuments = advertisingRowToBeUpdated.getAttribute('data-faculty-recognition-documents');
+            console.log('facultyRecognitionDocument ==>>', facultyRecognitionDocuments)
+            const facultyAwardDocuments = advertisingRowToBeUpdated.getAttribute('data-faculty-award-documents');
+            const staffAwardDocuments = advertisingRowToBeUpdated.getAttribute('data-staff-award-documents');
+            const alumniAwardDocuments = advertisingRowToBeUpdated.getAttribute('data-alumni-award-documents');
+            const studentAwardDocuments = advertisingRowToBeUpdated.getAttribute('data-student-awardDocuments');
+            const internationalLinkageDocuments = advertisingRowToBeUpdated.getAttribute('data-international-linkage-documents');
+            const conferenceParticipationDocuments = advertisingRowToBeUpdated.getAttribute('data-conference-participation-documents');
+            const organisingConferenceDocuments = advertisingRowToBeUpdated.getAttribute('data-organising-conference-documents');
+            const studentEventParticipationDocuments = advertisingRowToBeUpdated.getAttribute('data-student-event-participation-documents');
+            const newspaperArticleDocuments = advertisingRowToBeUpdated.getAttribute('data-newspaper-article-documents');
+            $('#branding-advertising-modal').modal('show');
+        }
+    })
+
+    updateBtn.addEventListener('click' , () => {
+        const updatedAdvertisingData = new FormData();
+        const updatedFacultyRecognitionDocuments = document.querySelector('input[name="facultyRecognitionDocuments"]');
+        const updatedFacultyAwardDocuments = document.querySelector('input[name="facultyAwardDocuments"]');
+        const updatedStaffAwardDocuments = document.querySelector('input[name="staffAwardDocuments"]');
+        const updatedalumniAwardDocuments = document.querySelector('input[name="alumniAwardDocuments"]');
+        const updatedStudentAwardDocuments = document.querySelector('input[name="studentAwardDocuments"]');
+        const updatedInternationalLinkagedOcuments = document.querySelector('input[name="internationalLinkageDocuments"]');
+        const updatedConferenceParticipationDocuments = document.querySelector('input[name="conferenceParticipationDocuments"]');
+        const updatedOrganisingConferencedOcuments = document.querySelector('input[name="organisingConferenceDocuments"]');
+        const updatedStudentEventParticipationDocuments = document.querySelector('input[name="studentEventParticipationDocuments"]');
+        const updatedNewspaperArticledOcuments = document.querySelector('input[name="newspaperArticleDocuments"]');
+        const updatedFacultyRecognition = document.getElementById('faculty-recognition').value;
+        const updatedFacultyRecognitionLink = document.getElementById('faculty-recognition-link').value;
+        const updatedFacultyAward = document.getElementById('faculty-award').value;
+        const updatedFacultyAwardLink = document.getElementById('faculty-award-link').value;
+        const updatedStaffAward = document.getElementById('staff-award').value;
+        const updatedStaffAwardLink = document.getElementById('staff-award-link').value;
+        const updatedAlumniAward = document.getElementById('alumni-award').value;
+        const updatedAlumniAwardLink = document.getElementById('alumni-award-link').value;
+        const updatedStudentAward = document.getElementById('student-award').value;
+        const updatedStudentAwardLink = document.getElementById('student-award-link').value;
+        const updatedInternationalLinkage = document.getElementById('international-linkage').value;
+        const updatedInternationalLinkageLink = document.getElementById('international-linkage-link').value;
+        const updatedConferenceParticipation = document.getElementById('conference-participation').value;
+        const updatedConferenceParticipationLink = document.getElementById('conference-participation-link').value;
+        const updatedOrganisingConference = document.getElementById('organising-conference').value;
+        const updatedOrganisingConferenceLink = document.getElementById('organising-conference-link').value;
+        const updatedStudentEventParticipation = document.getElementById('student-event-participation').value;
+        const updatedStudentEventParticipationLink = document.getElementById('student-event-participation-link').value;
+        const updatedNewsPaperArticle = document.getElementById('newspaper-article').value;
+        const updatedNewsPaperArticleLink = document.getElementById('newspaper-article-link').value;
+
+        updatedAdvertisingData.append('advertisingId' , advertisingId)
+        updatedAdvertisingData.append('facultyRecognitionDocuments' , updatedFacultyRecognitionDocuments.files[0]);
+        updatedAdvertisingData.append('facultyAwardDocuments' , updatedFacultyAwardDocuments.files[0]);
+        updatedAdvertisingData.append('staffAwardDocuments' , updatedStaffAwardDocuments.files[0]);
+        updatedAdvertisingData.append('alumniAwardDocuments' , updatedalumniAwardDocuments.files[0]);
+        updatedAdvertisingData.append('studentAwardDocuments' , updatedStudentAwardDocuments.files[0]);
+        updatedAdvertisingData.append('internationalLinkageDocuments' , updatedInternationalLinkagedOcuments.files[0]);
+        updatedAdvertisingData.append('conferenceParticipationDocuments' , updatedConferenceParticipationDocuments.files[0]);
+        updatedAdvertisingData.append('organisingConferenceDocuments' , updatedOrganisingConferencedOcuments.files[0]);
+        updatedAdvertisingData.append('studentEventParticipationDocuments' , updatedStudentEventParticipationDocuments.files[0]);
+        updatedAdvertisingData.append('newspaperArticleDocuments' , updatedNewspaperArticledOcuments.files[0]);
+        updatedAdvertisingData.append('facultyRecognition' , updatedFacultyRecognition);
+        updatedAdvertisingData.append('facultyAward' , updatedFacultyAward);
+        updatedAdvertisingData.append('facultyAwardLink' , updatedFacultyAwardLink);
+        updatedAdvertisingData.append('staffAward' , updatedStaffAward);
+        updatedAdvertisingData.append('staffAwardLink' , updatedStaffAwardLink);
+        updatedAdvertisingData.append('alumniAward' , updatedAlumniAward);
+        updatedAdvertisingData.append('alumniAwardLink' , updatedAlumniAwardLink);
+        updatedAdvertisingData.append('studentAward' , updatedStudentAward);
+        updatedAdvertisingData.append('studentAwardLink' , updatedStudentAwardLink);
+        updatedAdvertisingData.append('internationalLinkage' , updatedInternationalLinkage);
+        updatedAdvertisingData.append('internationalLinkageLink' , updatedInternationalLinkageLink);
+        updatedAdvertisingData.append('conferenceParticipation' , updatedConferenceParticipation);
+        updatedAdvertisingData.append('conferenceParticipationLink' , updatedConferenceParticipationLink);
+        updatedAdvertisingData.append('organisingConference' , updatedOrganisingConference);
+        updatedAdvertisingData.append('organisingConferenceLink' , updatedOrganisingConferenceLink);
+        updatedAdvertisingData.append('studentEventParticipation' , updatedStudentEventParticipation);
+        updatedAdvertisingData.append('studentEventParticipationLink' , updatedStudentEventParticipationLink);
+        updatedAdvertisingData.append('newspaperArticle' , updatedNewsPaperArticle);
+        updatedAdvertisingData.append('newspaperArticleLink' , updatedNewsPaperArticleLink);
+
+        fetch('/branding-advertising/update' , {
+            method : 'POST',
+            body : updatedAdvertisingData
+        })
+        .then((result) => {
+            return result.json()
+        })
+        .then((data) => {
+            if(data.status === 'done'){
+            console.log('data ==>>>', data);
+            advertisingRowToBeUpdated.getAttribute('data-faculty-recognition-link' , data.updatedAdvertisingData.facultyRecognitionLink);
+			advertisingRowToBeUpdated.querySelector('.faculty-recognition').innerText = data.updatedAdvertisingData.facultyRecognition;
+            advertisingRowToBeUpdated.getAttribute('data-faculty-recognition-link' , data.updatedAdvertisingData);
+			advertisingRowToBeUpdated.querySelector('.faculty-award').innerText = data.updatedAdvertisingData.facultyAward;
+			advertisingRowToBeUpdated.getAttribute('data-faculty-award-link' , data.updatedAdvertisingData.facultyAwardLink);
+			advertisingRowToBeUpdated.querySelector('.staff-award').innerText = data.updatedAdvertisingData.staffAward;
+			advertisingRowToBeUpdated.getAttribute('data-staff-award-link' , data.updatedAdvertisingData.staffAwardLink);
+			advertisingRowToBeUpdated.querySelector('.alumni-award').innerText = data.updatedAdvertisingData.alumniAward;
+			advertisingRowToBeUpdated.getAttribute('data-alumni-award-link' , data.updatedAdvertisingData.alumniAwardLink);
+			advertisingRowToBeUpdated.querySelector('.student-award').innerText = data.updatedAdvertisingData.studentAward;
+			advertisingRowToBeUpdated.getAttribute('data-student-award-link' , data.updatedAdvertisingData.staffAwardLink);
+			advertisingRowToBeUpdated.querySelector('.international-linkage').innerText = data.updatedAdvertisingData.internationalLinkage;
+			advertisingRowToBeUpdated.getAttribute('data-international-linkage-link' , data.updatedAdvertisingData.internationalLinkageLink);
+			advertisingRowToBeUpdated.querySelector('.conference-participation').innerText = data.updatedAdvertisingData.conferenceParticipation;
+			advertisingRowToBeUpdated.getAttribute('data-conference-participation-link' , data.updatedAdvertisingData.conferenceParticipationLink);
+			advertisingRowToBeUpdated.querySelector('.organising-conference').innerText = data.updatedAdvertisingData.organisingConference;
+			advertisingRowToBeUpdated.getAttribute('data-organising-conference-link' , data.updatedAdvertisingData.organisingConferenceLink);
+			advertisingRowToBeUpdated.querySelector('.student-event-participation').innerText = data.updatedAdvertisingData.studentEventParticipation;
+            advertisingRowToBeUpdated.setAttribute('data-student-event-participation-link' , data.updatedAdvertisingData.studentEventParticipationLink);
+			advertisingRowToBeUpdated.querySelector('.newspaper-article').innerText = data.updatedAdvertisingData.newspaperArticle;
+			advertisingRowToBeUpdated.getAttribute('data-newspaper-article-link' , data.updatedAdvertisingData.newspaperArticleLink);
+            advertisingRowToBeUpdated.setAttribute('data-faculty-recognition-documents' , data.facultyRecognitionDocuments[0].filename);
+            advertisingRowToBeUpdated.setAttribute('data-faculty-award-documents' , data.facultyAwardDocuments[0].filename);
+            advertisingRowToBeUpdated.setAttribute('data-alumni-award-documents' , data.alumniAwardDocuments[0].filename);
+            advertisingRowToBeUpdated.setAttribute('data-staff-award-documents' , data.staffAwardDocuments[0].filename);
+            advertisingRowToBeUpdated.setAttribute('data-student-award-documents' , data.studentAwardDocuments[0].filename);
+            advertisingRowToBeUpdated.setAttribute('data-international-linkage-documents' , data.internationalLinkageDocuments[0].filename);
+            advertisingRowToBeUpdated.setAttribute('data-conference-participation-documents' , data.conferenceParticipationDocuments[0].filename);
+            advertisingRowToBeUpdated.setAttribute('data-organising-conference-documents' , data.organisingConferenceDocuments[0].filename);
+            advertisingRowToBeUpdated.setAttribute('data-student-event-participation-documents' , data.studentEventParticipationDocuments[0].filename);
+            advertisingRowToBeUpdated.setAttribute('data-newspaper-article-documents' , data.newspaperArticleDocuments[0].filename);
+            
+            console.log('data.facultyRecognition ==>>', data.updatedAdvertisingData.facultyRecognition)
+            }
+            $('#branding-advertising-modal').modal('hide');
+            alert('data updated successfully');
+        })
+
+    })
+</script>
+<!-- footer section -->
+<%- include('./partials/footer') %>
+<%- include('./partials/footer-end') %>
+           
