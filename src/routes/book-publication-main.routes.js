@@ -1,5 +1,5 @@
 const express = require('express');
-const multer = require('multer');
+const upload = require('../../multer');
 
 
 const { asyncErrorHandler } = require('../middleware/error.middleware');
@@ -7,18 +7,6 @@ const bookPublicationMainController = require('../controllers/book-publication-m
 const bookPublicationController = require('../controllers/book-publication.controller');
 const editedBookPublication = require('../controllers/edited-book.controller');
 const bookChapterController = require('../controllers/book-chapter.controller')
-
-// Set up multer for handling file uploads
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, 'uploads/');
-    },
-    filename: function (req, file, cb) {
-        cb(null, file.originalname);
-    }
-});
-
-const upload = multer({ storage: storage });
 
 
 const router = express.Router();

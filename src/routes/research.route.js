@@ -1,21 +1,9 @@
 const express = require('express');
-const multer = require('multer');
-
- // Set up multer for handling file uploads
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, 'uploads/'); // destination folder
-    },
-    filename: function (req, file, cb) {
-        // Define the filename as the original filename
-        cb(null, file.originalname);
-    }
-});
-
-const upload = multer({ storage: storage });
+const upload = require('../../multer');
 
 
 const { asyncErrorHandler } = require('../middleware/error.middleware');
+
 const researchController = require('../controllers/research.controller');
 const caseStudyController = require('../controllers/case-study.controller');
 const journalController = require('../controllers/journal-paper.controller');
