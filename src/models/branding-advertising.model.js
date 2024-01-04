@@ -75,9 +75,9 @@ module.exports.brandingAndadvertisingview = async(advertisingId) => {
 
 module.exports.brandingAndadvertisingDelete = async(advertisingId) => {
     let sql = {
-        text : `DELETE  FROM branding_and_advertising WHERE id = $1`,
+        text : `DELETE FROM branding_and_advertising WHERE id = $1`,
         values : [advertisingId]
     }
     
-    return autoDbW.query(sql)
+    return autoDbW.query(sql);
 }

@@ -8,9 +8,8 @@ module.exports.fetchBrandingandAdvertisingData = async() => {
 }
 
 module.exports.insertBrandingAdvertising = async(body , files) => {
-    const advertisingData = body
-    console.log('data in service ==>>', advertisingData);
-    const  facultyRecognitionDocuments = files.facultyRecognitionDocuments[0].filename;
+    const advertisingData = body;
+    const facultyRecognitionDocuments = files.facultyRecognitionDocuments[0].filename;
     const facultyAwardDocuments = files.facultyAwardDocuments[0].filename;
     const staffAwardDocuments = files.staffAwardDocuments[0].filename;
     const alumniAwardDocuments = files.alumniAwardDocuments[0].filename;
@@ -25,6 +24,7 @@ module.exports.insertBrandingAdvertising = async(body , files) => {
     const brandingAndAdvertising = await brandingAndAdvertisingModels.insertBrandingAndAdvertisingData(advertisingData, facultyRecognitionDocuments,
          facultyAwardDocuments, staffAwardDocuments, alumniAwardDocuments, studentAwardDocuments, internationalLinkageDocuments, conferenceParticipationDocuments, organisingConferenceDocuments,
          studentEventParticipationDocuments, newspaperArticleDocuments);
+
     console.log('brandingAndAdvertising id ==>>', brandingAndAdvertising.rows[0].id)
     if(brandingAndAdvertising && brandingAndAdvertising.rows[0].id){
         return brandingAndAdvertising.rows[0].id;
@@ -58,7 +58,6 @@ module.exports.updateBrandingAndAdvertising = async (advertisingId, updatedAdver
 }
 
 module.exports.viewBrandingadvertising = async(advertisingId) => {
-    console.log('id in service ==>>', advertisingId);
     const viewAdvertisingData = await brandingAndAdvertisingModels.brandingAndadvertisingview(advertisingId);
     console.log('data in service ==>>', viewAdvertisingData.rows)
     return viewAdvertisingData.rows

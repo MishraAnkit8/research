@@ -14,7 +14,8 @@ module.exports.insertBrandingAndAdvertising = async(req, res, next) => {
     console.log('data comming from frontend ==>>', advertisingData);
     console.log('files ==>>', res.files);
     const {facultyRecognitionDocuments, facultyAwardDocuments, staffAwardDocuments, alumniAwardDocuments, studentAwardDocuments, internationalLinkageDocuments, conferenceParticipationDocuments, organisingConferenceDocuments,
-            studentEventParticipationDocuments, newspaperArticleDocuments} = req.files
+            studentEventParticipationDocuments, newspaperArticleDocuments} = req.files;
+
     const brandingAndAdvertising = await brandingAndAdvertisingServices.insertBrandingAdvertising(req.body, req.files);
     console.log('brandingAndAdvertising ==>>', brandingAndAdvertising)
     if(brandingAndAdvertising){
@@ -39,7 +40,7 @@ module.exports.insertBrandingAndAdvertising = async(req, res, next) => {
 module.exports.updateBrandingAdvertising = async(req, res, next) => {
     const updatedAdvertisingData = req.body;
     const advertisingId = req.body.advertisingId;
-    console.log('data comming from frontend ==>>', updatedAdvertisingData);
+    console.log('updated advertising data ==>>', updatedAdvertisingData);
     const {facultyRecognitionDocuments, facultyAwardDocuments, staffAwardDocuments, alumniAwardDocuments, studentAwardDocuments, internationalLinkageDocuments, conferenceParticipationDocuments, organisingConferenceDocuments,
             studentEventParticipationDocuments, newspaperArticleDocuments} = req.files
     const updatedAdvertising = await brandingAndAdvertisingServices.updateBrandingAndAdvertising(advertisingId, updatedAdvertisingData , req.files);
@@ -58,8 +59,6 @@ module.exports.updateBrandingAdvertising = async(req, res, next) => {
             organisingConferenceDocuments,
             studentEventParticipationDocuments,
             newspaperArticleDocuments
-
-
         })
     }
     

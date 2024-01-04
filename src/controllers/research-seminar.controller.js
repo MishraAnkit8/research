@@ -1,7 +1,7 @@
 
 const researchSeminarServices = require('../services/research-seminar.service');
 
-// controller for fetching
+
 module.exports.renderResearchSeminar = async (req, res, next) => {
     const seminarList = await researchSeminarServices.renderResearchSeminar();
     res.render('research-seminar', {
@@ -9,7 +9,7 @@ module.exports.renderResearchSeminar = async (req, res, next) => {
     });
 };
 
-// controller for inserting
+
 module.exports.createResearchSeminar = async (req, res, next) => {
     console.log('data in controller', req.body);
     const researchSeminarData = await researchSeminarServices.insertResearchSeminar(req.body) ;
@@ -28,7 +28,7 @@ module.exports.createResearchSeminar = async (req, res, next) => {
     };
 };
 
-// controller for deleting
+
 module.exports.delResearchSeminar = async (req, res, next) => {
     const seminarId= req.body.seminarId;
     console.log('controller seminarId', seminarId) 
@@ -48,7 +48,7 @@ module.exports.delResearchSeminar = async (req, res, next) => {
     };
 };
  
-// controller for updating 
+
 module.exports.updateResearchSeminar = async (req, res, next) => {
     const updateResearchSeminar = req.body;
     const seminarId= req.body.seminarId;

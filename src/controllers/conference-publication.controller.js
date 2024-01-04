@@ -4,7 +4,7 @@ const path = require('path');
 
 module.exports.renderConferencePage = async(req, res, next) => {
     const fileuploadStatus = req.app.locals.fileuploadStatus;
-    console.log('fileuploadStatus===>',req.app.locals.fileuploadStatus );
+    console.log('fileuploadStatus===>',req.app.locals.fileuploadStatus);
     const docuploadStatus = req.app.locals.docuploadStatus;
     const htmlVal = res.app.locals.htmlVal;
     const errorMsg = res.app.locals.errorMsg;

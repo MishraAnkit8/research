@@ -15,7 +15,7 @@ module.exports.fetchPatentSubMissionForms = async() => {
 module.exports.insertPatentData = async(patentData, file) => {
     const {typeOfInvention, titleOfInvention, patentStage, achiveSdg, applicationNum, date, isPresentor} = patentData;
    
-    console.log('file path', file)
+    console.log('file ==>', file)
     console.log("patentData::::::", patentData)
     let sql = {
         text : `INSERT INTO  patent_submissions (type_of_invention, title_of_invention,  patent_stage, achive_sdg, application_no, date, is_presenter, patent_file) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id`,

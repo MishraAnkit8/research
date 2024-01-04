@@ -1,6 +1,6 @@
 const journalPaperService = require('../services/journal-paper.service');
 
-// controller for fetching
+
 module.exports.renderJournalPaper = async (req, res, next) => {
     const journalList = await journalPaperService.renderJournalPaper();
     res.render('journal-paper', {
@@ -8,7 +8,7 @@ module.exports.renderJournalPaper = async (req, res, next) => {
     });
 };
 
-// controller for inserting
+
 module.exports.createJournalPaper = async (req, res, next) => {
     console.log('data in controller', req.body);
     const journalPaperData = await journalPaperService.insertJournalPapper(req.body) ;
@@ -27,7 +27,7 @@ module.exports.createJournalPaper = async (req, res, next) => {
     };
 };
 
-// controller for deleting
+
 module.exports.delJournalPaper = async (req, res, next) => {
     const journalPaperId = req.body.journalPaperId;
     console.log('controller journalPaperId', journalPaperId) 
@@ -47,7 +47,7 @@ module.exports.delJournalPaper = async (req, res, next) => {
     };
 };
  
-// controller for updating 
+
 module.exports.updateJournalPaper = async (req, res, next) => {
     const updateJournalDetails = req.body;
     const journalPaperId = req.body.journalPaperId;
@@ -71,7 +71,7 @@ module.exports.updateJournalPaper = async (req, res, next) => {
 
 module.exports.viewJournalPaper = async(req, res, next) => {
     const journalPaperId = req.body.journalPaperId;
-    console.log('journalPaperId for View ', journalPaperId);
+    console.log('journalPaperId for View' , journalPaperId);
     console.log('viewDataDetails ==>', req.body);
     const viewJournalDetails = await journalPaperService.viewJournalPaper({journalPaperId});
     console.log(' view data=>>', viewJournalDetails)

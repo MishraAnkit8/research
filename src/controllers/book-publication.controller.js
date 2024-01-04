@@ -31,7 +31,7 @@ module.exports.updateBookPublication = async(req, res, next) => {
     console.log('id ==', bookPublicationId )
     const updatedBookPublicationData = req.body;
     const updatedFile = req.file.filename;
-    const updatedBookPublication = await bookPublicationService.updateBookPublication( bookPublicationId , updatedBookPublicationData, updatedFile);
+    const updatedBookPublication = await bookPublicationService.updateBookPublication( bookPublicationId, updatedBookPublicationData, updatedFile);
     if(updatedBookPublication.status === 'done'){
         res.status(200).send({
             status : 'done',

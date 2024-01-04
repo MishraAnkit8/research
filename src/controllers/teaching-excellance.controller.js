@@ -25,7 +25,6 @@ module.exports.insertTeachingExecellance = async(req, res, next) => {
             invitingFacultyFile : invitingFacultyFile,
             programOrientationFile : programOrientationFile,
             teachingData : teachingExecellance
-
         })
     }
 };
@@ -45,8 +44,7 @@ module.exports.updatTeachingData = async(req, res, next) => {
             workShopFile : workShopFile, 
             invitingFacultyFile : invitingFacultyFile,
             programOrientationFile : programOrientationFile,
-            updatedTeachingExecellance : updatedTeachingExecellance,
-
+            updatedTeachingExecellance : updatedTeachingExecellance
         })
     }
 }

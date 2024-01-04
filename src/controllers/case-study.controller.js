@@ -9,7 +9,7 @@ module.exports.renderCaseStudy = async(req, res, next) => {
 };
 
 module.exports.insertCaseStudies  = async(req, res, next) => {
-    console.log('caseStudy inserted data ==>>', req.body);
+    console.log('caseStudy template data ==>>', req.body);
     const insertCaseStudy = await caseStudyService.insertCaseStudies(req.body);
     console.log('caseStudyId ==>>' , insertCaseStudy.rows[0].id);
     if(insertCaseStudy && insertCaseStudy.rows[0].id){
@@ -66,7 +66,7 @@ module.exports.updatedCaseStudies = async(req, res, next) => {
     const updatedCaseStudies = req.body;
     const caseStudyId = req.body.caseStudyId;
     console.log('caseId For Updation ::', caseStudyId);
-    const updatdeCaseStudiesData = await caseStudyService.updatedCaseStudies({caseStudyId , updatedCaseStudies});
+    const updatdeCaseStudiesData = await caseStudyService.updatedCaseStudies({caseStudyId, updatedCaseStudies});
     if(updatdeCaseStudiesData.status === 'done'){
         res.status(200).send({
             status : 'done',

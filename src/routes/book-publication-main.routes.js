@@ -8,10 +8,10 @@ const bookPublicationController = require('../controllers/book-publication.contr
 const editedBookPublication = require('../controllers/edited-book.controller');
 const bookChapterController = require('../controllers/book-chapter.controller')
 
- // Set up multer for handling file uploads
+// Set up multer for handling file uploads
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'uploads/'); // destination folder
+        cb(null, 'uploads/');
     },
     filename: function (req, file, cb) {
         cb(null, file.originalname);
@@ -19,6 +19,8 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
+
+
 const router = express.Router();
 
 // book publication main
