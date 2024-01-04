@@ -1,4 +1,3 @@
-const { updatedConsultantData } = require('../controllers/research-project-consultancy.controller');
 const researchCunsultancyModel = require('../models/research-consultancy.models');
 
 
