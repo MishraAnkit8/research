@@ -167,7 +167,7 @@
 <div class="modal fade " id="case-study-modal" tabindex="-1" role="dialog" aria-labelledby="case-study"
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable modal-lg modal-fullscreen p-5" role="document">
-        <div class="modal-content">
+        <div class="modal-content validate-input">
             <div class="modal-header">
                 <h5 class="modal-title" id="case-study">case study </h5>
                 <div class="close" data-dismiss="modal" aria-label="Close">
@@ -177,11 +177,10 @@
             <div class="modal-body">
                 <div class="row">
                     <!-- author's first name -->
-                    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <div class="form-group col">
-                            <label for="firstname" class="form-label  fw-bold">Author's first name</label>
-                            <input type="text" name="author-first-name" id="author-first-name" class="form-control"
-                                placeholder="First name">
+                            <label for="author-first-name" class="form-label  fw-bold">Author's first name</label>
+                            <input type="text" name="author-first-name" id="author-first-name" data-validate="isEmpty,isName" class="form-control" placeholder="First name" required>
                         </div>
                     </div>
 
@@ -387,6 +386,7 @@
 
 <!-- inline javascript -->
 <script>
+
     const caseStudiesDataList = document.getElementById('case-studies-data-list');
     const submitBtn = document.getElementById('submit-btn');
     const updateBtn = document.getElementById('update-btn');
@@ -412,11 +412,11 @@
         }
     })
     let caseStudyId , rowToBeUpdate;
-
-    submitBtn.addEventListener('click' , function(){
+    
+    const insertCaseStudy = async(url) => {
         console.log('clickeddd');
         const caseStudyData = {};
-        caseStudyData. authorsfirstName = document.getElementById('author-first-name').value;
+        caseStudyData.authorsFirstName = document.getElementById('author-first-name').value;
         caseStudyData.authorLastName = document.getElementById('author-last-name').value;
         caseStudyData.titleOfCaseStudy = document.getElementById('title-of-case-study').value;
         caseStudyData.edition = document.getElementById('edition').value;
@@ -435,7 +435,7 @@
             caseStudyData : caseStudyData
         }
 
-        fetch('/research/case-study/insert' , {
+        fetch(url , {
             method : 'POST',
             headers : {
                 'content-type' : 'application/json'
@@ -459,7 +459,7 @@
                 newCaseStudy.setAttribute('data-nmims-school-authors', caseStudyData.nmimsSchoolAuthors);
                 newCaseStudy.innerHTML = `
                         <td class="cell">${caseStudyId}</td>
-                        <td class="cell author-first-name">${caseStudyData.authorsfirstName}</td>
+                        <td class="cell author-first-name">${caseStudyData.authorsFirstName}</td>
                         <td class="cell author-last-name">${caseStudyData.authorLastName}</td>
                         <td class="cell title-of-case-study">${caseStudyData.titleOfCaseStudy}</td>
                         <td class="cell edition">${caseStudyData.edition}</td>
@@ -480,8 +480,16 @@
         .catch((error) => {
             console.log('ERROR' , error);
         })
-
-
+    }
+    submitBtn.addEventListener('click' , async function(){
+        const isValid = validateRequiredFormFields(submitBtn);
+            if (isValid) {
+                await insertCaseStudy('/research/case-study/insert');
+                console.log('data inserted successfully');
+            }
+            else {
+                alert('validation failed');
+            }
     });
 
     caseStudiesDataList.addEventListener('click' , async function(event) {
@@ -584,7 +592,7 @@
             const nmimsAuthors = rowToBeUpdate.getAttribute('data-nmims-authors');
             const nmimsCampusAuthors  = rowToBeUpdate.getAttribute('data-nmims-campus-authors');
             const nmimsSchoolAuthors = rowToBeUpdate.getAttribute('data-nmims-school-authors');
-            const authorsfirstName = rowToBeUpdate.querySelector('.author-first-name');
+            const authorsFirstName = rowToBeUpdate.querySelector('.author-first-name');
             const authorLastName = rowToBeUpdate.querySelector('.author-last-name');
             const titleOfCaseStudy = rowToBeUpdate.querySelector('.title-of-case-study');
             const edition = rowToBeUpdate.querySelector('.edition');
@@ -593,7 +601,7 @@
             const publicationYear = rowToBeUpdate.querySelector('.publication-year');
 
             //showing actually stored value  
-            document.getElementById('author-first-name').value = authorsfirstName.textContent;
+            document.getElementById('author-first-name').value = authorsFirstName.textContent;
             document.getElementById('author-last-name').value = authorLastName.textContent;
             document.getElementById('title-of-case-study').value = titleOfCaseStudy.textContent;
             document.getElementById('edition').value = edition.textContent;
@@ -627,7 +635,7 @@
 
         const updatedCaseStudies = {};
         updatedCaseStudies.caseStudyId = caseStudyId;
-        updatedCaseStudies.authorsfirstName = updatedName;
+        updatedCaseStudies.authorsFirstName = updatedName;
         updatedCaseStudies.authorLastName = updateLastName;
         updatedCaseStudies.pageNumber = updatedPage;
         updatedCaseStudies.edition = updatedEdition;
@@ -655,7 +663,7 @@
             console.log('data ===>>>' , data);
             if(data.status === 'done'){
                 console.log('caseID >>>', caseStudyId);
-                rowToBeUpdate.querySelector('.author-first-name').innerText = updatedCaseStudies.authorsfirstName;
+                rowToBeUpdate.querySelector('.author-first-name').innerText = updatedCaseStudies.authorsFirstName;
                 rowToBeUpdate.querySelector('.author-last-name').innerText = updatedCaseStudies.authorLastName;
                 rowToBeUpdate.querySelector('.edition').innerText = updatedCaseStudies.edition;
                 rowToBeUpdate.querySelector('.volume-number').innerText = updatedCaseStudies.volumeNumber;
