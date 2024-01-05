@@ -147,9 +147,9 @@
 <div class="modal fade " id="conference-publication-modal" tabindex="-1" role="dialog" aria-labelledby="case-study"
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable modal-lg modal-fullscreen p-5" role="document">
-        <div class="modal-content">
+        <div class="modal-content validate-input">
             <div class="modal-header">
-                <h5 class="modal-title" id="case-study">Conference Publication </h5>
+                <h5 class="modal-title" id="conference-publication">Conference Publication </h5>
                 <div class="close" data-dismiss="modal" aria-label="Close">
                     <button aria-hidden="true"><i class="fas fa-times fa-2x"></i></button>
                 </div>
@@ -157,12 +157,9 @@
             <div class="modal-body">
                 <div class="row">
                     <!--  Title of the Paper -->
-                    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <div class="form-group col">
-                            <label for="titlOfProject" class="form-label  fw-bold">Title of the Paper</label>
-                            <input type="text" name="title-project" id="title-of-paper" class="form-control"
-                                placeholder="Title of Project" />
-                        </div>
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="title-of-paper" class="form-label  fw-bold">Title of the Paper</label>
+                        <input type="text" name="title-project" id="title-of-paper" class="form-control" placeholder="Title of Project" required/>
                     </div>
                     <!-- Name and Place of Conference -->
                     <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
@@ -539,7 +536,14 @@
 
     }
     submitBtn.addEventListener('click', async () => {
-        await insertConferencePublicationForm('/research/conference-publication/insert');
+        const isValid = validateRequiredFormFields(submitBtn);
+            if (isValid) {
+                await insertConferencePublicationForm('/research/conference-publication/insert');
+                console.log('data inserted successfully');
+            }
+            else {
+                alert('validation failed');
+            }
     });
 
     // for delete
