@@ -1,244 +1,266 @@
-
 function validateRequiredFormFields(actionBtn) {
-  let isValid = true;
-  let requiredWrapper = actionBtn.closest('.validate-input');
-  console.log('requiredWrapper ==>>', requiredWrapper);
-  let formGroupElems = requiredWrapper.querySelectorAll('input[required], select[required], textarea[required]');
+    let validationState = true;
+    let validateInputWrapper = actionBtn.closest('.validate-input');
+    console.log('validateInputWrapper' , validateInputWrapper)
+    let elemToBeValidated = selectElemToBeValidated(validateInputWrapper);
 
-  console.log('formGroupElems ==>>', formGroupElems);
+    for (let elem of elemToBeValidated) {
+        let isValidElem = true;
+        const elemVal = elem.value.trim();
+        console.log('elemVal ==>>', elemVal);
+        const formGroup = elem.closest('.form-group');
+        const isRequired = elem.required;
+        const errorElem = formGroup.querySelector('.error-msg');
+        const validateArr = elem.dataset.validate ? elem.dataset.validate.split(',') : [];
+        const errorMsg = elem.dataset.errMsg ? elem.dataset.errMsg : 'Please enter a valid value';
 
-  formGroupElems.forEach(function (elem) {
-      const elemVal = elem.value;
-      console.log('elemVal ==>>', elemVal);
 
-      const formGroup = elem.closest('.form-group');
-      const hasError = formGroup.querySelector('.error-msg');
-      const hasErrorClass = formGroup.classList.contains('error');
+        if (!isRequired && elemVal === '') {
+            continue;
+        }
 
-      // Check if data-validate attribute is present
-      const validateAttr = elem.getAttribute('data-validate');
-      const validateArr = validateAttr ? validateAttr.split(',') : [];
-
-      console.log('validateArr >>> ', validateArr);
-
-      validateArr.forEach(validate => {
-        if (validate === 'email') {
-            if (!validateEmail(elemVal)) {
-                isValid = false;
-
-                if (!hasError && !hasErrorClass) {
-                    formGroup.append(`<span class="error-msg">Please enter a valid email address</span>`);
-                    formGroup.addClass('error');
-                }
-            } else if (validateEmail(elemVal) && (hasError || hasErrorClass)) {
-                formGroup.find('.error-msg').remove();
-                formGroup.removeClass('error');
-            }
-        } else if (validate === 'phone') {
-            if (!validatePhone(elemVal)) {
-                isValid = false;
-
-                if (!hasError && !hasErrorClass) {
-                    formGroup.append(`<span class="error-msg">Please enter a valid phone number</span>`);
-                    formGroup.addClass('error');
-                }
-            } else if (validatePhone(elemVal) && (hasError || hasErrorClass)) {
-                formGroup.find('.error-msg').remove();
-                formGroup.removeClass('error');
-            }
-        } else if (validate === 'password') {
-            if (!validatePassword(elemVal)) {
-                isValid = false;
-
-                if (!hasError && !hasErrorClass) {
-                    formGroup.append(`<span class="error-msg">Please enter a valid password</span>`);
-                    formGroup.addClass('error');
-                }
-            } else if (validatePassword(elemVal) && (hasError || hasErrorClass)) {
-                formGroup.find('.error-msg').remove();
-                formGroup.removeClass('error');
-            }
-        } else if (validate === 'confirm-password') {
-            const passwordElem = $elem.closest('.validate-input').find('input[data-validate="password"]');
-            const passwordElemVal = passwordElem.val();
-
-            if (!validateConfirmPassword(elemVal, passwordElemVal)) {
-                isValid = false;
-
-                if (!hasError && !hasErrorClass) {
-                    formGroup.append(`<span class="error-msg">Confirm password does not match</span>`);
-                    formGroup.addClass('error');
-                }
-            } else if (validateConfirmPassword(elemVal, passwordElemVal) && (hasError || hasErrorClass)) {
-                formGroup.find('.error-msg').remove();
-                formGroup.removeClass('error');
-            }
-        } else if (validate === 'number') {
-            if (!validateNumber(elemVal)) {
-                isValid = false;
-
-                if (!hasError && !hasErrorClass) {
-                    formGroup.append(`<span class="error-msg">Please enter a valid number</span>`);
-                    formGroup.addClass('error');
+        for (let validate of validateArr) {
+            if (validate === 'isExist') {
+                const isValid = isExist(elemVal);
+                if (!isValid) {
+                    isValidElem = false;
+                    validationState = false;
+                    break;
                 }
             }
+
+            if (validate === 'isNumber') {
+                const isValid = isNumber(elemVal);
+                if (!isValid) {
+                    isValidElem = false;
+                    validationState = false;
+                    break;
+                }
+            }
+
+            if (validate === 'isAlphabet') {
+                const isValid = isAlphabet(elemVal);
+                if (!isValid) {
+                    isValidElem = false;
+                    validationState = false;
+                    break;
+                }
+            }
+
+            if (validate === 'isAlphabeticWords') {
+                const isValid = isAlphabeticWords(elemVal);
+                if (!isValid) {
+                    isValidElem = false;
+                    validationState = false;
+                    break;
+                }
+            }
+
+            if (validate === 'isAlphaNumeric') {
+                const isValid = isAlphaNumeric(elemVal);
+                if (!isValid) {
+                    isValidElem = false;
+                    validationState = false;
+                    break;
+                }
+            }
+
+            if (validate === 'isEmail') {
+                const isValid = isEmail(elemVal);
+                if (!isValid) {
+                    isValidElem = false;
+                    validationState = false;
+                    break;
+                }
+            }
+
+            //isLength:min:max
+            if (validate.includes('isLength')) {
+                const lengthArr = validate.split(':');
+                const min = lengthArr[1];
+                const max = lengthArr[2];
+                const isValid = isLength(elemVal, min, max);
+                if (!isValid) {
+                    isValidElem = false;
+                    validationState = false;
+                    break;
+                }
+            }
+
+            if (validate === 'isNotSpecialChar') {
+                const isValid = isNotSpecialChar(elemVal);
+                if (!isValid) {
+                    isValidElem = false;
+                    validationState = false;
+                    break;
+                }
+            }
+
+        };
+
+        toggleErrorState(formGroup, errorMsg, errorElem, isValidElem);
+    }
+
+    return validationState;
+}
+
+function selectElemToBeValidated(validateInputWrapper) {
+    const allElements = validateInputWrapper.querySelectorAll('input, select, textarea');
+    const elemToBeValidated = [];
+
+    allElements.forEach(function (element) {
+        const dataValidate = element.getAttribute('data-validate');
+        if (dataValidate !== null && dataValidate !== '') {
+            elemToBeValidated.push(element);
         }
     });
 
-      if (isEmpty(elemVal)) {
-          isValid = false;
-
-          if (!hasError && !hasErrorClass) {
-              formGroup.insertAdjacentHTML('beforeend', `<span class="error-msg">This field is required</span>`);
-              formGroup.classList.add('error');
-          }
-      } else if (!isEmpty(elemVal) && (hasError || hasErrorClass)) {
-          formGroup.querySelector('.error-msg').remove();
-          formGroup.classList.remove('error');
-      }
-  });
-
-  return isValid;
+    return elemToBeValidated;
 }
 
-function isNumber(input) {
-  if (!input || input === '') {
-      return false;
-  }
+function toggleErrorState(formGroup, errorMsg, errorElem, isValidElem) {
+    console.log('errorElem', errorElem, 'isValid', isValidElem);
+    if (!errorElem && !isValidElem) {
+        console.log('Adding error message');
+        const errorDiv = document.createElement('div');
+        errorDiv.classList.add('error-msg');
+        errorDiv.innerText = errorMsg;
+        formGroup.appendChild(errorDiv);
+        formGroup.classList.add('error');
+    } else if (errorElem && isValidElem) {
+        console.log('Removing error message');
+        formGroup.removeChild(errorElem);
+        formGroup.classList.remove('error');
+    }
+}
 
-  for (let i = 0; i < input.length; i++) {
-      const charCode = input.charCodeAt(i);
-      if (charCode < 48 || charCode > 57) {
-          return false;
-      }
-  }
-  return true;
+
+
+
+function isNumber(input) {
+    if (!input || input === '') {
+        return false;
+    }
+
+    for (let i = 0; i < input.length; i++) {
+        const charCode = input.charCodeAt(i);
+        if (charCode < 48 || charCode > 57) {
+            return false;
+        }
+    }
+    return true;
 }
 
 function isAlphabet(input) {
-  if (!input || input.trim() === '') {
-      return false;
-  }
+    if (!input || input.trim() === '') {
+        return false;
+    }
 
-  for (let i = 0; i < input.length; i++) {
-      const charCode = input.charCodeAt(i);
-      if (
-          !(charCode === 32 || (charCode >= 65 && charCode <= 90) || (charCode >= 97 && charCode <= 122))
-      ) {
-          return false;
-      }
-  }
-  return true;
+    for (let i = 0; i < input.length; i++) {
+        const charCode = input.charCodeAt(i);
+        if (
+            !(charCode === 32 || (charCode >= 65 && charCode <= 90) || (charCode >= 97 && charCode <= 122))
+        ) {
+            return false;
+        }
+    }
+    return true;
 }
 
 function isAlphabeticWords(input) {
-  if (!input || input.trim() === '') {
-      return false;
-  }
+    if (!input || input.trim() === '') {
+        return false;
+    }
 
-  const words = input.split(' ');
+    const words = input.split(' ');
 
-  for (const word of words) {
-      for (let i = 0; i < word.length; i++) {
-          const charCode = word.charCodeAt(i);
-          if ((charCode < 65 || charCode > 90) && (charCode < 97 || charCode > 122)) {
-              return false;
-          }
-      }
-  }
+    for (const word of words) {
+        for (let i = 0; i < word.length; i++) {
+            const charCode = word.charCodeAt(i);
+            if ((charCode < 65 || charCode > 90) && (charCode < 97 || charCode > 122)) {
+                return false;
+            }
+        }
+    }
 
-  return true;
+    return true;
 }
 
 function isAlphaNumeric(input) {
-  if (!input || input === '') {
-      return false;
-  }
-
-  for (let i = 0; i < input.length; i++) {
-      const charCode = input.charCodeAt(i);
-      if (
-          (charCode < 48 || charCode > 57) && // Numeric characters
-          (charCode < 65 || charCode > 90) && // Uppercase letters
-          (charCode < 97 || charCode > 122)   // Lowercase letters
-      ) {
-          return false;
-      }
-  }
-  return true;
-}
-function isString(input) {
-  if(!input || input === ''){
-    return false
-  }
-  console.log('input ==>>', input);
-  console.log('input length ==>>', input.length);
-  for (let i = 0; i < input.length; i++) {
-    const char = input[i];
-    if (isNaN(parseInt(char, 10))) {
-        return true; // Non-numeric character found
+    if (!input || input === '') {
+        return false;
     }
+
+    for (let i = 0; i < input.length; i++) {
+        const charCode = input.charCodeAt(i);
+        if (
+            (charCode < 48 || charCode > 57) && // Numeric characters
+            (charCode < 65 || charCode > 90) && // Uppercase letters
+            (charCode < 97 || charCode > 122)   // Lowercase letters
+        ) {
+            return false;
+        }
+    }
+    return true;
 }
-  return false;
-}
+
 function isEmail(input) {
-  if (!input || input === '') {
-      return false;
-  }
+    if (!input || input === '') {
+        return false;
+    }
 
-  // Check for a valid format
-  if (input.indexOf('@') === -1) {
-      return false;
-  }
+    // Check for a valid format
+    if (input.indexOf('@') === -1) {
+        return false;
+    }
 
-  const parts = input.split('@');
-  if (parts.length !== 2 || parts[0].length === 0 || parts[1].length === 0) {
-      return false;
-  }
+    const parts = input.split('@');
+    if (parts.length !== 2 || parts[0].length === 0 || parts[1].length === 0) {
+        return false;
+    }
 
-  // Check the domain part
-  const domainParts = parts[1].split('.');
-  if (domainParts.length < 2) {
-      return false;
-  }
-  for (const part of domainParts) {
-      if (part.length === 0) {
-          return false;
-      }
-  }
+    // Check the domain part
+    const domainParts = parts[1].split('.');
+    if (domainParts.length < 2) {
+        return false;
+    }
+    for (const part of domainParts) {
+        if (part.length === 0) {
+            return false;
+        }
+    }
 
-  return true;
+    return true;
 }
 
-function isEmpty(input) { 
-  console.log('isEmpty there is no data ==>>',isEmpty)
-  return input === undefined || input === null || input === '';
+function isEmpty(input) {
+    return input === undefined || input === null || input === '';
 }
 
-function isNotExist(input) {
-  return input === undefined || input === null || input === '';
+function isExist(input) {
+    return !isEmpty(input);
 }
 
 function isNotSpecialChar(input) {
-  if (!input || input === '') {
-      return false;
-  }
+    if (!input || input === '') {
+        return false;
+    }
 
-  for (let i = 0; i < input.length; i++) {
-      const charCode = input.charCodeAt(i);
-      if (
-          (charCode >= 48 && charCode <= 57) || // Numeric characters
-          (charCode >= 65 && charCode <= 90) || // Uppercase letters
-          (charCode >= 97 && charCode <= 122) || // Lowercase letters
-          charCode === 32 // Space
-      ) {
-          return true;
-      }
-  }
-  return false;
+    for (let i = 0; i < input.length; i++) {
+        const charCode = input.charCodeAt(i);
+        if (
+            (charCode >= 48 && charCode <= 57) || // Numeric characters
+            (charCode >= 65 && charCode <= 90) || // Uppercase letters
+            (charCode >= 97 && charCode <= 122) || // Lowercase letters
+            charCode === 32 // Space
+        ) {
+            return true;
+        }
+    }
+    return false;
 }
 
 function isLength(input, minLength, maxLength) {
-  const length = input.trim().length;
-  return length >= minLength && length <= maxLength;
+    const length = input.trim().length;
+    return length >= minLength && length <= maxLength;
 }
