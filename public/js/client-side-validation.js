@@ -136,7 +136,6 @@ function toggleErrorState(formGroup, errorMsg, errorElem, isValidElem) {
 
 
 
-
 function isNumber(input) {
     if (!input || input === '') {
         return false;
