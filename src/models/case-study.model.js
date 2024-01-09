@@ -13,7 +13,8 @@ module.exports.fetchCaseStudy = async() =>{
     return autoDbR.query(sql);
 };
 
-module.exports.insertDataIntoCaseStudies = ({caseStudyData}) => {
+module.exports.insertDataIntoCaseStudies = (caseStudyData) => {
+    console.log('caseStudyData in models ==>>', caseStudyData);
     const {authorsFirstName, authorLastName, titleOfCaseStudy, edition, volumeNumber, publisherName, publicationYear, pageNumber, urlOfCaseStudy,
                numberOfNmimsAuthors, nmimsAuthors, nmimsCampusAuthors, nmimsSchoolAuthors } = caseStudyData ;
     let sql = {
@@ -22,6 +23,7 @@ module.exports.insertDataIntoCaseStudies = ({caseStudyData}) => {
         values : [authorsFirstName, authorLastName, titleOfCaseStudy, edition, volumeNumber, publisherName, publicationYear, pageNumber, urlOfCaseStudy,
                  numberOfNmimsAuthors, nmimsAuthors, nmimsCampusAuthors, nmimsSchoolAuthors]
     }
+    console.log('sql ==>>', sql)
     return autoDbW.query(sql);
 }
 

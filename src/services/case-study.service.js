@@ -7,9 +7,9 @@ module.exports.createCaseStudy = async () => {
 }
 
 module.exports.insertCaseStudies = async (body) => {
-    const {caseStudyData} = body;
-    console.log('inserted data in service ==>>', body);
-    const createCaseStudies = await caseStudyModel.insertDataIntoCaseStudies({caseStudyData});
+    const caseStudyData = body;
+    console.log('inserted data in service ==>>', caseStudyData);
+    const createCaseStudies = await caseStudyModel.insertDataIntoCaseStudies(caseStudyData);
     return createCaseStudies ;
 }
 

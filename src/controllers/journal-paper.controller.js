@@ -11,6 +11,7 @@ module.exports.renderJournalPaper = async (req, res, next) => {
 
 module.exports.createJournalPaper = async (req, res, next) => {
     console.log('data in controller', req.body);
+    
     const journalPaperData = await journalPaperService.insertJournalPapper(req.body) ;
     console.log(" journalPaperData ===>" , journalPaperData);
     if(journalPaperData && journalPaperData.rows[0].id) {
