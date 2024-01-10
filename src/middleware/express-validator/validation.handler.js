@@ -1,10 +1,11 @@
 const { validationResult } = require('express-validator');
-const { invalidRequestError } = require('../../utils/error/error.handler');
+const { invalidRequestError } = require('../../../utils/error/error.handler');
+const { asyncErrorHandler } = require('../error.middleware');
 
 // common validation error handler
 module.exports.validationHandler = (req, res, next) => {
     const errors = validationResult(req);
-    console.log('errors ==>>', errors);
+
     if (!errors.isEmpty()) {
         const uniqueErrors = errors.errors.filter((item, index, arr) => {
             const isUnique = arr.findIndex((t) =>

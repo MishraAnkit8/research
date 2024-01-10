@@ -2,7 +2,7 @@ const express = require('express');
 const upload = require('../../multer');
 
 // middlewre for valiadtion and errorHandler
-const {validateOrg} = require('../middleware/data-validation');
+const {validateOrg} = require('../middleware/express-validator/case-study.validator');
 const { asyncErrorHandler } = require('../middleware/error.middleware');
 
 const bookPublicationMainController = require('../controllers/book-publication-main.controller');

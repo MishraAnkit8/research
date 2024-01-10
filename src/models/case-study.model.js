@@ -13,7 +13,7 @@ module.exports.fetchCaseStudy = async() =>{
     return autoDbR.query(sql);
 };
 
-module.exports.insertDataIntoCaseStudies = (caseStudyData) => {
+module.exports.insertDataIntoCaseStudies = ({caseStudyData}) => {
     console.log('caseStudyData in models ==>>', caseStudyData);
     const {authorsFirstName, authorLastName, titleOfCaseStudy, edition, volumeNumber, publisherName, publicationYear, pageNumber, urlOfCaseStudy,
                numberOfNmimsAuthors, nmimsAuthors, nmimsCampusAuthors, nmimsSchoolAuthors } = caseStudyData ;

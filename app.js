@@ -3,7 +3,7 @@ const useragent = require('express-useragent');
 const dotenv = require('dotenv');
 const cookieParser = require('cookie-parser');
 const fileUpload = require('express-fileupload');
-//  const { customErrorHandler } = require('./utils/error-handler');
+const { customErrorHandler } = require('./src/middleware/error.middleware');
 // const { requestLogger, addRequestId, attachChildLogger } = require('./src/middleware/logger');
 const router = require('./src/routes/index.route');
 
@@ -31,23 +31,24 @@ app.use(useragent.express());
 // app.use(attachChildLogger);
 
 // Middleware for handling CORS
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", 'Content-Type, Authorization, Content-Length, X-Requested-With');
-  res.header("Access-Control-Allow-Methods", "PUT, POST, GET, OPTIONS, DELETE");
-  next();
-});
+// app.use((req, res, next) => {
+//   res.header("Access-Control-Allow-Origin", "*");
+//   res.header("Access-Control-Allow-Headers", 'Content-Type, Authorization, Content-Length, X-Requested-With');
+//   res.header("Access-Control-Allow-Methods", "PUT, POST, GET, OPTIONS, DELETE");
+//   next();
+// });
 
 // Middleware for parsing cookies with a secret
 app.use(cookieParser(process.env.COOKIE_SECRET));
-
 
 // Register your routes and error handler
 app.use(router);
 // app.use(customErrorHandler);
 
-const port = process.env.APP_PORT || 3000;
+//Error Middleware Handler
+app.use(customErrorHandler);
 
+const port = process.env.APP_PORT || 3000;
 app.listen(port, () => {
   console.log(`Server started at port ${port}`);
 });

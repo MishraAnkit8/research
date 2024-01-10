@@ -4,7 +4,7 @@ const { DatabaseError } = require('pg');
 const { CustomError } = require('../../utils/error/CustomError');
 
 module.exports.customErrorHandler = (err, req, res, next) => {
-    req.logger.error({ err });
+    //req.logger.error({ err });
     console.log("======================= Error Start ==============================");
     console.log("req.reqId >>>>>>>>>>>>> ", req.reqId);
     console.log("err.moduleName >>>>>>>> ", err.moduleName);

@@ -1,5 +1,5 @@
 const caseStudyService = require('../services/case-study.service');
-const validator = require('../middleware/data-validation');
+const validator = require('../middleware/express-validator/case-study.validator');
 
 module.exports.renderCaseStudy = async(req, res, next) => {
     const caseStudiesDataList = await caseStudyService.createCaseStudy();
