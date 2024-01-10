@@ -5,6 +5,7 @@ const upload = require('../../multer');
 const { asyncErrorHandler } = require('../middleware/error.middleware');
 const { validateCaseStudy } = require('../middleware/express-validator/case-study.validator');
 const { validateJournalPaper } = require('../middleware/express-validator/journal-paper.validators');
+const { validateResearchSeminar } = require('../middleware/express-validator/research-seminar.validators')
 
 const researchController = require('../controllers/research.controller');
 const caseStudyController = require('../controllers/case-study.controller');
@@ -68,7 +69,7 @@ router.use('/book-publication-main', bookPublicationRoutes);
 //research-seminar
 
 router.get('/research-seminar', asyncErrorHandler(researchSeminarController.renderResearchSeminar))
-router.post('/research-seminar/insert', asyncErrorHandler(researchSeminarController.createResearchSeminar));
+router.post('/research-seminar/insert', validateResearchSeminar, asyncErrorHandler(researchSeminarController.createResearchSeminar));
 router.post('/research-seminar/update', asyncErrorHandler(researchSeminarController.updateResearchSeminar));
 router.post('/research-seminar/delete', asyncErrorHandler(researchSeminarController.delResearchSeminar));
 router.post('/research-seminar/view', asyncErrorHandler(researchSeminarController.viewResearchSeminar));

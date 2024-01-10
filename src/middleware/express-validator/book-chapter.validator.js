@@ -1,221 +1,152 @@
-const { check } = require("express-validator");
-const { validationHandler } = require("./validation.handler");
+// const { check } = require("express-validator");
+// const { validationHandler } = require("./validation.handler");
 
-//check if value is an integer
-const isInt = (value) => {
-  if (value && isNaN(value)) {
-    return false;
-  }
-  return true;
-};
+// //check if value is an integer
+// const isInt = (value) => {
+//   if (value && isNaN(value)) {
+//     return false;
+//   }
+//   return true;
+// };
 
-// validate org insert
-module.exports.validateJournalPaper = [
-  check("journalDetails", "No data to be inserted.")
-    .notEmpty()
-    .withMessage("journalDetails should not be empty"),
+// // validate org insert
+// module.exports.validateBookChapter = [
+//   check("bookChapter", "No data to be inserted.")
+//     .notEmpty()
+//     .withMessage("bookChapter should not be empty"),
 
-  check("journalDetails.year")
-    .notEmpty()
-    .withMessage("year  required")
-    .bail()
-    .isInt()
-    .withMessage("year shuold be integer"),
+//   check("bookChapter.authorFirstName")
+//     .notEmpty()
+//     .withMessage("author first name  required")
+//     .bail()
+//     .isString()
+//     .withMessage("author first name should be string")
+//     .isLength({ min: 2 }),
 
- check("journalDetails.school")
-    .notEmpty()
-    .withMessage("school name is required")
-    .bail()
-    .isString()
-    .withMessage("school name should be string")
-    .isLength({ min: 2 }), 
+//  check("bookChapter.authorLastName")
+//     .notEmpty()
+//     .withMessage("author last name is required")
+//     .bail()
+//     .isString()
+//     .withMessage("author last name should be string")
+//     .isLength({ min: 2 }), 
 
- check("journalDetails.campus")
-    .notEmpty()
-    .withMessage("campus is required")
-    .bail()
-    .isString()
-    .withMessage(" journal paper campus  should be string")
-    .isLength({ min: 5 }), 
+//  check("bookChapter.bookTitle")
+//     .notEmpty()
+//     .withMessage("book title is required")
+//     .bail()
+//     .isString()
+//     .withMessage(" book title  should be string")
+//     .isLength({ min: 5 }), 
      
- check("journalDetails.policyCadre")
-    .notEmpty()
-    .withMessage("policy cadre is required")
-    .bail()
-    .isString()
-    .withMessage("policy cadre  should be string"),
+//  check("bookChapter.edition")
+//     .notEmpty()
+//     .withMessage("edition is required")
+//     .bail()
+//     .isAlphanumeric()
+//     .withMessage("edition  should be alphaNumeric"),
 
- check("journalDetails.researchType")
-    .notEmpty()
-    .withMessage("research type is required")
-    .bail()
-    .isString()
-    .withMessage("researchType should be string"),
+//  check("bookChapter.isbnNo")
+//     .notEmpty()
+//     .withMessage("isbn no is required")
+//     .bail()
+//     .isInt()
+//     .withMessage("isbn no should be integer"),
 
- check("journalDetails.allAuthors")
-    .notEmpty()
-    .withMessage("all authors is required")
-    .bail()
-    .isString()
-    .withMessage("all Authors name should be string")
-    .isLength({ min: 2 }),
+//  check("bookChapter.editorName")
+//     .notEmpty()
+//     .withMessage("editor name is required")
+//     .bail()
+//     .isString()
+//     .withMessage("editor name should be string")
+//     .isLength({ min: 2 }),
 
- check("journalDetails.totalAuthors")
-    .notEmpty()
-    .withMessage("total authors is required")
-    .bail()
-    .isInt()
-    .withMessage("total authors should be integer"),
+//  check("bookChapter.chapterTitle")
+//     .notEmpty()
+//     .withMessage("chapter title is required")
+//     .bail()
+//     .isString()
+//     .withMessage("chapter title should be string")
+//     .isLength({ min : 5 }),
  
- check("journalDetails.nmimsAuthors")
-    .notEmpty()
-    .withMessage("nmims authors is required")
-    .bail()
-    .isString()
-    .withMessage("nmims authors should be string")
-    .isLength({ min: 2 }),
-
- check("journalDetails.nmimsAuthorsCount")
-    .notEmpty()
-    .withMessage("nmims authors count is required")
-    .bail()
-    .isInt()
-    .withMessage("nmims authors count should be integer"),
+//  check("bookChapter.volumeNumber")
+//     .notEmpty()
+//     .withMessage("volume number count is required")
+//     .bail()
+//     .isInt()
+//     .withMessage("volume number should be integer"),
     
- check("journalDetails.countOtherFaculty")
-    .notEmpty()
-    .withMessage("count other faculty  is required")
-    .bail()
-    .bail()
-    .isInt()
-    .withMessage("count other faculty should be integer"),
+//  check("bookChapter.publisherCategory")
+//     .notEmpty()
+//     .withMessage("publisher category  is required"),
     
- check("journalDetails.titleOfPaper")
-    .notEmpty()
-    .withMessage("title of paper is required")
-    .bail()
-    .isString()
-    .withMessage("title of paper  should be string")
-    .isLength({ min: 2 }), 
+//  check("bookChapter.pageNumber")
+//     .notEmpty()
+//     .withMessage("page number is required")
+//     .bail()
+//     .isInt()
+//     .withMessage("page numberr  should be integer"),
 
- check("journalDetails.journalName")
-    .notEmpty()
-    .withMessage("journal name is required")
-    .bail()
-    .isString()
-    .withMessage("journal name should be string")
-    .isLength({ min: 2 }), 
+//  check("bookChapter.publisherName")
+//     .notEmpty()
+//     .withMessage("publisher name is required")
+//     .bail()
+//     .isString()
+//     .withMessage("publisher name should be string")
+//     .isLength({ min: 2 }), 
 
- check("journalDetails.publisher")
-    .notEmpty()
-    .withMessage("publisher is required")
-    .bail()
-    .isString()
-    .withMessage("publisher  should be string")
-    .isLength({ min: 2 }), 
+//  check("bookChapter.publicationYear")
+//     .notEmpty()
+//     .withMessage("publication year is required")
+//     .bail()
+//     .isInt()
+//     .withMessage("publication year should be integer"),
 
-    check("journalDetails.volume")
-    .notEmpty()
-    .withMessage("volume is required")
-    .bail()
-    .isInt()
-    .withMessage("volume should be integer"),
+//  check("bookChapter.bookUrl")
+//     .notEmpty()
+//     .withMessage("book url is required")
+//     .bail()
+//     .isString()
+//     .withMessage("book url should be string")
+//     .isLength({ min : 5 }),
     
- check("journalDetails.iss")
-    .notEmpty()
-    .withMessage("iss is required")
-    .bail()
-    .bail()
-    .isInt()
-    .withMessage("iss should be integer"),
+//  check("bookChapter.doiBookId")
+//     .notEmpty()
+//     .withMessage("doi book id is required")
+//     .bail()
+//     .bail()
+//     .isInt()
+//     .withMessage("doi book id should be integer"),
     
- check("journalDetails.pages")
-    .notEmpty()
-    .withMessage("pages is required")
-    .bail()
-    .isInt()
-    .withMessage("pages  should be integer"),
+//  check("bookChapter.numberOfNmimsAuthors")
+//     .notEmpty()
+//     .withMessage("number of nmims authors is required")
+//     .bail()
+//     .isInt()
+//     .withMessage("number of nmims authors  should be integer"),
 
- check("journalDetails.issnNo")
-    .notEmpty()
-    .withMessage("issn No is required")
-    .bail()
-    .isInt()
-    .withMessage("issn  should be integer"),
-
- check("journalDetails.dateOfPublishing")
-    .notEmpty()
-    .withMessage(" date of publishing is required")
-    .bail()
-    .isInt()
-    .withMessage("date of publishing should be integer"), 
-
-    check("journalDetails.impactFactor")
-    .notEmpty()
-    .withMessage("impact factor is required")
-    .bail()
-    .isString()
-    .withMessage("impact factor  should be string")
-    .isLength({ min: 2 }), 
-
-    check("journalDetails.scsCiteScore")
-    .notEmpty()
-    .withMessage("scs cite score is required")
-    .bail()
-    .isInt()
-    .withMessage("scs cite score should be integer"),
+//  check("bookChapter.nmimsAuthors")
+//     .notEmpty()
+//     .withMessage("nmims authors is required")
+//     .bail()
+//     .isString()
+//     .withMessage("nmims authors is should be integer")
+//     .isLength({ min : 2 }),
     
- check("journalDetails.scsIndexed")
-    .notEmpty()
-    .withMessage("scs indexed is required")
-    .bail()
-    .isInt()
-    .withMessage("scs indexed should be integer"),
-    
- check("journalDetails.wosIndexed")
-    .notEmpty()
-    .withMessage("wos indexed is required")
-    .bail()
-    .isInt()
-    .withMessage("wos indexed  should be integer"),
+//  check("bookChapter.nmimsCampusAuthors")
+//     .notEmpty()
+//     .withMessage("nmims campus authors is required")
+//     .bail()
+//     .isString()
+//     .withMessage("nmims campus authors should be integer")
+//     .isLength({min : 5}),
 
- check("journalDetails.gsIndexed")
-    .notEmpty()
-    .withMessage("gs indexed is required")
-    .bail()
-    .isInt()
-    .withMessage("gs indexed  should be integer"),
+//  check("bookChapter.nmimsSchoolAuthors")
+//     .notEmpty()
+//     .withMessage("nmims school authors is required")
+//     .bail()
+//     .isString()
+//     .withMessage("webLink  should be string"),
 
- check("journalDetails.abcdIndexed")
-    .notEmpty()
-    .withMessage("abcd indexedis required")
-    .bail()
-    .isInt()
-    .withMessage("abcd indexed should be integer"), 
-
-    check("journalDetails.ugcIndexed")
-    .notEmpty()
-    .withMessage("ugc indexed is required")
-    .bail()
-    .bail()
-    .isInt()
-    .withMessage("ugc indexed should be integer"),
-    
- check("journalDetails.webLink")
-    .notEmpty()
-    .withMessage("webLink is required")
-    .bail()
-    .isString()
-    .withMessage("webLink  should be string"),
-
- check("journalDetails.uid")
-    .notEmpty()
-    .withMessage("uid is required")
-    .bail()
-    .isInt()
-    .withMessage("uid should be integer"),
-
-
-
-  validationHandler, // Handler for validation errors
-];
+//   validationHandler, // Handler for validation errors
+// ];
