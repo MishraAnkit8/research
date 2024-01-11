@@ -58,30 +58,23 @@
                         <th class="cell">Year</th>
                         <th class="cell">School</th>
                         <th class="cell">Campus</th>
-                        <th class="cell">Policy Cadre</th>
                         <th class="cell">Publisher</th>
-                        <th class="cell">All authors</th>
-                        <th class="cell">Total No. of Authors</th>
-                        <th class="cell">Name of NMIMS Authors</th>
+                        <th class="cell">Name of NMIMS Faculty</th>
                         <th class="cell">Journal Name</th>
                         <th class="cell">Action</th>
                     </thead>
                     <% seminarList .forEach(function(seminar) { %>
-                        <tr scope="row" data-count-other-faculty ="<%- seminar.count_other_faculty %>"   data-volume="<%- seminar.volume %>" 
+                        <tr scope="row"  data-volume="<%- seminar.volume %>" data-publisher-category="<%- seminar.publisher_category %>"
                             data-iss="<%- seminar.iss %>" data-pages="<%- seminar.pages %>" data-issn-no="<%- seminar.issn_no %>" data-scs-cite-score="<%- seminar.scs_cite_score %>"
                             data-impact-factor="<%- seminar.impact_factor %>" data-scs-indexed="<%- seminar.scs_indexed %>" data-wos-indexed="<%- seminar.wos_indexed %>"
                             data-gs-indexed="<%- seminar.gs_indexed %>" data-title-of-paper="<%- seminar.title_of_paper %>" data-abdc-indexed="<%- seminar.abdc_indexed %>" data-ugc-indexed="<%- seminar.ugc_indexed %>"
-                            data-web-link="<%- seminar.web_link %>" data-uid="<%- seminar.uid %>" data-date-of-publishing="<%- seminar.date_of_publishing %>"
-                            data-research-type="<%- seminar.research_type %>" data-nmims-authors-count="<%- seminar. nmims_authors_count%>"  >
+                            data-web-link="<%- seminar.web_link %>" data-uid="<%- seminar.uid %>" data-date-of-publishing="<%- seminar.date_of_publishing %>"  >
                             <td class="cell" data-seminar-id="<%- seminar.id %>"> <%- seminar.id %> </td>
                             <td class=" cell year"> <%- seminar.year %> </td>
                             <td class=" cell school"> <%- seminar.school %> </td>
                             <td class=" cell campus"> <%- seminar.campus %> </td>
-                            <td class=" cell policy-cadre"><%- seminar.policy_cadre %></td>
                             <td class=" cell publisher"><%- seminar.publisher %></td>
-                            <td class=" cell all-authors"><%- seminar.all_authors %></td>
-                            <td class=" cell total-authors"><%- seminar.total_authors %></td>
-                            <td class=" cell nmims-authors"><%- seminar.nmims_authors %></td>
+                            <td class=" cell nmims-faculty"><%- seminar.nmims_faculty %></td>
                             <td class=" cell journal-name"><%- seminar.journal_name %></td>
                             <td> 
                                 <a class=" view" data-seminar-id="<%- seminar.id %>"><i class="fa-solid fa-eye view" data-seminar-id="<%- seminar.id %>"></i></a>
@@ -170,31 +163,10 @@
                         <input type="text" name="campusname" id="campus" class="form-control" data-validate="isEmpty,isAlphabeticWords" placeholder="Name of Campus" required/>
                     </div>
 
-                    <!--Policy Cadre -->
+                    <!-- Name of NMIMS faculty -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="policy-cadre" class="form-label fw-bold">Policy Cadre:</label>
-                        <input type="text" name="policy-cadre" id="policy-cadre" data-validate="isEmpty,isString" class="form-control"
-                            placeholder="policyCadre" required/>
-                    </div>
-                    <!-- All authors -->
-                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="all-authors" class="form-label fw-bold">All authors</label>
-                        <input type="text" name="all-authors" id="all-authors" data-validate="isEmpty,isString" class="form-control" placeholder="All authors" required>
-                    </div>
-                    <!-- Total No. of Authors -->
-                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="total-authors" class="form-label fw-bold">Total No. of Authors</label>
-                        <input type="text" name="total-authors" id="total-authors" class="form-control" data-validate="isEmpty,isNumber" placeholder="Total No. of Authors" required>
-                    </div>
-                    <!-- Name of NMIMS Authors -->
-                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="nmims-authors" class="form-label fw-bold">Name of NMIMS Authors</label>
-                        <input type="text" name="nmims-authors" id="nmims-authors" data-validate="isEmpty,isAlphabeticWords" class="form-control" placeholder="Name of NMIMS Authors" required>
-                    </div>
-                    <!-- No. of NMIMS Authors -->
-                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="nmims-authors-count" class="form-label fw-bold">No. of NMIMS Authors</label>
-                        <input type="text" name="volumes" id="nmims-authors-count" data-validate="isEmpty,isNumber" class="form-control" placeholder="No. of NMIMS Authors" required>
+                        <label for="nmims-authors" class="form-label fw-bold">Name of NMIMS Faculty</label>
+                        <input type="text" name="nmims-faculty" id="nmims-faculty" data-validate="isEmpty,isAlphabeticWords" class="form-control" placeholder="Name of NMIMS Authors" required>
                     </div>
                     <!-- Journal Name -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
@@ -209,14 +181,20 @@
                         </label>
                         <input type="text" name="publisher" id="publisher" data-validate="isEmpty,isAlphabeticWords" class="form-control" required/>
                     </div>
-
-
-                    <!-- Count of Other Faculty -->
-                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="count-other-faculty" class="form-label fw-bold">Count of Other Faculty</label>
-                        <input type="text" name="count-other-faculty" id="count-other-faculty" data-validate="isEmpty,isNumber" class="form-control" placeholder="Count of Other Faculty" required/>
+                      <!-- Publisher Category  -->
+                   <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                    <label for="publisher-category" id="publisher-category" class="form-label fw-bold mb-3">Publisher Category</label><br>
+                    <div class="form-check-inline">
+                        <label for="inter-national" class="form-check-label">
+                            <input type="radio" class="form-check-input" id="inter-national" name="publisher-category" value="International"> International
+                        </label>
                     </div>
-
+                    <div class="form-check-inline">
+                        <label for="national" class="form-check-label">
+                            <input type="radio" class="form-check-input" id="national" name="publisher-category" value="National"> National
+                        </label>
+                    </div>
+                </div>
                     <!-- Volume -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="volume" class="form-label fw-bold">Volume (Vols)</label>
@@ -305,12 +283,6 @@
                         <label for="title-of-paper" class="form-label fw-bold">Title Of Paper</label>
                         <input type="text" name="titleOfPaper" id="title-of-paper" class="form-control" data-validate="isEmpty,isAlphabeticWords" placeholder="title-of-paper" required>
                     </div>
-                    <!-- Rsearch Type -->
-                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="research-type" class="form-label fw-bold">Rsearch Type</label>
-                        <input type="text" name="researchType" id="research-type" data-validate="isEmpty,isAlphabeticWords" class="form-control" placeholder="Research type">
-                    </div>
-
                 </div>
             </div>
             <div class="modal-footer">
@@ -548,21 +520,22 @@
             submitBtn.classList.remove('d-none');
             updateBtn.classList.add('d-none');
             // make input field empty
+            const publisherCategoryNational = document.getElementById('national');
+            const publisherCategoryInternational = document.getElementById('inter-national');
+           
             document.getElementById('year').value = '';
             document.getElementById('school').value = '';
             document.getElementById('campus').value = '';
-            document.getElementById('policy-cadre').value = '';
             document.getElementById('publisher').value = '';
-            document.getElementById('all-authors').value = '';
-            document.getElementById('total-authors').value = '';
-            document.getElementById('nmims-authors').value = '';
+            document.getElementById('nmims-faculty').value = '';
             document.getElementById('journal-name').value = '';
-            document.getElementById('count-other-faculty').value = '';
             document.getElementById('volume').value = '';
             document.getElementById('iss').value = '';
             document.getElementById('pages').value = '';
             document.getElementById('issn-no').value = '';
             document.getElementById('scs-cite-score').value = '';
+            publisherCategoryNational.checked = false;
+            publisherCategoryInternational.checked = false;
             document.getElementById('impact-factor').value = '';
             document.getElementById('scs-indexed').value = '';
             document.getElementById('wos-indexed').value = '';
@@ -573,8 +546,6 @@
             document.getElementById('uid').value = '';
             document.getElementById('date-of-publishing').value = '';
             document.getElementById('title-of-paper').value = '';
-            document.getElementById('research-type').value = '';
-            document.getElementById('nmims-authors-count').value = '';
         }
     })
 
@@ -587,13 +558,10 @@
         seminarDetails.year = document.getElementById('year').value;
         seminarDetails.school = document.getElementById('school').value;
         seminarDetails.campus = document.getElementById('campus').value;
-        seminarDetails.policyCadre = document.getElementById('policy-cadre').value;
         seminarDetails.publisher = document.getElementById('publisher').value;
-        seminarDetails.allAuthors = document.getElementById('all-authors').value;
-        seminarDetails.totalAuthors= document.getElementById('total-authors').value;
-        seminarDetails.nmimsAuthors = document.getElementById('nmims-authors').value;
+        seminarDetails. publisherCategory = document.querySelector('input[name="publisher-category"]:checked').value;
+        seminarDetails.nmimsfaculty = document.getElementById('nmims-faculty').value;
         seminarDetails.journalName = document.getElementById('journal-name').value;
-        seminarDetails.countOtherFaculty = document.getElementById('count-other-faculty').value;
         seminarDetails.volume = document.getElementById('volume').value;
         seminarDetails.iss= document.getElementById('iss').value;
         seminarDetails.pages = document.getElementById('pages').value;
@@ -609,8 +577,6 @@
         seminarDetails.uid = document.getElementById('uid').value;
         seminarDetails.dateOfPublishing = document.getElementById('date-of-publishing').value;
         seminarDetails.titleOfPaper = document.getElementById('title-of-paper').value;
-        seminarDetails.researchType = document.getElementById('research-type').value;
-        seminarDetails.nmimsAuthorsCount = document.getElementById('nmims-authors-count').value;
 
         // inserting data from frontEnd
         console.log('seminarDetails==>>',seminarDetails);
@@ -637,7 +603,6 @@
                     console.log('seminarId ==>', seminarId);
                     //insert new row to the journal_papers table 
                     const newResearchSeminar = document.createElement('tr');
-                    newResearchSeminar.setAttribute('data-count-other-faculty', seminarDetails.countOtherFaculty);
                     newResearchSeminar.setAttribute('data-volume', seminarDetails.volume);
                     newResearchSeminar.setAttribute('data-iss', seminarDetails.iss);
                     newResearchSeminar.setAttribute('data-pages', seminarDetails.pages);
@@ -651,20 +616,16 @@
                     newResearchSeminar.setAttribute('data-ugc-indexed', seminarDetails.ugcIndexed);
                     newResearchSeminar.setAttribute('data-web-link', seminarDetails.webLink);
                     newResearchSeminar.setAttribute('data-uid', seminarDetails.uid);
+                    newResearchSeminar.setAttribute('data-publisher-category' , seminarDetails.publisherCategory);
                     newResearchSeminar.setAttribute('data-date-of-publishing', seminarDetails.dateOfPublishing);
                     newResearchSeminar.setAttribute('data-title-of-paper', seminarDetails.titleOfPaper);
-                    newResearchSeminar.setAttribute('data-research-type', seminarDetails.researchType);
-                    newResearchSeminar.setAttribute('data-nmims-author-count', seminarDetails.nmimsAuthorsCount);
                     newResearchSeminar.innerHTML = `
                             <td >${seminarId}</td>
                             <td class="year">${seminarDetails.year}</td>
                             <td class="school">${seminarDetails.school}</td>
                             <td class="campus">${seminarDetails.campus}</td>
-                            <td class="all-authors">${seminarDetails.allAuthors} </td>
-                            <td class="total-authors">${seminarDetails.totalAuthors}</td>
-                            <td class="nmims-authors">${seminarDetails.nmimsAuthors}</td>
+                            <td class="nmims-authors">${seminarDetails.nmimsfaculty}</td>
                             <td class="journal-name">${seminarDetails.journalName}</td>
-                            <td class="policy-cadre">${seminarDetails.policyCadre}</td>
                             <td class="publisher">${seminarDetails.publisher}</td>
                             <td>
                                 <a class="view" data-seminar-id="${seminarId}"><i data-seminar-id="${seminarId}" class="fa-solid fa-eye view"></i></a>
@@ -735,13 +696,11 @@
             const year = seminarRowToBeUpdated.querySelector('.year');
             const school = seminarRowToBeUpdated.querySelector('.school');
             const campus = seminarRowToBeUpdated.querySelector('.campus');
-            const allAuthors = seminarRowToBeUpdated.querySelector('.all-authors');
-            const totalAuthors = seminarRowToBeUpdated.querySelector('.total-authors');
-            const nmimsAuthors = seminarRowToBeUpdated.querySelector('.nmims-authors');
+            const publisherCategoryNational = document.getElementById('national');
+            const publisherCategoryInternational = document.getElementById('inter-national');
+            const nmimsfaculty = seminarRowToBeUpdated.querySelector('.nmims-faculty');
             const journalName = seminarRowToBeUpdated.querySelector('.journal-name');
-            const policyCadre = seminarRowToBeUpdated.querySelector('.policy-cadre');
             const publisher = seminarRowToBeUpdated.querySelector('.publisher');
-            const countOtherFaculty = seminarRowToBeUpdated.getAttribute('data-count-other-faculty');
             const titleOfPaper = seminarRowToBeUpdated.getAttribute('data-title-of-paper');
             const volume = seminarRowToBeUpdated.getAttribute('data-volume');
             const iss = seminarRowToBeUpdated.getAttribute('data-iss');
@@ -757,20 +716,20 @@
             const webLink = seminarRowToBeUpdated.getAttribute('data-web-link');
             const uid = seminarRowToBeUpdated.getAttribute('data-uid');
             const scsIndexed = seminarRowToBeUpdated.getAttribute('data-scs-indexed');
-            const researchType = seminarRowToBeUpdated.getAttribute('data-research-type');
-            const nmimsAuthorsCount = seminarRowToBeUpdated.getAttribute('data-nmims-authors-count');
-
             // for displaying alredy stored value
+            const publisherCategory = seminarRowToBeUpdated.getAttribute('data-publisher-category');
+            if(publisherCategory === 'National'){
+                publisherCategoryNational.checked = true;
+            }
+            else{
+                publisherCategoryInternational.checked = true;
+            }
             document.getElementById('year').value = year.textContent;
             document.getElementById('school').value = school.textContent;
             document.getElementById('campus').value = campus.textContent;
-            document.getElementById('all-authors').value = allAuthors.textContent;
             document.getElementById('publisher').value = publisher.textContent;
-            document.getElementById('nmims-authors').value = nmimsAuthors.textContent;
+            document.getElementById('nmims-faculty').value = nmimsfaculty.textContent;
             document.getElementById('journal-name').value = journalName.textContent;
-            document.getElementById('total-authors').value = totalAuthors.textContent;
-            document.getElementById('policy-cadre').value = policyCadre.textContent;
-            document.getElementById('count-other-faculty').value = countOtherFaculty;
             document.getElementById('title-of-paper').value = titleOfPaper;
             document.getElementById('volume').value = volume;
             document.getElementById('iss').value = iss;
@@ -785,8 +744,6 @@
             document.getElementById('ugc-indexed').value = ugcIndexed;
             document.getElementById('web-link').value = webLink;
             document.getElementById('uid').value = uid;
-            document.getElementById('research-type').value = researchType;
-            document.getElementById('nmims-authors-count').value = nmimsAuthorsCount;
             document.getElementById('scs-indexed').value = scsIndexed;
         }
 
@@ -879,16 +836,13 @@
         const updatedYear = document.getElementById('year').value;
         const updatedSchool = document.getElementById('school').value;
         const updatedCampus = document.getElementById('campus').value;
-        const updatedPolicyCadre = document.getElementById('policy-cadre').value;
         const updatedPublisher = document.getElementById('publisher').value;
-        const updatedAllAuthor = document.getElementById('all-authors').value;
-        const updatedTotalAuthors = document.getElementById('total-authors').value;
-        const updatedNmimsAuthors = document.getElementById('nmims-authors').value;
+        const updatedNmimsFaculty = document.getElementById('nmims-faculty').value;
         const updatedJournalName = document.getElementById('journal-name').value;
-        const updatedCountOtherFaculty = document.getElementById('count-other-faculty').value;
         const updatedTitleOfPaper = document.getElementById('title-of-paper').value ;
         const updatedVolume = document.getElementById('volume').value;
         const updatedIss = document.getElementById('iss').value;
+        const updatedPublisherCategory = document.querySelector('input[name="publisher-category"]:checked').value;
         const updatedPages = document.getElementById('pages').value;
         const updatedIssnNo = document.getElementById('issn-no').value;
         const updatedDateOfPublishing =  document.getElementById('date-of-publishing').value ;
@@ -900,21 +854,15 @@
         const updatedUgcIndexed  = document.getElementById('ugc-indexed').value;
         const updatedWebLink = document.getElementById('web-link').value;
         const updatedUid = document.getElementById('uid').value;
-        const updatedResearchType = document.getElementById('research-type').value;
-        const updatedNmimsAuthorsCount = document.getElementById('nmims-authors-count').value;
         const updatedScsIndexed= document.getElementById('scs-indexed').value
 
         updatedResearchSeminar.seminarId = seminarId
         updatedResearchSeminar.year = updatedYear
         updatedResearchSeminar.school = updatedSchool
         updatedResearchSeminar.campus = updatedCampus
-        updatedResearchSeminar.policyCadre = updatedPolicyCadre
         updatedResearchSeminar.publisher = updatedPublisher
-        updatedResearchSeminar.allAuthors = updatedAllAuthor
-        updatedResearchSeminar.totalAuthors = updatedTotalAuthors
-        updatedResearchSeminar.nmimsAuthors = updatedNmimsAuthors
+        updatedResearchSeminar.nmimsAuthors = updatedNmimsFaculty
         updatedResearchSeminar.journalName = updatedJournalName
-        updatedResearchSeminar.countOtherFaculty = updatedCountOtherFaculty;
         updatedResearchSeminar.titleOfPaper = updatedTitleOfPaper;
         updatedResearchSeminar.volume = updatedVolume;
         updatedResearchSeminar.iss = updatedIss;
@@ -929,8 +877,7 @@
         updatedResearchSeminar.ugcIndexed = updatedUgcIndexed;
         updatedResearchSeminar.webLink = updatedWebLink;
         updatedResearchSeminar.uid = updatedUid;
-        updatedResearchSeminar.researchType = updatedResearchType;
-        updatedResearchSeminar.nmimsAuthorsCount = updatedNmimsAuthorsCount;
+        updatedResearchSeminar.publisherCategory = updatedPublisherCategory;
         updatedResearchSeminar.scsIndexed = updatedScsIndexed;
 
         // sending  updated data to database by fetch api for update the value in db
@@ -957,13 +904,9 @@
                     seminarRowToBeUpdated.querySelector('.year').innerText = updatedResearchSeminar.year;
                     seminarRowToBeUpdated.querySelector('.school').innerText = updatedResearchSeminar.school;
                     seminarRowToBeUpdated.querySelector('.campus').innerText = updatedResearchSeminar.campus;
-                    seminarRowToBeUpdated.querySelector('.all-authors').innerText = updatedResearchSeminar.allAuthors;
-                    seminarRowToBeUpdated.querySelector('.total-authors').innerText = updatedResearchSeminar.totalAuthors;
-                    seminarRowToBeUpdated.querySelector('.nmims-authors').innerText = updatedResearchSeminar.nmimsAuthors;
+                    seminarRowToBeUpdated.querySelector('.nmims-faculty').innerText = updatedResearchSeminar.nmimsfaculty;
                     seminarRowToBeUpdated.querySelector('.journal-name').innerText = updatedResearchSeminar.journalName;
-                    seminarRowToBeUpdated.querySelector('.policy-cadre').innerText = updatedResearchSeminar.policyCadre;
                     seminarRowToBeUpdated.querySelector('.publisher').innerText = updatedResearchSeminar.publisher;
-                    seminarRowToBeUpdated.setAttribute('data-count-other-faculty', updatedCountOtherFaculty );
                     seminarRowToBeUpdated.setAttribute('data-volume' , updatedVolume);
                     seminarRowToBeUpdated.setAttribute('data-iss' , updatedIss);
                     seminarRowToBeUpdated.setAttribute('data-pages' , updatedPages);
@@ -977,10 +920,9 @@
                     seminarRowToBeUpdated.setAttribute('data-ugc-indexed' , updatedUgcIndexed);
                     seminarRowToBeUpdated.setAttribute('data-web-link' , updatedWebLink);
                     seminarRowToBeUpdated.setAttribute('data-uid' , updatedUid);
+                    seminarRowToBeUpdated.setAttribute('data-publisher-category' , updatedPublisherCategory);
                     seminarRowToBeUpdated.setAttribute('data-date-of-publishing' , updatedDateOfPublishing);
                     seminarRowToBeUpdated.setAttribute('data-title-of-paper' , updatedTitleOfPaper);
-                    seminarRowToBeUpdated.setAttribute('data-research-type' , updatedResearchType);
-                    seminarRowToBeUpdated.setAttribute('data-nmims-author-count' , updatedNmimsAuthorsCount);
                 }
                 $('#research-seminar-modal').modal('hide');
                 alert('data updated SuccessFully');
