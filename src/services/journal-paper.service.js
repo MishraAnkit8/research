@@ -7,7 +7,8 @@ module.exports.renderJournalPaper = async () => {
 
 // service for insert
 module.exports.insertJournalPapper = async (body) => {
-    const {journalDetails} =  body;
+    const journalDetails =  body;
+    console.log('journalDetails inservice ==>>', journalDetails)
     const newJournalPaper = await journalPaperModel.createJournalPaper(journalDetails);
     return newJournalPaper ;
 };

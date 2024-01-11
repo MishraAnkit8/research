@@ -13,6 +13,7 @@ function validateRequiredFormFields(actionBtn) {
         const errorElem = formGroup.querySelector('.error-msg');
         const validateArr = elem.dataset.validate ? elem.dataset.validate.split(',') : [];
         const errorMsg = elem.dataset.errMsg ? elem.dataset.errMsg : 'Please enter a valid value';
+        const emptyErrorMsg = elem.dataset.errMsg ? elem.dataset.errMsg : 'Please enter  value val';
 
 
         if (!isRequired && elemVal === '') {

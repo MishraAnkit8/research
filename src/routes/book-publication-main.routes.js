@@ -2,8 +2,8 @@ const express = require('express');
 const upload = require('../../multer');
 
 // middlewre for valiadtion and errorHandler
-const {validateOrg} = require('../middleware/data-validation');
 const { asyncErrorHandler } = require('../middleware/error.middleware');
+
 
 const bookPublicationMainController = require('../controllers/book-publication-main.controller');
 
@@ -19,7 +19,7 @@ router.get('/', asyncErrorHandler(bookPublicationMainController.renderBookPublic
 
 // book publication
 router.get('/book-publication', asyncErrorHandler(bookPublicationController.renderBookPublication));
-router.post('/book-publication/insert',  upload.single('researchSupportingDocument'), asyncErrorHandler(bookPublicationController.insertBookPublication));
+router.post('/book-publication/insert', upload.single('researchSupportingDocument'), asyncErrorHandler(bookPublicationController.insertBookPublication));
 router.post('/book-publication/update',  upload.single('researchSupportingDocument'), asyncErrorHandler(bookPublicationController.updateBookPublication));
 router.post('/book-publication/delete', asyncErrorHandler(bookPublicationController.deleteBookPublication));
 router.post('/book-publication/view', asyncErrorHandler(bookPublicationController.viewBookPublication));
@@ -35,7 +35,7 @@ router.post('/edited-book-publication/delete', asyncErrorHandler(editedBookPubli
 //book chapter
 
 router.get('/book-chapter-publication', asyncErrorHandler(bookChapterController.renderBookChapterPublication));
-router.post('/book-chapter-publication/insert',  upload.single('researchSupportingDocument'), asyncErrorHandler(bookChapterController.insertBookChapterPublication));
+router.post('/book-chapter-publication/insert', upload.single('researchSupportingDocument'), asyncErrorHandler(bookChapterController.insertBookChapterPublication));
 router.post('/book-chapter-publication/update',  upload.single('researchSupportingDocument'), asyncErrorHandler(bookChapterController.updateBookChapterData));
 router.post('/book-chapter-publication/view',  asyncErrorHandler(bookChapterController.viewBookChapterData));
 router.post('/book-chapter-publication/delete', asyncErrorHandler(bookChapterController.deleteBookChapterData));

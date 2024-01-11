@@ -37,7 +37,7 @@ module.exports.deleteResearchConsultant = async({consultantId}) => {
     }
 }
 
-module.exports.viewReseachProjectData = async({consultantId}) => {
+module.exports.viewReseachProjectData = async(consultantId) => {
     const researchConsultancy = await researchCunsultancyModel.viewResearchConsultancy(consultantId);
     console.log('researchConsultancy ==>>', researchConsultancy.rows[0])
     return researchConsultancy.rows[0]

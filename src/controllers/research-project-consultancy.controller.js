@@ -80,7 +80,8 @@ module.exports.deleteResearchConsultant = async(req, res, next) => {
 }
 
 module.exports.viewResearchProjectConsultancy = async(req, res, next) => {
-    const consultantId = req.body;
+    const {consultantId} = req.body;
+    console.log('consultantId  in controller ==>>', consultantId);
     const viewResearchConsultantData = await researchConsultancyService.viewReseachProjectData(consultantId);
     console.log('viewResearchConsultantData in controller ===>>', viewResearchConsultantData)
     if(viewResearchConsultantData){

@@ -7,7 +7,7 @@ module.exports.renderResearchSeminar = async () => {
 
 // service for insert
 module.exports.insertResearchSeminar = async (body) => {
-    const {seminarDetails} =  body;
+    const seminarDetails =  body;
     const newResearchSeminar = await researchSeminarModel.createResearchSeminar(seminarDetails);
     return newResearchSeminar ;
 };

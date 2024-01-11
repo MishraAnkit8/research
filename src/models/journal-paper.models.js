@@ -15,16 +15,18 @@ module.exports.fetchJournalPaper = () => {
 };
 
 // for inserting journal paper  data
-module.exports.createJournalPaper = (journalDetails) => {
-    const {year, school, campus, policyCadre, researchType, allAuthors, totalAuthors, nmimsAuthors, nmimsAuthorsCount,  countOtherFaculty, titleOfPaper, journalName, publisher, volume, iss, pages, issnNo, dateOfPublishing, impactFactor, scsCiteScore, scsIndexed, wosIndexed, gsIndexed, abcdIndexed, ugcIndexed, webLink, uid  } = journalDetails ;
+module.exports.createJournalPaper = ({journalDetails}) => {
+    console.log('journalDetails in models ==>>', journalDetails)
+    const {year, school, campus, policyCadre, researchType, allAuthors, totalAuthors, nmimsAuthors, nmimsAuthorsCount, countOtherFaculty, titleOfPaper, journalName, publisher, volume, iss, pages, issnNo, dateOfPublishing, impactFactor, scsCiteScore, scsIndexed, wosIndexed, gsIndexed, abcdIndexed, ugcIndexed, webLink, uid } = journalDetails ;
 
     let sql = {
-        text : `INSERT INTO journal_papers ( year, school, campus, policy_cadre, research_type, all_authors,
+        text : `INSERT INTO journal_papers (year, school, campus, policy_cadre, research_type, all_authors,
               total_authors, nmims_authors, nmims_authors_count, count_other_faculty, title_of_paper, journal_name, publisher, 
               volume,  iss, pages, issn_no, date_of_publishing, impact_factor, scs_cite_score, scs_indexed, wos_indexed, gs_indexed, abdc_indexed, ugc_indexed, web_link, uid)  VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27) RETURNING id ` ,
 
-        values : [year, school, campus, policyCadre, researchType, allAuthors, totalAuthors, nmimsAuthors, nmimsAuthorsCount,        countOtherFaculty, titleOfPaper, journalName, publisher, volume, iss, pages, issnNo, dateOfPublishing, impactFactor, scsCiteScore, scsIndexed, wosIndexed, gsIndexed, abcdIndexed, ugcIndexed, webLink, uid ]
+        values : [year, school, campus, policyCadre, researchType, allAuthors, totalAuthors, nmimsAuthors, nmimsAuthorsCount, countOtherFaculty, titleOfPaper, journalName, publisher, volume, iss, pages, issnNo, dateOfPublishing, impactFactor, scsCiteScore, scsIndexed, wosIndexed, gsIndexed, abcdIndexed, ugcIndexed, webLink, uid ]
     };
+    console.log('sql ==>>', sql)
     return autoDbW.query(sql);
 }
 // for deleting journal paper  data 
