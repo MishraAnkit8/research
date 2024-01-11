@@ -33,7 +33,7 @@ module.exports.updatTeachingData = async(req, res, next) => {
     console.log('id ==>', req.body.teachingId);
     const teachingId = req.body.teachingId;
     const updatedTeachingExecellance = req.body;
-    console.log('data ==>>', updatedTeachingExecellance);
+    console.log('data for updation in controller  ==>>', updatedTeachingExecellance);
     const {pedagogyInnovationFile, fdpProgramFile, workShopFile, invitingFacultyFile, programOrientationFile} = req.files;
     const updatedTeachingExecellanceData = await teachingExecellanceService.updatedTeachingExecellance(teachingId, updatedTeachingExecellance, req.files);
     if(updatedTeachingExecellanceData){

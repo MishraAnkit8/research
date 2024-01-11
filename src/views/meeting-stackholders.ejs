@@ -1,138 +1,119 @@
 <%- include('./partials/head') %>
 <!-- inline css -->
-<style>
-.case-study-row.flex-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center; 
-}
-
-.case-study-row .cell {
-    flex: 1; 
-    margin: 5px; 
-}
-
-.custom-modal {
-     max-width: 1000px;
-     max-height: 800px;
- }
- .sub-title-text{
-     font-size: 15px;
-     font-weight:500;
- }
-
-</style>
-
 <!-- Navbar section -->
 <%- include('./partials/header') %>
 <!-- This is left sidebar  -->
 <%- include('./partials/left-sidebar') %>
 <!-- This is right side section -->
 <main class="main" id="mainContent">
-                <div class="base-section coustom-section mt-5 p-5">
-                    <!--DASHBOARD CONTENT START-->
-                    <div class="breadcrumbs-container">
+    <div class="base-section coustom-section">
+        <!--DASHBOARD CONTENT START-->
+        <div class="breadcrumbs-container">
+        </div>
+        <div class="errorHtml"></div>
+        <div class="card table-card">
+            <div class="table-card-header text-uppercase d-flex align-items-center justify-content-between">
+                <div>
+                    <h3>MEETING STACKHOLDER</h3>
+                </div>
+                <div class="me-2">
+                    <button id="meeting-stackholders-add-modal" type="button" class="btn btn-primary add-modal" data-toggle="modal" data-target="#meeting-stackholders-modal">
+                        <i class="fas fa-plus plus"></i></button>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body table-responsive">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <label>Show Entries</label>
+                        <select class="form-select" id="changeEntry">
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                            <option value="150">150</option>
+                            <option value="200">200</option>
+                            <option value="250">250</option>
+                            <option value="300">300</option>
+                            <option value="350">350</option>
+                            <option value="400">400</option>
+                            <option value="500">500</option>
+                            <option value="800">800</option>
+                            <option value="1000">1000</option>
+                        </select>
                     </div>
-                    <div class="errorHtml"></div>
-                    <div class="card table-card">
-                        <div
-                            class="card-header table-card-header text-uppercase d-flex align-items-center justify-content-between">
-                            <div>
-                                <h3>meeting EXECELLANCE</h3>
-                            </div>
-                            <div class="me-2">
-                                <button id="meeting-stackholders-add-modal" type="button" class="btn btn-primary add-modal" data-toggle="modal"
-                                    data-target="#meeting-stackholders-modal">
-                                    <i  class="fas fa-plus plus"></i></button>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="card-body table-responsive">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <label>Show Entries</label>
-                                    <select class="form-select" id="changeEntry">
-                                        <option value="10">10</option>
-                                        <option value="25">25</option>
-                                        <option value="50">50</option>
-                                        <option value="100">100</option>
-                                        <option value="150">150</option>
-                                        <option value="200">200</option>
-                                        <option value="250">250</option>
-                                        <option value="300">300</option>
-                                        <option value="350">350</option>
-                                        <option value="400">400</option>
-                                        <option value="500">500</option>
-                                        <option value="800">800</option>
-                                        <option value="1000">1000</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <div class="table-searchbar-container"><button type="button"><i
-                                                class="fas fa-search"></i>
-                                        </button><input type="search" id="searchkeyword" placeholder="Enter keywords"
-                                            class="table-searchbar">
-                                    </div>
-                                </div>
-                            </div>
-                            <table class="table custom-table " id="meeting-stackholders-list">
-                                <thead>
-                                    <th>#</th>
-                                    <th>Ranking Description</th>
-                                    <th>Accreditation</th>
-                                    <th>Convocation at NMIMS</th>
-                                    <th>School/Campus Achievements</th>
-                                    <th>Inaugural Program at NMIMS</th>
-                                    <th>Events at NMIMS</th>
-                                    <th>Action</th>
-                                </thead>
-                              <% meetingData.forEach(function(meeting) { %>
-                                <tr scope="row" data-meeting-id="<%- meeting.id %>" data-ranking-document="<%- meeting.ranking_documents %>" data-ranking-link="<%- meeting.ranking_link %>"
-                                    data-accreditation-documents="<%- meeting.accreditation_documents %>" data-accreditation-link="<%- meeting.accreditation_link %>" 
-                                    data-achievements-documents="<%- meeting.achievements_documents %>" data-achievements-link="<%- meeting.achievements_link %>" data-convocation-documents="<%- meeting.convocation_documents %>"
-                                    data-convocation-link="<%- meeting.convocation_link %>" data-inaugural-program-documents="<%- meeting.inaugural_program_documents %>" data-inaugural-program-link="<%- meeting.inaugural_program_link %>"
-                                    data-events-documents="<%- meeting.events_documents %>" data-events-link="<%- meeting.events_link %>" >
-                                    <td data-meeting-id="<%- meeting.id %>"><%- meeting.id %></td>
-                                    <td class="ranking"><%- meeting.ranking %></td>
-                                    <td class="accreditation"><%- meeting.accreditation %></td>
-                                    <td class="convocation"><%- meeting.convocation %></td>
-                                    <td class="achievements"><%- meeting.school_campus_achievements %></td>
-                                    <td class="inaugural-program"><%- meeting.inaugural_program %></td>
-                                    <td class="events"><%- meeting.events %></td>
-                                    <td>
-                                        <a class="view" data-meeting-id="<%- meeting.id %>"><i class="fa-solid fa-eye view"
-                                            data-meeting-id="<%- meeting.id %>"></i></a>
-                                        <a class="edit" data-meeting-id="<%- meeting.id %>"><i class="fa fa-edit edit"
-                                            data-meeting-id="<%- meeting.id %>"></i></a>
-                                        <a class="delete" data-meeting-id="<%- meeting.id %>"><i class="fa-solid fa-trash delete"
-                                            data-meeting-id="<%- meeting.id %>"></i></a>
-                                    </td>
-                                </tr>
-                            <% }); %>
-                            </table>
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <p>Total entries:1
-                                    </p>
-                                </div>
-                                <div>
-                                    <p id="pagination" class="pagination-search"></p>
-                                </div>
-                            </div>
+                    <div>
+                        <div class="table-searchbar-container"><button type="button"><i class="fas fa-search"></i>
+                            </button><input type="search" id="searchkeyword" placeholder="Enter keywords"
+                                class="table-searchbar">
                         </div>
                     </div>
-                    <!--Import Modal -->
-    <div class="modal fade" id="open-program-modal" tabindex="-1" aria-labelledby="open-program-modal"
-                        aria-hidden="true">
+                </div>
+                <table class="table custom-table " id="meeting-stackholders-list">
+                    <thead>
+                        <th>#</th>
+                        <th>Ranking Description</th>
+                        <th>Accreditation</th>
+                        <th>Convocation at NMIMS</th>
+                        <th>School/Campus Achievements</th>
+                        <th>Inaugural Program at NMIMS</th>
+                        <th>Events at NMIMS</th>
+                        <th>Action</th>
+                    </thead>
+                    <% meetingData.forEach(function(meeting) { %>
+                        <tr scope="row" data-meeting-id="<%- meeting.id %>"
+                            data-ranking-document="<%- meeting.ranking_documents %>"
+                            data-ranking-link="<%- meeting.ranking_link %>"
+                            data-accreditation-documents="<%- meeting.accreditation_documents %>"
+                            data-accreditation-link="<%- meeting.accreditation_link %>"
+                            data-achievements-documents="<%- meeting.achievements_documents %>"
+                            data-achievements-link="<%- meeting.achievements_link %>"
+                            data-convocation-documents="<%- meeting.convocation_documents %>"
+                            data-convocation-link="<%- meeting.convocation_link %>"
+                            data-inaugural-program-documents="<%- meeting.inaugural_program_documents %>"
+                            data-inaugural-program-link="<%- meeting.inaugural_program_link %>"
+                            data-events-documents="<%- meeting.events_documents %>"
+                            data-events-link="<%- meeting.events_link %>">
+                            <td data-meeting-id="<%- meeting.id %>"><%- meeting.id %></td>
+                            <td class="ranking"><%- meeting.ranking %></td>
+                            <td class="accreditation"><%- meeting.accreditation %></td>
+                            <td class="convocation"><%- meeting.convocation %></td>
+                            <td class="achievements"><%- meeting.school_campus_achievements %></td>
+                            <td class="inaugural-program"><%- meeting.inaugural_program %></td>
+                            <td class="events"><%- meeting.events %></td>
+                            <td>
+                                <a class="view" data-meeting-id="<%- meeting.id %>"><i class="fa-solid fa-eye view"
+                                        data-meeting-id="<%- meeting.id %>"></i></a>
+                                <a class="edit" data-meeting-id="<%- meeting.id %>"><i class="fa fa-edit edit"
+                                        data-meeting-id="<%- meeting.id %>"></i></a>
+                                <a class="delete" data-meeting-id="<%- meeting.id %>"><i class="fa-solid fa-trash delete"
+                                        data-meeting-id="<%- meeting.id %>"></i></a>
+                            </td>
+                        </tr>
+                        <% }); %>
+                </table>
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <p>Total entries:1
+                        </p>
+                    </div>
+                    <div>
+                        <p id="pagination" class="pagination-search"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--Import Modal -->
+    <div class="modal fade" id="open-program-modal" tabindex="-1" aria-labelledby="open-program-modal" aria-hidden="true">
     </div>
     <!-- EDIT PROGRAM AND UPDATE -->
-    <div class="modal fade" id="edit-program-modal" tabindex="-1" aria-labelledby="editModalLabel"
-                        aria-hidden="true">
+    <div class="modal fade" id="edit-program-modal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="editModalLabel">Update Program</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div id="errorHtml"></div>
                 <div class="modal-body">
@@ -148,20 +129,20 @@
                             <option value="2">Part Time</option>
                         </select>
                     </div>
-
+    
                     <div class="mb-3">
                         <label for="abbr" class="form-label">Program Abbr</label>
                         <input type="text" class="form-control" id="abbr" name="abbr">
                     </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
+    </div>
 </main>
-<!-- Modal  form -->
+<!-- Metting stackholder Modal  form -->
 <div class="modal fade " id="meeting-stackholders-modal" tabindex="-1" role="dialog" aria-labelledby="meeting-execellance"
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable modal-lg modal-fullscreen p-5" role="document">
@@ -293,7 +274,7 @@
         </div>
     </div>
 </div>
-<!-- case-view-modal -->
+<!-- Meeting stack holder view-modal -->
 <div class="modal fade" id="meeting-excellance-view-modal" tabindex="-1" role="dialog" aria-labelledby="meeting-excellance-view-modal" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered custom-modal " role="document">
         <div class="modal-content">
@@ -456,6 +437,7 @@
         </div>
     </div>
 </div>
+<!-- inline javascript -->
 <script>
 const meetingSatckholdersAddModal = document.getElementById('meeting-stackholders-add-modal');
 const meetingStackholdersList = document.getElementById('meeting-stackholders-list')
@@ -825,8 +807,6 @@ updateBtn.addEventListener('click' , () => {
     
 })
 </script>
-<!-- inline javascript -->
-
 <!-- footer section -->
 <%- include('./partials/footer') %>
 <%- include('./partials/footer-end') %>

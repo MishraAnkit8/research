@@ -36,7 +36,7 @@ module.exports.validateResearchSeminar = [
     .bail()
     .isString()
     .withMessage(" journal paper campus  should be string")
-    .isLength({ min: 5 }), 
+    .isLength({ min: 2 }), 
      
  check("seminarDetails.policyCadre")
     .notEmpty()

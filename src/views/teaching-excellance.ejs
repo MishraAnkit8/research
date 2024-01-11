@@ -1,157 +1,136 @@
 <%- include('./partials/head') %>
 <!-- inline css -->
-<style>
-.case-study-row.flex-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center; 
-}
-
-.case-study-row .cell {
-    flex: 1; 
-    margin: 5px; 
-}
-
-.custom-modal {
-     max-width: 1000px;
-     max-height: 800px;
- }
- .sub-title-text{
-     font-size: 15px;
-     font-weight:500;
- }
-
-</style>
-
 <!-- Navbar section -->
 <%- include('./partials/header') %>
 <!-- This is left sidebar  -->
 <%- include('./partials/left-sidebar') %>
 <!-- This is right side section -->
 <main class="main" id="mainContent">
-                <div class="base-section coustom-section mt-5 p-5">
-                    <!--DASHBOARD CONTENT START-->
-                    <div class="breadcrumbs-container">
-                    </div>
-                    <div class="errorHtml"></div>
-                    <div class="card table-card">
-                        <div
-                            class="card-header table-card-header text-uppercase d-flex align-items-center justify-content-between">
-                            <div>
-                                <h3>TEACHING EXECELLANCE</h3>
-                            </div>
-                            <div class="me-2">
-                                <button id="teaching-execellance-add-modal" type="button" class="btn btn-primary add-modal" data-toggle="modal"
-                                    data-target="#teaching-execellance-modal">
-                                    <i  class="fas fa-plus plus"></i></button>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="card-body table-responsive">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <label>Show Entries</label>
-                                    <select class="form-select" id="changeEntry">
-                                        <option value="10">10</option>
-                                        <option value="25">25</option>
-                                        <option value="50">50</option>
-                                        <option value="100">100</option>
-                                        <option value="150">150</option>
-                                        <option value="200">200</option>
-                                        <option value="250">250</option>
-                                        <option value="300">300</option>
-                                        <option value="350">350</option>
-                                        <option value="400">400</option>
-                                        <option value="500">500</option>
-                                        <option value="800">800</option>
-                                        <option value="1000">1000</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <div class="table-searchbar-container"><button type="button"><i
-                                                class="fas fa-search"></i>
-                                        </button><input type="search" id="searchkeyword" placeholder="Enter keywords"
-                                            class="table-searchbar">
-                                    </div>
-                                </div>
-                            </div>
-                            <table class=" table" id="teaching-execellance-data-list">
-                                <thead>
-                                    <th>#</th>
-                                    <th>Pedagogy innovation</th>
-                                    <th>FDP Program on academic</th>
-                                    <th>Workshop for Students</th>
-                                    <th>Inviting visiting faculty from the industry to handle  workshops</th>
-                                    <th>Program Orientation</th>
-                                    <th>Action</th>
-                                </thead>
-                                <% teachingExecellance.forEach(function(teaching) { %>
-                                <tr scope="row" data-teaching-id="<%- teaching.id %>" data-pedagogy-innovation-file="<%- teaching.pedagogy_innovation_file %>"
-                                    data-fdp-program-file="<%- teaching.fdp_program_file %>" data-workshop-file="<%- teaching.workshop_file %>"
-                                    data-pedagogy-innovation-link="<%- teaching.pedagogy_innovation_link %>" data-fdp-program-link="<%- teaching.fdp_program_link %>"
-                                    data-workshop-link="<%- teaching.workshop_link %>" data-inviting-faculty-file="<%- teaching.inviting_faculty_file %>"
-                                    data-inviting-faculty-link="<%- teaching.inviting_faculty_link %>" data-program-orientation-file="<%- teaching.program_orientation_file %>" 
-                                    data-program-orientation-link="<%- teaching.program_orientation_link %>">
-                                    <td data-teaching-id="<%- teaching.id %>"><%- teaching.id %></td>
-                                    <td class="pedagogy-innovation"><%- teaching.pedagogy_innovation %></td>
-                                    <td class="fdp-program"><%- teaching.fdp_program %></td>
-                                    <td class="workshop-details"><%- teaching.workshop_details %></td>
-                                    <td class="inviting-faculty"><%- teaching.inviting_faculty %></td>
-                                    <td class="program-orientation"><%- teaching.program_orientation %></td>
-                                    <td class="cell ">
-                                        <a class="view" data-teaching-id="<%- teaching.id %>"><i class="fa-solid fa-eye view"
-                                            data-teaching-id="<%- teaching.id %>"></i></a>
-                                        <a class="edit" data-teaching-id="<%- teaching.id %>"><i class="fa fa-edit edit"
-                                            data-teaching-id="<%- teaching.id %>"></i></a>
-                                        <a class="delete" data-teaching-id="<%- teaching.id %>"><i class="fa-solid fa-trash delete"
-                                            data-teaching-id="<%- teaching.id %>"></i></a>
-                                    </td>
-                                </tr>
-                                <% }); %>
-                        </table>    
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <p>Total entries:1
-                                    </p>
-                                </div>
-                                <div>
-                                    <p id="pagination" class="pagination-search"></p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!--Import Modal -->
-    <div class="modal fade" id="open-program-modal" tabindex="-1" aria-labelledby="open-program-modal"
-                        aria-hidden="true">
-    </div>
-    <!-- EDIT PROGRAM AND UPDATE -->
-    <div class="modal fade" id="edit-program-modal" tabindex="-1" aria-labelledby="editModalLabel"
-                        aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editModalLabel">Update Program</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <div class="base-section coustom-section mt-5 p-5">
+        <!--DASHBOARD CONTENT START-->
+        <div class="breadcrumbs-container">
+        </div>
+        <div class="errorHtml"></div>
+        <div class="card table-card">
+            <div class="table-card-header text-uppercase d-flex align-items-center justify-content-between">
+                <div>
+                    <h3>TEACHING EXECELLANCE</h3>
                 </div>
-                <div id="errorHtml"></div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="exampleInputEmail1" class="form-label">Program Name</label>
-                        <input type="text" class="form-control" id="program_name" name="program_name">
-                        <input type="hidden" class="form-control" id="hidden_id" name="hidden_id">
-                    </div>
-                    <div class="mb-3">
-                        <label for="exampleInputPassword1" class="form-label">Program Type</label>
-                        <select class="form-control" name="program_type_lid" id="program_type_lid">
-                            <option value="1">Full Time</option>
-                            <option value="2">Part Time</option>
+                <div class="me-2">
+                    <button id="teaching-execellance-add-modal" type="button" class="btn btn-primary add-modal"
+                        data-toggle="modal" data-target="#teaching-execellance-modal">
+                        <i class="fas fa-plus plus"></i></button>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body table-responsive">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <label>Show Entries</label>
+                        <select class="form-select" id="changeEntry">
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                            <option value="150">150</option>
+                            <option value="200">200</option>
+                            <option value="250">250</option>
+                            <option value="300">300</option>
+                            <option value="350">350</option>
+                            <option value="400">400</option>
+                            <option value="500">500</option>
+                            <option value="800">800</option>
+                            <option value="1000">1000</option>
                         </select>
                     </div>
-
-                    <div class="mb-3">
-                        <label for="abbr" class="form-label">Program Abbr</label>
-                        <input type="text" class="form-control" id="abbr" name="abbr">
+                    <div>
+                        <div class="table-searchbar-container"><button type="button"><i class="fas fa-search"></i>
+                            </button><input type="search" id="searchkeyword" placeholder="Enter keywords"
+                                class="table-searchbar">
+                        </div>
                     </div>
+                </div>
+                <table class=" table" id="teaching-execellance-data-list">
+                    <thead>
+                        <th>#</th>
+                        <th>Pedagogy innovation</th>
+                        <th>FDP Program on academic</th>
+                        <th>Workshop for Students</th>
+                        <th>Inviting visiting faculty from the industry to handle workshops</th>
+                        <th>Program Orientation</th>
+                        <th>Action</th>
+                    </thead>
+                    <% teachingExecellance.forEach(function(teaching) { %>
+                        <tr scope="row" data-teaching-id="<%- teaching.id %>"
+                            data-pedagogy-innovation-file="<%- teaching.pedagogy_innovation_file %>"
+                            data-fdp-program-file="<%- teaching.fdp_program_file %>"
+                            data-workshop-file="<%- teaching.workshop_file %>"
+                            data-pedagogy-innovation-link="<%- teaching.pedagogy_innovation_link %>"
+                            data-fdp-program-link="<%- teaching.fdp_program_link %>"
+                            data-workshop-link="<%- teaching.workshop_link %>"
+                            data-inviting-faculty-file="<%- teaching.inviting_faculty_file %>"
+                            data-inviting-faculty-link="<%- teaching.inviting_faculty_link %>"
+                            data-program-orientation-file="<%- teaching.program_orientation_file %>"
+                            data-program-orientation-link="<%- teaching.program_orientation_link %>">
+                            <td data-teaching-id="<%- teaching.id %>"><%- teaching.id %></td>
+                            <td class="pedagogy-innovation"><%- teaching.pedagogy_innovation %></td>
+                            <td class="fdp-program"><%- teaching.fdp_program %></td>
+                            <td class="workshop-details"><%- teaching.workshop_details %></td>
+                            <td class="inviting-faculty"><%- teaching.inviting_faculty %></td>
+                            <td class="program-orientation"><%- teaching.program_orientation %></td>
+                            <td class="cell ">
+                                <a class="view" data-teaching-id="<%- teaching.id %>"><i class="fa-solid fa-eye view"
+                                        data-teaching-id="<%- teaching.id %>"></i></a>
+                                <a class="edit" data-teaching-id="<%- teaching.id %>"><i class="fa fa-edit edit"
+                                        data-teaching-id="<%- teaching.id %>"></i></a>
+                                <a class="delete" data-teaching-id="<%- teaching.id %>"><i class="fa-solid fa-trash delete"
+                                        data-teaching-id="<%- teaching.id %>"></i></a>
+                            </td>
+                        </tr>
+                        <% }); %>
+                </table>
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <p>Total entries:1
+                        </p>
+                    </div>
+                    <div>
+                        <p id="pagination" class="pagination-search"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--Import Modal -->
+        <div class="modal fade" id="open-program-modal" tabindex="-1" aria-labelledby="open-program-modal"
+            aria-hidden="true">
+        </div>
+        <!-- EDIT PROGRAM AND UPDATE -->
+        <div class="modal fade" id="edit-program-modal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editModalLabel">Update Program</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div id="errorHtml"></div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="exampleInputEmail1" class="form-label">Program Name</label>
+                            <input type="text" class="form-control" id="program_name" name="program_name">
+                            <input type="hidden" class="form-control" id="hidden_id" name="hidden_id">
+                        </div>
+                        <div class="mb-3">
+                            <label for="exampleInputPassword1" class="form-label">Program Type</label>
+                            <select class="form-control" name="program_type_lid" id="program_type_lid">
+                                <option value="1">Full Time</option>
+                                <option value="2">Part Time</option>
+                            </select>
+                        </div>
+    
+                        <div class="mb-3">
+                            <label for="abbr" class="form-label">Program Abbr</label>
+                            <input type="text" class="form-control" id="abbr" name="abbr">
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -160,6 +139,7 @@
                 </div>
             </div>
         </div>
+    </div>
 </main>
 <!-- Modal  form -->
 <div class="modal fade " id="teaching-execellance-modal" tabindex="-1" role="dialog" aria-labelledby="teaching-execellance"
@@ -276,14 +256,15 @@
         </div>
     </div>
 </div>
-<!-- case-view-modal -->
-<div class="modal fade" id="teaching-excellance-view-modal" tabindex="-1" role="dialog" aria-labelledby="case-view-modal" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered custom-modal " role="document">
-        <div class="modal-content">
+<!-- teaching execellance view-modal -->
+<div class="modal fade" id="teaching-excellance-view-modal" tabindex="-1" role="dialog" aria-labelledby="teaching-execellance"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg modal-fullscreen p-5" role="document">
+        <div class="modal-content validate-input">
             <div class="modal-header">
-                <h5 class="modal-title text-center" id="teaching-title">TEACHING EXECELLANCE</h5>
+                <h5 class="modal-title" id="teaching-execellance">TEACHING EXECELLANCE </h5>
                 <div type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true"><i class="fas fa-times fa"></i></span>
+                    <span aria-hidden="true"><i class="fas fa-times fa-2x"></i></span>
                 </div>
             </div>
             <div class="modal-body">
@@ -292,22 +273,22 @@
                     <!-- pedagogy_innovation -->
                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
-                            <div class="task-sub-title sub-title-text"> OEDAGOGY INNOVATION :</div>
-                            <label id="view-pedagogy-innovation"></label>
+                            <div class="task-sub-title sub-title-text"> Pedagogy Innovation:</div>
+                            <label class="view-content" id="view-pedagogy-innovation"></label>
                         </div>
                     </div>
                     <!-- pedagogy_innovation_file -->
                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
-                            <div class="task-sub-title sub-title-text">UPLOAD DOCUMENTS :</div>
-                            <label id="view-pedagogy-innovation-file"></label>
+                            <div class="task-sub-title sub-title-text">Documents Name :</div>
+                            <label class="view-content" id="view-pedagogy-innovation-file"></label>
                         </div>
                     </div>
                     <!-- pedagogy innovation link -->
                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
-                            <div class="task-sub-title sub-title-text">LINK :</div>
-                            <label id="view-pedagogy-innovation-link"></label>
+                            <div class="task-sub-title sub-title-text">Link :</div>
+                            <label class="view-content" id="view-pedagogy-innovation-link"></label>
                         </div>
                     </div>
                 </div>
@@ -316,23 +297,23 @@
                     <!-- fdp_program -->
                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
-                            <div class="task-sub-title sub-title-text"> FDP PROGRAM ON ACADEMIC PROCESSES (PEDAGOGY, CASE TEACHING, SIMULATIONS):</div>
-                            <label id="view-fdp-program"></label>
+                            <div class="task-sub-title sub-title-text"> FDP Program on Academic Processs (Pedagogy, Case Teaching, Simulations):</div>
+                            <label class="view-content" id="view-fdp-program"></label>
                         </div>
                     </div>
                     <!-- fdp_program_file -->
                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
-                            <div class="task-sub-title sub-title-text">UPLOAD DOCUMENTS :</div>
-                            <label id="view-fdp-program-file"></label>
+                            <div class="task-sub-title sub-title-text">Documents :</div>
+                            <label class="view-content" id="view-fdp-program-file"></label>
                         </div>
                     </div>
         
                     <!-- fdp_program_link -->
                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
-                            <div class="task-sub-title sub-title-text">LINK :</div>
-                            <label id="view-fdp-program-link"></label>
+                            <div class="task-sub-title sub-title-text">Link :</div>
+                            <label class="view-content" id="view-fdp-program-link"></label>
                         </div>
                     </div>
                 </div>
@@ -341,22 +322,22 @@
                     <!-- workshop_details -->
                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
-                            <div class="task-sub-title sub-title-text">WORKSHOP FOR STUDENT:</div>
-                            <label id="view-workshop-details"></label>
+                            <div class="task-sub-title sub-title-text"> WorkShop For Students:</div>
+                            <label class="view-content" id="view-workshop-details"></label>
                         </div>
                     </div>
                     <!-- workshop_file -->
                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
-                            <div class="task-sub-title sub-title-text">UPLOADS DOCUMENTS :</div>
-                            <label id="view-workshop-file"></label>
+                            <div class="task-sub-title sub-title-text">Documents :</div>
+                            <label class="view-content" id="view-workshop-file"></label>
                         </div>
                     </div>
                     <!-- LINK -->
                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
-                            <div class="task-sub-title sub-title-text">LINK :</div>
-                            <label id="view-workshop-link"></label>
+                            <div class="task-sub-title sub-title-text">Link :</div>
+                            <label class="view-content" id="view-workshop-link"></label>
                         </div>
                     </div>
                 </div>
@@ -365,22 +346,22 @@
                     <!-- inviting_faculty -->
                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
-                            <div class="task-sub-title sub-title-text"> INVITING VISITING FACULTY FROM THE INDUSTRY TO HANDLE NICHE  :</div>
-                            <label id="view-inviting-faculty"></label>
+                            <div class="task-sub-title sub-title-text"> Inviting Visiting Faculty From The Industry To Handle Niche :</div>
+                            <labelv class="view-content" id="view-inviting-faculty"></label>
                         </div>
                     </div>
                     <!--inviting_faculty_file -->
                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
-                            <div class="task-sub-title sub-title-text"> UPLOADES DOCUMENTS :</div>
-                            <label id="view-inviting-faculty-file"></label>
+                            <div class="task-sub-title sub-title-text"> Documents :</div>
+                            <label class="view-content" id="view-inviting-faculty-file"></label>
                         </div>
                     </div>
                     <!-- inviting_faculty_link -->
                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
-                            <div class="task-sub-title sub-title-text">LINK:</div>
-                            <label id="view-inviting-faculty-link"></label>
+                            <div class="task-sub-title sub-title-text">Link:</div>
+                            <label class="view-content" id="view-inviting-faculty-link"></label>
                         </div>
                     </div>
                 </div>
@@ -390,37 +371,41 @@
                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
                             <div class="task-sub-title sub-title-text">Program Orientation :</div>
-                            <label id="view-program-orientation"></label>
+                            <label class="view-content" id="view-program-orientation"></label>
                         </div>
                     </div>
                     <!-- program_orientation_file -->
                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
-                            <div class="task-sub-title sub-title-text">UPLOADES DOCUMENTS :</div>
-                            <label id="view-program-orientation-file"></label>
+                            <div class="task-sub-title sub-title-text">Documents :</div>
+                            <label class="view-content" id="view-program-orientation-file"></label>
                         </div>
                     </div>
                     <!-- program_orientation_link -->
                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
-                            <div class="task-sub-title sub-title-text">LINK :</div>
-                            <label id="view-program-orientation-link"></label>
+                            <div class="task-sub-title sub-title-text">Link :</div>
+                            <label class="view-content" id="view-program-orientation-link"></label>
                         </div>
                     </div>
                 </div>
             </div>
+            <!-- footer button -->
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
 </div>
+<!-- inline script -->
 <script>
+
     const teachingExecellanceAddModal = document.getElementById('teaching-execellance-add-modal');
     const teachingExecellanceList = document.getElementById('teaching-execellance-data-list');
     const submitBtn = document.getElementById('submit-btn');
     const updateBtn = document.getElementById('update-btn');
     let teachingRowToBeUpdated , teachingId;
+
     teachingExecellanceAddModal.addEventListener('click' , (event) => {
         if(event.target.tagName === 'BUTTON' && event.target.classList.contains('add-modal') || event.target.classList.contains('plus')){
             // for button visualization
@@ -544,7 +529,7 @@
         if(event.target.classList.contains('view')){
             console.log('clickedddd')
             const teachingExecellanceRowToBeViewed = event.target.closest('tr');
-            teachingId = teachingExecellanceRowToBeViewed.getAttribute('data-teaching-id');
+            teachingId = event.target.getAttribute('data-teaching-id');
             console.log('teachingId ==>>', teachingId);
             const viewPedagogyInnovation = document.getElementById('view-pedagogy-innovation');
             const viewPedagogyInnovationFile = document.getElementById('view-pedagogy-innovation-file');
@@ -599,7 +584,7 @@
         if(event.target.classList.contains('delete')){
             console.log('clickedd');
             teachingExecellanceRowToBeDeleted = event.target.closest('tr');
-            teachingId = teachingExecellanceRowToBeDeleted.getAttribute('data-teaching-id');
+            teachingId = event.target.getAttribute('data-teaching-id');
 
             fetch('/teaching-excellance/delete' , {
                 method : 'POST',
@@ -623,7 +608,8 @@
             submitBtn.classList.add('d-none');
             updateBtn.classList.remove('d-none');
             teachingRowToBeUpdated = event.target.closest('tr');
-            teachingId = teachingRowToBeUpdated.getAttribute('data-teaching-id');
+            console.log('teachingRowToBeUpdated ==>>', teachingRowToBeUpdated);
+            teachingId = event.target.getAttribute('data-teaching-id');
             console.log('id for updated ==>>', teachingId);
 
             const pedagogyInnovation = document.getElementById('pedagogy-innovation');
@@ -644,6 +630,7 @@
             fdpProgram.value = teachingRowToBeUpdated.querySelector('.fdp-program').innerText;
             const fdpProgramFile  = teachingRowToBeUpdated.getAttribute('data-fdp-program-file');
             fdpProgramLink.value = teachingRowToBeUpdated.getAttribute('data-fdp-program-link');
+            console.log('fdpProgramLink.value ==>>', fdpProgramLink.value)
             workShopDetails.value = teachingRowToBeUpdated.querySelector('.workshop-details').innerText;
             const workShopFile  = teachingRowToBeUpdated.getAttribute('data-work-shop-file');
             workShopLink.value = teachingRowToBeUpdated.getAttribute('data-workshop-link');
@@ -658,6 +645,7 @@
         }
     
     })
+    
     updateBtn.addEventListener('click' , () => {
         const updatedTeachingData = new FormData();
         const updatedPedagogyInnovation = document.getElementById('pedagogy-innovation').value;
@@ -711,22 +699,21 @@
                 teachingRowToBeUpdated.setAttribute('data-pedagogy-innovation-file' , data.pedagogyInnovationFile[0].filename);
                 teachingRowToBeUpdated.setAttribute('data-fdp-program-file' , data.fdpProgramFile[0].filename); 
                 teachingRowToBeUpdated.setAttribute('data-workshop-file' , data.workShopFile[0].filename); 
-                teachingRowToBeUpdated.setAttribute('data-pedagogy-innovation-link' , data.updatedTeachingExecellance.updatedPedagogyInnovation);
-                teachingRowToBeUpdated.setAttribute('data-fdp-program-link' , data.updatedTeachingExecellance.updatedFdpProgramLink); 
-                teachingRowToBeUpdated.setAttribute('data-workshop-link' , data.updatedTeachingExecellance.updatedWorkShopLink); 
+                teachingRowToBeUpdated.setAttribute('data-pedagogy-innovation-link' , data.updatedTeachingExecellance.pedagogyLink);
+                teachingRowToBeUpdated.setAttribute('data-fdp-program-link' , data.updatedTeachingExecellance.fdpProgramLink); 
+                teachingRowToBeUpdated.setAttribute('data-workshop-link' , data.updatedTeachingExecellance.workShopLink); 
                 teachingRowToBeUpdated.setAttribute('data-inviting-faculty-file' , data.invitingFacultyFile[0].filename); 
-                teachingRowToBeUpdated.setAttribute('data-inviting-faculty-link' , data.updatedTeachingExecellance.updatedInvitingFacultyLink); 
+                teachingRowToBeUpdated.setAttribute('data-inviting-faculty-link' , data.updatedTeachingExecellance.invitingFacultyLink); 
                 teachingRowToBeUpdated.setAttribute('data-program-orientation-file' , data.programOrientationFile[0].filename); 
-                teachingRowToBeUpdated.setAttribute('data-program-orientation-link' , data.updatedTeachingExecellance.updatedProgramOrientationLink);
+                teachingRowToBeUpdated.setAttribute('data-program-orientation-link' , data.updatedTeachingExecellance.programOrientationLink);
             }
             $('#teaching-execellance-modal').modal('hide');
             alert('data updated SuccessFully')
         })
 
     })
-</script>   
-<!-- inline javascript -->
 
+</script>   
 <!-- footer section -->
 <%- include('./partials/footer') %>
 <%- include('./partials/footer-end') %>

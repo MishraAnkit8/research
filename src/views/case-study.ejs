@@ -1,159 +1,135 @@
 <%- include('./partials/head') %>
 <!-- inline css -->
-<style>
-.case-study-row.flex-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center; 
-}
-
-.case-study-row .cell {
-    flex: 1; 
-    margin: 5px; 
-}
-
-.custom-modal {
-     max-width: 1000px;
-     max-height: 800px;
- }
- .sub-title-text{
-     font-size: 15px;
-     font-weight:500;
- }
-
-</style>
-
 <!-- Navbar section -->
 <%- include('./partials/header') %>
 <!-- This is left sidebar  -->
 <%- include('./partials/left-sidebar') %>
 <!-- This is right side section -->
 <main class="main" id="mainContent">
-                <div class="base-section coustom-section mt-5 p-5">
-                    <!--DASHBOARD CONTENT START-->
-                    <div class="breadcrumbs-container">
-                    </div>
-                    <div class="errorHtml"></div>
-                    <div class="card table-card">
-                        <div
-                            class="card-header table-card-header text-uppercase d-flex align-items-center justify-content-between">
-                            <div>
-                                <h3>CASE STUDY LIST</h3>
-                            </div>
-                            <div class="me-2">
-                                <button id="case-study-add-modal" type="button" class="btn btn-primary add-modal" data-toggle="modal"
-                                    data-target="#case-study-modal">
-                                    <i  class="fas fa-plus plus"></i></button>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="card-body table-responsive">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <label>Show Entries</label>
-                                    <select class="form-select" id="changeEntry">
-                                        <option value="10">10</option>
-                                        <option value="25">25</option>
-                                        <option value="50">50</option>
-                                        <option value="100">100</option>
-                                        <option value="150">150</option>
-                                        <option value="200">200</option>
-                                        <option value="250">250</option>
-                                        <option value="300">300</option>
-                                        <option value="350">350</option>
-                                        <option value="400">400</option>
-                                        <option value="500">500</option>
-                                        <option value="800">800</option>
-                                        <option value="1000">1000</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <div class="table-searchbar-container"><button type="button"><i
-                                                class="fas fa-search"></i>
-                                        </button><input type="search" id="searchkeyword" placeholder="Enter keywords"
-                                            class="table-searchbar">
-                                    </div>
-                                </div>
-                            </div>
-                            <table class=" table" id="case-studies-data-list">
-                                <thead>
-                                    <th class="cell">#</th>
-                                    <th class="cell">Author First Name</th>
-                                    <th class="cell">Author Last Name</th>
-                                    <th class="cell">Title of Case Study</th>
-                                    <th class="cell">Edition</th>
-                                    <th class="cell">Publisher Name</th>
-                                    <th class="cell">Volume Number</th>
-                                    <th class="cell">Publication Year</th>
-                                    <th class="cell">Action</th>
-                                </thead>
-                                <% caseStudiesData.forEach(function(caseStudy) { %>
-                                    <tr scope="row" data-case-id="<%- caseStudy.id %>" data-page-number="<%- caseStudy.page_number %>"
-                                        data-url-of-casestudy="<%- caseStudy.url_of_case_study %>" data-number-of-nmims-authors="<%- caseStudy.number_of_nmims_authors %>"
-                                        data-nmims-authors="<%- caseStudy.nmims_authors %>" data-nmims-campus-authors="<%- caseStudy.nmims_campus_authors %>"
-                                        data-nmims-school-authors="<%- caseStudy.nmims_school_authors %>">
-                                        <td class="cell " data-case-id="<%- caseStudy.id %>"> <%- caseStudy.id %> </td>
-                                        <td class="cell author-first-name"> <%- caseStudy.author_first_name %> </td>
-                                        <td class="cell author-last-name"> <%- caseStudy.author_last_name %> </td>
-                                        <td class="cell title-of-case-study">  <%- caseStudy.title_of_case_study %> </td>
-                                        <td class="cell edition"><%- caseStudy.edition %> </td>
-                                        <td class="cell publisher-name "> <%- caseStudy.publisher_name %> </td>
-                                        <td class="cell volume-number "> <%- caseStudy.volume_number %> </td>
-                                        <td class="cell publication-year"> <%- caseStudy.publication_year %> </td>
-                                        <td class="cell ">
-                                            <a class="view" data-case-id="<%- caseStudy.id %>"><i class="fa-solid fa-eye view"
-                                                data-case-id="<%- caseStudy.id %>"></i></a>
-                                            <a class="edit" data-case-id="<%- caseStudy.id %>"><i class="fa fa-edit edit"
-                                                data-case-id="<%- caseStudy.id %>"></i></a>
-                                            <a class="delete" data-case-id="<%- caseStudy.id %>"><i class="fa-solid fa-trash delete"
-                                                data-case-id="<%- caseStudy.id %>"></i></a>
-                                        </td>
-                                    </tr>
-                            <% }); %>
-                        </table>    
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <p>Total entries:1
-                                    </p>
-                                </div>
-                                <div>
-                                    <p id="pagination" class="pagination-search"></p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!--Import Modal -->
-    <div class="modal fade" id="open-program-modal" tabindex="-1" aria-labelledby="open-program-modal"
-                        aria-hidden="true">
-    </div>
-    <!-- EDIT PROGRAM AND UPDATE -->
-    <div class="modal fade" id="edit-program-modal" tabindex="-1" aria-labelledby="editModalLabel"
-                        aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editModalLabel">Update Program</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <div class="base-section coustom-section">
+        <!--DASHBOARD CONTENT START-->
+        <div class="breadcrumbs-container">
+        </div>
+        <div class="errorHtml"></div>
+        <div class="card table-card">
+            <div class="table-card-header text-uppercase d-flex align-items-center justify-content-between">
+                <div>
+                    <h3>CASE STUDY LIST</h3>
                 </div>
-                <div id="errorHtml"></div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="exampleInputEmail1" class="form-label">Program Name</label>
-                        <input type="text" class="form-control" id="program_name" name="program_name">
-                        <input type="hidden" class="form-control" id="hidden_id" name="hidden_id">
-                    </div>
-                    <div class="mb-3">
-                        <label for="exampleInputPassword1" class="form-label">Program Type</label>
-                        <select class="form-control" name="program_type_lid" id="program_type_lid">
-                            <option value="1">Full Time</option>
-                            <option value="2">Part Time</option>
+                <div class="me-2">
+                    <button id="case-study-add-modal" type="button" class="btn btn-primary add-modal" data-toggle="modal"
+                        data-target="#case-study-modal">
+                        <i class="fas fa-plus plus"></i></button>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body table-responsive">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <label>Show Entries</label>
+                        <select class="form-select" id="changeEntry">
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                            <option value="150">150</option>
+                            <option value="200">200</option>
+                            <option value="250">250</option>
+                            <option value="300">300</option>
+                            <option value="350">350</option>
+                            <option value="400">400</option>
+                            <option value="500">500</option>
+                            <option value="800">800</option>
+                            <option value="1000">1000</option>
                         </select>
                     </div>
-
-                    <div class="mb-3">
-                        <label for="abbr" class="form-label">Program Abbr</label>
-                        <input type="text" class="form-control" id="abbr" name="abbr">
+                    <div>
+                        <div class="table-searchbar-container"><button type="button"><i class="fas fa-search"></i>
+                            </button><input type="search" id="searchkeyword" placeholder="Enter keywords"
+                                class="table-searchbar">
+                        </div>
                     </div>
+                </div>
+                <table class=" table" id="case-studies-data-list">
+                    <thead>
+                        <th class="cell">#</th>
+                        <th class="cell">Author First Name</th>
+                        <th class="cell">Author Last Name</th>
+                        <th class="cell">Title of Case Study</th>
+                        <th class="cell">Edition</th>
+                        <th class="cell">Publisher Name</th>
+                        <th class="cell">Volume Number</th>
+                        <th class="cell">Publication Year</th>
+                        <th class="cell">Action</th>
+                    </thead>
+                    <% caseStudiesData.forEach(function(caseStudy) { %>
+                        <tr scope="row" data-case-id="<%- caseStudy.id %>" data-page-number="<%- caseStudy.page_number %>"
+                            data-url-of-casestudy="<%- caseStudy.url_of_case_study %>"
+                            data-number-of-nmims-authors="<%- caseStudy.number_of_nmims_authors %>"
+                            data-nmims-authors="<%- caseStudy.nmims_authors %>"
+                            data-nmims-campus-authors="<%- caseStudy.nmims_campus_authors %>"
+                            data-nmims-school-authors="<%- caseStudy.nmims_school_authors %>">
+                            <td class="cell " data-case-id="<%- caseStudy.id %>"> <%- caseStudy.id %> </td>
+                            <td class="cell author-first-name"> <%- caseStudy.author_first_name %> </td>
+                            <td class="cell author-last-name"> <%- caseStudy.author_last_name %> </td>
+                            <td class="cell title-of-case-study"> <%- caseStudy.title_of_case_study %> </td>
+                            <td class="cell edition"><%- caseStudy.edition %> </td>
+                            <td class="cell publisher-name "> <%- caseStudy.publisher_name %> </td>
+                            <td class="cell volume-number "> <%- caseStudy.volume_number %> </td>
+                            <td class="cell publication-year"> <%- caseStudy.publication_year %> </td>
+                            <td class="cell ">
+                                <a class="view" data-case-id="<%- caseStudy.id %>"><i class="fa-solid fa-eye view"
+                                        data-case-id="<%- caseStudy.id %>"></i></a>
+                                <a class="edit" data-case-id="<%- caseStudy.id %>"><i class="fa fa-edit edit"
+                                        data-case-id="<%- caseStudy.id %>"></i></a>
+                                <a class="delete" data-case-id="<%- caseStudy.id %>"><i class="fa-solid fa-trash delete"
+                                        data-case-id="<%- caseStudy.id %>"></i></a>
+                            </td>
+                        </tr>
+                        <% }); %>
+                </table>
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <p>Total entries:1
+                        </p>
+                    </div>
+                    <div>
+                        <p id="pagination" class="pagination-search"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--Import Modal -->
+        <div class="modal fade" id="open-program-modal" tabindex="-1" aria-labelledby="open-program-modal"
+            aria-hidden="true">
+        </div>
+        <!-- EDIT PROGRAM AND UPDATE -->
+        <div class="modal fade" id="edit-program-modal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editModalLabel">Update Program</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div id="errorHtml"></div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="exampleInputEmail1" class="form-label">Program Name</label>
+                            <input type="text" class="form-control" id="program_name" name="program_name">
+                            <input type="hidden" class="form-control" id="hidden_id" name="hidden_id">
+                        </div>
+                        <div class="mb-3">
+                            <label for="exampleInputPassword1" class="form-label">Program Type</label>
+                            <select class="form-control" name="program_type_lid" id="program_type_lid">
+                                <option value="1">Full Time</option>
+                                <option value="2">Part Time</option>
+                            </select>
+                        </div>
+    
+                        <div class="mb-3">
+                            <label for="abbr" class="form-label">Program Abbr</label>
+                            <input type="text" class="form-control" id="abbr" name="abbr">
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -162,6 +138,7 @@
                 </div>
             </div>
         </div>
+    </div>
 </main>
 <!-- Modal  form -->
 <div class="modal fade " id="case-study-modal" tabindex="-1" role="dialog" aria-labelledby="case-study"
@@ -316,7 +293,6 @@
                             <label id="view-publisher-name"></label>
                         </div>
                     </div>
-        
                     <!-- Publication Year -->
                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">

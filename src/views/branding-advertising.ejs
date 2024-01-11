@@ -1,182 +1,168 @@
 <%- include('./partials/head') %>
 <!-- inline css -->
-<style>
-.case-study-row.flex-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center; 
-}
-
-.case-study-row .cell {
-    flex: 1; 
-    margin: 5px; 
-}
-
-.custom-modal {
-     max-width: 1000px;
-     max-height: 800px;
- }
- .sub-title-text{
-     font-size: 15px;
-     font-weight:500;
- }
-
-</style>
-
 <!-- Navbar section -->
 <%- include('./partials/header') %>
 <!-- This is left sidebar  -->
 <%- include('./partials/left-sidebar') %>
 <!-- This is right side section -->
 <main class="main" id="mainContent">
-                <div class="base-section coustom-section mt-5 p-5">
-                    <!--DASHBOARD CONTENT START-->
-                    <div class="breadcrumbs-container">
-                    </div>
-                    <div class="errorHtml"></div>
-                    <div class="card table-card">
-                        <div
-                            class="card-header table-card-header text-uppercase d-flex align-items-center justify-content-between">
-                            <div>  
-                                <h3>BRANDING AND ADVERTISING</h3>
-                            </div>
-                            <div class="me-2">
-                                <button id="branding-advertising-add-modal" type="button" class="btn btn-primary add-modal" data-toggle="modal"
-                                    data-target="#branding-advertising-modal">
-                                    <i  class="fas fa-plus plus"></i></button>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="card-body table-responsive">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <label>Show Entries</label>
-                                    <select class="form-select" id="changeEntry">
-                                        <option value="10">10</option>
-                                        <option value="25">25</option>
-                                        <option value="50">50</option>
-                                        <option value="100">100</option>
-                                        <option value="150">150</option>
-                                        <option value="200">200</option>
-                                        <option value="250">250</option>
-                                        <option value="300">300</option>
-                                        <option value="350">350</option>
-                                        <option value="400">400</option>
-                                        <option value="500">500</option>
-                                        <option value="800">800</option>
-                                        <option value="1000">1000</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <div class="table-searchbar-container"><button type="button"><i
-                                                class="fas fa-search"></i>
-                                        </button><input type="search" id="searchkeyword" placeholder="Enter keywords"
-                                            class="table-searchbar">
-                                    </div>
-                                </div>
-                            </div>
-                            <table class="table custom-table " id="branding-advertising-list">
-                                <thead>
-                                    <th>#</th>
-                                    <th>Faculty Recognition</th>
-                                    <th>Faculty Awards</th>
-                                    <th>Staff Awards</th>
-                                    <th>Alumni awards</th>
-                                    <th>Student Awards</th>
-                                    <th>International Linkage Ventures</th>
-                                    <th>Conference Participation</th>
-                                    <th>Organising Conference at NMIMS</th>
-                                    <th>Student Event Participation</th>
-                                    <th>Newspaper Article</th>
-                                    <th>Action</th>
-                                </thead>
-                            <% advertisingData.forEach(function(advertising) { %>
-                                <tr scope="row" data-advertising-id="<%- advertising.id %>" data-faculty-recognition-documents="<%- advertising.faculty_recognition_documents %>"
-                                    data-faculty-recognition-link="<%- advertising.faculty_recognition_link %>" data-faculty-award-documents="<%- advertising.faculty_award_documents %>" 
-                                    data-faculty-award-link="<%- advertising.faculty_award_link %>" data-staff-award-documents="<%- advertising.staff_award_documents %>"
-                                    data-staff-award-link="<%- advertising.staff_award_link %>" data-student-award-documents="<%- advertising.student_award_documents %>" 
-                                    data-alumni-award-documents="<%- advertising.alumni_award_documents %>"  data-alumni-award-link="<%- advertising.alumni_award_link %>"
-                                    data-student-award-link="<%- advertising.student_award_link %>" data-international-linkage-documents="<%- advertising.international_linkage_documents %>"
-                                    data-international-linkage-link="<%- advertising.international_linkage_link %>" data-conference-participation-documents="<%- advertising.conference_participation_documents %>"
-                                    data-conference-participation-link="<%- advertising.conference_participation_link %>" data-organising-conference-documents="<%- advertising.organising_conference_documents %>"
-                                    data-organising-conference-link="<%- advertising.organising_conference_link %>" data-student-event-participation-documents="<%- advertising.student_event_participation_documents %>"
-                                    data-student-event-participation-link="<%- advertising.student_event_participation_link %>" data-newspaper-article-documents="<%- advertising.newspaper_article_documents %>"
-                                    data-newspaper-article-link="<%- advertising.newspaper_article_link %>">
-                                    <td data-advertising-id="<%- advertising.id %>"><%- advertising.id %></td>
-                                    <td class="faculty-recognition"><%- advertising.faculty_recognition %></td>
-                                    <td class="faculty-award"><%- advertising.faculty_award %></td>
-                                    <td class="staff-award"><%- advertising.staff_award %></td>
-                                    <td class="alumni-award"><%- advertising.alumni_award %></td>
-                                    <td class="student-award"><%- advertising.student_award %></td>
-                                    <td class="international-linkage"><%- advertising.international_linkage %></td>
-                                    <td class="conference-participation"><%- advertising.conference_participation %></td>
-                                    <td class="organising-conference"><%- advertising.organising_conference %></td>
-                                    <td class="student-event-participation"><%- advertising.student_event_participation %></td>
-                                    <td class="newspaper-article"><%- advertising.newspaper_article %></td>
-                                    <td>
-                                            <a class="view" data-advertising-id="<%- advertising.id %>"><i class="fa-solid fa-eye view"
-                                                data-advertising-id="<%- advertising.id %>"></i></a>
-                                            <a class="edit" data-advertising-id="<%- advertising.id %>"><i class="fa fa-edit edit"
-                                                data-advertising-id="<%- advertising.id %>"></i></a>
-                                            <a class="delete" data-advertising-id="<%- advertising.id %>"><i class="fa-solid fa-trash delete"
-                                                data-advertising-id="<%- advertising.id %>"></i></a>
-                                    </td>
-                                </tr>
-                            <% }); %>
-                            </table>
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <p>Total entries:1
-                                    </p>
-                                </div>
-                                <div>
-                                    <p id="pagination" class="pagination-search"></p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!--Import Modal -->
-    <div class="modal fade" id="open-program-modal" tabindex="-1" aria-labelledby="open-program-modal"
-                        aria-hidden="true">
-    </div>
-    <!-- EDIT PROGRAM AND UPDATE -->
-    <div class="modal fade" id="edit-program-modal" tabindex="-1" aria-labelledby="editModalLabel"
-                        aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editModalLabel">Update Program</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <div class="base-section coustom-section">
+        <!--DASHBOARD CONTENT START-->
+        <div class="breadcrumbs-container">
+        </div>
+        <div class="errorHtml"></div>
+        <div class="card table-card">
+            <div class="table-card-header text-uppercase d-flex align-items-center justify-content-between">
+                <div>
+                    <h3>BRANDING AND ADVERTISING</h3>
                 </div>
-                <div id="errorHtml"></div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="exampleInputEmail1" class="form-label">Program Name</label>
-                        <input type="text" class="form-control" id="program_name" name="program_name">
-                        <input type="hidden" class="form-control" id="hidden_id" name="hidden_id">
-                    </div>
-                    <div class="mb-3">
-                        <label for="exampleInputPassword1" class="form-label">Program Type</label>
-                        <select class="form-control" name="program_type_lid" id="program_type_lid">
-                            <option value="1">Full Time</option>
-                            <option value="2">Part Time</option>
+                <div class="me-2">
+                    <button id="branding-advertising-add-modal" type="button" class="btn btn-primary add-modal"
+                        data-toggle="modal" data-target="#branding-advertising-modal">
+                        <i class="fas fa-plus plus"></i></button>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body table-responsive">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <label>Show Entries</label>
+                        <select class="form-select" id="changeEntry">
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                            <option value="150">150</option>
+                            <option value="200">200</option>
+                            <option value="250">250</option>
+                            <option value="300">300</option>
+                            <option value="350">350</option>
+                            <option value="400">400</option>
+                            <option value="500">500</option>
+                            <option value="800">800</option>
+                            <option value="1000">1000</option>
                         </select>
                     </div>
-
-                    <div class="mb-3">
-                        <label for="abbr" class="form-label">Program Abbr</label>
-                        <input type="text" class="form-control" id="abbr" name="abbr">
+                    <div>
+                        <div class="table-searchbar-container"><button type="button"><i class="fas fa-search"></i>
+                            </button><input type="search" id="searchkeyword" placeholder="Enter keywords"
+                                class="table-searchbar">
+                        </div>
                     </div>
+                </div>
+                <table class="table custom-table " id="branding-advertising-list">
+                    <thead>
+                        <th>#</th>
+                        <th>Faculty Recognition</th>
+                        <th>Faculty Awards</th>
+                        <th>Staff Awards</th>
+                        <th>Alumni awards</th>
+                        <th>Student Awards</th>
+                        <th>International Linkage Ventures</th>
+                        <th>Conference Participation</th>
+                        <th>Organising Conference at NMIMS</th>
+                        <th>Student Event Participation</th>
+                        <th>Newspaper Article</th>
+                        <th>Action</th>
+                    </thead>
+                    <% advertisingData.forEach(function(advertising) { %>
+                        <tr scope="row" data-advertising-id="<%- advertising.id %>"
+                            data-faculty-recognition-documents="<%- advertising.faculty_recognition_documents %>"
+                            data-faculty-recognition-link="<%- advertising.faculty_recognition_link %>"
+                            data-faculty-award-documents="<%- advertising.faculty_award_documents %>"
+                            data-faculty-award-link="<%- advertising.faculty_award_link %>"
+                            data-staff-award-documents="<%- advertising.staff_award_documents %>"
+                            data-staff-award-link="<%- advertising.staff_award_link %>"
+                            data-student-award-documents="<%- advertising.student_award_documents %>"
+                            data-alumni-award-documents="<%- advertising.alumni_award_documents %>"
+                            data-alumni-award-link="<%- advertising.alumni_award_link %>"
+                            data-student-award-link="<%- advertising.student_award_link %>"
+                            data-international-linkage-documents="<%- advertising.international_linkage_documents %>"
+                            data-international-linkage-link="<%- advertising.international_linkage_link %>"
+                            data-conference-participation-documents="<%- advertising.conference_participation_documents %>"
+                            data-conference-participation-link="<%- advertising.conference_participation_link %>"
+                            data-organising-conference-documents="<%- advertising.organising_conference_documents %>"
+                            data-organising-conference-link="<%- advertising.organising_conference_link %>"
+                            data-student-event-participation-documents="<%- advertising.student_event_participation_documents %>"
+                            data-student-event-participation-link="<%- advertising.student_event_participation_link %>"
+                            data-newspaper-article-documents="<%- advertising.newspaper_article_documents %>"
+                            data-newspaper-article-link="<%- advertising.newspaper_article_link %>">
+                            <td data-advertising-id="<%- advertising.id %>"><%- advertising.id %></td>
+                            <td class="faculty-recognition"><%- advertising.faculty_recognition %></td>
+                            <td class="faculty-award"><%- advertising.faculty_award %></td>
+                            <td class="staff-award"><%- advertising.staff_award %></td>
+                            <td class="alumni-award"><%- advertising.alumni_award %></td>
+                            <td class="student-award"><%- advertising.student_award %></td>
+                            <td class="international-linkage"><%- advertising.international_linkage %></td>
+                            <td class="conference-participation"><%- advertising.conference_participation %></td>
+                            <td class="organising-conference"><%- advertising.organising_conference %></td>
+                            <td class="student-event-participation"><%- advertising.student_event_participation %></td>
+                            <td class="newspaper-article"><%- advertising.newspaper_article %></td>
+                            <td>
+                                <a class="view" data-advertising-id="<%- advertising.id %>"><i class="fa-solid fa-eye view"
+                                        data-advertising-id="<%- advertising.id %>"></i></a>
+                                <a class="edit" data-advertising-id="<%- advertising.id %>"><i class="fa fa-edit edit"
+                                        data-advertising-id="<%- advertising.id %>"></i></a>
+                                <a class="delete" data-advertising-id="<%- advertising.id %>"><i
+                                        class="fa-solid fa-trash delete"
+                                        data-advertising-id="<%- advertising.id %>"></i></a>
+                            </td>
+                        </tr>
+                        <% }); %>
+                </table>
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <p>Total entries:1
+                        </p>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                       
+                    <div>
+                        <p id="pagination" class="pagination-search"></p>
                     </div>
                 </div>
             </div>
         </div>
+        <!--Import Modal -->
+        <div class="modal fade" id="open-program-modal" tabindex="-1" aria-labelledby="open-program-modal"
+            aria-hidden="true">
+        </div>
+        <!-- EDIT PROGRAM AND UPDATE -->
+        <div class="modal fade" id="edit-program-modal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editModalLabel">Update Program</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div id="errorHtml"></div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="exampleInputEmail1" class="form-label">Program Name</label>
+                            <input type="text" class="form-control" id="program_name" name="program_name">
+                            <input type="hidden" class="form-control" id="hidden_id" name="hidden_id">
+                        </div>
+                        <div class="mb-3">
+                            <label for="exampleInputPassword1" class="form-label">Program Type</label>
+                            <select class="form-control" name="program_type_lid" id="program_type_lid">
+                                <option value="1">Full Time</option>
+                                <option value="2">Part Time</option>
+                            </select>
+                        </div>
+    
+                        <div class="mb-3">
+                            <label for="abbr" class="form-label">Program Abbr</label>
+                            <input type="text" class="form-control" id="abbr" name="abbr">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+    
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </main>
-<!-- Modal  form -->
+<!-- branding advertising  Modal  form -->
 <div class="modal fade " id="branding-advertising-modal" tabindex="-1" role="dialog" aria-labelledby="advertising-execellance"
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable modal-lg modal-fullscreen p-5" role="document">
@@ -197,7 +183,7 @@
                         <!-- file upload -->
                         <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                             <label for="faculty-recognition-documents" class="form-label fw-bold ">Upload Documents</label>
-                            <input type="file" name="facultyRecognitionDocuments" class="form-control " id="faculty-recognition-documents" data-validat="isEmpty,isAlphabeticWords" placeholder="upload-file" required>
+                            <input type="file" name="facultyRecognitionDocuments" class="form-control " id="faculty-recognition-documents" data-validat="isEmpty" placeholder="upload-file" required>
                         </div>
                         <!-- link -->
                         <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
@@ -219,7 +205,7 @@
                         <!-- link -->
                         <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                             <label for="faculty-award-link" class="form-label fw-bold">Link</label>
-                            <input type="text" name="facultawardlink" id="faculty-award-link" data-validat="isEmpty" class="form-control" placeholder="https://"required/>
+                            <input type="text" name="facultawardlink" id="faculty-award-link" data-validat="isEmpty,isAlphabeticWords" class="form-control" placeholder="https://"required/>
                         </div>
                     </div>
                     <!-- Staff Awards -->
@@ -236,7 +222,7 @@
                         <!-- link -->
                         <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                             <label for="staff-award-link" class="form-label fw-bold">Link</label>
-                            <input type="text" name="pada" id="staff-award-link" data-validat="isEmpty" class="form-control" placeholder="https://" required/>
+                            <input type="text" name="pada" id="staff-award-link" data-validat="isEmpty,isAlphabeticWords" class="form-control" placeholder="https://" required/>
                         </div>
                     </div>
                     <!-- Alumni awards  -->
@@ -253,7 +239,7 @@
                         <!-- link -->
                         <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                             <label for="link" class="form-label fw-bold">Link</label>
-                            <input type="text" name="alumniAwardLink" id="alumni-award-link" data-validat="isEmpty" class="form-control" placeholder="https://" required/>
+                            <input type="text" name="alumniAwardLink" id="alumni-award-link" data-validat="isEmpty,isAlphabeticWords" class="form-control" placeholder="https://" required/>
                         </div>
                     </div>
                     <!-- Student Awards -->
@@ -270,7 +256,7 @@
                         <!-- link -->
                         <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                             <label for="student-award-link" class="form-label fw-bold">Link</label>
-                            <input type="text" name="pada" id="student-award-link" data-validat="isEmpty" class="form-control" placeholder="https://" required/>
+                            <input type="text" name="pada" id="student-award-link" data-validat="isEmpty,isAlphabeticWords" class="form-control" placeholder="https://" required/>
                         </div>
                     </div>
                     <!-- International Linkage Ventures -->
@@ -287,7 +273,7 @@
                         <!-- link -->
                         <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                             <label for="international-linkage-link" class="form-label fw-bold">Link</label>
-                            <input type="text" name="internationalLinkageLink" id="international-linkage-link" data-validat="isEmpty" class="form-control" placeholder="https://" required/>
+                            <input type="text" name="internationalLinkageLink" id="international-linkage-link" data-validat="isEmpty,isAlphabeticWords" class="form-control" placeholder="https://" required/>
                         </div>
                     </div>
                     <!-- Conference Participation -->
@@ -304,7 +290,7 @@
                         <!-- link -->
                         <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                             <label for="conference-participation-link" class="form-label fw-bold">Link</label>
-                            <input type="text" name="conferenceParticipationLink" id="conference-participation-link" data-validat="isEmpty" class="form-control" placeholder="https://" required/>
+                            <input type="text" name="conferenceParticipationLink" id="conference-participation-link" data-validat="isEmpty,isAlphabeticWords" class="form-control" placeholder="https://" required/>
                         </div>
                     </div>
 
@@ -322,7 +308,7 @@
                         <!-- link -->
                         <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                             <label for="organising-conference-link" class="form-label fw-bold">Link</label>
-                            <input type="text" name="organisingConferenceLink" id="organising-conference-link" data-validat="isEmpty,isDocuments" class="form-control" placeholder="https://" required/>
+                            <input type="text" name="organisingConferenceLink" id="organising-conference-link" data-validat="isEmpty,isAlphabeticWords" class="form-control" placeholder="https://" required/>
                         </div>
                     </div>
 
@@ -340,7 +326,7 @@
                         <!-- link -->
                         <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                             <label for="student-event-participation-link" class="form-label fw-bold">Link</label>
-                            <input type="text" name="studentEventParticipationLink" id="student-event-participation-link" data-validat="isEmpty" class="form-control" placeholder="https://" required />
+                            <input type="text" name="studentEventParticipationLink" id="student-event-participation-link" data-validat="isEmpty,isAlphabeticWords" class="form-control" placeholder="https://" required />
                         </div>
                     </div>
                     <!-- Newspaper Article -->
@@ -357,7 +343,7 @@
                         <!-- link -->
                         <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
                             <label for="newspaper-article-link" class="form-label fw-bold">Link</label>
-                            <input type="text" name="newsPaperArticleLink" id="newspaper-article-link" data-validat="isEmpty" class="form-control" placeholder="https://" required/>
+                            <input type="text" name="newsPaperArticleLink" id="newspaper-article-link" data-validat="isEmpty,isAlphabeticWords" class="form-control" placeholder="https://" required/>
                         </div>
                     </div>
             </div>
@@ -371,20 +357,18 @@
     </div>
 </div>
 <!-- branding advertising view -->
-
-<div class="modal fade" id="branding-advertising-view-modal" tabindex="-1" role="dialog"
-    aria-labelledby="branding-advertising-view-modal" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered custom-modal " role="document">
-        <div class="modal-content">
+<div class="modal fade " id="branding-advertising-view-modal" tabindex="-1" role="dialog" aria-labelledby="advertising-execellance"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg modal-fullscreen p-5" role="document">
+        <div class="modal-content validate-input">
             <div class="modal-header">
-                <h5 class="modal-title text-center" id="advertising">BRANDING AND ADVERTISING</h5>
+                <h5 class="modal-title" id="branding-advertising"> BRANDING AND ADVERTISING  </h5>
                 <div type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true"><i class="fas fa-times fa"></i></span>
+                    <span type="button" aria-hidden="true"><i class="fas fa-times fa-2x"></i></span>
                 </div>
             </div>
             <div class="modal-body">
                 <div class="row">
-                    
                     <!-- Faculty Recognition -->
                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
@@ -599,13 +583,15 @@
                     </div>
                 </div>
             </div>
+            <!-- footer button -->
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary d-none" id="submit-btn">Submit</button>
+                <button type="button" class="btn btn-primary d-none" id="update-btn">update</button>
             </div>
         </div>
     </div>
 </div>
-
 <!-- inline javascript -->
 <script>
     const brandingAdvertisingAddModal = document.getElementById('branding-advertising-add-modal');

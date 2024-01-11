@@ -1,157 +1,139 @@
 <%- include('./partials/head') %>
 <!-- inline css -->
-<style>
-.case-study-row.flex-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center; 
-}
-
-.case-study-row .cell {
-    flex: 1; 
-    margin: 5px; 
-}
-
-.custom-modal {
-     max-width: 1000px;
-     max-height: 800px;
- }
- .sub-title-text{
-     font-size: 15px;
-     font-weight:500;
- }
-
-</style>
-
 <!-- Navbar section -->
 <%- include('./partials/header') %>
 <!-- This is left sidebar  -->
 <%- include('./partials/left-sidebar') %>
 <!-- This is right side section -->
 <main class="main" id="mainContent">
-                <div class="base-section coustom-section mt-5 p-5">
-                    <!--DASHBOARD CONTENT START-->
-                    <div class="breadcrumbs-container">
-                    </div>
-                    <div class="errorHtml"></div>
-                    <div class="card table-card">
-                        <div
-                            class="card-header table-card-header text-uppercase d-flex align-items-center justify-content-between">
-                            <div>
-                                <h3>BOOK CHAPTER PUBLICATION LIST</h3>
-                            </div>
-                            <div class="me-2">
-                                <button id="book-chapter-add-modal" type="button" class="btn btn-primary add-modal" data-toggle="modal"
-                                    data-target="#book-chapter-modal">
-                                    <i  class="fas fa-plus plus"></i></button>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="card-body table-responsive">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <label>Show Entries</label>
-                                    <select class="form-select" id="changeEntry">
-                                        <option value="10">10</option>
-                                        <option value="25">25</option>
-                                        <option value="50">50</option>
-                                        <option value="100">100</option>
-                                        <option value="150">150</option>
-                                        <option value="200">200</option>
-                                        <option value="250">250</option>
-                                        <option value="300">300</option>
-                                        <option value="350">350</option>
-                                        <option value="400">400</option>
-                                        <option value="500">500</option>
-                                        <option value="800">800</option>
-                                        <option value="1000">1000</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <div class="table-searchbar-container"><button type="button"><i
-                                                class="fas fa-search"></i>
-                                        </button><input type="search" id="searchkeyword" placeholder="Enter keywords"
-                                            class="table-searchbar">
-                                    </div>
-                                </div>
-                            </div>
-                            <table class="table custom-table " id="book-chapter-list">
-                                <thead>
-                                    <th>#</th>
-                                    <th>Author's name</th>
-                                    <th>Publication year</th>
-                                    <th>Book title</th>
-                                    <th>ISBN Number</th>
-                                    <th>Publisher Name</th>
-                                    <th>Action</th>
-                                </thead>
-                                <% bookChapterData.forEach(function(bookChapter) { %>
-                                    <tr row="scope" data-bookChapter-id="<%- bookChapter.id %>" data-author-last-name="<%-bookChapter.author_last_name %>" data-page-number="<%- bookChapter.page_number %>"
-                                        data-edition="<%- bookChapter.edition %>" data-volume-number="<%-bookChapter.volume_number %>" data-publisher-category="<%- bookChapter.publisher_category %>"
-                                        data-book-url="<%- bookChapter.book_url %>" data-doi-book-id="<%-bookChapter.doi_id %>"
-                                        data-number-of-nmims-authors="<%- bookChapter.number_of_nmims_authors %>" data-nmims-authors="<%- bookChapter.nmims_authors %>" data-nmims-campus-authors="<%- bookChapter.nmims_campus_authors %>"
-                                        data-nmims-school-authors="<%- bookChapter.nmims_school_authors %>" data-supporting-documents="<%- bookChapter.supporting_documents %>"
-                                        data-chapter-title="<%- bookChapter.chapter_title %>" data-editor-name="<%-bookChapter.editor_name %>">
-                                        <td data-bookChapter-id="<%- bookChapter.id %>"><%- bookChapter.id %></td>
-                                        <td class="author-first-name"><%- bookChapter.author_first_name %></td>
-                                        <td class="publication-year"><%- bookChapter.publication_year %></td>
-                                        <td class="book-title"><%- bookChapter.book_title %></td>
-                                        <td class="isbn-no"><%- bookChapter.isbn_no %></td>
-                                        <td class="publisher-name"><%- bookChapter.publisher_name %></td>
-                                        <td>
-                                            <a class="view" data-bookChapter-id="<%- bookChapter.id %>"><i class="fa-solid fa-eye view"
-                                                data-bookChapter-id="<%- bookChapter.id %>"></i></a>
-                                             <a class="edit"data-bookChapter-id="<%- bookChapter.id %>"><i class="fa fa-edit edit"
-                                                data-bookChapter-id="<%- bookChapter.id %>"></i></a>
-                                             <a class="delete"data-bookChapter-id="<%- bookChapter.id %>"><i class="fa-solid fa-trash delete"
-                                                data-bookChapter-id="<%- bookChapter.id %>"></i></a>
-                                        </td>
-                                    </tr>
-                                <% }); %>  
-                            </table>
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <p>Total entries:1
-                                    </p>
-                                </div>
-                                <div>
-                                    <p id="pagination" class="pagination-search"></p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!--Import Modal -->
-    <div class="modal fade" id="open-program-modal" tabindex="-1" aria-labelledby="open-program-modal"
-                        aria-hidden="true">
-    </div>
-    <!-- EDIT PROGRAM AND UPDATE -->
-    <div class="modal fade" id="edit-program-modal" tabindex="-1" aria-labelledby="editModalLabel"
-                        aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editModalLabel">Update Program</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <div class="base-section coustom-section">
+        <!--DASHBOARD CONTENT START-->
+        <div class="breadcrumbs-container">
+        </div>
+        <div class="errorHtml"></div>
+        <div class="card table-card">
+            <div class="table-card-header text-uppercase d-flex align-items-center justify-content-between">
+                <div>
+                    <h3>BOOK CHAPTER PUBLICATION LIST</h3>
                 </div>
-                <div id="errorHtml"></div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="exampleInputEmail1" class="form-label">Program Name</label>
-                        <input type="text" class="form-control" id="program_name" name="program_name">
-                        <input type="hidden" class="form-control" id="hidden_id" name="hidden_id">
-                    </div>
-                    <div class="mb-3">
-                        <label for="exampleInputPassword1" class="form-label">Program Type</label>
-                        <select class="form-control" name="program_type_lid" id="program_type_lid">
-                            <option value="1">Full Time</option>
-                            <option value="2">Part Time</option>
+                <div class="me-2">
+                    <button id="book-chapter-add-modal" type="button" class="btn btn-primary add-modal" data-toggle="modal"
+                        data-target="#book-chapter-modal">
+                        <i class="fas fa-plus plus"></i></button>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body table-responsive">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <label>Show Entries</label>
+                        <select class="form-select" id="changeEntry">
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                            <option value="150">150</option>
+                            <option value="200">200</option>
+                            <option value="250">250</option>
+                            <option value="300">300</option>
+                            <option value="350">350</option>
+                            <option value="400">400</option>
+                            <option value="500">500</option>
+                            <option value="800">800</option>
+                            <option value="1000">1000</option>
                         </select>
                     </div>
-
-                    <div class="mb-3">
-                        <label for="abbr" class="form-label">Program Abbr</label>
-                        <input type="text" class="form-control" id="abbr" name="abbr">
+                    <div>
+                        <div class="table-searchbar-container"><button type="button"><i class="fas fa-search"></i>
+                            </button><input type="search" id="searchkeyword" placeholder="Enter keywords"
+                                class="table-searchbar">
+                        </div>
                     </div>
+                </div>
+                <table class="table custom-table " id="book-chapter-list">
+                    <thead>
+                        <th>#</th>
+                        <th>Author's name</th>
+                        <th>Publication year</th>
+                        <th>Book title</th>
+                        <th>ISBN Number</th>
+                        <th>Publisher Name</th>
+                        <th>Action</th>
+                    </thead>
+                    <% bookChapterData.forEach(function(bookChapter) { %>
+                        <tr row="scope" data-bookChapter-id="<%- bookChapter.id %>"
+                            data-author-last-name="<%-bookChapter.author_last_name %>"
+                            data-page-number="<%- bookChapter.page_number %>" data-edition="<%- bookChapter.edition %>"
+                            data-volume-number="<%-bookChapter.volume_number %>"
+                            data-publisher-category="<%- bookChapter.publisher_category %>"
+                            data-book-url="<%- bookChapter.book_url %>" data-doi-book-id="<%-bookChapter.doi_id %>"
+                            data-number-of-nmims-authors="<%- bookChapter.number_of_nmims_authors %>"
+                            data-nmims-authors="<%- bookChapter.nmims_authors %>"
+                            data-nmims-campus-authors="<%- bookChapter.nmims_campus_authors %>"
+                            data-nmims-school-authors="<%- bookChapter.nmims_school_authors %>"
+                            data-supporting-documents="<%- bookChapter.supporting_documents %>"
+                            data-chapter-title="<%- bookChapter.chapter_title %>"
+                            data-editor-name="<%-bookChapter.editor_name %>">
+                            <td data-bookChapter-id="<%- bookChapter.id %>"><%- bookChapter.id %></td>
+                            <td class="author-first-name"><%- bookChapter.author_first_name %></td>
+                            <td class="publication-year"><%- bookChapter.publication_year %></td>
+                            <td class="book-title"><%- bookChapter.book_title %></td>
+                            <td class="isbn-no"><%- bookChapter.isbn_no %></td>
+                            <td class="publisher-name"><%- bookChapter.publisher_name %></td>
+                            <td>
+                                <a class="view" data-bookChapter-id="<%- bookChapter.id %>"><i class="fa-solid fa-eye view"
+                                        data-bookChapter-id="<%- bookChapter.id %>"></i></a>
+                                <a class="edit" data-bookChapter-id="<%- bookChapter.id %>"><i class="fa fa-edit edit"
+                                        data-bookChapter-id="<%- bookChapter.id %>"></i></a>
+                                <a class="delete" data-bookChapter-id="<%- bookChapter.id %>"><i
+                                        class="fa-solid fa-trash delete"
+                                        data-bookChapter-id="<%- bookChapter.id %>"></i></a>
+                            </td>
+                        </tr>
+                        <% }); %>
+                </table>
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <p>Total entries:1
+                        </p>
+                    </div>
+                    <div>
+                        <p id="pagination" class="pagination-search"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--Import Modal -->
+        <div class="modal fade" id="open-program-modal" tabindex="-1" aria-labelledby="open-program-modal"
+            aria-hidden="true">
+        </div>
+        <!-- EDIT PROGRAM AND UPDATE -->
+        <div class="modal fade" id="edit-program-modal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editModalLabel">Update Program</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div id="errorHtml"></div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="exampleInputEmail1" class="form-label">Program Name</label>
+                            <input type="text" class="form-control" id="program_name" name="program_name">
+                            <input type="hidden" class="form-control" id="hidden_id" name="hidden_id">
+                        </div>
+                        <div class="mb-3">
+                            <label for="exampleInputPassword1" class="form-label">Program Type</label>
+                            <select class="form-control" name="program_type_lid" id="program_type_lid">
+                                <option value="1">Full Time</option>
+                                <option value="2">Part Time</option>
+                            </select>
+                        </div>
+    
+                        <div class="mb-3">
+                            <label for="abbr" class="form-label">Program Abbr</label>
+                            <input type="text" class="form-control" id="abbr" name="abbr">
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -160,6 +142,7 @@
                 </div>
             </div>
         </div>
+    </div>
 </main>
 <!-- Book Chapter Modal  form -->
 <div class="modal fade " id="book-chapter-modal" tabindex="-1" role="dialog" aria-labelledby="book-chapter-modal"
@@ -177,42 +160,42 @@
                     <!-- author's first name -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="author-first-name" class="form-label fw-bold">Author's First Name</label>
-                        <input type="text" name="author-first-name" id="author-first-name" data-validate="isEmpty,isAlphabeticWords" class="form-control" data-validat="isEmpty,isAlphabeticWords" placeholder="First name" required>
+                        <input type="text" name="author-first-name" id="author-first-name" data-validate="isEmpty,isAlphabeticWords" class="form-control" data-validate="isEmpty,isAlphabeticWords" placeholder="First name" required>
                     </div>
                     <!-- Author's last name -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="author-last-name" class="form-label  fw-bold">Author's Last Name</label>
-                        <input type="text" name="lname" id="author-last-name" class="form-control" data-validat="isEmpty,isAlphabeticWords" placeholder="Last name" required>
+                        <input type="text" name="lname" id="author-last-name" class="form-control" data-validate="isEmpty,isAlphabeticWords" placeholder="Last name" required>
                     </div>
                     <!-- Title of chapter -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="chapter-title" class="form-label fw-bold">Title Of Chapeter</label>
-                        <input type="text" name="titleOfBook" id="chapter-title" class="form-control" data-validat="isEmpty,isAlphabeticWords" placeholder="Title of Book" required>
+                        <input type="text" name="titleOfBook" id="chapter-title" class="form-control" data-validate="isEmpty,isAlphabeticWords" placeholder="Title of Book" required>
                     </div>
                     <!-- Title of BOOK -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="book-title" class="form-label fw-bold">Title Of Book</label>
-                        <input type="text" name="titleOfBook" id="book-title" class="form-control" data-validat="isEmpty,isAlphabeticWords" placeholder="Title of Book" required>
+                        <input type="text" name="titleOfBook" id="book-title" class="form-control" data-validate="isEmpty,isAlphabeticWords" placeholder="Title of Book" required>
                     </div>
                     <!-- Edition -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="edition" class="form-label fw-bold">Edition (if it isn't the first)</label>
-                        <input type="text" name="case-study" id="edition" class="form-control" data-validat="isEmpty,isAlphabeticWords,isAlphaNumeric" placeholder="Optional" required>
+                        <input type="text" name="case-study" id="edition" class="form-control" data-validate="isEmpty,isAlphabeticWords,isAlphaNumeric" placeholder="Optional" required>
                     </div>
                     <!-- EDITOR NAME -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="editor-name" class="form-label fw-bold">EDITOR</label>
-                        <input type="text" name="editor" id="editor-name" class="form-control" data-validat="isEmpty,isAlphabeticWords" placeholder="Optional" required>
+                        <input type="text" name="editor" id="editor-name" class="form-control" data-validate="isEmpty,isAlphabeticWords" placeholder="Optional" required>
                     </div>
                     <!-- PAGE number -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="page-number" class="form-label fw-bold">Page Number</label>
-                        <input type="text" name="vol" id="page-number" data-validat="isEmpty,isNumber" class="form-control" placeholder="Optional" required>
+                        <input type="text" name="vol" id="page-number" data-validate="isEmpty,isNumber" class="form-control" placeholder="Optional" required>
                     </div>
                     <!-- Publisher Name -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="publisher-name" class="form-label fw-bold">Publisher Name</label>
-                        <input type="text" name="vol" id="publisher-name" class="form-control" data-validat="isEmpty,isAlphabeticWords" placeholder="Pulisher name">
+                        <input type="text" name="vol" id="publisher-name" class="form-control" data-validate="isEmpty,isAlphabeticWords" placeholder="Pulisher name">
                     </div>
                    <!-- Publisher Category  -->
                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
@@ -231,48 +214,48 @@
                     <!-- Publication Year -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="publication-year" class="form-label fw-bold">Publication Year</label>
-                        <input type="text" name="Year" id="publication-year" class="form-control" data-validat="isEmpty,isDate" placeholder="Publication Year" required>
+                        <input type="text" name="Year" id="publication-year" class="form-control" data-validate="isEmpty,isNumber" placeholder="Publication Year" required>
                     </div>
                     <!-- URL of the book publication -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="book-url" class="form-label fw-bold">URL of book</label>
-                        <input type="url" name="URL" id="book-url" class="form-control" data-validat="isEmpty,isUrl" placeholder="URL" required>
+                        <input type="url" name="URL" id="book-url" class="form-control" data-validate="isEmpty,isAlphabeticWords" placeholder="URL" required>
                     </div>
                      <!-- ISBN Number -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="ISBN-Number" class="form-label fw-bold">ISBN Number</label>
-                        <input type="isbn-no" name="ISBN-Number" id="isbn-no" class="form-control" data-validat="isEmpty,isNumber" placeholder="ISBN Number" required>
+                        <input type="isbn-no" name="ISBN-Number" id="isbn-no" class="form-control" data-validate="isEmpty,isNumber" placeholder="ISBN Number" required>
                     </div>
                      <!-- DOI of book -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="doi-book-id" class="form-label fw-bold">DOI of book</label>
-                        <input type="text" name="doi-book-id" id="doi-book-id" class="form-control" data-validat="isEmpty,isNumber" placeholder="DOI BOOK" required>
+                        <input type="text" name="doi-book-id" id="doi-book-id" class="form-control" data-validate="isEmpty,isNumber" placeholder="DOI BOOK" required>
                     </div>
                      <!-- volume number -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="volume-number" class="form-label fw-bold">VOLUME NUMBER</label>
-                        <input type="text" name="volume-number" id="volume-number" class="form-control" data-validat="isEmpty,isNumber" placeholder="publication Place" required>
+                        <input type="text" name="volume-number" id="volume-number" class="form-control" data-validate="isEmpty,isNumber" placeholder="publication Place" required>
                     </div>
                     <!-- No. of NMIMS Authors -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="number-of-nmims-authors" class="form-label fw-bold ">No. of NMIMS Authors</label>
-                        <input type="text" name="nmims-authors" id="number-of-nmims-authors" class="form-control" data-validat="isEmpty,isNumber" placeholder="No. of NMIMS Authors" required/>
+                        <input type="text" name="nmims-authors" id="number-of-nmims-authors" class="form-control" data-validate="isEmpty,isNumber" placeholder="No. of NMIMS Authors" required/>
                     </div>
                     <!-- Name of NMIMS Authors -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="nmims-authors" class="form-label fw-bold ">Name of NMIMS Authors</label>
-                        <input type="text" name="nmims-authors" id="nmims-authors" class="form-control" data-validat="isEmpty,isAlphabeticWords" placeholder="Name of NMIMS Authors" required/>
+                        <input type="text" name="nmims-authors" id="nmims-authors" class="form-control" data-validate="isEmpty,isAlphabeticWords" placeholder="Name of NMIMS Authors" required/>
                     </div>
                     <!-- NMIMS Campus - Author -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="nmims-campus-authors" class="form-label fw-bold ">NMIMS Campus Author</label>
-                        <input type="url" name="nmims-campus-authors" id="nmims-campus-authors" placeholder="NMIMS Campus Author" data-validat="isEmpty,isAlphabeticWords" class="form-control " required
+                        <input type="url" name="nmims-campus-authors" id="nmims-campus-authors" placeholder="NMIMS Campus Author" data-validate="isEmpty,isAlphabeticWords" class="form-control " required
                         />
                     </div>
                     <!--NMIMS School - Author-->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="nmims-school-authors" class="form-label fw-bold ">NMIMS School Author</label>
-                        <input type="url" name="nmimsSchoolAuthors" id="nmims-school-authors" data-validat="isEmpty,isAlphabeticWords" placeholder="NMIMS School Author" class="form-control " required/>
+                        <input type="url" name="nmimsSchoolAuthors" id="nmims-school-authors" data-validate="isEmpty,isAlphabeticWords" placeholder="NMIMS School Author" class="form-control " required/>
                     </div>
                       <!-- Upload Supporting Documents-->
                       <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
@@ -294,163 +277,155 @@
     </div>
 </div>
 <!--   BOOK CHAPTER  publication view modal -->
-<div class="modal fade" id="book-chapter-view" tabindex="-1" role="dialog" aria-labelledby="edited-book-view-modal" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered custom-modal " role="document">
-        <div class="modal-content">
+<div class="modal fade " id="book-chapter-view" tabindex="-1" role="dialog" aria-labelledby="book-chapter-modal"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg modal-fullscreen p-5" role="document">
+        <div class="modal-content validate-input">
             <div class="modal-header">
-                <h5 class="modal-title text-center" id="exampleModalLongTitle">  BOOK CHAPTER PUBLICATION</h5>
-                <div type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true"><i class="fas fa-times fa"></i></span>
+                <h5 class="modal-title" id="book-chapter">BOOK CHAPTER PUBLICATION </h5>
+                <div class="close" data-dismiss="modal" aria-label="Close">
+                    <span TYPE="button" aria-hidden="true"><i class="fas fa-times fa-2x"></i></span>
                 </div>
             </div>
             <div class="modal-body">
                 <div class="row">
-                    <div class="row">
-                        <!-- author's first name -->
-                        <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                            <div class="box">
-                                <div class="task-sub-title sub-title-text">AUTHOR'S FIRST NAME :</div>
-                                <label id="view-first-name"></label>
-                            </div>
+                    <!-- author's first name -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text">Author's First Name :</div>
+                            <label class="view-content" id="view-first-name"></label>
                         </div>
+                    </div>
             
-                        <!-- Author's last name -->
-                        <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                            <div class="box">
-                                <div class="task-sub-title sub-title-text">AUTHOR'S LAST NAME :</div>
-                                <label id="view-last-name"></label>
-                            </div>
+                    <!-- Author's last name -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text">Author Last Name :</div>
+                            <label class="view-content" id="view-last-name"></label>
                         </div>
-                        <!-- Title of case study -->
-                        <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                            <div class="box">
-                                <div class="task-sub-title sub-title-text">TITLE OF BOOK  :</div>
-                                <label id="view-book-title"></label>
-                            </div>
+                    </div>
+                    <!-- Title of case study -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text">Title Of Book :</div>
+                            <label class="view-content" id="view-book-title"></label>
                         </div>
-                        <!-- Publication place -->
-                        <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                            <div class="box">
-                                <div class="task-sub-title sub-title-text"> PLACE OF PUBLICATION :</div>
-                                <label id="view-volume-number"></label>
-                            </div>
+                    </div>
+                    <!-- Edition -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text">Edition :</div>
+                            <label class="view-content" id="view-edition"></label>
                         </div>
-                        <!-- Edition -->
-                        <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                            <div class="box">
-                                <div class="task-sub-title sub-title-text">EDITION :</div>
-                                <label id="view-edition"></label>
-                            </div>
+                    </div>
+                    <!-- Editor name -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text">Editor Name :</div>
+                            <label class="view-content" id="view-editor-name"></label>
                         </div>
-                          <!-- Editor name -->
-                          <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                            <div class="box">
-                                <div class="task-sub-title sub-title-text">EDITOR NAME :</div>
-                                <label id="view-editor-name"></label>
-                            </div>
+                    </div>
+                    <!-- chapter title -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text">Chapter Title :</div>
+                            <label class="view-content" id="view-chapter-title"></label>
                         </div>
-                          <!-- chapter title -->
-                          <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                            <div class="box">
-                                <div class="task-sub-title sub-title-text">CHAPTER TITLE :</div>
-                                <label id="view-chapter-title"></label>
-                            </div>
+                    </div>
+                    <!-- publisher category -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text">Publisher Category :</div>
+                            <label class="view-content" id="view-publisher-category"></label>
                         </div>
-                          <!-- publisher category -->
-                          <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                            <div class="box">
-                                <div class="task-sub-title sub-title-text">PUBLISHER CATEGORY :</div>
-                                <label id="view-publisher-category"></label>
-                            </div>
+                    </div>
+                    <!-- page number -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text">Page Number :</div>
+                            <label class="view-content" id="view-page-number"></label>
                         </div>
-                        <!-- page number -->
-                        <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                            <div class="box">
-                                <div class="task-sub-title sub-title-text">PAGE NUMBER :</div>
-                                <label id="view-page-number"></label>
-                            </div>
+                    </div>
+                    <!-- doi book id -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text">DOI Of Book :</div>
+                            <label class="view-content" id="view-doi-book-id"></label>
                         </div>
-                        <!-- doi book id -->
-                        <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                            <div class="box">
-                                <div class="task-sub-title sub-title-text">DOI OF BOOK  :</div>
-                                <label id="view-doi-book-id"></label>
-                            </div>
+                    </div>
+                    <!-- Publisher Name -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text">Publisher Name :</div>
+                            <label class="view-content" id="view-publisher-name"></label>
                         </div>
-                        <!-- Publisher Name -->
-                        <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                            <div class="box">
-                                <div class="task-sub-title sub-title-text">PUBLISHER NAME :</div>
-                                <label id="view-publisher-name"></label>
-                            </div>
-                        </div>
+                    </div>
             
-                        <!-- Publication Year -->
-                        <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                            <div class="box">
-                                <div class="task-sub-title sub-title-text">PUBLICATION YEAR :</div>
-                                <label id="view-publication-year"></label>
-                            </div>
+                    <!-- Publication Year -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text">Publication Year :</div>
+                            <label class="view-content" id="view-publication-year"></label>
                         </div>
-                        <!-- Publication Year -->
-                        <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                            <div class="box">
-                                <div class="task-sub-title sub-title-text">ISBN NUMBER :</div>
-                                <label id="view-isbn-no"></label>
-                            </div>
+                    </div>
+                    <!-- Publication Year -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text">ISBN Number :</div>
+                            <label class="view-content" id="view-isbn-no"></label>
                         </div>
-                        <!-- Publication Year -->
-                        <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                            <div class="box">
-                                <div class="task-sub-title sub-title-text">URL OF BOOK:</div>
-                                <label id="view-book-url"></label>
-                            </div>
+                    </div>
+                    <!-- Publication Year -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text">URL Of Book :</div>
+                            <label class="view-content" id="view-book-url"></label>
                         </div>
-                        <!-- Number of nmims authors -->
-                        <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                            <div class="box">
-                                <div class="task-sub-title sub-title-text"> NO. OF NMIMS AUTHORS :</div>
-                                <label id="view-no-of-nmims-authors"></label>
-                            </div>
+                    </div>
+                    <!-- Number of nmims authors -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text"> No. Of NMIMS Authors :</div>
+                            <label class="view-content" id="view-no-of-nmims-authors"></label>
                         </div>
-                        <!-- Publication Year -->
-                        <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                            <div class="box">
-                                <div class="task-sub-title sub-title-text"> NAME OF NMIMS AUTHORS :</div>
-                                <label id="view-nmims-authors"></label>
-                            </div>
+                    </div>
+                    <!-- Publication Year -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text"> Name Of NMIMS Auhthors :</div>
+                            <label class="view-content" id="view-nmims-authors"></label>
                         </div>
-                        <!-- NMIMS CAMPUS AUTHOR -->
-                        <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                            <div class="box">
-                                <div class="task-sub-title sub-title-text">NMIMS CAMPUS AUTHOR:</div>
-                                <label id="view-nmims-campus-authors"></label>
-                            </div>
+                    </div>
+                    <!-- NMIMS CAMPUS AUTHOR -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text">NMIMS Campus Authors:</div>
+                            <label class="view-content" id="view-nmims-campus-authors"></label>
                         </div>
-                        <!-- NMIMS SCHOOL AUTHOR -->
-                        <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                            <div class="box">
-                                <div class="task-sub-title sub-title-text">NMIMS SCHOOL AUTHOR :</div>
-                                <label id="view-nmims-school-authors"></label>
-                            </div>
+                    </div>
+                    <!-- NMIMS SCHOOL AUTHOR -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text">NMIMS School Authors :</div>
+                            <label class="view-content" id="view-nmims-school-authors"></label>
                         </div>
-                         <!-- Supporting Document -->
-                         <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                            <div class="box">
-                                <div class="task-sub-title sub-title-text">SUPPORTING DOCUMENT:</div>
-                                <label id="view-support-document"></label>
-                            </div>
+                    </div>
+                    <!-- Supporting Document -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text">Supporting Documents:</div>
+                            <label class="view-content" id="view-support-document"></label>
                         </div>
                     </div>
                 </div>
             </div>
+            <!-- footer button -->
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
 </div>
-
 <!-- inline javascript -->
 <script>
     const bookChapterList = document.getElementById('book-chapter-list');
@@ -737,7 +712,6 @@
                     viewEditorName.innerText = data.bookChapterView.editor_name; 
                     viewChapterTitle.innerText = data.bookChapterView.chapter_title;  
                     viewIsbnNo.innerText = data.bookChapterView.isbn_no; 
-                    viewVolumeNumber.innerText = data.bookChapterView.publication_place;
                     viewPublisherCategory.innerText = data.bookChapterView.publisher_category 
                     viewPageNumber .innerText = data.bookChapterView.page_number; 
                     viewPublisherName.innerText = data.bookChapterView.publisher_name; 
