@@ -1,5 +1,5 @@
 const researchConsultancyService = require('../services/research-consultancy.service');
-const clientScript = require('../../public/js/client');
+const clientScript = require('../../public/research/js/client');
 const path = require('path');
 
 module.exports.renderResearchProjectConsultancy = async(req, res, next) => {

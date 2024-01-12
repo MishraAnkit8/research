@@ -62,9 +62,9 @@
                     </thead>
                     <% editedBookList.forEach(function(editedBook) { %>
                         <tr row="scope" data-editedBook-id="<%- editedBook.id %>"
-                            data-author-last-name="<%-editedBook.author_last_name %>"
+                            data-author-last-name="<%- editedBook.author_last_name %>"
                             data-page-number="<%- editedBook.page_number %>" data-edition="<%- editedBook.edition %>"
-                            data-publication-place="<%-editedBook.publication_place %>"
+                            data-publication-place="<%- editedBook.publication_place %>"
                             data-publisher-category="<%- editedBook.publisher_category %>"
                             data-book-url="<%- editedBook.book_url %>" data-doi-book-id="<%-editedBook.doi_id %>"
                             data-number-of-nmims-authors="<%- editedBook.number_of_nmims_authors %>"
@@ -204,8 +204,8 @@
                         <input type="text" name="vol" id="publisher-name" data-validate="isEmpty,isAlphabeticWords" class="form-control"
                             placeholder="Pulisher name">
                     </div>
-                    <!-- Publisher Category  -->
-                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                     <!-- Publisher Category  -->
+                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="publisher-category" id="publisher-category" class="form-label fw-bold mb-3">Publisher Category</label><br>
                         <div class="form-check-inline">
                             <label for="inter-national" class="form-check-label">
@@ -519,6 +519,7 @@
         const chapterTitle = document.getElementById('chapter-title').value;
         const publicationPlace = document.getElementById('publication-place').value;
         const publisherCategory = document.querySelector('input[name="publisher-category"]:checked').value;
+        console.log('publisherCategory ==>>', publisherCategory)
         const pageNumber = document.getElementById('page-number').value;
         console.log('pageNumber ==>>',pageNumber)
         const publisherName = document.getElementById('publisher-name').value;
@@ -584,12 +585,12 @@
                             <td class="isbn-no">${data.editedBooKData.isbnNo}</td>
                             <td class="publisher-name">${data.editedBooKData.publisherName}</td>
                             <td>
-                                <a class="view" data-publication-id="${data.editedBookId}"><i class="fa-solid fa-eye view"
-                                    data-publication-id="${data.editedBookId}"></i></a>
-                                 <a class="edit"data-publication-id="${data.editedBookId}"><i class="fa fa-edit edit"
-                                    data-publication-id="${data.editedBookId}"></i></a>
-                                 <a class="delete"data-publication-id="${data.editedBookId}"><i class="fa-solid fa-trash delete"
-                                    data-publication-id="${data.editedBookId}"></i></a>
+                                <a class="view" data-editedbook-id="${data.editedBookId}"><i class="fa-solid fa-eye view"
+                                    data-editedbook-id="${data.editedBookId}"></i></a>
+                                 <a class="edit"data-editedbook-id="${data.editedBookId}"><i class="fa fa-edit edit"
+                                    data-editedbook-id="${data.editedBookId}"></i></a>
+                                 <a class="delete"data-editedbook-id="${data.editedBookId}"><i class="fa-solid fa-trash delete"
+                                    data-editedbook-id="${data.editedBookId}"></i></a>
                             </td> `;
             editedBookList.append(newEditedBook);
             $('#edited-book-modal').modal('hide');
@@ -614,7 +615,8 @@
         if(event.target.classList.contains('edit')){
             console.log('clickeddd');
             editedBookRowToBeUpdated = event.target.closest('tr');
-            editedBookId = editedBookRowToBeUpdated.getAttribute('data-editedbook-id');
+            console.log('editedBookRowToBeUpdated ==>>', editedBookRowToBeUpdated);
+            editedBookId = event.target.getAttribute('data-editedbook-id');
             console.log('editedBookId ==>>', editedBookId);
             $('#edited-book-modal').modal('show');
             updateBtn.classList.remove('d-none');
@@ -671,7 +673,8 @@
         if(event.target.classList.contains('delete')){
             console.log('clickedddd');
             const editedBookPublicatRowToBeDeleted = event.target.closest('tr');
-            editedBookId = editedBookPublicatRowToBeDeleted.getAttribute('data-editedbook-id');
+            console.log('editedBookPublicatRowToBeDeleted ==>>', editedBookPublicatRowToBeDeleted)
+            editedBookId = event.target.getAttribute('data-editedbook-id');
             console.log('ID ==>>', editedBookId);
 
             fetch('/research/book-publication-main/edited-book-publication/delete' , {
@@ -696,7 +699,7 @@
         if(event.target.classList.contains('view')){
             console.log('clickedddd');
             const editedBookRowToBeViewed = event.target.closest('tr');
-            editedBookId = editedBookRowToBeViewed.getAttribute('data-editedbook-id');
+            editedBookId = event.target.getAttribute('data-editedbook-id');
             console.log('ID ==>>', editedBookId);
             $('#edited-book-view-modal').modal('show');
             const viewAuthorFirstName = document.getElementById('view-first-name');

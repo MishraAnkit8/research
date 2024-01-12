@@ -1,5 +1,5 @@
 const patentSubmissionservice = require('../services/patent-submission.service');
-const clientScript = require('../../public/js/client');
+const clientScript = require('../../public/research/js/client');
 const path = require('path');
 
 module.exports.renderPatentSubMissionAndGrant = async(req, res, next) =>{

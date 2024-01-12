@@ -1,5 +1,5 @@
 const conferencePublicationServices = require('../services/conference-publications.service');
-const clientScript = require('../../public/js/client');
+const clientScript = require('../../public/research/js/client');
 const path = require('path');
 
 module.exports.renderConferencePage = async(req, res, next) => {
