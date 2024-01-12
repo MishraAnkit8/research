@@ -14,6 +14,7 @@ module.exports.insertEditedBookPublication = async(editedBook , filename) => {
 }
 
 module.exports.updateEditedBook = async(editedBookId , updatedEditedBookPublication, updatedFile) => {
+    console.log('data in service ==>>', updatedEditedBookPublication)
     const updatedEditedBookData = await editedBookPublicationModel.updatedEditedBookPublication(editedBookId , updatedEditedBookPublication, updatedFile);
     if(updatedEditedBookData && updatedEditedBookData.rowCount === 1) {
         return {

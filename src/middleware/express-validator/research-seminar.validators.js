@@ -38,57 +38,21 @@ module.exports.validateResearchSeminar = [
     .withMessage(" journal paper campus  should be string")
     .isLength({ min: 2 }), 
      
- check("seminarDetails.policyCadre")
-    .notEmpty()
-    .withMessage("policy cadre is required")
-    .bail()
-    .isString()
-    .withMessage("policy cadre  should be string"),
 
- check("seminarDetails.researchType")
+ check("seminarDetails.publisherCategory")
     .notEmpty()
     .withMessage("research type is required")
     .bail()
     .isString()
     .withMessage("researchType should be string"),
 
- check("seminarDetails.allAuthors")
+ check("seminarDetails.NmimsFaculty")
     .notEmpty()
-    .withMessage("all authors is required")
+    .withMessage("nmims faculty is required")
     .bail()
     .isString()
-    .withMessage("all Authors name should be string")
+    .withMessage("nmims faculty should be string")
     .isLength({ min: 2 }),
-
- check("seminarDetails.totalAuthors")
-    .notEmpty()
-    .withMessage("total authors is required")
-    .bail()
-    .isInt()
-    .withMessage("total authors should be integer"),
- 
- check("seminarDetails.nmimsAuthors")
-    .notEmpty()
-    .withMessage("nmims authors is required")
-    .bail()
-    .isString()
-    .withMessage("nmims authors should be string")
-    .isLength({ min: 2 }),
-
- check("seminarDetails.nmimsAuthorsCount")
-    .notEmpty()
-    .withMessage("nmims authors count is required")
-    .bail()
-    .isInt()
-    .withMessage("nmims authors count should be integer"),
-    
- check("seminarDetails.countOtherFaculty")
-    .notEmpty()
-    .withMessage("count other faculty  is required")
-    .bail()
-    .bail()
-    .isInt()
-    .withMessage("count other faculty should be integer"),
     
  check("seminarDetails.titleOfPaper")
     .notEmpty()
@@ -160,47 +124,28 @@ module.exports.validateResearchSeminar = [
 
     check("seminarDetails.scsCiteScore")
     .notEmpty()
-    .withMessage("scs cite score is required")
-    .bail()
-    .isInt()
-    .withMessage("scs cite score should be integer"),
+    .withMessage("scs cite score is required"),
     
  check("seminarDetails.scsIndexed")
     .notEmpty()
-    .withMessage("scs indexed is required")
-    .bail()
-    .isInt()
-    .withMessage("scs indexed should be integer"),
+    .withMessage("scs indexed is required"),
     
  check("seminarDetails.wosIndexed")
     .notEmpty()
-    .withMessage("wos indexed is required")
-    .bail()
-    .isInt()
-    .withMessage("wos indexed  should be integer"),
+    .withMessage("wos indexed is required"),
 
  check("seminarDetails.gsIndexed")
     .notEmpty()
-    .withMessage("gs indexed is required")
-    .bail()
-    .isInt()
-    .withMessage("gs indexed  should be integer"),
+    .withMessage("gs indexed is required"),
 
  check("seminarDetails.abcdIndexed")
     .notEmpty()
-    .withMessage("abcd indexedis required")
-    .bail()
-    .isInt()
-    .withMessage("abcd indexed should be integer"), 
+    .withMessage("abcd indexedis required"),
 
-    check("seminarDetails.ugcIndexed")
+ check("seminarDetails.ugcIndexed")
     .notEmpty()
-    .withMessage("ugc indexed is required")
-    .bail()
-    .bail()
-    .isInt()
-    .withMessage("ugc indexed should be integer"),
-    
+    .withMessage("ugc indexed is required"),
+
  check("seminarDetails.webLink")
     .notEmpty()
     .withMessage("webLink is required")

@@ -19,7 +19,7 @@ module.exports.insertEditedBookPublication = async(req, res, next) => {
     if(insertEditedBookPublication){
         res.status(200).send({
             status : 'done',
-            editedBooData : editedBook,
+            editedBooKData : editedBook,
             editedBookId  : insertEditedBookPublication,
             filename : filename
         })

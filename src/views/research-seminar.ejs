@@ -327,32 +327,11 @@
                             <label id="view-campus"></label>
                         </div>
                     </div>
-                    <!--Policy Cadre -->
-                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                        <div class="box">
-                            <div class="sub-title-text sub-title">POLICY CADRE:</div>
-                            <label id="view-policy-cadre"></label>
-                        </div>
-                    </div>
                     <!-- All authors -->
                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
-                            <div class="sub-title-text sub-title">ALL AUTHORS:</div>
-                            <label id="view-all-authors"></label>
-                        </div>
-                    </div>
-                    <!-- Total No. of Authors -->
-                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                        <div class="box">
-                            <div class="sub-title-text sub-title">TOTAL NO. OF AUTHORS:</div>
-                            <label id="view-total-authors"></label>
-                        </div>
-                    </div>
-                    <!-- Name of NMIMS Authors -->
-                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                        <div class="box">
-                            <div class="sub-title-text sub-title">NAME OF NMIMS AUTHORS:</div>
-                            <label id="view-nmims-authors"></label>
+                            <div class="sub-title-text sub-title">Name NMIMS Faculty:</div>
+                            <label id="view-nmims-faculty"></label>
                         </div>
                     </div>
                     <!-- Journal Name -->
@@ -367,13 +346,6 @@
                         <div class="box">
                             <div class="sub-title-text sub-title">PUBLISHER:</div>
                             <label id="view-publisher"></label>
-                        </div>
-                    </div>
-                    <!-- Count Faculty -->
-                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                        <div class="box">
-                            <div class="sub-title-text sub-title">COUNT OF FACULTY:</div>
-                            <label id="view-count-of-other-faculty"></label>
                         </div>
                     </div>
                     <!-- iss -->
@@ -481,18 +453,11 @@
                             <label id="view-title-of-paper"></label>
                         </div>
                     </div>
-                    <!--research Type -->
+                    <!--Publisher Category -->
                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
-                            <div class="sub-title-text sub-title">RESEARCH TYPE :</div>
-                            <label id="view-research-type"></label>
-                        </div>
-                    </div>
-                    <!--nmims_authors_count -->
-                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                        <div class="box">
-                            <div class="sub-title-text sub-title">NMIMS AUTHORS COUNT :</div>
-                            <label id="view-nmims-authors-count"></label>
+                            <div class="sub-title-text sub-title">Publisher Category :</div>
+                            <label id="view-publisher-category"></label>
                         </div>
                     </div>
                 </div>
@@ -560,7 +525,7 @@
         seminarDetails.campus = document.getElementById('campus').value;
         seminarDetails.publisher = document.getElementById('publisher').value;
         seminarDetails. publisherCategory = document.querySelector('input[name="publisher-category"]:checked').value;
-        seminarDetails.nmimsfaculty = document.getElementById('nmims-faculty').value;
+        seminarDetails.NmimsFaculty = document.getElementById('nmims-faculty').value;
         seminarDetails.journalName = document.getElementById('journal-name').value;
         seminarDetails.volume = document.getElementById('volume').value;
         seminarDetails.iss= document.getElementById('iss').value;
@@ -624,7 +589,7 @@
                             <td class="year">${seminarDetails.year}</td>
                             <td class="school">${seminarDetails.school}</td>
                             <td class="campus">${seminarDetails.campus}</td>
-                            <td class="nmims-authors">${seminarDetails.nmimsfaculty}</td>
+                            <td class="nmims-faculty">${seminarDetails.NmimsFaculty}</td>
                             <td class="journal-name">${seminarDetails.journalName}</td>
                             <td class="publisher">${seminarDetails.publisher}</td>
                             <td>
@@ -754,13 +719,9 @@
             const viewYear = document.getElementById('view-year');
             const viewSchool=  document.getElementById('view-school');
             const viewCampus = document.getElementById('view-campus');
-            const viewAllAuthors = document.getElementById('view-all-authors');
             const viewPublisher = document.getElementById('view-publisher');
-            const viewNmimsAuthors = document.getElementById('view-nmims-authors');
+            const viewNmimsFaculty = document.getElementById('view-nmims-faculty');
             const viewJournalName = document.getElementById('view-journal-name');
-            const viewTotalAuthors =  document.getElementById('view-total-authors');
-            const viewPolicyCadre = document.getElementById('view-policy-cadre');
-            const viewCountFaculty = document.getElementById('view-count-of-other-faculty');
             const viewIss = document.getElementById('view-iss');
             const viewIssNo = document.getElementById('view-issn-no');
             const viewAbcdIndexed = document.getElementById('view-abdc-indexed');
@@ -776,8 +737,7 @@
             const viewUid = document.getElementById('view-uid');
             const viewVolume = document.getElementById('view-volume');
             const viewTitle = document.getElementById('view-title-of-paper');
-            const viewRsearch = document.getElementById('view-research-type');
-            const viewNmimsAuthorsCount = document.getElementById('view-nmims-authors-count');
+            const viewPublisherCategory = document.getElementById('view-publisher-category');
 
             fetch('/research/research-seminar/view' , {
                 method : 'POST',
@@ -795,15 +755,11 @@
              .then((data) => {
                     console.log('data is viewing',data);  
                     viewYear.innerText = data[0].year;
-                    viewAllAuthors.innerText = data[0].all_authors;
                     viewCampus.innerText = data[0].campus;
-                    viewTotalAuthors.innerText = data[0].total_authors;
                     viewJournalName.innerText = data[0].journal_name;
-                    viewPolicyCadre.innerText = data[0].policy_cadre;
-                    viewNmimsAuthors.innerText = data[0].nmims_authors;
+                    viewNmimsFaculty.innerText = data[0].nmims_faculty;
                     viewSchool.innerText = data[0].school;
                     viewPublisher.innerText = data[0].publisher;
-                    viewCountFaculty.innerText = data[0].count_other_faculty; 
                     viewIss.innerText = data[0].iss;
                     viewIssNo.innerText = data[0].issn_no;
                     viewAbcdIndexed.innerText = data[0].abdc_indexed;
@@ -817,10 +773,9 @@
                     viewDateOfPublishing.innerText = data[0].date_of_publishing; 
                     viewVolume.innerText = data[0].volume; 
                     viewTitle.innerText = data[0].title_of_paper;
-                    viewRsearch.innerText = data[0].research_type;
+                    viewPublisherCategory.innerText = data[0].publisher_category;
                     viewWosIndexed.innerText = data[0].wos_indexed;
                     viewUid.innerText = data[0].uid;
-                    viewNmimsAuthorsCount.innerText = data[0].nmims_authors_count;
 
              }).catch((error) =>{
                 console.log('error:', error);
@@ -861,7 +816,7 @@
         updatedResearchSeminar.school = updatedSchool
         updatedResearchSeminar.campus = updatedCampus
         updatedResearchSeminar.publisher = updatedPublisher
-        updatedResearchSeminar.nmimsAuthors = updatedNmimsFaculty
+        updatedResearchSeminar.NmimsFaculty = updatedNmimsFaculty
         updatedResearchSeminar.journalName = updatedJournalName
         updatedResearchSeminar.titleOfPaper = updatedTitleOfPaper;
         updatedResearchSeminar.volume = updatedVolume;
@@ -904,7 +859,7 @@
                     seminarRowToBeUpdated.querySelector('.year').innerText = updatedResearchSeminar.year;
                     seminarRowToBeUpdated.querySelector('.school').innerText = updatedResearchSeminar.school;
                     seminarRowToBeUpdated.querySelector('.campus').innerText = updatedResearchSeminar.campus;
-                    seminarRowToBeUpdated.querySelector('.nmims-faculty').innerText = updatedResearchSeminar.nmimsfaculty;
+                    seminarRowToBeUpdated.querySelector('.nmims-faculty').innerText = updatedResearchSeminar.NmimsFaculty;
                     seminarRowToBeUpdated.querySelector('.journal-name').innerText = updatedResearchSeminar.journalName;
                     seminarRowToBeUpdated.querySelector('.publisher').innerText = updatedResearchSeminar.publisher;
                     seminarRowToBeUpdated.setAttribute('data-volume' , updatedVolume);
