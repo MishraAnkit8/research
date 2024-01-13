@@ -539,7 +539,7 @@
     submitBtn.addEventListener('click', async () => {
         const isValid = validateRequiredFormFields(submitBtn);
             if (isValid) {
-                await insertConferencePublicationForm('/research/conference-publication/insert');
+                await insertConferencePublicationForm('<%- BASE_URL %>research/conference-publication/insert');
                 console.log('data inserted successfully');
             }
             else {
@@ -554,7 +554,7 @@
         console.log('id for deletion ==>', conferenceId);
         conferenceRowToBeDelete = event.target.closest('tr');
 
-        fetch('/research/conference-publication/delete' , {
+        fetch('<%- BASE_URL %>research/conference-publication/delete' , {
             method : 'POST',
             headers : {
                 'content-type' : 'application/json'
@@ -592,7 +592,7 @@
             const viewAward = document.getElementById('view-award-for-presentation');
             $('#conference-publication-view-modal').modal('show');
 
-            fetch('/research/conference-publication/view' , {
+            fetch('<%- BASE_URL %>research/conference-publication/view' , {
                 method : 'POST',
                 headers : {
                     'content-type' : 'application/json'
@@ -737,7 +737,7 @@
         updatedConferenceData.append('authorType' , updatedAuthortype);
         updatedConferenceData.append('awardForPresentation' , updatedAward);
 
-        fetch('/research/conference-publication/update' , {
+        fetch('<%- BASE_URL %>research/conference-publication/update' , {
             method : 'POST',
             body : updatedConferenceData
         })

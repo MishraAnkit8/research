@@ -583,7 +583,7 @@ const insertMeetingStackholders = async (url) => {
 submitBtn.addEventListener('click', async () => {
         const isValid = validateRequiredFormFields(submitBtn);
             if (isValid) {
-                await insertMeetingStackholders('/meeting-stackholders/insert');
+                await insertMeetingStackholders('<%- BASE_URL %>meeting-stackholders/insert');
                 console.log('data inserted successfully');
             }
             else {
@@ -598,7 +598,7 @@ meetingStackholdersList.addEventListener('click' , (event) => {
         const meetingRowToBeDeleted = event.target.closest('tr');
         meetingId = meetingRowToBeDeleted.getAttribute('data-meeting-id');
 
-        fetch('/meeting-stackholders/delete' , {
+        fetch('<%- BASE_URL %>meeting-stackholders/delete' , {
             method : 'POST', 
             headers : {
                 'content-type' : 'application/json'
@@ -640,7 +640,7 @@ meetingStackholdersList.addEventListener('click' , (event) => {
         const viewEvents = document.getElementById('view-events');
         const viewEventsLink = document.getElementById('view-events-link');
 
-        fetch('/meeting-stackholders/view' , {
+        fetch('<%- BASE_URL %>meeting-stackholders/view' , {
             method : 'POST',
             headers : {
                 'content-type' : 'application/json'
@@ -771,7 +771,7 @@ updateBtn.addEventListener('click' , () => {
     updatedMeetingData.append('events' , updatedEvents);
     updatedMeetingData.append('eventsLink' , updatedEventsLink);
 
-    fetch('/meeting-stackholders/update' , {
+    fetch('<%- BASE_URL %>meeting-stackholders/update' , {
         method : 'POST', 
         body : updatedMeetingData
     })

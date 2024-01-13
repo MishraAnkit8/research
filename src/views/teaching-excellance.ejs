@@ -517,7 +517,7 @@
     submitBtn.addEventListener('click', async () => {
         const isValid = validateRequiredFormFields(submitBtn);
             if (isValid) {
-                await insertTeachingExecellance('/teaching-excellance/insert');
+                await insertTeachingExecellance('<%- BASE_URL %>teaching-excellance/insert');
                 console.log('data inserted successfully');
             }
             else {
@@ -547,7 +547,7 @@
             const viewProgramOrientationFile = document.getElementById('view-program-orientation-file');
             const viewProgramOrientationLink = document.getElementById('view-program-orientation-link');
 
-            fetch('/teaching-excellance/view' , {
+            fetch('<%- BASE_URL %>teaching-excellance/view' , {
                 method : 'POST',
                 headers : {
                     'content-type' : 'application/json'
@@ -586,7 +586,7 @@
             teachingExecellanceRowToBeDeleted = event.target.closest('tr');
             teachingId = event.target.getAttribute('data-teaching-id');
 
-            fetch('/teaching-excellance/delete' , {
+            fetch('<%- BASE_URL %>teaching-excellance/delete' , {
                 method : 'POST',
                 headers: {
                     'content-type' : 'application/json'
@@ -681,7 +681,7 @@
         updatedTeachingData.append('programOrientationFile' , updatedProgramOrientationFile.files[0]); 
         updatedTeachingData.append('programOrientationLink' , updatedProgramOrientationLink);
 
-        fetch('/teaching-excellance/update' , {
+        fetch('<%- BASE_URL %>teaching-excellance/update' , {
             method : 'POST',
             body : updatedTeachingData
         })
