@@ -514,6 +514,7 @@
             const newBookPublication = document.createElement('tr');
             newBookPublication.setAttribute('data-volume-number' , data.bookPublicationData.volumeNumber);
             newBookPublication.setAttribute('data-edition' , data.bookPublicationData.edition);
+            newBookPublication.setAttribute('data-author-last-name' , data.bookPublicationData.authorLastName);
             newBookPublication.setAttribute('data-publication-place' , data.bookPublicationData.edition);
             newBookPublication.setAttribute('data-publisher-category' , data.bookPublicationData.publisherCategory);
             newBookPublication.setAttribute('data-publication-year' , data.bookPublicationData.publicationYear);
@@ -549,7 +550,7 @@
     submitBtn.addEventListener('click' , async function() {
         const isValid = validateRequiredFormFields(submitBtn);
             if (isValid) {
-                await insertBookPublication('/research/book-publication-main/book-publication/insert')
+                await insertBookPublication('<%- BASE_URL %>research/book-publication-main/book-publication/insert')
                 console.log('data inserted successfully');
             }
             else {
@@ -618,7 +619,7 @@
             bookPublicationId = bookPublicatRowToBeDeleted.getAttribute('data-publication-id');
             console.log('ID ==>>', bookPublicationId);
 
-            fetch('/research/book-publication-main/book-publication/delete' , {
+            fetch('<%- BASE_URL %>research/book-publication-main/book-publication/delete' , {
                 method : 'POST',
                 headers : {
                     'content-type' : 'application/json'
@@ -661,7 +662,7 @@
             const viewNmimsSchoolAuthors = document.getElementById('view-nmims-school-authors');
             const viewSupportingDocuments = document.getElementById('view-support-document');
 
-            fetch('/research/book-publication-main/book-publication/view' , {
+            fetch('<%- BASE_URL %>research/book-publication-main/book-publication/view' , {
                 method : 'POST',
                 headers : {
                     'content-type' : 'application/json'
@@ -736,7 +737,7 @@
         if(updatedDocuments && updatedDocuments.files && updatedDocuments.files.length > 0){
             updatedBookPublicationData.append('researchSupportingDocument' , updatedDocuments.files[0]);
          }
-        fetch('/research/book-publication-main/book-publication/update' , {
+        fetch('<%- BASE_URL %>research/book-publication-main/book-publication/update' , {
             method : 'POST',
             body : updatedBookPublicationData
         })
