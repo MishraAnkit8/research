@@ -16,9 +16,9 @@ function validateRequiredFormFields(actionBtn) {
         const emptyErrorMsg = elem.dataset.errMsg ? elem.dataset.errMsg : 'Please enter  value val';
 
 
-        if (!isRequired && elemVal === '') {
-            continue;
-        }
+        // if (!isRequired && elemVal === '') {
+        //     continue;
+        // }
 
         for (let validate of validateArr) {
             if (validate === 'isExist') {
@@ -119,21 +119,52 @@ function selectElemToBeValidated(validateInputWrapper) {
     return elemToBeValidated;
 }
 
+// function toggleErrorState(formGroup, errorMsg, errorElem, isValidElem) {
+//     console.log('errorElem', errorElem, 'isValid', isValidElem);
+//     if (!errorElem && !isValidElem) {
+//         console.log('Adding error message');
+//         const errorDiv = document.createElement('div');
+//         errorDiv.classList.add('error-msg');
+//         errorDiv.innerText = errorMsg;
+//         formGroup.appendChild(errorDiv);
+//         formGroup.classList.add('error');
+//     } else if (errorElem && isValidElem) {
+//         console.log('Removing error message');
+//         formGroup.removeChild(errorElem);
+//         formGroup.classList.remove('error');
+//     }
+// }
+
 function toggleErrorState(formGroup, errorMsg, errorElem, isValidElem) {
-    console.log('errorElem', errorElem, 'isValid', isValidElem);
-    if (!errorElem && !isValidElem) {
-        console.log('Adding error message');
-        const errorDiv = document.createElement('div');
-        errorDiv.classList.add('error-msg');
-        errorDiv.innerText = errorMsg;
-        formGroup.appendChild(errorDiv);
+    // Check if element is not valid or empty
+    if (!isValidElem || isEmptyField(formGroup)) {
+        // Either element is not valid or it's empty, create or update error message
+        if (!errorElem) {
+            const errorDiv = document.createElement('div');
+            errorDiv.classList.add('error-msg');
+            errorDiv.innerText = errorMsg;
+            formGroup.appendChild(errorDiv);
+        } else {
+            errorElem.innerText = errorMsg;
+        }
+
+        // Add red color
         formGroup.classList.add('error');
-    } else if (errorElem && isValidElem) {
-        console.log('Removing error message');
-        formGroup.removeChild(errorElem);
+    } else {
+        // Element is valid and not empty, remove error message if it exists
+        if (errorElem) {
+            formGroup.removeChild(errorElem);
+        }
         formGroup.classList.remove('error');
     }
 }
+
+function isEmptyField(formGroup) {
+    const elem = formGroup.querySelector('input, select, textarea');
+    const elemVal = elem.value.trim();
+    return elemVal === '';
+}
+
 
 
 
