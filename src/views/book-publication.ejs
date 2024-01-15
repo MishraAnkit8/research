@@ -197,7 +197,7 @@
                         </div>
                         <div class="form-check-inline">
                             <label for="national" class="form-check-label">
-                                <input type="radio" class="form-check-input" id="national" name="publisher-category" value="National"> National
+                                <input type="radio" class="form-check-input" id="national" name="publisher-category" value="National" checked> National
                             </label>
                         </div>
                     </div>
@@ -258,8 +258,8 @@
            <!-- Add your modal footer buttons if needed -->
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                <button class="btn btn-md btn-success d-none" id="submit-btn">Submit</button>
-                <button class="btn btn-md btn-success d-none" id="update-btn">update</button>
+                <button class="btn btn-md btn-primary d-none" id="submit-btn">Submit</button>
+                <button class="btn btn-md btn-primary d-none" id="update-btn">update</button>
             </div>
         </div>
     </div>
@@ -446,8 +446,8 @@
             edition.value = '';
             isbnNo.value = '';
             publicationPlace.value = '';
-            publisherCategoryNational.checked = false;
-            publisherCategoryInternational.checked = false;
+            // publisherCategoryNational.checked = false;
+            // publisherCategoryInternational.checked = false;
             volumeNumber.value = '';
             publisherName.value = '';
             publicationYear.value = '';
@@ -542,7 +542,7 @@
                             </td> `;
             bookPublicationList.append(newBookPublication);
             $('#book-publication-modal').modal('hide');
-            alert('data inserted successfully');
+            alert('data inserted prbtn-primaryfully');
            }
         })
     }
@@ -551,10 +551,10 @@
         const isValid = validateRequiredFormFields(submitBtn);
             if (isValid) {
                 await insertBookPublication('<%- BASE_URL %>research/book-publication-main/book-publication/insert')
-                console.log('data inserted successfully');
+                console.log('data inserted prbtn-primaryfully');
             }
             else {
-                alert('validation failed');
+                console.log('validation failed');
             }
     })
 
@@ -616,9 +616,9 @@
         if(event.target.classList.contains('delete')){
             console.log('clickedddd');
             const bookPublicatRowToBeDeleted = event.target.closest('tr');
-            bookPublicationId = bookPublicatRowToBeDeleted.getAttribute('data-publication-id');
-            console.log('ID ==>>', bookPublicationId);
-
+            bookPublicationId = event.target.getAttribute('data-publication-id');
+            console.log('bookPublicationId ==>>', bookPublicationId);
+            
             fetch('<%- BASE_URL %>research/book-publication-main/book-publication/delete' , {
                 method : 'POST',
                 headers : {
@@ -641,9 +641,8 @@
         if(event.target.classList.contains('view')){
             console.log('clickedddd');
             const bookPublicationRowToBeViewed = event.target.closest('tr');
-            bookPublicationId = bookPublicationRowToBeViewed.getAttribute('data-publication-id');
-            console.log('ID ==>>', bookPublicationId);
-            $('#book-publication-view-modal').modal('show');
+            bookPublicationId = event.target.getAttribute('data-publication-id');
+            console.log('bookPublicationId ==>>', bookPublicationId);
             const viewAuthorFirstName = document.getElementById('view-first-name');
             const viewAuthorLastName = document.getElementById('view-last-name');
             const viewBookTitle = document.getElementById('view-book-title');
@@ -695,6 +694,7 @@
                     
                 }
             })
+            $('#book-publication-view-modal').modal('show');
         }
     })
 
@@ -771,7 +771,7 @@
                 console.log('Eroor ::', error);
             })
             $('#book-publication-modal').modal('hide');
-            alert('data updated successfully');
+            alert('data updated prbtn-primaryfully');
     })
 
 </script>

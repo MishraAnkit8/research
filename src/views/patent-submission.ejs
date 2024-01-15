@@ -160,13 +160,13 @@
                     <div class="col-lg-4 col-md-6 col-sm-12 mb-4 ">
                         <div class="form-group col">
                             <label for="type-of-invention" class="form-label fw-bold ">Type of Invention(IPR)</label>
-                            <select class="form-control gap-10" id="type-of-invention" data-validate="isEmpty,isNumber" required>
+                            <select class="form-control gap-10" id="type-of-invention" data-validate="isEmpty" required>
                                 <option selected>Select option</option>
-                                <option value="1" name="Patent">Patent</option>
-                                <option value="2" name="Copy Right">Copy Right</option>
-                                <option value="3" name="Design Registration">Design Registration</option>
-                                <option value="4" name="Trade mark">Trade mark</option>
-                                <option value="5" name="Trade Secret">Trade Secret</option>
+                                <option  name="Patent">Patent</option>
+                                <option  name="Copy Right">Copy Right</option>
+                                <option  name="Design Registration">Design Registration</option>
+                                <option  name="Trade mark">Trade mark</option>
+                                <option  name="Trade Secret">Trade Secret</option>
                             </select>
                         </div>
                     </div>
@@ -178,11 +178,11 @@
                     <!-- Patent Stage -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="patent-stage" class="form-label fw-bold">Patent Stage</label>
-                        <select class="form-control gap-10" id="patent-stage" data-validate="isEmpty,isNumber" required>
+                        <select class="form-control gap-10" id="patent-stage" data-validate="isEmpty" required>
                             <option selected>Select option</option>
-                            <option value="1" name="Filied">Filied</option>
-                            <option value="2" name="Published">Published</option>
-                            <option value="3" name="Granted">Granted</option>
+                            <option name="Filied">Filied</option>
+                            <option name="Published">Published</option>
+                            <option name="Granted">Granted</option>
                         </select>
                     </div>
                     <!-- Are you achieve SDG ? -->
@@ -193,7 +193,7 @@
                             Yes
                         </label>
                         <label for="no">
-                            <input type="radio" name="achive-sdg" id="no" value="no">
+                            <input type="radio" name="achive-sdg" id="no" value="no" checked>
                             No
                         </label>
                     </div>
@@ -226,7 +226,7 @@
                         </div>
                         <div class="form-check-inline">
                             <label for="no" class="form-check-label">
-                                <input type="radio" class="form-check-input" id="is-award-no" name="is-presenter" value="no">
+                                <input type="radio" class="form-check-input" id="is-award-no" name="is-presenter" value="no" checked>
                                 no
                             </label>
                         </div>
@@ -263,18 +263,18 @@
             </div>
             <div class="modal-body">
                 <div class="row">
-                    <!-- title of invention -->
-                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                        <div class="box">
-                            <div class="sub-title-text sub-title">Title Of Invention :</div>
-                            <label class="view-content" id="view-title-of-invetion"></label>
-                        </div>
-                    </div>
                     <!-- type of invetion -->
                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
                             <div class="sub-title-text sub-title">Type Of Invention :</div>
                             <label class="view-content" id="view-type-of-invetion"></label>
+                        </div>
+                    </div>
+                    <!-- title of invention -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="sub-title-text sub-title">Title Of Invention :</div>
+                            <label class="view-content" id="view-title-of-invetion"></label>
                         </div>
                     </div>
                     <!-- PATENT STAGE -->
@@ -350,7 +350,7 @@
             const achiveSdgYes = document.getElementById('yes'); 
             const achiveSdgNo = document.getElementById('no');
             const isPresenterYes = document.getElementById('is-award-yes'); 
-            isPresenterNo = document.getElementById('is-award-no');
+             const isPresenterNo = document.getElementById('is-award-no');
 
             // for making input field empty
             typeOfInvention.value = '';
@@ -359,10 +359,10 @@
             applicationNum.value = '';
             patentSubmissionDocument.value = '';
             date.value = '';
-            achiveSdgYes.checked = false; 
-            achiveSdgNo.checked = false;
-            isPresenterYes.checked = false; 
-            isPresenterNo.checked = false;
+            // achiveSdgYes.checked = false; 
+            // achiveSdgNo.checked = false;
+            // isPresenterYes.checked = false; 
+            // isPresenterNo.checked = false;
         }
     })
     
@@ -410,8 +410,8 @@
                 const newPatentRow = document.createElement('tr');
                 newPatentRow.innerHTML = `
                     <td>${patentId}</td>
-                    <td class="type-of-invention">${data.patentData.titleOfInvention}</td>
-                            <td class="title-of-invention">${data.patentData.typeOfInvention}</td>
+                    <td class="type-of-invention">${data.patentData.typeOfInvention}</td>
+                            <td class="title-of-invention">${data.patentData.titleOfInvention}</td>
                             <td class="patent-stage">${data.patentData.patentStage}</td>
                             <td class="application-no">${data.patentData.applicationNum}</td>
                             <td class="date">${data.patentData.date}</td>
@@ -445,7 +445,7 @@
             await insertPatentforms('<%- BASE_URL %>research/patent-submission/insert');
        }
        else{
-        alert('validation failed');
+        conso.log('validation failed');
        }
     });
 

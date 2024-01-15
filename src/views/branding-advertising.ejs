@@ -217,7 +217,7 @@
                         <!-- file upload -->
                         <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                             <label for="staffAwardDocuments" class="form-label fw-bold ">Upload Documents</label>
-                            <input type="file" name="staff-award-documents" class="form-control" data-validat="isEmpty,isDocuments" id="staff-award-documents" placeholder="upload-file">
+                            <input type="file" name="staffAwardDocuments" class="form-control" data-validat="isEmpty,isDocuments" id="staff-award-documents" placeholder="upload-file">
                         </div>
                         <!-- link -->
                         <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
@@ -256,7 +256,7 @@
                         <!-- link -->
                         <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                             <label for="student-award-link" class="form-label fw-bold">Link</label>
-                            <input type="text" name="pada" id="student-award-link" data-validat="isEmpty,isAlphabeticWords" class="form-control" placeholder="https://" required/>
+                            <input type="text" name="staff-award-link" id="student-award-link" data-validat="isEmpty,isAlphabeticWords" class="form-control" placeholder="https://" required/>
                         </div>
                     </div>
                     <!-- International Linkage Ventures -->
@@ -679,6 +679,7 @@
         const organisingConference = document.getElementById('organising-conference').value;
         const organisingConferenceLink = document.getElementById('organising-conference-link').value;
         const studentEventParticipation = document.getElementById('student-event-participation').value;
+        console.log('studentEventParticipation ==>>', studentEventParticipation)
         const studentEventParticipationLink = document.getElementById('student-event-participation-link').value;
         const newsPaperArticle = document.getElementById('newspaper-article').value;
         const newsPaperArticleLink = document.getElementById('newspaper-article-link').value;
@@ -711,8 +712,8 @@
         brandingAdvertisingData.append('organisingConferenceLink' , organisingConferenceLink);
         brandingAdvertisingData.append('studentEventParticipation' , studentEventParticipation);
         brandingAdvertisingData.append('studentEventParticipationLink' , studentEventParticipationLink);
-        brandingAdvertisingData.append('newspaperArticle' , newsPaperArticle);
-        brandingAdvertisingData.append('newspaperArticleLink' , newsPaperArticleLink);
+        brandingAdvertisingData.append('newsPaperArticle' , newsPaperArticle);
+        brandingAdvertisingData.append('newsPaperArticleLink' , newsPaperArticleLink);
 
         //api fetching 
         fetch(url , {
@@ -750,7 +751,7 @@
                 newBrandingAdvertisingRow.innerHTML = `
                                     <td >${data.advertisingId}</td>
                                     <td class="faculty-recognition">${data.advertisingData.facultyRecognition}</td>
-                                    <td class="faculty-award">${ data.advertisingDatafacultyAward}</td>
+                                    <td class="faculty-award">${ data.advertisingData.facultyAward}</td>
                                     <td class="staff-award">${ data.advertisingData.staffAward}</td>
                                     <td class="alumni-award">${ data.advertisingData.alumniAward}</td>
                                     <td class="student-award">${ data.advertisingData.studentAward}</td>
@@ -758,7 +759,7 @@
                                     <td class="conference-participation">${ data.advertisingData.conferenceParticipation}</td>
                                     <td class="organising-conference">${ data.advertisingData.organisingConference}</td>
                                     <td class="student-event-participation">${ data.advertisingData.studentEventParticipation}</td>
-                                    <td class="newspaper-article">${ data.advertisingData.newspaperArticle}</td>
+                                    <td class="newspaper-article">${ data.advertisingData.newsPaperArticle}</td>
                                     <td>
                                         <a class="view" data-advertising-id=${data.advertisingId}><i class="fa-solid fa-eye view"
                                             data-advertising-id=${data.advertisingId}></i></a>
@@ -780,7 +781,7 @@
                 console.log('data inserted successfully');
             }
             else {
-                alert('validation failed');
+                console('validation failed');
             }
     }) 
 
@@ -790,7 +791,7 @@
           if(event.target.classList.contains('delete')){
             console.log('clickeddd')
             const advertisingRowToBeDeleted = event.target.closest('tr');
-            advertisingId = advertisingRowToBeDeleted.getAttribute('data-advertising-id');
+            advertisingId = event.target.getAttribute('data-advertising-id');
             console.log('advertisingId ==>>', advertisingId);
 
             fetch('/branding-advertising/delete' , {
@@ -846,7 +847,7 @@
             const viewNewsPaperArticleLink = document.getElementById('view-newspaper-article-link');
 
             const advertisingRowToBeViewed = event.target.closest('tr');
-            advertisingId = advertisingRowToBeViewed.getAttribute('data-advertising-id');
+            advertisingId = event.target.getAttribute('data-advertising-id');
 
             fetch('<%- BASE_URL %>branding-advertising/view' , {
                 method : 'POST',
@@ -903,7 +904,7 @@
             updateBtn.classList.remove('d-none');
 
             advertisingRowToBeUpdated = event.target.closest('tr');
-            advertisingId = advertisingRowToBeUpdated.getAttribute('data-advertising-id');
+            advertisingId = event.target.getAttribute('data-advertising-id');
             console.log('advertisingId ===>>', advertisingId);
             const facultyRecognition = document.getElementById('faculty-recognition');
             const facultyRecognitionLink = document.getElementById('faculty-recognition-link');
@@ -1008,6 +1009,7 @@
         updatedAdvertisingData.append('studentEventParticipationDocuments' , updatedStudentEventParticipationDocuments.files[0]);
         updatedAdvertisingData.append('newspaperArticleDocuments' , updatedNewspaperArticledOcuments.files[0]);
         updatedAdvertisingData.append('facultyRecognition' , updatedFacultyRecognition);
+        updatedAdvertisingData.append('facultyRecognitionLink' , updatedFacultyRecognitionLink);
         updatedAdvertisingData.append('facultyAward' , updatedFacultyAward);
         updatedAdvertisingData.append('facultyAwardLink' , updatedFacultyAwardLink);
         updatedAdvertisingData.append('staffAward' , updatedStaffAward);
@@ -1024,8 +1026,8 @@
         updatedAdvertisingData.append('organisingConferenceLink' , updatedOrganisingConferenceLink);
         updatedAdvertisingData.append('studentEventParticipation' , updatedStudentEventParticipation);
         updatedAdvertisingData.append('studentEventParticipationLink' , updatedStudentEventParticipationLink);
-        updatedAdvertisingData.append('newspaperArticle' , updatedNewsPaperArticle);
-        updatedAdvertisingData.append('newspaperArticleLink' , updatedNewsPaperArticleLink);
+        updatedAdvertisingData.append('newsPaperArticle' , updatedNewsPaperArticle);
+        updatedAdvertisingData.append('newsPaperArticleLink' , updatedNewsPaperArticleLink);
 
         fetch('<%- BASE_URL %>branding-advertising/update' , {
             method : 'POST',
@@ -1037,27 +1039,26 @@
         .then((data) => {
             if(data.status === 'done'){
             console.log('data ==>>>', data);
-            advertisingRowToBeUpdated.getAttribute('data-faculty-recognition-link' , data.updatedAdvertisingData.facultyRecognitionLink);
-			advertisingRowToBeUpdated.querySelector('.faculty-recognition').innerText = data.updatedAdvertisingData.facultyRecognition;
-            advertisingRowToBeUpdated.getAttribute('data-faculty-recognition-link' , data.updatedAdvertisingData);
-			advertisingRowToBeUpdated.querySelector('.faculty-award').innerText = data.updatedAdvertisingData.facultyAward;
-			advertisingRowToBeUpdated.getAttribute('data-faculty-award-link' , data.updatedAdvertisingData.facultyAwardLink);
-			advertisingRowToBeUpdated.querySelector('.staff-award').innerText = data.updatedAdvertisingData.staffAward;
-			advertisingRowToBeUpdated.getAttribute('data-staff-award-link' , data.updatedAdvertisingData.staffAwardLink);
-			advertisingRowToBeUpdated.querySelector('.alumni-award').innerText = data.updatedAdvertisingData.alumniAward;
-			advertisingRowToBeUpdated.getAttribute('data-alumni-award-link' , data.updatedAdvertisingData.alumniAwardLink);
-			advertisingRowToBeUpdated.querySelector('.student-award').innerText = data.updatedAdvertisingData.studentAward;
-			advertisingRowToBeUpdated.getAttribute('data-student-award-link' , data.updatedAdvertisingData.staffAwardLink);
-			advertisingRowToBeUpdated.querySelector('.international-linkage').innerText = data.updatedAdvertisingData.internationalLinkage;
-			advertisingRowToBeUpdated.getAttribute('data-international-linkage-link' , data.updatedAdvertisingData.internationalLinkageLink);
-			advertisingRowToBeUpdated.querySelector('.conference-participation').innerText = data.updatedAdvertisingData.conferenceParticipation;
-			advertisingRowToBeUpdated.getAttribute('data-conference-participation-link' , data.updatedAdvertisingData.conferenceParticipationLink);
-			advertisingRowToBeUpdated.querySelector('.organising-conference').innerText = data.updatedAdvertisingData.organisingConference;
-			advertisingRowToBeUpdated.getAttribute('data-organising-conference-link' , data.updatedAdvertisingData.organisingConferenceLink);
-			advertisingRowToBeUpdated.querySelector('.student-event-participation').innerText = data.updatedAdvertisingData.studentEventParticipation;
+            advertisingRowToBeUpdated.querySelector('.faculty-recognition').innerText = data.updatedAdvertisingData.facultyRecognition;
+            advertisingRowToBeUpdated.setAttribute('data-faculty-recognition-link' , data.updatedAdvertisingData.facultyRecognitionLink);
+            advertisingRowToBeUpdated.querySelector('.faculty-award').innerText = data.updatedAdvertisingData.facultyAward;
+            advertisingRowToBeUpdated.setAttribute('data-faculty-award-link' , data.updatedAdvertisingData.facultyAwardLink);
+            advertisingRowToBeUpdated.querySelector('.staff-award').innerText = data.updatedAdvertisingData.staffAward;
+            advertisingRowToBeUpdated.setAttribute('data-staff-award-link' , data.updatedAdvertisingData.staffAwardLink);
+            advertisingRowToBeUpdated.querySelector('.alumni-award').innerText = data.updatedAdvertisingData.alumniAward;
+            advertisingRowToBeUpdated.setAttribute('data-alumni-award-link' , data.updatedAdvertisingData.alumniAwardLink);
+            advertisingRowToBeUpdated.querySelector('.student-award').innerText = data.updatedAdvertisingData.studentAward;
+            advertisingRowToBeUpdated.setAttribute('data-student-award-link' , data.updatedAdvertisingData.staffAwardLink);
+            advertisingRowToBeUpdated.querySelector('.international-linkage').innerText = data.updatedAdvertisingData.internationalLinkage;
+            advertisingRowToBeUpdated.setAttribute('data-international-linkage-link' , data.updatedAdvertisingData.internationalLinkageLink);
+            advertisingRowToBeUpdated.querySelector('.conference-participation').innerText = data.updatedAdvertisingData.conferenceParticipation;
+            advertisingRowToBeUpdated.setAttribute('data-conference-participation-link' , data.updatedAdvertisingData.conferenceParticipationLink);
+            advertisingRowToBeUpdated.querySelector('.organising-conference').innerText = data.updatedAdvertisingData.organisingConference;
+            advertisingRowToBeUpdated.setAttribute('data-organising-conference-link' , data.updatedAdvertisingData.organisingConferenceLink);
+            advertisingRowToBeUpdated.querySelector('.student-event-participation').innerText = data.updatedAdvertisingData.studentEventParticipation;
             advertisingRowToBeUpdated.setAttribute('data-student-event-participation-link' , data.updatedAdvertisingData.studentEventParticipationLink);
-			advertisingRowToBeUpdated.querySelector('.newspaper-article').innerText = data.updatedAdvertisingData.newspaperArticle;
-			advertisingRowToBeUpdated.getAttribute('data-newspaper-article-link' , data.updatedAdvertisingData.newspaperArticleLink);
+            advertisingRowToBeUpdated.querySelector('.newspaper-article').innerText = data.updatedAdvertisingData.newsPaperArticle;
+            advertisingRowToBeUpdated.setAttribute('data-newspaper-article-link' , data.updatedAdvertisingData.newsPaperArticleLink);
             advertisingRowToBeUpdated.setAttribute('data-faculty-recognition-documents' , data.facultyRecognitionDocuments[0].filename);
             advertisingRowToBeUpdated.setAttribute('data-faculty-award-documents' , data.facultyAwardDocuments[0].filename);
             advertisingRowToBeUpdated.setAttribute('data-alumni-award-documents' , data.alumniAwardDocuments[0].filename);
@@ -1068,7 +1069,7 @@
             advertisingRowToBeUpdated.setAttribute('data-organising-conference-documents' , data.organisingConferenceDocuments[0].filename);
             advertisingRowToBeUpdated.setAttribute('data-student-event-participation-documents' , data.studentEventParticipationDocuments[0].filename);
             advertisingRowToBeUpdated.setAttribute('data-newspaper-article-documents' , data.newspaperArticleDocuments[0].filename);
-            
+
             console.log('data.facultyRecognition ==>>', data.updatedAdvertisingData.facultyRecognition)
             }
             $('#branding-advertising-modal').modal('hide');

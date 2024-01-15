@@ -179,7 +179,7 @@
                         <div class="form-check-inline">
                             <label for="national" class="form-check-label">
                                 <input type="radio" class="form-check-input" id="national" name="publisher-category"
-                                    value="National"> National
+                                    value="National" checked> National
                             </label>
                         </div>
                     </div>
@@ -194,7 +194,7 @@
                         </div>
                         <div class="form-check-inline">
                             <label for="no" class="form-check-label">
-                                <input type="radio" class="form-check-input" id="no" name="is-presenter" value="No"> No
+                                <input type="radio" class="form-check-input" id="no" name="is-presenter" value="No" checked> No
                             </label>
                         </div>
                     </div>
@@ -204,7 +204,7 @@
                         <div class="form-check-inline">
                             <label for="internal" class="form-check-label">
                                 <input type="radio" class="form-check-input" id="internal" name="author-type"
-                                    value="Internal">
+                                    value="Internal" checked>
                                 Internal
                             </label>
                         </div>
@@ -238,7 +238,7 @@
                         <div class="form-check-inline">
                             <label for="award-no" class="form-check-label">
                                 <input type="radio" class="form-check-input" id="is-award-no" name="award-for-presentation"
-                                    value="No">
+                                    value="No" checked>
                                 No
                             </label>
                         </div>
@@ -298,7 +298,7 @@
     </div>
 </div>
 <!-- conference-publication-view-modal -->
-<div class="modal fade " id="conference-publication-view-modal" tabindex="-1" role="dialog" aria-labelledby="case-study"
+<div class="modal fade " id="conference-publication-view-modal" tabindex="-1" role="dialog" aria-labelledby="conference-publication-view-modal"
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable modal-lg modal-fullscreen p-5" role="document">
         <div class="modal-content validate-input">
@@ -450,14 +450,14 @@
             volAndIssueNo.value = ''; 
             issnIsbnNo.value = '';
             doiWebLink.value = ''; 
-            isPublisherCategoryNational.checked = false; 
-            isPublisherCategoryInterNational.checked = false; 
-            isPresenterYes.checked = false; 
-            isPresenterNo.checked = false; 
-            isAuthorEnternal.checked = false; 
-            isAuthorExternal.checked = false; 
-            isAwardYes.checked = false; 
-            isAwardno.checked = false; 
+            // isPublisherCategoryNational.checked = false; 
+            // isPublisherCategoryInterNational.checked = false; 
+            // isPresenterYes.checked = false; 
+            // isPresenterNo.checked = false; 
+            // isAuthorEnternal.checked = false; 
+            // isAuthorExternal.checked = false; 
+            // isAwardYes.checked = false; 
+            // isAwardno.checked = false; 
             conferenceDocument.value = ''; 
         }
     })
@@ -530,6 +530,7 @@
                 conferencePublicationList.append(newConferenceFormData)
             }
             $('#conference-publication-modal').modal('hide');
+            alert('Data Inserted Successfully');
         })
         .catch((error) => {
             console.error('Error ==>' , error)
@@ -543,7 +544,7 @@
                 console.log('data inserted successfully');
             }
             else {
-                alert('validation failed');
+                console.log('validation failed');
             }
     });
 
@@ -575,8 +576,8 @@
         if(event.target.classList.contains('view')){
             console.log('clickeddd');
             const conferenceRowToBeViewed = event.target.closest('tr');
-            conferenceId = conferenceRowToBeViewed.getAttribute('data-conference-id');
-            console.log('ID For View', conferenceId);
+            conferenceId = event.target.getAttribute('data-conference-id');
+            console.log('conferenceId ==>>', conferenceId);
             const viewConferenceDocument = document.getElementById('view-conference-document');
             const viewConferenceProof = document.getElementById('view-conference-proof');
             const viewTitleOfPaper = document.getElementById('view-title-of-paper');     
@@ -590,7 +591,6 @@
             const viewIsPresenter = document.getElementById('view-is-presenter');
             const viewAuthortype = document.getElementById('view-author-type');
             const viewAward = document.getElementById('view-award-for-presentation');
-            $('#conference-publication-view-modal').modal('show');
 
             fetch('<%- BASE_URL %>research/conference-publication/view' , {
                 method : 'POST',
@@ -621,6 +621,10 @@
 
                 }
             })
+            .catch((error) => {
+                console.log('error ==>>', error);
+            })
+            $('#conference-publication-view-modal').modal('show');
         }
         // for update
         if(event.target.classList.contains('edit')){
@@ -698,7 +702,7 @@
            }
             
         }
-    })
+    });
 
     updateBtn.addEventListener('click' , () => {
         console.log('clickedddd')

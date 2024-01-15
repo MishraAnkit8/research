@@ -587,7 +587,7 @@ submitBtn.addEventListener('click', async () => {
                 console.log('data inserted successfully');
             }
             else {
-                alert('validation failed');
+                console.log('validation failed');
             }
     });
 
@@ -596,7 +596,7 @@ meetingStackholdersList.addEventListener('click' , (event) => {
     if(event.target.classList.contains('delete')){
         console.log('clickeddd');
         const meetingRowToBeDeleted = event.target.closest('tr');
-        meetingId = meetingRowToBeDeleted.getAttribute('data-meeting-id');
+        meetingId = event.target.getAttribute('data-meeting-id');
 
         fetch('<%- BASE_URL %>meeting-stackholders/delete' , {
             method : 'POST', 
@@ -619,7 +619,7 @@ meetingStackholdersList.addEventListener('click' , (event) => {
     if(event.target.classList.contains('view')){
         console.log('clcikedd');
         const meetingRowToBeViewed = event.target.closest('tr');
-        meetingId = meetingRowToBeViewed.getAttribute('data-meeting-id');
+        meetingId = event.target.getAttribute('data-meeting-id');
         console.log('meetingId', meetingId);
         const viewRankingDocuments = document.getElementById('view-ranking-file');
         const viewAccreditationFile = document.getElementById('view-accreditation-file');
@@ -682,7 +682,7 @@ meetingStackholdersList.addEventListener('click' , (event) => {
         submitBtn.classList.add('d-none');
         updateBtn.classList.remove('d-none');
         meetingRowToBeUpdated = event.target.closest('tr');
-        meetingId = meetingRowToBeUpdated.getAttribute('data-meeting-id');
+        meetingId = event.target.getAttribute('data-meeting-id');
         console.log('meetingId ::', meetingId);
         const ranking = document.getElementById('ranking');
         const rankingLink = document.getElementById('ranking-link');
@@ -697,12 +697,6 @@ meetingStackholdersList.addEventListener('click' , (event) => {
         const inauguralProgramLink = document.getElementById('inaugural-program-link');
         const events = document.getElementById('event');
         const eventsLink = document.getElementById('event-link');
-        const rankingDocuments = document.getElementById('ranking-documents');
-        const accreditationFile = document.getElementById('accreditation-file');
-        const achievementsFile = document.getElementById('achievements-file');
-        const convocationFile = document.getElementById('convocation-file');
-        const inauguralProgramFile = document.getElementById('inaugural-file');
-        const eventFile = document.getElementById('event-file');
         
         
         // assigning with acutual value
@@ -718,12 +712,12 @@ meetingStackholdersList.addEventListener('click' , (event) => {
         achievementsLink.value = meetingRowToBeUpdated.getAttribute('data-achievement-link');
         inauguralProgramLink.value = meetingRowToBeUpdated.getAttribute('data-inaugural-program-link');
         eventsLink.value = meetingRowToBeUpdated.getAttribute('data-events-link');
-        rankingDocuments.value = meetingRowToBeUpdated.getAttribute('data-ranking-documents');
-        accreditationFile.value = meetingRowToBeUpdated.getAttribute('data-accreditation-file');
-        achievementsFile.value = meetingRowToBeUpdated.getAttribute('data-achievements-file');
-        convocationFile.value = meetingRowToBeUpdated.getAttribute('data-convocation-file');
-        inauguralProgramFile.value = meetingRowToBeUpdated.getAttribute('data-inaugural-file');
-        eventFile.value = meetingRowToBeUpdated.getAttribute('data-event-file');
+        const rankingDocuments = meetingRowToBeUpdated.getAttribute('data-ranking-documents');
+        const accreditationFile= meetingRowToBeUpdated.getAttribute('data-accreditation-file');
+        const achievementsFile = meetingRowToBeUpdated.getAttribute('data-achievements-file');
+        const convocationFile = meetingRowToBeUpdated.getAttribute('data-convocation-file');
+        const inauguralProgramFile = meetingRowToBeUpdated.getAttribute('data-inaugural-file');
+        const  eventFile = meetingRowToBeUpdated.getAttribute('data-event-file');
         $('#meeting-stackholders-modal').modal('show');
 
     }
@@ -731,12 +725,12 @@ meetingStackholdersList.addEventListener('click' , (event) => {
 
 updateBtn.addEventListener('click' , () => {
     const updatedMeetingData = new FormData();
-    const updatedRankingDocuments = document.querySelector('rankingDocuments');
-    const updatedAccredItationFile = document.querySelector('accreditationFile');
-    const updatedAchievementsFile = document.querySelector('achievementsFile');
-    const updatedConvocationFile = document.querySelector('convocationFile');
-    const updatedInauguralProgramFile = document.querySelector('inauguralFile');
-    const updatedEventFile = document.querySelector('eventFile');
+    const updatedRankingDocuments = document.querySelector('input[name="rankingDocuments"]');
+    const updatedAccredItationFile = document.querySelector('input[name="accreditationFile"]');
+    const updatedAchievementsFile = document.querySelector('input[name="achievementsFile"]');
+    const updatedConvocationFile = document.querySelector('input[name="convocationFile"]');
+    const updatedInauguralProgramFile = document.querySelector('input[name="inauguralFile"]');
+    const updatedEventFile = document.querySelector('input[name="eventFile"]');
     const updatedRanking = document.getElementById('ranking').value;
     const updatedRankingLink = document.getElementById('ranking-link').value;
     const updatedAccredItation = document.getElementById('accreditation').value;
@@ -788,12 +782,12 @@ updateBtn.addEventListener('click' , () => {
             meetingRowToBeUpdated.setAttribute('data-convocation-documents' , data.convocationFile[0].filename); 
             meetingRowToBeUpdated.setAttribute('data-inaugural-program-documents' , data.inauguralProgramFile[0].filename);
             meetingRowToBeUpdated.setAttribute('data-events-documents' , data.eventFile[0].filename); 
-            meetingRowToBeUpdated.setAttribute('data-ranking-link' , data.updateMeetingData.updatedRankingLink);
-            meetingRowToBeUpdated.setAttribute('data-accreditation-link' , data.updateMeetingData.updatedAccredItationLink); 
-            meetingRowToBeUpdated.setAttribute('data-achievement-link' , data.updateMeetingData.updatedAchievementsLink); 
-            meetingRowToBeUpdated.setAttribute('data-convocation-link' , data.updateMeetingData.updatedConvocationLink);
-            meetingRowToBeUpdated.setAttribute('data-inaugural-program-link' , data.updateMeetingData.updatedInauguralProgramLink);
-            meetingRowToBeUpdated.setAttribute('data-events-link' , data.updateMeetingData.updatedEventsLink);
+            meetingRowToBeUpdated.setAttribute('data-ranking-link' , data.updateMeetingData.rankingLink);
+            meetingRowToBeUpdated.setAttribute('data-accreditation-link' , data.updateMeetingData.accreditationLink); 
+            meetingRowToBeUpdated.setAttribute('data-achievement-link' , data.updateMeetingData.achievementsLink); 
+            meetingRowToBeUpdated.setAttribute('data-convocation-link' , data.updateMeetingData.convocationLink);
+            meetingRowToBeUpdated.setAttribute('data-inaugural-program-link' , data.updateMeetingData.inauguralProgramLink);
+            meetingRowToBeUpdated.setAttribute('data-events-link' , data.updateMeetingData.eventsLink);
             meetingRowToBeUpdated.querySelector('.ranking').innerText = data.updateMeetingData.ranking;
             meetingRowToBeUpdated.querySelector('.accreditation').innerText = data.updateMeetingData.accreditation;
             meetingRowToBeUpdated.querySelector('.achievements').innerText = data.updateMeetingData.achievements;

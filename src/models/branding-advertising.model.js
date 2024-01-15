@@ -16,10 +16,10 @@ module.exports.fetchBrandingAndadvertising = async() => {
 
 module.exports.insertBrandingAndAdvertisingData = async(advertisingData, facultyRecognitionDocuments,
     facultyAwardDocuments, staffAwardDocuments, alumniAwardDocuments, studentAwardDocuments, internationalLinkageDocuments, conferenceParticipationDocuments, organisingConferenceDocuments,
-    studentEventParticipationDocuments, newspaperArticleDocuments) => {
+    studentEventParticipationDocuments, newsPaperArticleDocuments) => {
         const {facultyRecognition, facultyRecognitionLink, facultyAward, facultyAwardLink, staffAward, staffAwardLink, alumniAward, alumniAwardLink,
             studentAward, studentAwardLink, internationalLinkage, internationalLinkageLink, conferenceParticipation, conferenceParticipationLink, organisingConference,
-            organisingConferenceLink, studentEventParticipation, studentEventParticipationLink, newspaperArticle, newspaperArticleLink} = advertisingData;
+            organisingConferenceLink, studentEventParticipation, studentEventParticipationLink, newsPaperArticle, newsPaperArticleLink } = advertisingData;
         let sql = {
             text : `INSERT INTO branding_and_advertising (
                  faculty_recognition, faculty_recognition_link, faculty_award, faculty_award_link, staff_award, staff_award_link, alumni_award, alumni_award_link,
@@ -30,9 +30,9 @@ module.exports.insertBrandingAndAdvertisingData = async(advertisingData, faculty
                  VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27 , $28, $29, $30) RETURNING id`,
             values : [facultyRecognition, facultyRecognitionLink, facultyAward, facultyAwardLink, staffAward, staffAwardLink, alumniAward, alumniAwardLink,
                 studentAward, studentAwardLink, internationalLinkage, internationalLinkageLink, conferenceParticipation, conferenceParticipationLink, organisingConference,
-                organisingConferenceLink, studentEventParticipation, studentEventParticipationLink, newspaperArticle, newspaperArticleLink, facultyRecognitionDocuments,
+                organisingConferenceLink, studentEventParticipation, studentEventParticipationLink, newsPaperArticle, newsPaperArticleLink, facultyRecognitionDocuments,
                 facultyAwardDocuments, staffAwardDocuments, alumniAwardDocuments, studentAwardDocuments, internationalLinkageDocuments, conferenceParticipationDocuments, organisingConferenceDocuments,
-                studentEventParticipationDocuments, newspaperArticleDocuments]
+                studentEventParticipationDocuments, newsPaperArticleDocuments]
         }
         console.log('sql ==>>', sql);
         return autoDbW.query(sql);
@@ -41,10 +41,10 @@ module.exports.insertBrandingAndAdvertisingData = async(advertisingData, faculty
 
 module.exports.updateBrandingAdvertising = async(advertisingId, updatedAdvertisingData, facultyRecognitionDocuments,
     facultyAwardDocuments, staffAwardDocuments, alumniAwardDocuments, studentAwardDocuments, internationalLinkageDocuments, conferenceParticipationDocuments, organisingConferenceDocuments,
-    studentEventParticipationDocuments, newspaperArticleDocument) => {
+    studentEventParticipationDocuments, newsPaperArticleDocument) => {
         const {facultyRecognition, facultyRecognitionLink, facultyAward, facultyAwardLink, staffAward, staffAwardLink, alumniAward, alumniAwardLink,
             studentAward, studentAwardLink, internationalLinkage, internationalLinkageLink, conferenceParticipation, conferenceParticipationLink, organisingConference,
-            organisingConferenceLink, studentEventParticipation, studentEventParticipationLink, newspaperArticle, newspaperArticleLink} = updatedAdvertisingData;
+            organisingConferenceLink, studentEventParticipation, studentEventParticipationLink, newsPaperArticle, newsPaperArticleLink} = updatedAdvertisingData;
         
         let sql = {
             text : `UPDATE  branding_and_advertising SET 
@@ -55,9 +55,9 @@ module.exports.updateBrandingAdvertising = async(advertisingId, updatedAdvertisi
                 conference_participation_documents = $28, organising_conference_documents = $29, student_event_participation_documents = $30, newspaper_article_documents = $31 WHERE id = $1`,
             values : [advertisingId, facultyRecognition, facultyRecognitionLink, facultyAward, facultyAwardLink, staffAward, staffAwardLink, alumniAward, alumniAwardLink,
                 studentAward, studentAwardLink, internationalLinkage, internationalLinkageLink, conferenceParticipation, conferenceParticipationLink, organisingConference,
-                organisingConferenceLink, studentEventParticipation, studentEventParticipationLink, newspaperArticle, newspaperArticleLink, facultyRecognitionDocuments,
+                organisingConferenceLink, studentEventParticipation, studentEventParticipationLink, newsPaperArticle, newsPaperArticleLink, facultyRecognitionDocuments,
                 facultyAwardDocuments, staffAwardDocuments, alumniAwardDocuments, studentAwardDocuments, internationalLinkageDocuments, conferenceParticipationDocuments, organisingConferenceDocuments,
-                studentEventParticipationDocuments, newspaperArticleDocument]
+                studentEventParticipationDocuments, newsPaperArticleDocument]
         }
         console.log('sql ==>>', sql);
         return autoDbW.query(sql)

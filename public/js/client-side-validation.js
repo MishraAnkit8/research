@@ -166,8 +166,6 @@ function isEmptyField(formGroup) {
 }
 
 
-
-
 function isNumber(input) {
     if (!input || input === '') {
         return false;

@@ -521,6 +521,7 @@
 <!-- inline Javascript -->
 
 <script>
+
     const journalPaperModal = document.getElementById('journal-paper-modal');
     const journalPaperModalView = document.getElementById('journal-paper-modal-view');
     journalPaperModalView.style.display ='none';
@@ -670,9 +671,7 @@
     submitBtn.addEventListener('click', async () => {
         const isValid = validateRequiredFormFields(submitBtn);
             if (isValid) {
-                await insertJournalPaper('<%- BASE_URL %>research/journal-paper/insert')
-
-                console.log('data inserted successfully');
+                await insertJournalPaper('<%- BASE_URL %>research/journal-paper/insert');
             }
             else {
                 alert('validation failed');
@@ -711,6 +710,7 @@
         }
         // for updating 
         if (event.target.classList.contains('edit')) {
+            console.log('clicked')
             $('#journal-paper-modal').modal('show');
             rowToBeUpdated = event.target.closest('tr');
             console.log('rowToBeUpdated ==>>', rowToBeUpdated)
@@ -780,7 +780,9 @@
         }
         // for viewing record of journal paper
         if(event.target.classList.contains('view')){
+            console.log('clicked')
             journalPaperId = event.target.getAttribute('data-journalPaper-id');
+            console.log('journalPaperId ==>>', journalPaperId)
             // updating value with actuall value
             const viewYear = document.getElementById('view-year');
             const viewSchool=  document.getElementById('view-school');
@@ -983,6 +985,6 @@
             })
         })
 
-    </script>
+</script>
 <%- include('./partials/footer') %>
 <%- include('./partials/footer-end') %>

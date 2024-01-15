@@ -207,7 +207,7 @@
                         </div>
                         <div class="form-check-inline">
                             <label for="national" class="form-check-label">
-                                <input type="radio" class="form-check-input" id="national" name="publisher-category" value="National"> National
+                                <input type="radio" class="form-check-input" id="national" name="publisher-category" value="National" checked> National
                             </label>
                         </div>
                     </div>
@@ -469,8 +469,8 @@
             chapterTitle.value = ''; 
             isbnNo.value = '';
             volumeNumber.value = '';
-            publisherCategoryNational.checked = false;
-            publisherCategoryInternational.checked = false;
+            // publisherCategoryNational.checked = false;
+            // publisherCategoryInternational.checked = false;
             pageNumber.value = '';
             publisherName.value = '';
             publicationYear.value = '';
@@ -539,6 +539,7 @@
             const newBookChapter = document.createElement('tr');
             newBookChapter.setAttribute('data-page-number' , data.bookChapter.pageNumber);
             newBookChapter.setAttribute('data-edition' , data.bookChapter.edition);
+            newBookChapter.setAttribute('data-author-last-name' , data.bookChapter.authorLastName)
             newBookChapter.setAttribute('data-editor-name' , data.bookChapter.editorName);
             newBookChapter.setAttribute('data-chapter-title' , data.bookChapter.chapterTitle);
             newBookChapter.setAttribute('data-volume-number' , data.bookChapter.volumeNumber);
@@ -558,12 +559,12 @@
                             <td class="isbn-no">${data.bookChapter.isbnNo}</td>
                             <td class="publisher-name">${data.bookChapter.publisherName}</td>
                             <td>
-                                <a class="view" data-publication-id="${data.bookChapterId}"><i class="fa-solid fa-eye view"
-                                    data-publication-id="${data.bookChapterId}"></i></a>
-                                 <a class="edit"data-publication-id="${data.bookChapterId}"><i class="fa fa-edit edit"
-                                    data-publication-id="${data.bookChapterId}"></i></a>
-                                 <a class="delete"data-publication-id="${data.bookChapterId}"><i class="fa-solid fa-trash delete"
-                                    data-publication-id="${data.bookChapterId}"></i></a>
+                                <a class="view" data-bookChapter-id="${data.bookChapterId}"><i class="fa-solid fa-eye view"
+                                    data-bookChapter-id="${data.bookChapterId}"></i></a>
+                                 <a class="edit"data-bookChapter-id="${data.bookChapterId}"><i class="fa fa-edit edit"
+                                    data-bookChapter-id="${data.bookChapterId}"></i></a>
+                                 <a class="delete"data-bookChapter-id="${data.bookChapterId}"><i class="fa-solid fa-trash delete"
+                                    data-bookChapter-id="${data.bookChapterId}"></i></a>
                             </td> `;
             bookChapterList.append(newBookChapter);
             $('#book-chapter-modal').modal('hide');
@@ -578,7 +579,7 @@
                 console.log('data inserted successfully');
             }
             else {
-                alert('validation failed');
+                console.log('validation failed');
             }
     })
 
@@ -587,7 +588,8 @@
         if(event.target.classList.contains('edit')){
             console.log('clickeddd');
             bookChapterRowToBeUpdated = event.target.closest('tr');
-            bookChapterId = bookChapterRowToBeUpdated.getAttribute('data-bookChapter-id');
+            console.log('bookChapterRowToBeUpdated ==>>',bookChapterRowToBeUpdated)
+            bookChapterId = event.target.getAttribute('data-bookchapter-id');
             console.log('bookChapterId ==>>', bookChapterId);
             $('#book-chapter-modal').modal('show');
             updateBtn.classList.remove('d-none');
@@ -644,7 +646,7 @@
         if(event.target.classList.contains('delete')){
             console.log('clickedddd');
             const bookChapterPublicatRowToBeDeleted = event.target.closest('tr');
-            bookChapterId = bookChapterPublicatRowToBeDeleted.getAttribute('data-bookChapter-id');
+            bookChapterId = event.target.getAttribute('data-bookChapter-id');
             console.log('ID ==>>', bookChapterId);
 
             fetch('<%- BASE_URL %>research/book-publication-main/book-chapter-publication/delete' , {
@@ -669,7 +671,7 @@
         if(event.target.classList.contains('view')){
             console.log('clickedddd');
             const bookChapterRowToBeViewed = event.target.closest('tr');
-            bookChapterId = bookChapterRowToBeViewed.getAttribute('data-bookChapter-id');
+            bookChapterId = event.target.getAttribute('data-bookChapter-id');
             console.log('ID ==>>', bookChapterId);
             $('#book-chapter-view').modal('show');
             const viewAuthorFirstName = document.getElementById('view-first-name');
@@ -784,6 +786,7 @@
                 console.log('data ==>>', data);
                 bookChapterRowToBeUpdated.setAttribute('data-page-number' , data.updatedBookChapter.pageNumber );
                 bookChapterRowToBeUpdated.setAttribute('data-edition' , data.updatedBookChapter.edition);
+                bookChapterRowToBeUpdated.setAttribute('data-author-last-name' , data.updatedBookChapter.authorLastName);
                 bookChapterRowToBeUpdated.setAttribute('data-volume-number' , data.updatedBookChapter.volumeNumber);
                 bookChapterRowToBeUpdated.setAttribute('data-publisher-category' , data.updatedBookChapter.publisherCategory);
                 bookChapterRowToBeUpdated.setAttribute('data-editot-name' , data.updatedBookChapter.editorName);
@@ -805,7 +808,7 @@
             .catch((error) => {
                 console.log('Eroor ::', error);
             })
-            $('#book-chapter-modal').modal('show');
+            $('#book-chapter-modal').modal('hide');
             alert('data updated successfully');
     })
 </script>
