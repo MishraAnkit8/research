@@ -16,9 +16,9 @@ function validateRequiredFormFields(actionBtn) {
         const emptyErrorMsg = elem.dataset.errMsg ? elem.dataset.errMsg : 'Please enter  value val';
 
 
-        // if (!isRequired && elemVal === '') {
-        //     continue;
-        // }
+        if (!isRequired && elemVal === '') {
+            continue;
+        }
 
         for (let validate of validateArr) {
             if (validate === 'isExist') {
@@ -88,8 +88,31 @@ function validateRequiredFormFields(actionBtn) {
                 }
             }
 
+            //between:min:max
+            if (validate.includes('isBetween')) {
+                const betweenArr = validate.split(':');
+                const min = betweenArr[1];
+                const max = betweenArr[2];
+                const isValid = between(elemVal, min, max);
+                if (!isValid) {
+                    isValidElem = false;
+                    validationState = false;
+                    break;
+                }
+            }
+
             if (validate === 'isNotSpecialChar') {
                 const isValid = isNotSpecialChar(elemVal);
+                if (!isValid) {
+                    isValidElem = false;
+                    validationState = false;
+                    break;
+                }
+            }
+
+            //isFloatingNumber
+            if (validate === 'isFloatingNumber') {
+                const isValid = isFloatingNumber(elemVal);
                 if (!isValid) {
                     isValidElem = false;
                     validationState = false;
@@ -111,7 +134,8 @@ function selectElemToBeValidated(validateInputWrapper) {
 
     allElements.forEach(function (element) {
         const dataValidate = element.getAttribute('data-validate');
-        if (dataValidate !== null && dataValidate !== '') {
+        const isDisabled = element.disabled;
+        if (dataValidate !== null && dataValidate !== '' && !isDisabled) {
             elemToBeValidated.push(element);
         }
     });
@@ -119,51 +143,22 @@ function selectElemToBeValidated(validateInputWrapper) {
     return elemToBeValidated;
 }
 
-// function toggleErrorState(formGroup, errorMsg, errorElem, isValidElem) {
-//     console.log('errorElem', errorElem, 'isValid', isValidElem);
-//     if (!errorElem && !isValidElem) {
-//         console.log('Adding error message');
-//         const errorDiv = document.createElement('div');
-//         errorDiv.classList.add('error-msg');
-//         errorDiv.innerText = errorMsg;
-//         formGroup.appendChild(errorDiv);
-//         formGroup.classList.add('error');
-//     } else if (errorElem && isValidElem) {
-//         console.log('Removing error message');
-//         formGroup.removeChild(errorElem);
-//         formGroup.classList.remove('error');
-//     }
-// }
-
 function toggleErrorState(formGroup, errorMsg, errorElem, isValidElem) {
-    // Check if element is not valid or empty
-    if (!isValidElem || isEmptyField(formGroup)) {
-        // Either element is not valid or it's empty, create or update error message
-        if (!errorElem) {
-            const errorDiv = document.createElement('div');
-            errorDiv.classList.add('error-msg');
-            errorDiv.innerText = errorMsg;
-            formGroup.appendChild(errorDiv);
-        } else {
-            errorElem.innerText = errorMsg;
-        }
-
-        // Add red color
+    console.log('errorElem', errorElem, 'isValid', isValidElem);
+    if (!errorElem && !isValidElem) {
+        console.log('Adding error message');
+        const errorDiv = document.createElement('div');
+        errorDiv.classList.add('error-msg');
+        errorDiv.innerText = errorMsg;
+        formGroup.appendChild(errorDiv);
         formGroup.classList.add('error');
-    } else {
-        // Element is valid and not empty, remove error message if it exists
-        if (errorElem) {
-            formGroup.removeChild(errorElem);
-        }
+    } else if (errorElem && isValidElem) {
+        console.log('Removing error message');
+        formGroup.removeChild(errorElem);
         formGroup.classList.remove('error');
     }
 }
 
-function isEmptyField(formGroup) {
-    const elem = formGroup.querySelector('input, select, textarea');
-    const elemVal = elem.value.trim();
-    return elemVal === '';
-}
 
 
 function isNumber(input) {
@@ -176,6 +171,13 @@ function isNumber(input) {
         if (charCode < 48 || charCode > 57) {
             return false;
         }
+    }
+    return true;
+}
+
+function isFloatingNumber(input) {
+    if(parseFloat(input) != input) {
+        return false;
     }
     return true;
 }
@@ -290,6 +292,41 @@ function isNotSpecialChar(input) {
 }
 
 function isLength(input, minLength, maxLength) {
+    if (isEmpty(input) || isEmpty(minLength) || isEmpty(maxLength)) {
+        return false;
+    }
+
     const length = input.trim().length;
+
+    if(minLength == 'min') {
+        return length <= maxLength;
+    }
+
+    if(maxLength == 'max') {
+        return length >= minLength;
+    }
+
     return length >= minLength && length <= maxLength;
+}
+
+function isBetween(input, min, max) {
+    if (isEmpty(input) || isEmpty(min) || isEmpty(max)) {
+        return false;
+    }
+
+    input = parseFloat(input);
+
+    if(!isNumber(input)) {
+        return false;
+    }
+
+    if (min === 'min') {
+        return input <= max;
+    }
+
+    if (max === 'max') {
+        return input >= min;
+    }
+
+    return input >= min && input <= max;
 }

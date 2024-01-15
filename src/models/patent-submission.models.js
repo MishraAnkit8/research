@@ -18,7 +18,7 @@ module.exports.insertPatentData = async(patentData, file) => {
     console.log('file ==>', file)
     console.log("patentData::::::", patentData)
     let sql = {
-        text : `INSERT INTO  patent_submissions (type_of_invention, title_of_invention,  patent_stage, achive_sdg, application_no, date, is_presenter, patent_file) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id`,
+        text : `INSERT INTO  patent_submissions (type_of_invention, title_of_invention,  patent_stage, achieve_sdg, application_no, date, is_presenter, patent_file) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id`,
         values : [typeOfInvention, titleOfInvention, patentStage, achiveSdg, applicationNum, date, isPresentor, file]
     }
     console.log('sql ==>>', sql)
@@ -30,7 +30,7 @@ module.exports.updatePatentsubmissionData = async({updatedPatentData, patentId, 
     console.log('filename in models ==>', patentDocument )
     const {typeOfInvention, titleOfInvention, patentStage, achiveSdg, applicationNum, date, isPresentor} = updatedPatentData 
     let sql = {
-        text : `UPDATE patent_submissions  SET type_of_invention = $2,  title_of_invention = $3, patent_stage = $4, achive_sdg = $5, 
+        text : `UPDATE patent_submissions  SET type_of_invention = $2,  title_of_invention = $3, patent_stage = $4, achieve_sdg = $5, 
               application_no = $6, date = $7, is_presenter =$8 , patent_file = $9 WHERE id = $1`,
         values : [patentId , typeOfInvention, titleOfInvention, patentStage, achiveSdg, applicationNum, date, isPresentor, patentDocument]
     
