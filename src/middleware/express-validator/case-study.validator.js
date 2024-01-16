@@ -114,6 +114,13 @@ module.exports.validateCaseStudy = [
     .isString()
     .withMessage("nmims school  should be string")
     .isLength({ min: 2 }), 
+check("caseStudyData.publisherCategory")
+    .notEmpty()
+    .withMessage("publisher category is required")
+    .bail()
+    .isString()
+    .withMessage("publisher category should be string")
+    .isLength({ min: 2 }), 
     
   validationHandler, // Handler for validation errors
 ];

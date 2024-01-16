@@ -36,7 +36,7 @@ module.exports.validateJournalPaper = [
     .bail()
     .isString()
     .withMessage(" journal paper campus  should be string")
-    .isLength({ min: 5 }), 
+    .isLength({ min: 2 }), 
      
  check("journalDetails.policyCadre")
     .notEmpty()
@@ -114,21 +114,6 @@ module.exports.validateJournalPaper = [
     .withMessage("publisher  should be string")
     .isLength({ min: 2 }), 
 
-    check("journalDetails.volume")
-    .notEmpty()
-    .withMessage("volume is required")
-    .bail()
-    .isInt()
-    .withMessage("volume should be integer"),
-    
- check("journalDetails.iss")
-    .notEmpty()
-    .withMessage("iss is required")
-    .bail()
-    .bail()
-    .isInt()
-    .withMessage("iss should be integer"),
-    
  check("journalDetails.pages")
     .notEmpty()
     .withMessage("pages is required")
@@ -147,7 +132,7 @@ module.exports.validateJournalPaper = [
     .notEmpty()
     .withMessage(" date of publishing is required")
     .bail()
-    .isInt()
+    .isDate()
     .withMessage("date of publishing should be integer"), 
 
     check("journalDetails.impactFactor")

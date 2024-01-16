@@ -77,21 +77,6 @@ module.exports.validateResearchSeminar = [
     .isString()
     .withMessage("publisher  should be string")
     .isLength({ min: 2 }), 
-
-    check("seminarDetails.volume")
-    .notEmpty()
-    .withMessage("volume is required")
-    .bail()
-    .isInt()
-    .withMessage("volume should be integer"),
-    
- check("seminarDetails.iss")
-    .notEmpty()
-    .withMessage("iss is required")
-    .bail()
-    .bail()
-    .isInt()
-    .withMessage("iss should be integer"),
     
  check("seminarDetails.pages")
     .notEmpty()
@@ -111,8 +96,8 @@ module.exports.validateResearchSeminar = [
     .notEmpty()
     .withMessage(" date of publishing is required")
     .bail()
-    .isInt()
-    .withMessage("date of publishing should be integer"), 
+    .isDate()
+    .withMessage("date of publishing should be Date"), 
 
     check("seminarDetails.impactFactor")
     .notEmpty()

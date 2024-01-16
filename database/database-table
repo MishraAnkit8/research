@@ -15,11 +15,9 @@
     title_of_paper VARCHAR(255),
     journal_name VARCHAR(255),
     publisher VARCHAR(255),
-    volume VARCHAR(255),
-    iss VARCHAR(255),
     pages VARCHAR(255),
     issn_no VARCHAR(255),
-    date_of_publishing INTEGER,
+    date_of_publishing DATE,
     impact_factor VARCHAR(255),
     scs_cite_score INTEGER,
     scs_indexed VARCHAR(255),
@@ -43,7 +41,7 @@ CREATE TABLE research_project_consultancy (
     name_of_funding_agency VARCHAR(100),
     funding_amount NUMERIC,
     status_of_research_project VARCHAR(50),
-    submission_grant_date integer,
+    submission_grant_date DATE,
     faculty_type VARCHAR(50),
     supporting_documents VARCHAR(50) );
 	
@@ -55,7 +53,7 @@ CREATE TABLE patent_submissions (
     patent_stage VARCHAR(255),
     achieve_sdg VARCHAR(3) CHECK(achieve_sdg IN('yes', 'no')),
     application_no INTEGER,
-    date INTEGER,
+    date DATE,
     is_presenter VARCHAR(3) CHECK(is_presenter IN('yes', 'no')),
     patent_file VARCHAR(255)
 );
@@ -72,6 +70,7 @@ CREATE TABLE case_studies (
       publisher_name VARCHAR(255), 
       publication_year INTEGER,
       page_number INTEGER,
+	publisher_category VARCHAR(20) CHECK(publisher_category IN ('International', 'National')),
       url_of_case_study VARCHAR(255),
       number_of_nmims_authors INTEGER,
       nmims_authors VARCHAR(255), 
@@ -99,28 +98,27 @@ CREATE TABLE CONFERENCE_PUBLICATIONS (
 
 CREATE TABLE book_publications (
      id SERIAL PRIMARY KEY,
-     author_first_name VARCHAR(255) ,
      author_last_name VARCHAR(255), 
      book_title VARCHAR(255),
      edition VARCHAR(255),
-	 publication_place VARCHAR(255),
-	 publisher_category VARCHAR(10) CHECK(publisher_category IN ('International', 'National')),
+	isbn INTEGER,
+     publication_place VARCHAR(255),
+     publisher_category VARCHAR(10) CHECK(publisher_category IN ('International', 'National')),
      volume_number INTEGER, 
      publisher_name VARCHAR(255), 
      publication_year INTEGER,
      book_url VARCHAR(255),
-	 doi_id INTEGER,
+     doi_id INTEGER UNIQUE,
      number_of_nmims_authors INTEGER,
      nmims_authors VARCHAR(255), 
      nmims_campus_authors VARCHAR(255), 
      nmims_school_authors VARCHAR(255),
-	 supporting_documents VARCHAR(50)
-)
+     supporting_documents VARCHAR(50)
+);
 
 CREATE TABLE edited_book_publications (
      id SERIAL PRIMARY KEY,
-     author_first_name VARCHAR(255) ,
-     author_last_name VARCHAR(255), 
+     author_name VARCHAR(255) ,
      book_title VARCHAR(255),
 	chapter_title VARCHAR(255),
 	editor_name VARCHAR(255),
@@ -139,10 +137,10 @@ CREATE TABLE edited_book_publications (
      nmims_school_authors VARCHAR(255),
 	 supporting_documents VARCHAR(50)
 )
+
 CREATE TABLE book_chapter_publications (
      id SERIAL PRIMARY KEY,
-     author_first_name VARCHAR(255) ,
-     author_last_name VARCHAR(255), 
+     author_name VARCHAR(255) ,
      book_title VARCHAR(255),
 	chapter_title VARCHAR(255),
 	volume_number INTEGER,
@@ -154,14 +152,13 @@ CREATE TABLE book_chapter_publications (
     publication_year INTEGER,
     book_url VARCHAR(255),
 	doi_id INTEGER,
-	isbn_no INTEGER,
+	isbn INTEGER,
     number_of_nmims_authors INTEGER,
     nmims_authors VARCHAR(255), 
     nmims_campus_authors VARCHAR(255), 
     nmims_school_authors VARCHAR(255),
 	supporting_documents VARCHAR(50)
 )
-
 
 CREATE TABLE teaching_execellance (
     id SERIAL PRIMARY KEY,
@@ -203,12 +200,10 @@ CREATE TABLE teaching_execellance (
     title_of_paper VARCHAR(255),
     journal_name VARCHAR(255),
     publisher VARCHAR(255),
-    volume VARCHAR(255),
-    iss VARCHAR(255),
     pages VARCHAR(255),
     issn_no VARCHAR(255),
 	publisher_category VARCHAR(20) CHECK(publisher_category IN ('International', 'National')),
-    date_of_publishing INTEGER,
+    date_of_publishing DATE,
     impact_factor VARCHAR(255),
     scs_cite_score INTEGER,
     scs_indexed VARCHAR(255),

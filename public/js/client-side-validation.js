@@ -38,6 +38,7 @@ function validateRequiredFormFields(actionBtn) {
                     break;
                 }
             }
+            
 
             if (validate === 'isAlphabet') {
                 const isValid = isAlphabet(elemVal);
@@ -110,6 +111,15 @@ function validateRequiredFormFields(actionBtn) {
                 }
             }
 
+            if (validate === 'isNotNumber') {
+                const isValid = isNotNumber(elemVal);
+                if (!isValid) {
+                    isValidElem = false;
+                    validationState = false;
+                    break;
+                }
+            }
+
             //isFloatingNumber
             if (validate === 'isFloatingNumber') {
                 const isValid = isFloatingNumber(elemVal);
@@ -173,6 +183,10 @@ function isNumber(input) {
         }
     }
     return true;
+}
+
+ function isNotNumber(input) {
+    return !isNumber(input);
 }
 
 function isFloatingNumber(input) {

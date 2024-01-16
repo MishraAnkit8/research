@@ -160,9 +160,9 @@
                     <div class="col-lg-4 col-md-6 col-sm-12 mb-4 ">
                         <div class="form-group col">
                             <label for="type-of-invention" class="form-label fw-bold ">Type of Invention(IPR)</label>
-                            <select class="form-control gap-10" id="type-of-invention" data-validate="isEmpty"  required>
-                                <option selected>Select option</option>
-                                <option  name="Patent">Patent</option>
+                            <select class="form-control gap-10" id="type-of-invention" data-validate="isEmpty,isExist" data-err-msg="This field is required and select value " required>
+                                <option >Select option</option>
+                                <option  name="Patent" selected>Patent</option>
                                 <option  name="Copy Right">Copy Right</option>
                                 <option  name="Design Registration">Design Registration</option>
                                 <option  name="Trade mark">Trade mark</option>
@@ -173,21 +173,21 @@
                     <!-- Title of Invention -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="title" class="form-label fw-bold">Title of Invention</label>
-                        <input type="text" name="titleInvention" id="title-of-invention" data-err-msg="This field is required and min length > 1." class="form-control fname" data-validate="isEmpty,isAlphabeticWords" placeholder="Title of Invention" required>
+                        <input type="text" name="titleInvention" id="title-of-invention" data data-err-msg="This field is required and min length > 1." class="form-control fname" data-validate="isEmpty,isAlphabeticWords" placeholder="Title of Invention" required>
                     </div>
                     <!-- Patent Stage -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="patent-stage" class="form-label fw-bold">Patent Stage</label>
-                        <select class="form-control gap-10" id="patent-stage" data-validate="isEmpty" required>
+                        <select class="form-control gap-10" id="patent-stage" data-validate="isEmpty,isExist" data-err-msg="This field is required and select value "  required>
                             <option selected>Select option</option>
                             <option name="Filied">Filied</option>
                             <option name="Published">Published</option>
                             <option name="Granted">Granted</option>
                         </select>
                     </div>
-                    <!-- Are you achieve SDG ? -->
+                    <!-- Sustainable Development Goals (SDG) [dropdown list to be added] ? -->
                     <div form-group class="col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="achive-sdg" class="mb-2 fw-bold" aria-required="true">Are you achieve SDG ?</label><br>
+                        <label for="achive-sdg" class="mb-2 fw-bold" aria-required="true">Sustainable Development Goals (SDG)?</label><br>
                         <label for="yes">
                             <input type="radio" name="achive-sdg" id="yes" value="yes">
                             Yes
@@ -202,7 +202,7 @@
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="application-no" class="form-label fw-bold">Application
                             Number</label>
-                        <input type="text" name="applicationNo" id="application-no" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required'."  class="form-control number"
+                        <input type="number" name="applicationNo" id="application-no" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required'."  class="form-control number"
                             placeholder="Application Number" required>
                     </div>
             
@@ -211,7 +211,7 @@
                         <label for="date" class="form-label fw-bold">
                             Date of Filing/Grant/Published?DDDD
                         </label>
-                        <input type="text" name="date" id="date" data-validate="isEmpty,isNumber" data-err-msg="Date is required." class="form-control" min='2000-01-01' max="2023-10-02" required>
+                        <input type="date" name="GrantDate" id="date" data-validate="isEmpty,isExist" data-err-msg="Date is required." class="form-control" required>
                     </div>
             
                     <!-- Inventor -->
@@ -243,8 +243,8 @@
             <!-- Add your modal footer buttons if needed -->
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-md btn-success d-none" id="submit-btn">Submit</button>
-                <button class="btn btn-md btn-success d-none" id="update-btn">update</button>
+                <button type="button" class="btn btn-md btn-primary d-none" id="submit-btn">Submit</button>
+                <button class="btn btn-md btn-primary d-none" id="update-btn">update</button>
             </div>
         </div>
     </div>
@@ -287,7 +287,7 @@
                     <!-- Are you achieve SDG -->
                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
-                            <div class="sub-title-text sub-title">Are You Achive SDG :</div>
+                            <div class="sub-title-text sub-title">Sustainable Development Goals (SDG) :</div>
                             <label class="view-content" id="view-achive-sdg"></label>
                         </div>
                     </div>
@@ -445,7 +445,7 @@
             await insertPatentforms('<%- BASE_URL %>research/patent-submission/insert');
        }
        else{
-        console.log('validation failed');
+        alert('validation failed');
        }
     });
 
@@ -502,6 +502,7 @@
          .then((data) => {
              if(data.status === 'done'){
                 patentSubMissionDataToBeDelete.remove();
+                alert('Record Deleted Successfully');
             }
          })
          .catch((error) => {

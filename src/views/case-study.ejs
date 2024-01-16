@@ -68,7 +68,8 @@
                             data-number-of-nmims-authors="<%- caseStudy.number_of_nmims_authors %>"
                             data-nmims-authors="<%- caseStudy.nmims_authors %>"
                             data-nmims-campus-authors="<%- caseStudy.nmims_campus_authors %>"
-                            data-nmims-school-authors="<%- caseStudy.nmims_school_authors %>">
+                            data-nmims-school-authors="<%- caseStudy.nmims_school_authors %>"
+                            data-publisher-category="<%- caseStudy.publisher_category %>">
                             <td class="cell " data-case-id="<%- caseStudy.id %>"> <%- caseStudy.id %> </td>
                             <td class="cell author-first-name"> <%- caseStudy.author_first_name %> </td>
                             <td class="cell author-last-name"> <%- caseStudy.author_last_name %> </td>
@@ -169,7 +170,7 @@
                     <!-- Title of case study -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="title-of-case-study" class="form-label fw-bold">Title Of Case Study</label>
-                        <input type="text" name="titleOfCaseStudy" id="title-of-case-study" class="form-control" data-validate="isEmpty,isAlphabeticWords" data-err-msg="This field is required and min length > 1." placeholder="Title of case study" required>
+                        <input type="text" name="titleOfCaseStudy" id="title-of-case-study" class="form-control" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="This field is required and min length > 1." placeholder="Title of case study" required>
                     </div>
                     <!-- Edition -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
@@ -179,7 +180,7 @@
                     <!-- Volume number -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="volume-number" class="form-label fw-bold">Volume Number</label>
-                        <input type="text" name="volumeNumber" id="volume-number" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required." class="form-control" placeholder="Optional" required>
+                        <input type="number" name="volumeNumber" id="volume-number" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required." class="form-control" placeholder="Optional" required>
                     </div>
                     <!-- Publisher Name -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
@@ -190,7 +191,7 @@
                     <!-- Publication Year -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="publication-year" class="form-label fw-bold">Publication Year</label>
-                        <input type="text" name="publicationYear" id="publication-year"  data-validate="isEmpty,isNumber"class="form-control" data-err-msg="Year is required." placeholder="Publication Year" required>
+                        <input type="number" name="publicationYear" id="publication-year"  data-validate="isEmpty,isNumber"class="form-control" data-err-msg="Year is required." placeholder="Publication Year" required>
                     </div>
 
                     <!-- Page numbers -->
@@ -202,13 +203,26 @@
                     <!-- URL of the Case Study -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="url-of-case-study" class="form-label fw-bold">URL Of The Case Study</label>
-                        <input type="url" name="urlOfCaseStudy" id="url-of-case-study" data-validate="isEmpty,isUrl" data-err-msg="This field is required and min length > 1." class="form-control" placeholder="URL" required>
+                        <input type="text" name="urlOfCaseStudy" id="url-of-case-study" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="This field is required and min length > 1." class="form-control" placeholder="URL" required>
                     </div>
-
+                    <!-- Publisher Category  -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="publisher-category" id="publisher-category" class="form-label fw-bold mb-3">Publisher Category</label><br>
+                        <div class="form-check-inline">
+                            <label for="inter-national" class="form-check-label">
+                                <input type="radio" class="form-check-input" id="inter-national" name="publisher-category" value="International"> International
+                            </label>
+                        </div>
+                        <div class="form-check-inline">
+                            <label for="national" class="form-check-label">
+                                <input type="radio" class="form-check-input" id="national" name="publisher-category" value="National" checked> National
+                            </label>
+                        </div>
+                    </div>
                     <!-- No. of NMIMS Authors -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="number-of-nmims-authors" class="form-label fw-bold ">No. Of NMIMS Authors</label>
-                        <input type="text" name="numberOfNmimsAuthors" id="number-of-nmims-authors" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required." placeholder="No. of NMIMS Authors" class="form-control" required/>
+                        <input type="number" name="numberOfNmimsAuthors" id="number-of-nmims-authors" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required." placeholder="No. of NMIMS Authors" class="form-control" required/>
                     </div>
                     <!-- Name of NMIMS Authors -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
@@ -292,6 +306,14 @@
                         <div class="box">
                             <div class="task-sub-title sub-title-text">Publisher Name :</div>
                             <label class="view-content" id="view-publisher-name"></label>
+                        </div>
+                    </div>
+
+                    <!-- publisher category -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text">Publisher Category :</div>
+                            <label class="view-content" id="view-publisher-category"></label>
                         </div>
                     </div>
                     <!-- Publication Year -->
@@ -389,6 +411,7 @@
         caseStudyData.authorLastName = document.getElementById('author-last-name').value;
         caseStudyData.titleOfCaseStudy = document.getElementById('title-of-case-study').value;
         caseStudyData.edition = document.getElementById('edition').value;
+        caseStudyData.publisherCategory = document.querySelector('input[name="publisher-category"]:checked').value;
         caseStudyData.volumeNumber = document.getElementById('volume-number').value;
         caseStudyData.publisherName = document.getElementById('publisher-name').value;
         caseStudyData.publicationYear = document.getElementById('publication-year').value;
@@ -424,6 +447,7 @@
                 newCaseStudy.setAttribute('data-url-of-caseStudy', caseStudyData.urlOfCaseStudy);
                 newCaseStudy.setAttribute('data-number-of-nmims-authors', caseStudyData.numberOfNmimsAuthors);
                 newCaseStudy.setAttribute('data-nmims-authors', caseStudyData.nmimsAuthors);
+                newCaseStudy.setAttribute('data-publisher-category' , caseStudyData.publisherCategory);
                 newCaseStudy.setAttribute('data-nmims-campus-authors', caseStudyData.nmimsCampusAuthors);
                 newCaseStudy.setAttribute('data-nmims-school-authors', caseStudyData.nmimsSchoolAuthors);
                 newCaseStudy.innerHTML = `
@@ -457,7 +481,7 @@
                 console.log('data inserted successfully');
             }
             else {
-                console.log('validation failed due to error');
+                alert('validation failed due to error');
             }
     });
 
@@ -497,6 +521,7 @@
                 viewAuthorLastName.innerText = data[0].author_last_name;
                 viewTitleOfCaseStudy.innerText = data[0].title_of_case_study;
                 viewEdition.innerText = data[0].edition;
+                viewPublisherCategory.innerText = data[0].publisher_category; 
                 viewVolumeNumber.innerText = data[0].volume_number;
                 viewPublisherName.innerText = data[0].publisher_name;
                 viewPublicationYear.innerText = data[0].publication_year;
@@ -537,6 +562,7 @@
                 if(data.status === 'done'){
                     console.log('data ==>>', data);
                     rowToBeDelete.remove();
+                    alert('Record Deleted Successfully')
                     
                 }
             })
@@ -559,6 +585,8 @@
             const urlOfCaseStudy = rowToBeUpdate.getAttribute('data-url-of-caseStudy');
             const numberOfNmimsAuthors = rowToBeUpdate.getAttribute('data-number-of-nmims-authors');
             const nmimsAuthors = rowToBeUpdate.getAttribute('data-nmims-authors');
+            const publisherCategoryNational = document.getElementById('national');
+            const publisherCategoryInternational = document.getElementById('inter-national');
             const nmimsCampusAuthors  = rowToBeUpdate.getAttribute('data-nmims-campus-authors');
             const nmimsSchoolAuthors = rowToBeUpdate.getAttribute('data-nmims-school-authors');
             const authorsFirstName = rowToBeUpdate.querySelector('.author-first-name');
@@ -578,6 +606,14 @@
             document.getElementById('publisher-name').value = publisherName.textContent;
             document.getElementById('publication-year').value = publicationYear.textContent;
             document.getElementById('page-number').value = pageNumber;
+            const publisherCategory = rowToBeUpdate.getAttribute('data-publisher-category');
+
+            if(publisherCategory === 'National'){
+                publisherCategoryNational.checked = true;
+            }
+            else{
+                publisherCategoryInternational.checked = true;
+            }
             document.getElementById('url-of-case-study').value = urlOfCaseStudy;
             document.getElementById('number-of-nmims-authors').value = numberOfNmimsAuthors;
             document.getElementById('nmims-authors').value = nmimsAuthors;
@@ -585,12 +621,14 @@
             document.getElementById('nmims-school-authors').value = nmimsSchoolAuthors ;
         }
     })
+    
     updateBtn.addEventListener('click' , function(){
         console.log('data is updated');
         const updatedName = document.getElementById('author-first-name').value;
         const updatedPage = document.getElementById('page-number').value;
         const updateLastName = document.getElementById('author-last-name').value;
         const updatedEdition = document.getElementById('edition').value;
+        const updatedPublisherCategory = document.querySelector('input[name="publisher-category"]:checked').value;
         const updatedVolume = document.getElementById('volume-number').value;
         const updatedPublisher = document.getElementById('publisher-name').value;
         const updatedPublicationYear = document.getElementById('publication-year').value;
@@ -609,6 +647,7 @@
         updatedCaseStudies.pageNumber = updatedPage;
         updatedCaseStudies.edition = updatedEdition;
         updatedCaseStudies.volumeNumber = updatedVolume;
+        updatedCaseStudies.publisherCategory = updatedPublisherCategory;
         updatedCaseStudies.publicationYear =updatedPublicationYear;
         updatedCaseStudies.publisherName = updatedPublisher;
         updatedCaseStudies.urlOfCaseStudy = updatedUrl;
@@ -638,6 +677,7 @@
                 rowToBeUpdate.querySelector('.volume-number').innerText = updatedCaseStudies.volumeNumber;
                 rowToBeUpdate.querySelector('.publication-year').innerText = updatedCaseStudies.publicationYear;
                 rowToBeUpdate.setAttribute('data-page-number', updatedPage);
+                rowToBeUpdate.setAttribute('data-publisher-category' , updatedPublisherCategory);
                 rowToBeUpdate.setAttribute('data-url-of-caseStudy', updatedUrl);
                 rowToBeUpdate.setAttribute('data-numberOfNmimsAuthors', updatedNumberOfNmimsAuthor);
                 rowToBeUpdate.setAttribute('data-nmims-authors', updatedNmimsAuthors);

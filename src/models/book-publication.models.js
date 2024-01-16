@@ -14,13 +14,13 @@ module.exports.fetchBookPublication = async() => {
 }
 
 module.exports.insertBookPublicationData = async(bookPublicationData, filename) => {
-    const {authorFirstName, authorLastName, bookTitle, edition, publicationPlace, publisherCategory, volumeNumber, publisherName, publicationYear,
+    const { authorLastName, bookTitle, edition, publicationPlace, publisherCategory, volumeNumber, publisherName, publicationYear,
         bookUrl, doiBookId, isbnNo, numberOfNmimsAuthors, nmimsAuthors, nmimsCampusAuthors, nmimsSchoolAuthors} = bookPublicationData
     let sql = {
-        text : `INSERT INTO book_publications (author_first_name, author_last_name, book_title, edition, publication_place, publisher_category, volume_number, publisher_name, 
+        text : `INSERT INTO book_publications ( author_last_name, book_title, edition, publication_place, publisher_category, volume_number, publisher_name, 
             publication_year, book_url, doi_id, isbn, number_of_nmims_authors, nmims_authors, nmims_campus_authors, nmims_school_authors, supporting_documents)
-            VALUES ($1, $2 , $3 ,$4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17) RETURNING id `,
-        values : [authorFirstName, authorLastName, bookTitle, edition, publicationPlace, publisherCategory, volumeNumber, publisherName, publicationYear,
+            VALUES ($1, $2 , $3 ,$4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16) RETURNING id `,
+        values : [ authorLastName, bookTitle, edition, publicationPlace, publisherCategory, volumeNumber, publisherName, publicationYear,
             bookUrl, doiBookId, isbnNo, numberOfNmimsAuthors, nmimsAuthors, nmimsCampusAuthors, nmimsSchoolAuthors, filename]
     }
     console.log('sql ===>>', sql)
@@ -28,12 +28,12 @@ module.exports.insertBookPublicationData = async(bookPublicationData, filename) 
 }
 
 module.exports.updatedBookPublication = async(bookPublicationId, updatedBookPublicationData, updatedFile) => {
-    const {authorFirstName, authorLastName, bookTitle, edition, publicationPlace, publisherCategory, volumeNumber, publisherName, publicationYear,
+    const { authorLastName, bookTitle, edition, publicationPlace, publisherCategory, volumeNumber, publisherName, publicationYear,
         bookUrl, doiBookId, isbnNo, numberOfNmimsAuthors, nmimsAuthors, nmimsCampusAuthors, nmimsSchoolAuthors} = updatedBookPublicationData;
     let sql = {
-        text : `UPDATE book_publications SET author_first_name = $2, author_last_name = $3, book_title = $4, edition = $5, publication_place = $6, publisher_category = $7, volume_number = $8, publisher_name = $9, 
-               publication_year = $10, book_url = $11, doi_id = $12, isbn = $13, number_of_nmims_authors = $14, nmims_authors = $15, nmims_campus_authors = $16, nmims_school_authors = $17, supporting_documents = $18 WHERE id = $1`,
-        values : [bookPublicationId, authorFirstName, authorLastName, bookTitle, edition, publicationPlace, publisherCategory, volumeNumber, publisherName, publicationYear,
+        text : `UPDATE book_publications SET  author_last_name = $2, book_title = $3, edition = $4, publication_place = $5, publisher_category = $6, volume_number = $7, publisher_name = $8, 
+               publication_year = $9, book_url = $10, doi_id = $11, isbn = $12, number_of_nmims_authors = $13, nmims_authors = $14, nmims_campus_authors = $15, nmims_school_authors = $16, supporting_documents = $17 WHERE id = $1`,
+        values : [bookPublicationId,  authorLastName, bookTitle, edition, publicationPlace, publisherCategory, volumeNumber, publisherName, publicationYear,
                   bookUrl, doiBookId, isbnNo, numberOfNmimsAuthors, nmimsAuthors, nmimsCampusAuthors, nmimsSchoolAuthors, updatedFile]
     }
     return autoDbW.query(sql)
