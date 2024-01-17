@@ -345,7 +345,7 @@
             const titleOfInvention = document.getElementById('title-of-invention');
             const patentStage = document.getElementById('patent-stage');
             const applicationNum = document.getElementById('application-no');
-            const date = document.getElementById('date');
+            const subMissionDate = document.getElementById('date');
             const patentSubmissionDocument = document.querySelector('input[type="file"]');
             const achiveSdgYes = document.getElementById('yes'); 
             const achiveSdgNo = document.getElementById('no');
@@ -390,8 +390,8 @@
         const applicationNum= document.getElementById('application-no').value;
         patentData.append('applicationNum', applicationNum);
 
-        const date = document.getElementById('date').value;
-        patentData.append('date', date);
+        const subMissionDate = document.getElementById('date').value;
+        patentData.append('subMissionDate', subMissionDate);
 
         const selectIsPresentor = document.querySelector('input[name="is-presenter"]:checked').value;
         patentData.append('isPresentor', selectIsPresentor);
@@ -414,7 +414,7 @@
                             <td class="title-of-invention">${data.patentData.titleOfInvention}</td>
                             <td class="patent-stage">${data.patentData.patentStage}</td>
                             <td class="application-no">${data.patentData.applicationNum}</td>
-                            <td class="date">${data.patentData.date}</td>
+                            <td class="date">${data.patentData.subMissionDate}</td>
                             <td class="is-presenter">${data.patentData.isPresentor}</td>
                             <td class="achive-sdg">${data.patentData.achiveSdg}</td>
                             <td class="patent-file">${data.filename}</td>
@@ -454,6 +454,7 @@
         submitBtn.classList.add('d-none');
         updatetBtn.classList.remove('d-none');
         rowToBeUpdated = event.target.closest('tr');
+        console.log('rowToBeUpdated ==>>',rowToBeUpdated);
         patentId = event.target.getAttribute('data-patent-id');
         console.log('Id For Updation', patentId);
         $('#patent-submission-modal').modal('show');
@@ -467,6 +468,10 @@
         const isPresenterYes = document.getElementById('is-award-yes'); 
         const isPresenterNo = document.getElementById('is-award-no');
 
+        const patentDate = rowToBeUpdated.querySelector('.date').innerText;
+        console.log('patentDate ==>>', patentDate)
+        const formattedDate = formatDateToYYYYMMDD(patentDate);
+        console.log('formattedDate ==>>', formattedDate)
         typeOfInvention.value = rowToBeUpdated.querySelector('.type-of-invention').innerText;
         titleOfInvention.value = rowToBeUpdated.querySelector('.title-of-invention').innerText;
         patentStage.value = rowToBeUpdated.querySelector('.patent-stage').innerText;
@@ -476,7 +481,7 @@
             achiveSdgNo.checked = true;
         }
         applicationNum.value = rowToBeUpdated.querySelector('.application-no').innerText;
-        date.value = rowToBeUpdated.querySelector('.date').innerText;
+        date.value = formattedDate;
         if (rowToBeUpdated.querySelector('.is-presenter').innerText === 'yes') {
             isPresenterYes.checked = true;
         } else {
@@ -545,7 +550,7 @@
                 viewTypeOfInvetion.innerText = data.patentData[0].type_of_invention;
                 viewApplicationNum.innerText = data.patentData[0].application_no;
                 viewAchiveSdg.innerText = data.patentData[0].achieve_sdg;
-                viewDate.innerText = data.patentData[0].date;
+                viewDate.innerText = data.patentData[0].date.split('T')[0];
                 viewPatentStage.innerText = data.patentData[0].patent_stage;
                 viewIsPresenter.innerText = data.patentData[0].is_presenter;
                 viewUploadedDoc.innerText = data.patentData[0].patent_file;
@@ -609,6 +614,7 @@
             console.error('ERROR:', error);
         })
         $('#patent-submission-modal').modal('hide');
+        alert('Data Updated Successfully');
     })
 
 </script>

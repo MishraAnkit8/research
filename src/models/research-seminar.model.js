@@ -52,7 +52,8 @@ module.exports.updateRsearchSeminar = async ({seminarId , updateResearchSeminar}
 
 module.exports.viewRsearchSeminarData = async ({seminarId}) => {
     const sql = {
-        text : `SELECT * FROM research_seminars WHERE id = $1 `,
+        text : `SELECT  year, school, campus, nmims_faculty, publisher_category, title_of_paper, journal_name, publisher, 
+        pages, issn_no, TO_CHAR(date_of_publishing, 'DD-MM-YYYY') as date_of_publishing, impact_factor, scs_cite_score, scs_indexed, wos_indexed, gs_indexed, abdc_indexed, ugc_indexed, web_link, uid FROM research_seminars WHERE id = $1 `,
         values : [seminarId]
     }
     console.log('sql ==>>>', sql)

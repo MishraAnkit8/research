@@ -63,7 +63,7 @@
                     </thead>
                 <% reseachConsultancyDataList.forEach(function(consultancy)  { %>
                     <tr scope="row" data-consultancy-id="<%- consultancy.id %>" data-grant-type="<%- consultancy.type_of_grant %>"
-                        data-grant-proposal="<%- consultancy.grant_proposal_category %>" data-submission-date="<%- consultancy.submission_grant_date %>"
+                        data-grant-proposal="<%- consultancy.grant_proposal_category %>" data-submission-date="<%- consultancy.submission_grant_date.toISOString().split('T')[0] %>"
                         data-faulty-type="<%- consultancy.faculty_type %>" data-supports-document="<%- consultancy.supporting_documents %>">
                         <td data-consultancy-id="<%- consultancy.id %>"><%- consultancy.id %></td>
                         <td class="title-of-project"><%- consultancy.title_of_project %> </td>
@@ -171,7 +171,7 @@
                         <div class="form-check-inline">
                             <label for="research" class="form-check-label">
                                 <input type="radio" class="form-check-input" id="research" name="type-of-grant"
-                                    value="Research Project"> Research Project
+                                    value="Research Project" checked> Research Project
                             </label>
                         </div>
                         <div class="form-check-inline">
@@ -489,11 +489,14 @@
     });
 
     researchProjectConsultancyList.addEventListener('click' , function(event) {
+        console.log('clikedddd')
             if(event.target.classList.contains('edit')){
+                console.log('clikedddd2')
                 submitBtn.classList.add('d-none');
                 updateBtn.classList.remove('d-none');
                 $('#consultancy-modal').modal('show');
                 consultantRowToBeUpdated = event.target.closest('tr');
+                console.log('consultantRowToBeUpdated ==>>', consultantRowToBeUpdated)
                 consultantId = event.target.getAttribute('data-consultancy-id');
                 console.log('consultantId ==>>', consultantId);
                 const isGrantProposalCategoryGoverement = document.getElementById('goverment');
@@ -508,7 +511,6 @@
                 const statusSubmitted = document.getElementById('submitted');
                 const statusPresentationHeld = document.getElementById('presentation-held');
                 const statusGranted = document.getElementById('granted');
-                const submissionGrantDate = document.getElementById('submission-grant-date');
                 const facultyTypeInternal = document.getElementById('internal');
                 const facultyTypeExternal = document.getElementById('external');
                 const supportingDocument = document.getElementById('supporting-documents');
@@ -541,10 +543,10 @@
                     }
             }
                 
-                document.getElementById('title-of-project').value = titleOfProject.textContent;
-                document.getElementById('thurst-area').value = thurstAreaOfResearch.textContent;
-                document.getElementById('funding-agency').value = fundingAgency.textContent;
-                document.getElementById('funding-amount').value = fundingAmount.textContent;
+                document.getElementById('title-of-project').value = titleOfProject.innerText.trim();
+                document.getElementById('thurst-area').value = thurstAreaOfResearch.innerText.trim();
+                document.getElementById('funding-agency').value = fundingAgency.innerText.trim();
+                document.getElementById('funding-amount').value = fundingAmount.innerText.trim();
                 const projectStatus = consultantRowToBeUpdated.querySelector('.research-project-status');
                 if(projectStatus){
                     if(projectStatus.innerText === 'Presentation held'){
@@ -563,7 +565,10 @@
                         statusSubmitted.checked = false;
                     }
                 }
-                submissionGrantDate.value = consultantRowToBeUpdated.getAttribute('data-submission-date');
+                const submissionGrantDate = consultantRowToBeUpdated.getAttribute('data-submission-date');
+                const formattedDate = formatDateToYYYYMMDD(submissionGrantDate);
+                console.log('formattedDate ==>>', formattedDate)
+                document.getElementById('submission-grant-date').value = formattedDate;
                 const facultyType = consultantRowToBeUpdated.getAttribute('data-faulty-type');
                 if(facultyType === 'External'){
                     facultyTypeExternal.checked = true;
@@ -573,9 +578,6 @@
                 }
                 const supportingDocuments = consultantRowToBeUpdated.getAttribute('data-supports-document');
                 console.log('supportingDocuments ==>>', supportingDocuments)
-                if(supportingDocuments){
-                    supportingDocument.textContent = supportingDocuments;
-                }
             }
 
             if(event.target.classList.contains('delete')){
@@ -639,7 +641,7 @@
                         viewFundingAgency.innerText = data.consultantData.name_of_funding_agency; 
                         viewFundingAmount.innerText = data.consultantData.funding_amount;
                         viewStatusOfResearchProject.innerText = data.consultantData.status_of_research_project;
-                        viewSubmissionGrantDate.innerText = data.consultantData.submission_grant_date;               
+                        viewSubmissionGrantDate.innerText = data.consultantData.submission_grant_date.split('T')[0];               
                         viewFacultyType.innerText = data.consultantData.faculty_type;
                         viewSupportingDocument.innerText = data.consultantData.supporting_documents; 
                     }

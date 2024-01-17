@@ -55,3 +55,14 @@ if (!leftSideBar.contains(event.target) && !hamburger.contains(event.target)) {
 function hideLeftSidebar() {
     document.querySelector('.left-sidebar').classList.add('d-none');
 }
+
+
+function formatDateToYYYYMMDD(inputDateString) {
+    const dateObject = new Date(inputDateString);
+  
+    const year = dateObject.getFullYear();
+    const month = (dateObject.getMonth() + 1).toString().padStart(2, '0');
+    const day = dateObject.getDate().toString().padStart(2, '0');
+  
+    return `${year}-${month}-${day}`;
+  }

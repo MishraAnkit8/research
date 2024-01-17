@@ -133,7 +133,7 @@ module.exports.validateJournalPaper = [
     .withMessage(" date of publishing is required")
     .bail()
     .isDate()
-    .withMessage("date of publishing should be integer"), 
+    .withMessage("date of publishing sholud not be empty"), 
 
     check("journalDetails.impactFactor")
     .notEmpty()

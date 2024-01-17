@@ -1,7 +1,8 @@
 const journalPaperModel = require('../models/journal-paper.models');
 // service for fetch
 module.exports.renderJournalPaper = async () => {
-    let result = await journalPaperModel.fetchJournalPaper(); 
+    let result = await journalPaperModel.fetchJournalPaper();
+    console.log('result ==>>', result) 
     return result.rows  
 };
 
@@ -10,6 +11,7 @@ module.exports.insertJournalPapper = async (body) => {
     const journalDetails =  body;
     console.log('journalDetails inservice ==>>', journalDetails)
     const newJournalPaper = await journalPaperModel.createJournalPaper(journalDetails);
+    console.log('newJournalPaper ==>>', newJournalPaper)
     return newJournalPaper ;
 };
 
@@ -53,6 +55,7 @@ module.exports.updateJournalPaper = async ({journalPaperId, updateJournalDetails
 module.exports.viewJournalPaper = async ({journalPaperId}) => {
     const viewJournalPaperData = await journalPaperModel.viewJournalPaperData({journalPaperId});
     if(viewJournalPaperData.rowCount === 1){
+        console.log('data in service  for applying view ===>>',viewJournalPaperData.rows[0] )
         return  viewJournalPaperData.rows;
     } 
     else{
