@@ -16,8 +16,6 @@
                     <h5>BOOK PUBLICATION LIST</h5>
                 </div>
                 <div class="me-2">
-                    <a class="btn btn-danger" href="/admin/programs/download"><i class="fas fa-download"></i>
-                        Download </a>
                     <button type="button" id="book-publication-form" class="btn btn-primary add-modal" data-toggle="modal" data-target="#book-publication-modal">
                         <i class="fas fa-plus plus"></i></button>
                     </button>
@@ -73,12 +71,12 @@
                             <td class="isbn-no"><%- publication.isbn %></td>
                             <td class="publisher-name"><%- publication.publisher_name %></td>
                             <td>
-                                <a class="view" data-publication-id="<%- publication.id %>"><i class="fa-solid fa-eye view"
-                                    data-publication-id="<%- publication.id %>"></i></a>
-                                 <a class="edit"data-publication-id="<%- publication.id %>"><i class="fa fa-edit edit"
-                                    data-publication-id="<%- publication.id %>"></i></a>
-                                 <a class="delete"data-publication-id="<%- publication.id %>"><i class="fa-solid fa-trash delete"
-                                    data-publication-id="<%- publication.id %>"></i></a>
+                                <label  class="view" data-publication-id="<%- publication.id %>"><i class="fa-solid fa-eye view text-danger"
+                                    data-publication-id="<%- publication.id %>"></i></label>
+                                 <label  class="edit"data-publication-id="<%- publication.id %>"><i class="fa fa-edit edit text-danger"
+                                    data-publication-id="<%- publication.id %>"></i></label>
+                                 <label  class="delete"data-publication-id="<%- publication.id %>"><i class="fa-solid fa-trash delete text-danger"
+                                    data-publication-id="<%- publication.id %>"></i></label>
                             </td>
                         </tr>
                    <% }); %>
@@ -520,16 +518,16 @@
                             <td class="isbn-no">${data.bookPublicationData.isbnNo}</td>
                             <td class="publisher-name">${data.bookPublicationData.publisherName}</td>
                             <td>
-                                <a class="view" data-publication-id="${data.bookPublicationId}"><i class="fa-solid fa-eye view"
-                                    data-publication-id="${data.bookPublicationId}"></i></a>
-                                 <a class="edit"data-publication-id="${data.bookPublicationId}"><i class="fa fa-edit edit"
-                                    data-publication-id="${data.bookPublicationId}"></i></a>
-                                 <a class="delete"data-publication-id="${data.bookPublicationId}"><i class="fa-solid fa-trash delete"
-                                    data-publication-id="${data.bookPublicationId}"></i></a>
+                                <label class="view" data-publication-id="${data.bookPublicationId}"><i class="fa-solid fa-eye view text-danger"
+                                    data-publication-id="${data.bookPublicationId}"></i></label>
+                                <label class="edit"data-publication-id="${data.bookPublicationId}"><i class="fa fa-edit edit text-danger"
+                                    data-publication-id="${data.bookPublicationId}"></i></label>
+                                <label class="delete"data-publication-id="${data.bookPublicationId}"><i class="fa-solid fa-trash delete text-danger"
+                                    data-publication-id="${data.bookPublicationId}"></i></label>
                             </td> `;
             bookPublicationList.append(newBookPublication);
             $('#book-publication-modal').modal('hide');
-            alert('data inserted prbtn-primaryfully');
+            alert('data inserted successfully');
            }
         })
     }
@@ -688,7 +686,7 @@
         }
     })
 
-    updateBtn.addEventListener('click' , () => {
+    const upadatBookPublication = async(url) =>{
         const updatedBookPublicationData = new FormData();
         const updatedaAuthorLastName = document.getElementById('author-last-name').value;
         const updatedBookTitle = document.getElementById('book-title').value;
@@ -725,7 +723,7 @@
         if(updatedDocuments && updatedDocuments.files && updatedDocuments.files.length > 0){
             updatedBookPublicationData.append('researchSupportingDocument' , updatedDocuments.files[0]);
          }
-        fetch('<%- BASE_URL %>research/book-publication-main/book-publication/update' , {
+        fetch(url , {
             method : 'POST',
             body : updatedBookPublicationData
         })
@@ -759,6 +757,16 @@
             })
             $('#book-publication-modal').modal('hide');
             alert('Row Updated Successfully');
+    }
+
+    updateBtn.addEventListener('click' , async() => {
+        const isValid = validateRequiredFormFields(submitBtn);
+            if (isValid) {
+                await upadatBookPublication('<%- BASE_URL %>research/book-publication-main/book-publication/update')
+            }
+            else {
+                alert('Validation Failed');
+            }
     })
 
 </script>

@@ -69,12 +69,16 @@
                 <td class="proceedings-detail"><%- conference.proceedings_detail %></td>
                 <td class="issn-isbn-no"><%- conference.issn_isbn_no %></td>
                 <td>
-                    <a class="view" data-conference-id="<%- conference.id %>"><i class="fa-solid fa-eye view"
-                       data-conference-id="<%- conference.id %>"></i></a>
-                    <a class="edit"data-conference-id="<%- conference.id %>"><i class="fa fa-edit edit"
-                       data-conference-id="<%- conference.id %>"></i></a>
-                    <a class="delete"data-conference-id="<%- conference.id %>"><i class="fa-solid fa-trash delete"
-                       data-conference-id="<%- conference.id %>"></i></a>
+                    <label class="view" data-conference-id="<%- conference.id %>">
+                        <i class="fa-solid fa-eye view text-danger" data-conference-id="<%- conference.id %>"></i>
+                    </label>
+                    <label class="edit" data-conference-id="<%- conference.id %>">
+                        <i class="fa fa-edit edit text-danger" data-conference-id="<%- conference.id %>"></i>
+                    </label>
+                    <label class="delete" data-conference-id="<%- conference.id %>">
+                        <i class="fa-solid fa-trash delete text-danger" data-conference-id="<%- conference.id %>"></i>
+                    </label>
+                    
                 </td>
             </tr>
 
@@ -508,6 +512,7 @@
             if(data.status == 'done'){
                 console.log('data ==>>', data);
                 const newConferenceFormData = document.createElement('tr');
+                newConferenceFormData.classList.add('your-custom-class')
                 newConferenceFormData.setAttribute('data-publisher-category' , data.conferenceData.publisherCategory);
                 newConferenceFormData.setAttribute('data-is-presenter' , data.conferenceData.isPresenter);
                 newConferenceFormData.setAttribute('data-author-type' , data.conferenceData.authorType);
@@ -524,12 +529,12 @@
                     <td class="proceedings-detail">${data.conferenceData.procedingDetail}</td>
                     <td class="issn-isbn-no">${data.conferenceData.issnIsbnNo}</td>
                     <td>
-                        <a class="view" data-conference-id="${data.conferenceId}"><i class="fa-solid fa-eye view"
-                        data-conference-id="${data.conferenceId}"></i></a>
-                        <a class="edit"data-conference-id="${data.conferenceId}"><i class="fa fa-edit edit"
-                        data-conference-id="${data.conferenceId}"></i></a>
-                        <a class="delete"data-conference-id="${data.conferenceId}"><i class="fa-solid fa-trash delete"
-                        data-conference-id="${data.conferenceId}"></i></a>
+                        <label class="view" data-conference-id="${data.conferenceId}"><i class="fa-solid fa-eye view text-danger"
+                        data-conference-id="${data.conferenceId}"></i></label>
+                        <label class="edit"data-conference-id="${data.conferenceId}"><i class="fa fa-edit edit text-danger"
+                        data-conference-id="${data.conferenceId}"></i></label>
+                        <label class="delete"data-conference-id="${data.conferenceId}"><i class="fa-solid fa-trash delete text-danger"
+                        data-conference-id="${data.conferenceId}"></i></label>
                     </td>
                 `;
                 conferencePublicationList.append(newConferenceFormData)
@@ -716,7 +721,7 @@
         }
     });
 
-    updateBtn.addEventListener('click' , () => {
+    const updateConferencePublication = async(url) => {
         console.log('clickedddd')
         const updatedConferenceData = new FormData();
         const updatedTitleOfPaper = document.getElementById('title-of-paper').value;
@@ -753,7 +758,7 @@
         updatedConferenceData.append('authorType' , updatedAuthortype);
         updatedConferenceData.append('awardForPresentation' , updatedAward);
 
-        fetch('<%- BASE_URL %>research/conference-publication/update' , {
+        fetch(url , {
             method : 'POST',
             body : updatedConferenceData
         })
@@ -780,6 +785,17 @@
         })
         $('#conference-publication-modal').modal('hide');
         alert('data updated succesfully');
+    };
+
+    updateBtn.addEventListener('click' , async() => {
+        const isValid = validateRequiredFormFields(submitBtn);
+            if (isValid) {
+                await updateConferencePublication('<%- BASE_URL %>research/conference-publication/update');
+            }
+            else {
+                alert('Validation Failed');
+            }
+
     })
 
 </script>

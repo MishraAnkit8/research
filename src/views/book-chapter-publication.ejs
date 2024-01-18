@@ -80,13 +80,12 @@
                             <td class="isbn-no"><%- bookChapter.isbn %></td>
                             <td class="publisher-name"><%- bookChapter.publisher_name %></td>
                             <td>
-                                <a class="view" data-bookChapter-id="<%- bookChapter.id %>"><i class="fa-solid fa-eye view"
-                                        data-bookChapter-id="<%- bookChapter.id %>"></i></a>
-                                <a class="edit" data-bookChapter-id="<%- bookChapter.id %>"><i class="fa fa-edit edit"
-                                        data-bookChapter-id="<%- bookChapter.id %>"></i></a>
-                                <a class="delete" data-bookChapter-id="<%- bookChapter.id %>"><i
-                                        class="fa-solid fa-trash delete"
-                                        data-bookChapter-id="<%- bookChapter.id %>"></i></a>
+                                <label class="view" data-bookChapter-id="<%- bookChapter.id %>"><i class="fa-solid fa-eye view text-danger"
+                                    data-bookChapter-id="<%- bookChapter.id %>"></i></label>
+                                <label class="edit" data-bookChapter-id="<%- bookChapter.id %>"><i class="fa fa-edit edit text-danger"
+                                    data-bookChapter-id="<%- bookChapter.id %>"></i></label>
+                                <label class="delete" data-bookChapter-id="<%- bookChapter.id %>"><i class="fa-solid fa-trash delete text-danger"
+                                    data-bookChapter-id="<%- bookChapter.id %>"></i></label>
                             </td>
                         </tr>
                         <% }); %>
@@ -546,12 +545,12 @@
                             <td class="isbn-no">${data.bookChapter.isbnNo}</td>
                             <td class="publisher-name">${data.bookChapter.publisherName}</td>
                             <td>
-                                <a class="view" data-bookChapter-id="${data.bookChapterId}"><i class="fa-solid fa-eye view"
-                                    data-bookChapter-id="${data.bookChapterId}"></i></a>
-                                 <a class="edit"data-bookChapter-id="${data.bookChapterId}"><i class="fa fa-edit edit"
-                                    data-bookChapter-id="${data.bookChapterId}"></i></a>
-                                 <a class="delete"data-bookChapter-id="${data.bookChapterId}"><i class="fa-solid fa-trash delete"
-                                    data-bookChapter-id="${data.bookChapterId}"></i></a>
+                                <label class="view" data-bookChapter-id="${data.bookChapterId}"><i class="fa-solid fa-eye view text-danger"
+                                    data-bookChapter-id="${data.bookChapterId}"></i></label>
+                                <label class="edit"data-bookChapter-id="${data.bookChapterId}"><i class="fa fa-edit edit text-danger"
+                                    data-bookChapter-id="${data.bookChapterId}"></i></label>
+                                <label class="delete"data-bookChapter-id="${data.bookChapterId}"><i class="fa-solid fa-trash delete text-danger"
+                                    data-bookChapter-id="${data.bookChapterId}"></i></label>
                             </td> `;
             bookChapterList.append(newBookChapter);
             $('#book-chapter-modal').modal('hide');
@@ -722,7 +721,7 @@
         }
     })
 
-    updateBtn.addEventListener('click' , () => {
+    const updateBookChapter = async (url) => {
         const updatedBookChapter = new FormData();
         const updatedAuthorName = document.getElementById('author-name').value;
         const updatedBookTitle = document.getElementById('book-title').value;
@@ -763,7 +762,7 @@
         if(updatedDocuments && updatedDocuments.files && updatedDocuments.files.length > 0){
             updatedBookChapter.append('researchSupportingDocument' , updatedDocuments.files[0]);
          }
-        fetch('<%- BASE_URL %>research/book-publication-main/book-chapter-publication/update' , {
+        fetch(url, {
             method : 'POST',
             body : updatedBookChapter
         })
@@ -798,8 +797,19 @@
                 console.log('Eroor ::', error);
             })
             $('#book-chapter-modal').modal('hide');
-            alert('data updated successfully');
+            alert('Data Updated Successfully');
+    }
+
+    updateBtn.addEventListener('click' , async() => {
+        const isValid = validateRequiredFormFields(updateBtn);
+            if (isValid) {
+                await updateBookChapter('<%- BASE_URL %>research/book-publication-main/book-chapter-publication/update');
+            }
+            else {
+                alert('Validation Failed');
+            }
     })
+
 </script>
 <!-- footer section -->
 <%- include('./partials/footer') %>

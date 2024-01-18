@@ -603,6 +603,7 @@
     const submitBtn= document.getElementById('submit-btn');
     const updateBtn = document.getElementById('update-btn');
     let advertisingId , advertisingRowToBeUpdated;
+
     brandingAdvertisingAddModal.addEventListener('click' , (event) => {
         if(event.target.tagName === 'BUTTON' && event.target.classList.contains('add-modal') || event.target.classList.contains('plus')){
             // for button visualization
@@ -753,7 +754,7 @@
                 newBrandingAdvertisingRow.setAttribute('data-newspaper-article-link' , data.advertisingData.newsPaperArticleLink);
                 console.log('data.advertisingData ==>', data.advertisingData);
                 newBrandingAdvertisingRow.innerHTML = `
-                                    <td >${inde}</td>
+                                    <td >${index+1}</td>
                                     <td class="faculty-recognition">${data.advertisingData.facultyRecognition}</td>
                                     <td class="faculty-award">${ data.advertisingData.facultyAward}</td>
                                     <td class="staff-award">${ data.advertisingData.staffAward}</td>
@@ -778,6 +779,7 @@
             alert('data insetrtde successfull');
         })
     }
+    
     submitBtn.addEventListener('click' , async() => {
         const isValid = validateRequiredFormFields(submitBtn);
             if (isValid) {
@@ -790,192 +792,192 @@
             }
     }) 
 
-    brandingAdvertisingList.addEventListener('click' , (event) => {
-        
-          //delete advertising
-          if(event.target.classList.contains('delete')){
-            console.log('clickeddd')
-            const advertisingRowToBeDeleted = event.target.closest('tr');
-            advertisingId = event.target.getAttribute('data-advertising-id');
-            console.log('advertisingId ==>>', advertisingId);
-            let confirmDelete = confirm("Do you want to delete the Branding Advertising?");
-            if(!confirmDelete) {
-                return;
+    brandingAdvertisingList.addEventListener('click', (event) => {
+
+            //delete advertising
+            if (event.target.classList.contains('delete')) {
+                console.log('clickeddd')
+                const advertisingRowToBeDeleted = event.target.closest('tr');
+                advertisingId = event.target.getAttribute('data-advertising-id');
+                console.log('advertisingId ==>>', advertisingId);
+                let confirmDelete = confirm("Do you want to delete the Branding Advertising?");
+                if (!confirmDelete) {
+                    return;
+                }
+
+                fetch('/branding-advertising/delete', {
+                    method: 'POST',
+                    headers: {
+                        'content-type': 'application/json'
+                    },
+                    body: JSON.stringify({ advertisingId })
+                })
+                    .then((result) => {
+                        return result.json()
+                    })
+                    .then((data) => {
+                        if (data.status === 'done') {
+                            console.log('data ==>>', data)
+                            advertisingRowToBeDeleted.remove();
+                            location.reload();
+                        }
+                    })
+
             }
+            // view advertising
+            if (event.target.classList.contains('view')) {
+                console.log('clcikedd');
+                const viewFacultyRecognitionDocuments = document.getElementById('view-faculty-recognition-file');
+                const viewFacultyAwardDocuments = document.getElementById('view-faculty-award-file');
+                const viewStaffAwardDocuments = document.getElementById('view-staff-award-file');
+                const viewalumniAwardDocuments = document.getElementById('view-alumni-award-file');
+                const viewStudentAwardDocuments = document.getElementById('view-student-award-file');
+                const viewInternationalLinkagedOcuments = document.getElementById('view-international-linkage-file');
+                const viewConferenceParticipationDocuments = document.getElementById('view-conference-participation-file');
+                const viewOrganisingConferencedOcuments = document.getElementById('view-organising-conference-file');
+                const viewStudentEventParticipationDocuments = document.getElementById('view-student-event-participation-file');
+                const viewNewspaperArticledOcuments = document.getElementById('view-newspaper-article-file');
+                const viewFacultyRecognition = document.getElementById('view-faculty-recognition');
+                const viewFacultyRecognitionLink = document.getElementById('view-faculty-recognition-link');
+                const viewFacultyAward = document.getElementById('view-faculty-award');
+                const viewFacultyAwardLink = document.getElementById('view-faculty-award-link');
+                const viewStaffAward = document.getElementById('view-staff-award');
+                const viewStaffAwardLink = document.getElementById('view-staff-award-link');
+                const viewAlumniAward = document.getElementById('view-alumni-award');
+                const viewAlumniAwardLink = document.getElementById('view-alumni-award-link');
+                const viewStudentAward = document.getElementById('view-student-award');
+                const viewStudentAwardLink = document.getElementById('view-student-award-link');
+                const viewInternationalLinkage = document.getElementById('view-international-linkage');
+                const viewInternationalLinkageLink = document.getElementById('view-international-linkage-link');
+                const viewConferenceParticipation = document.getElementById('view-conference-participation');
+                const viewConferenceParticipationLink = document.getElementById('view-conference-participation-link');
+                const viewOrganisingConference = document.getElementById('view-organising-conference');
+                const viewOrganisingConferenceLink = document.getElementById('view-organising-conference-link');
+                const viewStudentEventParticipation = document.getElementById('view-student-event-participation');
+                const viewStudentEventParticipationLink = document.getElementById('view-student-event-participation-link');
+                const viewNewsPaperArticle = document.getElementById('view-newspaper-article');
+                const viewNewsPaperArticleLink = document.getElementById('view-newspaper-article-link');
 
-            fetch('/branding-advertising/delete' , {
-                method : 'POST',
-                headers : {
-                    'content-type' : 'application/json'
-                },
-                body : JSON.stringify({advertisingId})
-            })
-            .then((result) => {
-                return result.json()
-            })
-            .then((data) => {
-                if(data.status === 'done'){
-                    console.log('data ==>>', data)
-                    advertisingRowToBeDeleted.remove();
-                    location.reload();
-                }
-            })
-            
-          }  
-        // view advertising
-        if(event.target.classList.contains('view')){
-            console.log('clcikedd');
-            const viewFacultyRecognitionDocuments = document.getElementById('view-faculty-recognition-file');
-            const viewFacultyAwardDocuments = document.getElementById('view-faculty-award-file');
-            const viewStaffAwardDocuments = document.getElementById('view-staff-award-file');
-            const viewalumniAwardDocuments = document.getElementById('view-alumni-award-file');
-            const viewStudentAwardDocuments = document.getElementById('view-student-award-file');
-            const viewInternationalLinkagedOcuments = document.getElementById('view-international-linkage-file');
-            const viewConferenceParticipationDocuments = document.getElementById('view-conference-participation-file');
-            const viewOrganisingConferencedOcuments = document.getElementById('view-organising-conference-file');
-            const viewStudentEventParticipationDocuments = document.getElementById('view-student-event-participation-file');
-            const viewNewspaperArticledOcuments = document.getElementById('view-newspaper-article-file');
-            const viewFacultyRecognition = document.getElementById('view-faculty-recognition');
-            const viewFacultyRecognitionLink = document.getElementById('view-faculty-recognition-link');
-            const viewFacultyAward = document.getElementById('view-faculty-award');
-            const viewFacultyAwardLink = document.getElementById('view-faculty-award-link');
-            const viewStaffAward = document.getElementById('view-staff-award');
-            const viewStaffAwardLink = document.getElementById('view-staff-award-link');
-            const viewAlumniAward = document.getElementById('view-alumni-award');
-            const viewAlumniAwardLink = document.getElementById('view-alumni-award-link');
-            const viewStudentAward = document.getElementById('view-student-award');
-            const viewStudentAwardLink = document.getElementById('view-student-award-link');
-            const viewInternationalLinkage = document.getElementById('view-international-linkage');
-            const viewInternationalLinkageLink = document.getElementById('view-international-linkage-link');
-            const viewConferenceParticipation = document.getElementById('view-conference-participation');
-            const viewConferenceParticipationLink = document.getElementById('view-conference-participation-link');
-            const viewOrganisingConference = document.getElementById('view-organising-conference');
-            const viewOrganisingConferenceLink = document.getElementById('view-organising-conference-link');
-            const viewStudentEventParticipation = document.getElementById('view-student-event-participation');
-            const viewStudentEventParticipationLink = document.getElementById('view-student-event-participation-link');
-            const viewNewsPaperArticle = document.getElementById('view-newspaper-article');
-            const viewNewsPaperArticleLink = document.getElementById('view-newspaper-article-link');
+                const advertisingRowToBeViewed = event.target.closest('tr');
+                advertisingId = event.target.getAttribute('data-advertising-id');
 
-            const advertisingRowToBeViewed = event.target.closest('tr');
-            advertisingId = event.target.getAttribute('data-advertising-id');
+                fetch('<%- BASE_URL %>branding-advertising/view', {
+                    method: 'POST',
+                    headers: {
+                        'content-type': 'application/json'
+                    },
+                    body: JSON.stringify({ advertisingId })
+                })
+                    .then((result) => {
+                        return result.json()
+                    })
+                    .then((data) => {
+                        if (data.status === 'done') {
+                            console.log('data ==>>', data);
+                            viewFacultyRecognitionDocuments.innerText = data.brandingAndAdvertisingview[0].faculty_recognition_documents;
+                            viewFacultyAwardDocuments.innerText = data.brandingAndAdvertisingview[0].faculty_award_documents;
+                            viewStaffAwardDocuments.innerText = data.brandingAndAdvertisingview[0].staff_award_documents;
+                            viewalumniAwardDocuments.innerText = data.brandingAndAdvertisingview[0].alumni_award_documents;
+                            viewStudentAwardDocuments.innerText = data.brandingAndAdvertisingview[0].student_award_documents;
+                            viewInternationalLinkagedOcuments.innerText = data.brandingAndAdvertisingview[0].international_linkage_documents;
+                            viewConferenceParticipationDocuments.innerText = data.brandingAndAdvertisingview[0].conference_participation_documents;
+                            viewOrganisingConferencedOcuments.innerText = data.brandingAndAdvertisingview[0].organising_conference_documents;
+                            viewStudentEventParticipationDocuments.innerText = data.brandingAndAdvertisingview[0].student_event_participation_documents;
+                            viewNewspaperArticledOcuments.innerText = data.brandingAndAdvertisingview[0].newspaper_article_documents;
+                            viewFacultyRecognition.innerText = data.brandingAndAdvertisingview[0].faculty_recognition;
+                            viewFacultyRecognitionLink.innerText = data.brandingAndAdvertisingview[0].faculty_recognition_link;
+                            viewFacultyAward.innerText = data.brandingAndAdvertisingview[0].faculty_award;
+                            viewFacultyAwardLink.innerText = data.brandingAndAdvertisingview[0].faculty_award_link;
+                            viewStaffAward.innerText = data.brandingAndAdvertisingview[0].staff_award;
+                            viewStaffAwardLink.innerText = data.brandingAndAdvertisingview[0].staff_award_link;
+                            viewAlumniAward.innerText = data.brandingAndAdvertisingview[0].alumni_award;
+                            viewAlumniAwardLink.innerText = data.brandingAndAdvertisingview[0].alumni_award_link;
+                            viewStudentAward.innerText = data.brandingAndAdvertisingview[0].student_award;
+                            viewStudentAwardLink.innerText = data.brandingAndAdvertisingview[0].student_award_link;
+                            viewInternationalLinkage.innerText = data.brandingAndAdvertisingview[0].international_linkage;
+                            viewInternationalLinkageLink.innerText = data.brandingAndAdvertisingview[0].international_linkage_link;
+                            viewConferenceParticipation.innerText = data.brandingAndAdvertisingview[0].conference_participation;
+                            viewConferenceParticipationLink.innerText = data.brandingAndAdvertisingview[0].conference_participation_link;
+                            viewOrganisingConference.innerText = data.brandingAndAdvertisingview[0].organising_conference;
+                            viewOrganisingConferenceLink.innerText = data.brandingAndAdvertisingview[0].organising_conference_link;
+                            viewStudentEventParticipation.innerText = data.brandingAndAdvertisingview[0].student_event_participation;
+                            viewStudentEventParticipationLink.innerText = data.brandingAndAdvertisingview[0].student_event_participation_link;
+                            viewNewsPaperArticle.innerText = data.brandingAndAdvertisingview[0].newspaper_article;
+                            viewNewsPaperArticleLink.innerText = data.brandingAndAdvertisingview[0].newspaper_article_link;
+                        }
+                    })
+                $('#branding-advertising-view-modal').modal('show');
 
-            fetch('<%- BASE_URL %>branding-advertising/view' , {
-                method : 'POST',
-                headers : {
-                    'content-type' : 'application/json'
-                },
-                body : JSON.stringify({advertisingId})
-            })
-            .then((result) => {
-                return result.json()
-            })
-            .then((data) => {
-                if(data.status === 'done'){
-                    console.log('data ==>>', data);
-                    viewFacultyRecognitionDocuments.innerText = data.brandingAndAdvertisingview[0].faculty_recognition_documents;
-                    viewFacultyAwardDocuments.innerText = data.brandingAndAdvertisingview[0].faculty_award_documents;
-                    viewStaffAwardDocuments.innerText = data.brandingAndAdvertisingview[0].staff_award_documents;
-                    viewalumniAwardDocuments.innerText = data.brandingAndAdvertisingview[0].alumni_award_documents;
-                    viewStudentAwardDocuments.innerText = data.brandingAndAdvertisingview[0].student_award_documents;
-                    viewInternationalLinkagedOcuments.innerText = data.brandingAndAdvertisingview[0].international_linkage_documents;
-                    viewConferenceParticipationDocuments.innerText = data.brandingAndAdvertisingview[0].conference_participation_documents;
-                    viewOrganisingConferencedOcuments.innerText = data.brandingAndAdvertisingview[0].organising_conference_documents;
-                    viewStudentEventParticipationDocuments.innerText = data.brandingAndAdvertisingview[0].student_event_participation_documents;
-                    viewNewspaperArticledOcuments.innerText = data.brandingAndAdvertisingview[0].newspaper_article_documents;
-                    viewFacultyRecognition.innerText = data.brandingAndAdvertisingview[0].faculty_recognition;
-                    viewFacultyRecognitionLink.innerText = data.brandingAndAdvertisingview[0].faculty_recognition_link;
-                    viewFacultyAward.innerText = data.brandingAndAdvertisingview[0].faculty_award;
-                    viewFacultyAwardLink.innerText = data.brandingAndAdvertisingview[0].faculty_award_link;
-                    viewStaffAward.innerText = data.brandingAndAdvertisingview[0].staff_award;
-                    viewStaffAwardLink.innerText = data.brandingAndAdvertisingview[0].staff_award_link;
-                    viewAlumniAward.innerText = data.brandingAndAdvertisingview[0].alumni_award;
-                    viewAlumniAwardLink.innerText = data.brandingAndAdvertisingview[0].alumni_award_link;
-                    viewStudentAward.innerText = data.brandingAndAdvertisingview[0].student_award;
-                    viewStudentAwardLink.innerText = data.brandingAndAdvertisingview[0].student_award_link;
-                    viewInternationalLinkage.innerText = data.brandingAndAdvertisingview[0].international_linkage;
-                    viewInternationalLinkageLink.innerText = data.brandingAndAdvertisingview[0].international_linkage_link;
-                    viewConferenceParticipation.innerText = data.brandingAndAdvertisingview[0].conference_participation;
-                    viewConferenceParticipationLink.innerText = data.brandingAndAdvertisingview[0].conference_participation_link;
-                    viewOrganisingConference.innerText = data.brandingAndAdvertisingview[0].organising_conference;
-                    viewOrganisingConferenceLink.innerText = data.brandingAndAdvertisingview[0].organising_conference_link;
-                    viewStudentEventParticipation.innerText = data.brandingAndAdvertisingview[0].student_event_participation;
-                    viewStudentEventParticipationLink.innerText = data.brandingAndAdvertisingview[0].student_event_participation_link;
-                    viewNewsPaperArticle.innerText = data.brandingAndAdvertisingview[0].newspaper_article;
-                    viewNewsPaperArticleLink.innerText = data.brandingAndAdvertisingview[0].newspaper_article_link;
-                }
-            })
-            $('#branding-advertising-view-modal').modal('show');
+            }
+            // update advertising
+            if (event.target.classList.contains('edit')) {
+                console.log('clickeddddd');
+                removeErrorMsg();
+                submitBtn.classList.add('d-none');
+                updateBtn.classList.remove('d-none');
 
-        }
-        // update advertising
-        if(event.target.classList.contains('edit')){
-            console.log('clickeddddd');
-            removeErrorMsg();
-            submitBtn.classList.add('d-none');
-            updateBtn.classList.remove('d-none');
+                advertisingRowToBeUpdated = event.target.closest('tr');
+                advertisingId = event.target.getAttribute('data-advertising-id');
+                console.log('advertisingId ===>>', advertisingId);
+                const facultyRecognition = document.getElementById('faculty-recognition');
+                const facultyRecognitionLink = document.getElementById('faculty-recognition-link');
+                const facultyAward = document.getElementById('faculty-award');
+                const facultyAwardLink = document.getElementById('faculty-award-link');
+                const staffAward = document.getElementById('staff-award');
+                const staffAwardLink = document.getElementById('staff-award-link');
+                const alumniAward = document.getElementById('alumni-award');
+                const alumniAwardLink = document.getElementById('alumni-award-link');
+                const studentAward = document.getElementById('student-award')
+                const studentAwardLink = document.getElementById('student-award-link');
+                const internationalLinkage = document.getElementById('international-linkage');
+                const internationalLinkageLink = document.getElementById('international-linkage-link');
+                const conferenceParticipation = document.getElementById('conference-participation');
+                const conferenceParticipationLink = document.getElementById('conference-participation-link');
+                const organisingConference = document.getElementById('organising-conference');
+                const organisingConferenceLink = document.getElementById('organising-conference-link');
+                const studentEventParticipation = document.getElementById('student-event-participation');
+                const studentEventParticipationLink = document.getElementById('student-event-participation-link');
+                const newsPaperArticle = document.getElementById('newspaper-article');
+                const newsPaperArticleLink = document.getElementById('newspaper-article-link');
 
-            advertisingRowToBeUpdated = event.target.closest('tr');
-            advertisingId = event.target.getAttribute('data-advertising-id');
-            console.log('advertisingId ===>>', advertisingId);
-            const facultyRecognition = document.getElementById('faculty-recognition');
-            const facultyRecognitionLink = document.getElementById('faculty-recognition-link');
-            const facultyAward = document.getElementById('faculty-award');
-            const facultyAwardLink = document.getElementById('faculty-award-link');
-            const staffAward = document.getElementById('staff-award');
-            const staffAwardLink = document.getElementById('staff-award-link');
-            const alumniAward = document.getElementById('alumni-award');
-            const alumniAwardLink = document.getElementById('alumni-award-link');
-            const studentAward = document.getElementById('student-award')
-            const studentAwardLink = document.getElementById('student-award-link');
-            const internationalLinkage = document.getElementById('international-linkage');
-            const internationalLinkageLink = document.getElementById('international-linkage-link');
-            const conferenceParticipation = document.getElementById('conference-participation');
-            const conferenceParticipationLink = document.getElementById('conference-participation-link');
-            const organisingConference = document.getElementById('organising-conference');
-            const organisingConferenceLink = document.getElementById('organising-conference-link');
-            const studentEventParticipation = document.getElementById('student-event-participation');
-            const studentEventParticipationLink = document.getElementById('student-event-participation-link');
-            const newsPaperArticle = document.getElementById('newspaper-article');
-            const newsPaperArticleLink = document.getElementById('newspaper-article-link');
+                //assigning with  value
 
-            //assigning with  value
-            
-            facultyRecognition.value = advertisingRowToBeUpdated.querySelector('.faculty-recognition').innerText;
-            facultyRecognitionLink.value = advertisingRowToBeUpdated.getAttribute('data-faculty-recognition-link');
-            facultyAward.value = advertisingRowToBeUpdated.querySelector('.faculty-award').innerText;
-            facultyAwardLink.value = advertisingRowToBeUpdated.getAttribute('data-faculty-award-link');
-            staffAward.value = advertisingRowToBeUpdated.querySelector('.staff-award').innerText;
-            staffAwardLink.value = advertisingRowToBeUpdated.getAttribute('data-staff-award-link');
-            alumniAward.value = advertisingRowToBeUpdated.querySelector('.alumni-award').innerText;
-            alumniAwardLink.value = advertisingRowToBeUpdated.getAttribute('data-alumni-award-link');
-            studentAward.value = advertisingRowToBeUpdated.querySelector('.student-award').innerText;
-            studentAwardLink.value = advertisingRowToBeUpdated.getAttribute('data-student-award-link');
-            internationalLinkage.value = advertisingRowToBeUpdated.querySelector('.international-linkage').innerText;
-            internationalLinkageLink.value = advertisingRowToBeUpdated.getAttribute('data-international-linkage-link');
-            conferenceParticipation.value = advertisingRowToBeUpdated.querySelector('.conference-participation').innerText;
-            conferenceParticipationLink.value = advertisingRowToBeUpdated.getAttribute('data-conference-participation-link');
-            organisingConference.value = advertisingRowToBeUpdated.querySelector('.organising-conference').innerText;
-            organisingConferenceLink.value = advertisingRowToBeUpdated.getAttribute('data-organising-conference-link');
-            studentEventParticipation.value = advertisingRowToBeUpdated.querySelector('.student-event-participation').innerText;
-            studentEventParticipationLink.value = advertisingRowToBeUpdated.getAttribute('data-student-event-participation-link');
-            newsPaperArticle.value = advertisingRowToBeUpdated.querySelector('.newspaper-article').innerText;
-            newsPaperArticleLink.value = advertisingRowToBeUpdated.getAttribute('data-newspaper-article-link');
-            const facultyRecognitionDocuments = advertisingRowToBeUpdated.getAttribute('data-faculty-recognition-documents');
-            console.log('facultyRecognitionDocument ==>>', facultyRecognitionDocuments)
-            const facultyAwardDocuments = advertisingRowToBeUpdated.getAttribute('data-faculty-award-documents');
-            const staffAwardDocuments = advertisingRowToBeUpdated.getAttribute('data-staff-award-documents');
-            const alumniAwardDocuments = advertisingRowToBeUpdated.getAttribute('data-alumni-award-documents');
-            const studentAwardDocuments = advertisingRowToBeUpdated.getAttribute('data-student-awardDocuments');
-            const internationalLinkageDocuments = advertisingRowToBeUpdated.getAttribute('data-international-linkage-documents');
-            const conferenceParticipationDocuments = advertisingRowToBeUpdated.getAttribute('data-conference-participation-documents');
-            const organisingConferenceDocuments = advertisingRowToBeUpdated.getAttribute('data-organising-conference-documents');
-            const studentEventParticipationDocuments = advertisingRowToBeUpdated.getAttribute('data-student-event-participation-documents');
-            const newspaperArticleDocuments = advertisingRowToBeUpdated.getAttribute('data-newspaper-article-documents');
-            $('#branding-advertising-modal').modal('show');
-        }
-    })
+                facultyRecognition.value = advertisingRowToBeUpdated.querySelector('.faculty-recognition').innerText;
+                facultyRecognitionLink.value = advertisingRowToBeUpdated.getAttribute('data-faculty-recognition-link');
+                facultyAward.value = advertisingRowToBeUpdated.querySelector('.faculty-award').innerText;
+                facultyAwardLink.value = advertisingRowToBeUpdated.getAttribute('data-faculty-award-link');
+                staffAward.value = advertisingRowToBeUpdated.querySelector('.staff-award').innerText;
+                staffAwardLink.value = advertisingRowToBeUpdated.getAttribute('data-staff-award-link');
+                alumniAward.value = advertisingRowToBeUpdated.querySelector('.alumni-award').innerText;
+                alumniAwardLink.value = advertisingRowToBeUpdated.getAttribute('data-alumni-award-link');
+                studentAward.value = advertisingRowToBeUpdated.querySelector('.student-award').innerText;
+                studentAwardLink.value = advertisingRowToBeUpdated.getAttribute('data-student-award-link');
+                internationalLinkage.value = advertisingRowToBeUpdated.querySelector('.international-linkage').innerText;
+                internationalLinkageLink.value = advertisingRowToBeUpdated.getAttribute('data-international-linkage-link');
+                conferenceParticipation.value = advertisingRowToBeUpdated.querySelector('.conference-participation').innerText;
+                conferenceParticipationLink.value = advertisingRowToBeUpdated.getAttribute('data-conference-participation-link');
+                organisingConference.value = advertisingRowToBeUpdated.querySelector('.organising-conference').innerText;
+                organisingConferenceLink.value = advertisingRowToBeUpdated.getAttribute('data-organising-conference-link');
+                studentEventParticipation.value = advertisingRowToBeUpdated.querySelector('.student-event-participation').innerText;
+                studentEventParticipationLink.value = advertisingRowToBeUpdated.getAttribute('data-student-event-participation-link');
+                newsPaperArticle.value = advertisingRowToBeUpdated.querySelector('.newspaper-article').innerText;
+                newsPaperArticleLink.value = advertisingRowToBeUpdated.getAttribute('data-newspaper-article-link');
+                const facultyRecognitionDocuments = advertisingRowToBeUpdated.getAttribute('data-faculty-recognition-documents');
+                console.log('facultyRecognitionDocument ==>>', facultyRecognitionDocuments)
+                const facultyAwardDocuments = advertisingRowToBeUpdated.getAttribute('data-faculty-award-documents');
+                const staffAwardDocuments = advertisingRowToBeUpdated.getAttribute('data-staff-award-documents');
+                const alumniAwardDocuments = advertisingRowToBeUpdated.getAttribute('data-alumni-award-documents');
+                const studentAwardDocuments = advertisingRowToBeUpdated.getAttribute('data-student-awardDocuments');
+                const internationalLinkageDocuments = advertisingRowToBeUpdated.getAttribute('data-international-linkage-documents');
+                const conferenceParticipationDocuments = advertisingRowToBeUpdated.getAttribute('data-conference-participation-documents');
+                const organisingConferenceDocuments = advertisingRowToBeUpdated.getAttribute('data-organising-conference-documents');
+                const studentEventParticipationDocuments = advertisingRowToBeUpdated.getAttribute('data-student-event-participation-documents');
+                const newspaperArticleDocuments = advertisingRowToBeUpdated.getAttribute('data-newspaper-article-documents');
+                $('#branding-advertising-modal').modal('show');
+            }
+        })
 
-    updateBtn.addEventListener('click' , () => {
+    const updateBrandingAndAdvertising = async(url) => {
         const updatedAdvertisingData = new FormData();
         const updatedFacultyRecognitionDocuments = document.querySelector('input[name="facultyRecognitionDocuments"]');
         const updatedFacultyAwardDocuments = document.querySelector('input[name="facultyAwardDocuments"]');
@@ -1040,7 +1042,7 @@
         updatedAdvertisingData.append('newsPaperArticle' , updatedNewsPaperArticle);
         updatedAdvertisingData.append('newsPaperArticleLink' , updatedNewsPaperArticleLink);
 
-        fetch('<%- BASE_URL %>branding-advertising/update' , {
+        fetch(url , {
             method : 'POST',
             body : updatedAdvertisingData
         })
@@ -1084,10 +1086,21 @@
             console.log('data.facultyRecognition ==>>', data.updatedAdvertisingData.facultyRecognition)
             }
             $('#branding-advertising-modal').modal('hide');
-            alert('data updated successfully');
+            alert('Data Updated Successfully');
         })
+    }
 
-    })
+    updateBtn.addEventListener('click', async () => {
+            const isValid = validateRequiredFormFields(updateBtn);
+            if (isValid) {
+                await updateBrandingAndAdvertising('<%- BASE_URL %>branding-advertising/update');;;
+            }
+            else {
+                console.log('validation failed');
+            }
+
+        });
+
 </script>
 <!-- footer section -->
 <%- include('./partials/footer') %>

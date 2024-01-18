@@ -80,12 +80,12 @@
                             <td class="isbn-no"><%- editedBook.isbn %></td>
                             <td class="publisher-name"><%- editedBook.publisher_name %></td>
                             <td>
-                                <a class="view" data-editedBook-id="<%- editedBook.id %>"><i class="fa-solid fa-eye view"
-                                        data-editedBook-id="<%- editedBook.id %>"></i></a>
-                                <a class="edit" data-editedBook-id="<%- editedBook.id %>"><i class="fa fa-edit edit"
-                                        data-editedBook-id="<%- editedBook.id %>"></i></a>
-                                <a class="delete" data-editedBook-id="<%- editedBook.id %>"><i
-                                        class="fa-solid fa-trash delete" data-editedBook-id="<%- editedBook.id %>"></i></a>
+                                <label class="view" data-editedBook-id="<%- editedBook.id %>"><i class="fa-solid fa-eye view text-danger"
+                                    data-editedBook-id="<%- editedBook.id %>"></i></label>
+                                <label class="edit" data-editedBook-id="<%- editedBook.id %>"><i class="fa fa-edit edit text-danger"
+                                    data-editedBook-id="<%- editedBook.id %>"></i></label>
+                                <label class="delete" data-editedBook-id="<%- editedBook.id %>"><i
+                                    class="fa-solid fa-trash delete text-danger" data-editedBook-id="<%- editedBook.id %>"></i></label>
                             </td>
                         </tr>
                         <% }); %>
@@ -284,7 +284,7 @@
         </div>
     </div>
 </div>
-<!--  edited book publication view modal -->
+<!--  Edited book publication view modal -->
 <div class="modal fade " id="edited-book-view-modal" tabindex="-1" role="dialog" aria-labelledby="edited-book-view-modal"
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable modal-lg modal-fullscreen p-5" role="document">
@@ -569,12 +569,12 @@
                             <td class="isbn-no">${data.editedBooKData.isbnNo}</td>
                             <td class="publisher-name">${data.editedBooKData.publisherName}</td>
                             <td>
-                                <a class="view" data-editedbook-id="${data.editedBookId}"><i class="fa-solid fa-eye view"
-                                    data-editedbook-id="${data.editedBookId}"></i></a>
-                                 <a class="edit"data-editedbook-id="${data.editedBookId}"><i class="fa fa-edit edit"
-                                    data-editedbook-id="${data.editedBookId}"></i></a>
-                                 <a class="delete"data-editedbook-id="${data.editedBookId}"><i class="fa-solid fa-trash delete"
-                                    data-editedbook-id="${data.editedBookId}"></i></a>
+                                <label class="view" data-editedbook-id="${data.editedBookId}"><i class="fa-solid fa-eye view tex-danger"
+                                    data-editedbook-id="${data.editedBookId}"></i></label>
+                                <label class="edit"data-editedbook-id="${data.editedBookId}"><i class="fa fa-edit edit tex-danger"
+                                    data-editedbook-id="${data.editedBookId}"></i></label>
+                                <label class="delete"data-editedbook-id="${data.editedBookId}"><i class="fa-solid fa-trash delete tex-danger"
+                                    data-editedbook-id="${data.editedBookId}"></i></label>
                             </td> `;
             editedBookList.append(newEditedBook);
             $('#edited-book-modal').modal('hide');
@@ -747,7 +747,7 @@
 
     });
     
-    updateBtn.addEventListener('click' , () => {
+    const updateEditedBookPublication = async(url) => {
         const updatededitedBook = new FormData();
         const updatedAuthorName = document.getElementById('author-first-name').value;
         const updatedBookTitle = document.getElementById('book-title').value;
@@ -789,7 +789,7 @@
             updatededitedBook.append('researchSupportingDocument' , updatedDocuments.files[0]);
          }
 
-        fetch('<%- BASE_URL %>research/book-publication-main/edited-book-publication/update' , {
+        fetch(url , {
             method : 'POST',
             body : updatededitedBook
         })
@@ -824,7 +824,19 @@
             })
             $('#edited-book-modal').modal('hide');
             alert('data updated successfully');
-    });
+    };
+
+    updateBtn.addEventListener('click' , async() => {
+        const isValid = validateRequiredFormFields(submitBtn);
+            if (isValid) {
+                await updateEditedBookPublication('<%- BASE_URL %>research/book-publication-main/edited-book-publication/update')
+            }
+            else {
+                alert('Validation Failed');
+            }
+
+    })
+
 </script>
 / <!-- footer section -->
 <%- include('./partials/footer') %>

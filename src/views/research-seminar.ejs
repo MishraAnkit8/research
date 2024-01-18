@@ -449,6 +449,7 @@
     const rowCount = document.getElementById('row-count');
     let rowIndex = rowCount.innerText;
     let indexValue = parseInt(rowIndex, 10);
+    
     const seminarModal = document.getElementById('research-seminar-modall');
     const seminarModalView = document.getElementById('research-seminar-modal-view');
     seminarModalView.style.display ='none';
@@ -571,7 +572,7 @@
                             </td>  ` ;
                         researchSeminarList.appendChild(newResearchSeminar);
                     $('#research-seminar-modal').modal('hide');
-                    alert('data is inserted  successFully');
+                    alert('Data  Inserted  SuccessFully');
                     // for clear input field
                 }
             }).catch((error) => {
@@ -590,175 +591,174 @@
             }
     });
     
-    // for deleting
     researchSeminarList.addEventListener('click', function (event) {
 
-        if (event.target.classList.contains('delete')) {
-            const seminarRowData = event.target.parentElement.parentElement.parentElement;
-            const seminarId = event.target.getAttribute('data-seminar-id');
-            console.log('seminarId for delete :', seminarId);
-            let confirmDelete = confirm("Do you want to delete the Seminar?");
-            if(!confirmDelete) {
-                return;
+            if (event.target.classList.contains('delete')) {
+                const seminarRowData = event.target.parentElement.parentElement.parentElement;
+                const seminarId = event.target.getAttribute('data-seminar-id');
+                console.log('seminarId for delete :', seminarId);
+                let confirmDelete = confirm("Do you want to delete the Seminar?");
+                if (!confirmDelete) {
+                    return;
+                }
+
+                fetch('<%- BASE_URL %>research/research-seminar/delete', {
+                    method: 'post',
+                    headers: {
+                        'content-type': 'application/json'
+                    },
+                    body: JSON.stringify({ seminarId })
+                })
+                    .then((result) => {
+                        return result.json();
+                    })
+                    .then((data) => {
+                        if (data.status === 'done') {
+                            seminarRowData.remove();
+                            location.reload();
+                        }
+                    })
+                    .catch((error) => {
+                        console.log(error)
+                    });
+            }
+            // for updating 
+
+            if (event.target.classList.contains('edit')) {
+                removeErrorMsg();
+                seminarRowToBeUpdated = event.target.closest('tr');
+                console.log('seminarRowToBeUpdated ==>>>', seminarRowToBeUpdated)
+                seminarId = event.target.getAttribute('data-seminar-id');
+                console.log('seminarId ==>>', seminarId);
+                // for button visualization
+                submitBtn.classList.add('d-none');
+                updateBtn.classList.remove('d-none');
+                // Capturing  the specific row's data and seminar ID
+                const year = seminarRowToBeUpdated.querySelector('.year');
+                const school = seminarRowToBeUpdated.querySelector('.school');
+                const campus = seminarRowToBeUpdated.querySelector('.campus');
+                const publisherCategoryNational = document.getElementById('national');
+                const publisherCategoryInternational = document.getElementById('inter-national');
+                const nmimsfaculty = seminarRowToBeUpdated.querySelector('.nmims-faculty');
+                const journalName = seminarRowToBeUpdated.querySelector('.journal-name');
+                const publisher = seminarRowToBeUpdated.querySelector('.publisher');
+                const titleOfPaper = seminarRowToBeUpdated.getAttribute('data-title-of-paper');
+                const pages = seminarRowToBeUpdated.getAttribute('data-pages');
+                const issnNo = seminarRowToBeUpdated.getAttribute('data-issn-no');
+                const dateOfPublishing = new Date(seminarRowToBeUpdated.getAttribute('data-date-of-publishing'));
+                const formattedDate = formatDateToYYYYMMDD(dateOfPublishing);
+                const impactFactor = seminarRowToBeUpdated.getAttribute('data-impact-factor');
+                const scsCiteScore = seminarRowToBeUpdated.getAttribute('data-scs-cite-score');
+                const wosIndexed = seminarRowToBeUpdated.getAttribute('data-wos-indexed');
+                const gsIndexed = seminarRowToBeUpdated.getAttribute('data-gs-indexed');
+                const abcdIndexed = seminarRowToBeUpdated.getAttribute('data-abdc-indexed');
+                const ugcIndexed = seminarRowToBeUpdated.getAttribute('data-ugc-indexed');
+                const webLink = seminarRowToBeUpdated.getAttribute('data-web-link');
+                const uid = seminarRowToBeUpdated.getAttribute('data-uid');
+                const scsIndexed = seminarRowToBeUpdated.getAttribute('data-scs-indexed');
+                // for displaying alredy stored value
+                const publisherCategory = seminarRowToBeUpdated.getAttribute('data-publisher-category');
+                if (publisherCategory === 'National') {
+                    publisherCategoryNational.checked = true;
+                }
+                else {
+                    publisherCategoryInternational.checked = true;
+                }
+                document.getElementById('year').value = year.innerText.trim();
+                console.log('====>>>>', year.innerText.trim())
+                document.getElementById('school').value = school.innerText.trim();
+                document.getElementById('campus').value = campus.innerText.trim();
+                document.getElementById('publisher').value = publisher.innerText.trim();
+                document.getElementById('nmims-faculty').value = nmimsfaculty.innerText.trim();
+                document.getElementById('journal-name').value = journalName.innerText.trim();
+                document.getElementById('title-of-paper').value = titleOfPaper;
+                document.getElementById('pages').value = pages.trim();
+                document.getElementById('issn-no').value = issnNo.trim();
+                document.getElementById('date-of-publishing').value = formattedDate.replace(/\//g, '-');
+                document.getElementById('impact-factor').value = impactFactor.trim();
+                document.getElementById('scs-cite-score').value = scsCiteScore.trim();
+                document.getElementById('wos-indexed').value = wosIndexed.trim();
+                document.getElementById('gs-indexed').value = gsIndexed.trim();
+                document.getElementById('abdc-indexed').value = abcdIndexed.trim();
+                document.getElementById('ugc-indexed').value = ugcIndexed.trim();
+                document.getElementById('web-link').value = webLink.trim();
+                document.getElementById('uid').value = uid.trim();
+                document.getElementById('scs-indexed').value = scsIndexed.trim();
+
+                $('#research-seminar-modal').modal('show');
             }
 
-            fetch('<%- BASE_URL %>research/research-seminar/delete', {
-                method : 'post',
-                headers: {
-                    'content-type' : 'application/json'
-                },
-                body: JSON.stringify({ seminarId })
-            })
-                .then((result) => {
-                    return result.json();
-                })
-                .then((data) => {
-                    if (data.status === 'done') {
-                        seminarRowData.remove();
-                        location.reload();
-                    } 
-                })
-                .catch((error) => {
-                    console.log(error)
-                });
-        }
-        // for updating 
+            // for viewing record of journal paper
+            if (event.target.classList.contains('view')) {
+                seminarId = event.target.getAttribute('data-seminar-id');
+                // updating value with actuall value
+                const viewYear = document.getElementById('view-year');
+                const viewSchool = document.getElementById('view-school');
+                const viewCampus = document.getElementById('view-campus');
+                const viewPublisher = document.getElementById('view-publisher');
+                const viewNmimsFaculty = document.getElementById('view-nmims-faculty');
+                const viewJournalName = document.getElementById('view-journal-name');
+                const viewIssNo = document.getElementById('view-issn-no');
+                const viewAbcdIndexed = document.getElementById('view-abdc-indexed');
+                const viewWebLink = document.getElementById('view-web-link');
+                const viewPages = document.getElementById('view-pages');
+                const viewScsCiteScore = document.getElementById('view-scs-cite-score');
+                const viewImpactFactor = document.getElementById('view-impact-factor');
+                const viewScsIndexed = document.getElementById('view-scs-indexed');
+                const viewWosIndexed = document.getElementById('view-wos-indexed');
+                const viewGsIndexed = document.getElementById('view-gs-indexed');
+                const viewUgcIndexed = document.getElementById('view-ugc-indexed');
+                const viewDateOfPublishing = document.getElementById('view-date-of-publishing');
+                const viewUid = document.getElementById('view-uid');
+                const viewTitle = document.getElementById('view-title-of-paper');
+                const viewPublisherCategory = document.getElementById('view-publisher-category');
 
-        if (event.target.classList.contains('edit')) {
-            removeErrorMsg();
-            seminarRowToBeUpdated = event.target.closest('tr');
-            console.log('seminarRowToBeUpdated ==>>>', seminarRowToBeUpdated)
-            seminarId = event.target.getAttribute('data-seminar-id');
-            console.log('seminarId ==>>', seminarId);
-            // for button visualization
-            submitBtn.classList.add('d-none');
-            updateBtn.classList.remove('d-none');
-            // Capturing  the specific row's data and seminar ID
-            const year = seminarRowToBeUpdated.querySelector('.year');
-            const school = seminarRowToBeUpdated.querySelector('.school');
-            const campus = seminarRowToBeUpdated.querySelector('.campus');
-            const publisherCategoryNational = document.getElementById('national');
-            const publisherCategoryInternational = document.getElementById('inter-national');
-            const nmimsfaculty = seminarRowToBeUpdated.querySelector('.nmims-faculty');
-            const journalName = seminarRowToBeUpdated.querySelector('.journal-name');
-            const publisher = seminarRowToBeUpdated.querySelector('.publisher');
-            const titleOfPaper = seminarRowToBeUpdated.getAttribute('data-title-of-paper');
-            const pages = seminarRowToBeUpdated.getAttribute('data-pages');
-            const issnNo = seminarRowToBeUpdated.getAttribute('data-issn-no');
-            const dateOfPublishing = new Date(seminarRowToBeUpdated.getAttribute('data-date-of-publishing'));
-            const formattedDate = formatDateToYYYYMMDD(dateOfPublishing);
-            const impactFactor = seminarRowToBeUpdated.getAttribute('data-impact-factor');
-            const scsCiteScore = seminarRowToBeUpdated.getAttribute('data-scs-cite-score');
-            const wosIndexed = seminarRowToBeUpdated.getAttribute('data-wos-indexed');
-            const gsIndexed = seminarRowToBeUpdated.getAttribute('data-gs-indexed');
-            const abcdIndexed = seminarRowToBeUpdated.getAttribute('data-abdc-indexed');
-            const ugcIndexed = seminarRowToBeUpdated.getAttribute('data-ugc-indexed');
-            const webLink = seminarRowToBeUpdated.getAttribute('data-web-link');
-            const uid = seminarRowToBeUpdated.getAttribute('data-uid');
-            const scsIndexed = seminarRowToBeUpdated.getAttribute('data-scs-indexed');
-            // for displaying alredy stored value
-            const publisherCategory = seminarRowToBeUpdated.getAttribute('data-publisher-category');
-            if(publisherCategory === 'National'){
-                publisherCategoryNational.checked = true;
+                fetch('<%- BASE_URL %>research/research-seminar/view', {
+                    method: 'POST',
+                    headers: {
+                        'content-type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        seminarId: seminarId
+                    })
+
+                })
+                    .then((result) => {
+                        return result.json();
+                    })
+                    .then((data) => {
+                        console.log('data is viewing', data);
+                        viewYear.innerText = data[0].year;
+                        viewCampus.innerText = data[0].campus;
+                        viewJournalName.innerText = data[0].journal_name;
+                        viewNmimsFaculty.innerText = data[0].nmims_faculty;
+                        viewSchool.innerText = data[0].school;
+                        viewPublisher.innerText = data[0].publisher;
+                        viewIssNo.innerText = data[0].issn_no;
+                        viewAbcdIndexed.innerText = data[0].abdc_indexed;
+                        viewWebLink.innerText = data[0].web_link;
+                        viewPages.innerText = data[0].pages;
+                        viewScsCiteScore.innerText = data[0].pages;
+                        viewImpactFactor.innerText = data[0].impact_factor;
+                        viewScsIndexed.innerText = data[0].scs_indexed;
+                        viewGsIndexed.innerText = data[0].gs_indexed;
+                        viewUgcIndexed.innerText = data[0].ugc_indexed;
+                        viewDateOfPublishing.innerText = data[0].date_of_publishing.split('T')[0];
+                        viewTitle.innerText = data[0].title_of_paper;
+                        viewPublisherCategory.innerText = data[0].publisher_category;
+                        viewWosIndexed.innerText = data[0].wos_indexed;
+                        viewUid.innerText = data[0].uid;
+
+                    }).catch((error) => {
+                        console.log('error:', error);
+
+                    });
+                $('#research-seminar-modal-view').modal('show');
             }
-            else{
-                publisherCategoryInternational.checked = true;
-            }
-            document.getElementById('year').value = year.innerText.trim();
-            console.log('====>>>>', year.innerText.trim())
-            document.getElementById('school').value = school.innerText.trim();
-            document.getElementById('campus').value = campus.innerText.trim();
-            document.getElementById('publisher').value = publisher.innerText.trim();
-            document.getElementById('nmims-faculty').value = nmimsfaculty.innerText.trim();
-            document.getElementById('journal-name').value = journalName.innerText.trim();
-            document.getElementById('title-of-paper').value = titleOfPaper;
-            document.getElementById('pages').value = pages.trim();
-            document.getElementById('issn-no').value = issnNo.trim();
-            document.getElementById('date-of-publishing').value = formattedDate.replace(/\//g, '-');
-            document.getElementById('impact-factor').value = impactFactor.trim();
-            document.getElementById('scs-cite-score').value = scsCiteScore.trim();
-            document.getElementById('wos-indexed').value = wosIndexed.trim();
-            document.getElementById('gs-indexed').value = gsIndexed.trim();
-            document.getElementById('abdc-indexed').value = abcdIndexed.trim();
-            document.getElementById('ugc-indexed').value = ugcIndexed.trim();
-            document.getElementById('web-link').value = webLink.trim();
-            document.getElementById('uid').value = uid.trim();
-            document.getElementById('scs-indexed').value = scsIndexed.trim();
-            
-            $('#research-seminar-modal').modal('show');
-        }
 
-        // for viewing record of journal paper
-        if(event.target.classList.contains('view')){
-            seminarId = event.target.getAttribute('data-seminar-id');
-            // updating value with actuall value
-            const viewYear = document.getElementById('view-year');
-            const viewSchool=  document.getElementById('view-school');
-            const viewCampus = document.getElementById('view-campus');
-            const viewPublisher = document.getElementById('view-publisher');
-            const viewNmimsFaculty = document.getElementById('view-nmims-faculty');
-            const viewJournalName = document.getElementById('view-journal-name');
-            const viewIssNo = document.getElementById('view-issn-no');
-            const viewAbcdIndexed = document.getElementById('view-abdc-indexed');
-            const viewWebLink = document.getElementById('view-web-link');
-            const viewPages = document.getElementById('view-pages');
-            const viewScsCiteScore = document.getElementById('view-scs-cite-score');
-            const viewImpactFactor = document.getElementById('view-impact-factor');
-            const viewScsIndexed = document.getElementById('view-scs-indexed');
-            const viewWosIndexed = document.getElementById('view-wos-indexed');
-            const viewGsIndexed = document.getElementById('view-gs-indexed');
-            const viewUgcIndexed = document.getElementById('view-ugc-indexed');
-            const viewDateOfPublishing = document.getElementById('view-date-of-publishing');
-            const viewUid = document.getElementById('view-uid');
-            const viewTitle = document.getElementById('view-title-of-paper');
-            const viewPublisherCategory = document.getElementById('view-publisher-category');
+        });
 
-            fetch('<%- BASE_URL %>research/research-seminar/view' , {
-                method : 'POST',
-                headers : {
-                    'content-type': 'application/json'
-                },
-                body : JSON.stringify({
-                    seminarId : seminarId
-                })
-
-             })
-             .then((result) => {
-                    return result.json();
-             })
-             .then((data) => {
-                    console.log('data is viewing',data);  
-                    viewYear.innerText = data[0].year;
-                    viewCampus.innerText = data[0].campus;
-                    viewJournalName.innerText = data[0].journal_name;
-                    viewNmimsFaculty.innerText = data[0].nmims_faculty;
-                    viewSchool.innerText = data[0].school;
-                    viewPublisher.innerText = data[0].publisher;
-                    viewIssNo.innerText = data[0].issn_no;
-                    viewAbcdIndexed.innerText = data[0].abdc_indexed;
-                    viewWebLink.innerText = data[0].web_link;
-                    viewPages.innerText = data[0].pages; 
-                    viewScsCiteScore.innerText = data[0].pages; 
-                    viewImpactFactor.innerText = data[0].impact_factor;
-                    viewScsIndexed.innerText = data[0].scs_indexed;
-                    viewGsIndexed.innerText = data[0].gs_indexed;
-                    viewUgcIndexed.innerText = data[0].ugc_indexed; 
-                    viewDateOfPublishing.innerText = data[0].date_of_publishing.split('T')[0]; 
-                    viewTitle.innerText = data[0].title_of_paper;
-                    viewPublisherCategory.innerText = data[0].publisher_category;
-                    viewWosIndexed.innerText = data[0].wos_indexed;
-                    viewUid.innerText = data[0].uid;
-
-             }).catch((error) =>{
-                console.log('error:', error);
-
-             });
-            $('#research-seminar-modal-view').modal('show');
-        }
-        
-    });
-    // adding event listner in update button
-    updateBtn.addEventListener('click', async function () {
+    const updateResearchSeminar = async(url) => {
         // for assigning store value in our data base
         const updatedYear = document.getElementById('year').value;
         const updatedSchool = document.getElementById('school').value;
@@ -804,7 +804,7 @@
         updatedResearchSeminar.scsIndexed = updatedScsIndexed;
 
         // sending  updated data to database by fetch api for update the value in db
-        fetch('<%- BASE_URL %>research/research-seminar/update', {
+        fetch(url, {
             method: 'post',
             headers: {
                 'content-type': 'application/json'
@@ -846,7 +846,7 @@
                     seminarRowToBeUpdated.setAttribute('data-title-of-paper' , updatedTitleOfPaper);
                 }
                 $('#research-seminar-modal').modal('hide');
-                alert('data updated SuccessFully');
+                alert('Data Updated SuccessFully');
             })
             .catch((error) => {
                 console.log("ERROIR : ", error);
@@ -854,9 +854,19 @@
                 $('#research-seminar-modal').modal('hide');
                
             })
-        })
+        }
 
-        // view journal data
+    updateBtn.addEventListener('click' , async() => {
+        const isValid = validateRequiredFormFields(submitBtn);
+            if (isValid) {
+                await updateResearchSeminar('<%- BASE_URL %>research/research-seminar/update');
+                }
+            else {
+                alert('Validation Failed');
+            }
+
+    })
+
 
 
     </script>
