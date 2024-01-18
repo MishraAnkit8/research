@@ -60,7 +60,7 @@
                         <th>Publisher Name</th>
                         <th>Action</th>
                     </thead>
-                    <% editedBookList.forEach(function(editedBook) { %>
+                    <% editedBookList.forEach(function(editedBook,index) { %>
                         <tr row="scope" data-editedBook-id="<%- editedBook.id %>"
                             data-page-number="<%- editedBook.page_number %>" data-edition="<%- editedBook.edition %>"
                             data-publication-place="<%- editedBook.publication_place %>"
@@ -73,7 +73,7 @@
                             data-supporting-documents="<%- editedBook.supporting_documents %>"
                             data-chapter-title="<%- editedBook.chapter_title %>"
                             data-editor-name="<%-editedBook.editor_name %>">
-                            <td data-editedBook-id="<%- editedBook.id %>"><%- editedBook.id %></td>
+                            <td class="row-count"><%- index+1 %></td>
                             <td class="author-first-name"><%- editedBook.author_name %></td>
                             <td class="publication-year"><%- editedBook.publication_year %></td>
                             <td class="book-title"><%- editedBook.book_title %></td>
@@ -92,8 +92,8 @@
                 </table>
                 <div class="d-flex justify-content-between">
                     <div>
-                        <p>Total entries:1
-                        </p>
+                        <label>Total entries: <%- rowCount %></label>
+                        <label class="d-none" id="row-count"> <%- rowCount %></label>
                     </div>
                     <div>
                         <p id="pagination" class="pagination-search"></p>
@@ -435,7 +435,10 @@
 </div>
 <!-- inline javascript -->
 <script>
-
+    //for index icrement
+    const rowCount = document.getElementById('row-count');
+    let rowIndex = rowCount.innerText;
+    let indexValue = parseInt(rowIndex, 10);
     const editedBookList = document.getElementById('edited-book-list');
     const submitBtn = document.getElementById('submit-btn');
     const updateBtn = document.getElementById('update-btn');
@@ -559,7 +562,7 @@
             newEditedBook.setAttribute('data-nmims-school-authors' , data.editedBooKData.nmimsSchoolAuthors);
             newEditedBook.setAttribute('data-supporting-documents' , data.editedBooKData.supportingDocuments);
             newEditedBook.innerHTML = `
-                        <td >${data.editedBookId}</td>
+                        <td >${indexValue}</td>
                             <td class="author-first-name">${data.editedBooKData.authorName}</td>
                             <td class="publication-year">${data.editedBooKData.publicationYear}</td>
                             <td class="book-title">${data.editedBooKData.bookTitle}</td>
@@ -584,6 +587,7 @@
         const isValid = validateRequiredFormFields(submitBtn);
             if (isValid) {
                 await insertEditedBook('<%- BASE_URL %>research/book-publication-main/edited-book-publication/insert')
+                indexValue += 1
                 console.log('data inserted successfully');
             }
             else {

@@ -65,7 +65,7 @@
                         <th>Newspaper Article</th>
                         <th>Action</th>
                     </thead>
-                    <% advertisingData.forEach(function(advertising) { %>
+                    <% advertisingData.forEach(function(advertising,index) { %>
                         <tr scope="row" data-advertising-id="<%- advertising.id %>"
                             data-faculty-recognition-documents="<%- advertising.faculty_recognition_documents %>"
                             data-faculty-recognition-link="<%- advertising.faculty_recognition_link %>"
@@ -87,7 +87,7 @@
                             data-student-event-participation-link="<%- advertising.student_event_participation_link %>"
                             data-newspaper-article-documents="<%- advertising.newspaper_article_documents %>"
                             data-newspaper-article-link="<%- advertising.newspaper_article_link %>">
-                            <td data-advertising-id="<%- advertising.id %>"><%- advertising.id %></td>
+                            <td><%- index+1 %></td>
                             <td class="faculty-recognition"><%- advertising.faculty_recognition %></td>
                             <td class="faculty-award"><%- advertising.faculty_award %></td>
                             <td class="staff-award"><%- advertising.staff_award %></td>
@@ -112,8 +112,8 @@
                 </table>
                 <div class="d-flex justify-content-between">
                     <div>
-                        <p>Total entries:1
-                        </p>
+                        <label> Total entries: <%- rowCount %> </label>
+                        <label class="d-none" id="row-count"> <%- rowCount %> </label>
                     </div>
                     <div>
                         <p id="pagination" class="pagination-search"></p>
@@ -594,6 +594,10 @@
 </div>
 <!-- inline javascript -->
 <script>
+    //   for index icrement
+    const rowCount = document.getElementById('row-count');
+    let rowIndex = rowCount.innerText;
+    let indexValue = parseInt(rowIndex, 10);
     const brandingAdvertisingAddModal = document.getElementById('branding-advertising-add-modal');
     const brandingAdvertisingList = document.getElementById('branding-advertising-list')
     const submitBtn= document.getElementById('submit-btn');
@@ -749,7 +753,7 @@
                 newBrandingAdvertisingRow.setAttribute('data-newspaper-article-link' , data.advertisingData.newsPaperArticleLink);
                 console.log('data.advertisingData ==>', data.advertisingData);
                 newBrandingAdvertisingRow.innerHTML = `
-                                    <td >${data.advertisingId}</td>
+                                    <td >${inde}</td>
                                     <td class="faculty-recognition">${data.advertisingData.facultyRecognition}</td>
                                     <td class="faculty-award">${ data.advertisingData.facultyAward}</td>
                                     <td class="staff-award">${ data.advertisingData.staffAward}</td>
@@ -778,6 +782,7 @@
         const isValid = validateRequiredFormFields(submitBtn);
             if (isValid) {
                 await insertBrandingAndAdvertising('<%- BASE_URL %>branding-advertising/insert');
+                indexValue += 1
                 console.log('data inserted successfully');
             }
             else {

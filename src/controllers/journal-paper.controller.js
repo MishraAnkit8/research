@@ -3,9 +3,12 @@ const journalPaperService = require('../services/journal-paper.service');
 
 module.exports.renderJournalPaper = async (req, res, next) => {
     const journalList = await journalPaperService.renderJournalPaper();
+    
     res.render('journal-paper', {
-        journalData : journalList
+        journalData : journalList.rows,
+        rowCount : journalList.rowCount
     });
+    console.log('journalList in Controller ==>>', journalList.rowCount)
 };
 
 

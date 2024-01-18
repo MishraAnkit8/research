@@ -18,7 +18,8 @@ module.exports.renderResearchProjectConsultancy = async(req, res, next) => {
             fileuploadStatus: fileuploadStatus,
             errorMsg: errorMsg,
             htmlVal: htmlVal,
-            reseachConsultancyDataList : researchcConsultancyData
+            reseachConsultancyDataList : researchcConsultancyData.rows,
+            rowCount : researchcConsultancyData.rowCount
         })
     }
     

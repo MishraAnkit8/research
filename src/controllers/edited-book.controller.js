@@ -5,7 +5,8 @@ module.exports.renderEdietedBookPublication = async(req, res, next) => {
     console.log('editeBookList  in controller ==>>', editedBookPublicationData);
     if(editedBookPublicationData){
         res.render('edited-book-publication' , {
-            editedBookList : editedBookPublicationData
+            editedBookList : editedBookPublicationData.rows,
+            rowCount : editedBookPublicationData.rowCount
         })
     }
 }

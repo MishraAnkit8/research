@@ -66,3 +66,4 @@ function formatDateToYYYYMMDD(inputDateString) {
   
     return `${year}-${month}-${day}`;
   }
+

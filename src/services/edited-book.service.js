@@ -3,7 +3,7 @@ const editedBookPublicationModel = require('../models/edited-book.model');
 module.exports.fetchEditedBookPublicationData = async() => {
     const editedBookPublicationdata = await editedBookPublicationModel.fetchEditedBookPublication();
     console.log(editedBookPublicationdata.rows[0]);
-    return editedBookPublicationdata.rows
+    return editedBookPublicationdata
 }
 
 module.exports.insertEditedBookPublication = async(editedBook , filename) => {

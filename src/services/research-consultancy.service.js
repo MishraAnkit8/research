@@ -4,7 +4,7 @@ const researchCunsultancyModel = require('../models/research-consultancy.models'
 module.exports.fetchResearConsultacyData = async() => {
     const researchConsultancyData = await researchCunsultancyModel.fetchResearchConsultancy();
     console.log('researchConsultancyData', researchConsultancyData.rows[0]);
-    return researchConsultancyData.rows
+    return researchConsultancyData
 }
 
 module.exports.insertResearchConsultancyData = async(body , filename) => {

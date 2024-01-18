@@ -4,7 +4,7 @@ const conferencePublicationModels = require('../models/conference-publications.m
 module.exports.fetchConferencePublication = async() => {
     const conferencePublicationData = await conferencePublicationModels.fetchConferencePublication();
     console.log('feched data in service  ==>' , conferencePublicationData.rows);
-    return conferencePublicationData.rows;
+    return conferencePublicationData;
 };
 
 module.exports.insertConferenceData = async(body , files) => {

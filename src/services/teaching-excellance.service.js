@@ -2,7 +2,7 @@ const teachingExecellanceModel = require('../models/teaching-excellance.model');
 
 module.exports.fetchTeachingExecellanceData = async() => {
     const teachingExecellanceData = await teachingExecellanceModel.fetchTeachingExecellance();
-    return teachingExecellanceData.rows;
+    return teachingExecellanceData;
 }
 
 module.exports.insertTeachingExecellance = async(teachingExecellance, files) => {

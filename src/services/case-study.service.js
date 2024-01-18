@@ -3,7 +3,7 @@ const caseStudyModel = require('../models/case-study.model');
 module.exports.createCaseStudy = async () => {
     const caseStudyFetchData = await caseStudyModel.fetchCaseStudy();
     console.log(caseStudyFetchData.rows);
-    return caseStudyFetchData.rows;
+    return caseStudyFetchData;
 }
 
 module.exports.insertCaseStudies = async (body) => {

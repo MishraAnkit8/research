@@ -15,7 +15,8 @@ module.exports.renderConferencePage = async(req, res, next) => {
     const conferenceData = await conferencePublicationServices.fetchConferencePublication()
     res.render('conference-publication' , {
         status : 'done',
-        conferenceData : conferenceData,
+        conferenceData : conferenceData.rows,
+        rowCount : conferenceData.rowCount,
         utils: clientScript,
         fileuploadStatus: fileuploadStatus,
         docuploadStatus: docuploadStatus,

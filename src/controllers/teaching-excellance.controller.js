@@ -4,7 +4,8 @@ module.exports.renderTeachingExecellance = async(req, res, next) => {
     const teachingExecellance = await teachingExecellanceService.fetchTeachingExecellanceData();
     console.log('teachingExecellance ==>>', teachingExecellance)
         res.render('teaching-excellance' , {
-            teachingExecellance : teachingExecellance
+            teachingExecellance : teachingExecellance.rows,
+            rowCount : teachingExecellance.rowCount
         });
 }
 

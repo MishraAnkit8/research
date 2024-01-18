@@ -61,11 +61,11 @@
                             <th> Project Status</th>
                             <th>Action</th>
                     </thead>
-                <% reseachConsultancyDataList.forEach(function(consultancy)  { %>
+                <% reseachConsultancyDataList.forEach(function(consultancy,index)  { %>
                     <tr scope="row" data-consultancy-id="<%- consultancy.id %>" data-grant-type="<%- consultancy.type_of_grant %>"
                         data-grant-proposal="<%- consultancy.grant_proposal_category %>" data-submission-date="<%- consultancy.submission_grant_date.toISOString().split('T')[0] %>"
                         data-faulty-type="<%- consultancy.faculty_type %>" data-supports-document="<%- consultancy.supporting_documents %>">
-                        <td data-consultancy-id="<%- consultancy.id %>"><%- consultancy.id %></td>
+                        <td ><%- index+1 %></td>
                         <td class="title-of-project"><%- consultancy.title_of_project %> </td>
                         <td class="thurst-area"><%- consultancy.thrust_area_of_research %></td>
                         <td class="funding-agency"><%- consultancy.name_of_funding_agency %></td>
@@ -83,8 +83,8 @@
                <% }); %>
                 <div class="d-flex justify-content-between">
                     <div>
-                        <p>Total entries:1
-                        </p>
+                        <label> Total entries: <%- rowCount %> </label>
+                        <label class="d-none" id="row-count"> <%- rowCount %> </label>
                     </div>
                     <div>
                         <p id="pagination" class="pagination-search"></p>
@@ -363,7 +363,10 @@
 </div>
 <!-- inline javascript -->
 <script>
-
+    //   for index icrement
+    const rowCount = document.getElementById('row-count');
+    let rowIndex = rowCount.innerText;
+    let indexValue = parseInt(rowIndex, 10);
     const researchProjectConsultancyList = document.getElementById('consultancy-list');
     const submitBtn = document.getElementById('submit-btn');
     const updateBtn = document.getElementById('update-btn');
@@ -391,22 +394,12 @@
             const facultyTypeExternal = document.getElementById('external');
             const supportingDocument = document.getElementById('supporting-documents');
 
-            // making input fields empty
-            // isGrantProposalCategoryGoverement.checked = false;
-            // isGrantProposalCategoryNonGoverement.checked = false;
-            // grantResearchProject.checked = false; 
-            // grantConsultancy.checked = false; 
-            // grantCapacityBuilding.checked = false; 
             titleOfProject.value = '';
             thurstAreaOfResearch.value = '';
             fundingAgency.value = '';
             fundingAmount.value = '';
-            // statusSubmitted.checked = false; 
-            // statusPresentationHeld.checked = false; 
             statusGranted.checked = false; 
             submissionGrantDate.value = '';
-            // facultyTypeInternal.checked = false; 
-            // facultyTypeExternal.checked = false; 
             supportingDocument.value = '';     
         }
     })
@@ -455,7 +448,7 @@
                 newResearchConsultant.setAttribute('data-faulty-type' , data.researchConsultantData.facultyType);
                 newResearchConsultant.setAttribute('data-supports-document' , data.researchConsultantData.filename);
                 newResearchConsultant.innerHTML = `
-                        <td>${consultantId}</td>
+                        <td>${indexValue}</td>
                         <td class="title-of-project">${data.researchConsultantData.titleOfProject}</td>
                         <td class="thurst-area">${data.researchConsultantData.thurstAreaOfResearch}</td>
                         <td class="funding-agency">${data.researchConsultantData.fundingAgency}</td>
@@ -481,7 +474,7 @@
         const isValid = validateRequiredFormFields(submitBtn);
             if (isValid) {
                 await insertResearchConsultancyForm('<%- BASE_URL %>research/research-project-consultancy/insert');
-                console.log('data inserted sucessfully');
+                indexValue += 1
             }
             else {
                 console.log('validation failed');

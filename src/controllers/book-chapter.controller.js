@@ -6,7 +6,8 @@ module.exports.renderBookChapterPublication = async(req, res, next) => {
     console.log('bookChapterData in controller ==>>', bookChapterData);
     if(bookChapterData){
         res.render('book-chapter-publication' , {
-                bookChapterData : bookChapterData
+                bookChapterData : bookChapterData.rows,
+                rowCount : bookChapterData.rowCount
         })
     }
 }

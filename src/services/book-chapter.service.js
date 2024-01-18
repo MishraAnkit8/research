@@ -3,7 +3,7 @@ const bookChapterModels = require('../models/book-chapter.model');
 module.exports.fetchBookChapter= async() => {
     const BookChapterData = await bookChapterModels.fetchEditedBookPublication();
     console.log(BookChapterData.rows[0]);
-    return BookChapterData.rows
+    return BookChapterData
 }
 
 module.exports.insertBookChapter = async(bookChapter , filename) => {

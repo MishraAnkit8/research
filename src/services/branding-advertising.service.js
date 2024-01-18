@@ -4,7 +4,7 @@ const brandingAndAdvertisingModels = require('../models/branding-advertising.mod
 module.exports.fetchBrandingandAdvertisingData = async() => {
     const brandingAndAdvertising = await brandingAndAdvertisingModels.fetchBrandingAndadvertising();
     console.log('brandingAndAdvertising ==>>', brandingAndAdvertising.rows)
-    return brandingAndAdvertising.rows;
+    return brandingAndAdvertising;
 }
 
 module.exports.insertBrandingAdvertising = async(body , files) => {

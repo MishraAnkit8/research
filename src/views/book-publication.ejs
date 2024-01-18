@@ -60,13 +60,13 @@
                         <th>Publisher Name</th>
                         <th>Action</th>
                     </thead>
-                    <% bookPublicationList.forEach(function(publication) { %>
+                    <% bookPublicationList.forEach(function(publication,index) { %>
                         <tr row="scope" data-publication-id="<%- publication.id %>"  data-volume-number="<%- publication.volume_number %>"
                             data-edition="<%- publication.edition %>" data-publication-place="<%-publication.publication_place %>" data-publisher-category="<%- publication.publisher_category %>"
                             data-publication-year="<%- publication.publication_year %>" data-book-url="<%- publication.book_url %>" data-doi-book-id="<%-publication.doi_id %>"
                             data-number-of-nmims-authors="<%- publication.number_of_nmims_authors %>" data-nmims-authors="<%- publication.nmims_authors %>" data-nmims-campus-authors="<%- publication.nmims_campus_authors %>"
                             data-nmims-school-authors="<%- publication.nmims_school_authors %>" data-supporting-documents="<%- publication.supporting_documents %>">
-                            <td data-publication-id="<%- publication.id %>"><%- publication.id %></td>
+                            <td class="row-count" id="rowCount"><%- index+1 %></td>
                             <td class="author-last-name"><%- publication.author_last_name %></td>
                             <td class="publication-year"><%- publication.publication_year %></td>
                             <td class="book-title"><%- publication.book_title %></td>
@@ -86,8 +86,8 @@
                 </table>
                 <div class="d-flex justify-content-between">
                     <div>
-                        <p>Total entries:1
-                        </p>
+                        <label> Total entries: <%- rowCount %> </label>
+                        <label class="d-none" id="row-count"> <%- rowCount %> </label>
                     </div>
                     <div>
                         <p id="pagination" class="pagination-search"></p>
@@ -397,7 +397,10 @@
     </div>
 </div>
 <script>
-
+    //   for index icrement
+    const rowCount = document.getElementById('row-count');
+    let rowIndex = rowCount.innerText;
+    let indexValue = parseInt(rowIndex, 10);
     const bookPublicationList = document.getElementById('book-Publication-list');
     const submitBtn = document.getElementById('submit-btn');
     const updateBtn = document.getElementById('update-btn');
@@ -510,7 +513,7 @@
             newBookPublication.setAttribute('data-nmims-school-authors' , data.bookPublicationData.nmimsSchoolAuthors);
             newBookPublication.setAttribute('data-supporting-documents' , data.bookPublicationData.supportingDocuments);
             newBookPublication.innerHTML = `
-                        <td >${data.bookPublicationId}</td>
+                        <td >${indexValue}</td>
                             <td class="author-last-name">${data.bookPublicationData.authorLastName}</td>
                             <td class="publication-year">${data.bookPublicationData.publicationYear}</td>
                             <td class="book-title">${data.bookPublicationData.bookTitle}</td>
@@ -535,6 +538,7 @@
         const isValid = validateRequiredFormFields(submitBtn);
             if (isValid) {
                 await insertBookPublication('<%- BASE_URL %>research/book-publication-main/book-publication/insert')
+                indexValue += 1
                 console.log('data inserted successfully');
             }
             else {

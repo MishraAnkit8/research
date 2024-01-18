@@ -5,7 +5,8 @@ const meetingServices = require('../services/meeting-stackholders.service')
 module.exports.renderMeetingStackholders = async(req, res, next) => {
     const meetingData = await meetingServices.fetchMeetingData();
     res.render('meeting-stackholders' , {
-        meetingData : meetingData
+        meetingData : meetingData,rows,
+        rowCount : meetingData.rowCount
     })
 }
 

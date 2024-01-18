@@ -5,7 +5,8 @@ const researchSeminarServices = require('../services/research-seminar.service');
 module.exports.renderResearchSeminar = async (req, res, next) => {
     const seminarList = await researchSeminarServices.renderResearchSeminar();
     res.render('research-seminar', {
-        seminarList : seminarList
+        seminarList : seminarList.rows,
+        rowCount : seminarList.rowCount
     });
 };
 

@@ -60,7 +60,7 @@
                         <th>Publisher Name</th>
                         <th>Action</th>
                     </thead>
-                    <% bookChapterData.forEach(function(bookChapter) { %>
+                    <% bookChapterData.forEach(function(bookChapter,index) { %>
                         <tr row="scope" data-bookChapter-id="<%- bookChapter.id %>"
                             data-page-number="<%- bookChapter.page_number %>" data-edition="<%- bookChapter.edition %>"
                             data-volume-number="<%-bookChapter.volume_number %>"
@@ -73,7 +73,7 @@
                             data-supporting-documents="<%- bookChapter.supporting_documents %>"
                             data-chapter-title="<%- bookChapter.chapter_title %>"
                             data-editor-name="<%-bookChapter.editor_name %>">
-                            <td data-bookChapter-id="<%- bookChapter.id %>"><%- bookChapter.id %></td>
+                            <td ><%- index+1 %></td>
                             <td class="author-name"><%- bookChapter.author_name %></td>
                             <td class="publication-year"><%- bookChapter.publication_year %></td>
                             <td class="book-title"><%- bookChapter.book_title %></td>
@@ -93,8 +93,8 @@
                 </table>
                 <div class="d-flex justify-content-between">
                     <div>
-                        <p>Total entries:1
-                        </p>
+                        <label>Total entries : <%- rowCount %> </label>
+                        <label class="d-none" id="row-count"> <%- rowCount %> </label>
                     </div>
                     <div>
                         <p id="pagination" class="pagination-search"></p>
@@ -413,11 +413,17 @@
 </div>
 <!-- inline javascript -->
 <script>
+    //   for index icrement
+    const rowCount = document.getElementById('row-count');
+    let rowIndex = rowCount.innerText;
+    let indexValue = parseInt(rowIndex, 10);
+    
     const bookChapterList = document.getElementById('book-chapter-list');
     const submitBtn = document.getElementById('submit-btn');
     const updateBtn = document.getElementById('update-btn');
     const addnewBookChapter = document.getElementById('book-chapter-add-modal');
     let bookChapterId , bookChapterRowToBeUpdated;
+   
     addnewBookChapter.addEventListener('click' , function(event) {
         console.log('clikeddd')
         if(event.target.tagName === 'BUTTON' && event.target.classList.contains('add-modal') || event.target.classList.contains('plus')){
@@ -466,6 +472,7 @@
             supportingDocuments.value = '';
         }
     })
+    
     const insertbookChapter = async(url) =>{
         const bookChapter = new FormData();
         const authorName = document.getElementById('author-name').value;
@@ -552,10 +559,12 @@
            }
         })
     }
+    
     submitBtn.addEventListener('click', async function () {
             const isValid = validateRequiredFormFields(submitBtn);
             if (isValid) {
                 await insertbookChapter('<%- BASE_URL %>research/book-publication-main/book-chapter-publication/insert');
+                indexValue += 1
                 console.log('data inserted successfully');
             }
             else {

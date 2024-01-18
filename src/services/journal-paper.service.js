@@ -2,8 +2,7 @@ const journalPaperModel = require('../models/journal-paper.models');
 // service for fetch
 module.exports.renderJournalPaper = async () => {
     let result = await journalPaperModel.fetchJournalPaper();
-    console.log('result ==>>', result) 
-    return result.rows  
+    return result  
 };
 
 // service for insert

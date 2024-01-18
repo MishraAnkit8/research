@@ -60,7 +60,7 @@
                         <th>Program Orientation</th>
                         <th>Action</th>
                     </thead>
-                    <% teachingExecellance.forEach(function(teaching) { %>
+                    <% teachingExecellance.forEach(function(teaching, index) { %>
                         <tr scope="row" data-teaching-id="<%- teaching.id %>"
                             data-pedagogy-innovation-file="<%- teaching.pedagogy_innovation_file %>"
                             data-fdp-program-file="<%- teaching.fdp_program_file %>"
@@ -72,7 +72,7 @@
                             data-inviting-faculty-link="<%- teaching.inviting_faculty_link %>"
                             data-program-orientation-file="<%- teaching.program_orientation_file %>"
                             data-program-orientation-link="<%- teaching.program_orientation_link %>">
-                            <td data-teaching-id="<%- teaching.id %>"><%- teaching.id %></td>
+                            <td><%- index+1 %></td>
                             <td class="pedagogy-innovation"><%- teaching.pedagogy_innovation %></td>
                             <td class="fdp-program"><%- teaching.fdp_program %></td>
                             <td class="workshop-details"><%- teaching.workshop_details %></td>
@@ -91,8 +91,8 @@
                 </table>
                 <div class="d-flex justify-content-between">
                     <div>
-                        <p>Total entries:1
-                        </p>
+                        <label> Total entries: <%- rowCount %> </label>
+                        <label class="d-none" id="row-count"> <%- rowCount %> </label>
                     </div>
                     <div>
                         <p id="pagination" class="pagination-search"></p>
@@ -399,7 +399,10 @@
 </div>
 <!-- inline script -->
 <script>
-
+    // for index icrement
+    const rowCount = document.getElementById('row-count');
+    let rowIndex = rowCount.innerText;
+    let indexValue = parseInt(rowIndex, 10);
     const teachingExecellanceAddModal = document.getElementById('teaching-execellance-add-modal');
     const teachingExecellanceList = document.getElementById('teaching-execellance-data-list');
     const submitBtn = document.getElementById('submit-btn');
@@ -493,7 +496,7 @@
                 newTeachingExecellance.setAttribute('data-program-orientation-file' , data.pedagogyInnovationFile[0].filename); 
                 newTeachingExecellance.setAttribute('data-program-orientation-link' , data.teachingData.programOrientationLink);
                 newTeachingExecellance.innerHTML = `
-                                    <td >${data.teachingId}</td>
+                                    <td >${indexValue}</td>
                                     <td class="pedagogy-innovation">${data.teachingData.pedagogyInnovation}</td>
                                     <td class="fdp-program">${data.teachingData.fdpProgram}</td>
                                     <td class="workshop-details">${data.teachingData.workShopDetails}</td>
@@ -518,7 +521,7 @@
         const isValid = validateRequiredFormFields(submitBtn);
             if (isValid) {
                 await insertTeachingExecellance('<%- BASE_URL %>teaching-excellance/insert');
-                console.log('data inserted successfully');
+                indexValue += 1;
             }
             else {
                 console.log('validation failed');

@@ -66,14 +66,15 @@
                         <th class="cell">Journal Name</th>
                         <th class="cell">Action</th>
                     </thead>
-                    <% journalData .forEach(function(journalPaper) { %>
+                    <% journalData .forEach(function(journalPaper,index) { %>
+                        <tbody id="journal-table-body">
                         <tr scope="row" data-count-other-faculty ="<%- journalPaper.count_other_faculty %>" data-nmims-author-count="<%- journalPaper.nmims_authors_count %> "
                             data-pages="<%- journalPaper.pages %>" data-issn-no="<%- journalPaper.issn_no %>" data-scs-cite-score="<%- journalPaper.scs_cite_score %>"
                             data-impact-factor="<%- journalPaper.impact_factor %>" data-scs-indexed="<%- journalPaper.scs_indexed %>" data-wos-indexed="<%- journalPaper.wos_indexed %>"
                             data-gs-indexed="<%- journalPaper.gs_indexed %>" data-title-of-paper="<%- journalPaper.title_of_paper %>" data-abdc-indexed="<%- journalPaper.abdc_indexed %>" data-ugc-indexed="<%- journalPaper.ugc_indexed %>"
                             data-web-link="<%- journalPaper.web_link %>" data-uid="<%- journalPaper.uid %>" data-date-of-publishing="<%- journalPaper.date_of_publishing %>"
                             data-research-type="<%- journalPaper.research_type %>" data-nmims-authors-count="<%- journalPaper. nmims_authors_count%>">
-                            <td class="cell" data-journalPaper-id="<%- journalPaper.id %>"> <%- journalPaper.id %> </td>
+                            <td class="cell " id="rowCount"> <%- index + 1 %> </td>
                             <td class=" cell year"> <%- journalPaper.year %> </td>
                             <td class=" cell school"> <%- journalPaper.school %> </td>
                             <td class=" cell campus"> <%- journalPaper.campus %> </td>
@@ -90,11 +91,13 @@
                             </td>
                         </tr>
                         <% }); %>
+                    </tbody>
                 </table>
                 <div class="d-flex justify-content-between">
                     <div>
-                        <label>Total entries:1
+                        <label >Total entries : <%- rowCount %>
                         </label>
+                        <label class="d-none" id="row-count"> <%- rowCount %></label>
                     </div>
                     <div>
                         <label id="pagination" class="pagination-search"></label>
@@ -494,9 +497,11 @@
     </div>
 </div>
 <!-- inline Javascript -->
-
 <script>
-
+    //   for index icrement
+    const rowCount = document.getElementById('row-count');
+    let rowIndex = rowCount.innerText;
+    let indexValue = parseInt(rowIndex, 10);
     const journalPaperModal = document.getElementById('journal-paper-modal');
     const journalPaperModalView = document.getElementById('journal-paper-modal-view');
     journalPaperModalView.style.display ='none';
@@ -538,12 +543,13 @@
             document.getElementById('nmims-authors-count').value = '';
         }
     })
-
     let rowToBeUpdated, journalPaperId;
    const insertJournalPaper = async(url) => {
         const year = document.getElementById('year')
         console.log('year value ==>>', year.value);
         const journalDetails = {};
+    
+        console.log('indexValue ==>>', indexValue)
         journalDetails.year = document.getElementById('year').value;
         journalDetails.school = document.getElementById('school').value;
         journalDetails.campus = document.getElementById('campus').value;
@@ -612,7 +618,7 @@
                     newJournalPaper.setAttribute('data-research-type', journalDetails.researchType);
                     newJournalPaper.setAttribute('data-nmims-author-count', journalDetails.nmimsAuthorsCount);
                     newJournalPaper.innerHTML = `
-                            <td >${journalPaperId}</td>
+                            <td class="cell" id="rowCount">${indexValue}</td>
                             <td class="year">${journalDetails.year}</td>
                             <td class="school">${journalDetails.school}</td>
                             <td class="campus">${journalDetails.campus}</td>
@@ -640,6 +646,7 @@
         const isValid = validateRequiredFormFields(submitBtn);
             if (isValid) {
                 await insertJournalPaper('<%- BASE_URL %>research/journal-paper/insert');
+                indexValue += 1
             }
             else {
                 alert('Validation Failed');

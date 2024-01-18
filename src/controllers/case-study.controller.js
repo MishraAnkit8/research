@@ -5,7 +5,8 @@ module.exports.renderCaseStudy = async(req, res, next) => {
     const caseStudiesDataList = await caseStudyService.createCaseStudy();
     console.log('data in controller' , caseStudiesDataList);
     res.render('case-study', {
-        caseStudiesData : caseStudiesDataList
+        caseStudiesData : caseStudiesDataList.rows,
+        rowCount : caseStudiesData.rowCount
     } );
 };
 

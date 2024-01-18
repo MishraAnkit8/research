@@ -24,7 +24,8 @@ module.exports.renderPatentSubMissionAndGrant = async(req, res, next) =>{
         docuploadStatus: docuploadStatus,
         errorMsg: errorMsg,
         htmlVal: htmlVal,
-        patentList : patentSubmissionList
+        patentList : patentSubmissionList.rows,
+        rowCount : patentSubmissionList.rowCount
       })
 }
 };

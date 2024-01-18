@@ -3,7 +3,7 @@ const meetingModels = require('../models/meeting-stackholders.model');
 module.exports.fetchMeetingData = async() => {
     const meetingStackholderData = await meetingModels.fetchMeetingStackholdersData();
     console.log('meetingStackholderData' , meetingStackholderData.rows[0]);
-    return meetingStackholderData.rows;
+    return meetingStackholderData;
 }
 
 module.exports.insertMeetingStackholder = async(body, files) => {

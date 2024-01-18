@@ -66,9 +66,9 @@
                         <th>upload documents</th>
                         <th>Action</th>
                     </thead>
-                    <% patentList.forEach(function(patent) {%>
-                        <tr>
-                            <td data-patent-id="patent.id"><%- patent.id %></td>
+                    <% patentList.forEach(function(patent,index) {%>
+                        <tr data-patent-id="<%- patent.id %>">
+                            <td ><%- index+1 %></td>
                             <td class="type-of-invention"><%- patent.type_of_invention %></td>
                             <td class="title-of-invention"><%- patent.title_of_invention %></td>
                             <td class="patent-stage"><%- patent.patent_stage %></td>
@@ -90,8 +90,8 @@
                 </table>
                 <div class="d-flex justify-content-between">
                     <div>
-                        <p>Total entries:1
-                        </p>
+                        <label> Total entries: <%- rowCount %> </label>
+                        <label class="d-none" id="row-count"> <%- rowCount %> </label>
                     </div>
                     <div>
                         <p id="pagination" class="pagination-search"></p>
@@ -331,7 +331,10 @@
 
 <!-- inline script -->
 <script>
-
+    //   for index icrement
+    const rowCount = document.getElementById('row-count');
+    let rowIndex = rowCount.innerText;
+    let indexValue = parseInt(rowIndex, 10);
     const addNewPatentSubmission = document.getElementById('add-patent-submission');
     const submitBtn = document.getElementById('submit-btn');
     const updatetBtn = document.getElementById('update-btn');
@@ -347,10 +350,6 @@
             const applicationNum = document.getElementById('application-no');
             const subMissionDate = document.getElementById('date');
             const patentSubmissionDocument = document.querySelector('input[type="file"]');
-            const achiveSdgYes = document.getElementById('yes'); 
-            const achiveSdgNo = document.getElementById('no');
-            const isPresenterYes = document.getElementById('is-award-yes'); 
-             const isPresenterNo = document.getElementById('is-award-no');
 
             // for making input field empty
             typeOfInvention.value = '';
@@ -359,10 +358,7 @@
             applicationNum.value = '';
             patentSubmissionDocument.value = '';
             date.value = '';
-            // achiveSdgYes.checked = false; 
-            // achiveSdgNo.checked = false;
-            // isPresenterYes.checked = false; 
-            // isPresenterNo.checked = false;
+
         }
     })
     
@@ -409,7 +405,7 @@
                 patentId = data.patentId;
                 const newPatentRow = document.createElement('tr');
                 newPatentRow.innerHTML = `
-                    <td>${patentId}</td>
+                    <td>${indexValue}</td>
                     <td class="type-of-invention">${data.patentData.typeOfInvention}</td>
                             <td class="title-of-invention">${data.patentData.titleOfInvention}</td>
                             <td class="patent-stage">${data.patentData.patentStage}</td>
@@ -441,8 +437,8 @@
     submitBtn.addEventListener('click', async () => {
        const isValid = validateRequiredFormFields(submitBtn);
        if(isValid) {
-            console.log('data inserted successfully');
             await insertPatentforms('<%- BASE_URL %>research/patent-submission/insert');
+            indexValue += 1;
        }
        else{
         alert('validation failed');

@@ -62,7 +62,7 @@
                         <th class="cell">Publication Year</th>
                         <th class="cell">Action</th>
                     </thead>
-                    <% caseStudiesData.forEach(function(caseStudy) { %>
+                    <% caseStudiesData.forEach(function(caseStudy, index) { %>
                         <tr scope="row" data-case-id="<%- caseStudy.id %>" data-page-number="<%- caseStudy.page_number %>"
                             data-url-of-casestudy="<%- caseStudy.url_of_case_study %>"
                             data-number-of-nmims-authors="<%- caseStudy.number_of_nmims_authors %>"
@@ -70,7 +70,7 @@
                             data-nmims-campus-authors="<%- caseStudy.nmims_campus_authors %>"
                             data-nmims-school-authors="<%- caseStudy.nmims_school_authors %>"
                             data-publisher-category="<%- caseStudy.publisher_category %>">
-                            <td class="cell " data-case-id="<%- caseStudy.id %>"> <%- caseStudy.id %> </td>
+                            <td > <%- index+1 %> </td>
                             <td class="cell author-first-name"> <%- caseStudy.author_first_name %> </td>
                             <td class="cell author-last-name"> <%- caseStudy.author_last_name %> </td>
                             <td class="cell title-of-case-study"> <%- caseStudy.title_of_case_study %> </td>
@@ -91,8 +91,8 @@
                 </table>
                 <div class="d-flex justify-content-between">
                     <div>
-                        <p>Total entries:1
-                        </p>
+                        <label> Total entries: <%- rowCount %> </label>
+                        <label class="d-none" id="row-count"> <%- rowCount %> </label>
                     </div>
                     <div>
                         <p id="pagination" class="pagination-search"></p>
@@ -377,7 +377,10 @@
 
 <!-- inline javascript -->
 <script>
-
+    //   for index icrement
+    const rowCount = document.getElementById('row-count');
+    let rowIndex = rowCount.innerText;
+    let indexValue = parseInt(rowIndex, 10);
     const caseStudiesDataList = document.getElementById('case-studies-data-list');
     const submitBtn = document.getElementById('submit-btn');
     const updateBtn = document.getElementById('update-btn');
@@ -478,6 +481,7 @@
         const isValid = validateRequiredFormFields(submitBtn);
             if (isValid) {
                 await insertCaseStudy('<%- BASE_URL %>research/case-study/insert');
+                indexValue += 1
                 console.log('data inserted successfully');
             }
             else {

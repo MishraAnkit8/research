@@ -4,7 +4,8 @@ module.exports.renderBrandingAndAdvertising = async(req, res, next) => {
     const brandingAndAdvertising = await brandingAndAdvertisingServices.fetchBrandingandAdvertisingData();
     if(brandingAndAdvertising){
         res.render('branding-advertising' , {
-            advertisingData : brandingAndAdvertising
+            advertisingData : brandingAndAdvertising.rows,
+            rowCount : brandingAndAdvertising.rowCount
         })
     }
 }

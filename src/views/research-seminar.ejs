@@ -63,13 +63,13 @@
                         <th class="cell">Journal Name</th>
                         <th class="cell">Action</th>
                     </thead>
-                    <% seminarList .forEach(function(seminar) { %>
+                    <% seminarList .forEach(function(seminar, index) { %>
                         <tr scope="row" data-publisher-category="<%- seminar.publisher_category %>"
                             data-pages="<%- seminar.pages %>" data-issn-no="<%- seminar.issn_no %>" data-scs-cite-score="<%- seminar.scs_cite_score %>"
                             data-impact-factor="<%- seminar.impact_factor %>" data-scs-indexed="<%- seminar.scs_indexed %>" data-wos-indexed="<%- seminar.wos_indexed %>"
                             data-gs-indexed="<%- seminar.gs_indexed %>" data-title-of-paper="<%- seminar.title_of_paper %>" data-abdc-indexed="<%- seminar.abdc_indexed %>" data-ugc-indexed="<%- seminar.ugc_indexed %>"
                             data-web-link="<%- seminar.web_link %>" data-uid="<%- seminar.uid %>" data-date-of-publishing="<%- seminar.date_of_publishing %>"  >
-                            <td class="cell" data-seminar-id="<%- seminar.id %>"> <%- seminar.id %> </td>
+                            <td> <%- index+1 %> </td>
                             <td class=" cell year"> <%- seminar.year %> </td>
                             <td class=" cell school"> <%- seminar.school %> </td>
                             <td class=" cell campus"> <%- seminar.campus %> </td>
@@ -86,8 +86,8 @@
                 </table>
                 <div class="d-flex justify-content-between">
                     <div>
-                        <label>Total entries:1
-                        </label>
+                        <label> Total entries: <%- rowCount %> </label>
+                        <label class="d-none" id="row-count"> <%- rowCount %> </label>
                     </div>
                     <div>
                         <label id="pagination" class="pagination-search"></label>
@@ -445,6 +445,10 @@
 <!-- inline Javascript -->
 
 <script>
+    //   for index icrement
+    const rowCount = document.getElementById('row-count');
+    let rowIndex = rowCount.innerText;
+    let indexValue = parseInt(rowIndex, 10);
     const seminarModal = document.getElementById('research-seminar-modall');
     const seminarModalView = document.getElementById('research-seminar-modal-view');
     seminarModalView.style.display ='none';
@@ -472,8 +476,6 @@
             document.getElementById('pages').value = '';
             document.getElementById('issn-no').value = '';
             document.getElementById('scs-cite-score').value = '';
-            // publisherCategoryNational.checked = false;
-            // publisherCategoryInternational.checked = false;
             document.getElementById('impact-factor').value = '';
             document.getElementById('scs-indexed').value = '';
             document.getElementById('wos-indexed').value = '';
@@ -554,7 +556,7 @@
                     newResearchSeminar.setAttribute('data-date-of-publishing', seminarDetails.dateOfPublishing);
                     newResearchSeminar.setAttribute('data-title-of-paper', seminarDetails.titleOfPaper);
                     newResearchSeminar.innerHTML = `
-                            <td >${seminarId}</td>
+                            <td >${indexValue}</td>
                             <td class="year">${seminarDetails.year}</td>
                             <td class="school">${seminarDetails.school}</td>
                             <td class="campus">${seminarDetails.campus}</td>
@@ -580,8 +582,8 @@
         const isValid = validateRequiredFormFields(submitBtn);
             if (isValid) {
                 await insertResearchConsultancyForm('<%- BASE_URL %>research/research-seminar/insert');
-                console.log('data inserted successfully');
-            }
+                indexValue += 1;
+                }
             else {
                 alert('validation Failed');
             }

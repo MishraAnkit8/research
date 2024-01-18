@@ -3,7 +3,7 @@ const researchSeminarModel = require('../models/research-seminar.model');
 module.exports.renderResearchSeminar = async () => {
     let result = await researchSeminarModel.fetchResearchSeminar(); 
     console.log('result ===>', result)
-    return result.rows  
+    return result  
 };
 
 // service for insert

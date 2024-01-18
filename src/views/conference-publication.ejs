@@ -58,12 +58,12 @@
                 <th>ISSN/ISNB No</th>
                 <th>Action</th>
             </thead>
-           <% conferenceData.forEach(function(conference) { %>
+           <% conferenceData.forEach(function(conference,index) { %>
             <tr scope="row" data-conference-id="<%- conference.id %>" data-publisher-category="<%- conference.publisher_category %>" data-is-presenter="<%- conference.is_presenter %>" 
                 data-author-type="<%- conference.author_type %>" data-publication-details="<%- conference.publication_details %>" data-vol-and-issue-no="<%- conference.vol_and_issue_no %>"
                 data-doi-weblink="<%- conference.doi_weblink %>" data-upload-files="<%- conference.upload_files %>" data-award-for-presentation="<%- conference.award_for_presentation %>"
                 data-upload-proof="<%- conference.upload_proof %>">
-                <td data-conference-id="<%- conference.id %> "><%- conference.id %> </td>
+                <td><%- index+1 %> </td>
                 <td class="title-of-paper"><%- conference.title_of_paper %></td>
                 <td class="name-and-place"><%- conference.name_and_place %> </td>
                 <td class="proceedings-detail"><%- conference.proceedings_detail %></td>
@@ -82,8 +82,8 @@
         </table>
         <div class="d-flex justify-content-between">
             <div>
-                <p>Total entries:1
-                </p>
+                <label> Total entries: <%- rowCount %> </label>
+                <label class="d-none" id="row-count"> <%- rowCount %> </label>      
             </div>
             <div>
                 <p id="pagination" class="pagination-search"></p>
@@ -416,7 +416,11 @@
   
 <!-- inline script -->
 <script>
-   
+    //   for index icrement
+    const rowCount = document.getElementById('row-count');
+    let rowIndex = rowCount.innerText;
+    let indexValue = parseInt(rowIndex, 10);
+    console.log('indexValue ==>', indexValue)
     const conferencePublicationList = document.getElementById('conference-publication-list');
     let conferenceId, conferenceRowToBeUpdated;
     const conferenceAddModal = document.getElementById('confrence-modal-form');
@@ -461,6 +465,7 @@
             conferenceDocument.value = ''; 
         }
     })
+    
     const insertConferencePublicationForm = async (url) => {
         const conferenceData = new FormData();
         const conferenceDocument = document.querySelector('input[name="conferenceDocument"]');
@@ -513,7 +518,7 @@
                 newConferenceFormData.setAttribute('data-award-for-presentation' , data.conferenceData.isPresenter);
                 newConferenceFormData.setAttribute('data-upload-proof' , data.conferenceData.ConferenceProof);
                 newConferenceFormData.innerHTML = `
-                    <td>${data.conferenceId}</td>
+                    <td>${indexValue}</td>
                     <td class="title-of-paper">${data.conferenceData.titleOfPaper}</td>
                     <td class="name-and-place">${data.conferenceData.nameAndPlace}</td>
                     <td class="proceedings-detail">${data.conferenceData.procedingDetail}</td>
@@ -537,11 +542,12 @@
         })
 
     }
+    
     submitBtn.addEventListener('click', async () => {
         const isValid = validateRequiredFormFields(submitBtn);
             if (isValid) {
                 await insertConferencePublicationForm('<%- BASE_URL %>research/conference-publication/insert');
-                console.log('data inserted successfully');
+                indexValue += 1;
             }
             else {
                 alert('Validation Failed');
