@@ -79,12 +79,12 @@
                             <td class="inviting-faculty"><%- teaching.inviting_faculty %></td>
                             <td class="program-orientation"><%- teaching.program_orientation %></td>
                             <td class="cell ">
-                                <a class="view" data-teaching-id="<%- teaching.id %>"><i class="fa-solid fa-eye view"
-                                        data-teaching-id="<%- teaching.id %>"></i></a>
-                                <a class="edit" data-teaching-id="<%- teaching.id %>"><i class="fa fa-edit edit"
-                                        data-teaching-id="<%- teaching.id %>"></i></a>
-                                <a class="delete" data-teaching-id="<%- teaching.id %>"><i class="fa-solid fa-trash delete"
-                                        data-teaching-id="<%- teaching.id %>"></i></a>
+                                <label class="view" data-teaching-id="<%- teaching.id %>"><i class="fa-solid fa-eye view text-danger"
+                                    data-teaching-id="<%- teaching.id %>"></i></label>
+                                <label class="edit" data-teaching-id="<%- teaching.id %>"><i class="fa fa-edit edit text-danger"
+                                    data-teaching-id="<%- teaching.id %>"></i></label>
+                                <label class="delete" data-teaching-id="<%- teaching.id %>"><i class="fa-solid fa-trash delete text-danger"
+                                    data-teaching-id="<%- teaching.id %>"></i></label>
                             </td>
                         </tr>
                         <% }); %>
@@ -503,12 +503,12 @@
                                     <td class="inviting-faculty">${data.teachingData.invitingFaculty}</td>
                                     <td class="program-orientation">${data.teachingData.programOrientation}td>
                                     <td class="cell ">
-                                        <a class="view" data-teaching-id=${data.teachingId}><i class="fa-solid fa-eye view"
-                                            data-teaching-id=${data.teachingId}></i></a>
-                                        <a class="edit" data-teaching-id=${data.teachingId}><i class="fa fa-edit edit"
-                                            data-teaching-id=${data.teachingId}></i></a>
-                                        <a class="delete" data-teaching-id=${data.teachingId}><i class="fa-solid fa-trash delete"
-                                            data-teaching-id=${data.teachingId}></i></a>
+                                        <label class="view" data-teaching-id=${data.teachingId}><i class="fa-solid fa-eye view text-danger"
+                                            data-teaching-id=${data.teachingId}></i></label>
+                                        <label class="edit" data-teaching-id=${data.teachingId}><i class="fa fa-edit edit text-danger"
+                                            data-teaching-id=${data.teachingId}></i></label>
+                                        <label class="delete" data-teaching-id=${data.teachingId}><i class="fa-solid fa-trash delete text-danger"
+                                            data-teaching-id=${data.teachingId}></i></label>
                                     </td>`;
                                     teachingExecellanceList.appendChild(newTeachingExecellance);
             }
@@ -655,7 +655,7 @@
     
     })
     
-    updateBtn.addEventListener('click' , () => {
+    const updatedTeachingExecellanceData = async(url) => {
         const updatedTeachingData = new FormData();
         const updatedPedagogyInnovation = document.getElementById('pedagogy-innovation').value;
         const updatedPedagogyInnovationFile = document.querySelector('input[name="pedagogyInnovationFile"]');
@@ -690,7 +690,7 @@
         updatedTeachingData.append('programOrientationFile' , updatedProgramOrientationFile.files[0]); 
         updatedTeachingData.append('programOrientationLink' , updatedProgramOrientationLink);
 
-        fetch('<%- BASE_URL %>teaching-excellance/update' , {
+        fetch(url , {
             method : 'POST',
             body : updatedTeachingData
         })
@@ -720,6 +720,16 @@
             alert('data updated SuccessFully')
         })
 
+    };
+
+    updateBtn.addEventListener('click' , async() => {
+        const isValid = validateRequiredFormFields(submitBtn);
+            if (isValid) {
+                await updatedTeachingExecellanceData('<%- BASE_URL %>teaching-excellance/update');
+            }
+            else {
+                console.log('Validation Failed');
+            }
     })
 
 </script>   

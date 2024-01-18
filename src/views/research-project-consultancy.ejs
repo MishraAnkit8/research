@@ -72,12 +72,12 @@
                         <td class="funding-amount"><%- consultancy.funding_amount %></td>
                         <td class="research-project-status"><%- consultancy.status_of_research_project %></td>
                         <td>
-                            <a class="view" data-consultancy-id="<%- consultancy.id %>"><i class="fa-solid fa-eye view"
-                                     data-consultancy-id="<%- consultancy.id %>"></i></a>
-                            <a class="edit" data-consultancy-id="<%- consultancy.id %>"><i class="fa fa-edit edit"
-                                     data-consultancy-id="<%- consultancy.id %>"></i></a>
-                            <a class="delete" data-consultancy-id="<%- consultancy.id %>"><i class="fa-solid fa-trash delete"
-                                     data-consultancy-id="<%- consultancy.id %>"></i></a>
+                            <label class="view" data-consultancy-id="<%- consultancy.id %>"><i class="fa-solid fa-eye view text-danger"
+                                data-consultancy-id="<%- consultancy.id %>"></i></label>
+                            <label class="edit" data-consultancy-id="<%- consultancy.id %>"><i class="fa fa-edit edit text-danger"
+                                data-consultancy-id="<%- consultancy.id %>"></i></label>
+                            <label class="delete" data-consultancy-id="<%- consultancy.id %>"><i class="fa-solid fa-trash delete text-danger"
+                                data-consultancy-id="<%- consultancy.id %>"></i></label>
                         </td>
                     </tr>
                <% }); %>
@@ -455,12 +455,12 @@
                         <td class="funding-amount">${data.researchConsultantData.fundingAmount}</td>
                         <td class="research-project-status">${data.researchConsultantData.statusOfResearchProject}</td>
                         <td>
-                            <a class="view" data-consultancy-id="${consultantId}"><i class="fa-solid fa-eye view"
-                                    data-consultancy-id="${consultantId}"></i></a>
-                            <a class="edit" data-consultancy-id="${consultantId}"><i class="fa fa-edit edit"
-                                    data-consultancy-id="${consultantId}"></i></a>
-                            <a class="delete" data-consultancy-id="${consultantId}"><i class="fa-solid fa-trash delete"
-                                    data-consultancy-id="${consultantId}"></i></a>
+                            <label class="view" data-consultancy-id="${consultantId}"><i class="fa-solid fa-eye view text-danger"
+                                data-consultancy-id="${consultantId}"></i></label>
+                            <label class="edit" data-consultancy-id="${consultantId}"><i class="fa fa-edit edit text-danger"
+                                data-consultancy-id="${consultantId}"></i></label>
+                            <label class="delete" data-consultancy-id="${consultantId}"><i class="fa-solid fa-trash delete text-danger"
+                                data-consultancy-id="${consultantId}"></i></label>
                         </td>`;
 
                         researchProjectConsultancyList.appendChild(newResearchConsultant);
@@ -649,7 +649,7 @@
             }
         })
 
-    updateBtn.addEventListener('click' , () => {
+    const updateResearchConsultancy = async(url) => {
         console.log('clickeddd')
         const updatedConsultantData = new FormData();
         const updatedGrantProposalCategory = document.querySelector('input[name="grant-proposal"]:checked').value;
@@ -677,7 +677,7 @@
             updatedConsultantData.append('researchSupportingDocument' , updatedSupportingDocument.files[0]);
         }
         
-        fetch('<%- BASE_URL %>research/research-project-consultancy/update' , {
+        fetch(url , {
             method : 'POST',
             body : updatedConsultantData
         })
@@ -701,6 +701,16 @@
         })
         $('#consultancy-modal').modal('hide');
         alert('data updated pbtn-primaryfully');
+    };
+
+    updateBtn.addEventListener('click' , async() => {
+        const isValid = validateRequiredFormFields(submitBtn);
+            if (isValid) {
+                await updateResearchConsultancy('<%- BASE_URL %>research/research-project-consultancy/update');
+            }
+            else {
+                console.log('Validation failed');
+            }
     })
     
 </script>

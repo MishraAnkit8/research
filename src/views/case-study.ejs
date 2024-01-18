@@ -79,12 +79,12 @@
                             <td class="cell volume-number "> <%- caseStudy.volume_number %> </td>
                             <td class="cell publication-year"> <%- caseStudy.publication_year %> </td>
                             <td class="cell ">
-                                <a class="view" data-case-id="<%- caseStudy.id %>"><i class="fa-solid fa-eye view"
-                                        data-case-id="<%- caseStudy.id %>"></i></a>
-                                <a class="edit" data-case-id="<%- caseStudy.id %>"><i class="fa fa-edit edit"
-                                        data-case-id="<%- caseStudy.id %>"></i></a>
-                                <a class="delete" data-case-id="<%- caseStudy.id %>"><i class="fa-solid fa-trash delete"
-                                        data-case-id="<%- caseStudy.id %>"></i></a>
+                                <label class="view" data-case-id="<%- caseStudy.id %>"><i class="fa-solid fa-eye view text-danger"
+                                    data-case-id="<%- caseStudy.id %>"></i></label>
+                                <label class="edit" data-case-id="<%- caseStudy.id %>"><i class="fa fa-edit edit text-danger"
+                                    data-case-id="<%- caseStudy.id %>"></i></label>
+                                <label class="delete" data-case-id="<%- caseStudy.id %>"><i class="fa-solid fa-trash delete text-danger"
+                                    data-case-id="<%- caseStudy.id %>"></i></label>
                             </td>
                         </tr>
                         <% }); %>
@@ -385,6 +385,8 @@
     const submitBtn = document.getElementById('submit-btn');
     const updateBtn = document.getElementById('update-btn');
     const addNewCaseStudyData = document.getElementById('case-study-add-modal');
+    let caseStudyId , rowToBeUpdate;
+
     addNewCaseStudyData.addEventListener('click' , async function(event){
         if(event.target.tagName === 'BUTTON' && event.target.classList.contains('add-modal') || event.target.classList.contains('plus')){
             // for button visualization
@@ -405,7 +407,6 @@
             document.getElementById('nmims-school-authors').value = '';
         }
     })
-    let caseStudyId , rowToBeUpdate;
     
     const insertCaseStudy = async(url) => {
         console.log('clickeddd');
@@ -463,9 +464,9 @@
                         <td class="cell publisher-name">${caseStudyData.publisherName}</td>
                         <td class="cell publication-year">${caseStudyData.publicationYear}</td>
                         <td class="cell actions">
-                            <a class="view" data-case-id="${caseStudyId}"><i data-case-id="${caseStudyId}" class="fa-solid fa-eye view"></i></a>
-                            <a class="edit" data-case-id="${caseStudyId}"><i data-case-id="${caseStudyId}" class="fa fa-edit edit"></i></a>
-                            <a class="delete" data-case-id="${caseStudyId}"><i data-case-id="${caseStudyId}" class="fa-solid fa-trash delete"></i></a>
+                            <label class="view" data-case-id="${caseStudyId}"><i data-case-id="${caseStudyId}" class="fa-solid fa-eye view text-danger"></i></label>
+                            <label class="edit" data-case-id="${caseStudyId}"><i data-case-id="${caseStudyId}" class="fa fa-edit edit text-danger"></i></label>
+                            <label class="delete" data-case-id="${caseStudyId}"><i data-case-id="${caseStudyId}" class="fa-solid fa-trash delete text-danger"></i></label>  
                         </td> `;
                         
                         caseStudiesDataList.appendChild(newCaseStudy);
@@ -477,6 +478,7 @@
             console.log('ERROR' , error);
         })
     }
+    
     submitBtn.addEventListener('click' , async function(){
         const isValid = validateRequiredFormFields(submitBtn);
             if (isValid) {
@@ -631,7 +633,7 @@
         }
     })
     
-    updateBtn.addEventListener('click' , function(){
+    const updateCaseStudy = async(url) => {
         console.log('data is updated');
         const updatedName = document.getElementById('author-first-name').value;
         const updatedPage = document.getElementById('page-number').value;
@@ -666,7 +668,7 @@
         updatedCaseStudies.nmimsSchoolAuthors = updatedschool;
         updatedCaseStudies.titleOfCaseStudy = updatedtitle;
 
-        fetch('<%- BASE_URL %>research/case-study/update' , {
+        fetch(url , {
             method : 'POST',
             headers : {
                 'content-type' : 'application/json'
@@ -695,7 +697,20 @@
                 $('#case-study-modal').modal('hide');
                 alert('data Updated SuccessFully');            }
         })
+    };
+
+    updateBtn.addEventListener('click' , async() => {
+        const isValid = validateRequiredFormFields(updateBtn);
+            if (isValid) {
+                await updateCaseStudy('<%- BASE_URL %>research/case-study/update');
+
+            }
+            else {
+                alert('Data Validation Failed');
+            }
+                
     })
+
 </script>
 <!-- footer section -->
 <%- include('./partials/footer') %>

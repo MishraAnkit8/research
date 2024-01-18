@@ -83,12 +83,12 @@
                             <td class="inaugural-program"><%- meeting.inaugural_program %></td>
                             <td class="events"><%- meeting.events %></td>
                             <td>
-                                <a class="view" data-meeting-id="<%- meeting.id %>"><i class="fa-solid fa-eye view"
-                                        data-meeting-id="<%- meeting.id %>"></i></a>
-                                <a class="edit" data-meeting-id="<%- meeting.id %>"><i class="fa fa-edit edit"
-                                        data-meeting-id="<%- meeting.id %>"></i></a>
-                                <a class="delete" data-meeting-id="<%- meeting.id %>"><i
-                                        class="fa-solid fa-trash delete" data-meeting-id="<%- meeting.id %>"></i></a>
+                                <label class="view" data-meeting-id="<%- meeting.id %>"><i class="fa-solid fa-eye view text-danger"
+                                    data-meeting-id="<%- meeting.id %>"></i></label>
+                                <label class="edit" data-meeting-id="<%- meeting.id %>"><i class="fa fa-edit edit text-danger"
+                                    data-meeting-id="<%- meeting.id %>"></i></label>
+                                <label class="delete" data-meeting-id="<%- meeting.id %>"><i
+                                    class="fa-solid fa-trash delete text-danger" data-meeting-id="<%- meeting.id %>"></i></label>
                             </td>
                         </tr>
                         <% }); %>
@@ -569,12 +569,12 @@
                     <td class="inaugural-program">${data.meetingData.inauguralProgram}</td>
                     <td class="events">${data.meetingData.events}</td>
                     <td>
-                        <a class="view" data-meeting-id="${data.meetingId}"><i class="fa-solid fa-eye view"
-                            data-meeting-id="${data.meetingId}"></i></a>
-                        <a class="edit" data-meeting-id="${data.meetingId}"><i class="fa fa-edit edit"
-                            data-meeting-id="${data.meetingId}"></i></a>
-                        <a class="delete" data-meeting-id="${data.meetingId}"><i class="fa-solid fa-trash delete"
-                            data-meeting-id="${data.meetingId}"></i></a>
+                        <label class="view" data-meeting-id="${data.meetingId}"><i class="fa-solid fa-eye view text-danger"
+                            data-meeting-id="${data.meetingId}"></i></label>
+                        <label class="edit" data-meeting-id="${data.meetingId}"><i class="fa fa-edit edit text-danger"
+                            data-meeting-id="${data.meetingId}"></i></label>
+                        <label class="delete" data-meeting-id="${data.meetingId}"><i class="fa-solid fa-trash delete text-danger"
+                            data-meeting-id="${data.meetingId}"></i></label>
                     </td>`;
 
                     meetingStackholdersList.appendChild(newMeeting);
@@ -734,7 +734,7 @@
         }
     })
 
-    updateBtn.addEventListener('click', () => {
+    const updateMeetingStackholder = async(url) => {
         const updatedMeetingData = new FormData();
         const updatedRankingDocuments = document.querySelector('input[name="rankingDocuments"]');
         const updatedAccredItationFile = document.querySelector('input[name="accreditationFile"]');
@@ -776,7 +776,7 @@
         updatedMeetingData.append('events', updatedEvents);
         updatedMeetingData.append('eventsLink', updatedEventsLink);
 
-        fetch('<%- BASE_URL %>meeting-stackholders/update', {
+        fetch(url, {
             method: 'POST',
             body: updatedMeetingData
         })
@@ -811,7 +811,18 @@
             })
 
 
+    };
+
+    updateBtn.addEventListener('click' , async() => {
+        const isValid = validateRequiredFormFields(submitBtn);
+        if (isValid) {
+            await updateMeetingStackholder('<%- BASE_URL %>meeting-stackholders/update');
+        }
+        else {
+            console.log('Validation Failed');
+        }
     })
+
 </script>
 <!-- footer section -->
 <%- include('./partials/footer') %>
