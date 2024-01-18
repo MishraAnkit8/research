@@ -588,6 +588,10 @@
             console.log('clickedd');
             teachingExecellanceRowToBeDeleted = event.target.closest('tr');
             teachingId = event.target.getAttribute('data-teaching-id');
+            let confirmDelete = confirm("Do you want to delete the Execellance?");
+            if(!confirmDelete) {
+                return;
+            }
 
             fetch('<%- BASE_URL %>teaching-excellance/delete' , {
                 method : 'POST',
@@ -602,12 +606,14 @@
             .then((data) => {
                 if(data.status === 'done'){
                     teachingExecellanceRowToBeDeleted.remove();
+                    location.reload();
                 }
             })
         }
         
         if(event.target.classList.contains('edit')){
             console.log('clickeddddd')
+            removeErrorMsg();
             submitBtn.classList.add('d-none');
             updateBtn.classList.remove('d-none');
             teachingRowToBeUpdated = event.target.closest('tr');

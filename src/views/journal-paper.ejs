@@ -293,7 +293,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal" id="close-btn">Close</button>
                 <button type="button" class="btn btn-primary d-none" id="submit-btn">Submit</button>
                 <button type="button" class="btn btn-primary d-none " id="update-btn">Update</button>
             </div>
@@ -498,20 +498,22 @@
 </div>
 <!-- inline Javascript -->
 <script>
-    //   for index icrement
+    //for index icrement
     const rowCount = document.getElementById('row-count');
     let rowIndex = rowCount.innerText;
     let indexValue = parseInt(rowIndex, 10);
     const journalPaperModal = document.getElementById('journal-paper-modal');
     const journalPaperModalView = document.getElementById('journal-paper-modal-view');
-    journalPaperModalView.style.display ='none';
+    journalPaperModalView.style.display = 'none';
     const journalTable = document.getElementById('journal-paper-list');
     const submitBtn = document.getElementById('submit-btn');
     const updateBtn = document.getElementById('update-btn');
+    const closeBtn = document.getElementById('close-btn');
     const journalPaperAddModal = document.getElementById('journal-paper-add-modal');
-    journalPaperAddModal.addEventListener('click' , async function(event){
-        if(event.target.tagName === 'BUTTON' && event.target.classList.contains('add-modal') || event.target.classList.contains('plus')){
-           console.log('clicked');
+
+    journalPaperAddModal.addEventListener('click', async function (event) {
+        if (event.target.tagName === 'BUTTON' && event.target.classList.contains('add-modal') || event.target.classList.contains('plus')) {
+            console.log('clicked');
             // for button visualization
             submitBtn.classList.remove('d-none');
             updateBtn.classList.add('d-none');
@@ -543,12 +545,13 @@
             document.getElementById('nmims-authors-count').value = '';
         }
     })
+    
     let rowToBeUpdated, journalPaperId;
-   const insertJournalPaper = async(url) => {
+    const insertJournalPaper = async (url) => {
         const year = document.getElementById('year')
         console.log('year value ==>>', year.value);
         const journalDetails = {};
-    
+
         console.log('indexValue ==>>', indexValue)
         journalDetails.year = document.getElementById('year').value;
         journalDetails.school = document.getElementById('school').value;
@@ -556,12 +559,12 @@
         journalDetails.policyCadre = document.getElementById('policy-cadre').value;
         journalDetails.publisher = document.getElementById('publisher').value;
         journalDetails.allAuthors = document.getElementById('all-authors').value;
-        journalDetails.totalAuthors= document.getElementById('total-authors').value;
+        journalDetails.totalAuthors = document.getElementById('total-authors').value;
         journalDetails.nmimsAuthors = document.getElementById('nmims-authors').value;
         journalDetails.journalName = document.getElementById('journal-name').value;
         journalDetails.countOtherFaculty = document.getElementById('count-other-faculty').value;
         journalDetails.pages = document.getElementById('pages').value;
-        journalDetails.issnNo  = document.getElementById('issn-no').value;
+        journalDetails.issnNo = document.getElementById('issn-no').value;
         journalDetails.scsCiteScore = document.getElementById('scs-cite-score').value;
         journalDetails.impactFactor = document.getElementById('impact-factor').value;
         journalDetails.scsIndexed = document.getElementById('scs-indexed').value;
@@ -577,7 +580,7 @@
         journalDetails.nmimsAuthorsCount = document.getElementById('nmims-authors-count').value;
 
         // inserting data from frontEnd
-        console.log('journalDetails==>>',journalDetails);
+        console.log('journalDetails==>>', journalDetails);
         const payload = {
             journalDetails: journalDetails
         }
@@ -636,6 +639,7 @@
                     journalTable.appendChild(newJournalPaper);
                     $('#journal-paper-modal').modal('hide');
                     alert('Data Inserted  SuccessFully');
+                    location.reload();
                 }
             }).catch((error) => {
                 console.error("ERROR:", error);
@@ -643,16 +647,16 @@
     };
 
     submitBtn.addEventListener('click', async () => {
-        const isValid = validateRequiredFormFields(submitBtn);
-            if (isValid) {
-                await insertJournalPaper('<%- BASE_URL %>research/journal-paper/insert');
-                indexValue += 1
-            }
-            else {
-                alert('Validation Failed');
-            }
+        const isValid = validateRequiredFormFields(document.getElementById('submit-btn'));
+        if (isValid) {
+            await insertJournalPaper('<%- BASE_URL %>research/journal-paper/insert');
+            indexValue += 1
+        }
+        else {
+            alert('Validation Failed'); 
+        }
     });
-    
+
     // for deleting
     journalTable.addEventListener('click', function (event) {
 
@@ -661,10 +665,15 @@
             const journalPaperId = event.target.getAttribute('data-journalPaper-id');
             console.log('journalPaperId for delete :', journalPaperId);
             // fetching api for delete
+            let confirmDelete = confirm("Do you want to delete the journal?");
+            if (!confirmDelete) {
+                return;
+            }
+
             fetch('<%- BASE_URL %>research/journal-paper/delete', {
-                method : 'post',
+                method: 'post',
                 headers: {
-                    'content-type' : 'application/json'
+                    'content-type': 'application/json'
                 },
                 body: JSON.stringify({ journalPaperId })
             })
@@ -674,19 +683,17 @@
                 .then((data) => {
                     if (data.status === 'done') {
                         journalPaperRowData.remove();
-                        alert('Row deleted suceesfully');
-                    } else {
-                        alert('Unable to delete element: ' + data.message);
+                        location.reload();
                     }
                 })
                 .catch((error) => {
-
                     console.log(error)
                 });
         }
         // for updating 
         if (event.target.classList.contains('edit')) {
             console.log('clicked')
+            removeErrorMsg();
             $('#journal-paper-modal').modal('show');
             rowToBeUpdated = event.target.closest('tr');
             console.log('rowToBeUpdated ==>>', rowToBeUpdated)
@@ -697,7 +704,7 @@
             updateBtn.classList.remove('d-none');
             // Capturing  the specific row's data and journalPaper ID
             const year = rowToBeUpdated.querySelector('.year');
-            console.log('year ==>>',year)
+            console.log('year ==>>', year)
             const school = rowToBeUpdated.querySelector('.school');
             const campus = rowToBeUpdated.querySelector('.campus');
             const allAuthors = rowToBeUpdated.querySelector('.all-authors');
@@ -755,20 +762,21 @@
             console.log('nmimsAuthorsCount ==>>', nmimsAuthorsCount)
             document.getElementById('scs-indexed').value = scsIndexed.trim();
         }
+        
         // for viewing record of journal paper
-        if(event.target.classList.contains('view')){
+        if (event.target.classList.contains('view')) {
             console.log('clicked')
             journalPaperId = event.target.getAttribute('data-journalPaper-id');
             console.log('journalPaperId ==>>', journalPaperId)
             // updating value with actuall value
             const viewYear = document.getElementById('view-year');
-            const viewSchool=  document.getElementById('view-school');
+            const viewSchool = document.getElementById('view-school');
             const viewCampus = document.getElementById('view-campus');
             const viewAllAuthors = document.getElementById('view-all-authors');
             const viewPublisher = document.getElementById('view-publisher');
             const viewNmimsAuthors = document.getElementById('view-nmims-authors');
             const viewJournalName = document.getElementById('view-journal-name');
-            const viewTotalAuthors =  document.getElementById('view-total-authors');
+            const viewTotalAuthors = document.getElementById('view-total-authors');
             const viewPolicyCadre = document.getElementById('view-policy-cadre');
             const viewCountFaculty = document.getElementById('view-count-of-other-faculty');
             const viewIssNo = document.getElementById('view-issn-no');
@@ -787,21 +795,21 @@
             const viewRsearch = document.getElementById('view-research-type');
             const viewNmimsAuthorsCount = document.getElementById('view-nmims-authors-count');
 
-            fetch('<%- BASE_URL %>research/journal-paper/view' , {
-                method : 'POST',
-                headers : {
+            fetch('<%- BASE_URL %>research/journal-paper/view', {
+                method: 'POST',
+                headers: {
                     'content-type': 'application/json'
                 },
-                body : JSON.stringify({
-                    journalPaperId : journalPaperId
+                body: JSON.stringify({
+                    journalPaperId: journalPaperId
                 })
 
-             })
-             .then((result) => {
+            })
+                .then((result) => {
                     return result.json();
-             })
-             .then((data) => {
-                    console.log('data is viewing',data);  
+                })
+                .then((data) => {
+                    console.log('data is viewing', data);
                     viewYear.innerText = data[0].year;
                     viewAllAuthors.innerText = data[0].all_authors;
                     viewCampus.innerText = data[0].campus;
@@ -811,33 +819,33 @@
                     viewNmimsAuthors.innerText = data[0].nmims_authors;
                     viewSchool.innerText = data[0].school;
                     viewPublisher.innerText = data[0].publisher;
-                    viewCountFaculty.innerText = data[0].count_other_faculty; 
+                    viewCountFaculty.innerText = data[0].count_other_faculty;
                     viewIssNo.innerText = data[0].issn_no;
                     viewAbcdIndexed.innerText = data[0].abdc_indexed;
                     viewWebLink.innerText = data[0].web_link;
-                    viewPages.innerText = data[0].pages; 
-                    viewScsCiteScore.innerText = data[0].pages; 
+                    viewPages.innerText = data[0].pages;
+                    viewScsCiteScore.innerText = data[0].pages;
                     viewImpactFactor.innerText = data[0].impact_factor;
                     viewScsIndexed.innerText = data[0].scs_indexed;
                     viewGsIndexed.innerText = data[0].gs_indexed;
-                    viewUgcIndexed.innerText = data[0].ugc_indexed; 
-                    viewDateOfPublishing.innerText = data[0].date_of_publishing; 
+                    viewUgcIndexed.innerText = data[0].ugc_indexed;
+                    viewDateOfPublishing.innerText = data[0].date_of_publishing;
                     viewTitle.innerText = data[0].title_of_paper;
                     viewRsearch.innerText = data[0].research_type;
                     viewWosIndexed.innerText = data[0].wos_indexed;
                     viewUid.innerText = data[0].uid;
                     viewNmimsAuthorsCount.innerText = data[0].nmims_authors_count;
 
-             }).catch((error) =>{
-                console.log('error:', error);
+                }).catch((error) => {
+                    console.log('error:', error);
 
-             });
+                });
             $('#journal-paper-modal-view').modal('show');
         }
-        
+
     });
-    // adding event listner in update button
-    updateBtn.addEventListener('click', async function () {
+
+    const updateJournalPaper = async (url) => {
         // for assigning store value in our data base
         const updatedYear = document.getElementById('year').value;
         const updatedSchool = document.getElementById('school').value;
@@ -849,21 +857,21 @@
         const updatedNmimsAuthors = document.getElementById('nmims-authors').value;
         const updatedJournalName = document.getElementById('journal-name').value;
         const updatedCountOtherFaculty = document.getElementById('count-other-faculty').value;
-        const updatedTitleOfPaper = document.getElementById('title-of-paper').value ;
+        const updatedTitleOfPaper = document.getElementById('title-of-paper').value;
         const updatedPages = document.getElementById('pages').value;
         const updatedIssnNo = document.getElementById('issn-no').value;
-        const updatedDateOfPublishing =  document.getElementById('date-of-publishing').value ;
+        const updatedDateOfPublishing = document.getElementById('date-of-publishing').value;
         const updatedImpactFactor = document.getElementById('impact-factor').value;
         const updatedScsCiteScore = document.getElementById('scs-cite-score').value;
         const updatedWosIndexed = document.getElementById('wos-indexed').value;
         const updatedGsIndexed = document.getElementById('gs-indexed').value;
         const updatedAbcdIndexed = document.getElementById('abdc-indexed').value;
-        const updatedUgcIndexed  = document.getElementById('ugc-indexed').value;
+        const updatedUgcIndexed = document.getElementById('ugc-indexed').value;
         const updatedWebLink = document.getElementById('web-link').value;
         const updatedUid = document.getElementById('uid').value;
         const updatedResearchType = document.getElementById('research-type').value;
         const updatedNmimsAuthorsCount = document.getElementById('nmims-authors-count').value;
-        const updatedScsIndexed= document.getElementById('scs-indexed').value
+        const updatedScsIndexed = document.getElementById('scs-indexed').value
 
         let updatedJournalPaperDetails = {};
 
@@ -885,7 +893,7 @@
         updatedJournalPaperDetails.impactFactor = updatedImpactFactor;
         updatedJournalPaperDetails.scsCiteScore = updatedScsCiteScore;
         updatedJournalPaperDetails.wosIndexed = updatedWosIndexed;
-        updatedJournalPaperDetails. gsIndexed = updatedGsIndexed;
+        updatedJournalPaperDetails.gsIndexed = updatedGsIndexed;
         updatedJournalPaperDetails.abcdIndexed = updatedAbcdIndexed;
         updatedJournalPaperDetails.ugcIndexed = updatedUgcIndexed;
         updatedJournalPaperDetails.webLink = updatedWebLink;
@@ -895,17 +903,17 @@
         updatedJournalPaperDetails.scsIndexed = updatedScsIndexed;
 
         // sending  updated data to database by fetch api for update the value in db
-        fetch('<%- BASE_URL %>research/journal-paper/update', {
+        fetch(url, {
             method: 'post',
             headers: {
                 'content-type': 'application/json'
             },
             body: JSON.stringify(updatedJournalPaperDetails)
+        })
+            .then((result) => {
+                return result.json()
             })
-        .then((result) => {
-               return result.json()
-            })
-        .then((data) => {
+            .then((data) => {
                 console.log('data ==>>>', data);
 
                 if (data.status === 'done') {
@@ -919,22 +927,22 @@
                     rowToBeUpdated.querySelector('.journal-name').innerText = updatedJournalPaperDetails.journalName;
                     rowToBeUpdated.querySelector('.policy-cadre').innerText = updatedJournalPaperDetails.policyCadre;
                     rowToBeUpdated.querySelector('.publisher').innerText = updatedJournalPaperDetails.publisher;
-                    rowToBeUpdated.setAttribute('data-count-other-faculty', updatedCountOtherFaculty );
-                    rowToBeUpdated.setAttribute('data-pages' , updatedPages);
-                    rowToBeUpdated.setAttribute('data-issn-no' , updatedIssnNo);
-                    rowToBeUpdated.setAttribute('data-scs-cite-score' , updatedScsCiteScore);
-                    rowToBeUpdated.setAttribute('data-impact-factor' , updatedImpactFactor);
-                    rowToBeUpdated.setAttribute('data-scs-indexed' , updatedScsIndexed );
-                    rowToBeUpdated.setAttribute('data-wos-indexed' , updatedWosIndexed);
-                    rowToBeUpdated.setAttribute('data-gs-indexed' , updatedGsIndexed);
-                    rowToBeUpdated.setAttribute('data-abdc-indexed' , updatedAbcdIndexed);
-                    rowToBeUpdated.setAttribute('data-ugc-indexed' , updatedUgcIndexed);
-                    rowToBeUpdated.setAttribute('data-web-link' , updatedWebLink);
-                    rowToBeUpdated.setAttribute('data-uid' , updatedUid);
-                    rowToBeUpdated.setAttribute('data-date-of-publishing' , updatedDateOfPublishing);
-                    rowToBeUpdated.setAttribute('data-title-of-paper' , updatedTitleOfPaper);
-                    rowToBeUpdated.setAttribute('data-research-type' , updatedResearchType);
-                    rowToBeUpdated.setAttribute('data-nmims-author-count' , updatedNmimsAuthorsCount);
+                    rowToBeUpdated.setAttribute('data-count-other-faculty', updatedCountOtherFaculty);
+                    rowToBeUpdated.setAttribute('data-pages', updatedPages);
+                    rowToBeUpdated.setAttribute('data-issn-no', updatedIssnNo);
+                    rowToBeUpdated.setAttribute('data-scs-cite-score', updatedScsCiteScore);
+                    rowToBeUpdated.setAttribute('data-impact-factor', updatedImpactFactor);
+                    rowToBeUpdated.setAttribute('data-scs-indexed', updatedScsIndexed);
+                    rowToBeUpdated.setAttribute('data-wos-indexed', updatedWosIndexed);
+                    rowToBeUpdated.setAttribute('data-gs-indexed', updatedGsIndexed);
+                    rowToBeUpdated.setAttribute('data-abdc-indexed', updatedAbcdIndexed);
+                    rowToBeUpdated.setAttribute('data-ugc-indexed', updatedUgcIndexed);
+                    rowToBeUpdated.setAttribute('data-web-link', updatedWebLink);
+                    rowToBeUpdated.setAttribute('data-uid', updatedUid);
+                    rowToBeUpdated.setAttribute('data-date-of-publishing', updatedDateOfPublishing);
+                    rowToBeUpdated.setAttribute('data-title-of-paper', updatedTitleOfPaper);
+                    rowToBeUpdated.setAttribute('data-research-type', updatedResearchType);
+                    rowToBeUpdated.setAttribute('data-nmims-author-count', updatedNmimsAuthorsCount);
                 }
                 $('#journal-paper-modal').modal('hide');
                 alert('data updated SuccessFully');
@@ -943,9 +951,11 @@
                 console.log("ERROIR : ", error);
                 alert('An error occurred while updating the element');
                 $('#journal-paper-modal').modal('hide');
-               
+
             })
-        })
+    }
+
+
 
 </script>
 <%- include('./partials/footer') %>

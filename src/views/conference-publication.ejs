@@ -551,6 +551,7 @@
             }
             else {
                 alert('Validation Failed');
+                indexValue -+ 1;
             }
     });
 
@@ -560,7 +561,10 @@
         conferenceId = event.target.getAttribute('data-conference-id');
         console.log('id for deletion ==>', conferenceId);
         conferenceRowToBeDelete = event.target.closest('tr');
-
+        let confirmDelete = confirm("Do you want to delete the Conference Publication?");
+            if(!confirmDelete) {
+                return;
+            }
         fetch('<%- BASE_URL %>research/conference-publication/delete' , {
             method : 'POST',
             headers : {
@@ -574,7 +578,7 @@
         .then((data) => {
             if(data.status === 'done'){
                 conferenceRowToBeDelete.remove();
-                alert('Record Deleted Successfully');
+                location.reload();
             }
         })
         }
@@ -636,6 +640,7 @@
         // for update
         if(event.target.classList.contains('edit')){
             console.log('clickedddd');
+            removeErrorMsg();
             conferenceId = event.target.getAttribute('data-conference-id');
             conferenceRowToBeUpdated = event.target.closest('tr');
             console.log('ID ==>>', conferenceId);

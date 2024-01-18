@@ -7,6 +7,7 @@ function validateRequiredFormFields(actionBtn) {
     for (let elem of elemToBeValidated) {
         let isValidElem = true;
         const elemVal = elem.value.trim();
+
         console.log('elemVal ==>>', elemVal);
         const formGroup = elem.closest('.form-group');
         const isRequired = elem.required;
@@ -343,4 +344,15 @@ function isBetween(input, min, max) {
     }
 
     return input >= min && input <= max;
+}
+
+// for removing error class and error massage
+function removeErrorMsg() {
+    const modalContent = document.querySelectorAll('.modal-content .form-group .error-msg');
+
+    modalContent.forEach(function(elem) {
+        elem.classList.remove('error-msg');
+        elem.removeAttribute('data-err-msg');
+        elem.innerText = '';
+    });
 }

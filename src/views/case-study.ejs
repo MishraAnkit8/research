@@ -550,6 +550,10 @@
             const rowToBeDelete = event.target.parentElement.parentElement.parentElement;
             console.log('==>>>', rowToBeDelete)
             console.log('ID', caseStudyId);
+            let confirmDelete = confirm("Do you want to delete the Case Study?");
+            if(!confirmDelete) {
+                return;
+            }
             fetch('<%- BASE_URL %>research/case-study/delete' , {
                 method : 'POST',
                 headers : {
@@ -566,7 +570,7 @@
                 if(data.status === 'done'){
                     console.log('data ==>>', data);
                     rowToBeDelete.remove();
-                    alert('Record Deleted Successfully')
+                    location.reload();
                     
                 }
             })
@@ -577,6 +581,7 @@
 
         if(event.target.classList.contains('edit')){
             console.log('clickeddddd');
+            removeErrorMsg();
             $('#case-study-modal').modal('show');
             // button visualization
             submitBtn.classList.add('d-none');

@@ -338,6 +338,8 @@
     const addNewPatentSubmission = document.getElementById('add-patent-submission');
     const submitBtn = document.getElementById('submit-btn');
     const updatetBtn = document.getElementById('update-btn');
+    const patenetSubMissionList = document.getElementById('patent-submisson-list');
+    let patentId, rowToBeUpdated;
 
     addNewPatentSubmission.addEventListener('click' , function(event){
         if(event.target.tagName === 'BUTTON' && event.target.classList.contains('add-modal') || event.target.classList.contains('plus')){
@@ -362,9 +364,6 @@
         }
     })
     
-    const patenetSubMissionList = document.getElementById('patent-submisson-list');
-    let patentId, rowToBeUpdated;
-
     const insertPatentforms = async (url) => {
         const patentData = new FormData();
         
@@ -445,116 +444,122 @@
        }
     });
 
-    patenetSubMissionList.addEventListener('click' , function(event) {
-      if(event.target.classList.contains('edit')){
-        submitBtn.classList.add('d-none');
-        updatetBtn.classList.remove('d-none');
-        rowToBeUpdated = event.target.closest('tr');
-        console.log('rowToBeUpdated ==>>',rowToBeUpdated);
-        patentId = event.target.getAttribute('data-patent-id');
-        console.log('Id For Updation', patentId);
-        $('#patent-submission-modal').modal('show');
-        const typeOfInvention = document.getElementById('type-of-invention');
-        const titleOfInvention = document.getElementById('title-of-invention');
-        const patentStage = document.getElementById('patent-stage');
-        const achiveSdgYes = document.getElementById('yes'); 
-        const achiveSdgNo = document.getElementById('no');
-        const applicationNum = document.getElementById('application-no');
-        const date = document.getElementById('date');
-        const isPresenterYes = document.getElementById('is-award-yes'); 
-        const isPresenterNo = document.getElementById('is-award-no');
+    patenetSubMissionList.addEventListener('click', function (event) {
 
-        const patentDate = rowToBeUpdated.querySelector('.date').innerText;
-        console.log('patentDate ==>>', patentDate)
-        const formattedDate = formatDateToYYYYMMDD(patentDate);
-        console.log('formattedDate ==>>', formattedDate)
-        typeOfInvention.value = rowToBeUpdated.querySelector('.type-of-invention').innerText;
-        titleOfInvention.value = rowToBeUpdated.querySelector('.title-of-invention').innerText;
-        patentStage.value = rowToBeUpdated.querySelector('.patent-stage').innerText;
-        if (rowToBeUpdated.querySelector('.achive-sdg').innerText === 'yes') {
-            achiveSdgYes.checked = true;
-        } else {
-            achiveSdgNo.checked = true;
-        }
-        applicationNum.value = rowToBeUpdated.querySelector('.application-no').innerText;
-        date.value = formattedDate;
-        if (rowToBeUpdated.querySelector('.is-presenter').innerText === 'yes') {
-            isPresenterYes.checked = true;
-        } else {
-            isPresenterNo.checked = true;
-        } 
-      }
+            if (event.target.classList.contains('edit')) {
+                submitBtn.classList.add('d-none');
+                updatetBtn.classList.remove('d-none');
+                removeErrorMsg();
+                rowToBeUpdated = event.target.closest('tr');
+                console.log('rowToBeUpdated ==>>', rowToBeUpdated);
+                patentId = event.target.getAttribute('data-patent-id');
+                console.log('Id For Updation', patentId);
+                $('#patent-submission-modal').modal('show');
+                const typeOfInvention = document.getElementById('type-of-invention');
+                const titleOfInvention = document.getElementById('title-of-invention');
+                const patentStage = document.getElementById('patent-stage');
+                const achiveSdgYes = document.getElementById('yes');
+                const achiveSdgNo = document.getElementById('no');
+                const applicationNum = document.getElementById('application-no');
+                const date = document.getElementById('date');
+                const isPresenterYes = document.getElementById('is-award-yes');
+                const isPresenterNo = document.getElementById('is-award-no');
 
-    //   for delete patent submission form
-    if(event.target.classList.contains('delete')){
-        const patentSubMissionDataToBeDelete = event.target.closest('tr');
-        patentId = event.target.getAttribute('data-patent-id');
-
-        fetch('<%- BASE_URL %>research/patent-submission/delete' , {
-          method : 'POST',
-          headers : {
-            'content-type' : 'application/json'
-          },
-          body : JSON.stringify({patentId})
-        })
-         .then((result) => {
-             return result.json();
-          })
-         .then((data) => {
-             if(data.status === 'done'){
-                patentSubMissionDataToBeDelete.remove();
-                alert('Record Deleted Successfully');
+                const patentDate = rowToBeUpdated.querySelector('.date').innerText;
+                console.log('patentDate ==>>', patentDate)
+                const formattedDate = formatDateToYYYYMMDD(patentDate);
+                console.log('formattedDate ==>>', formattedDate)
+                typeOfInvention.value = rowToBeUpdated.querySelector('.type-of-invention').innerText;
+                titleOfInvention.value = rowToBeUpdated.querySelector('.title-of-invention').innerText;
+                patentStage.value = rowToBeUpdated.querySelector('.patent-stage').innerText;
+                if (rowToBeUpdated.querySelector('.achive-sdg').innerText === 'yes') {
+                    achiveSdgYes.checked = true;
+                } else {
+                    achiveSdgNo.checked = true;
+                }
+                applicationNum.value = rowToBeUpdated.querySelector('.application-no').innerText;
+                date.value = formattedDate;
+                if (rowToBeUpdated.querySelector('.is-presenter').innerText === 'yes') {
+                    isPresenterYes.checked = true;
+                } else {
+                    isPresenterNo.checked = true;
+                }
             }
-         })
-         .catch((error) => {
-            console.error('ERRORR ::', error)
-         })
-    }
 
-    // patent submission view
-    if(event.target.classList.contains('view')){
-        console.log('data ready for view');
-        const patentSubmissionDataToBeViewed = event.target.closest('tr');
-        console.log('row to be viewed', patentSubmissionDataToBeViewed);
-        patentId = event.target.getAttribute('data-patent-id')
-        $('#patent-submission-modal-view').modal('show');
-        const viewTypeOfInvetion = document.getElementById('view-type-of-invetion');
-        const viewTitleOfinvetion = document.getElementById('view-title-of-invetion');
-        const viewDate = document.getElementById('view-date');
-        const viewAchiveSdg = document.getElementById('view-achive-sdg');
-        const viewIsPresenter = document.getElementById('view-is-presenter');
-        const viewUploadedDoc = document.getElementById('view-patent-file');
-        const viewApplicationNum = document.getElementById('view-application-number');
-        const viewPatentStage = document.getElementById('view-patent-stage');
+            //   for delete patent submission form
+            if (event.target.classList.contains('delete')) {
+                const patentSubMissionDataToBeDelete = event.target.closest('tr');
+                patentId = event.target.getAttribute('data-patent-id');
+                let confirmDelete = confirm("Do you want to delete the Patent?");
+                if(!confirmDelete) {
+                    return;
+                }
 
-        fetch('<%- BASE_URL %>research/patent-submission/view' , {
-            method : 'POST',
-            headers : {
-                'content-type' : 'application/json'
-            },
-            body : JSON.stringify({
-                patentId
-            })
-        })
-        .then((result) => {
-            return result.json();
-        })
-        .then((data) => {
-            if(data.status === 'done'){
-                console.log('data' , data)
-                viewTitleOfinvetion.innerText = data.patentData[0].title_of_invention;
-                viewTypeOfInvetion.innerText = data.patentData[0].type_of_invention;
-                viewApplicationNum.innerText = data.patentData[0].application_no;
-                viewAchiveSdg.innerText = data.patentData[0].achieve_sdg;
-                viewDate.innerText = data.patentData[0].date.split('T')[0];
-                viewPatentStage.innerText = data.patentData[0].patent_stage;
-                viewIsPresenter.innerText = data.patentData[0].is_presenter;
-                viewUploadedDoc.innerText = data.patentData[0].patent_file;
+                fetch('<%- BASE_URL %>research/patent-submission/delete', {
+                    method: 'POST',
+                    headers: {
+                        'content-type': 'application/json'
+                    },
+                    body: JSON.stringify({ patentId })
+                })
+                    .then((result) => {
+                        return result.json();
+                    })
+                    .then((data) => {
+                        if (data.status === 'done') {
+                            patentSubMissionDataToBeDelete.remove();
+                            location.reload();
+                        }
+                    })
+                    .catch((error) => {
+                        console.error('ERRORR ::', error)
+                    })
             }
-        })  
-    }
-            
-    })
+
+            // patent submission view
+            if (event.target.classList.contains('view')) {
+                console.log('data ready for view');
+                const patentSubmissionDataToBeViewed = event.target.closest('tr');
+                console.log('row to be viewed', patentSubmissionDataToBeViewed);
+                patentId = event.target.getAttribute('data-patent-id')
+                $('#patent-submission-modal-view').modal('show');
+                const viewTypeOfInvetion = document.getElementById('view-type-of-invetion');
+                const viewTitleOfinvetion = document.getElementById('view-title-of-invetion');
+                const viewDate = document.getElementById('view-date');
+                const viewAchiveSdg = document.getElementById('view-achive-sdg');
+                const viewIsPresenter = document.getElementById('view-is-presenter');
+                const viewUploadedDoc = document.getElementById('view-patent-file');
+                const viewApplicationNum = document.getElementById('view-application-number');
+                const viewPatentStage = document.getElementById('view-patent-stage');
+
+                fetch('<%- BASE_URL %>research/patent-submission/view', {
+                    method: 'POST',
+                    headers: {
+                        'content-type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        patentId
+                    })
+                })
+                    .then((result) => {
+                        return result.json();
+                    })
+                    .then((data) => {
+                        if (data.status === 'done') {
+                            console.log('data', data)
+                            viewTitleOfinvetion.innerText = data.patentData[0].title_of_invention;
+                            viewTypeOfInvetion.innerText = data.patentData[0].type_of_invention;
+                            viewApplicationNum.innerText = data.patentData[0].application_no;
+                            viewAchiveSdg.innerText = data.patentData[0].achieve_sdg;
+                            viewDate.innerText = data.patentData[0].date.split('T')[0];
+                            viewPatentStage.innerText = data.patentData[0].patent_stage;
+                            viewIsPresenter.innerText = data.patentData[0].is_presenter;
+                            viewUploadedDoc.innerText = data.patentData[0].patent_file;
+                        }
+                    })
+            }
+
+        })
 
     updatetBtn.addEventListener('click' , function() {
         console.log('clickedd');

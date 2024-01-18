@@ -251,7 +251,7 @@
                     <!-- Weblink-DOI Number -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="web-link" class="form-label fw-bold">WEB Link</label>
-                        <input type="text" name="webLinks" id="web-link" class="form-control" data-validate="isEmpty,isNotNumber,isExist:2:255" data-err-msg="This field is required." placeholder="Weblink-DOI Number" required>
+                        <input type="text" name="webLinks" id="web-link" class="form-control" data-validate="isEmpty,isNotNumber,isExist" data-err-msg="This field is required." placeholder="Weblink-DOI Number" required>
                     </div>
 
                     <!-- UID -->
@@ -269,7 +269,7 @@
                     <!-- title-of-paper -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="title-of-paper" class="form-label fw-bold">Title Of Paper</label>
-                        <input type="text" name="titleOfPaper" id="title-of-paper" class="form-control" data-validate="isEmpty,isNotNumber,isExist:2:255" data-err-msg="This field is required and min length > 1." placeholder="title-of-paper" required>
+                        <input type="text" name="titleOfPaper" id="title-of-paper" class="form-control" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="This field is required and min length > 1." placeholder="title-of-paper" required>
                     </div>
                 </div>
             </div>
@@ -457,6 +457,9 @@
     const submitBtn = document.getElementById('submit-btn');
     const updateBtn = document.getElementById('update-btn');
     const seminarAddModal = document.getElementById('research-seminar-add-modal');
+    let seminarRowToBeUpdated, seminarId;
+    let updatedResearchSeminar = {};
+    
     seminarAddModal.addEventListener('click' , async function(event){
         if(event.target.tagName === 'BUTTON' && event.target.classList.contains('add-modal') || event.target.classList.contains('plus')){
            console.log('clicked');
@@ -489,8 +492,6 @@
         }
     })
 
-    let seminarRowToBeUpdated, seminarId;
-    let updatedResearchSeminar = {};
     const insertResearchConsultancyForm =  async function (url) {
         const year = document.getElementById('year')
         console.log('year value ==>>', year.value);
@@ -560,9 +561,9 @@
                             <td class="year">${seminarDetails.year}</td>
                             <td class="school">${seminarDetails.school}</td>
                             <td class="campus">${seminarDetails.campus}</td>
+                            <td class="publisher">${seminarDetails.publisher}</td>
                             <td class="nmims-faculty">${seminarDetails.NmimsFaculty}</td>
                             <td class="journal-name">${seminarDetails.journalName}</td>
-                            <td class="publisher">${seminarDetails.publisher}</td>
                             <td>
                                 <a class="view" data-seminar-id="${seminarId}"><i data-seminar-id="${seminarId}" class="fa-solid fa-eye view"></i></a>
                                 <a class="edit"  data-seminar-id="${seminarId}"><i  data-seminar-id="${seminarId}" class="fa fa-edit edit"></i></a>
@@ -596,7 +597,11 @@
             const seminarRowData = event.target.parentElement.parentElement.parentElement;
             const seminarId = event.target.getAttribute('data-seminar-id');
             console.log('seminarId for delete :', seminarId);
-            // fetching api for delete
+            let confirmDelete = confirm("Do you want to delete the Seminar?");
+            if(!confirmDelete) {
+                return;
+            }
+
             fetch('<%- BASE_URL %>research/research-seminar/delete', {
                 method : 'post',
                 headers: {
@@ -610,7 +615,7 @@
                 .then((data) => {
                     if (data.status === 'done') {
                         seminarRowData.remove();
-                        alert('Record Deleted Successfully')
+                        location.reload();
                     } 
                 })
                 .catch((error) => {
@@ -620,7 +625,7 @@
         // for updating 
 
         if (event.target.classList.contains('edit')) {
-            $('#research-seminar-modal').modal('show');
+            removeErrorMsg();
             seminarRowToBeUpdated = event.target.closest('tr');
             console.log('seminarRowToBeUpdated ==>>>', seminarRowToBeUpdated)
             seminarId = event.target.getAttribute('data-seminar-id');
@@ -679,6 +684,8 @@
             document.getElementById('web-link').value = webLink.trim();
             document.getElementById('uid').value = uid.trim();
             document.getElementById('scs-indexed').value = scsIndexed.trim();
+            
+            $('#research-seminar-modal').modal('show');
         }
 
         // for viewing record of journal paper

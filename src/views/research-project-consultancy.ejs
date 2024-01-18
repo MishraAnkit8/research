@@ -484,7 +484,8 @@
     researchProjectConsultancyList.addEventListener('click' , function(event) {
         console.log('clikedddd')
             if(event.target.classList.contains('edit')){
-                console.log('clikedddd2')
+                console.log('clikedddd2');
+                removeErrorMsg();
                 submitBtn.classList.add('d-none');
                 updateBtn.classList.remove('d-none');
                 $('#consultancy-modal').modal('show');
@@ -572,14 +573,17 @@
                 const supportingDocuments = consultantRowToBeUpdated.getAttribute('data-supports-document');
                 console.log('supportingDocuments ==>>', supportingDocuments)
             }
-
+            //for delete
             if(event.target.classList.contains('delete')){
                 console.log('clekeddddd');
                 const consultantRowToBEDeleted = event.target.closest('tr');
                 console.log('consultantRowToBEDeleted  ==>>', consultantRowToBEDeleted);
                 consultantId = event.target.getAttribute('data-consultancy-id');
                 console.log('consultantId ===>>', consultantId);
-                
+                let confirmDelete = confirm("Do you want to delete the Consultancy?");
+                if(!confirmDelete) {
+                    return;
+                }
                 fetch('<%- BASE_URL %>research/research-project-consultancy/delete' , {
                     method : 'POST',
                     headers : {
@@ -593,7 +597,7 @@
                 .then((data) => {
                     if(data.status === 'done'){
                         consultantRowToBEDeleted.remove();
-                        alert('Record Deleted Successfully');
+                        location.reload();
                     }
                 })
             }

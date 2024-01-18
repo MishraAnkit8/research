@@ -602,7 +602,10 @@
             console.log('clickeddd');
             const meetingRowToBeDeleted = event.target.closest('tr');
             meetingId = event.target.getAttribute('data-meeting-id');
-
+            let confirmDelete = confirm("Do you want to delete the Meeting Stackholder?");
+            if(!confirmDelete) {
+                return;
+            }
             fetch('<%- BASE_URL %>meeting-stackholders/delete', {
                 method: 'POST',
                 headers: {
@@ -617,6 +620,7 @@
                     if (data.status === 'done') {
                         console.log('data ==>>', data);
                         meetingRowToBeDeleted.remove();
+                        location.reload();
                     }
                 })
         }
@@ -682,8 +686,10 @@
                 })
             $('#meeting-excellance-view-modal').modal('show');
         }
+        
         if (event.target.classList.contains('edit')) {
             console.log('clcikeddd');
+            removeErrorMsg();
             submitBtn.classList.add('d-none');
             updateBtn.classList.remove('d-none');
             meetingRowToBeUpdated = event.target.closest('tr');

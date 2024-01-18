@@ -599,6 +599,7 @@
         // for updation
         if(event.target.classList.contains('edit')){
             console.log('clickeddd');
+            removeErrorMsg();
             editedBookRowToBeUpdated = event.target.closest('tr');
             console.log('editedBookRowToBeUpdated ==>>', editedBookRowToBeUpdated);
             editedBookId = event.target.getAttribute('data-editedbook-id');
@@ -659,7 +660,10 @@
             console.log('editedBookPublicatRowToBeDeleted ==>>', editedBookPublicatRowToBeDeleted)
             editedBookId = event.target.getAttribute('data-editedbook-id');
             console.log('ID ==>>', editedBookId);
-
+            let confirmDelete = confirm("Do you want to delete the Edited Book Publication?");
+            if(!confirmDelete) {
+                return;
+            }
             fetch('<%- BASE_URL %>research/book-publication-main/edited-book-publication/delete' , {
                 method : 'POST',
                 headers : {
@@ -674,7 +678,7 @@
                 if(data.status === 'done'){
                     console.log('data ==>>', data);
                     editedBookPublicatRowToBeDeleted.remove();
-                    alert('Row Deleted Successfully')
+                    location.reload();
                 }
             })
         }

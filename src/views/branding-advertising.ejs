@@ -798,6 +798,10 @@
             const advertisingRowToBeDeleted = event.target.closest('tr');
             advertisingId = event.target.getAttribute('data-advertising-id');
             console.log('advertisingId ==>>', advertisingId);
+            let confirmDelete = confirm("Do you want to delete the Branding Advertising?");
+            if(!confirmDelete) {
+                return;
+            }
 
             fetch('/branding-advertising/delete' , {
                 method : 'POST',
@@ -813,6 +817,7 @@
                 if(data.status === 'done'){
                     console.log('data ==>>', data)
                     advertisingRowToBeDeleted.remove();
+                    location.reload();
                 }
             })
             
@@ -905,6 +910,7 @@
         // update advertising
         if(event.target.classList.contains('edit')){
             console.log('clickeddddd');
+            removeErrorMsg();
             submitBtn.classList.add('d-none');
             updateBtn.classList.remove('d-none');
 
