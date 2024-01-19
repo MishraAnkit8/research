@@ -34,6 +34,7 @@ module.exports.insertPatentsubmission = async(req, res, next) => {
         console.log('patentData in Controller', req.body);
         const patentData = req.body;
         const { filename, path: filePath } = req.file;
+        console.log('file data ==>>', req.file)
         console.log('file name ==>', filename);
         console.log('Controller for handleFileConversion ==>>', req.file)
         const patentDataSubmission = await patentSubmissionservice.insertPatentFormData(req.body, filename);

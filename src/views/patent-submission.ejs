@@ -60,20 +60,18 @@
                         <th>Title of Invention</th>
                         <th>Patent Stage</th>
                         <th>Application Number</th>
-                        <th>Date</th>
                         <th>Are you the Presenter</th>
                         <th>Are you achieve SDG ?</th>
                         <th>upload documents</th>
                         <th>Action</th>
                     </thead>
                     <% patentList.forEach(function(patent,index) {%>
-                        <tr data-patent-id="<%- patent.id %>">
+                        <tr data-patent-id="<%- patent.id %>" data-patent-date="<%- patent.date %>">
                             <td ><%- index+1 %></td>
                             <td class="type-of-invention"><%- patent.type_of_invention %></td>
                             <td class="title-of-invention"><%- patent.title_of_invention %></td>
                             <td class="patent-stage"><%- patent.patent_stage %></td>
                             <td class="application-no"><%- patent.application_no %></td>
-                            <td class="date"><%- patent.date %></td>
                             <td class="is-presenter"><%- patent.is_presenter %></td>
                             <td class="achive-sdg"><%- patent.achieve_sdg %></td>
                             <td class="patent-file"><%- patent.patent_file %></td>
@@ -403,13 +401,13 @@
                 console.log('data >>>', data);
                 patentId = data.patentId;
                 const newPatentRow = document.createElement('tr');
+                newPatentRow.setAttribute('data-patent-date' , data.patentData.subMissionDate)
                 newPatentRow.innerHTML = `
                     <td>${indexValue}</td>
                     <td class="type-of-invention">${data.patentData.typeOfInvention}</td>
                             <td class="title-of-invention">${data.patentData.titleOfInvention}</td>
                             <td class="patent-stage">${data.patentData.patentStage}</td>
                             <td class="application-no">${data.patentData.applicationNum}</td>
-                            <td class="date">${data.patentData.subMissionDate}</td>
                             <td class="is-presenter">${data.patentData.isPresentor}</td>
                             <td class="achive-sdg">${data.patentData.achiveSdg}</td>
                             <td class="patent-file">${data.filename}</td>
@@ -418,7 +416,7 @@
                                     data-patent-id="${patentId}"></i></label>
                                 <label class="edit" data-patent-id="${patentId}"><i class="fa fa-edit edit text-danger"
                                     data-patent-id="${patentId}"></i></label>
-                                <label class="delete" data-patent-id="${patentId}"><i class="fa-solid fa-trash delete text"
+                                <label class="delete" data-patent-id="${patentId}"><i class="fa-solid fa-trash delete text-danger"
                                     data-patent-id="${patentId}"></i></label>
                            </td> `;
 
@@ -461,14 +459,14 @@
                 const achiveSdgYes = document.getElementById('yes');
                 const achiveSdgNo = document.getElementById('no');
                 const applicationNum = document.getElementById('application-no');
-                const date = document.getElementById('date');
                 const isPresenterYes = document.getElementById('is-award-yes');
                 const isPresenterNo = document.getElementById('is-award-no');
 
-                const patentDate = rowToBeUpdated.querySelector('.date').innerText;
-                console.log('patentDate ==>>', patentDate)
-                const formattedDate = formatDateToYYYYMMDD(patentDate);
+                const subMissionDate = rowToBeUpdated.getAttribute('data-patent-date');
+                console.log('patentDate ==>>', subMissionDate)
+                const formattedDate = formatDateToYYYYMMDD(subMissionDate);
                 console.log('formattedDate ==>>', formattedDate)
+                document.getElementById('date').value = formattedDate.trim();
                 typeOfInvention.value = rowToBeUpdated.querySelector('.type-of-invention').innerText;
                 titleOfInvention.value = rowToBeUpdated.querySelector('.title-of-invention').innerText;
                 patentStage.value = rowToBeUpdated.querySelector('.patent-stage').innerText;
@@ -568,7 +566,7 @@
         const updatedPatentStage = document.getElementById('patent-stage').value;
         const updatedAchiveSdg =  document.querySelector('input[name="achive-sdg"]:checked').value
         const updatedApplicationNum = document.getElementById('application-no').value;
-        const updatedDate = document.getElementById('date').value;
+        const updatedSubMissionDate = document.getElementById('date').value;
         const updatedIs_Presenter = document.querySelector('input[name="is-presenter"]:checked').value; 
 
         const updatedPatentData = new FormData();
@@ -579,7 +577,7 @@
         updatedPatentData.append('patentStage', updatedPatentStage);
         updatedPatentData.append('achiveSdg', updatedAchiveSdg);
         updatedPatentData.append('applicationNum', updatedApplicationNum);
-        updatedPatentData.append('date', updatedDate);
+        updatedPatentData.append('subMissionDate', updatedSubMissionDate);
         updatedPatentData.append('isPresentor', updatedIs_Presenter);
         const updatedPatentFileInput = document.querySelector('input[type="file"]');
         if (updatedPatentFileInput.files.length > 0) {
@@ -605,7 +603,7 @@
                 rowToBeUpdated.querySelector('.achive-sdg').innerText = data.updatedPatentData.achiveSdg;
                 rowToBeUpdated.querySelector('.application-no').innerText = data.updatedPatentData.applicationNum;
                 rowToBeUpdated.querySelector('.patent-stage').innerText = data.updatedPatentData.patentStage;
-                rowToBeUpdated.querySelector('.date').innerText = data.updatedPatentData.date;
+                rowToBeUpdated.setAttribute('data-patent-date' , data.updatedPatentData.subMissionDate);
                 rowToBeUpdated.querySelector('.is-presenter').innerText = data.updatedPatentData.isPresentor;
                 document.querySelector('.patent-file').innerText = data.patentDocument;
             
