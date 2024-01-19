@@ -27,6 +27,7 @@
                     <div>
                         <label>Show Entries</label>
                         <select class="form-select" id="changeEntry">
+                            <option value="5">5</option>
                             <option value="10">10</option>
                             <option value="25">25</option>
                             <option value="50">50</option>
@@ -43,13 +44,13 @@
                         </select>
                     </div>
                 </div>
-                <div class="table-searchbar-container"><button type="button"><i class="fas fa-search"></i>
-                    </button><input type="search" id="searchkeyword" placeholder="Enter keywords"
-                        class="table-searchbar">
+                <div class="table-searchbar-container">
+                    <button type="button" id="searchBtn"><i class="fas fa-search"></i></button>
+                    <input type="search" id="searchKeyword" placeholder="Enter keywords" class="table-searchbar">
                 </div>
             </div>
         </div>
-        <table class="table custom-table" id="conference-publication-list">
+        <table class="table custom-table research-pagination" id="conference-publication-list">
             <thead>
                 <th>#</th>
                 <th>Title of the Paper</th>
@@ -90,7 +91,11 @@
                 Total Entries : <label  id="row-count"> <%- rowCount %> </label>      
             </div>
             <div>
-                <p id="pagination" class="pagination-search"></p>
+                <div>
+                    <button id="prevBtn" class="btn btn-primary">Previous</button>
+                    <button id="nextBtn" class="btn btn-primary">Next</button>
+                    <p id="pagination" class="pagination-search"></p>
+                </div>
             </div>
         </div>
     </div>
@@ -154,7 +159,7 @@
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="title-of-paper" class="form-label  fw-bold">Title Of The Paper</label>
                         <input type="text" name="title-project" id="title-of-paper" class="form-control"
-                            data-validate="isEmpty,isNotNumber,isExist,isLength:2:255"  data-err-msg="This field is required and min length > 1." placeholder="Title of Project" required />
+                            data-validate="isEmpty,isNotNumber,isExist,isLength:2:255"  data-err-msg="This field is required and min length > 1." required />
                     </div>
                     <!-- Name and Place of Conference -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
@@ -162,14 +167,14 @@
                             <label for="name-and-place" class="form-label  fw-bold"> Name and Place of Conference </label>
                             <input type="text" name="name-and-place" id="name-and-place"
                                 data-validate="isEmpty,isNotNumber,isExist,isLength:2:255"  data-err-msg="This field is required and min length > 1." class="form-control"
-                                placeholder="Name and Place of Conference" required />
+                               required />
                         </div>
                     </div>
                     <!-- Proceedings Detail -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="proceedings-detail" class="form-label fw-bold"> Proceedings Detail </label>
                         <input type="text" name="proceedings-detail"   id="proceedings-detail"
-                            data-validate="isEmpty,isNotNumber,isExist,isLength:2:255"  data-err-msg="This field is required and min length > 1."class="form-control" placeholder="Proceedings Detail" required>
+                            data-validate="isEmpty,isNotNumber,isExist,isLength:2:255"  data-err-msg="This field is required and min length > 1."class="form-control" required>
                     </div>
                     <!-- Publisher Category  -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
@@ -226,7 +231,7 @@
                             Publication Details
                         </label>
                         <input type="text" name="publicaton-detail" id="publication-details"
-                            data-validate="isEmpty,isNotNumber,isExist,isLength:2:255"  data-err-msg="This field is required and min length > 1." class="form-control" placeholder="Publication Details" required>
+                            data-validate="isEmpty,isNotNumber,isExist,isLength:2:255"  data-err-msg="This field is required and min length > 1." class="form-control" required>
                     </div>
                     <!-- Any award for presentation -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12  mb-4">
@@ -253,7 +258,7 @@
                             Vol and issue no [e.g 9 (12)]
                         </label>
                         <input type="number" name="vol-issues" id="vol-and-issue-no" data-validate="isEmpty,isNumber"  data-err-msg="Numeric value is required."
-                            class="form-control" placeholder="Vol and issue no." required>
+                            class="form-control"  required>
                     </div>
                     <!-- ISSN/ISNB No -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
@@ -261,7 +266,7 @@
                             ISSN/ISNB No.
                         </label>
                         <input type="number" name="ISBN-Number" id="issn-isbn-no" data-validate="isEmpty,isNumber"  data-err-msg="Numeric value is required."
-                            class="form-control" placeholder="ISSN/ISNB No." required>
+                            class="form-control" required>
                     </div>
                     <!-- DOI/Weblink of paper -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
@@ -270,7 +275,7 @@
                                 DOI/Weblink of paper
                             </label>
                             <input type="text" name="web-link" id="doi-weblink" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255"  data-err-msg="Link is required."
-                                placeholder="DOI/Weblink of paper" class="form-control" required/>
+                                class="form-control" required/>
                         </div>
                     </div>
                     <!-- Upload Files -->
@@ -278,7 +283,7 @@
                         <div class="form-group">
                             <label for="upload" class="form-label fw-bold ">Upload Files</label>
                             <input type="file" id="conference-file" data-validate="isEmpty"  data-err-msg="File is required" name="conferenceDocument"
-                                class="form-control" placeholder="conference-file-name" required>
+                                class="form-control" required>
                         </div>
                     </div>
                     <!-- upload proof -->
@@ -287,7 +292,7 @@
                             <label for="upload" data-validate="isEmpty,"  data-err-msg="File is required." class="form-label fw-bold " required>Upload
                                 Proof</label>
                             <input type="file" id="conference-proof" name="conferenceProof" class="form-control "
-                                placeholder="upload-conference-proofe">
+                               required>
                         </div>
                     </div>
                 </div>
@@ -782,5 +787,6 @@
     })
 
 </script>
+<%- include('./partials/pagination') %>
 <%- include('./partials/footer') %>
 <%- include('./partials/footer-end') %>

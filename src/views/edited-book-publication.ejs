@@ -28,6 +28,7 @@
                     <div>
                         <label>Show Entries</label>
                         <select class="form-select" id="changeEntry">
+                            <option value="5">5</option>
                             <option value="10">10</option>
                             <option value="25">25</option>
                             <option value="50">50</option>
@@ -44,13 +45,13 @@
                         </select>
                     </div>
                     <div>
-                        <div class="table-searchbar-container"><button type="button"><i class="fas fa-search"></i>
-                            </button><input type="search" id="searchkeyword" placeholder="Enter keywords"
-                                class="table-searchbar">
+                        <div class="table-searchbar-container">
+                            <button type="button" id="searchBtn"><i class="fas fa-search"></i></button>
+                            <input type="search" id="searchKeyword" placeholder="Enter keywords" class="table-searchbar">
                         </div>
                     </div>
                 </div>
-                <table class="table custom-table " id="edited-book-list">
+                <table class="table custom-table research-pagination" id="edited-book-list">
                     <thead>
                         <th>#</th>
                         <th>Author's name</th>
@@ -96,6 +97,8 @@
                         <label class="d-none" id="row-count"> <%- rowCount %></label>
                     </div>
                     <div>
+                        <button id="prevBtn" class="btn btn-primary">Previous</button>
+                        <button id="nextBtn" class="btn btn-primary">Next</button>
                         <p id="pagination" class="pagination-search"></p>
                     </div>
                 </div>
@@ -159,43 +162,39 @@
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="author-first-name" class="form-label  fw-bold">Author's  Name</label>
                         <input type="text" name="author-first-name" data-validate="isEmpty,isAlphabeticWords,isLength:2:255" data-err-msg="This field is required and min length > 1." id="author-first-name"
-                            class="form-control" placeholder="First name" required>
+                            class="form-control"  required>
                     </div>
                     <!-- Title of edited book -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="chapter-title" class="form-label fw-bold">Title Of Chapeter</label>
                         <input type="text" name="titleOfBook" id="chapter-title" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="This field is required and min length > 1."
-                            class="form-control" placeholder="Title of Book" required>
+                            class="form-control"  required>
                     </div>
                     <!-- Title of BOOK -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="book-title" class="form-label fw-bold">Title of book</label>
                         <input type="text" name="titleOfBook" id="book-title" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="This field is required and min length > 1."
-                            class="form-control" placeholder="Title of Book" required>
+                            class="form-control"  required>
                     </div>
                     <!-- Edition -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="edition" class="form-label fw-bold">Edition (if it isn't the first)</label>
-                        <input type="text" name="edition" id="edition" data-validate="isEmpty,isAlphaNumeric" data-err-msg="AlphaNumeric value is required." class="form-control"
-                            placeholder="Optional" required>
+                        <input type="text" name="edition" id="edition" data-validate="isEmpty,isAlphaNumeric" data-err-msg="AlphaNumeric value is required." class="form-control" required>
                     </div>
                     <!-- EDITOR NAME -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="edition" class="form-label fw-bold">Editor(s) Of The Book</label>
-                        <input type="text" name="editor" data-validate="isEmpty,isAlphabeticWords" data-err-msg="This field is required and min length > 1." id="editor-name" class="form-control"
-                            placeholder="Optional" required>
+                        <input type="text" name="editor" data-validate="isEmpty,isAlphabeticWords" data-err-msg="This field is required and min length > 1." id="editor-name" class="form-control" required>
                     </div>
                     <!-- PAGE number -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="Volume" class="form-label fw-bold">Page number</label>
-                        <input type="number" name="vol" id="page-number" data-validate="isEmpty,isNumber,isLength:2:255" data-err-msg="Numeric value is required." class="form-control"
-                            placeholder="Optional" required>
+                        <input type="number" name="vol" id="page-number" data-validate="isEmpty,isNumber,isLength:2:255" data-err-msg="Numeric value is required." class="form-control" required>
                     </div>
                     <!-- Publisher Name -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="publisherName" class="form-label fw-bold">Publisher Name</label>
-                        <input type="text" name="vol" id="publisher-name" data-validate="isEmpty,isAlphabeticWords,isLength:2:255" data-err-msg="This field is required and min length > 1." class="form-control"
-                            placeholder="Pulisher name" required>
+                        <input type="text" name="vol" id="publisher-name" data-validate="isEmpty,isAlphabeticWords,isLength:2:255" data-err-msg="This field is required and min length > 1." class="form-control" required>
                     </div>
                      <!-- Publisher Category  -->
                      <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
@@ -214,56 +213,52 @@
                     <!-- Publication Year -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="publicationYear" class="form-label fw-bold">Publication Year</label>
-                        <input type="number" name="Year" id="publication-year" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required." class="form-control"
-                            placeholder="Publication Year" required>
+                        <input type="number" name="Year" id="publication-year" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required." class="form-control" required>
                     </div>
                     <!-- URL of the book publication -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="URL of book" class="form-label fw-bold">URL Of Book</label>
-                        <input type="text" name="URL" id="book-url" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="This field is required and min length > 1." class="form-control"
-                            placeholder="URL" required>
+                        <input type="text" name="URL" id="book-url" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="This field is required and min length > 1." class="form-control" required>
                     </div>
                     <!-- ISBN Number -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="caseStudy" class="form-label fw-bold">ISBN Number</label>
-                        <input type="number" name="ISBN-Number" id="isbn-no" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required" class="form-control"
-                            placeholder="ISBN Number" required>
+                        <input type="number" name="ISBN-Number" id="isbn-no" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required" class="form-control" required>
                     </div>
                     <!-- DOI of book -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="doi-book-id" class="form-label fw-bold">DOI of book</label>
-                        <input type="number" name="doi-book-id" id="doi-book-id" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required" class="form-control"
-                            placeholder="DOI BOOK " required>
+                        <input type="number" name="doi-book-id" id="doi-book-id" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required" class="form-control" required>
                     </div>
                     <!-- Place of Publication -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="publication-place" class="form-label fw-bold">Place of Publication</label>
                         <input type="text" name="publication-place" id="publication-place" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="This field is required and min length > 1."
-                            class="form-control" placeholder="publication Place " required>
+                            class="form-control" required>
                     </div>
                     <!-- No. of NMIMS Authors -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="number-of-nmims-authors" class="form-label fw-bold ">No. of NMIMS Authors</label>
                         <input type="number" name="nmims-authors" id="number-of-nmims-authors" data-validate="isEmpty,isNumber"
-                        data-err-msg="Numeric value is required."   placeholder="No. of NMIMS Authors" class="form-control " required/>
+                        data-err-msg="Numeric value is required." class="form-control " required/>
                     </div>
                     <!-- Name of NMIMS Authors -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="nmims-authors" class="form-label fw-bold ">Name of NMIMS Authors</label>
                         <input type="text" name="nmimsAuthors" id="nmims-authors" data-validate="isEmpty,isAlphabeticWords,isLength:2:255" data-err-msg="This field is required and min length > 1."
-                            placeholder="Name of NMIMS Authors" class="form-control " required/>
+                            class="form-control " required/>
                     </div>
                     <!-- NMIMS Campus - Author -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="nmims-campus-authors" class="form-label fw-bold ">NMIMS Campus Author</label>
                         <input type="url" name="nmimsCampusAuthors" id="nmims-campus-authors" data-validate="isEmpty,isAlphabeticWords,isLength:2:255" data-err-msg="This field is required and min length > 1."
-                            placeholder="NMIMS Campus Author" class="form-control " required/>
+                        class="form-control " required/>
                     </div>
                     <!--NMIMS School - Author-->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="nmims-school-authors" class="form-label fw-bold ">NMIMS School Author</label>
                         <input type="text" name="nmimsSchoolAuthors" id="nmims-school-authors" data-validate="isEmpty,isAlphabeticWords,isLength:2:255" data-err-msg="This field is required and min length > 1."
-                            placeholder="NMIMS School Author" class="form-control " required/>
+                            class="form-control " required/>
                     </div>
                     <!-- Upload Supporting Documents-->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
@@ -838,7 +833,8 @@
     })
 
 </script>
-/ <!-- footer section -->
+ <!-- footer section -->
+<%- include('./partials/pagination') %>
 <%- include('./partials/footer') %>
 <%- include('./partials/footer-end') %>
            
