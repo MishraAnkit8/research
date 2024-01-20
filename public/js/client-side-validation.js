@@ -40,6 +40,14 @@ function validateRequiredFormFields(actionBtn) {
                 }
             }
             
+            if (validate === 'isValidYear') {
+                const isValid = isValidYear(elemVal);
+                if (!isValid) {
+                    isValidElem = false;
+                    validationState = false;
+                    break;
+                }
+            }
 
             if (validate === 'isAlphabet') {
                 const isValid = isAlphabet(elemVal);
@@ -188,6 +196,17 @@ function isNumber(input) {
 
  function isNotNumber(input) {
     return !isNumber(input);
+}
+
+function isValidYear(year) {
+    const numericYear = parseInt(year, 10);
+
+    if (isNaN(numericYear)) {
+        // Not a valid numeric year
+        return false;
+    }
+
+    return numericYear >= 1900 && numericYear <= 3000;
 }
 
 
