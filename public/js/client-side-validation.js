@@ -190,6 +190,8 @@ function isNumber(input) {
     return !isNumber(input);
 }
 
+
+
 function isFloatingNumber(input) {
     if(parseFloat(input) != input) {
         return false;

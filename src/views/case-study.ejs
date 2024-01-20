@@ -28,6 +28,7 @@
                     <div>
                         <label>Show Entries</label>
                         <select class="form-select" id="changeEntry">
+                            <option value="5">5</option>
                             <option value="10">10</option>
                             <option value="25">25</option>
                             <option value="50">50</option>
@@ -44,13 +45,13 @@
                         </select>
                     </div>
                     <div>
-                        <div class="table-searchbar-container"><button type="button"><i class="fas fa-search"></i>
-                            </button><input type="search" id="searchkeyword" placeholder="Enter keywords"
-                                class="table-searchbar">
+                        <div class="table-searchbar-container">
+                            <button type="button" id="searchBtn"><i class="fas fa-search"></i></button>
+                            <input type="search" id="searchKeyword" placeholder="Enter keywords" class="table-searchbar">
                         </div>
                     </div>
                 </div>
-                <table class=" table" id="case-studies-data-list">
+                <table class="table custom-table table-responsive research-pagination" id="case-studies-data-list">
                     <thead>
                         <th class="cell">#</th>
                         <th class="cell">Author First Name</th>
@@ -95,6 +96,8 @@
                         <label class="d-none" id="row-count"> <%- rowCount %> </label>
                     </div>
                     <div>
+                        <button id="prevBtn" class="btn btn-primary">Previous</button>
+                        <button id="nextBtn" class="btn btn-primary">Next</button>
                         <p id="pagination" class="pagination-search"></p>
                     </div>
                 </div>
@@ -158,52 +161,52 @@
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <div class="form-group col">
                             <label for="author-first-name" class="form-label  fw-bold">Author's First Name</label>
-                            <input type="text" name="author-first-name" id="author-first-name" data-validate="isEmpty,isAlphabeticWords" data-err-msg="This field is required and min length > 1." class="form-control" placeholder="First name" required>
+                            <input type="text" name="author-first-name" id="author-first-name" data-validate="isEmpty,isAlphabeticWords" data-err-msg="This field is required and min length > 1." class="form-control"  required>
                         </div>
                     </div>
 
                     <!-- Author's last name -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="author-last-name" class="form-label  fw-bold">Author's Last Name</label>
-                        <input type="text" name="lastName" id="author-last-name" class="form-control" data-validate="isEmpty,isAlphabeticWords" data-err-msg="This field is required and min length > 1." placeholder="Last name" required>
+                        <input type="text" name="lastName" id="author-last-name" class="form-control" data-validate="isEmpty,isAlphabeticWords" data-err-msg="This field is required and min length > 1." required>
                     </div>
                     <!-- Title of case study -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="title-of-case-study" class="form-label fw-bold">Title Of Case Study</label>
-                        <input type="text" name="titleOfCaseStudy" id="title-of-case-study" class="form-control" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="This field is required and min length > 1." placeholder="Title of case study" required>
+                        <input type="text" name="titleOfCaseStudy" id="title-of-case-study" class="form-control" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="This field is required and min length > 1." required>
                     </div>
                     <!-- Edition -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="edition" class="form-label fw-bold">Edition</label>
-                        <input type="text" name="edition" id="edition" data-validate="isEmpty,isAlphaNumeric" data-err-msg="AlphaNumeric value is required." class="form-control" placeholder="Optional" required>
+                        <input type="text" name="edition" id="edition" data-validate="isEmpty,isAlphaNumeric" data-err-msg="AlphaNumeric value is required." class="form-control" required>
                     </div>
                     <!-- Volume number -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="volume-number" class="form-label fw-bold">Volume Number</label>
-                        <input type="number" name="volumeNumber" id="volume-number" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required." class="form-control" placeholder="Optional" required>
+                        <input type="number" name="volumeNumber" id="volume-number" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required." class="form-control" required>
                     </div>
                     <!-- Publisher Name -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="publisher-name" class="form-label fw-bold">Publisher Name</label>
-                        <input type="text" name="publisherName" id="publisher-name" data-validate="isEmpty,isAlphabeticWords" class="form-control" data-err-msg="This field is required and min length > 1." placeholder="Pulisher name" required>
+                        <input type="text" name="publisherName" id="publisher-name" data-validate="isEmpty,isAlphabeticWords" class="form-control" data-err-msg="This field is required and min length > 1." required>
                     </div>
 
                     <!-- Publication Year -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="publication-year" class="form-label fw-bold">Publication Year</label>
-                        <input type="number" name="publicationYear" id="publication-year"  data-validate="isEmpty,isNumber"class="form-control" data-err-msg="Year is required." placeholder="Publication Year" required>
+                        <input type="number" name="publicationYear" id="publication-year"  data-validate="isEmpty,isNumber"class="form-control" data-err-msg="Year is required." required>
                     </div>
 
                     <!-- Page numbers -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="page-number" class="form-label fw-bold">Page Number</label>
-                        <input type="number" name="pageNumber" id="page-number" class="form-control" data-validate="isEmpty,isNumber" placeholder="Page Number" data-err-msg="Numeric value is required ." required>
+                        <input type="number" name="pageNumber" id="page-number" class="form-control" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required ." required>
                     </div>
 
                     <!-- URL of the Case Study -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="url-of-case-study" class="form-label fw-bold">URL Of The Case Study</label>
-                        <input type="text" name="urlOfCaseStudy" id="url-of-case-study" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="This field is required and min length > 1." class="form-control" placeholder="URL" required>
+                        <input type="text" name="urlOfCaseStudy" id="url-of-case-study" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="This field is required and min length > 1." class="form-control" required>
                     </div>
                     <!-- Publisher Category  -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
@@ -222,22 +225,22 @@
                     <!-- No. of NMIMS Authors -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="number-of-nmims-authors" class="form-label fw-bold ">No. Of NMIMS Authors</label>
-                        <input type="number" name="numberOfNmimsAuthors" id="number-of-nmims-authors" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required." placeholder="No. of NMIMS Authors" class="form-control" required/>
+                        <input type="number" name="numberOfNmimsAuthors" id="number-of-nmims-authors" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required." class="form-control" required/>
                     </div>
                     <!-- Name of NMIMS Authors -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="nmims-authors" class="form-label fw-bold ">Name Of NMIMS Authors</label>
-                        <input type="text" name="nmimsAuthors" id="nmims-authors" data-validate="isEmpty,isAlphabeticWords" data-err-msg="This field is required and min length > 1." placeholder="Name of NMIMS Authors" class="form-control" required/>
+                        <input type="text" name="nmimsAuthors" id="nmims-authors" data-validate="isEmpty,isAlphabeticWords" data-err-msg="This field is required and min length > 1." class="form-control" required/>
                     </div>
                     <!-- NMIMS Campus - Author -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="nmims-campus-authors" class="form-label fw-bold ">NMIMS Campus Author</label>
-                        <input type="text" name="nmimsCampusAuthors" id="nmims-campus-authors" data-validate="isEmpty,isAlphabeticWords" data-err-msg="This field is required and min length > 1." placeholder="NMIMS Campus Author" class="form-control" required/>
+                        <input type="text" name="nmimsCampusAuthors" id="nmims-campus-authors" data-validate="isEmpty,isAlphabeticWords" data-err-msg="This field is required and min length > 1." class="form-control" required/>
                     </div>
                     <!--NMIMS School - Author-->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="nmims-school-authors" class="form-label fw-bold ">NMIMS School Author</label>
-                        <input type="text" name="nmimsSchoolAuthors" id="nmims-school-authors" data-validate="isEmpty,isAlphabeticWords" data-err-msg="This field is required and min length > 1." placeholder="NMIMS School Author" class="form-control" required/>
+                        <input type="text" name="nmimsSchoolAuthors" id="nmims-school-authors" data-validate="isEmpty,isAlphabeticWords" data-err-msg="This field is required and min length > 1." class="form-control" required/>
                     </div>
                 </div>
             </div>
@@ -455,7 +458,7 @@
                 newCaseStudy.setAttribute('data-nmims-campus-authors', caseStudyData.nmimsCampusAuthors);
                 newCaseStudy.setAttribute('data-nmims-school-authors', caseStudyData.nmimsSchoolAuthors);
                 newCaseStudy.innerHTML = `
-                        <td class="cell">${caseStudyId}</td>
+                        <td class="cell" id="rowCount">${indexValue}</td>
                         <td class="cell author-first-name">${caseStudyData.authorsFirstName}</td>
                         <td class="cell author-last-name">${caseStudyData.authorLastName}</td>
                         <td class="cell title-of-case-study">${caseStudyData.titleOfCaseStudy}</td>
@@ -713,6 +716,7 @@
 
 </script>
 <!-- footer section -->
+<%- include('./partials/pagination') %>
 <%- include('./partials/footer') %>
 <%- include('./partials/footer-end') %>
            

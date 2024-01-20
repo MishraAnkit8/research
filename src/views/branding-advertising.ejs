@@ -28,6 +28,7 @@
                     <div>
                         <label>Show Entries</label>
                         <select class="form-select" id="changeEntry">
+                            <option value="5">5</option>
                             <option value="10">10</option>
                             <option value="25">25</option>
                             <option value="50">50</option>
@@ -44,13 +45,13 @@
                         </select>
                     </div>
                     <div>
-                        <div class="table-searchbar-container"><button type="button"><i class="fas fa-search"></i>
-                            </button><input type="search" id="searchkeyword" placeholder="Enter keywords"
-                                class="table-searchbar">
+                        <div class="table-searchbar-container">
+                            <button type="button" id="searchBtn"><i class="fas fa-search"></i></button>
+                            <input type="search" id="searchKeyword" placeholder="Enter keywords" class="table-searchbar">
                         </div>
                     </div>
                 </div>
-                <table class="table custom-table " id="branding-advertising-list">
+                <table class="table custom-table table-responsive research-pagination" id="branding-advertising-list">
                     <thead>
                         <th>#</th>
                         <th>Faculty Recognition</th>
@@ -65,7 +66,7 @@
                         <th>Newspaper Article</th>
                         <th>Action</th>
                     </thead>
-                    <% advertisingData.forEach(function(advertising,index) { %>
+                    <% advertisingData.forEach(function(advertising, index) { %>
                         <tr scope="row" data-advertising-id="<%- advertising.id %>"
                             data-faculty-recognition-documents="<%- advertising.faculty_recognition_documents %>"
                             data-faculty-recognition-link="<%- advertising.faculty_recognition_link %>"
@@ -110,15 +111,18 @@
                         </tr>
                         <% }); %>
                 </table>
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <label> Total entries: <%- rowCount %> </label>
-                        <label class="d-none" id="row-count"> <%- rowCount %> </label>
-                    </div>
-                    <div>
-                        <p id="pagination" class="pagination-search"></p>
-                    </div>
-                </div>
+            </div>
+        </div>
+        <div class="d-flex justify-content-between">
+            <div>
+                <label>Total entries : <%- rowCount %>
+                </label>
+                <label class="d-none" id="row-count"> <%- rowCount %></label>
+            </div>
+            <div>
+                <button id="prevBtn" class="btn btn-primary">Previous</button>
+                <button id="nextBtn" class="btn btn-primary">Next</button>
+                <p id="pagination" class="pagination-search"></p>
             </div>
         </div>
         <!--Import Modal -->
@@ -183,12 +187,12 @@
                         <!-- file upload -->
                         <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                             <label for="faculty-recognition-documents" class="form-label fw-bold ">Upload Documents</label>
-                            <input type="file" name="facultyRecognitionDocuments" class="form-control " id="faculty-recognition-documents" data-validate="isEmpty,isFile" data-err-msg="File is required." placeholder="upload-file" required>
+                            <input type="file" name="facultyRecognitionDocuments" class="form-control " id="faculty-recognition-documents" data-validate="isEmpty,isExist,isFile" data-err-msg="File is required." required>
                         </div>
                         <!-- link -->
                         <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                             <label for="faculty-recognition-link" class="form-label fw-bold">Link</label>
-                            <input type="text" name="pada" id="faculty-recognition-link" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255"  data-err-msg="Link is required." class="form-control" placeholder="https://" required/>
+                            <input type="text" name="pada" id="faculty-recognition-link" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255"  data-err-msg="Link is required." class="form-control" required/>
                         </div>
                     </div>
                     <!-- Faculty Awards -->
@@ -200,12 +204,12 @@
                         <!-- file upload -->
                         <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                             <label for="facultyAwardDocuments" class="form-label fw-bold ">Upload Documents</label>
-                            <input type="file" name="facultyAwardDocuments" class="form-control " id="faculty-award-documents" data-validate="isEmpty,isFile" data-err-msg="File is required."  placeholder="upload-file" required>
+                            <input type="file" name="facultyAwardDocuments" class="form-control " id="faculty-award-documents" data-validate="isEmpty,isExist,isFile" data-err-msg="File is required." required>
                         </div>
                         <!-- link -->
                         <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                             <label for="faculty-award-link" class="form-label fw-bold">Link</label>
-                            <input type="text" name="facultawardlink" id="faculty-award-link" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" class="form-control" data-err-msg="Link is required." placeholder="https://"required/>
+                            <input type="text" name="facultawardlink" id="faculty-award-link" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" class="form-control" data-err-msg="Link is required." required/>
                         </div>
                     </div>
                     <!-- Staff Awards -->
@@ -217,12 +221,12 @@
                         <!-- file upload -->
                         <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                             <label for="staffAwardDocuments" class="form-label fw-bold ">Upload Documents</label>
-                            <input type="file" name="staffAwardDocuments" class="form-control" data-validate="isEmpty,isFile" data-err-msg="File is required." id="staff-award-documents" placeholder="upload-file">
+                            <input type="file" name="staffAwardDocuments" class="form-control" data-validate="isEmpty,isExist,isFile" data-err-msg="File is required." id="staff-award-documents" required>
                         </div>
                         <!-- link -->
                         <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                             <label for="staff-award-link" class="form-label fw-bold">Link</label>
-                            <input type="text" name="pada" id="staff-award-link" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="Link is required." class="form-control" placeholder="https://" required/>
+                            <input type="text" name="pada" id="staff-award-link" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="Link is required." class="form-control" required/>
                         </div>
                     </div>
                     <!-- Alumni awards  -->
@@ -234,29 +238,29 @@
                         <!-- file upload -->
                         <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                             <label for="alumniAwardDocuments" class="form-label fw-bold ">Upload Documents</label>
-                            <input type="file" name="alumniAwardDocuments" class="form-control" data-validate="isEmpty,isFile" data-err-msg="File is required." id="alumni-award-documents" placeholder="upload-file" required>
+                            <input type="file" name="alumniAwardDocuments" class="form-control" data-validate="isEmpty,isExist,isFile" data-err-msg="File is required." id="alumni-award-documents" required>
                         </div>
                         <!-- link -->
                         <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                             <label for="link" class="form-label fw-bold">Link</label>
-                            <input type="text" name="alumniAwardLink" id="alumni-award-link" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="Link is required." class="form-control" placeholder="https://" required/>
+                            <input type="text" name="alumniAwardLink" id="alumni-award-link" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="Link is required." class="form-control" required/>
                         </div>
                     </div>
                     <!-- Student Awards -->
                     <div class="row">
                         <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                             <label for="student-award" class="form-label fw-bold">Student Awards</label>
-                            <input type="text" name="student-award" id="student-award" data-validate="isEmpty,isAlphabeticWords" data-err-msg="This field is required and min length > 1." class="form-control" placeholder="tsudent award" required/>
+                            <input type="text" name="student-award" id="student-award" data-validate="isEmpty,isAlphabeticWords" data-err-msg="This field is required and min length > 1." class="form-control" required/>
                         </div>
                         <!-- file upload -->
                         <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                             <label for="studentAwardDocuments" class="form-label fw-bold ">Upload Documents</label>
-                            <input type="file" name="studentAwardDocuments" data-validate="isEmpty,isFile" class="form-control" data-err-msg="File is required." id="student-award-documents" placeholder="upload-file" required>
+                            <input type="file" name="studentAwardDocuments" data-validate="isEmpty,isExist,isFile" class="form-control" data-err-msg="File is required." id="student-award-documents" required>
                         </div>
                         <!-- link -->
                         <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                             <label for="student-award-link" class="form-label fw-bold">Link</label>
-                            <input type="text" name="staff-award-link" id="student-award-link" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="Link is required." class="form-control" placeholder="https://" required/>
+                            <input type="text" name="staff-award-link" id="student-award-link" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="Link is required." class="form-control" required/>
                         </div>
                     </div>
                     <!-- International Linkage Ventures -->
@@ -268,29 +272,29 @@
                         <!-- file upload -->
                         <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                             <label for="internationalLinkageDocuments" class="form-label fw-bold ">Upload Documents</label>
-                            <input type="file" name="internationalLinkageDocuments" class="form-control" data-validate="isEmpty,isFile" data-err-msg="File is required." id="international-linkage-documents" placeholder="upload-file" required>
+                            <input type="file" name="internationalLinkageDocuments" class="form-control" data-validate="isEmpty,isExist,isFile" data-err-msg="File is required." id="international-linkage-documents" required>
                         </div>
                         <!-- link -->
                         <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                             <label for="international-linkage-link" class="form-label fw-bold">Link</label>
-                            <input type="text" name="internationalLinkageLink" id="international-linkage-link" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="Link is required." class="form-control" placeholder="https://" required/>
+                            <input type="text" name="internationalLinkageLink" id="international-linkage-link" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="Link is required." class="form-control" required/>
                         </div>
                     </div>
                     <!-- Conference Participation -->
                     <div class="row">
                         <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                             <label for="conferencePrep" class="form-label fw-bold">Conference Participation</label>
-                            <input type="text" name="conference-prep" id="conference-participation" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="This field is required and min length > 1." class="form-control" placeholder="conference-participation">
+                            <input type="text" name="conference-prep" id="conference-participation" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="This field is required and min length > 1." class="form-control" required>
                         </div>
                         <!-- file upload -->
                         <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                             <label for="conferenceParticipationDocuments" class="form-label fw-bold ">Upload Documents</label>
-                            <input type="file" name="conferenceParticipationDocuments" class="form-control" data-validate="isEmpty,isFile" data-err-msg="File is required." id="conference-participation-documents"placeholder="upload-file" required>
+                            <input type="file" name="conferenceParticipationDocuments" class="form-control" data-validate="isEmpty,isExist,isFile" data-err-msg="File is required." id="conference-participation-documents" required>
                         </div>
                         <!-- link -->
                         <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                             <label for="conference-participation-link" class="form-label fw-bold">Link</label>
-                            <input type="text" name="conferenceParticipationLink" id="conference-participation-link" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="Link is required." class="form-control" placeholder="https://" required/>
+                            <input type="text" name="conferenceParticipationLink" id="conference-participation-link" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="Link is required." class="form-control" required/>
                         </div>
                     </div>
 
@@ -303,12 +307,12 @@
                         <!-- file upload -->
                         <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                             <label for="organisingConferenceDocuments" class="form-label fw-bold ">Upload Documents</label>
-                            <input type="file" name="organisingConferenceDocuments" class="form-control" id="organising-conference-documents" data-validate="isEmpty,isFile" data-err-msg="file is required." placeholder="upload-file" required>
+                            <input type="file" name="organisingConferenceDocuments" class="form-control" id="organising-conference-documents" data-validate="isEmpty,isExist,isFile" data-err-msg="file is required." required>
                         </div>
                         <!-- link -->
                         <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                             <label for="organising-conference-link" class="form-label fw-bold">Link</label>
-                            <input type="text" name="organisingConferenceLink" id="organising-conference-link" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="Link is required." class="form-control" placeholder="https://" required/>
+                            <input type="text" name="organisingConferenceLink" id="organising-conference-link" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="Link is required." class="form-control" required/>
                         </div>
                     </div>
 
@@ -321,12 +325,12 @@
                         <!-- file upload -->
                         <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                             <label for="studentEventParticipationDocuments" class="form-label fw-bold">Upload Documents</label>
-                            <input type="file" name="studentEventParticipationDocuments" class="form-control" data-validate="isEmpty,isFile" data-err-msg="File is required." id="studentEvent-participation-documents" placeholder="upload-file" required>
+                            <input type="file" name="studentEventParticipationDocuments" class="form-control" data-validate="isEmpty,isExist,isFile" data-err-msg="File is required." id="studentEvent-participation-documents" required>
                         </div>
                         <!-- link -->
                         <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                             <label for="student-event-participation-link" class="form-label fw-bold">Link</label>
-                            <input type="text" name="studentEventParticipationLink" id="student-event-participation-link" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="Link is required"  class="form-control" placeholder="https://" required />
+                            <input type="text" name="studentEventParticipationLink" id="student-event-participation-link" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="Link is required"  class="form-control" required />
                         </div>
                     </div>
                     <!-- Newspaper Article -->
@@ -338,12 +342,12 @@
                         <!-- file upload -->
                         <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                             <label for="newspaperArticleDocuments" class="form-label fw-bold ">Upload Documents</label>
-                            <input type="file" name="newspaperArticleDocuments" class="form-control" data-validate="isEmpty,isFile" data-err-msg="File is required." id="newspaper-article-documents" placeholder="upload-file" required>
+                            <input type="file" name="newspaperArticleDocuments" class="form-control" data-validate="isEmpty,isExist,isFile" data-err-msg="File is required." id="newspaper-article-documents" required>
                         </div>
                         <!-- link -->
                         <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                             <label for="newspaper-article-link" class="form-label fw-bold">Link</label>
-                            <input type="text" name="newsPaperArticleLink" id="newspaper-article-link" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="Link is required." class="form-control" placeholder="https://" required/>
+                            <input type="text" name="newsPaperArticleLink" id="newspaper-article-link" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="Link is required." class="form-control" required/>
                         </div>
                     </div>
             </div>
@@ -754,7 +758,7 @@
                 newBrandingAdvertisingRow.setAttribute('data-newspaper-article-link' , data.advertisingData.newsPaperArticleLink);
                 console.log('data.advertisingData ==>', data.advertisingData);
                 newBrandingAdvertisingRow.innerHTML = `
-                                    <td >${index+1}</td>
+                                    <td class="cell" id="rowCount">${indexValue}</td>
                                     <td class="faculty-recognition">${data.advertisingData.facultyRecognition}</td>
                                     <td class="faculty-award">${ data.advertisingData.facultyAward}</td>
                                     <td class="staff-award">${ data.advertisingData.staffAward}</td>
@@ -774,9 +778,9 @@
                                             data-advertising-id=${data.advertisingId}></i></label>
                                     </td> `;
                                     brandingAdvertisingList.appendChild(newBrandingAdvertisingRow);
+                                    $('#branding-advertising-modal').modal('hide');
+                                    alert('data insetrtde successfull');
             }
-            $('#branding-advertising-modal').modal('hide');
-            alert('data insetrtde successfull');
         })
     }
     
@@ -785,7 +789,6 @@
             if (isValid) {
                 await insertBrandingAndAdvertising('<%- BASE_URL %>branding-advertising/insert');
                 indexValue += 1
-                console.log('data inserted successfully');
             }
             else {
                 console.log('validation failed');
@@ -1102,6 +1105,8 @@
         });
 
 </script>
+<!-- for pagination -->
+<%- include('./partials/pagination') %>
 <!-- footer section -->
 <%- include('./partials/footer') %>
 <%- include('./partials/footer-end') %>

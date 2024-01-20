@@ -6,7 +6,7 @@ module.exports.renderCaseStudy = async(req, res, next) => {
     console.log('data in controller' , caseStudiesDataList);
     res.render('case-study', {
         caseStudiesData : caseStudiesDataList.rows,
-        rowCount : caseStudiesData.rowCount
+        rowCount : caseStudiesDataList.rowCount
     } );
 };
 

@@ -28,6 +28,7 @@
                     <div>
                         <label>Show Entries</label>
                         <select class="form-select" id="changeEntry">
+                            <option value="5">5</option>
                             <option value="10">10</option>
                             <option value="25">25</option>
                             <option value="50">50</option>
@@ -44,13 +45,13 @@
                         </select>
                     </div>
                     <div>
-                        <div class="table-searchbar-container"><button type="button"><i class="fas fa-search"></i>
-                            </button><input type="search" id="searchkeyword" placeholder="Enter keywords"
-                                class="table-searchbar">
+                        <div class="table-searchbar-container">
+                            <button type="button" id="searchBtn"><i class="fas fa-search"></i></button>
+                            <input type="search" id="searchKeyword" placeholder="Enter keywords" class="table-searchbar">
                         </div>
                     </div>
                 </div>
-                <table class=" table" id="teaching-execellance-data-list">
+                <table class="table custom-table table-responsive research-pagination" id="teaching-execellance-data-list">
                     <thead>
                         <th>#</th>
                         <th>Pedagogy innovation</th>
@@ -95,6 +96,8 @@
                         <label class="d-none" id="row-count"> <%- rowCount %> </label>
                     </div>
                     <div>
+                        <button id="prevBtn" class="btn btn-primary">Previous</button>
+                        <button id="nextBtn" class="btn btn-primary">Next</button>
                         <p id="pagination" class="pagination-search"></p>
                     </div>
                 </div>
@@ -163,12 +166,12 @@
                     <!-- file upload -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="pedagogy-innovation-file" class="form-label fw-bold ">Upload Documents</label>
-                        <input type="file" name="pedagogyInnovationFile" id="pedagogy-innovation-file" data-validate="isEmpty,isFile" data-err-msg="File is required." class="form-control" placeholder="upload-file">
+                        <input type="file" name="pedagogyInnovationFile" id="pedagogy-innovation-file" data-validate="isEmpty,isExist,isFile" data-err-msg="File is required." class="form-control" required>
                     </div>
                     <!-- link -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="pedagogy-innovation-link" class="form-label fw-bold">Link</label>
-                        <input type="text" name="pedagogyLink" id="pedagogy-innovation-link" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="Link is required." class="form-control" placeholder="https://" required/>
+                        <input type="text" name="pedagogyLink" id="pedagogy-innovation-link" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="Link is required." class="form-control" required/>
                     </div>
                 </div>
 
@@ -183,12 +186,12 @@
                     <!-- file upload -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="fdp-program" class="form-label fw-bold  mb-4">Upload Documents</label>
-                        <input type="file" name="fdpProgramFile" fdpProgramFile="fdp-program-file" id="fdp-program" data-validate="isEmpty,isFile" data-err-msg="File is required." class="form-control" placeholder="upload-file">
+                        <input type="file" name="fdpProgramFile" fdpProgramFile="fdp-program-file" id="fdp-program" data-validate="isEmpty,isExist,isFile" data-err-msg="File is required." class="form-control" required>
                     </div>
                     <!-- link -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="fdp-program-link" class="form-label fw-bold mb-4">Link</label>
-                        <input type="text" name="pada" id="fdp-program-link" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="Link is required." class="form-control" placeholder="https://" required/>
+                        <input type="text" name="pada" id="fdp-program-link" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="Link is required." class="form-control" required/>
                     </div>
                 </div>
 
@@ -201,12 +204,12 @@
                     <!-- file upload -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="work-shop-file" class="form-label fw-bold ">Upload Documents</label>
-                        <input type="file" name="workShopFile" id="work-shop-file" class="form-control" data-validate="isEmpty,isFile" data-err-msg="file is required." placeholder="upload-file">
+                        <input type="file" name="workShopFile" id="work-shop-file" class="form-control" data-validate="isEmpty,isExist,isFile" data-err-msg="file is required." required>
                     </div>
                     <!-- link -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="workshop-details-link" class="form-label fw-bold">Link</label>
-                        <input type="text" name="pada" id="workshop-details-link" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="Link is required." class="form-control" placeholder="https://" required/>
+                        <input type="text" name="pada" id="workshop-details-link" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="Link is required." class="form-control" required/>
                     </div>
                 </div>
                 <div class="row">
@@ -219,13 +222,12 @@
                     <!-- file upload -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="inviting-faculty-file" class="form-label fw-bold mb-4">Upload Documents</label>
-                        <input type="file" name="invitingFacultyFile" id="inviting-faculty-file" data-validate="isEmpty,isFile" data-err-msg="File is required." class="form-control " 
-                            placeholder="upload-file">
+                        <input type="file" name="invitingFacultyFile" id="inviting-faculty-file" data-validate="isEmpty,isExist,isFile" data-err-msg="File is required." class="form-control " required>
                     </div>
                     <!-- link -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="inviting-faculty-link" class="form-label fw-bold mb-4">Link</label>
-                        <input type="text" name="pada" id="inviting-faculty-link" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" class="form-control"  data-err-msg="Link is required."placeholder="https://" required/>
+                        <input type="text" name="pada" id="inviting-faculty-link" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" class="form-control"  data-err-msg="Link is required." required/>
                     </div>
                 </div>
 
@@ -238,12 +240,12 @@
                     <!-- file upload -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="program-orientation-file" class="form-label fw-bold ">Upload Documents</label>
-                        <input type="file" name="programOrientationFile" class="form-control" data-validate="isEmpty,isFile" data-err-msg="File is required." id="program-orientation-file" placeholder="upload-file">
+                        <input type="file" name="programOrientationFile" class="form-control" data-validate="isEmpty,isExist,isFile" data-err-msg="File is required." id="program-orientation-file" required>
                     </div>
                     <!-- link -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="program-orientation-link" class="form-label fw-bold">Link</label>
-                        <input type="text" name="programOrientationLink" id="program-orientation-link" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="Link is required." class="form-control" placeholder="https://" required/>
+                        <input type="text" name="programOrientationLink" id="program-orientation-link" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="Link is required." class="form-control" required/>
                     </div>
                 </div>
             </div>

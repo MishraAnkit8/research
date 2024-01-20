@@ -30,6 +30,7 @@
                     <div>
                         <label>Show Entries</label>
                         <select class="form-select" id="changeEntry">
+                            <option value="5">5</option>
                             <option value="10">10</option>
                             <option value="25">25</option>
                             <option value="50">50</option>
@@ -46,13 +47,13 @@
                         </select>
                     </div>
                     <div>
-                        <div class="table-searchbar-container"><button type="button"><i class="fas fa-search"></i>
-                            </button><input type="search" id="searchkeyword" placeholder="Enter keywords"
-                                class="table-searchbar">
+                        <div class="table-searchbar-container">
+                            <button type="button" id="searchBtn"><i class="fas fa-search"></i></button>
+                            <input type="search" id="searchKeyword" placeholder="Enter keywords" class="table-searchbar">
                         </div>
                     </div>
                 </div>
-                <table class="table table-responsive" id="research-seminar-list">
+                <table class="table custom-table table-responsive research-pagination" id="research-seminar-list">
                     <thead>
                         <th class="cell">#</th>
                         <th class="cell">Year</th>
@@ -90,7 +91,9 @@
                         <label class="d-none" id="row-count"> <%- rowCount %> </label>
                     </div>
                     <div>
-                        <label id="pagination" class="pagination-search"></label>
+                        <button id="prevBtn" class="btn btn-primary">Previous</button>
+                        <button id="nextBtn" class="btn btn-primary">Next</button>
+                        <p id="pagination" class="pagination-search"></p>
                     </div>
                 </div>
             </div>
@@ -150,28 +153,28 @@
                     <!-- year -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="year" class="form-label fw-bold">Year</label>
-                        <input type="number" name="year" id="year" class="form-control" data-validate="isEmpty,isNumber" data-err-msg="Year is required." placeholder="2023" required/>
+                        <input type="number" name="year" id="year" class="form-control" data-validate="isEmpty,isNumber" data-err-msg="Year is required." required/>
                     </div>
                     <!-- school -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="school" class="form-label fw-bold">School:</label>
-                        <input type="text" name="schoolname" id="school" class="form-control" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="This field is required and min length > 1." placeholder="Name of school" required>
+                        <input type="text" name="schoolname" id="school" class="form-control" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="This field is required and min length > 1."  required>
                     </div>
                     <!-- Campus -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="campus" class="form-label fw-bold">Campus:</label>
-                        <input type="text" name="campusname" id="campus" class="form-control" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="This field is required and min length > 1." placeholder="Name of Campus" required/>
+                        <input type="text" name="campusname" id="campus" class="form-control" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="This field is required and min length > 1." required/>
                     </div>
 
                     <!-- Name of NMIMS faculty -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="nmims-authors" class="form-label fw-bold">Name of NMIMS Faculty</label>
-                        <input type="text" name="nmims-faculty" id="nmims-faculty" data-validate="isEmpty,isAlphabeticWords,isLength:2:255" data-err-msg="This field is required and min length > 1." class="form-control" placeholder="Name of NMIMS Authors" required>
+                        <input type="text" name="nmims-faculty" id="nmims-faculty" data-validate="isEmpty,isAlphabeticWords,isLength:2:255" data-err-msg="This field is required and min length > 1." class="form-control"  required>
                     </div>
                     <!-- Journal Name -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="journal-name" class="form-label fw-bold">Journal Name</label>
-                        <input type="text" name="journal-name" id="journal-name" data-validate="isEmpty,isAlphabeticWords,isLength:2:255" data-err-msg="This field is required and min length > 1." class="form-control" placeholder="Journal Name" required>
+                        <input type="text" name="journal-name" id="journal-name" data-validate="isEmpty,isAlphabeticWords,isLength:2:255" data-err-msg="This field is required and min length > 1." class="form-control"  required>
                     </div>
 
                     <!-- Publisher -->
@@ -198,78 +201,78 @@
                     <!-- Pages-->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="pages" class="form-label fw-bold">Vol,ISS,Pages</label>
-                        <input type="number" name="pages" id="pages" class="form-control" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required." placeholder="Pages" required>
+                        <input type="number" name="pages" id="pages" class="form-control" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required." required>
                     </div>
 
                     <!-- ISSN No. -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="iss-no" class="form-label fw-bold">ISSN No.</label>
-                        <input type="number" name="iss-no" id="issn-no" class="form-control" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required." placeholder="ISSN No." required>
+                        <input type="number" name="iss-no" id="issn-no" class="form-control" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required." required>
                     </div>
 
                     <!-- SCS Cite Score -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="scs-cite-score" class="form-label fw-bold">SCS Cite Score</label>
-                        <input type="number" name="scsCiteScores" id="scs-cite-score" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required." class="form-control" placeholder="SCS Cite Score" required>
+                        <input type="number" name="scsCiteScores" id="scs-cite-score" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required." class="form-control" required>
                     </div>
                     <!-- Impact Factor -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="impact-factor" class="form-label fw-bold">Impact Factor</label>
-                        <input type="text" name="impactFactors" id="impact-factor" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="Numeric value is required." class="form-control" placeholder="Impact Factor" required>
+                        <input type="text" name="impactFactors" id="impact-factor" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="Numeric value is required." class="form-control" required>
                     </div>
 
                     <!-- SCS Indexed -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="scs-indexed" class="form-label fw-bold">SCS Indexed</label>
-                        <input type="number" name="scs-indexed" id="scs-indexed" class="form-control" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required." placeholder="SCS Indexed" required>
+                        <input type="number" name="scs-indexed" id="scs-indexed" class="form-control" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required." required>
                     </div>
 
                     <!-- WoS Indexed -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="wos-indexed" class="form-label fw-bold">WoS Indexed</label>
-                        <input type="number" name="wos-indexed" id="wos-indexed" class="form-control" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required." placeholder="WoS Indexed" required>
+                        <input type="number" name="wos-indexed" id="wos-indexed" class="form-control" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required." required>
                     </div>
 
                     <!-- GS Indexed -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="gs-indexed" class="form-label fw-bold">GS Indexed</label>
-                        <input type="number" name="gs-indexed" id="gs-indexed" class="form-control" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required." placeholder="GS Indexed" required>
+                        <input type="number" name="gs-indexed" id="gs-indexed" class="form-control" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required." required>
                     </div>
 
                     <!-- ABDC Indexed -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="abdc-indexed" class="form-label fw-bold">ABDC Indexed</label>
-                        <input type="number" name="abdc-indexed" id="abdc-indexed" class="form-control" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required." placeholder="ABDC Indexed" required>
+                        <input type="number" name="abdc-indexed" id="abdc-indexed" class="form-control" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required." required>
                     </div>
 
                     <!-- UGC Indexed -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="ugc-indexed" class="form-label fw-bold">UGC Indexed</label>
-                        <input type="number" name="abdc-indexed" id="ugc-indexed" class="form-control" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required." placeholder="UGC Indexed" required>
+                        <input type="number" name="abdc-indexed" id="ugc-indexed" class="form-control" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required." required>
                     </div>
 
                     <!-- Weblink-DOI Number -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="web-link" class="form-label fw-bold">WEB Link</label>
-                        <input type="text" name="webLinks" id="web-link" class="form-control" data-validate="isEmpty,isNotNumber,isExist" data-err-msg="This field is required." placeholder="Weblink-DOI Number" required>
+                        <input type="text" name="webLinks" id="web-link" class="form-control" data-validate="isEmpty,isNotNumber,isExist" data-err-msg="This field is required." required>
                     </div>
 
                     <!-- UID -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="uid" class="form-label fw-bold">UID</label>
-                        <input type="number" name="uid-number" id="uid" class="form-control" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required." placeholder="UID Number" required>
+                        <input type="number" name="uid-number" id="uid" class="form-control" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required." required>
                     </div>
 
                     <!-- Date of Publishing -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="date-of-publishing" class="form-label fw-bold">Date of Publishing/DDDD</label>
-                        <input type="date" name="dateOfPublishing" id="date-of-publishing" class="form-control" data-validate="isEmpty,isExist" data-err-msg="Date is required." placeholder="Date of Publishing" required>
+                        <input type="date" name="dateOfPublishing" id="date-of-publishing" class="form-control" data-validate="isEmpty,isExist" data-err-msg="Date is required." required>
                     </div>
 
                     <!-- title-of-paper -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="title-of-paper" class="form-label fw-bold">Title Of Paper</label>
-                        <input type="text" name="titleOfPaper" id="title-of-paper" class="form-control" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="This field is required and min length > 1." placeholder="title-of-paper" required>
+                        <input type="text" name="titleOfPaper" id="title-of-paper" class="form-control" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="This field is required and min length > 1." required>
                     </div>
                 </div>
             </div>
