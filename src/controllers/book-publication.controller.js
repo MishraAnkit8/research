@@ -1,7 +1,9 @@
+const fs = require('fs');
+const path = require('path');
+
 const bookPublicationService = require('../services/book-publication.service');
 
-const path = require('path');
-//for dowload upload file
+// uploaded file path for dowload
 const uploadFolder = path.join(__dirname, '..', '..', 'uploads');
 console.log('uploadFolder ==>>', uploadFolder)
 
@@ -17,6 +19,24 @@ module.exports.downloadFile = (req, res) => {
     }
   });
 };
+
+module.exports.viewFile = (req, res, next) => {
+const filename = req.params.filename;
+  const filePath = path.join(uploadFolder, filename);
+  console.log("filePath ==>>", filePath);
+  console.log("filename ==>>>", filename);
+
+  fs.access(filePath, fs.constants.R_OK, (err) => {
+    if (err) {
+      console.error('Error accessing file:', err);
+      res.status(404).send('File not found');
+    } else {
+      // Stream the file to the response for download
+      const stream = fs.createReadStream(filePath);
+      stream.pipe(res);
+    }
+  });
+}
 
 
 module.exports.renderBookPublication = async(req, res, next) => {

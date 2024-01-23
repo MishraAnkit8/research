@@ -1,5 +1,38 @@
 <%- include('./partials/head') %>
 <!-- inline css -->
+<style>
+ /* Update the CSS in your file */
+.ankit {
+    
+  display: none;
+  margin-left: 10%;
+  position: fixed;
+  z-index: 1;
+  width: 50vw;
+  height: 50vh;
+  overflow: hidden;
+  /* backdrop-filter: blur(8px); Apply a blur effect to the background */
+}
+
+.ankit-content {
+  margin: auto;
+  display: block;
+  max-width: 80%;
+  max-height: 80%;
+  filter: drop-shadow(0 0 10px #fff); /* Add a subtle shadow to the image */
+}
+
+.close {
+  position: absolute;
+  top: 15px;
+  right: 35px;
+  color: #f1f1f1;
+  font-size: 40px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+</style>
 <!-- <-- Navbar section --> 
 <%- include('./partials/header') %>
 <!-- This is left sidebar  -->
@@ -51,6 +84,11 @@
                         </div>
                     </div>
                 </div>
+                <div id="imageModal" class="ankit">
+                    <span  onclick="closeModal()">&times;
+                    <img id="modalImage" class="ankit-content" alt="Image Preview">
+                </span>
+                </div>
                 <table class="table custom-table research-pagination" id="book-Publication-list">
                     <thead>
                         <th>#</th>
@@ -80,8 +118,10 @@
                                     data-publication-id="<%- publication.id %>"></i></label>
                                  <label  class="delete"data-publication-id="<%- publication.id %>"><i class="fa-solid fa-trash delete text-danger"
                                     data-publication-id="<%- publication.id %>"></i></label>
-                                    <label  class="delete"data-publication-id="<%- publication.id %>"><i class="fa-solid fa-download download text-danger"
+                                <label  class="downolad"data-publication-id="<%- publication.id %>"><i class="fa-solid fa-download download text-danger"
                                         data-publication-id="<%- publication.id %>"></i></label>
+                                <label  class="eye" data-publication-id="<%- publication.id %>"><i class="fa fa-eye eye text-danger"
+                                            data-publication-id="<%- publication.id %>"></i></label>
                             </td>
                             
                         </tr>
@@ -726,6 +766,24 @@
 
 
         }
+    
+        if(event.target.classList.contains('eye')){
+            console.log('clicked eye');
+            const bookPublicatRowfileToBeDownolad = event.target.closest('tr');
+            bookPublicationId = event.target.getAttribute('data-publication-id');
+            console.log('bookPublicationId ==>>', bookPublicationId);
+            const supportingDocuments = bookPublicatRowfileToBeDownolad.getAttribute('data-supporting-documents');
+            console.log('supportingDocuments ==>>', supportingDocuments);
+            const bookPublicationRoute = '<%- BASE_URL %>research/book-publication-main/book-publication/viewing/';
+            console.log('bookPublicationRoute ==>>', bookPublicationRoute)
+            const fileViewURL = `${bookPublicationRoute}${supportingDocuments}`;
+            console.log('fileViewURL ==>>>', fileViewURL);
+            // window.open(fileViewURL, '_blank');
+           /// document.getElementById('#table').html = `<img class="" url=${fileViewURL} /> `
+           openModal(fileViewURL);
+
+
+        }
     })
 
     const upadatBookPublication = async(url) =>{
@@ -813,7 +871,8 @@
     updateBtn.addEventListener('click' , async() => {
         const isValid = validateRequiredFormFields(submitBtn);
             if (isValid) {
-                await upadatBookPublication('<%- BASE_URL %>research/book-publication-main/book-publication/update')
+                await upadatBookPublication('<%- BASE_URL %>research/book-publication-main/book-publication/update');
+                location.reload()
             }
             else {
                 alert('Validation Failed');

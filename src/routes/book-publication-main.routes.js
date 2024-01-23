@@ -24,6 +24,7 @@ router.post('/book-publication/update',  upload.single('researchSupportingDocume
 router.post('/book-publication/delete', asyncErrorHandler(bookPublicationController.deleteBookPublication));
 router.post('/book-publication/view', asyncErrorHandler(bookPublicationController.viewBookPublication));
 router.get('/book-publication/download/:filename', bookPublicationController.downloadFile);
+router.get('/book-publication/viewing/:filename', bookPublicationController.viewFile);
 
 //edited book publication
 

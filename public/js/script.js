@@ -68,5 +68,31 @@ function formatDateToYYYYMMDD(inputDateString) {
     return `${year}-${month}-${day}`;
   }
 
-
+// for popup image 
+// Update the JavaScript in your file
+// Function to open the modal
+function openModal(imageUrl) {
+    const modal = document.getElementById('imageModal');
+    const modalImage = document.getElementById('modalImage');
+  
+    modalImage.src = imageUrl; // Set the image source
+    modal.style.display = 'block'; // Display the modal
+  }
+  
+  // Function to close the modal
+  function closeModal() {
+    const modal = document.getElementById('imageModal');
+    modal.style.display = 'none'; // Hide the modal
+  }
+  
+  // Attach click event to the image element
+  document.getElementById('modalImage').addEventListener('click', function() {
+    closeModal(); // Close the modal on image click
+  });
+  
+  // Attach click event to close button (if needed)
+  document.querySelector('.close').addEventListener('click', closeModal);
+  
+  
+  
   
