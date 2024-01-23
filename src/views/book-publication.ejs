@@ -16,6 +16,8 @@
                     <h5>BOOK PUBLICATION LIST</h5>
                 </div>
                 <div class="me-2">
+                    <a class="btn btn-danger" href="<%- BASE_URL %>research/book-publication-main/book-publication/download/Report.xlsx"><i class="fas fa-download"></i>
+                        Download </a>
                     <button type="button" id="book-publication-form" class="btn btn-primary add-modal" data-toggle="modal" data-target="#book-publication-modal">
                         <i class="fas fa-plus plus"></i></button>
                     </button>
@@ -78,7 +80,10 @@
                                     data-publication-id="<%- publication.id %>"></i></label>
                                  <label  class="delete"data-publication-id="<%- publication.id %>"><i class="fa-solid fa-trash delete text-danger"
                                     data-publication-id="<%- publication.id %>"></i></label>
+                                    <label  class="delete"data-publication-id="<%- publication.id %>"><i class="fa-solid fa-download download text-danger"
+                                        data-publication-id="<%- publication.id %>"></i></label>
                             </td>
+                            
                         </tr>
                    <% }); %>
                     
@@ -249,7 +254,7 @@
                         <label for="supporting-documents" class="form-label fw-bold">
                             Upload Supporting Documents
                         </label>
-                        <input type="file" name="researchSupportingDocument" id="supporting-documents" data-validate="isEmpty,isExist,isFile" data-err-msg="Document is required as pdf or csv or excel sheet" class="form-control" min='2000-01-01' max="2023-10-02" required>
+                        <input type="file" name="researchSupportingDocument" id="supporting-documents"  class="form-control" min='2000-01-01' max="2023-10-02" required>
                     </div>
                 </div>
             </div>
@@ -406,7 +411,7 @@
     const submitBtn = document.getElementById('submit-btn');
     const updateBtn = document.getElementById('update-btn');
     const addNewBookPublication = document.getElementById('book-publication-form');
-    let bookPublicationId , bookPublicationRowToBeUpdated;
+    let bookPublicationId , bookPublicationRowToBeUpdated, supportingDocuments;
 
     addNewBookPublication.addEventListener('click' , function(event) {
         if(event.target.tagName === 'BUTTON' && event.target.classList.contains('add-modal') || event.target.classList.contains('plus')){
@@ -470,7 +475,7 @@
         const nmimsAuthors = document.getElementById('nmims-authors').value;
         const nmimsCampusAuthors = document.getElementById('nmims-campus-authors').value;
         const nmimsSchoolAuthors = document.getElementById('nmims-school-authors').value;
-        const supportingDocuments = document.querySelector('input[type="file"]');
+        supportingDocuments = document.querySelector('input[type="file"]');
 
         // appending value
         bookPublicationData.append('authorLastName' , authorLastName);
@@ -512,7 +517,7 @@
             newBookPublication.setAttribute('data-nmims-authors' , data.bookPublicationData.nmimsAuthors);
             newBookPublication.setAttribute('data-nmims-campus-authors' , data.bookPublicationData.nmimsCampusAuthors);
             newBookPublication.setAttribute('data-nmims-school-authors' , data.bookPublicationData.nmimsSchoolAuthors);
-            newBookPublication.setAttribute('data-supporting-documents' , data.bookPublicationData.supportingDocuments);
+            newBookPublication.setAttribute('data-supporting-documents' , data.filename);
             newBookPublication.innerHTML = `
                         <td >${indexValue}</td>
                             <td class="author-last-name">${data.bookPublicationData.authorLastName}</td>
@@ -526,6 +531,8 @@
                                 <label class="edit"data-publication-id="${data.bookPublicationId}"><i class="fa fa-edit edit text-danger"
                                     data-publication-id="${data.bookPublicationId}"></i></label>
                                 <label class="delete"data-publication-id="${data.bookPublicationId}"><i class="fa-solid fa-trash delete text-danger"
+                                    data-publication-id="${data.bookPublicationId}"></i></label>
+                                <label class="delete"data-publication-id="${data.bookPublicationId}"><i class="fa-solid fa-download download text-danger"
                                     data-publication-id="${data.bookPublicationId}"></i></label>
                             </td> `;
             bookPublicationList.append(newBookPublication);
@@ -553,6 +560,7 @@
             console.log('clickeddd');
             removeErrorMsg();
             bookPublicationRowToBeUpdated = event.target.closest('tr');
+            console.log('bookPublicationRowToBeUpdated ==>>', bookPublicationRowToBeUpdated)
             bookPublicationId = event.target.getAttribute('data-publication-id');
             console.log('bookPublicationId ==>>', bookPublicationId);
             $('#book-publication-modal').modal('show');
@@ -597,7 +605,6 @@
             nmimsAuthors.value = bookPublicationRowToBeUpdated.getAttribute('data-nmims-authors');
             nmimsCampusAuthors.value = bookPublicationRowToBeUpdated.getAttribute('data-nmims-campus-authors');
             nmimsSchoolAuthors.value = bookPublicationRowToBeUpdated.getAttribute('data-nmims-school-authors');
-            supportingDocuments.textContent = bookPublicationRowToBeUpdated.getAttribute('data-supporting-documents');
             }
         
         //  for delete   
@@ -687,6 +694,38 @@
             })
             $('#book-publication-view-modal').modal('show');
         }
+    
+        if(event.target.classList.contains('download')){
+            console.log('clicked download');
+            const bookPublicatRowfileToBeDownolad = event.target.closest('tr');
+            bookPublicationId = event.target.getAttribute('data-publication-id');
+            console.log('bookPublicationId ==>>', bookPublicationId);
+            const supportingDocuments = bookPublicatRowfileToBeDownolad.getAttribute('data-supporting-documents');
+            console.log('supportingDocuments ==>>', supportingDocuments);
+
+            const bookPublicationRoute = '<%- BASE_URL %>research/book-publication-main/book-publication/download/';
+
+            const fileDownloadURL = `${bookPublicationRoute}${supportingDocuments}`;
+            console.log('fileDownloadURL ==>>', fileDownloadURL)
+
+        fetch(fileDownloadURL)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.blob();
+        })
+        .then(blob => {
+            // Create a link element and trigger a click to download the file
+            const link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = supportingDocuments;
+            link.click();
+        })
+        .catch(error => console.error('Error downloading file:', error));
+
+
+        }
     })
 
     const upadatBookPublication = async(url) =>{
@@ -706,7 +745,7 @@
         const updatedNmimsAuthors = document.getElementById('nmims-authors').value;
         const updatedNmimsCampusAuthors = document.getElementById('nmims-campus-authors').value;
         const updatedNmimsSchoolAuthors = document.getElementById('nmims-school-authors').value;
-        const updatedDocuments = document.getElementById('supporting-documents');
+        let updatedDocuments = document.querySelector('input[type="file"]');
         updatedBookPublicationData.append('bookPublicationId' , bookPublicationId);
         updatedBookPublicationData.append('authorLastName' , updatedaAuthorLastName);
         updatedBookPublicationData.append('bookTitle' , updatedBookTitle);
@@ -724,8 +763,13 @@
         updatedBookPublicationData.append('nmimsCampusAuthors' , updatedNmimsCampusAuthors);
         updatedBookPublicationData.append('nmimsSchoolAuthors' , updatedNmimsSchoolAuthors);
         if(updatedDocuments && updatedDocuments.files && updatedDocuments.files.length > 0){
+            console.log('updatedDocuments ==>>', updatedDocuments);
             updatedBookPublicationData.append('researchSupportingDocument' , updatedDocuments.files[0]);
          }
+        else{
+            updatedDocuments = null;
+            updatedBookPublicationData.append('researchSupportingDocument' , updatedDocuments);
+        }
         fetch(url , {
             method : 'POST',
             body : updatedBookPublicationData
@@ -747,7 +791,11 @@
                 bookPublicationRowToBeUpdated.setAttribute('data-nmims-authors' , data.updatedBookPublication.nmimsAuthors);
                 bookPublicationRowToBeUpdated.setAttribute('data-nmims-campus-authors' , data.updatedBookPublication.nmimsCampusAuthors);
                 bookPublicationRowToBeUpdated.setAttribute('data-nmims-school-authors' , data.updatedBookPublication.nmimsSchoolAuthors);
-                bookPublicationRowToBeUpdated.setAttribute('data-supporting-documents' , data.updatedBookPublication.supportingDocuments);
+                console.log('inside fetch api ==>>', updatedDocuments);
+                if(updatedDocuments === null){
+
+                };
+                bookPublicationRowToBeUpdated.setAttribute('data-supporting-documents' , data.updatedFile);
                 bookPublicationRowToBeUpdated.querySelector('.author-last-name').innerText = data.updatedBookPublication.authorLastName;
                 bookPublicationRowToBeUpdated.querySelector('.book-title').innerText = data.updatedBookPublication.bookTitle;
                 bookPublicationRowToBeUpdated.querySelector('.publisher-name').innerText = data.updatedBookPublication.publisherName;

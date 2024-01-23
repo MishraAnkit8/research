@@ -1,5 +1,24 @@
 const bookPublicationService = require('../services/book-publication.service');
 
+const path = require('path');
+//for dowload upload file
+const uploadFolder = path.join(__dirname, '..', '..', 'uploads');
+console.log('uploadFolder ==>>', uploadFolder)
+
+module.exports.downloadFile = (req, res) => {
+  const filename = req.params.filename;
+  const filePath = path.join(uploadFolder, filename);
+  console.log("filePath ==>>", filePath);
+  console.log("filename ==>>>", filename);
+  res.download(filePath, (err) => {
+    if (err) {
+      console.error("Error downloading file:", err);
+      res.status(500).send("Error downloading file");
+    }
+  });
+};
+
+
 module.exports.renderBookPublication = async(req, res, next) => {
     const fetchBookPublicationData = await bookPublicationService.fetchBookPublicationData();
     console.log('bookPublicationList  in controller ==>>', fetchBookPublicationData);
@@ -31,15 +50,34 @@ module.exports.updateBookPublication = async(req, res, next) => {
     const bookPublicationId  = req.body.bookPublicationId ;
     console.log('id ==', bookPublicationId )
     const updatedBookPublicationData = req.body;
-    const updatedFile = req.file.filename;
-    const updatedBookPublication = await bookPublicationService.updateBookPublication( bookPublicationId, updatedBookPublicationData, updatedFile);
-    if(updatedBookPublication.status === 'done'){
-        res.status(200).send({
-            status : 'done',
-            updatedBookPublication : updatedBookPublicationData,
-            bookPublicationId : bookPublicationId 
-        })
+    updatedBookPublicationData.researchSupportingDocument = req.file ? req.file.filename : null;
+    console.log(' updatedFile in controller ==>>', req.file);
+    if(req.file) {
+        const updatedFile = req.file.filename;
+        const updatedBookPublication = await bookPublicationService.updateBookPublication( bookPublicationId, updatedBookPublicationData, updatedFile);
+        console.log('updatedBookPublication ==>>>', updatedBookPublication);
+        if(updatedBookPublication.status === 'done'){
+            res.status(200).send({
+                status : 'done',
+                updatedBookPublication : updatedBookPublicationData,
+                bookPublicationId : bookPublicationId,
+                updatedFile : updatedFile 
+            })
+        }
     }
+    else {
+        const updatedBookPublication = await bookPublicationService.updateBookPublication( bookPublicationId, updatedBookPublicationData);
+        console.log('updatedBookPublication ==>>', updatedBookPublication);
+        if(updatedBookPublication.status === 'done'){
+            res.status(200).send({
+                status : 'done',
+                updatedBookPublication : updatedBookPublicationData,
+                bookPublicationId : bookPublicationId 
+            })
+        }
+
+    }
+  
 
 }
 

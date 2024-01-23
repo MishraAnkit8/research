@@ -2,7 +2,7 @@ const teachingExecellanceService = require('../services/teaching-excellance.serv
 
 module.exports.renderTeachingExecellance = async(req, res, next) => {
     const teachingExecellance = await teachingExecellanceService.fetchTeachingExecellanceData();
-    console.log('teachingExecellance ==>>', teachingExecellance)
+    console.log('teachingExecellance ==>>', teachingExecellance.rows);
         res.render('teaching-excellance' , {
             teachingExecellance : teachingExecellance.rows,
             rowCount : teachingExecellance.rowCount

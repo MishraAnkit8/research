@@ -33,15 +33,28 @@ module.exports.updateBookChapterData = async(req, res, next) => {
     const bookChapterId  = req.body.bookChapterId;
     console.log('id ==', bookChapterId)
     const updatedBookChapterPublication = req.body;
-    const updatedFile = req.file.filename;
-    const updatedBookChapterData = await bookChapterServices.updatedBookChapter(bookChapterId, updatedBookChapterPublication, updatedFile);
-    if(updatedBookChapterData.status === 'done'){
-        res.status(200).send({
-            status : 'done',
-            updatedBookChapter : updatedBookChapterPublication,
-            bookChapterId : bookChapterId 
-        })
+    if(req.file){
+        const updatedFile = req.file.filename;
+        const updatedBookChapterData = await bookChapterServices.updatedBookChapter(bookChapterId, updatedBookChapterPublication, updatedFile);
+        if(updatedBookChapterData.status === 'done'){
+            res.status(200).send({
+                status : 'done',
+                updatedBookChapter : updatedBookChapterPublication,
+                bookChapterId : bookChapterId 
+            })
+        }
     }
+    else{
+        const updatedBookChapterData = await bookChapterServices.updatedBookChapter(bookChapterId, updatedBookChapterPublication);
+        if(updatedBookChapterData.status === 'done'){
+            res.status(200).send({
+                status : 'done',
+                updatedBookChapter : updatedBookChapterPublication,
+                bookChapterId : bookChapterId 
+            })
+        }
+    }
+   
 
 }
 

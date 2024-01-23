@@ -14,6 +14,12 @@ function initializePagination() {
     document.getElementById("nextBtn").addEventListener("click", handleNextClick);
     document.getElementById("prevBtn").addEventListener("click", handlePrevClick);
     document.getElementById("searchBtn").addEventListener("click", handleSearchClick);
+    // eventlisner  for enter button press to search 
+    document.getElementById("searchKeyword").addEventListener("keypress", function (e) {
+      if (e.key === "Enter") {
+          handleSearchClick();
+      }
+  });
   
     function showPage(page) {
       currentPage = page;

@@ -14,14 +14,28 @@ module.exports.insertBookPublication = async(bookPublicationData, filename) => {
 }
 
 module.exports.updateBookPublication = async(bookPublicationId, updatedBookPublicationData, updatedFile) => {
-    const updatedBookPublication = await bookPublicationModel.updatedBookPublication(bookPublicationId , updatedBookPublicationData, updatedFile);
-    if(updatedBookPublication && updatedBookPublication.rowCount === 1) {
-        return {
-            status : 'done',
-            massage : 'date updated successfully'
+    if(updatedFile){
+        const updatedBookPublication = await bookPublicationModel.updatedBookPublication(bookPublicationId , updatedBookPublicationData, updatedFile);
+        if(updatedBookPublication && updatedBookPublication.rowCount === 1) {
+            return {
+                status : 'done',
+                massage : 'date updated successfully'
+            }
         }
+        
     }
-    
+
+    else{
+        const updatedBookPublication = await bookPublicationModel.updatedBookPublication(bookPublicationId , updatedBookPublicationData);
+        if(updatedBookPublication && updatedBookPublication.rowCount === 1) {
+            return {
+                status : 'done',
+                massage : 'date updated successfully'
+            }
+        }
+        
+    }
+   
 }
 
 module.exports.deleteBookPublicationData = async({bookPublicationId}) => {
