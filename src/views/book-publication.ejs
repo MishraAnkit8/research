@@ -1,38 +1,5 @@
 <%- include('./partials/head') %>
 <!-- inline css -->
-<style>
- /* Update the CSS in your file */
-.ankit {
-    
-  display: none;
-  margin-left: 10%;
-  position: fixed;
-  z-index: 1;
-  width: 50vw;
-  height: 50vh;
-  overflow: hidden;
-  /* backdrop-filter: blur(8px); Apply a blur effect to the background */
-}
-
-.ankit-content {
-  margin: auto;
-  display: block;
-  max-width: 80%;
-  max-height: 80%;
-  filter: drop-shadow(0 0 10px #fff); /* Add a subtle shadow to the image */
-}
-
-.close {
-  position: absolute;
-  top: 15px;
-  right: 35px;
-  color: #f1f1f1;
-  font-size: 40px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-</style>
 <!-- <-- Navbar section --> 
 <%- include('./partials/header') %>
 <!-- This is left sidebar  -->
@@ -84,10 +51,6 @@
                         </div>
                     </div>
                 </div>
-                <div id="imageModal" class="ankit">
-                    <span  onclick="closeModal()">&times;
-                    <img id="modalImage" class="ankit-content" alt="Image Preview">
-                </span>
                 </div>
                 <table class="table custom-table research-pagination" id="book-Publication-list">
                     <thead>
@@ -120,8 +83,6 @@
                                     data-publication-id="<%- publication.id %>"></i></label>
                                 <label  class="downolad"data-publication-id="<%- publication.id %>"><i class="fa-solid fa-download download text-danger"
                                         data-publication-id="<%- publication.id %>"></i></label>
-                                <label  class="eye" data-publication-id="<%- publication.id %>"><i class="fa fa-eye eye text-danger"
-                                            data-publication-id="<%- publication.id %>"></i></label>
                             </td>
                             
                         </tr>
@@ -297,16 +258,21 @@
                         <input type="file" name="researchSupportingDocument" id="supporting-documents"  class="form-control" min='2000-01-01' max="2023-10-02" required>
                     </div>
                 </div>
+                <div id="file-view" class="h-25 w-25">
+                    <img id="modalImage" class="img-fluid rounded file-style modal-file" alt="Image Preview">
+                    <a id="downloadLink" download="image" class="btn btn-primary" style="display: none;">Download File</a>
+                </div>
             </div>
            <!-- Add your modal footer buttons if needed -->
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                 <button class="btn btn-md btn-primary d-none" id="submit-btn">Submit</button>
-                <button class="btn btn-md btn-primary d-none" id="update-btn">update</button>
+                <button class="btn btn-md btn-primary d-none" id="update-btn">Update</button>
             </div>
         </div>
     </div>
 </div>
+
 <!-- book publication view modal -->
 <div class="modal fade " id="book-publication-view-modal" tabindex="-1" role="dialog" aria-labelledby="book-publication-modal"
     aria-hidden="true">
@@ -450,6 +416,9 @@
     const bookPublicationList = document.getElementById('book-Publication-list');
     const submitBtn = document.getElementById('submit-btn');
     const updateBtn = document.getElementById('update-btn');
+    // for image preview and download file
+    const fileView = document.getElementById('file-view');
+    const downloadLink = document.getElementById('downloadLink');
     const addNewBookPublication = document.getElementById('book-publication-form');
     let bookPublicationId , bookPublicationRowToBeUpdated, supportingDocuments;
 
@@ -457,6 +426,8 @@
         if(event.target.tagName === 'BUTTON' && event.target.classList.contains('add-modal') || event.target.classList.contains('plus')){
             updateBtn.classList.add('d-none');
             submitBtn.classList.remove('d-none');
+            fileView.classList.add('d-none');
+            modalImage.classList.add('d-none');
 
             const authorLastName = document.getElementById('author-last-name');
             const bookTitle = document.getElementById('book-title');
@@ -482,8 +453,6 @@
             edition.value = '';
             isbnNo.value = '';
             publicationPlace.value = '';
-            // publisherCategoryNational.checked = false;
-            // publisherCategoryInternational.checked = false;
             volumeNumber.value = '';
             publisherName.value = '';
             publicationYear.value = '';
@@ -606,6 +575,8 @@
             $('#book-publication-modal').modal('show');
             updateBtn.classList.remove('d-none');
             submitBtn.classList.add('d-none');
+            fileView.classList.remove('d-none');
+            modalImage.classList.remove('d-none');
             const authorLastName = document.getElementById('author-last-name');
             const bookTitle = document.getElementById('book-title');
             const edition = document.getElementById('edition');
@@ -622,7 +593,7 @@
             const nmimsAuthors = document.getElementById('nmims-authors');
             const nmimsCampusAuthors = document.getElementById('nmims-campus-authors');
             const nmimsSchoolAuthors = document.getElementById('nmims-school-authors');
-            const supportingDocuments = document.getElementById('supporting-documents');
+            const supportingDocuments = bookPublicationRowToBeUpdated.getAttribute('data-supporting-documents');
             // assigning related row data value
             authorLastName.value = bookPublicationRowToBeUpdated.querySelector('.author-last-name').innerText;
             bookTitle.value = bookPublicationRowToBeUpdated.querySelector('.book-title').innerText;
@@ -645,8 +616,17 @@
             nmimsAuthors.value = bookPublicationRowToBeUpdated.getAttribute('data-nmims-authors');
             nmimsCampusAuthors.value = bookPublicationRowToBeUpdated.getAttribute('data-nmims-campus-authors');
             nmimsSchoolAuthors.value = bookPublicationRowToBeUpdated.getAttribute('data-nmims-school-authors');
+            // for file preview
+            const bookPublicationRouteImage = '<%- BASE_URL %>research/book-publication-main/book-publication/viewing/';
+            const bookPublicationRouteFile = '<%- BASE_URL %>research/book-publication-main/book-publication/download/';
+            if(bookPublicationRouteImage){
+                modalImage.classList.remove('d-none');
             }
-        
+            else{
+                modalImage.classList.add('d-none');
+            }
+            handleFilePreviewAndDownload(supportingDocuments, bookPublicationRouteImage, bookPublicationRouteFile);
+        }
         //  for delete   
         if(event.target.classList.contains('delete')){
             console.log('clickedddd');
@@ -729,62 +709,12 @@
                     viewNmimsCampusAuthors.innerText = data.bookPublicationView.nmims_campus_authors; 
                     viewNmimsSchoolAuthors.innerText = data.bookPublicationView.nmims_school_authors; 
                     viewSupportingDocuments.innerText = data.bookPublicationView.supporting_documents;
-                    
                 }
             })
             $('#book-publication-view-modal').modal('show');
         }
     
-        if(event.target.classList.contains('download')){
-            console.log('clicked download');
-            const bookPublicatRowfileToBeDownolad = event.target.closest('tr');
-            bookPublicationId = event.target.getAttribute('data-publication-id');
-            console.log('bookPublicationId ==>>', bookPublicationId);
-            const supportingDocuments = bookPublicatRowfileToBeDownolad.getAttribute('data-supporting-documents');
-            console.log('supportingDocuments ==>>', supportingDocuments);
-
-            const bookPublicationRoute = '<%- BASE_URL %>research/book-publication-main/book-publication/download/';
-
-            const fileDownloadURL = `${bookPublicationRoute}${supportingDocuments}`;
-            console.log('fileDownloadURL ==>>', fileDownloadURL)
-
-        fetch(fileDownloadURL)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.blob();
-        })
-        .then(blob => {
-            // Create a link element and trigger a click to download the file
-            const link = document.createElement('a');
-            link.href = window.URL.createObjectURL(blob);
-            link.download = supportingDocuments;
-            link.click();
-        })
-        .catch(error => console.error('Error downloading file:', error));
-
-
-        }
-    
-        if(event.target.classList.contains('eye')){
-            console.log('clicked eye');
-            const bookPublicatRowfileToBeDownolad = event.target.closest('tr');
-            bookPublicationId = event.target.getAttribute('data-publication-id');
-            console.log('bookPublicationId ==>>', bookPublicationId);
-            const supportingDocuments = bookPublicatRowfileToBeDownolad.getAttribute('data-supporting-documents');
-            console.log('supportingDocuments ==>>', supportingDocuments);
-            const bookPublicationRoute = '<%- BASE_URL %>research/book-publication-main/book-publication/viewing/';
-            console.log('bookPublicationRoute ==>>', bookPublicationRoute)
-            const fileViewURL = `${bookPublicationRoute}${supportingDocuments}`;
-            console.log('fileViewURL ==>>>', fileViewURL);
-            // window.open(fileViewURL, '_blank');
-           /// document.getElementById('#table').html = `<img class="" url=${fileViewURL} /> `
-           openModal(fileViewURL);
-
-
-        }
-    })
+    });
 
     const upadatBookPublication = async(url) =>{
         const updatedBookPublicationData = new FormData();
@@ -878,6 +808,8 @@
                 alert('Validation Failed');
             }
     })
+
+
 
 </script>
 <!-- for pagination -->

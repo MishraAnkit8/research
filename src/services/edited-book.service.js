@@ -15,13 +15,26 @@ module.exports.insertEditedBookPublication = async(editedBook , filename) => {
 
 module.exports.updateEditedBook = async(editedBookId , updatedEditedBookPublication, updatedFile) => {
     console.log('data in service ==>>', updatedEditedBookPublication)
-    const updatedEditedBookData = await editedBookPublicationModel.updatedEditedBookPublication(editedBookId , updatedEditedBookPublication, updatedFile);
-    if(updatedEditedBookData && updatedEditedBookData.rowCount === 1) {
-        return {
-            status : 'done',
-            massage : 'date updated successfully'
+    if(updatedFile){
+        const updatedEditedBookData = await editedBookPublicationModel.updatedEditedBookPublication(editedBookId , updatedEditedBookPublication, updatedFile);
+        if(updatedEditedBookData && updatedEditedBookData.rowCount === 1) {
+            return {
+                status : 'done',
+                massage : 'date updated successfully'
+            }
         }
     }
+
+    else{
+        const updatedEditedBookData = await editedBookPublicationModel.updatedEditedBookPublication(editedBookId , updatedEditedBookPublication);
+        if(updatedEditedBookData && updatedEditedBookData.rowCount === 1) {
+            return {
+                status : 'done',
+                massage : 'date updated successfully'
+            }
+        }
+    }
+
     
 }
 

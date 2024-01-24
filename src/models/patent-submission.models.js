@@ -27,16 +27,30 @@ module.exports.insertPatentData = async(patentData, file) => {
 }
 
 module.exports.updatePatentsubmissionData = async({updatedPatentData, patentId, patentDocument}) => {
-    console.log('filename in models ==>', patentDocument )
-    const {typeOfInvention, titleOfInvention, patentStage, achiveSdg, applicationNum, subMissionDate, isPresentor} = updatedPatentData 
-    let sql = {
-        text : `UPDATE patent_submissions  SET type_of_invention = $2,  title_of_invention = $3, patent_stage = $4, achieve_sdg = $5, 
-              application_no = $6, date = $7, is_presenter =$8 , patent_file = $9 WHERE id = $1`,
-        values : [patentId , typeOfInvention, titleOfInvention, patentStage, achiveSdg, applicationNum, subMissionDate, isPresentor, patentDocument]
-    
+    if(patentDocument) {
+        console.log('filename in models ==>', patentDocument )
+        const {typeOfInvention, titleOfInvention, patentStage, achiveSdg, applicationNum, subMissionDate, isPresentor} = updatedPatentData 
+        let sql = {
+            text : `UPDATE patent_submissions  SET type_of_invention = $2,  title_of_invention = $3, patent_stage = $4, achieve_sdg = $5, 
+                  application_no = $6, date = $7, is_presenter =$8 , patent_file = $9 WHERE id = $1`,
+            values : [patentId , typeOfInvention, titleOfInvention, patentStage, achiveSdg, applicationNum, subMissionDate, isPresentor, patentDocument]
+        
+        }
+        console.log('Sql ==>>', sql);
+        return autoDbW.query(sql)
     }
-    console.log('Sql ==>>', sql);
-    return autoDbW.query(sql)
+    else{
+        console.log('filename in models ==>', patentDocument )
+        const {typeOfInvention, titleOfInvention, patentStage, achiveSdg, applicationNum, subMissionDate, isPresentor} = updatedPatentData 
+        let sql = {
+            text : `UPDATE patent_submissions  SET type_of_invention = $2,  title_of_invention = $3, patent_stage = $4, achieve_sdg = $5, 
+                  application_no = $6, date = $7, is_presenter =$8 WHERE id = $1`,
+            values : [patentId , typeOfInvention, titleOfInvention, patentStage, achiveSdg, applicationNum, subMissionDate, isPresentor]
+        
+        }
+        console.log('Sql ==>>', sql);
+        return autoDbW.query(sql)
+    }
 }
 
 module.exports.deletePatentSubmissionData = async(patentId) => {

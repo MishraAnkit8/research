@@ -68,30 +68,53 @@ function formatDateToYYYYMMDD(inputDateString) {
     return `${year}-${month}-${day}`;
   }
 
-// for popup image 
-// Update the JavaScript in your file
-// Function to open the modal
+// for popup image preview modal
 function openModal(imageUrl) {
-    const modal = document.getElementById('imageModal');
     const modalImage = document.getElementById('modalImage');
-  
-    modalImage.src = imageUrl; // Set the image source
-    modal.style.display = 'block'; // Display the modal
+    modalImage.src = imageUrl;
+    console.log('imageUrl ==>>>', imageUrl)
   }
   
-  // Function to close the modal
-  function closeModal() {
-    const modal = document.getElementById('imageModal');
-    modal.style.display = 'none'; // Hide the modal
-  }
+  function handleFilePreviewAndDownload(filename, bookPublicationRouteImage, bookPublicationRouteFile) {
+    const downloadLink = document.getElementById('downloadLink');
+    // for checking image extension preview
+    const fileExtension = (filename || '').split('.').pop().toLowerCase();
+    const allowedImageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+    const isImage = allowedImageExtensions.includes(fileExtension);
+
+    console.log('isImage ===>>>:::::::', isImage);
+
+    if (isImage) {
+        const fetchUrl = `${bookPublicationRouteImage}${filename}`;
+        console.log('fetchUrl ==>>>', fetchUrl);
+        // Display image preview modal
+        openModal(fetchUrl);
+        $('#imageModal').modal('show');
+
+        // Hide download link
+        downloadLink.style.display = 'none';
+    } else {
+        const fileDownloadURL = `${bookPublicationRouteFile}${filename}`;
+        console.log('fileDownloadURL ==>>', fileDownloadURL);
+
+        // Hide image preview modal
+        $('#imageModal').modal('hide');
+
+        // Create a link element for download
+        downloadLink.href = fileDownloadURL;
+        downloadLink.download = filename;
+        // Show download link
+        downloadLink.style.display = 'block';
+    }
+}
+
+// Example usage:
+
+
+
   
-  // Attach click event to the image element
-  document.getElementById('modalImage').addEventListener('click', function() {
-    closeModal(); // Close the modal on image click
-  });
   
-  // Attach click event to close button (if needed)
-  document.querySelector('.close').addEventListener('click', closeModal);
+
   
   
   

@@ -85,7 +85,7 @@
                             data-impact-factor="<%- journalPaper.impact_factor %>" data-scs-indexed="<%- journalPaper.scs_indexed %>" data-wos-indexed="<%- journalPaper.wos_indexed %>"
                             data-gs-indexed="<%- journalPaper.gs_indexed %>" data-title-of-paper="<%- journalPaper.title_of_paper %>" data-abdc-indexed="<%- journalPaper.abdc_indexed %>" data-ugc-indexed="<%- journalPaper.ugc_indexed %>"
                             data-web-link="<%- journalPaper.web_link %>" data-uid="<%- journalPaper.uid %>" data-date-of-publishing="<%- journalPaper.date_of_publishing %>"
-                            data-research-type="<%- journalPaper.research_type %>" data-nmims-authors-count="<%- journalPaper. nmims_authors_count%>">
+                            data-journal-category="<%- journalPaper.journal_category %>" data-nmims-authors-count="<%- journalPaper. nmims_authors_count%>">
                             <td class="cell " id="rowCount"> <%- index + 1 %> </td>
                             <td class=" cell year"> <%- journalPaper.year %> </td>
                             <td class=" cell school"> <%- journalPaper.school %> </td>
@@ -301,10 +301,19 @@
                         <label for="title-of-paper" class="form-label fw-bold">Title Of Paper</label>
                         <input type="text" name="dop" id="title-of-paper" data-validate="isEmpty,isNotNumber,isExist" data-err-msg="This is required field and min length > 1." class="form-control" required>                    
                     </div>
-                    <!-- Rsearch Type -->
-                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="research-type" class="form-label fw-bold">Rsearch Type</label>
-                        <input type="text" name="dop" id="research-type" data-validate="isEmpty,isNotNumber,isExist" data-err-msg="This is required field and min length > 1." class="form-control" required>
+                     <!-- Research Journal Paper  -->
+                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="journal-category" id="journal-category" class="form-label fw-bold mb-3">Research Journal Paper</label><br>
+                        <div class="form-check-inline">
+                            <label for="inter-national" class="form-check-label">
+                                <input type="radio" class="form-check-input" id="inter-national" name="journal-category" value="International"> International
+                            </label>
+                        </div>
+                        <div class="form-check-inline">
+                            <label for="national" class="form-check-label">
+                                <input type="radio" class="form-check-input" id="national" name="journal-category" value="National" checked> National
+                            </label>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -490,11 +499,11 @@
                             <label class="view-content" id="view-title-of-paper"></label>
                         </div>
                     </div>
-                    <!--research Type -->
+                    <!--Research Journal Paper -->
                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
-                            <div class="sub-title-text sub-title">Research Type :</div>
-                            <label class="view-content" id="view-research-type"></label>
+                            <div class="sub-title-text sub-title">Research Journal Paper:</div>
+                            <label class="view-content" id="view-journal-category"></label>
                         </div>
                     </div>
                     <!--nmims_authors_count -->
@@ -592,8 +601,7 @@
         journalDetails.uid = document.getElementById('uid').value;
         journalDetails.dateOfPublishing = document.getElementById('date-of-publishing').value;
         journalDetails.titleOfPaper = document.getElementById('title-of-paper').value;
-        journalDetails.researchType = document.getElementById('research-type').value;
-        journalDetails.nmimsAuthorsCount = document.getElementById('nmims-authors-count').value;
+        journalDetails.journalCategory = document.querySelector('input[name="journal-category"]:checked').value;        journalDetails.nmimsAuthorsCount = document.getElementById('nmims-authors-count').value;
 
         // inserting data from frontEnd
         console.log('journalDetails==>>', journalDetails);
@@ -634,7 +642,7 @@
                     newJournalPaper.setAttribute('data-uid', journalDetails.uid);
                     newJournalPaper.setAttribute('data-date-of-publishing', journalDetails.dateOfPublishing);
                     newJournalPaper.setAttribute('data-title-of-paper', journalDetails.titleOfPaper);
-                    newJournalPaper.setAttribute('data-research-type', journalDetails.researchType);
+                    newJournalPaper.setAttribute('data-journal-category' , journalDetails.journalCategory);
                     newJournalPaper.setAttribute('data-nmims-author-count', journalDetails.nmimsAuthorsCount);
                     newJournalPaper.innerHTML = `
                             <td class="cell" id="rowCount">${indexValue}</td>
@@ -745,8 +753,10 @@
             const webLink = rowToBeUpdated.getAttribute('data-web-link');
             const uid = rowToBeUpdated.getAttribute('data-uid');
             const scsIndexed = rowToBeUpdated.getAttribute('data-scs-indexed');
-            const researchType = rowToBeUpdated.getAttribute('data-research-type');
             const nmimsAuthorsCount = rowToBeUpdated.getAttribute('data-nmims-author-count');
+            const journalCategoryNational = document.getElementById('national');
+            const journalCategoryInternational = document.getElementById('inter-national');
+            const journalCategory = rowToBeUpdated.getAttribute('data-journal-category');
 
             // for displaying alredy stored value
             document.getElementById('year').value = year.innerText.trim();
@@ -772,10 +782,15 @@
             document.getElementById('ugc-indexed').value = ugcIndexed.trim();
             document.getElementById('web-link').value = webLink.trim();
             document.getElementById('uid').value = uid.trim();
-            document.getElementById('research-type').value = researchType.trim();
             document.getElementById('nmims-authors-count').value = nmimsAuthorsCount.trim();
             console.log('nmimsAuthorsCount ==>>', nmimsAuthorsCount)
             document.getElementById('scs-indexed').value = scsIndexed.trim();
+            if(journalCategory === 'National'){
+                journalCategoryNational.checked = true;
+            }
+            else{
+                journalCategoryInternational.checked = true;
+            }
         }
 
         // for viewing record of journal paper
@@ -807,7 +822,8 @@
             const viewDateOfPublishing = document.getElementById('view-date-of-publishing');
             const viewUid = document.getElementById('view-uid');
             const viewTitle = document.getElementById('view-title-of-paper');
-            const viewRsearch = document.getElementById('view-research-type');
+            const viewJournalCategory = document.getElementById('view-journal-category');
+            
             const viewNmimsAuthorsCount = document.getElementById('view-nmims-authors-count');
 
             fetch('<%- BASE_URL %>research/journal-paper/view', {
@@ -846,7 +862,7 @@
                     viewUgcIndexed.innerText = data[0].ugc_indexed;
                     viewDateOfPublishing.innerText = data[0].date_of_publishing;
                     viewTitle.innerText = data[0].title_of_paper;
-                    viewRsearch.innerText = data[0].research_type;
+                    viewJournalCategory.innerText = data[0].journal_category;
                     viewWosIndexed.innerText = data[0].wos_indexed;
                     viewUid.innerText = data[0].uid;
                     viewNmimsAuthorsCount.innerText = data[0].nmims_authors_count;
@@ -884,7 +900,8 @@
         const updatedUgcIndexed = document.getElementById('ugc-indexed').value;
         const updatedWebLink = document.getElementById('web-link').value;
         const updatedUid = document.getElementById('uid').value;
-        const updatedResearchType = document.getElementById('research-type').value;
+        const updatedJournalCategory = document.querySelector('input[name="journal-category"]:checked').value;
+
         const updatedNmimsAuthorsCount = document.getElementById('nmims-authors-count').value;
         const updatedScsIndexed = document.getElementById('scs-indexed').value
 
@@ -913,7 +930,7 @@
         updatedJournalPaperDetails.ugcIndexed = updatedUgcIndexed;
         updatedJournalPaperDetails.webLink = updatedWebLink;
         updatedJournalPaperDetails.uid = updatedUid;
-        updatedJournalPaperDetails.researchType = updatedResearchType;
+        updatedJournalPaperDetails.journalCategory = updatedJournalCategory;
         updatedJournalPaperDetails.nmimsAuthorsCount = updatedNmimsAuthorsCount;
         updatedJournalPaperDetails.scsIndexed = updatedScsIndexed;
 
@@ -956,7 +973,7 @@
                     rowToBeUpdated.setAttribute('data-uid', updatedUid);
                     rowToBeUpdated.setAttribute('data-date-of-publishing', updatedDateOfPublishing);
                     rowToBeUpdated.setAttribute('data-title-of-paper', updatedTitleOfPaper);
-                    rowToBeUpdated.setAttribute('data-research-type', updatedResearchType);
+                    rowToBeUpdated.setAttribute('data-journal-category', updatedJournalCategory);
                     rowToBeUpdated.setAttribute('data-nmims-author-count', updatedNmimsAuthorsCount);
                 }
                 $('#journal-paper-modal').modal('hide');

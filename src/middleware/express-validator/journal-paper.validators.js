@@ -45,9 +45,9 @@ module.exports.validateJournalPaper = [
     .isString()
     .withMessage("policy cadre  should be string"),
 
- check("journalDetails.researchType")
+ check("journalDetails.journalCategory")
     .notEmpty()
-    .withMessage("research type is required")
+    .withMessage("journal Category is required")
     .bail()
     .isString()
     .withMessage("researchType should be string"),

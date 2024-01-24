@@ -14,13 +14,25 @@ module.exports.insertBookChapter = async(bookChapter , filename) => {
 }
 
 module.exports.updatedBookChapter = async(bookChapterId, updatedBookChapterPublication, updatedFile) => {
-    const updatedBookChapterData = await bookChapterModels.updatedBookChapter(bookChapterId , updatedBookChapterPublication, updatedFile);
-    if(updatedBookChapterData && updatedBookChapterData.rowCount === 1) {
-        return {
-            status : 'done',
-            massage : 'date updated successfully'
+    if(updatedFile){
+        const updatedBookChapterData = await bookChapterModels.updatedBookChapter(bookChapterId , updatedBookChapterPublication, updatedFile);
+        if(updatedBookChapterData && updatedBookChapterData.rowCount === 1) {
+            return {
+                status : 'done',
+                massage : 'date updated successfully'
+            }
         }
     }
+    else{
+        const updatedBookChapterData = await bookChapterModels.updatedBookChapter(bookChapterId , updatedBookChapterPublication);
+        if(updatedBookChapterData && updatedBookChapterData.rowCount === 1) {
+            return {
+                status : 'done',
+                massage : 'date updated successfully'
+            }
+        }
+    }
+ 
     
 }
 

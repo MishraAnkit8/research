@@ -18,17 +18,31 @@ module.exports.updatPatentSubmission = async(body) => {
     console.log('updated Data in Service ::', body)
     const updatedPatentData = body;
     const patentId = body.patentId;
-    const patentDocument = body.patentDocument;
-    console.log('file name  In service ==>>', patentDocument)
-    console.log('ID in service >>', body.patentId)
-    const upadtedPatentSubmissionData = await patentFormsModels.updatePatentsubmissionData(updatedPatentData, patentId, patentDocument );
-    console.log('Id for updation  ==>>', patentId);
-    if(upadtedPatentSubmissionData && upadtedPatentSubmissionData.rowCount === 1){
-        return{
-            status : 'done',
-            massage : 'data updated successFully'
+    if(body.patentDocument){
+        const patentDocument = body.patentDocument;
+        console.log('file name  In service ==>>', patentDocument)
+        console.log('ID in service >>', body.patentId)
+        const upadtedPatentSubmissionData = await patentFormsModels.updatePatentsubmissionData(updatedPatentData, patentId, patentDocument );
+        console.log('Id for updation  ==>>', patentId);
+        if(upadtedPatentSubmissionData && upadtedPatentSubmissionData.rowCount === 1){
+            return{
+                status : 'done',
+                massage : 'data updated successFully'
+            }
         }
     }
+    else{
+        console.log('ID in service >>', body.patentId)
+        const upadtedPatentSubmissionData = await patentFormsModels.updatePatentsubmissionData(updatedPatentData, patentId);
+        console.log('Id for updation  ==>>', patentId);
+        if(upadtedPatentSubmissionData && upadtedPatentSubmissionData.rowCount === 1){
+            return{
+                status : 'done',
+                massage : 'data updated successFully'
+            }
+        }
+    }
+   
 }
 
 module.exports.deletePatentSubmission = async(body) => {

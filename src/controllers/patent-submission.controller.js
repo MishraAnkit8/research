@@ -57,16 +57,28 @@ module.exports.updatePatentSubMissiom = async(req, res, next) => {
     console.log('ID in controller ==>', req.body.patentId);
     const updatedPatentData = req.body;
     const  patentId = req.body.patentId;
-    const patentDocument = req.file.filename
-    console.log(' updated file in Cotroller ', req.file);
-    const updatedPatentSubmissionData = await patentSubmissionservice.updatPatentSubmission({updatedPatentData, patentId, patentDocument});
-    if(updatedPatentSubmissionData.status === 'done'){
-        res.json({
-            status : 'done',
-            massage : 'Data updated successfully',
-            updatedPatentData : updatedPatentData,
-            patentDocument
-        })
+    if(req.file) {
+        const patentDocument = req.file.filename
+        console.log(' updated file in Cotroller ', req.file);
+        const updatedPatentSubmissionData = await patentSubmissionservice.updatPatentSubmission({updatedPatentData, patentId, patentDocument});
+        if(updatedPatentSubmissionData.status === 'done'){
+            res.json({
+                status : 'done',
+                massage : 'Data updated successfully',
+                updatedPatentData : updatedPatentData,
+                patentDocument
+            })
+        }
+    }
+    else{
+        const updatedPatentSubmissionData = await patentSubmissionservice.updatPatentSubmission({updatedPatentData, patentId});
+        if(updatedPatentSubmissionData.status === 'done'){
+            res.json({
+                status : 'done',
+                massage : 'Data updated successfully',
+                updatedPatentData : updatedPatentData  
+            })
+        }
     }
 }
 

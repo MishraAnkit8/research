@@ -163,12 +163,12 @@
                         <div class="form-group col">
                             <label for="type-of-invention" class="form-label fw-bold ">Type of Invention(IPR)</label>
                             <select class="form-control gap-10" id="type-of-invention" data-validate="isEmpty,isExist" data-err-msg="This field is required and select value " required>
-                                <option >Select option</option>
-                                <option  name="Patent" selected>Patent</option>
-                                <option  name="Copy Right">Copy Right</option>
-                                <option  name="Design Registration">Design Registration</option>
-                                <option  name="Trade mark">Trade mark</option>
-                                <option  name="Trade Secret">Trade Secret</option>
+                                <option value="" selected>Select option</option>
+                                <option  value="Patent" selected>Patent</option>
+                                <option  value="Copy Right">Copy Right</option>
+                                <option  value="Design Registration">Design Registration</option>
+                                <option  value="Trade mark">Trade mark</option>
+                                <option  value="Trade Secret">Trade Secret</option>
                             </select>
                         </div>
                     </div>
@@ -180,13 +180,14 @@
                     <!-- Patent Stage -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="patent-stage" class="form-label fw-bold">Patent Stage</label>
-                        <select class="form-control gap-10" id="patent-stage" data-validate="isEmpty,isExist" data-err-msg="This field is required and select value "  required>
-                            <option selected>Select option</option>
-                            <option name="Filied">Filied</option>
-                            <option name="Published">Published</option>
-                            <option name="Granted">Granted</option>
+                        <select class="form-control gap-10" id="patent-stage" data-validate="isEmpty,isExist" data-err-msg="This field is required and select a value" required onchange="resetSelect(this)">
+                            <option  value="" selected>Select option</option>
+                            <option value="Filed">Filed</option>
+                            <option value="Published">Published</option>
+                            <option value="Granted">Granted</option>
                         </select>
                     </div>
+
                     <!-- Sustainable Development Goals (SDG) [dropdown list to be added] ? -->
                     <div form-group class="col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="achive-sdg" class="mb-2 fw-bold" aria-required="true">Sustainable Development Goals (SDG)?</label><br>
@@ -237,7 +238,7 @@
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="patentFile" class="form-label fw-bold mb-3">Upload Data</label>
                             <div class="form-group">
-                                <input id="patent-file" type="file" name="patentFile" data-validate="isEmpty,isExist,isFile" data-err-msg="File is required." class="form-control" required/>
+                                <input id="patent-file" type="file" name="patentFile" class="form-control" required/>
                             </div>
                     </div>
                 </div>
@@ -583,9 +584,13 @@
         updatedPatentData.append('applicationNum', updatedApplicationNum);
         updatedPatentData.append('subMissionDate', updatedSubMissionDate);
         updatedPatentData.append('isPresentor', updatedIs_Presenter);
-        const updatedPatentFileInput = document.querySelector('input[type="file"]');
+        let updatedPatentFileInput = document.querySelector('input[type="file"]');
         if (updatedPatentFileInput.files.length > 0) {
             updatedPatentData.append('patentFile', updatedPatentFileInput.files[0]);
+        }
+        else{
+            updatedPatentFileInput = null;
+            updatedPatentData.append('patentFile', updatedPatentFileInput);
         }
 
 
