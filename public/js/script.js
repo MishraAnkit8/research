@@ -69,13 +69,13 @@ function formatDateToYYYYMMDD(inputDateString) {
   }
 
 // for popup image preview modal
+const modalImage = document.getElementById('modalImage');
 function openModal(imageUrl) {
-    const modalImage = document.getElementById('modalImage');
     modalImage.src = imageUrl;
     console.log('imageUrl ==>>>', imageUrl)
   }
-  
-  function handleFilePreviewAndDownload(filename, bookPublicationRouteImage, bookPublicationRouteFile) {
+
+function handleFilePreviewAndDownload(filename, bookPublicationRouteImage, bookPublicationRouteFile) {
     const downloadLink = document.getElementById('downloadLink');
     // for checking image extension preview
     const fileExtension = (filename || '').split('.').pop().toLowerCase();
@@ -83,7 +83,6 @@ function openModal(imageUrl) {
     const isImage = allowedImageExtensions.includes(fileExtension);
 
     console.log('isImage ===>>>:::::::', isImage);
-
     if (isImage) {
         const fetchUrl = `${bookPublicationRouteImage}${filename}`;
         console.log('fetchUrl ==>>>', fetchUrl);
@@ -103,6 +102,11 @@ function openModal(imageUrl) {
         // Create a link element for download
         downloadLink.href = fileDownloadURL;
         downloadLink.download = filename;
+        modalImage.src  = '';
+        if (modalImage.parentNode) {
+            modalImage.parentNode.removeChild(modalImage);
+        }
+    
         // Show download link
         downloadLink.style.display = 'block';
     }

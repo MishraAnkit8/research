@@ -36,6 +36,8 @@ router.post('/update', upload.fields([
 
 router.post('/view' , asyncErrorHandler(brandingAndAdvertisingController.viewBrandingadvertising));
 router.post('/delete' , asyncErrorHandler(brandingAndAdvertisingController.deleteBrandingAdvertising));
+router.get('/download/:filename', brandingAndAdvertisingController.downloadFile);
+router.get('/viewing/:filename', brandingAndAdvertisingController.viewFile);
 
 
 
