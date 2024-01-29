@@ -76,7 +76,7 @@ module.exports.updateBookPublication = async(bookPublicationId, updatedBookPubli
     }
 
     else{
-        const updatedBookPublication = await bookPublicationModel.updatedBookPublication(bookPublicationId , updatedBookPublicationData);
+        const updatedBookPublication = await bookPublicationModel.updatedBookPublication(bookPublicationId, updatedBookPublicationData);
         if(updatedBookPublication && updatedBookPublication.rowCount === 1) {
             return {
                 status : 'done',

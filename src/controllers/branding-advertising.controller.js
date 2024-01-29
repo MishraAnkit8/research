@@ -80,10 +80,15 @@ module.exports.insertBrandingAndAdvertising = async(req, res, next) => {
 module.exports.updateBrandingAdvertising = async(req, res, next) => {
     const updatedAdvertisingData = req.body;
     const advertisingId = req.body.advertisingId;
+    console.log('files in controller ===>>', req.files)
     console.log('updated advertising data ==>>', updatedAdvertisingData);
     const {facultyRecognitionDocuments, facultyAwardDocuments, staffAwardDocuments, alumniAwardDocuments, studentAwardDocuments, internationalLinkageDocuments, conferenceParticipationDocuments, organisingConferenceDocuments,
-            studentEventParticipationDocuments, newspaperArticleDocuments} = req.files
-    const updatedAdvertising = await brandingAndAdvertisingServices.updateBrandingAndAdvertising(advertisingId, updatedAdvertisingData , req.files);
+            studentEventParticipationDocuments, newspaperArticleDocuments} = req.files;
+    const filesToUpdate = {
+                facultyRecognitionDocuments, facultyAwardDocuments, staffAwardDocuments, alumniAwardDocuments, studentAwardDocuments,
+                internationalLinkageDocuments, conferenceParticipationDocuments, organisingConferenceDocuments, studentEventParticipationDocuments, newspaperArticleDocuments
+            };
+    const updatedAdvertising = await brandingAndAdvertisingServices.updateBrandingAndAdvertising(advertisingId, updatedAdvertisingData, filesToUpdate);
     if(updatedAdvertising.status === 'done'){
         res.status(200).send({
             status : 'done',
