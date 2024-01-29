@@ -39,7 +39,7 @@ module.exports.insertBrandingAndAdvertisingData = async(advertisingData, faculty
 
 }
 
-module.exports.updateBrandingAdvertising = async(advertisingId, updatedAdvertisingData, filesToUpdate) => {
+module.exports.updateBrandingAdvertising = async (advertisingId, updatedAdvertisingData, filesToUpdate) => {
     console.log('filesToUpdate in models ==>>', filesToUpdate);
     const {
         facultyRecognition, facultyRecognitionLink, facultyAward, facultyAwardLink,
@@ -50,13 +50,13 @@ module.exports.updateBrandingAdvertising = async(advertisingId, updatedAdvertisi
         newsPaperArticle, newsPaperArticleLink
     } = updatedAdvertisingData;
 
-    console.log('filesToUpdate.facultyRecognitionDocuments  ==>>>', filesToUpdate.facultyRecognitionDocuments )
+    console.log('filesToUpdate.facultyRecognitionDocuments  ==>>>', filesToUpdate.facultyRecognitionDocuments);
 
     const facultyRecognitionDocuments = filesToUpdate.facultyRecognitionDocuments ? filesToUpdate.facultyRecognitionDocuments[0].filename : null;
     const facultyAwardDocuments = filesToUpdate.facultyAwardDocuments ? filesToUpdate.facultyAwardDocuments[0].filename : null;
     const staffAwardDocuments = filesToUpdate.staffAwardDocuments ? filesToUpdate.staffAwardDocuments[0].filename : null;
     const alumniAwardDocuments = filesToUpdate.alumniAwardDocuments ? filesToUpdate.alumniAwardDocuments[0].filename : null;
-    const studentAwardDocuments = filesToUpdate.studentAwardDocuments ? filesToUpdate.studentAwardDocuments[0].filename : null; 
+    const studentAwardDocuments = filesToUpdate.studentAwardDocuments ? filesToUpdate.studentAwardDocuments[0].filename : null;
     const internationalLinkageDocuments = filesToUpdate.internationalLinkageDocuments ? filesToUpdate.internationalLinkageDocuments[0].filename : null;
     const conferenceParticipationDocuments = filesToUpdate.conferenceParticipationDocuments ? filesToUpdate.conferenceParticipationDocuments[0].filename : null;
     const organisingConferenceDocuments = filesToUpdate.organisingConferenceDocuments ? filesToUpdate.organisingConferenceDocuments[0].filename : null;
@@ -64,65 +64,95 @@ module.exports.updateBrandingAdvertising = async(advertisingId, updatedAdvertisi
     const newspaperArticleDocuments = filesToUpdate.newspaperArticleDocuments ? filesToUpdate.newspaperArticleDocuments[0].filename : null;
 
     const fieldsToUpdate = [
-        { field: 'faculty_recognition', value: facultyRecognition},
-        { field: 'faculty_recognition_documents', value: facultyRecognitionDocuments},
-        { field: 'faculty_recognition_link', value: facultyRecognitionLink},
-        { field: 'faculty_award', value: facultyAward},
-        { field: 'faculty_award_link', value: facultyAwardLink},
-        { field: 'faculty_award_documents', value: facultyAwardDocuments},
-        { field: 'staff_award', value: staffAward},
-        { field: 'staff_award_documents', value: staffAwardDocuments},
-        { field: 'staff_award_link', value: staffAwardLink},
-        { field: 'alumni_award', value: alumniAward},
-        { field: 'alumni_award_documents', value: alumniAwardDocuments},
-        { field: 'alumni_award_link', value: alumniAwardLink},
-        { field: 'student_award', value: studentAward},
-        { field: 'student_award_link', value: studentAwardLink},
-        { field: 'student_award_documents', value: studentAwardDocuments},
-        { field: 'international_linkage', value: internationalLinkage},
-        { field: 'international_linkage_link', value: internationalLinkageLink},
-        { field: 'international_linkage_documents', value: internationalLinkageDocuments},
-        { field: 'conference_participation', value: conferenceParticipation},
-        { field: 'conference_participation_documents', value: conferenceParticipationDocuments},
-        { field: 'conference_participation_link', value: conferenceParticipationLink},
-        { field: 'organising_conference', value: organisingConference},
-        { field: 'organising_conference_documents', value: organisingConferenceDocuments},
-        { field: 'organising_conference_link', value: organisingConferenceLink},
-        { field: 'student_event_participation', value: studentEventParticipation},
-        { field: 'organising_conference_documents', value: studentEventParticipationDocuments},
-        { field: 'student_event_participation_link', value: studentEventParticipationLink},
-        { field: 'newspaper_article', value: newsPaperArticle},
-        { field: 'newspaperArticleDocuments', value: newspaperArticleDocuments},
-        { field: 'newspaper_article_link', value: newsPaperArticleLink},
+        { field: 'faculty_recognition', value: facultyRecognition },
+        { field: 'faculty_recognition_documents', value: facultyRecognitionDocuments },
+        { field: 'faculty_recognition_link', value: facultyRecognitionLink },
+        { field: 'faculty_award', value: facultyAward },
+        { field: 'faculty_award_link', value: facultyAwardLink },
+        { field: 'faculty_award_documents', value: facultyAwardDocuments },
+        { field: 'staff_award', value: staffAward },
+        { field: 'staff_award_documents', value: staffAwardDocuments },
+        { field: 'staff_award_link', value: staffAwardLink },
+        { field: 'alumni_award', value: alumniAward },
+        { field: 'alumni_award_documents', value: alumniAwardDocuments },
+        { field: 'alumni_award_link', value: alumniAwardLink },
+        { field: 'student_award', value: studentAward },
+        { field: 'student_award_link', value: studentAwardLink },
+        { field: 'student_award_documents', value: studentAwardDocuments },
+        { field: 'international_linkage', value: internationalLinkage },
+        { field: 'international_linkage_link', value: internationalLinkageLink },
+        { field: 'international_linkage_documents', value: internationalLinkageDocuments },
+        { field: 'conference_participation', value: conferenceParticipation },
+        { field: 'conference_participation_documents', value: conferenceParticipationDocuments },
+        { field: 'conference_participation_link', value: conferenceParticipationLink },
+        { field: 'organising_conference', value: organisingConference },
+        { field: 'organising_conference_documents', value: organisingConferenceDocuments },
+        { field: 'organising_conference_link', value: organisingConferenceLink },
+        { field: 'student_event_participation', value: studentEventParticipation },
+        { field: 'student_event_participation_documents', value: studentEventParticipationDocuments },
+        { field: 'student_event_participation_link', value: studentEventParticipationLink },
+        { field: 'newspaper_article', value: newsPaperArticle },
+        { field: 'newspaper_article_documents', value: newspaperArticleDocuments },
+        { field: 'newspaper_article_link', value: newsPaperArticleLink },
     ];
-    console.log('fieldsToUpdate ===>>', fieldsToUpdate)
+
+    console.log('fieldsToUpdate ===>>', fieldsToUpdate);
+
     const setStatements = fieldsToUpdate
-    .map((fieldInfo, index) => {
-        const condition = fieldInfo.value !== null;
-        console.log('index ==>>', index);
-        console.log('condition == ==>>>::::', condition);
-        return { condition, index };
-    })
-    .filter(item => item.condition)
-    .map(item => item.index + 2);
+        .filter(fieldInfo => fieldInfo.value !== null) // Filter out items where value is null
+        .map((fieldInfo, index) => {
+            console.log('dataCondition ===>>>:::::', fieldInfo.value);
+            console.log('index ==>>', index);
+            console.log('condition == ==>>>::::', true); // Since the filter ensures value is not null
+            return { statement: `${fieldInfo.field} = $${index + 2}`, dataCondition: `${fieldInfo.value}` };
+        });
 
-    console.log('setStatements ===>>>', setStatements);
+    console.log('setStatements ==>>>', setStatements);
 
-    const updateDocument = fieldsToUpdate.map(fieldInfo => fieldInfo.condition).filter(value => value !== null);
-
-    console.log('updateDocument ===>>>:::::', updateDocument)
+    const updateDocument = fieldsToUpdate.map(fieldInfo => {
+        const condition = fieldInfo.value;
+        if(condition){
+            console.log('condition ==>>::::', condition)
+            console.log(`Condition for ${fieldInfo.field}: ${condition}`);
+        }
+        
+        
+        // Exclude file fields from updateDocument
+        if (fieldInfo.field.endsWith('_documents')) {
+            console.log(`Skipping file field ${fieldInfo.field}`);
+            return null;
+        }
     
+        const value =  fieldInfo.value ;
+        if(value){
+            console.log(`Value for ${fieldInfo.field}: ${value}`);
+            return value;
+        }
+    }).filter(value => value !== null);
+    
+
     const updatedAdvertisingValues = [
-        advertisingId, 
+        advertisingId,
         ...updateDocument,
-        updatedAdvertisingData
-
     ];
-    console.log('updatedAdvertisingValues ==>>>', updatedAdvertisingValues)
 
-    const setStatementString = setStatements.map(item => item.statement).join(',');
-    console.log('setStatementString ==>>', setStatementString)
+    console.log('updatedAdvertisingValues ==>>>', updatedAdvertisingValues);
 
+    // const setStatementString = setStatements.map(item => item.statement).join(',');
+    // console.log('setStatementString ==>>>', setStatementString)
+    const setStatementString = setStatements.map((item, index) => {
+        if (item.dataCondition !== 'null') {
+          return `${item.statement}`;
+        } else {
+          return '';
+        }
+      }).filter(Boolean).join(', ');
+      
+      console.log('setStatementString ==>>>', setStatementString);
+
+
+    const placeholders = Array.from({ length: updateDocument.length }, (_, i) => `$${i + 2}`).join(',');
+    
     const sql = {
         text: `UPDATE branding_and_advertising SET ${setStatementString} WHERE id = $1`,
         values: updatedAdvertisingValues,
@@ -130,7 +160,8 @@ module.exports.updateBrandingAdvertising = async(advertisingId, updatedAdvertisi
 
     console.log('sql ==>>', sql);
     return autoDbW.query(sql);
-}
+};
+
 
 
 

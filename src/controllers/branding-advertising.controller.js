@@ -89,6 +89,7 @@ module.exports.updateBrandingAdvertising = async(req, res, next) => {
                 internationalLinkageDocuments, conferenceParticipationDocuments, organisingConferenceDocuments, studentEventParticipationDocuments, newspaperArticleDocuments
             };
     const updatedAdvertising = await brandingAndAdvertisingServices.updateBrandingAndAdvertising(advertisingId, updatedAdvertisingData, filesToUpdate);
+    console.log('updatedAdvertising in controller for update ===>>>:::', updatedAdvertising)
     if(updatedAdvertising.status === 'done'){
         res.status(200).send({
             status : 'done',

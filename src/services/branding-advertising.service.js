@@ -50,6 +50,7 @@ module.exports.updateBrandingAndAdvertising = async (advertisingId, updatedAdver
         advertisingId,
         updatedAdvertisingData,
         filesToUpdate);
+    console.log('brandingAndAdvertising in service ===>>>', brandingAndAdvertising)
 
     if (brandingAndAdvertising && brandingAndAdvertising.rowCount === 1) {
         return {
