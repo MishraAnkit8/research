@@ -1,11 +1,14 @@
 const express = require('express');
 const upload = require('../../multer');
 
+  
+
 // middlewre for valiadtion and errorHandler
 const { asyncErrorHandler } = require('../middleware/error.middleware');
 
 
 const bookPublicationMainController = require('../controllers/book-publication-main.controller');
+const bookPublicationService = require('../services/book-publication.service');
 
 const bookPublicationController = require('../controllers/book-publication.controller');
 const editedBookPublication = require('../controllers/edited-book.controller');
@@ -19,12 +22,16 @@ router.get('/', asyncErrorHandler(bookPublicationMainController.renderBookPublic
 
 // book publication
 router.get('/book-publication', asyncErrorHandler(bookPublicationController.renderBookPublication));
-router.post('/book-publication/insert', upload.single('researchSupportingDocument'), asyncErrorHandler(bookPublicationController.insertBookPublication));
+router.post('/book-publication/insert', upload.single('researchSupportingDocument'), asyncErrorHandler(bookPublicationController.insertBookPublication), (req, res) => {
+    const filePath = req.file.path;
+    console.log('filePath in book publication router ==>>>:::', filePath);
+    res.send(`File uploaded to 'uploads/bookPublication'. Path: ${filePath}`);
+});
 router.post('/book-publication/update',  upload.single('researchSupportingDocument'), asyncErrorHandler(bookPublicationController.updateBookPublication));
 router.post('/book-publication/delete', asyncErrorHandler(bookPublicationController.deleteBookPublication));
 router.post('/book-publication/view', asyncErrorHandler(bookPublicationController.viewBookPublication));
-router.get('/book-publication/download/:filename', bookPublicationController.downloadFile);
-router.get('/book-publication/viewing/:filename', bookPublicationController.viewFile);
+router.get('/book-publication/download/:filename', bookPublicationService.downloadFile);
+router.get('/book-publication/viewing/:filename', bookPublicationService.viewFile);
 
 //edited book publication
 

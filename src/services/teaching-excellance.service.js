@@ -1,5 +1,10 @@
 const teachingExecellanceModel = require('../models/teaching-excellance.model');
+const fs = require('fs');
+const path = require('path');
 
+// uploaded file path for dowload
+const uploadFolder = path.join(__dirname, '..', '..', 'uploads');
+console.log('uploadFolder in side teaching service ==>>', uploadFolder)
 module.exports.fetchTeachingExecellanceData = async() => {
     const teachingExecellanceData = await teachingExecellanceModel.fetchTeachingExecellance();
     return teachingExecellanceData;
