@@ -250,17 +250,26 @@
                         <label for="nmims-school-authors" class="form-label fw-bold ">NMIMS School Author</label>
                         <input type="url" name="web-link" id="nmims-school-authors" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="This is required and min length > 1." class="form-control" required/>
                     </div>
-                      <!-- Upload Supporting Documents-->
-                      <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="supporting-documents" class="form-label fw-bold">
-                            Upload Supporting Documents
-                        </label>
-                        <input type="file" name="researchSupportingDocument" id="supporting-documents"  class="form-control" min='2000-01-01' max="2023-10-02" required>
+                    <!-- Upload Supporting Documents-->
+                    <div class="form-group col-lg-6 col-md-8 col-sm-12 mb-4">
+                        <div class="col-lg-6 col-md-8 col-sm-12">
+                            <label for="supporting-documents" class="form-label fw-bold ">
+                                Upload Supporting Documents
+                            </label>
+                            <div class="d-flex">
+                                <input type="file" name="researchSupportingDocument" id="supporting-documents"
+                                    class="col-md-8 form-control " min='2000-01-01' max="2023-10-02" required>
+                                <a id="downloadLink" class="p-2" download="image" style="display: none;">
+                                    <i class="fa-solid fa-download download text-danger"></i>
+                                </a>
+                                <img id="modalImage" class="img-fluid col-md-4 rounded file-style modal-file file-view" alt="Image Preview">
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div id="file-view" class="h-25 w-25">
-                    <img id="modalImage" class="img-fluid rounded file-style modal-file" alt="Image Preview">
-                    <a id="downloadLink" download="image" class="btn btn-primary" style="display: none;">Download File</a>
+                    <div class="form-group col-lg-6 col-md-2 col-sm-12 mb-4">
+                        <div id="file-view" class="h-10 w-10">
+                        </div>
+                    </div>
                 </div>
             </div>
            <!-- Add your modal footer buttons if needed -->
@@ -541,8 +550,6 @@
                                     data-publication-id="${data.bookPublicationId}"></i></label>
                                 <label class="delete"data-publication-id="${data.bookPublicationId}"><i class="fa-solid fa-trash delete text-danger"
                                     data-publication-id="${data.bookPublicationId}"></i></label>
-                                <label class="delete"data-publication-id="${data.bookPublicationId}"><i class="fa-solid fa-download download text-danger"
-                                    data-publication-id="${data.bookPublicationId}"></i></label>
                             </td> `;
             bookPublicationList.append(newBookPublication);
             $('#book-publication-modal').modal('hide');
@@ -594,6 +601,7 @@
             const nmimsCampusAuthors = document.getElementById('nmims-campus-authors');
             const nmimsSchoolAuthors = document.getElementById('nmims-school-authors');
             const supportingDocuments = bookPublicationRowToBeUpdated.getAttribute('data-supporting-documents');
+            console.log('supportingDocuments ==>>', supportingDocuments)
             // assigning related row data value
             authorLastName.value = bookPublicationRowToBeUpdated.querySelector('.author-last-name').innerText;
             bookTitle.value = bookPublicationRowToBeUpdated.querySelector('.book-title').innerText;
@@ -617,15 +625,15 @@
             nmimsCampusAuthors.value = bookPublicationRowToBeUpdated.getAttribute('data-nmims-campus-authors');
             nmimsSchoolAuthors.value = bookPublicationRowToBeUpdated.getAttribute('data-nmims-school-authors');
             // for file preview
-            const bookPublicationRouteImage = '<%- BASE_URL %>research/book-publication-main/book-publication/viewing/';
-            const bookPublicationRouteFile = '<%- BASE_URL %>research/book-publication-main/book-publication/download/';
-            if(bookPublicationRouteImage){
+            const imageRoute = '<%- BASE_URL %>research/book-publication-main/book-publication/viewing/';
+            const fileRoute = '<%- BASE_URL %>research/book-publication-main/book-publication/download/';
+            if(imageRoute){
                 modalImage.classList.remove('d-none');
             }
             else{
                 modalImage.classList.add('d-none');
             }
-            handleFilePreviewAndDownload(supportingDocuments, bookPublicationRouteImage, bookPublicationRouteFile);
+            handleFilePreviewAndDownload(supportingDocuments, imageRoute, fileRoute);
         }
         //  for delete   
         if(event.target.classList.contains('delete')){

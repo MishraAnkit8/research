@@ -62,6 +62,21 @@ module.exports.updateBrandingAdvertising = async (advertisingId, updatedAdvertis
     const organisingConferenceDocuments = filesToUpdate.organisingConferenceDocuments ? filesToUpdate.organisingConferenceDocuments[0].filename : null;
     const studentEventParticipationDocuments = filesToUpdate.studentEventParticipationDocuments ? filesToUpdate.studentEventParticipationDocuments[0].filename : null;
     const newspaperArticleDocuments = filesToUpdate.newspaperArticleDocuments ? filesToUpdate.newspaperArticleDocuments[0].filename : null;
+    console.log('newspaperArticleDocuments ==>>', newspaperArticleDocuments)
+    const filesArray = [
+        facultyRecognitionDocuments,
+        facultyAwardDocuments,
+        staffAwardDocuments,
+        alumniAwardDocuments,
+        studentAwardDocuments,
+        internationalLinkageDocuments,
+        conferenceParticipationDocuments,
+        organisingConferenceDocuments,
+        studentEventParticipationDocuments,
+        newspaperArticleDocuments
+    ];
+
+    console.log('newspaperArticleDocuments ==>>', filesArray)
 
     const fieldsToUpdate = [
         { field: 'faculty_recognition', value: facultyRecognition },
@@ -99,11 +114,11 @@ module.exports.updateBrandingAdvertising = async (advertisingId, updatedAdvertis
     console.log('fieldsToUpdate ===>>', fieldsToUpdate);
 
     const setStatements = fieldsToUpdate
-        .filter(fieldInfo => fieldInfo.value !== null) // Filter out items where value is null
+        .filter(fieldInfo => fieldInfo.value !== null) // Filter where value is null
         .map((fieldInfo, index) => {
             console.log('dataCondition ===>>>:::::', fieldInfo.value);
             console.log('index ==>>', index);
-            console.log('condition == ==>>>::::', true); // Since the filter ensures value is not null
+            console.log('condition == ==>>>::::', true); //  filter ensures value is not null
             return { statement: `${fieldInfo.field} = $${index + 2}`, dataCondition: `${fieldInfo.value}` };
         });
 
@@ -115,13 +130,16 @@ module.exports.updateBrandingAdvertising = async (advertisingId, updatedAdvertis
             console.log('condition ==>>::::', condition)
             console.log(`Condition for ${fieldInfo.field}: ${condition}`);
         }
+        else{
+            return null
+        }
         
         
         // Exclude file fields from updateDocument
-        if (fieldInfo.field.endsWith('_documents')) {
-            console.log(`Skipping file field ${fieldInfo.field}`);
-            return null;
-        }
+        // if (fieldInfo.field.endsWith('_documents')) {
+        //     console.log(`Skipping file field ${fieldInfo.field}`);
+        //     ;
+        // }
     
         const value =  fieldInfo.value ;
         if(value){
@@ -129,6 +147,8 @@ module.exports.updateBrandingAdvertising = async (advertisingId, updatedAdvertis
             return value;
         }
     }).filter(value => value !== null);
+
+    console.log('updateDocument ====::::>>>', updateDocument)
     
 
     const updatedAdvertisingValues = [

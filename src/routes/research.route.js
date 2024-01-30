@@ -7,6 +7,7 @@ const { validateCaseStudy } = require('../middleware/express-validator/case-stud
 const { validateJournalPaper } = require('../middleware/express-validator/journal-paper.validators');
 const { validateResearchSeminar } = require('../middleware/express-validator/research-seminar.validators')
 
+// controllers
 const researchController = require('../controllers/research.controller');
 const caseStudyController = require('../controllers/case-study.controller');
 const journalController = require('../controllers/journal-paper.controller');
@@ -15,6 +16,11 @@ const patentSubmission = require('../controllers/patent-submission.controller');
 const researchConsultancyController = require('../controllers/research-project-consultancy.controller');
 const bookPublicationRoutes = require('./book-publication-main.routes');
 const researchSeminarController = require('../controllers/research-seminar.controller')
+
+// services
+const patentSubmissionServices = require('../services/patent-submission.service');
+const researchConsultancyService = require('../services/research-consultancy.service');
+
 
 const router = express.Router();
 
@@ -55,6 +61,8 @@ router.post('/patent-submission/insert', upload.single('patentFile'), asyncError
 router.post('/patent-submission/update', upload.single('patentFile'), asyncErrorHandler(patentSubmission.updatePatentSubMissiom));
 router.post('/patent-submission/delete', asyncErrorHandler(patentSubmission.deletePatentData));
 router.post('/patent-submission/view', asyncErrorHandler(patentSubmission.viewPatentSubmissionData));
+router.get('/patent-submission/download/:filename', patentSubmissionServices.downloadFile);
+router.get('/patent-submission/viewing/:filename', patentSubmissionServices.viewFile);
 
 //research project consultancy
 router.get('/research-project-consultancy', asyncErrorHandler(researchConsultancyController.renderResearchProjectConsultancy));
@@ -62,6 +70,8 @@ router.post('/research-project-consultancy/insert', upload.single('researchSuppo
 router.post('/research-project-consultancy/update', upload.single('researchSupportingDocument'), asyncErrorHandler(researchConsultancyController.updatedConsultantData));
 router.post('/research-project-consultancy/delete', asyncErrorHandler(researchConsultancyController.deleteResearchConsultant));
 router.post('/research-project-consultancy/view', asyncErrorHandler(researchConsultancyController.viewResearchProjectConsultancy));
+router.get('/patent-submission/download/:filename', researchConsultancyService.downloadFile);
+router.get('/patent-submission/viewing/:filename', researchConsultancyService.viewFile);
 
 // book publication
 router.use('/book-publication-main', bookPublicationRoutes);

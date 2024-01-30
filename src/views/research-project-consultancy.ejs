@@ -262,11 +262,24 @@
                         </div>
                     </div>
                     <!-- Upload Supporting Documents-->
-                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="supporting-documents" class="form-label fw-bold">
-                            Upload Supporting Documents
-                        </label>
-                        <input type="file" name="researchSupportingDocument" id="supporting-documents" data-validate="isEmpty,isExist,isFile" data-err-msg="File is required." class="form-control" required>
+                    <div class="form-group col-lg-6 col-md-8 col-sm-12 mb-4">
+                        <div class="col-lg-6 col-md-8 col-sm-12">
+                            <label for="supporting-documents" class="form-label fw-bold ">
+                                Upload Supporting Documents
+                            </label>
+                            <div class="d-flex">
+                                <input type="file" name="researchSupportingDocument" id="supporting-documents"
+                                    class="col-md-8 form-control " min='2000-01-01' max="2023-10-02" required>
+                                <a id="downloadLink" class="p-2" download="image" style="display: none;">
+                                    <i class="fa-solid fa-download download text-danger"></i>
+                                </a>
+                                <img id="modalImage" class="img-fluid col-md-4 rounded file-style modal-file file-view" alt="Image Preview">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group col-lg-6 col-md-2 col-sm-12 mb-4">
+                        <div id="file-view" class="h-10 w-10">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -379,6 +392,9 @@
     const researchProjectConsultancyList = document.getElementById('consultancy-list');
     const submitBtn = document.getElementById('submit-btn');
     const updateBtn = document.getElementById('update-btn');
+     // for image preview and download file
+     const fileView = document.getElementById('file-view');
+    const downloadLink = document.getElementById('downloadLink');
     let consultantId, consultantRowToBeUpdated ;
     const addResearchConsultancyModal = document.getElementById('add-research-project-consultancy');
     
@@ -386,6 +402,8 @@
         if(event.target.tagName === 'BUTTON' && event.target.classList.contains('add-modal') || event.target.classList.contains('plus')){
             submitBtn.classList.remove('d-none');
             updateBtn.classList.add('d-none');
+            fileView.classList.add('d-none');
+            modalImage.classList.add('d-none');
             const isGrantProposalCategoryGoverement = document.getElementById('goverment');
             const isGrantProposalCategoryNonGoverement = document.getElementById('non-goverment');
             const grantResearchProject = document.getElementById('research');
@@ -497,6 +515,8 @@
                 removeErrorMsg();
                 submitBtn.classList.add('d-none');
                 updateBtn.classList.remove('d-none');
+                fileView.classList.remove('d-none');
+                 modalImage.classList.remove('d-none');
                 $('#consultancy-modal').modal('show');
                 consultantRowToBeUpdated = event.target.closest('tr');
                 console.log('consultantRowToBeUpdated ==>>', consultantRowToBeUpdated)
@@ -516,7 +536,7 @@
                 const statusGranted = document.getElementById('granted');
                 const facultyTypeInternal = document.getElementById('internal');
                 const facultyTypeExternal = document.getElementById('external');
-                const supportingDocument = document.getElementById('supporting-documents');
+                const supportingDocument = consultantRowToBeUpdated.getAttribute('data-supports-document');
 
                 // assigning value with actuall value
                 const GrantProposalCategory = consultantRowToBeUpdated.getAttribute('data-grant-proposal');
@@ -544,6 +564,16 @@
                         grantResearchProject.checked = false;
                         grantConsultancy.checked = false;
                     }
+
+                    const imageRoute = '<%- BASE_URL %>research/research-project-consultancy/viewing/';
+                    const fileRoute = '<%- BASE_URL %>research/research-project-consultancy/download/';
+                    if(imageRoute){
+                        modalImage.classList.remove('d-none');
+                    }
+                    else{
+                        modalImage.classList.add('d-none');
+                    }
+                    handleFilePreviewAndDownload(supportingDocument, imageRoute, fileRoute);
             }
                 
                 document.getElementById('title-of-project').value = titleOfProject.innerText.trim();
@@ -670,7 +700,7 @@
         const updatedStatusOfResearchProject = document.querySelector('input[name="research-project-status"]:checked').value;
         const updatedSubmissionGrantDate = document.getElementById('submission-grant-date').value;
         const updatedFacultyType = document.querySelector('input[name="faculty-type"]:checked').value;
-        const updatedSupportingDocument = document.querySelector('input[type="file"]');
+        let updatedSupportingDocument = document.querySelector('input[type="file"]');
 
         updatedConsultantData.append('consultantId' , consultantId);
         updatedConsultantData.append('grantProposalCategory' ,updatedGrantProposalCategory);
@@ -684,6 +714,10 @@
         updatedConsultantData.append('facultyType' , updatedFacultyType);
         if(updatedSupportingDocument && updatedSupportingDocument.files && updatedSupportingDocument.files.length > 0){
             updatedConsultantData.append('researchSupportingDocument' , updatedSupportingDocument.files[0]);
+        }
+        else{
+            updatedSupportingDocument = null;
+            updatedConsultantData.append('researchSupportingDocument' , updatedSupportingDocument);
         }
         
         fetch(url , {

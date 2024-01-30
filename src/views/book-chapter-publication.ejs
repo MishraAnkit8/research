@@ -263,12 +263,25 @@
                         <label for="nmims-school-authors" class="form-label fw-bold ">NMIMS School Author</label>
                         <input type="url" name="nmimsSchoolAuthors" id="nmims-school-authors" data-validate="isEmpty,isAlphabeticWords,isLength:2:255"  data-err-msg="This field is required and min length > 1." class="form-control " required/>
                     </div>
-                      <!-- Upload Supporting Documents-->
-                      <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="supporting-documents" class="form-label fw-bold">
-                            Upload Supporting Documents
-                        </label>
-                        <input type="file" name="researchSupportingDocument" id="supporting-documents"  class="form-control">
+                    <!-- Upload Supporting Documents-->
+                    <div class="form-group col-lg-6 col-md-8 col-sm-12 mb-4">
+                        <div class="col-lg-6 col-md-8 col-sm-12">
+                            <label for="supporting-documents" class="form-label fw-bold ">
+                                Upload Supporting Documents
+                            </label>
+                            <div class="d-flex">
+                                <input type="file" name="researchSupportingDocument" id="supporting-documents"
+                                    class="col-md-8 form-control " min='2000-01-01' max="2023-10-02" required>
+                                <a id="downloadLink" class="p-2" download="image" style="display: none;">
+                                    <i class="fa-solid fa-download download text-danger"></i>
+                                </a>
+                                <img id="modalImage" class="img-fluid col-md-4 rounded file-style modal-file file-view" alt="Image Preview">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group col-lg-6 col-md-2 col-sm-12 mb-4">
+                        <div id="file-view" class="h-10 w-10">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -442,12 +455,16 @@
     const updateBtn = document.getElementById('update-btn');
     const addnewBookChapter = document.getElementById('book-chapter-add-modal');
     let bookChapterId , bookChapterRowToBeUpdated;
+    const fileView = document.getElementById('file-view');
+    const downloadLink = document.getElementById('downloadLink');
    
     addnewBookChapter.addEventListener('click' , function(event) {
         console.log('clikeddd')
         if(event.target.tagName === 'BUTTON' && event.target.classList.contains('add-modal') || event.target.classList.contains('plus')){
             updateBtn.classList.add('d-none');
             submitBtn.classList.remove('d-none');
+            fileView.classList.add('d-none');
+            modalImage.classList.add('d-none');
 
             const authorName = document.getElementById('author-name');
             const bookTitle = document.getElementById('book-title');
@@ -606,6 +623,9 @@
             $('#book-chapter-modal').modal('show');
             updateBtn.classList.remove('d-none');
             submitBtn.classList.add('d-none');
+            fileView.classList.remove('d-none');
+            modalImage.classList.remove('d-none');
+
             const authorName = document.getElementById('author-name');
             const bookTitle = document.getElementById('book-title');
             const edition = document.getElementById('edition');
@@ -625,7 +645,7 @@
             const nmimsAuthors = document.getElementById('nmims-authors');
             const nmimsCampusAuthors = document.getElementById('nmims-campus-authors');
             const nmimsSchoolAuthors = document.getElementById('nmims-school-authors');
-            const supportingDocuments = document.getElementById('supporting-documents');
+            const supportingDocuments = bookChapterRowToBeUpdated.getAttribute('data-supporting-documents');
             // assigning related row data value
             authorName.value = bookChapterRowToBeUpdated.querySelector('.author-name').innerText;
             bookTitle.value = bookChapterRowToBeUpdated.querySelector('.book-title').innerText;
@@ -636,6 +656,7 @@
             publisherName.value = bookChapterRowToBeUpdated.querySelector('.publisher-name').innerText;
             isbnNo.value = bookChapterRowToBeUpdated.querySelector('.isbn-no').innerText;
             volumeNumber.value = bookChapterRowToBeUpdated.getAttribute('data-volume-number');
+
             const publisherCategory = bookChapterRowToBeUpdated.getAttribute('data-publisher-category');
             if(publisherCategory === 'National'){
                 publisherCategoryNational.checked = true;
@@ -651,6 +672,17 @@
             nmimsAuthors.value = bookChapterRowToBeUpdated.getAttribute('data-nmims-authors');
             nmimsCampusAuthors.value = bookChapterRowToBeUpdated.getAttribute('data-nmims-campus-authors');
             nmimsSchoolAuthors.value = bookChapterRowToBeUpdated.getAttribute('data-nmims-school-authors');
+              // for file preview
+            const imageRoute = '<%- BASE_URL %>research/book-publication-main/book-chapter-publication/viewing/';
+            const fileRoute = '<%- BASE_URL %>research/book-publication-main/book-chapter-publication/download/';
+            if(imageRoute){
+                modalImage.classList.remove('d-none');
+            }
+            else{
+                modalImage.classList.add('d-none');
+            }
+            handleFilePreviewAndDownload(supportingDocuments, imageRoute, fileRoute);
+        
             supportingDocuments.textContent = bookChapterRowToBeUpdated.getAttribute('data-supporting-documents');
             }
         

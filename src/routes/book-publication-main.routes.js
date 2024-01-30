@@ -8,10 +8,13 @@ const { asyncErrorHandler } = require('../middleware/error.middleware');
 
 
 const bookPublicationMainController = require('../controllers/book-publication-main.controller');
-const bookPublicationService = require('../services/book-publication.service');
 
+const bookPublicationService = require('../services/book-publication.service');
 const bookPublicationController = require('../controllers/book-publication.controller');
+
 const editedBookPublication = require('../controllers/edited-book.controller');
+const editedBookService = require('../services/edited-book.service');
+
 const bookChapterController = require('../controllers/book-chapter.controller')
 
 
@@ -24,7 +27,6 @@ router.get('/', asyncErrorHandler(bookPublicationMainController.renderBookPublic
 router.get('/book-publication', asyncErrorHandler(bookPublicationController.renderBookPublication));
 router.post('/book-publication/insert', upload.single('researchSupportingDocument'), asyncErrorHandler(bookPublicationController.insertBookPublication), (req, res) => {
     const filePath = req.file.path;
-    console.log('filePath in book publication router ==>>>:::', filePath);
     res.send(`File uploaded to 'uploads/bookPublication'. Path: ${filePath}`);
 });
 router.post('/book-publication/update',  upload.single('researchSupportingDocument'), asyncErrorHandler(bookPublicationController.updateBookPublication));
@@ -40,6 +42,8 @@ router.post('/edited-book-publication/insert',  upload.single('researchSupportin
 router.post('/edited-book-publication/update',  upload.single('researchSupportingDocument'), asyncErrorHandler(editedBookPublication.updateEditedBookPublication));
 router.post('/edited-book-publication/view',  asyncErrorHandler(editedBookPublication.viewEditedBookPublication));
 router.post('/edited-book-publication/delete', asyncErrorHandler(editedBookPublication.deleteEditedBookPublication));
+router.get('/book-publication/download/:filename', editedBookService.downloadFile);
+router.get('/book-publication/viewing/:filename', editedBookService.viewFile);
 
 //book chapter
 

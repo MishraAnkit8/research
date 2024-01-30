@@ -1,4 +1,53 @@
+
+const fs = require('fs');
+const path = require('path');
+
 const researchCunsultancyModel = require('../models/research-consultancy.models');
+
+const uploadFolder = path.join(__dirname, '..', '..', 'uploads');
+
+module.exports.downloadFile = (req, res) => {
+    const filename = req.params.filename;
+    const filePath = path.join(uploadFolder, filename);
+    console.log("filePath ==>>", filePath);
+    console.log("filename ==>>>", filename);
+  
+    //  original filename from the provided filename
+    const originalFilename = filename.split('_').slice(1).join('_');
+  
+    // PDF
+    res.setHeader('Content-Type', 'application/pdf');
+  
+    // filename for the download
+    res.download(filePath, originalFilename, (err) => {
+      if (err) {
+        console.error("Error downloading file:", err);
+        res.status(500).send("Error downloading file");
+      } else {
+        console.log('File downloaded successfully');
+      }
+    });
+  };
+  
+
+module.exports.viewFile = (req, res, next) => {
+const filename = req.params.filename;
+  const filePath = path.join(uploadFolder, filename);
+  console.log("filePath ==>>", filePath);
+  console.log("filename ==>>>", filename);
+
+  fs.access(filePath, fs.constants.R_OK, (err) => {
+    if (err) {
+      console.error('Error accessing file:', err);
+      res.status(404).send('File not found');
+    } else {
+      // Stream the file to the response for download
+      const stream = fs.createReadStream(filePath);
+      stream.pipe(res);
+    }
+  });
+}
+
 
 
 module.exports.fetchResearConsultacyData = async() => {
@@ -20,10 +69,19 @@ module.exports.insertResearchConsultancyData = async(body , filename) => {
 }
 
 module.exports.updateResearchConstant = async(consultantId, updatedConsultant, updateFileName) => {
+  if(updateFileName){
     const updateResearchProjectConstant = await researchCunsultancyModel.updateResearchConsultantData(consultantId ,updatedConsultant, updateFileName);
     if(updateResearchProjectConstant && updateResearchProjectConstant.rowCount === 1){
         return updateResearchProjectConstant
     }
+  }
+  else{
+    const updateResearchProjectConstant = await researchCunsultancyModel.updateResearchConsultantData(consultantId ,updatedConsultant);
+    if(updateResearchProjectConstant && updateResearchProjectConstant.rowCount === 1){
+        return updateResearchProjectConstant
+    }
+  }
+    
 }
 
 module.exports.deleteResearchConsultant = async({consultantId}) => {

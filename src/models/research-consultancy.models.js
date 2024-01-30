@@ -26,15 +26,30 @@ module.exports.insertResearhcProjectConstancyData = async(researchCunsultancyDat
 }
 
 module.exports.updateResearchConsultantData = async(consultantId, updatedConsultant, updateFileName) => {
-    const {titleOfProject, grantProposalCategory, typeOfGrant, thurstAreaOfResearch, fundingAgency, fundingAmount, statusOfResearchProject,
-        submissionGrantDate, facultyType} = updatedConsultant;
-    let sql = {
-        text : `UPDATE research_project_consultancy SET title_of_project = $2, grant_proposal_category = $3, type_of_grant = $4,  thrust_area_of_research = $5, name_of_funding_agency = $6,
-        funding_amount = $7, status_of_research_project = $8, submission_grant_date = $9, faculty_type = $10, supporting_documents = $11 WHERE id = $1 `,
-        values : [consultantId, titleOfProject, grantProposalCategory, typeOfGrant, thurstAreaOfResearch, fundingAgency, fundingAmount, statusOfResearchProject,
-            submissionGrantDate, facultyType, updateFileName]
+    if(updateFileName){
+        const {titleOfProject, grantProposalCategory, typeOfGrant, thurstAreaOfResearch, fundingAgency, fundingAmount, statusOfResearchProject,
+            submissionGrantDate, facultyType} = updatedConsultant;
+        let sql = {
+            text : `UPDATE research_project_consultancy SET title_of_project = $2, grant_proposal_category = $3, type_of_grant = $4,  thrust_area_of_research = $5, name_of_funding_agency = $6,
+            funding_amount = $7, status_of_research_project = $8, submission_grant_date = $9, faculty_type = $10, supporting_documents = $11 WHERE id = $1 `,
+            values : [consultantId, titleOfProject, grantProposalCategory, typeOfGrant, thurstAreaOfResearch, fundingAgency, fundingAmount, statusOfResearchProject,
+                submissionGrantDate, facultyType, updateFileName]
+        }
+        return autoDbW.query(sql)
+
     }
-    return autoDbW.query(sql)
+    else{
+        const {titleOfProject, grantProposalCategory, typeOfGrant, thurstAreaOfResearch, fundingAgency, fundingAmount, statusOfResearchProject,
+            submissionGrantDate, facultyType} = updatedConsultant;
+        let sql = {
+            text : `UPDATE research_project_consultancy SET title_of_project = $2, grant_proposal_category = $3, type_of_grant = $4,  thrust_area_of_research = $5, name_of_funding_agency = $6,
+            funding_amount = $7, status_of_research_project = $8, submission_grant_date = $9, faculty_type = $10 WHERE id = $1 `,
+            values : [consultantId, titleOfProject, grantProposalCategory, typeOfGrant, thurstAreaOfResearch, fundingAgency, fundingAmount, statusOfResearchProject,
+                submissionGrantDate, facultyType]
+        }
+        return autoDbW.query(sql)
+    }
+   
 }
 
 module.exports.deleteResearchConsultantData = async(consultantId) => {

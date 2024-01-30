@@ -47,19 +47,35 @@ module.exports.insertResearchConsultancyData = async(req, res, next) => {
 
 module.exports.updatedConsultantData = async(req, res, next) => {
     console.log('data comming from templates ==>>', req.body);
-    console.log(' updated file name ==>', req.file);
-    const consultantId = req.body.consultantId
-    const updatedConsultant = req.body;
-    const updateFileName = req.file.filename;
-    const updateResearchConstantData = await researchConsultancyService.updateResearchConstant(consultantId, updatedConsultant, updateFileName);
-    if(updateResearchConstantData){
-        res.status(200).send({
-            status : 'done',
-            massage : 'updated successfully',
-            updatedConsultant,
-            updateFileName
-        })
+    if(req.file){
+        console.log(' updated file name ==>', req.file);
+        const consultantId = req.body.consultantId
+        const updatedConsultant = req.body;
+        const updateFileName = req.file.filename;
+        const updateResearchConstantData = await researchConsultancyService.updateResearchConstant(consultantId, updatedConsultant, updateFileName);
+        if(updateResearchConstantData){
+            res.status(200).send({
+                status : 'done',
+                massage : 'updated successfully',
+                updatedConsultant,
+                updateFileName
+            })
+        }
     }
+
+    else{
+        const consultantId = req.body.consultantId
+        const updatedConsultant = req.body;
+        const updateResearchConstantData = await researchConsultancyService.updateResearchConstant(consultantId, updatedConsultant);
+        if(updateResearchConstantData){
+            res.status(200).send({
+                status : 'done',
+                massage : 'updated successfully',
+                updatedConsultant
+            })
+        }
+    }
+   
 }
 
 module.exports.deleteResearchConsultant = async(req, res, next) => {

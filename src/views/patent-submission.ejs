@@ -235,11 +235,25 @@
                         </div>
                     </div>
                     <!-- Upload Supporting Documents-->
-                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="patentFile" class="form-label fw-bold mb-3">Upload Data</label>
-                            <div class="form-group">
-                                <input id="patent-file" type="file" name="patentFile" class="form-control" required/>
+                     <!-- Upload Supporting Documents-->
+                     <div class="form-group col-lg-6 col-md-8 col-sm-12 mb-4">
+                        <div class="col-lg-6 col-md-8 col-sm-12">
+                            <label for="supporting-documents" class="form-label fw-bold ">
+                                Upload Supporting Documents
+                            </label>
+                            <div class="d-flex">
+                                <input type="file" name="patentFile" id="patent-file"
+                                    class="col-md-8 form-control " min='2000-01-01' max="2023-10-02" required>
+                                <a id="downloadLink" class="p-2" download="image" style="display: none;">
+                                    <i class="fa-solid fa-download download text-danger"></i>
+                                </a>
+                                <img id="modalImage" class="img-fluid col-md-4 rounded file-style modal-file file-view" alt="Image Preview">
                             </div>
+                        </div>
+                    </div>
+                    <div class="form-group col-lg-6 col-md-2 col-sm-12 mb-4">
+                        <div id="file-view" class="h-10 w-10">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -341,6 +355,8 @@
     const addNewPatentSubmission = document.getElementById('add-patent-submission');
     const submitBtn = document.getElementById('submit-btn');
     const updatetBtn = document.getElementById('update-btn');
+    const fileView = document.getElementById('file-view');
+    const downloadLink = document.getElementById('downloadLink');
     const patenetSubMissionList = document.getElementById('patent-submisson-list');
     let patentId, rowToBeUpdated;
 
@@ -348,6 +364,8 @@
         if(event.target.tagName === 'BUTTON' && event.target.classList.contains('add-modal') || event.target.classList.contains('plus')){
             submitBtn.classList.remove('d-none');
             updatetBtn.classList.add('d-none');
+            fileView.classList.add('d-none');
+            modalImage.classList.add('d-none');
     
             const typeOfInvention = document.getElementById('type-of-invention');
             const titleOfInvention = document.getElementById('title-of-invention');
@@ -452,6 +470,8 @@
             if (event.target.classList.contains('edit')) {
                 submitBtn.classList.add('d-none');
                 updatetBtn.classList.remove('d-none');
+                fileView.classList.remove('d-none');
+                modalImage.classList.remove('d-none');
                 removeErrorMsg();
                 rowToBeUpdated = event.target.closest('tr');
                 console.log('rowToBeUpdated ==>>', rowToBeUpdated);
@@ -475,6 +495,9 @@
                 typeOfInvention.value = rowToBeUpdated.querySelector('.type-of-invention').innerText;
                 titleOfInvention.value = rowToBeUpdated.querySelector('.title-of-invention').innerText;
                 patentStage.value = rowToBeUpdated.querySelector('.patent-stage').innerText;
+                const patentfile = rowToBeUpdated.querySelector('.patent-file');
+                const supportingDocuments = patentfile.innerText.trim();
+                console.log('supportingDocuments ==>>', supportingDocuments)
                 if (rowToBeUpdated.querySelector('.achive-sdg').innerText === 'yes') {
                     achiveSdgYes.checked = true;
                 } else {
@@ -487,6 +510,16 @@
                 } else {
                     isPresenterNo.checked = true;
                 }
+                // for file and image view and download
+                const imageRoute = '<%- BASE_URL %>research/patent-submission/viewing/';
+                const fileRoute = '<%- BASE_URL %>research/patent-submission/download/';
+                if(imageRoute){
+                    modalImage.classList.remove('d-none');
+                }
+                else{
+                    modalImage.classList.add('d-none');
+                }
+                handleFilePreviewAndDownload(supportingDocuments, imageRoute, fileRoute);
             }
 
             //   for delete patent submission form

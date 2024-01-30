@@ -75,7 +75,7 @@ function openModal(imageUrl) {
     console.log('imageUrl ==>>>', imageUrl)
   }
 
-function handleFilePreviewAndDownload(filename, bookPublicationRouteImage, bookPublicationRouteFile) {
+function handleFilePreviewAndDownload(filename, imageRoute, fileRoute) {
     const downloadLink = document.getElementById('downloadLink');
     // for checking image extension preview
     const fileExtension = (filename || '').split('.').pop().toLowerCase();
@@ -84,7 +84,7 @@ function handleFilePreviewAndDownload(filename, bookPublicationRouteImage, bookP
 
     console.log('isImage ===>>>:::::::', isImage);
     if (isImage) {
-        const fetchUrl = `${bookPublicationRouteImage}${filename}`;
+        const fetchUrl = `${imageRoute}${filename}`;
         console.log('fetchUrl ==>>>', fetchUrl);
         // Display image preview modal
         openModal(fetchUrl);
@@ -93,7 +93,7 @@ function handleFilePreviewAndDownload(filename, bookPublicationRouteImage, bookP
         // Hide download link
         downloadLink.style.display = 'none';
     } else {
-        const fileDownloadURL = `${bookPublicationRouteFile}${filename}`;
+        const fileDownloadURL = `${fileRoute}${filename}`;
         console.log('fileDownloadURL ==>>', fileDownloadURL);
 
         // Hide image preview modal
