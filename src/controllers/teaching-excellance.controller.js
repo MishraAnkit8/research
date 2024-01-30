@@ -36,7 +36,9 @@ module.exports.updatTeachingData = async(req, res, next) => {
     const updatedTeachingExecellance = req.body;
     console.log('data for updation in controller  ==>>', updatedTeachingExecellance);
     const {pedagogyInnovationFile, fdpProgramFile, workShopFile, invitingFacultyFile, programOrientationFile} = req.files;
-    const updatedTeachingExecellanceData = await teachingExecellanceService.updatedTeachingExecellance(teachingId, updatedTeachingExecellance, req.files);
+
+    const teachingDocumentToBeUpdate = {pedagogyInnovationFile, fdpProgramFile, workShopFile, invitingFacultyFile, programOrientationFile}
+    const updatedTeachingExecellanceData = await teachingExecellanceService.updatedTeachingExecellance(teachingId, updatedTeachingExecellance, teachingDocumentToBeUpdate);
     if(updatedTeachingExecellanceData){
         res.status(200).send({
             status : 'done',

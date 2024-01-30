@@ -240,7 +240,7 @@
                     <!-- file upload -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="program-orientation-file" class="form-label fw-bold ">Upload Documents</label>
-                        <input type="file" name="programOrientationFile" class="form-control" data-validate="isEmpty,isExist,isFile" data-err-msg="File is required." id="program-orientation-file" required>
+                        <input type="file" name="programOrientationFile" class="form-control file-err" data-validate="isEmpty,isExist,isFile" data-err-msg="File is required." id="program-orientation-file" required>
                     </div>
                     <!-- link -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
@@ -410,6 +410,7 @@
     const submitBtn = document.getElementById('submit-btn');
     const updateBtn = document.getElementById('update-btn');
     let teachingRowToBeUpdated , teachingId;
+    var fileInputs = document.querySelectorAll('input[type="file"]');
 
     teachingExecellanceAddModal.addEventListener('click' , (event) => {
         if(event.target.tagName === 'BUTTON' && event.target.classList.contains('add-modal') || event.target.classList.contains('plus')){
@@ -525,7 +526,7 @@
                                     teachingExecellanceList.appendChild(newTeachingExecellance);
             }
             $('#teaching-execellance-modal').modal('hide');
-            alert('data inserted successfully')
+            alert('Data Inserted Successfully')
         })
     }
 
@@ -670,36 +671,67 @@
     const updatedTeachingExecellanceData = async(url) => {
         const updatedTeachingData = new FormData();
         const updatedPedagogyInnovation = document.getElementById('pedagogy-innovation').value;
-        const updatedPedagogyInnovationFile = document.querySelector('input[name="pedagogyInnovationFile"]');
+        let updatedPedagogyInnovationFile = document.querySelector('input[name="pedagogyInnovationFile"]');
         const updatedPedagogyLink = document.getElementById('pedagogy-innovation-link').value;
         const updatedFdpProgram = document.getElementById('fdp-program').value;
-        const updatedFdpProgramFile = document.querySelector('input[name="fdpProgramFile"]');
+        let updatedFdpProgramFile = document.querySelector('input[name="fdpProgramFile"]');
         const updatedFdpProgramLink = document.getElementById('fdp-program-link').value;
         const updatedWorkShopDetails = document.getElementById('workshop-details').value;
-        const updatedWorkShopFile = document.querySelector('input[name="workShopFile"]');
+        let updatedWorkShopFile = document.querySelector('input[name="workShopFile"]');
         const updatedWorkShopLink = document.getElementById('workshop-details-link').value;
         const updatedInvitingFaculty = document.getElementById('inviting-faculty').value;
-        const updatedInvitingFacultyFile = document.querySelector('input[name="invitingFacultyFile"]');
+        let updatedInvitingFacultyFile = document.querySelector('input[name="invitingFacultyFile"]');
         const updatedInvitingFacultyLink = document.getElementById('inviting-faculty-link').value;
         const updatedProgramOrientation = document.getElementById('program-orientation').value;
-        const updatedProgramOrientationFile = document.querySelector('input[name="programOrientationFile"]');
+        let updatedProgramOrientationFile = document.querySelector('input[name="programOrientationFile"]');
         const updatedProgramOrientationLink = document.getElementById('program-orientation-link').value;
 
         updatedTeachingData.append('teachingId' , teachingId)
         updatedTeachingData.append('pedagogyInnovation' , updatedPedagogyInnovation);
-        updatedTeachingData.append('pedagogyInnovationFile' , updatedPedagogyInnovationFile.files[0]); 
+        if(updatedPedagogyInnovationFile && updatedPedagogyInnovationFile.files && updatedPedagogyInnovationFile.files.length > 0){
+            updatedTeachingData.append('pedagogyInnovationFile' , updatedPedagogyInnovationFile.files[0]); 
+        }
+        else{
+            updatedPedagogyInnovationFile = null;
+            updatedTeachingData.append('pedagogyInnovationFile' , updatedPedagogyInnovationFile); 
+
+        }
         updatedTeachingData.append('pedagogyLink' , updatedPedagogyLink);
         updatedTeachingData.append('fdpProgram' , updatedFdpProgram);
-        updatedTeachingData.append('fdpProgramFile' , updatedFdpProgramFile.files[0]); 
+        if(updatedFdpProgramFile && updatedFdpProgramFile.files && updatedFdpProgramFile.files.length > 0){
+            updatedTeachingData.append('fdpProgramFile' , updatedFdpProgramFile.files[0]); 
+        }
+        else{
+            updatedFdpProgramFile = null;
+            updatedTeachingData.append('fdpProgramFile' , updatedFdpProgramFile); 
+        }
         updatedTeachingData.append('fdpProgramLink' , updatedFdpProgramLink);
         updatedTeachingData.append('workShopDetails' , updatedWorkShopDetails); 
-        updatedTeachingData.append('workShopFile' , updatedWorkShopFile.files[0]); 
+        if(updatedWorkShopFile  &&  updatedWorkShopFile.files && updatedWorkShopFile.files.length > 0){
+            updatedTeachingData.append('workShopFile' , updatedWorkShopFile.files[0]); 
+        }
+        else{
+            updatedWorkShopFile = null;
+            updatedTeachingData.append('workShopFile' , updatedWorkShopFile); 
+        }
         updatedTeachingData.append('workShopLink' , updatedWorkShopLink); 
         updatedTeachingData.append('invitingFaculty' , updatedInvitingFaculty); 
-        updatedTeachingData.append('invitingFacultyFile' , updatedInvitingFacultyFile.files[0]); 
+        if(updatedInvitingFacultyFile && updatedInvitingFacultyFile.files && updatedInvitingFacultyFile.files.length > 0){
+            updatedTeachingData.append('invitingFacultyFile' , updatedInvitingFacultyFile.files[0]); 
+        }
+        else{
+            updatedInvitingFacultyFile = null;
+            updatedTeachingData.append('invitingFacultyFile' , updatedInvitingFacultyFile); 
+        }
         updatedTeachingData.append('invitingFacultyLink' , updatedInvitingFacultyLink);
         updatedTeachingData.append('programOrientation' , updatedProgramOrientation) 
-        updatedTeachingData.append('programOrientationFile' , updatedProgramOrientationFile.files[0]); 
+        if(updatedProgramOrientationFile && updatedProgramOrientationFile.files && updatedProgramOrientationFile.files.length > 0){
+            updatedTeachingData.append('programOrientationFile' , updatedProgramOrientationFile.files[0]); 
+        }
+        else{
+            updatedProgramOrientationFile = null;
+            updatedTeachingData.append('programOrientationFile' , updatedProgramOrientationFile); 
+        }
         updatedTeachingData.append('programOrientationLink' , updatedProgramOrientationLink);
 
         fetch(url , {
@@ -717,25 +749,48 @@
                 teachingRowToBeUpdated.querySelector('.workshop-details').innerText = data.updatedTeachingExecellance.workShopDetails;
                 teachingRowToBeUpdated.querySelector('.inviting-faculty').innerText = data.updatedTeachingExecellance.invitingFaculty;
                 teachingRowToBeUpdated.querySelector('.program-orientation').innerText = data.updatedTeachingExecellance.programOrientation;
-                teachingRowToBeUpdated.setAttribute('data-pedagogy-innovation-file' , data.pedagogyInnovationFile[0].filename);
-                teachingRowToBeUpdated.setAttribute('data-fdp-program-file' , data.fdpProgramFile[0].filename); 
-                teachingRowToBeUpdated.setAttribute('data-workshop-file' , data.workShopFile[0].filename); 
+               
+                if(updatedPedagogyInnovationFile){
+                    teachingRowToBeUpdated.setAttribute('data-pedagogy-innovation-file' , data.pedagogyInnovationFile[0].filename);
+                }
+                
+                if(updatedFdpProgramFile){
+                    teachingRowToBeUpdated.setAttribute('data-fdp-program-file' , data.fdpProgramFile[0].filename); 
+                }
+                
+                if(updatedWorkShopFile){
+                    teachingRowToBeUpdated.setAttribute('data-workshop-file' , data.workShopFile[0].filename); 
+                }
+                
                 teachingRowToBeUpdated.setAttribute('data-pedagogy-innovation-link' , data.updatedTeachingExecellance.pedagogyLink);
                 teachingRowToBeUpdated.setAttribute('data-fdp-program-link' , data.updatedTeachingExecellance.fdpProgramLink); 
                 teachingRowToBeUpdated.setAttribute('data-workshop-link' , data.updatedTeachingExecellance.workShopLink); 
-                teachingRowToBeUpdated.setAttribute('data-inviting-faculty-file' , data.invitingFacultyFile[0].filename); 
+                
+                if(updatedInvitingFacultyFile){
+                    teachingRowToBeUpdated.setAttribute('data-inviting-faculty-file' , data.invitingFacultyFile[0].filename); 
+                }
                 teachingRowToBeUpdated.setAttribute('data-inviting-faculty-link' , data.updatedTeachingExecellance.invitingFacultyLink); 
-                teachingRowToBeUpdated.setAttribute('data-program-orientation-file' , data.programOrientationFile[0].filename); 
+                
+                if(updatedProgramOrientationFile){
+                    teachingRowToBeUpdated.setAttribute('data-program-orientation-file' , data.programOrientationFile[0].filename); 
+                } 
+
                 teachingRowToBeUpdated.setAttribute('data-program-orientation-link' , data.updatedTeachingExecellance.programOrientationLink);
             }
             $('#teaching-execellance-modal').modal('hide');
-            alert('data updated SuccessFully')
+            alert('Data Updated SuccessFully')
         })
 
     };
 
     updateBtn.addEventListener('click' , async() => {
-        const isValid = validateRequiredFormFields(submitBtn);
+        formGroup = updateBtn.closest('.validate-input')
+        console.log("formGroup::::::::", formGroup)
+        formGroup.querySelectorAll('input[type="file"]')?.forEach(elm => {
+            console.log("elm:::::::::", elm);
+            elm.removeAttribute('data-validate')
+        })
+        const isValid = validateRequiredFormFields(updateBtn);
             if (isValid) {
                 await updatedTeachingExecellanceData('<%- BASE_URL %>teaching-excellance/update');
             }

@@ -84,6 +84,7 @@ module.exports.updateBrandingAdvertising = async(req, res, next) => {
     console.log('updated advertising data ==>>', updatedAdvertisingData);
     const {facultyRecognitionDocuments, facultyAwardDocuments, staffAwardDocuments, alumniAwardDocuments, studentAwardDocuments, internationalLinkageDocuments, conferenceParticipationDocuments, organisingConferenceDocuments,
             studentEventParticipationDocuments, newspaperArticleDocuments} = req.files;
+            
     const filesToUpdate = {
                 facultyRecognitionDocuments, facultyAwardDocuments, staffAwardDocuments, alumniAwardDocuments, studentAwardDocuments,
                 internationalLinkageDocuments, conferenceParticipationDocuments, organisingConferenceDocuments, studentEventParticipationDocuments, newspaperArticleDocuments

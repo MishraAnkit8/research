@@ -46,10 +46,7 @@ module.exports.updateBrandingAndAdvertising = async (advertisingId, updatedAdver
     // const studentEventParticipationDocuments = filesToUpdate.studentEventParticipationDocuments ? filesToUpdate.studentEventParticipationDocuments[0].filename : null;
     // const newspaperArticleDocuments = filesToUpdate.newspaperArticleDocuments ? filesToUpdate.newspaperArticleDocuments[0].filename : null;
 
-    const brandingAndAdvertising = await brandingAndAdvertisingModels.updateBrandingAdvertising(
-        advertisingId,
-        updatedAdvertisingData,
-        filesToUpdate);
+    const brandingAndAdvertising = await brandingAndAdvertisingModels.updateBrandingAdvertising(advertisingId, updatedAdvertisingData, filesToUpdate);
     console.log('brandingAndAdvertising in service ===>>>', brandingAndAdvertising)
 
     if (brandingAndAdvertising && brandingAndAdvertising.rowCount === 1) {

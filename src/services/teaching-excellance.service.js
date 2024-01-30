@@ -5,6 +5,7 @@ const path = require('path');
 // uploaded file path for dowload
 const uploadFolder = path.join(__dirname, '..', '..', 'uploads');
 console.log('uploadFolder in side teaching service ==>>', uploadFolder)
+
 module.exports.fetchTeachingExecellanceData = async() => {
     const teachingExecellanceData = await teachingExecellanceModel.fetchTeachingExecellance();
     return teachingExecellanceData;
@@ -25,13 +26,14 @@ module.exports.insertTeachingExecellance = async(teachingExecellance, files) => 
     }
 }
 
-module.exports.updatedTeachingExecellance = async(teachingId, updatedTeachingExecellance, files) => {
-    const pedagogyInnovationFile = files.pedagogyInnovationFile[0].filename;
-    const fdpProgramFile = files.fdpProgramFile [0].filename;
-    const workShopFile = files.workShopFile[0].filename;
-    const invitingFacultyFile = files.invitingFacultyFile[0].filename;
-    const programOrientationFile = files.programOrientationFile[0].filename; 
-    const updatedTeachingExecellanceData = await teachingExecellanceModel.updateTeachingExecellance(teachingId, updatedTeachingExecellance, pedagogyInnovationFile, fdpProgramFile, workShopFile, invitingFacultyFile, programOrientationFile);
+module.exports.updatedTeachingExecellance = async(teachingId, updatedTeachingExecellance, teachingDocumentToBeUpdate) => {
+    // const pedagogyInnovationFile = files.pedagogyInnovationFile[0].filename;
+    // const fdpProgramFile = files.fdpProgramFile [0].filename;
+    // const workShopFile = files.workShopFile[0].filename;
+    // const invitingFacultyFile = files.invitingFacultyFile[0].filename;
+    // const programOrientationFile = files.programOrientationFile[0].filename; 
+    const updatedTeachingExecellanceData = await teachingExecellanceModel.updateTeachingExecellance(teachingId, updatedTeachingExecellance, teachingDocumentToBeUpdate);
+    console.log('updated data in services ==>>>::::', updatedTeachingExecellanceData);
     if(updatedTeachingExecellanceData && updatedTeachingExecellanceData.rowCount === 1){
         return {
             status : 'done',

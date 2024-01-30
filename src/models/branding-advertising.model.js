@@ -123,7 +123,7 @@ module.exports.updateBrandingAdvertising = async (advertisingId, updatedAdvertis
         });
 
     console.log('setStatements ==>>>', setStatements);
-
+//checking if any field emty then it should then make them null     
     const updateDocument = fieldsToUpdate.map(fieldInfo => {
         const condition = fieldInfo.value;
         if(condition){
@@ -134,13 +134,6 @@ module.exports.updateBrandingAdvertising = async (advertisingId, updatedAdvertis
             return null
         }
         
-        
-        // Exclude file fields from updateDocument
-        // if (fieldInfo.field.endsWith('_documents')) {
-        //     console.log(`Skipping file field ${fieldInfo.field}`);
-        //     ;
-        // }
-    
         const value =  fieldInfo.value ;
         if(value){
             console.log(`Value for ${fieldInfo.field}: ${value}`);
