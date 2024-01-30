@@ -267,7 +267,7 @@
                                 Upload Supporting Documents
                             </label>
                            <div class="d-flex">
-                             <input type="file" name="researchSupportingDocument" id="supporting-documents"  class="col-md-8 form-control " min='2000-01-01' max="2023-10-02" required>
+                             <input type="file" name="researchSupportingDocument" id="supporting-documents" data-validate="isEmpty,isExist,isFile" data-err-msg="File is required."  class="col-md-8 form-control " min='2000-01-01' max="2023-10-02" required>
                                 <a id="downloadLink" class="p-2" download="image" style="display: none;">
                                     <i class="fa-solid fa-download download text-danger"></i>
                                 </a>
@@ -857,6 +857,12 @@
     };
 
     updateBtn.addEventListener('click' , async() => {
+        formGroup = updateBtn.closest('.validate-input')
+        console.log("formGroup::::::::", formGroup)
+        formGroup.querySelectorAll('input[type="file"]')?.forEach(elm => {
+            console.log("elm:::::::::", elm);
+            elm.removeAttribute('data-validate')
+        })
         const isValid = validateRequiredFormFields(submitBtn);
             if (isValid) {
                 await updateEditedBookPublication('<%- BASE_URL %>research/book-publication-main/edited-book-publication/update')

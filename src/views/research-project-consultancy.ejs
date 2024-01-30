@@ -269,6 +269,7 @@
                             </label>
                             <div class="d-flex">
                                 <input type="file" name="researchSupportingDocument" id="supporting-documents"
+                                data-validate="isEmpty,isExist,isFile" data-err-msg="File is required."
                                     class="col-md-8 form-control " min='2000-01-01' max="2023-10-02" required>
                                 <a id="downloadLink" class="p-2" download="image" style="display: none;">
                                     <i class="fa-solid fa-download download text-danger"></i>
@@ -747,7 +748,13 @@
     };
 
     updateBtn.addEventListener('click' , async() => {
-        const isValid = validateRequiredFormFields(submitBtn);
+        formGroup = updateBtn.closest('.validate-input')
+        console.log("formGroup::::::::", formGroup)
+        formGroup.querySelectorAll('input[type="file"]')?.forEach(elm => {
+            console.log("elm:::::::::", elm);
+            elm.removeAttribute('data-validate')
+        })
+        const isValid = validateRequiredFormFields(updateBtn);
             if (isValid) {
                 await updateResearchConsultancy('<%- BASE_URL %>research/research-project-consultancy/update');
             }

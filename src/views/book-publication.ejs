@@ -257,7 +257,7 @@
                                 Upload Supporting Documents
                             </label>
                             <div class="d-flex">
-                                <input type="file" name="researchSupportingDocument" id="supporting-documents"
+                                <input type="file" name="researchSupportingDocument" id="supporting-documents"data-validate="isEmpty,isExist,isFile" data-err-msg="File is required."
                                     class="col-md-8 form-control " min='2000-01-01' max="2023-10-02" required>
                                 <a id="downloadLink" class="p-2" download="image" style="display: none;">
                                     <i class="fa-solid fa-download download text-danger"></i>
@@ -408,6 +408,17 @@
                             <label class="view-content" id="view-support-document"></label>
                         </div>
                     </div>
+                    <div class="d-flex">
+                        <a id="downloadLinkView" class="p-2" download="image" style="display: none;">
+                            <i class="fa-solid fa-download download text-danger"></i>
+                        </a>
+                        <img id="modalImageView" class="img-fluid col-md-4 rounded file-style modal-file file-view" alt="Image Preview">
+                    </div>
+                    
+            <div class="form-group col-lg-6 col-md-2 col-sm-12 mb-4">
+                <div id="file-viewing" class="h-25 w-25">
+                </div>
+            </div>
                 </div>
             </div>
            <!-- Add your modal footer buttons if needed -->
@@ -668,7 +679,19 @@
         // for view
         if(event.target.classList.contains('view')){
             console.log('clickedddd');
+            const fileViewing = document.getElementById('file-viewing');
+            const downloadLink = document.getElementById('downloadLinkView');
+            const modalImage = document.getElementById('modalImageView')
+            console.log('fileView>>> ', fileView);
+            console.log('modalImage>>> ', modalImage);
+
+
+
+            fileViewing.classList.remove('d-none');
+            // modalImage.classList.remove('d-none');
             const bookPublicationRowToBeViewed = event.target.closest('tr');
+            const supportingDocuments = bookPublicationRowToBeViewed.getAttribute('data-supporting-documents');
+
             bookPublicationId = event.target.getAttribute('data-publication-id');
             console.log('bookPublicationId ==>>', bookPublicationId);
             const viewAuthorLastName = document.getElementById('view-last-name');
@@ -687,6 +710,18 @@
             const viewNmimsCampusAuthors = document.getElementById('view-nmims-campus-authors');
             const viewNmimsSchoolAuthors = document.getElementById('view-nmims-school-authors');
             const viewSupportingDocuments = document.getElementById('view-support-document');
+            const imageRoute = '<%- BASE_URL %>research/book-publication-main/book-publication/viewing/';
+            const fileRoute = '<%- BASE_URL %>research/book-publication-main/book-publication/download/';
+            
+            console.log('imageRoute>>> ', imageRoute)
+            if(imageRoute){
+                modalImage.classList.remove('d-none');
+            }
+            else{
+                modalImage.classList.add('d-none');
+            }
+            handleFilePreviewAndDownload(supportingDocuments, imageRoute, fileRoute);
+    
 
             fetch('<%- BASE_URL %>research/book-publication-main/book-publication/view' , {
                 method : 'POST',
@@ -807,6 +842,12 @@
     }
 
     updateBtn.addEventListener('click' , async() => {
+        formGroup = updateBtn.closest('.validate-input')
+        console.log("formGroup::::::::", formGroup)
+        formGroup.querySelectorAll('input[type="file"]')?.forEach(elm => {
+            console.log("elm:::::::::", elm);
+            elm.removeAttribute('data-validate')
+        })
         const isValid = validateRequiredFormFields(submitBtn);
             if (isValid) {
                 await upadatBookPublication('<%- BASE_URL %>research/book-publication-main/book-publication/update');
