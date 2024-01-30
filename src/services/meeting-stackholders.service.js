@@ -25,16 +25,9 @@ module.exports.insertMeetingStackholder = async(body, files) => {
 
 }
 
-module.exports.updateMeetingStackholders = async(meetingId, updateMeetingData, files) => {
-    const rankingDocuments = files.rankingDocuments[0].filename;
-    console.log('rankingDocuments ==>', rankingDocuments)
-    const accreditationFile = files.accreditationFile[0].filename;
-    const achievementsFile = files.achievementsFile[0].filename;
-    const convocationFile = files.convocationFile[0].filename;
-    const inauguralProgramFile = files.inauguralProgramFile[0].filename;
-    const eventFile = files.eventFile[0].filename;
+module.exports.updateMeetingStackholders = async(meetingId, updateMeetingData, meetingDocumentToBeUpdate) => {
     console.log('data in service ==>>', updateMeetingData)
-    const updatedMeeting = await meetingModels.updateMeetingData(meetingId, updateMeetingData, rankingDocuments, accreditationFile, achievementsFile, convocationFile, inauguralProgramFile, eventFile);
+    const updatedMeeting = await meetingModels.updateMeetingData(meetingId, updateMeetingData, meetingDocumentToBeUpdate);
     if(updatedMeeting && updatedMeeting.rowCount === 1){
         return{
             status : 'done',

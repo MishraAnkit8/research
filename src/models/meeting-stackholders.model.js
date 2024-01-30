@@ -27,20 +27,104 @@ module.exports.insertMeetingStackholders = async(meetingStackholderData, ranking
     return autoDbW.query(sql)
 }
 
-module.exports.updateMeetingData = async(meetingId, updateMeetingData, rankingDocuments, accreditationFile, achievementsFile, convocationFile, inauguralProgramFile, eventFile) => {
+module.exports.updateMeetingData = async(meetingId, updateMeetingData, meetingDocumentToBeUpdate) => {
     const {ranking, rankingLink, accreditation, accreditationLink, achievements, achievementsLink, convocation, convocationLink, 
         inauguralProgram, inauguralProgramLink, events, eventsLink} = updateMeetingData;
-    let sql = {
-        text : `UPDATE  meeting_stackholders SET 
-            ranking = $2, ranking_link = $3, accreditation = $4, accreditation_link = $5, school_campus_achievements = $6, 
-            achievements_link = $7, convocation = $8, convocation_link =$9, inaugural_program = $10, inaugural_program_link = $11, events = $12, events_link = $13, 
-            ranking_documents = $14, accreditation_documents = $15, achievements_documents = $16, convocation_documents = $17, inaugural_program_documents = $18, events_documents = $19
-            WHERE id = $1`,
-        values : [meetingId, ranking, rankingLink, accreditation, accreditationLink, achievements, achievementsLink, convocation, convocationLink, 
-            inauguralProgram, inauguralProgramLink, events, eventsLink, rankingDocuments, accreditationFile, achievementsFile, convocationFile, inauguralProgramFile, eventFile]
-    }
-    console.log('sql ==>>', sql);
-    return autoDbW.query(sql);
+    
+        const rankingDocuments = meetingDocumentToBeUpdate.rankingDocuments ? meetingDocumentToBeUpdate.rankingDocuments[0].filename : null;
+        const accreditationFile = meetingDocumentToBeUpdate.accreditationFile ? meetingDocumentToBeUpdate.accreditationFile[0].filename : null;
+        const achievementsFile = meetingDocumentToBeUpdate.achievementsFile ? meetingDocumentToBeUpdate.achievementsFile[0].filename : null;
+        const convocationFile = meetingDocumentToBeUpdate.convocationFile ? meetingDocumentToBeUpdate.convocationFile[0].filename : null;
+        const inauguralProgramFile = meetingDocumentToBeUpdate.inauguralProgramFile ? meetingDocumentToBeUpdate.inauguralProgramFile[0].filename : null;
+        const eventFile = meetingDocumentToBeUpdate.eventFile ? meetingDocumentToBeUpdate.eventFile[0].filename : null;
+
+        const filesArray = [
+            rankingDocuments,
+            accreditationFile,
+            achievementsFile,
+            convocationFile,
+            inauguralProgramFile,
+            eventFile
+        ]
+        console.log('filesArray ===>>>', filesArray);
+        const meetingFieldToBeUpdated = [
+            { field: 'ranking', value: ranking },
+            { field: 'ranking_documents', value: rankingDocuments },
+            { field: 'ranking_link', value: rankingLink },
+            { field: 'accreditation', value: accreditation },
+            { field: 'accreditation_documents', value: accreditationFile },
+            { field: 'accreditation_link', value: accreditationLink },
+            { field: 'school_campus_achievements', value: achievements },
+            { field: 'achievements_documents', value: achievementsFile },
+            { field: 'achievements_link', value: achievementsLink },
+            { field: 'convocation', value: convocation },
+            { field: 'convocation_documents', value: convocationFile },
+            { field: 'convocation_link', value: convocationLink },
+            { field: 'inaugural_program', value: inauguralProgram },
+            { field: 'inaugural_program_documents', value: inauguralProgramFile },
+            { field: 'inaugural_program_link', value: inauguralProgramLink },
+            { field: 'events', value: events },
+            { field: 'events_documents', value: eventFile },
+            { field: 'events_link', value: eventsLink },
+        ]
+
+        console.log('meetingFieldToBeUpdated ===>>> :::', meetingFieldToBeUpdated);
+        const setStatements = meetingFieldToBeUpdated
+            .filter(fieldInfo => fieldInfo.value !== null)
+            .map((fieldInfo, index) => {
+                console.log('dataCondition ===>>>:::::', fieldInfo.value);
+                console.log('index ==>>', index);
+                console.log('condition == ==>>>::::', true);
+                return { statement: `${fieldInfo.field} = $${index + 2}`, dataCondition: `${fieldInfo.value}` };
+            });
+
+        console.log('setStatements ==>>>', setStatements);
+
+        const updateDocument = meetingFieldToBeUpdated.map(fieldInfo => {
+            const condition = fieldInfo.value;
+            if(condition){
+                console.log('condition ==>>::::', condition)
+                console.log(`Condition for ${fieldInfo.field}: ${condition}`);
+            }
+            else{
+                return null
+            }
+            
+            const value =  fieldInfo.value ;
+            if(value){
+                console.log(`Value for ${fieldInfo.field}: ${value}`);
+                return value;
+            }
+        }).filter(value => value !== null);
+
+        console.log('updateDocument ====::::>>>', updateDocument)
+        
+
+        const updateMeetingStackholdersData = [
+            meetingId,
+            ...updateDocument,
+        ];
+
+        console.log('updateMeetingStackholdersData ==>>>', updateMeetingStackholdersData);
+
+        const setStatementString = setStatements.map((item, index) => {
+            if (item.dataCondition !== 'null') {
+            return `${item.statement}`;
+            } else {
+            return '';
+            }
+        }).filter(Boolean).join(', ');
+        
+        console.log('setStatementString ==>>>', setStatementString);
+        
+        const sql = {
+            text: `UPDATE meeting_stackholders SET ${setStatementString} WHERE id = $1`,
+            values: updateMeetingStackholdersData,
+        };
+
+        console.log('sql ==>>', sql);
+        return autoDbW.query(sql);
+
 }
 
 module.exports.viewMeeting = async(meetingId) => {

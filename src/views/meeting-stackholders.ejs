@@ -740,12 +740,12 @@
 
     const updateMeetingStackholder = async(url) => {
         const updatedMeetingData = new FormData();
-        const updatedRankingDocuments = document.querySelector('input[name="rankingDocuments"]');
-        const updatedAccredItationFile = document.querySelector('input[name="accreditationFile"]');
-        const updatedAchievementsFile = document.querySelector('input[name="achievementsFile"]');
-        const updatedConvocationFile = document.querySelector('input[name="convocationFile"]');
-        const updatedInauguralProgramFile = document.querySelector('input[name="inauguralFile"]');
-        const updatedEventFile = document.querySelector('input[name="eventFile"]');
+        let updatedRankingDocuments = document.querySelector('input[name="rankingDocuments"]');
+        let updatedAccredItationFile = document.querySelector('input[name="accreditationFile"]');
+        let updatedAchievementsFile = document.querySelector('input[name="achievementsFile"]');
+        let updatedConvocationFile = document.querySelector('input[name="convocationFile"]');
+        let updatedInauguralProgramFile = document.querySelector('input[name="inauguralFile"]');
+        let updatedEventFile = document.querySelector('input[name="eventFile"]');
         const updatedRanking = document.getElementById('ranking').value;
         const updatedRankingLink = document.getElementById('ranking-link').value;
         const updatedAccredItation = document.getElementById('accreditation').value;
@@ -761,12 +761,51 @@
         const updatedEventsLink = document.getElementById('event-link').value;
 
         updatedMeetingData.append('meetingId', meetingId);
-        updatedMeetingData.append('rankingDocuments', updatedRankingDocuments.files[0]);
-        updatedMeetingData.append('accreditationFile', updatedAccredItationFile.files[0]);
-        updatedMeetingData.append('achievementsFile', updatedAchievementsFile.files[0]);
-        updatedMeetingData.append('convocationFile', updatedConvocationFile.files[0]);
-        updatedMeetingData.append('inauguralProgramFile', updatedInauguralProgramFile.files[0]);
-        updatedMeetingData.append('eventFile', updatedEventFile.files[0]);
+        if(updatedRankingDocuments && updatedRankingDocuments.files && updatedRankingDocuments.files.length > 0){
+            updatedMeetingData.append('rankingDocuments', updatedRankingDocuments.files[0]);
+        }
+        else{
+            updatedRankingDocuments = null;
+            updatedMeetingData.append('rankingDocuments', updatedRankingDocuments);
+        }
+
+        if(updatedAccredItationFile && updatedAccredItationFile.files && updatedAccredItationFile.files.length > 0){
+            updatedMeetingData.append('accreditationFile', updatedAccredItationFile.files[0]);
+        }
+        else{
+            updatedAccredItationFile = null;
+            updatedMeetingData.append('accreditationFile', updatedAccredItationFile);
+        } 
+
+        if(updatedAchievementsFile && updatedAchievementsFile.files && updatedAchievementsFile.files.length > 0){
+            updatedMeetingData.append('achievementsFile', updatedAchievementsFile.files[0]);
+        } 
+        else{
+            updatedAchievementsFile = null;
+            updatedMeetingData.append('achievementsFile', updatedAchievementsFile);
+        }
+
+        if(updatedConvocationFile && updatedConvocationFile.files && updatedConvocationFile.files.length > 0){
+            updatedMeetingData.append('convocationFile', updatedConvocationFile.files[0]);
+        }
+        else{
+            updatedConvocationFile = null;
+            updatedMeetingData.append('convocationFile', updatedConvocationFile);
+        }
+        if(updatedInauguralProgramFile && updatedInauguralProgramFile.files && updatedInauguralProgramFile.files.length > 0){
+            updatedMeetingData.append('inauguralProgramFile', updatedInauguralProgramFile.files[0]);
+        }
+        else{
+            updatedInauguralProgramFile = null;
+            updatedMeetingData.append('inauguralProgramFile', updatedInauguralProgramFile);
+        }
+        if(updatedEventFile && updatedEventFile.files && updatedEventFile.files.length > 0){
+            updatedMeetingData.append('eventFile', updatedEventFile.files[0]);
+        }
+        else{
+            updatedEventFile = null;
+            updatedMeetingData.append('eventFile', updatedEventFile);
+        }
         updatedMeetingData.append('ranking', updatedRanking);
         updatedMeetingData.append('rankingLink', updatedRankingLink);
         updatedMeetingData.append('accreditation', updatedAccredItation)
@@ -791,12 +830,29 @@
 
                 if (data.status === 'done') {
                     console.log('data ==>>', data);
-                    meetingRowToBeUpdated.setAttribute('data-ranking-document', data.rankingDocuments[0].filename);
-                    meetingRowToBeUpdated.setAttribute('data-accreditation-documents', data.accreditationFile[0].filename);
-                    meetingRowToBeUpdated.setAttribute('data-achievements-documents', data.achievementsFile[0].filename);
-                    meetingRowToBeUpdated.setAttribute('data-convocation-documents', data.convocationFile[0].filename);
-                    meetingRowToBeUpdated.setAttribute('data-inaugural-program-documents', data.inauguralProgramFile[0].filename);
-                    meetingRowToBeUpdated.setAttribute('data-events-documents', data.eventFile[0].filename);
+                    if(updatedRankingDocuments){
+                        meetingRowToBeUpdated.setAttribute('data-ranking-document', data.rankingDocuments[0].filename);
+                    }
+
+                    if(updatedAccredItationFile){
+                        meetingRowToBeUpdated.setAttribute('data-accreditation-documents', data.accreditationFile[0].filename);
+                    }
+
+                    if(updatedAchievementsFile){
+                        meetingRowToBeUpdated.setAttribute('data-achievements-documents', data.achievementsFile[0].filename);
+                    }
+
+                    if(updatedConvocationFile){
+                        meetingRowToBeUpdated.setAttribute('data-convocation-documents', data.convocationFile[0].filename);
+                    }
+
+                    if(updatedInauguralProgramFile){
+                        meetingRowToBeUpdated.setAttribute('data-inaugural-program-documents', data.inauguralProgramFile[0].filename);
+                    }
+
+                    if(updatedEventFile){
+                        meetingRowToBeUpdated.setAttribute('data-events-documents', data.eventFile[0].filename);
+                    }
                     meetingRowToBeUpdated.setAttribute('data-ranking-link', data.updateMeetingData.rankingLink);
                     meetingRowToBeUpdated.setAttribute('data-accreditation-link', data.updateMeetingData.accreditationLink);
                     meetingRowToBeUpdated.setAttribute('data-achievements-link', data.updateMeetingData.achievementsLink);
@@ -811,13 +867,19 @@
                     meetingRowToBeUpdated.querySelector('.events').innerText = data.updateMeetingData.events;
                 }
                 $('#meeting-stackholders-modal').modal('hide');
-                alert('updated successfully');
+                alert('Updated Successfully');
             })
 
 
     };
 
     updateBtn.addEventListener('click' , async() => {
+        formGroup = updateBtn.closest('.validate-input')
+        console.log("formGroup::::::::", formGroup)
+        formGroup.querySelectorAll('input[type="file"]')?.forEach(elm => {
+            console.log("elm:::::::::", elm);
+            elm.removeAttribute('data-validate')
+        })
         const isValid = validateRequiredFormFields(submitBtn);
         if (isValid) {
             await updateMeetingStackholder('<%- BASE_URL %>meeting-stackholders/update');

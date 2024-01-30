@@ -68,16 +68,16 @@ module.exports.updateTeachingExecellance = async(teachingId, updatedTeachingExec
         console.log('teachingFieldsToUpdate ===>>>', teachingFieldsToUpdate);
 
         const setStatements = teachingFieldsToUpdate
-            .filter(fieldInfo => fieldInfo.value !== null) // Filter where value is null
+            .filter(fieldInfo => fieldInfo.value !== null)
             .map((fieldInfo, index) => {
                 console.log('dataCondition ===>>>:::::', fieldInfo.value);
                 console.log('index ==>>', index);
-                console.log('condition == ==>>>::::', true); //  filter ensures value is not null
+                console.log('condition == ==>>>::::', true);
                 return { statement: `${fieldInfo.field} = $${index + 2}`, dataCondition: `${fieldInfo.value}` };
             });
 
         console.log('setStatements ==>>>', setStatements);
-    //checking if any field emty then it should then make them null     
+
         const updateDocument = teachingFieldsToUpdate.map(fieldInfo => {
             const condition = fieldInfo.value;
             if(condition){
@@ -105,8 +105,6 @@ module.exports.updateTeachingExecellance = async(teachingId, updatedTeachingExec
 
         console.log('updateTeachingExecellanceData ==>>>', updateTeachingExecellanceData);
 
-        // const setStatementString = setStatements.map(item => item.statement).join(',');
-        // console.log('setStatementString ==>>>', setStatementString)
         const setStatementString = setStatements.map((item, index) => {
             if (item.dataCondition !== 'null') {
             return `${item.statement}`;

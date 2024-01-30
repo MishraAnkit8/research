@@ -46,20 +46,88 @@ module.exports.DeleteConference = async({conferenceId}) => {
     return autoDbW.query(sql);
 }
 
-module.exports.updateConferencePublication = async(upadtedConferenceData, conferenceId, conferenceDocument, conferenceProof) => {
+module.exports.updateConferencePublication = async(upadtedConferenceData, conferenceId, ConferenceFileToBeUpdate) => {
     console.log('Id for Updation in models ==>>>', conferenceId);
-    console.log('conferenceDocument in models ==>>', conferenceDocument[0].filename);
     const {titleOfPaper,  nameAndPlace, procedingDetail, publisherCategory, isPresenter, authorType, publicationDetails, 
         volAndIssueNo, issnIsbnNo, doiWebLink, awardForPresentation} = upadtedConferenceData;
-        console.log('upadtedConferenceData in models  ==>>', upadtedConferenceData)
-    let sql = {
-        text : `UPDATE conference_publications SET  title_of_paper = $2, name_and_place = $3, proceedings_detail = $4, publisher_category =$5, is_presenter = $6,
-                author_type = $7, publication_details = $8, vol_and_issue_no = $9, issn_isbn_no = $10, doi_weblink = $11, award_for_presentation = $12, upload_files = $13, upload_proof = $14 WHERE id = $1 `,
-        values : [conferenceId, titleOfPaper,  nameAndPlace, procedingDetail, publisherCategory, isPresenter, authorType, publicationDetails, 
-            volAndIssueNo, issnIsbnNo, doiWebLink, awardForPresentation, conferenceDocument[0].filename, conferenceProof[0].filename]          
+    
+    const conferenceDocument = ConferenceFileToBeUpdate.conferenceDocument ? ConferenceFileToBeUpdate.conferenceDocument[0].filename : null;
+    console.log('conferenceDocument ==>> ::::', conferenceDocument)
+    const conferenceProof = ConferenceFileToBeUpdate.conferenceProof ? ConferenceFileToBeUpdate.conferenceProof[0].filename : null;
 
-    }
-     return autoDbW.query(sql);
+    const conferenceFilesarray = {conferenceDocument , conferenceProof}
+    console.log('conferenceFiles  =>>', conferenceFilesarray)
+ 
+    const conferenceFieldToBeUpdate = [
+        { field: 'title_of_paper', value: titleOfPaper },
+        { field: 'name_and_place', value: nameAndPlace },
+        { field: 'proceedings_detail', value: procedingDetail },
+        { field: 'publisher_category', value: publisherCategory },
+        { field: 'is_presenter', value: isPresenter },
+        { field: 'author_type', value: authorType },
+        { field: 'publication_details', value: publicationDetails },
+        { field: 'vol_and_issue_no', value: volAndIssueNo },
+        { field: 'issn_isbn_no', value: issnIsbnNo },
+        { field: 'upload_files', value: conferenceDocument },
+        { field: 'award_for_presentation', value: awardForPresentation },
+        { field: 'upload_proof', value: conferenceProof },
+    ]
+
+    console.log('conferenceFieldToBeUpdate ==>>', conferenceFieldToBeUpdate);
+    const setStatements = conferenceFieldToBeUpdate
+        .filter(fieldInfo => fieldInfo.value !== null)
+        .map((fieldInfo, index) => {
+            console.log('dataCondition ===>>>:::::', fieldInfo.value);
+            console.log('index ==>>', index);
+            console.log('condition == ==>>>::::', true);
+            return { statement: `${fieldInfo.field} = $${index + 2}`, dataCondition: `${fieldInfo.value}` };
+        });
+
+    console.log('setStatements ==>>>', setStatements);
+
+    const updateDocument = conferenceFieldToBeUpdate.map(fieldInfo => {
+        const condition = fieldInfo.value;
+        if(condition){
+            console.log('condition ==>>::::', condition)
+            console.log(`Condition for ${fieldInfo.field}: ${condition}`);
+        }
+        else{
+            return null
+        }
+        
+        const value =  fieldInfo.value ;
+        if(value){
+            console.log(`Value for ${fieldInfo.field}: ${value}`);
+            return value;
+        }
+    }).filter(value => value !== null);
+
+    console.log('updateDocument ====::::>>>', updateDocument)
+    
+    const updateConferenceData = [
+        conferenceId,
+        ...updateDocument,
+    ];
+
+    console.log('updateConferenceData ==>>>', updateConferenceData);
+
+    const setStatementString = setStatements.map((item, index) => {
+        if (item.dataCondition !== 'null') {
+        return `${item.statement}`;
+        } else {
+        return '';
+        }
+    }).filter(Boolean).join(', ');
+    
+    console.log('setStatementString ==>>>', setStatementString);
+    
+    const sql = {
+        text: `UPDATE conference_publications SET ${setStatementString} WHERE id = $1`,
+        values: updateConferenceData,
+    };
+
+    console.log('sql ==>>', sql);
+    return autoDbW.query(sql);
 
 }
 

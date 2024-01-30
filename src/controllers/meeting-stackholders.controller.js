@@ -37,7 +37,8 @@ module.exports.updateMeetingStackholders = async(req, res, next) => {
     console.log('updateMeetingData ==>>', updateMeetingData)
     const meetingId = req.body.meetingId;
     const {rankingDocuments, accreditationFile, achievementsFile, convocationFile, inauguralProgramFile, eventFile} = req.files;
-    const updateMeetingStackholdersData = await meetingServices.updateMeetingStackholders(meetingId, req.body, req.files);
+    const meetingDocumentToBeUpdate = {rankingDocuments, accreditationFile, achievementsFile, convocationFile, inauguralProgramFile, eventFile};
+    const updateMeetingStackholdersData = await meetingServices.updateMeetingStackholders(meetingId, req.body, meetingDocumentToBeUpdate);
     if(updateMeetingStackholdersData.status === 'done'){
         res.status(200).send({
             status : 'done',

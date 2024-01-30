@@ -725,16 +725,24 @@
         const updatedIssnIsbnNo = document.getElementById('issn-isbn-no').value;
         const updatedDoiWebLink = document.getElementById('doi-weblink').value;
         const updatedAward = document.querySelector('input[name="award-for-presentation"]:checked').value;
-        const updatedConferenceFile = document.getElementById('conference-file');
-        const updatedConferenceProof = document.getElementById('conference-proof');
+        let updatedConferenceFile = document.querySelector('input[name="conferenceDocument"]');
+        let updatedConferenceProof = document.querySelector('input[name="conferenceProof"]');
         
         // appending currunt updated value 
         updatedConferenceData.append('conferenceId', conferenceId)
         if (updatedConferenceFile && updatedConferenceFile.files && updatedConferenceFile.files.length > 0) {
             updatedConferenceData.append('conferenceDocument', updatedConferenceFile.files[0]);
         }
+        else{
+            updatedConferenceFile = null;
+            updatedConferenceData.append('conferenceDocument', updatedConferenceFile);
+        }
         if (updatedConferenceProof && updatedConferenceProof.files && updatedConferenceProof.files.length > 0) {
             updatedConferenceData.append('conferenceProof', updatedConferenceProof.files[0])
+        }
+        else{
+            updatedConferenceProof = null;
+            updatedConferenceData.append('conferenceProof', updatedConferenceProof)
         }
         updatedConferenceData.append('titleOfPaper' , updatedTitleOfPaper);
         updatedConferenceData.append('nameAndPlace' ,updatedNameAndPlace);
@@ -768,8 +776,12 @@
                 conferenceRowToBeUpdated.setAttribute('data-publication-details' , data.upadtedConferenceData.publicationDetails);
                 conferenceRowToBeUpdated.setAttribute('data-vol-and-issue-no' , data.upadtedConferenceData.volAndIssueNo);
                 conferenceRowToBeUpdated.setAttribute('data-doi-weblink' , data.upadtedConferenceData.doiWebLink);
-                conferenceRowToBeUpdated.setAttribute('data-upload-files' , data.ConferenceDocument);
-                conferenceRowToBeUpdated.setAttribute('data-award-for-presentation' , data.upadtedConferenceData.isPresenter);
+                if(updatedConferenceFile){
+                    conferenceRowToBeUpdated.setAttribute('data-upload-files' , data.ConferenceDocument);
+                }
+                if(updatedConferenceProof){
+                    conferenceRowToBeUpdated.setAttribute('data-award-for-presentation' , data.upadtedConferenceData.isPresenter);
+                }
                 conferenceRowToBeUpdated.setAttribute('data-upload-proof' , data.upadtedConferenceData.ConferenceProof);
             }
         })
@@ -778,7 +790,13 @@
     };
 
     updateBtn.addEventListener('click' , async() => {
-        const isValid = validateRequiredFormFields(submitBtn);
+        formGroup = updateBtn.closest('.validate-input')
+        console.log("formGroup::::::::", formGroup)
+        formGroup.querySelectorAll('input[type="file"]')?.forEach(elm => {
+            console.log("elm:::::::::", elm);
+            elm.removeAttribute('data-validate')
+        })
+        const isValid = validateRequiredFormFields(updateBtn);
             if (isValid) {
                 await updateConferencePublication('<%- BASE_URL %>research/conference-publication/update');
             }

@@ -39,11 +39,11 @@ module.exports.deleteConferencePublicationData = async(body) => {
     }
 }
 
-module.exports.updatedConferencePublication = async (body, conferenceProof, conferenceDocument) => {
+module.exports.updatedConferencePublication = async (body, ConferenceFileToBeUpdate) => {
     console.log('data in service' , body);
     const upadtedConferenceData = body
     const conferenceId =  body.conferenceId;
-    const updateConferencePublicationData = await conferencePublicationModels.updateConferencePublication(upadtedConferenceData, conferenceId, conferenceProof, conferenceDocument);
+    const updateConferencePublicationData = await conferencePublicationModels.updateConferencePublication(upadtedConferenceData, conferenceId, ConferenceFileToBeUpdate);
     if(updateConferencePublicationData && updateConferencePublicationData.rowCount === 1){
         console.log('updateConferencePublicationData in service ==>>', updateConferencePublicationData);
         return {
