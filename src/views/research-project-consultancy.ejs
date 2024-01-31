@@ -67,7 +67,7 @@
                             data-grant-proposal="<%- consultancy.grant_proposal_category %>"
                             data-submission-date="<%- consultancy.submission_grant_date.toISOString().split('T')[0] %>"
                             data-faulty-type="<%- consultancy.faculty_type %>"
-                            data-supports-document="<%- consultancy.supporting_documents %>">
+                            data-supporting-documents="<%- consultancy.supporting_documents %>">
                             <td><%- index+1 %></td>
                             <td class="title-of-project"><%- consultancy.title_of_project %> </td>
                             <td class="thurst-area"><%- consultancy.thrust_area_of_research %></td>
@@ -371,7 +371,9 @@
                      <!-- Upload Supporting Documents -->
                      <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
-                            <div class="task-sub-title sub-title-text">Documents : </div>
+                            <div class="task-sub-title sub-title-text"><button class="btn btn-primary h-10 w-10" id="downloadButton">
+                                <i class="fas fa-download"></i> Download researchConsultancyDocument
+                            </button></div>
                             <label class="view-content" id="view-supporting-document"></label>
                         </div>
                     </div>
@@ -474,7 +476,7 @@
                 newResearchConsultant.setAttribute('data-grant-proposal' , data.researchConsultantData.grantProposalCategory)
                 newResearchConsultant.setAttribute('data-submission-date' , data.researchConsultantData.submissionGrantDate);
                 newResearchConsultant.setAttribute('data-faulty-type' , data.researchConsultantData.facultyType);
-                newResearchConsultant.setAttribute('data-supports-document' , data.researchConsultantData.filename);
+                newResearchConsultant.setAttribute('data-supporting-documents' , data.researchConsultantData.filename);
                 newResearchConsultant.innerHTML = `
                         <td>${indexValue}</td>
                         <td class="title-of-project">${data.researchConsultantData.titleOfProject}</td>
@@ -493,7 +495,7 @@
 
                         researchProjectConsultancyList.appendChild(newResearchConsultant);
                         $('#consultancy-modal').modal('hide');
-                        alert('data is inserted  successFully');
+                        alert('Data Inserted  SuccessFully');
             }
         })
     }
@@ -610,7 +612,7 @@
                 else{
                     facultyTypeInternal.checked = true;
                 }
-                const supportingDocuments = consultantRowToBeUpdated.getAttribute('data-supports-document');
+                const supportingDocuments = consultantRowToBeUpdated.getAttribute('data-supporting-documents');
                 console.log('supportingDocuments ==>>', supportingDocuments)
             }
             //for delete
@@ -648,6 +650,29 @@
                 console.log('consultantRowToBeViewed ==>>', consultantRowToBeViewed);
                 consultantId = event.target.getAttribute('data-consultancy-id');
                 console.log('consultantId ==>>', consultantId);
+                document.getElementById('downloadButton').addEventListener('click', function () {
+                const fileName = consultantRowToBeViewed.getAttribute('data-supporting-documents');
+                console.log('fileName ===>', fileName)
+
+                fetch(`<%- BASE_URL %>research/research-project-consultancy/download/${fileName}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.blob();
+                    })
+                    .then(blob => {
+                        const link = document.createElement('a');
+                        link.href = window.URL.createObjectURL(blob);
+                        link.download = fileName;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                    })
+                    .catch(error => {
+                        console.error('There was a problem with the fetch operation:', error);
+                    });
+            });
                 const viewGrantProposalCategory = document.getElementById('view-grant-proposal');
                 const viewTypeOfGrant = document.getElementById('view-grant-type');
                 const viewTitleOfProject = document.getElementById('view-project-title');

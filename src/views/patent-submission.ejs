@@ -10,9 +10,12 @@
 <main class="main" id="mainContent">
     <div class="base-section custom-section mt-5 p-5 ">
         <!--DASHBOARD CONTENT START-->
-        <!-- <div class="breadcrumbs-container">
-        </div> -->
         <div class="errorHtml"></div>
+        <div class="breadcrumbs-container">
+            <ul class="breadcrumb">
+                <li><a href="<%- BASE_URL %>research">RESEARCH >> </a></li>
+            </ul>
+        </div>
         <div class="card table-card">
             <div class="table-card-header text-uppercase d-flex align-items-center justify-content-between">
                 <div>
@@ -180,7 +183,7 @@
                     <!-- Patent Stage -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="patent-stage" class="form-label fw-bold">Patent Stage</label>
-                        <select class="form-control gap-10" id="patent-stage" data-validate="isEmpty,isExist" data-err-msg="This field is required and select a value" required onchange="resetSelect(this)">
+                        <select class="form-control gap-10" id="patent-stage" data-validate="isEmpty,isExist" data-err-msg="This field is required and select a value" required >
                             <option  value="" selected>Select option</option>
                             <option value="Filed">Filed</option>
                             <option value="Published">Published</option>
@@ -332,7 +335,11 @@
                     <!-- Upload Data -->
                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
-                            <div class="sub-title-text sub-title"> Document :</div>
+                            <div class="sub-title-text sub-title">
+                                <button class="btn btn-primary h-10 w-10" id="downloadButton">
+                                    <i class="fas fa-download"></i> Download patentDocument
+                                </button>
+                            </div>
                             <label class="view-content" id="view-patent-file"></label>
                         </div>
                     </div>
@@ -557,6 +564,30 @@
                 console.log('data ready for view');
                 const patentSubmissionDataToBeViewed = event.target.closest('tr');
                 console.log('row to be viewed', patentSubmissionDataToBeViewed);
+                document.getElementById('downloadButton').addEventListener('click', function () {
+                const patentFile = patentSubmissionDataToBeViewed.querySelector('.patent-file');
+                const fileName = patentFile.innerText.trim();
+                console.log('fileName ====>>>', fileName)
+
+                fetch(`<%- BASE_URL %>research/patent-submission/download/${fileName}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.blob();
+                    })
+                    .then(blob => {
+                        const link = document.createElement('a');
+                        link.href = window.URL.createObjectURL(blob);
+                        link.download = fileName;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                    })
+                    .catch(error => {
+                        console.error('There was a problem with the fetch operation:', error);
+                    });
+            });
                 patentId = event.target.getAttribute('data-patent-id')
                 $('#patent-submission-modal-view').modal('show');
                 const viewTypeOfInvetion = document.getElementById('view-type-of-invetion');
