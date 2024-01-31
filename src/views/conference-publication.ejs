@@ -282,8 +282,11 @@
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <div class="form-group">
                             <label for="upload" class="form-label fw-bold ">Upload Files</label>
-                            <input type="file" id="conference-file" data-validate="isEmpty,isExist,isFile"  data-err-msg="File is required" name="conferenceDocument"
-                                class="form-control" required>
+                            <div class="d-flex">
+                                <input type="file" id="conference-file" data-validate="isEmpty,isExist,isFile" data-err-msg="File is required"
+                                    name="conferenceDocument" class="form-control" required>
+                                <button id="downloadConferenceFile" class="download-btn"><i class="fas fa-download text-danger"></i></button>
+                            </div>
                         </div>
                     </div>
                     <!-- upload proof -->
@@ -291,28 +294,11 @@
                         <div class="form-group">
                             <label for="upload"  class="form-label fw-bold ">Upload
                                 Proof</label>
-                            <input type="file" id="conference-proof" data-validate="isEmpty,isExist,isFile"  data-err-msg="File is required." name="conferenceProof" class="form-control "
-                               required>
-                        </div>
-                    </div>
-                      <!-- Upload Supporting Documents-->
-                      <div class="form-group col-lg-6 col-md-8 col-sm-12 mb-4">
-                        <div class="col-lg-6 col-md-8 col-sm-12">
-                            <label for="supporting-documents" class="form-label fw-bold ">
-                                Upload Supporting Documents
-                            </label>
                             <div class="d-flex">
-                                <input type="file" name="researchSupportingDocument" id="supporting-documents"
-                                    class="col-md-8 form-control " min='2000-01-01' max="2023-10-02" required>
-                                <a id="downloadLink" class="p-2" download="image" style="display: none;">
-                                    <i class="fa-solid fa-download download text-danger"></i>
-                                </a>
-                                <img id="modalImage" class="img-fluid col-md-4 rounded file-style modal-file file-view" alt="Image Preview">
+                                <input type="file" id="conference-proof" data-validate="isEmpty,isExist,isFile" data-err-msg="File is required."
+                                    name="conferenceProof" class="form-control " required>
+                                <button class="download-btn" id="downloadConferenceProof"><i class="fas fa-download text-danger"></i></button>
                             </div>
-                        </div>
-                    </div>
-                    <div class="form-group col-lg-6 col-md-2 col-sm-12 mb-4">
-                        <div id="file-view" class="h-10 w-10">
                         </div>
                     </div>
                 </div>
@@ -415,7 +401,10 @@
                     <!-- Upload Files -->
                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
-                            <div class="task-sub-title sub-title-text">Upload Files:</div>
+                            <div class="task-sub-title sub-title-text"><button class="btn btn-primary h-10 w-10" id="downloadConferenceFile" >
+                                <i class="fas fa-download"></i> Download ConferenceDocument
+                            </button>
+                        </div>
                             <label class="view-content" id="view-conference-document"></label>
                         </div>
                     </div>
@@ -429,7 +418,10 @@
                     <!-- Upload Proof -->
                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
-                            <div class="task-sub-title sub-title-text">Upload Proof:</div>
+                            <div class="task-sub-title sub-title-text"><button class="btn btn-primary h-10 w-10" id="downloadConferenceProof">
+                                <i class="fas fa-download text-danger"></i> Download ConferenceProof
+                            </button>
+                        </div>
                             <label class="view-content" id="view-conference-proof"></label>
                         </div>
                     </div>
@@ -455,11 +447,15 @@
     const conferenceAddModal = document.getElementById('confrence-modal-form');
     const submitBtn = document.getElementById('submit-btn');
     const updateBtn = document.getElementById('update-btn');
+    let downloadConferenceProof = document.getElementById('downloadConferenceProof');
+    let downloadConferenceFile  = document.getElementById('downloadConferenceFile');
     //modal for button visualization
     conferenceAddModal.addEventListener('click' , function(event){
         if(event.target.tagName === 'BUTTON' && event.target.classList.contains('add-modal') || event.target.classList.contains('plus')){
             updateBtn.classList.add('d-none');
             submitBtn.classList.remove('d-none');
+            downloadConferenceFile.classList.add('d-none');
+            downloadConferenceProof.classList.add('d-none');
             const titleOfPaper = document.getElementById('title-of-paper');      
             const nameAndPlace = document.getElementById('name-and-place');
             const procedingDetail = document.getElementById('proceedings-detail');
@@ -604,6 +600,26 @@
             const conferenceRowToBeViewed = event.target.closest('tr');
             conferenceId = event.target.getAttribute('data-conference-id');
             console.log('conferenceId ==>>', conferenceId);
+            downloadConferenceFile.classList.remove('d-none');
+            downloadConferenceProof.classList.remove('d-none');
+            let conferenceFile = conferenceRowToBeViewed.getAttribute('data-upload-files');
+            let conferenceProof = conferenceRowToBeViewed.getAttribute('data-upload-proof');
+            console.log('conferenceFile ==>>', conferenceFile)
+            const buttonToFile = {
+                downloadConferenceFile: conferenceFile,
+                downloadConferenceProof: conferenceProof,
+            };
+            document.addEventListener('click', function (event) {
+                const button = event.target.closest('button');
+                console.log('button ==>>', button)
+                if (button && button.id in buttonToFile) {
+                    const fileName = buttonToFile[button.id];
+                    const fileUrl = `<%- BASE_URL %>research/conference-publication/download/${fileName}`;
+
+                    downloadFile(fileName, fileUrl);
+                }
+            });
+
             const viewConferenceDocument = document.getElementById('view-conference-document');
             const viewConferenceProof = document.getElementById('view-conference-proof');
             const viewTitleOfPaper = document.getElementById('view-title-of-paper');     
@@ -662,6 +678,8 @@
             $('#conference-publication-modal').modal('show');
             updateBtn.classList.remove('d-none');
             submitBtn.classList.add('d-none');
+            downloadConferenceFile.classList.remove('d-none');
+            downloadConferenceProof.classList.remove('d-none');
             const titleOfPaper = document.getElementById('title-of-paper');      
             const nameAndPlace = document.getElementById('name-and-place');
             const procedingDetail = document.getElementById('proceedings-detail');
@@ -716,18 +734,33 @@
             else{
                 isAwardno.checked = true
             }
-           const conferenceDocumentData = conferenceRowToBeUpdated.getAttribute('data-upload-files');
+           let conferenceDocumentData = conferenceRowToBeUpdated.getAttribute('data-upload-files');
            const conferenceFileName = document.getElementById('conference-file-name');
            if(conferenceFileName && conferenceDocumentData){
             conferenceFileName.textContent = conferenceDocumentData
             console.log('conferenceFileName', conferenceFileName.textContent)
            }
-           const conferenceProof = conferenceRowToBeUpdated.getAttribute('data-upload-proof');
+           let conferenceProof = conferenceRowToBeUpdated.getAttribute('data-upload-proof');
            const conferenceProofName = document.getElementById('conference-proof-name');
-           if(conferenceProofName && conferenceProof){
-            conferenceProofName.textContent = conferenceProof
-           }
-            
+           if (conferenceProofName && conferenceProof) {
+                conferenceProofName.textContent = conferenceProof
+            }
+            //  fecth api for download view 
+            const buttonToFile = {
+                downloadConferenceFile: conferenceDocumentData,
+                downloadConferenceProof: conferenceProof,
+            };
+            document.addEventListener('click', function (event) {
+                const button = event.target.closest('button');
+
+                if (button && button.id in buttonToFile) {
+                    const fileName = buttonToFile[button.id];
+                    const fileUrl = `<%- BASE_URL %>research/conference-publication/download/${fileName}`;
+
+                    downloadFile(fileName, fileUrl);
+                }
+            });
+ 
         }
     });
 
@@ -806,7 +839,7 @@
             }
         })
         $('#conference-publication-modal').modal('hide');
-        alert('data updated succesfully');
+        alert('Data Updated Succesfully');
     };
 
     updateBtn.addEventListener('click' , async() => {

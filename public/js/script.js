@@ -113,7 +113,27 @@ function handleFilePreviewAndDownload(filename, imageRoute, fileRoute) {
 }
 
 // Example usage:
-
+//  for download file function
+function downloadFile(fileName, fileUrl) {
+    fetch(fileUrl)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.blob();
+        })
+        .then(blob => {
+            const link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = fileName;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        })
+        .catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
+        });
+}
 
 
   

@@ -3,6 +3,8 @@ const upload = require('../../multer');
 
 const { asyncErrorHandler } = require('../middleware/error.middleware');
 const brandingAndAdvertisingController = require('../controllers/branding-advertising.controller');
+const brandingandAdvertisingServices = require('../services/branding-advertising.service');
+
 
 const router = express.Router();
 
@@ -36,8 +38,8 @@ router.post('/update', upload.fields([
 
 router.post('/view' , asyncErrorHandler(brandingAndAdvertisingController.viewBrandingadvertising));
 router.post('/delete' , asyncErrorHandler(brandingAndAdvertisingController.deleteBrandingAdvertising));
-router.get('/download/:filename', brandingAndAdvertisingController.downloadFile);
-router.get('/viewing/:filename', brandingAndAdvertisingController.viewFile);
+router.get('/download/:filename', brandingandAdvertisingServices.downloadFile);
+router.get('/viewing/:filename', brandingandAdvertisingServices.viewFile);
 
 
 
