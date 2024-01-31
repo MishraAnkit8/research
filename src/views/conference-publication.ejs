@@ -415,10 +415,7 @@
                     <!-- Upload Files -->
                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
-                            <div class="task-sub-title sub-title-text"><button class="btn btn-primary h-10 w-10" id="downloadButton">
-                                <i class="fas fa-download"></i> Download conference Document
-                            </button>
-                        </div>
+                            <div class="task-sub-title sub-title-text">Upload Files:</div>
                             <label class="view-content" id="view-conference-document"></label>
                         </div>
                     </div>
@@ -432,10 +429,7 @@
                     <!-- Upload Proof -->
                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
-                            <div class="task-sub-title sub-title-text"><button class="btn btn-primary h-10 w-10" id="downloadButton">
-                                <i class="fas fa-download"></i> Download ConferenceProof
-                            </button>
-                        </div>
+                            <div class="task-sub-title sub-title-text">Upload Proof:</div>
                             <label class="view-content" id="view-conference-proof"></label>
                         </div>
                     </div>
@@ -610,44 +604,6 @@
             const conferenceRowToBeViewed = event.target.closest('tr');
             conferenceId = event.target.getAttribute('data-conference-id');
             console.log('conferenceId ==>>', conferenceId);
-            const conferenceFile = conferenceRowToBeViewed.getAttribute('data-upload-files');
-            const conferenceProof = conferenceRowToBeViewed.getAttribute('data-upload-proof');
-            const filesInfo = [
-                { attributeName: 'conferenceFile', fileName: conferenceFile },
-                { attributeName: 'conferenceProof', fileName: conferenceProof },
-                    ];
-
-            function downloadFile(filename) {
-
-                const fileInfo = filesInfo.find(file => file.filename === filename);
-
-                if (!fileInfo) {
-                    console.error('File information not found for attribute:', filename);
-                    return;
-                }
-
-                const { fileName } = fileInfo;
-
-                fetch(`<%- BASE_URL %>research/conference-publication/download/${fileName}`)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
-                        return response.blob();
-                    })
-                    .then(blob => {
-                        // Create a temporary link element to trigger the download
-                        const link = document.createElement('a');
-                        link.href = window.URL.createObjectURL(blob);
-                        link.download = fileName;
-                        document.body.appendChild(link);
-                        link.click();
-                        document.body.removeChild(link);
-                    })
-                    .catch(error => {
-                        console.error('There was a problem with the fetch operation:', error);
-                    });
-            }
             const viewConferenceDocument = document.getElementById('view-conference-document');
             const viewConferenceProof = document.getElementById('view-conference-proof');
             const viewTitleOfPaper = document.getElementById('view-title-of-paper');     
