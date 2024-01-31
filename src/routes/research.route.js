@@ -20,6 +20,7 @@ const researchSeminarController = require('../controllers/research-seminar.contr
 // services
 const patentSubmissionServices = require('../services/patent-submission.service');
 const researchConsultancyService = require('../services/research-consultancy.service');
+const conferenceServices = require('../services/conference-publications.service');
 
 
 const router = express.Router();
@@ -54,6 +55,8 @@ router.post('/conference-publication/update', upload.fields([
     { name: 'conferenceDocument', maxCount: 1 },
     { name: 'conferenceProof', maxCount: 1 },
 ]),asyncErrorHandler(conferenceController.updateConferencePublication));
+router.get('/conference-publication/download/:filename', conferenceServices.downloadFile);
+router.get('/conference-publication/viewing/:filename', conferenceServices.viewFile);
 
 //patent submission form
 router.get('/patent-submission', asyncErrorHandler(patentSubmission.renderPatentSubMissionAndGrant));

@@ -29,8 +29,6 @@ module.exports.downloadFile = (req, res) => {
     });
   };
   
-
-
 module.exports.viewFile = (req, res, next) => {
 const filename = req.params.filename;
   const filePath = path.join(uploadFolder, filename);

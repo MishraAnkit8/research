@@ -8,12 +8,12 @@
 <main class="main" id="mainContent">
     <div class="base-section coustom-section">
         <!--DASHBOARD CONTENT START-->
-        <div class="breadcrumbs-container">
+        <!-- <div class="breadcrumbs-container">
             <ul class="breadcrumb">
                 <li><a href="<%- BASE_URL %>research/book-publication-main">BOOK PUBLICATION MAIN</a></li>
                 <li><a href="">BOOK CHAPTER PUBLICATION</a></li>
             </ul>
-        </div>
+        </div> -->
         <div class="errorHtml"></div>
         <div class="card table-card">
             <div class="table-card-header text-uppercase d-flex align-items-center justify-content-between">
@@ -430,7 +430,10 @@
                     <!-- Supporting Document -->
                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
-                            <div class="task-sub-title sub-title-text">Supporting Documents:</div>
+                            <div class="task-sub-title sub-title-text"><button class="btn btn-primary h-10 w-10" id="downloadButton">
+                                    <i class="fas fa-download"></i> Download supportingDocuments
+                                </button>
+                            </div>
                             <label class="view-content" id="view-support-document"></label>
                         </div>
                     </div>
@@ -722,6 +725,28 @@
             const bookChapterRowToBeViewed = event.target.closest('tr');
             bookChapterId = event.target.getAttribute('data-bookChapter-id');
             console.log('ID ==>>', bookChapterId);
+            document.getElementById('downloadButton').addEventListener('click', function () {
+                const fileName = bookChapterRowToBeViewed.getAttribute('data-supporting-documents');;
+
+                fetch(`<%- BASE_URL %>research/book-publication-main/book-publication/download/${fileName}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.blob();
+                    })
+                    .then(blob => {
+                        const link = document.createElement('a');
+                        link.href = window.URL.createObjectURL(blob);
+                        link.download = fileName;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                    })
+                    .catch(error => {
+                        console.error('There was a problem with the fetch operation:', error);
+                    });
+            });
             $('#book-chapter-view').modal('show');
             const viewauthorName = document.getElementById('view-first-name');
             const viewBookTitle = document.getElementById('view-book-title');

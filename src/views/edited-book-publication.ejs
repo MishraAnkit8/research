@@ -426,7 +426,9 @@
                      <!-- Supporting Document -->
                      <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
-                            <div class="task-sub-title sub-title-text">Supporting Documents:</div>
+                            <div class="task-sub-title sub-title-text"><button class="btn btn-primary h-10 w-10" id="downloadButton">
+                                    <i class="fas fa-download"></i> Download supportingDocuments
+                                </button></div>
                             <label class="view-content" id="view-support-document"></label>
                         </div>
                     </div>
@@ -712,6 +714,28 @@
             console.log('clickedddd');
             const editedBookRowToBeViewed = event.target.closest('tr');
             editedBookId = event.target.getAttribute('data-editedbook-id');
+            document.getElementById('downloadButton').addEventListener('click', function () {
+                const fileName = editedBookRowToBeViewed.getAttribute('data-supporting-documents');;
+
+                fetch(`<%- BASE_URL %>research/book-publication-main/book-publication/download/${fileName}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.blob();
+                    })
+                    .then(blob => {
+                        const link = document.createElement('a');
+                        link.href = window.URL.createObjectURL(blob);
+                        link.download = fileName;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                    })
+                    .catch(error => {
+                        console.error('There was a problem with the fetch operation:', error);
+                    });
+            });
             console.log('ID ==>>', editedBookId);
             $('#edited-book-view-modal').modal('show');
             const viewauthorName = document.getElementById('view-first-name');

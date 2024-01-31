@@ -10,7 +10,7 @@ const storage = multer.diskStorage({
 
         console.log('file in multer ==>> ::::', file);
         // Define the filename as the original filename
-        let uniqueFileName = uuidv4() + file.originalname
+        let uniqueFileName = file.originalname
         cb(null, uniqueFileName);
     }
 });

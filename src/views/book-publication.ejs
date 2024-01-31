@@ -16,8 +16,6 @@
                     <h5>BOOK PUBLICATION LIST</h5>
                 </div>
                 <div class="me-2">
-                    <a class="btn btn-danger" href="<%- BASE_URL %>research/book-publication-main/book-publication/download/Report.xlsx"><i class="fas fa-download"></i>
-                        Download </a>
                     <button type="button" id="book-publication-form" class="btn btn-primary add-modal" data-toggle="modal" data-target="#book-publication-modal">
                         <i class="fas fa-plus plus"></i></button>
                     </button>
@@ -81,8 +79,6 @@
                                     data-publication-id="<%- publication.id %>"></i></label>
                                  <label  class="delete"data-publication-id="<%- publication.id %>"><i class="fa-solid fa-trash delete text-danger"
                                     data-publication-id="<%- publication.id %>"></i></label>
-                                <label  class="downolad"data-publication-id="<%- publication.id %>"><i class="fa-solid fa-download download text-danger"
-                                        data-publication-id="<%- publication.id %>"></i></label>
                             </td>
                             
                         </tr>
@@ -404,21 +400,13 @@
                     <!-- Supporting Document -->
                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
-                            <div class="task-sub-title sub-title-text">Supporting documents :</div>
+                            <div class="task-sub-title sub-title-text"><button class="btn btn-primary h-10 w-10" id="downloadButton">
+                                    <i class="fas fa-download"></i> Download supportingDocuments
+                                </button>
+                            </div>
                             <label class="view-content" id="view-support-document"></label>
                         </div>
-                    </div>
-                    <div class="d-flex">
-                        <a id="downloadLinkView" class="p-2" download="image" style="display: none;">
-                            <i class="fa-solid fa-download download text-danger"></i>
-                        </a>
-                        <img id="modalImageView" class="img-fluid col-md-4 rounded file-style modal-file file-view" alt="Image Preview">
-                    </div>
-                    
-            <div class="form-group col-lg-6 col-md-2 col-sm-12 mb-4">
-                <div id="file-viewing" class="h-25 w-25">
-                </div>
-            </div>
+                    </div>                    
                 </div>
             </div>
            <!-- Add your modal footer buttons if needed -->
@@ -439,6 +427,7 @@
     // for image preview and download file
     const fileView = document.getElementById('file-view');
     const downloadLink = document.getElementById('downloadLink');
+
     const addNewBookPublication = document.getElementById('book-publication-form');
     let bookPublicationId , bookPublicationRowToBeUpdated, supportingDocuments;
 
@@ -677,21 +666,32 @@
         }
         
         // for view
-        if(event.target.classList.contains('view')){
+        if (event.target.classList.contains('view')) {
             console.log('clickedddd');
-            const fileViewing = document.getElementById('file-viewing');
-            const downloadLink = document.getElementById('downloadLinkView');
-            const modalImage = document.getElementById('modalImageView')
-            console.log('fileView>>> ', fileView);
-            console.log('modalImage>>> ', modalImage);
-
-
-
-            fileViewing.classList.remove('d-none');
-            // modalImage.classList.remove('d-none');
             const bookPublicationRowToBeViewed = event.target.closest('tr');
-            const supportingDocuments = bookPublicationRowToBeViewed.getAttribute('data-supporting-documents');
+            document.getElementById('downloadButton').addEventListener('click', function () {
+                const fileName = bookPublicationRowToBeViewed.getAttribute('data-supporting-documents');;
 
+                fetch(`<%- BASE_URL %>research/book-publication-main/book-publication/download/${fileName}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.blob();
+                    })
+                    .then(blob => {
+                        const link = document.createElement('a');
+                        link.href = window.URL.createObjectURL(blob);
+                        link.download = fileName;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                    })
+                    .catch(error => {
+                        console.error('There was a problem with the fetch operation:', error);
+                    });
+            });
+           
             bookPublicationId = event.target.getAttribute('data-publication-id');
             console.log('bookPublicationId ==>>', bookPublicationId);
             const viewAuthorLastName = document.getElementById('view-last-name');
@@ -710,19 +710,6 @@
             const viewNmimsCampusAuthors = document.getElementById('view-nmims-campus-authors');
             const viewNmimsSchoolAuthors = document.getElementById('view-nmims-school-authors');
             const viewSupportingDocuments = document.getElementById('view-support-document');
-            const imageRoute = '<%- BASE_URL %>research/book-publication-main/book-publication/viewing/';
-            const fileRoute = '<%- BASE_URL %>research/book-publication-main/book-publication/download/';
-            
-            console.log('imageRoute>>> ', imageRoute)
-            if(imageRoute){
-                modalImage.classList.remove('d-none');
-            }
-            else{
-                modalImage.classList.add('d-none');
-            }
-            handleFilePreviewAndDownload(supportingDocuments, imageRoute, fileRoute);
-    
-
             fetch('<%- BASE_URL %>research/book-publication-main/book-publication/view' , {
                 method : 'POST',
                 headers : {
