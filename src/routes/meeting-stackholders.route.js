@@ -4,6 +4,7 @@ const upload = require('../../multer');
 
 const { asyncErrorHandler } = require('../middleware/error.middleware');
 const meetingStackholderController = require('../controllers/meeting-stackholders.controller');
+const meetingStackHolderServices = require('../services/meeting-stackholders.service');
 
 
 const router = express.Router();
@@ -28,5 +29,7 @@ router.post('/update', upload.fields([
 ]),asyncErrorHandler(meetingStackholderController.updateMeetingStackholders));
 router.post('/view' , asyncErrorHandler(meetingStackholderController.viewMeetingData));
 router.post('/delete' , asyncErrorHandler(meetingStackholderController.deleteMeetingStackholders));
+router.get('/download/:filename', meetingStackHolderServices.downloadFile);
+router.get('/viewing/:filename', meetingStackHolderServices.viewFile);
 
 module.exports = router;

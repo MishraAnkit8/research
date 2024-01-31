@@ -2,6 +2,7 @@ const express = require('express');
 const upload = require('../../multer');
 
 const teachingExecellanceController = require('../controllers/teaching-excellance.controller');
+const teachingExecellanceServices = require('../services/teaching-excellance.service');
 
 // middleware for server side validation and error handler
 const { asyncErrorHandler } = require('../middleware/error.middleware');
@@ -26,5 +27,7 @@ router.post('/update', upload.fields([
 ]),asyncErrorHandler(teachingExecellanceController.updatTeachingData));
 router.post('/delete', asyncErrorHandler(teachingExecellanceController.deleteTeachingExecellance));
 router.post('/view', asyncErrorHandler(teachingExecellanceController.viewTeachingExecellance));
+router.get('/download/:filename', teachingExecellanceServices.downloadFile);
+router.get('/viewing/:filename', teachingExecellanceServices.viewFile);
 
 module.exports = router;

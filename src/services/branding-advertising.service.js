@@ -11,7 +11,6 @@ module.exports.downloadFile = (req, res) => {
     console.log("filePath ==>>", filePath);
     console.log("filename ==>>>", filename);
   
-    // Extract the original filename from the provided filename
     const originalFilename = filename.split('_').slice(1).join('_');
   
     // Set the content type header to force the browser to treat it as a PDF
