@@ -15,7 +15,8 @@ const bookPublicationController = require('../controllers/book-publication.contr
 const editedBookPublication = require('../controllers/edited-book.controller');
 const editedBookService = require('../services/edited-book.service');
 
-const bookChapterController = require('../controllers/book-chapter.controller')
+const bookChapterController = require('../controllers/book-chapter.controller');
+const bookChapterServices = require('../services/book-chapter.service')
 
 
 const router = express.Router();
@@ -42,8 +43,8 @@ router.post('/edited-book-publication/insert',  upload.single('researchSupportin
 router.post('/edited-book-publication/update',  upload.single('researchSupportingDocument'), asyncErrorHandler(editedBookPublication.updateEditedBookPublication));
 router.post('/edited-book-publication/view',  asyncErrorHandler(editedBookPublication.viewEditedBookPublication));
 router.post('/edited-book-publication/delete', asyncErrorHandler(editedBookPublication.deleteEditedBookPublication));
-router.get('/book-publication/download/:filename', editedBookService.downloadFile);
-router.get('/book-publication/viewing/:filename', editedBookService.viewFile);
+router.get('/edited-book-publication/download/:filename', editedBookService.downloadFile);
+router.get('/edited-book-publication/viewing/:filename', editedBookService.viewFile);
 
 //book chapter
 
@@ -52,6 +53,8 @@ router.post('/book-chapter-publication/insert', upload.single('researchSupportin
 router.post('/book-chapter-publication/update',  upload.single('researchSupportingDocument'), asyncErrorHandler(bookChapterController.updateBookChapterData));
 router.post('/book-chapter-publication/view',  asyncErrorHandler(bookChapterController.viewBookChapterData));
 router.post('/book-chapter-publication/delete', asyncErrorHandler(bookChapterController.deleteBookChapterData));
+router.get('/book-chapter-publication/download/:filename', bookChapterServices.downloadFile);
+router.get('/book-chapter-publication/viewing/:filename', bookChapterServices.viewFile);
 
 
 module.exports = router;

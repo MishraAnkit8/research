@@ -11,11 +11,14 @@
         <div class="errorHtml"></div>
         <div class="breadcrumbs-container">
             <ul class="breadcrumb">
-                <li><a href="<%- BASE_URL %>research/book-publication-main">BOOK PUBLICATION MAIN >> </a></li>
+                <li class="breadcrumb-link">
+                    <a href="<%- BASE_URL %>research/book-publication-main"> BOOK PUBLICATION DASHBOARD </a>
+                </li>
+                <li class="breadcrumb-link"> EDITED BOOK  PUBLICATION  </li>
             </ul>
         </div>
         <div class="card table-card">
-            <div class="table-card-header text-uppercase d-flex align-items-center justify-content-between">
+            <div class="table-card-header text-uppercase d-flex align-items-center justify-content-between p-1">
                 <div class="list-header">
                     <h3>EDITED BOOK PUBLICATION</h3>
                 </div>
@@ -593,7 +596,6 @@
                             </td> `;
             editedBookList.append(newEditedBook);
             $('#edited-book-modal').modal('hide');
-            alert('data inserted successfully');
            }
         })
     }
@@ -603,7 +605,7 @@
             if (isValid) {
                 await insertEditedBook('<%- BASE_URL %>research/book-publication-main/edited-book-publication/insert')
                 indexValue += 1
-                console.log('data inserted successfully');
+                console.log('Data Inserted Successfully');
             }
             else {
                 alert('Validation Failed');
@@ -718,9 +720,10 @@
             const editedBookRowToBeViewed = event.target.closest('tr');
             editedBookId = event.target.getAttribute('data-editedbook-id');
             document.getElementById('downloadButton').addEventListener('click', function () {
-                const fileName = editedBookRowToBeViewed.getAttribute('data-supporting-documents');;
+                let fileName = editedBookRowToBeViewed.getAttribute('data-supporting-documents');
+                console.log('fileName ==>>', fileName)
 
-                fetch(`<%- BASE_URL %>research/book-publication-main/book-publication/download/${fileName}`)
+                fetch(`<%- BASE_URL %>research/book-publication-main/edited-book-publication/download/${fileName}`)
                     .then(response => {
                         if (!response.ok) {
                             throw new Error('Network response was not ok');
@@ -880,7 +883,7 @@
                 console.log('Eroor ::', error);
             })
             $('#edited-book-modal').modal('hide');
-            alert('data updated successfully');
+            alert('Row Data Updated Successfully');
     };
 
     updateBtn.addEventListener('click' , async() => {

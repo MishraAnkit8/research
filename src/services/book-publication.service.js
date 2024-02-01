@@ -11,8 +11,7 @@ module.exports.downloadFile = (req, res) => {
     const filePath = path.join(uploadFolder, filename);
     console.log("filePath ==>>", filePath);
     console.log("filename ==>>>", filename);
-  
-    // Extract the original filename from the provided filename
+
     const originalFilename = filename.split('_').slice(1).join('_');
   
     // Set the content type header to force the browser to treat it as a PDF
@@ -46,7 +45,6 @@ const filename = req.params.filename;
     }
   });
 }
-
 
 module.exports.fetchBookPublicationData = async() => {
     const bookPublicationdata = await bookPublicationModel.fetchBookPublication();

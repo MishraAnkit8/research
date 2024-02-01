@@ -11,11 +11,14 @@
         <div class="errorHtml"></div>
         <div class="breadcrumbs-container">
             <ul class="breadcrumb">
-                <li><a href="<%- BASE_URL %>research/book-publication-main">BOOK PUBLICATION MAIN >> </a></li>
+                <li class="breadcrumb-link">
+                    <a href="<%- BASE_URL %>research/book-publication-main"> BOOK PUBLICATION DASHBOARD </a>
+                </li>
+                <li class="breadcrumb-link"> BOOK PUBLICATION CHAPTER </li>
             </ul>
         </div>
         <div class="card table-card">
-            <div class="table-card-header text-uppercase d-flex align-items-center justify-content-between">
+            <div class="table-card-header text-uppercase d-flex align-items-center justify-content-between p-1">
                 <div>
                     <h3>BOOK CHAPTER PUBLICATION LIST</h3>
                 </div>
@@ -67,7 +70,8 @@
                     <% bookChapterData.forEach(function(bookChapter,index) { %>
                         <tr row="scope" data-bookChapter-id="<%- bookChapter.id %>"
                             data-page-number="<%- bookChapter.page_number %>" data-edition="<%- bookChapter.edition %>"
-                            data-volume-number="<%- bookChapter.volume_number %>" data-book-editor="<%- bookChapter.book_editor %>"
+                            data-volume-number="<%- bookChapter.volume_number %>"
+                            data-book-editor="<%- bookChapter.book_editor %>"
                             data-publisher-category="<%- bookChapter.publisher_category %>"
                             data-book-url="<%- bookChapter.book_url %>" data-doi-book-id="<%-bookChapter.doi_id %>"
                             data-number-of-nmims-authors="<%- bookChapter.number_of_nmims_authors %>"
@@ -75,7 +79,8 @@
                             data-nmims-campus-authors="<%- bookChapter.nmims_campus_authors %>"
                             data-nmims-school-authors="<%- bookChapter.nmims_school_authors %>"
                             data-supporting-documents="<%- bookChapter.supporting_documents %>"
-                            data-chapter-title="<%- bookChapter.chapter_title %>" data-editor-name="<%-bookChapter.editor_name %>">
+                            data-chapter-title="<%- bookChapter.chapter_title %>"
+                            data-editor-name="<%-bookChapter.editor_name %>">
                             <td><%- index+1 %></td>
                             <td class="author-name"><%- bookChapter.author_name %></td>
                             <td class="publication-year"><%- bookChapter.publication_year %></td>
@@ -87,7 +92,8 @@
                                         class="fa-solid fa-eye view text-danger"
                                         data-bookChapter-id="<%- bookChapter.id %>"></i></label>
                                 <label class="edit" data-bookChapter-id="<%- bookChapter.id %>"><i
-                                        class="fa fa-edit edit text-danger" data-bookChapter-id="<%- bookChapter.id %>"></i></label>
+                                        class="fa fa-edit edit text-danger"
+                                        data-bookChapter-id="<%- bookChapter.id %>"></i></label>
                                 <label class="delete" data-bookChapter-id="<%- bookChapter.id %>"><i
                                         class="fa-solid fa-trash delete text-danger"
                                         data-bookChapter-id="<%- bookChapter.id %>"></i></label>
@@ -106,7 +112,6 @@
                         <p id="pagination" class="pagination-search"></p>
                     </div>
                 </div>
-            </div>
             </div>
         </div>
         <!--Import Modal -->
@@ -430,7 +435,7 @@
                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
                             <div class="task-sub-title sub-title-text"><button class="btn btn-primary h-10 w-10" id="downloadButton">
-                                    <i class="fas fa-download"></i> Download supportingDocuments
+                                    <i class="fas fa-download text-danger"></i> Download supportingDocuments
                                 </button>
                             </div>
                             <label class="view-content" id="view-support-document"></label>
@@ -596,7 +601,7 @@
                             </td> `;
             bookChapterList.append(newBookChapter);
             $('#book-chapter-modal').modal('hide');
-            alert('data inserted successfully');
+            alert('Data Inserted Successfully');
            }
         })
     }
@@ -725,9 +730,10 @@
             bookChapterId = event.target.getAttribute('data-bookChapter-id');
             console.log('ID ==>>', bookChapterId);
             document.getElementById('downloadButton').addEventListener('click', function () {
-                const fileName = bookChapterRowToBeViewed.getAttribute('data-supporting-documents');;
+                const fileName = bookChapterRowToBeViewed.getAttribute('data-supporting-documents');
+                console.log('fileName ==>>', fileName)
 
-                fetch(`<%- BASE_URL %>research/book-publication-main/book-publication/download/${fileName}`)
+                fetch(`<%- BASE_URL %>research/book-publication-main/book-chapter-publication/download/${fileName}`)
                     .then(response => {
                         if (!response.ok) {
                             throw new Error('Network response was not ok');
@@ -873,7 +879,9 @@
                 bookChapterRowToBeUpdated.setAttribute('data-nmims-authors' , data.updatedBookChapter.nmimsAuthors);
                 bookChapterRowToBeUpdated.setAttribute('data-nmims-campus-authors' , data.updatedBookChapter.nmimsCampusAuthors);
                 bookChapterRowToBeUpdated.setAttribute('data-nmims-school-authors' , data.updatedBookChapter.nmimsSchoolAuthors);
-                bookChapterRowToBeUpdated.setAttribute('data-supporting-documents' , data.updatedBookChapter.supportingDocuments);
+                if(updatedDocuments){
+                    bookChapterRowToBeUpdated.setAttribute('data-supporting-documents' , data.updatedFile);
+                }
                 bookChapterRowToBeUpdated.querySelector('.author-name').innerText = data.updatedBookChapter.authorName;
                 bookChapterRowToBeUpdated.querySelector('.book-title').innerText = data.updatedBookChapter.bookTitle;
                 bookChapterRowToBeUpdated.querySelector('.publisher-name').innerText = data.updatedBookChapter.publisherName;
@@ -885,7 +893,6 @@
                 console.log('Eroor ::', error);
             })
             $('#book-chapter-modal').modal('hide');
-            alert('Data Updated Successfully');
     }
 
     updateBtn.addEventListener('click' , async() => {
@@ -898,6 +905,7 @@
         const isValid = validateRequiredFormFields(updateBtn);
             if (isValid) {
                 await updateBookChapter('<%- BASE_URL %>research/book-publication-main/book-chapter-publication/update');
+                alert('Data Updated Successfully');
             }
             else {
                 alert('Validation Failed');

@@ -10,11 +10,14 @@
         <div class="errorHtml"></div>
         <div class="breadcrumbs-container">
             <ul class="breadcrumb">
-                <li><a href="<%- BASE_URL %>research/book-publication-main">BOOK PUBLICATION MAIN >> </a></li>
+                <li class="breadcrumb-link">
+                    <a href="<%- BASE_URL %>research/book-publication-main"> BOOK PUBLICATION DASHBOARD </a>
+                </li>
+                <li class="breadcrumb-link"> BOOK PUBLICATION </li>
             </ul>
         </div>
         <div class="card table-card">
-            <div class="table-card-header text-uppercase d-flex align-items-center justify-content-between">
+            <div class="table-card-header text-uppercase d-flex align-items-center justify-content-between p-1">
                 <div>
                     <h5>BOOK PUBLICATION LIST</h5>
                 </div>
@@ -51,7 +54,6 @@
                             <input type="search" id="searchKeyword" placeholder="Enter keywords" class="table-searchbar">
                         </div>
                     </div>
-                </div>
                 </div>
                 <table class="table custom-table research-pagination" id="book-Publication-list">
                     <thead>
@@ -99,7 +101,7 @@
                         <p id="pagination" class="pagination-search"></p>
                     </div>
                 </div>
-            </div>
+ 
         </div>
         <!--Import Modal -->
         <div class="modal fade" id="open-program-modal" tabindex="-1" aria-labelledby="open-program-modal"
@@ -404,7 +406,7 @@
                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
                             <div class="task-sub-title sub-title-text"><button class="btn btn-primary h-10 w-10" id="downloadButton">
-                                    <i class="fas fa-download"></i> Download supportingDocuments
+                                    <i class="fas fa-download text-danger"></i> Download supportingDocuments
                                 </button>
                             </div>
                             <label class="view-content" id="view-support-document"></label>
@@ -556,7 +558,6 @@
                             </td> `;
             bookPublicationList.append(newBookPublication);
             $('#book-publication-modal').modal('hide');
-            alert('data inserted successfully');
            }
         })
     }
@@ -566,7 +567,7 @@
             if (isValid) {
                 await insertBookPublication('<%- BASE_URL %>research/book-publication-main/book-publication/insert')
                 indexValue += 1
-                console.log('data inserted successfully');
+                alert('Data Inserted Successfully');
             }
             else {
                 alert('Validation Failed');
@@ -672,8 +673,10 @@
         if (event.target.classList.contains('view')) {
             console.log('clickedddd');
             const bookPublicationRowToBeViewed = event.target.closest('tr');
+            console.log('bookPublicationRowToBeViewed ===>>>', bookPublicationRowToBeViewed)
             document.getElementById('downloadButton').addEventListener('click', function () {
-                const fileName = bookPublicationRowToBeViewed.getAttribute('data-supporting-documents');;
+                const fileName = bookPublicationRowToBeViewed.getAttribute('data-supporting-documents');
+                console.log('fileName ===>>>', fileName)
 
                 fetch(`<%- BASE_URL %>research/book-publication-main/book-publication/download/${fileName}`)
                     .then(response => {
@@ -813,10 +816,9 @@
                 bookPublicationRowToBeUpdated.setAttribute('data-nmims-campus-authors' , data.updatedBookPublication.nmimsCampusAuthors);
                 bookPublicationRowToBeUpdated.setAttribute('data-nmims-school-authors' , data.updatedBookPublication.nmimsSchoolAuthors);
                 console.log('inside fetch api ==>>', updatedDocuments);
-                if(updatedDocuments === null){
-
+                if(updatedDocuments.files){
+                    bookPublicationRowToBeUpdated.setAttribute('data-supporting-documents' , data.updatedFile);
                 };
-                bookPublicationRowToBeUpdated.setAttribute('data-supporting-documents' , data.updatedFile);
                 bookPublicationRowToBeUpdated.querySelector('.author-last-name').innerText = data.updatedBookPublication.authorLastName;
                 bookPublicationRowToBeUpdated.querySelector('.book-title').innerText = data.updatedBookPublication.bookTitle;
                 bookPublicationRowToBeUpdated.querySelector('.publisher-name').innerText = data.updatedBookPublication.publisherName;
@@ -828,7 +830,6 @@
                 console.log('Eroor ::', error);
             })
             $('#book-publication-modal').modal('hide');
-            alert('Row Updated Successfully');
     }
 
     updateBtn.addEventListener('click' , async() => {
@@ -841,7 +842,8 @@
         const isValid = validateRequiredFormFields(submitBtn);
             if (isValid) {
                 await upadatBookPublication('<%- BASE_URL %>research/book-publication-main/book-publication/update');
-                location.reload()
+                alert('Row Data Updated Successfully');
+                // location.reload()
             }
             else {
                 alert('Validation Failed');

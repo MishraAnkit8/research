@@ -69,7 +69,7 @@ module.exports.updateConferencePublication = async(req, res, next) => {
     console.log('id for updation', conferenceId)
     console.log('data in controller for updation ==>>', req.body);
     const upadtedConferenceData = req.body;
-    console.log('fi;es in controller :', req.files);
+    console.log('fielses in controller :', req.files);
     const {conferenceProof , conferenceDocument} = req.files;
     const ConferenceFileToBeUpdate = {conferenceProof , conferenceDocument}
     const updateConference = await conferencePublicationServices.updatedConferencePublication(req.body, ConferenceFileToBeUpdate);
@@ -78,8 +78,7 @@ module.exports.updateConferencePublication = async(req, res, next) => {
             status : updateConference.status,
             masssage : updateConference.massage,
             upadtedConferenceData,
-            ConferenceDocument : conferenceDocument,
-            ConferenceProof : conferenceProof
+            ConferenceFileList : ConferenceFileToBeUpdate
         })
     }
     else{

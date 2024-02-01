@@ -40,7 +40,8 @@ module.exports.updateBookChapterData = async(req, res, next) => {
             res.status(200).send({
                 status : 'done',
                 updatedBookChapter : updatedBookChapterPublication,
-                bookChapterId : bookChapterId 
+                bookChapterId : bookChapterId,
+                updatedFile 
             })
         }
     }
