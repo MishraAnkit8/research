@@ -319,7 +319,7 @@
                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
                             <div class="task-sub-title sub-title-text">
-                                <button class="btn btn-primary h-10 w-10" id="pedagogyFile">
+                                <button data-filename="pedagogyDataFile" class="btn btn-primary h-10 w-10 downoload-file download-button" id="pedagogy-file-view">
                                     <i class="fas fa-download text-danger"></i> Pedagogy Innovation file
                                 </button>
                             </div>
@@ -346,7 +346,8 @@
                     <!-- fdp_program_file -->
                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
-                            <div class="task-sub-title sub-title-text"><button class="btn btn-primary h-10 w-10" id="FdpFile">
+                            <div class="task-sub-title sub-title-text">
+                                <button data-filename="fdpDataFile" class="btn btn-primary h-10 w-10 downoload-file" id="fdp-file-view">
                                     <i class="fas fa-download text-danger"></i> FDP Program file
                                 </button></div>
                             <label class="view-content" id="view-fdp-program-file"></label>
@@ -374,7 +375,7 @@
                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
                             <div class="task-sub-title sub-title-text">
-                                <button class="btn btn-primary h-10 w-10" id="workShopDataFile">
+                                <button data-filename="workDataFile" class="btn btn-primary h-10 w-10 downoload-file" id="work-shop-file-view">
                                     <i class="fas fa-download text-danger"></i> WorkShop File
                                 </button>
                             </div>
@@ -402,7 +403,7 @@
                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
                             <div class="task-sub-title sub-title-text">
-                                <button class="btn btn-primary h-10 w-10" id="invitingFile">
+                                <button data-filename="facultyDataFile" class="btn btn-primary h-10 w-10 downoload-file" id="inviting-file-view">
                                     <i class="fas fa-download text-danger"></i> Inviting Faculty File
                                 </button>
                             </div>
@@ -430,7 +431,7 @@
                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
                             <div class="task-sub-title sub-title-text">
-                                <button class="btn btn-primary h-10 w-10" id="orientationFile">
+                                <button data-filename="programDataFile" class="btn btn-primary h-10 w-10 downoload-file" id="orientation-file-view">
                                     <i class="fas fa-download text-danger"></i> Program Orientation  File
                                 </button>
                             </div>
@@ -464,12 +465,7 @@
     const submitBtn = document.getElementById('submit-btn');
     const updateBtn = document.getElementById('update-btn');
     let teachingRowToBeUpdated , teachingId;
-    let pedagogyFile = document.getElementById('pedagogyFile');
-    let FdpFile = document.getElementById('FdpFile');
-    let workShopDataFile = document.getElementById('workShopDataFile');
-    let invitingFile = document.getElementById('invitingFile');
-    let orientationFile = document.getElementById('orientationFile');
-
+    const downloadFileBtn = document.querySelectorAll('.downoload-file');
     teachingExecellanceAddModal.addEventListener('click' , (event) => {
         if(event.target.tagName === 'BUTTON' && event.target.classList.contains('add-modal') || event.target.classList.contains('plus')){
             // for button visualization
@@ -610,34 +606,12 @@
             const teachingExecellanceRowToBeViewed = event.target.closest('tr');
             teachingId = event.target.getAttribute('data-teaching-id');
             console.log('teachingId ==>>', teachingId);
-            let pedagogyInnovationFile  = teachingExecellanceRowToBeViewed.getAttribute('data-pedagogy-innovation-file');
-            let fdpProgramFile  = teachingExecellanceRowToBeViewed.getAttribute('data-fdp-program-file');
-            let workShopFile  = teachingExecellanceRowToBeViewed.getAttribute('data-workshop-file');
-            let invitingFacultyFile  = teachingExecellanceRowToBeViewed.getAttribute('data-inviting-faculty-file');
-            let programOrientationFile = teachingExecellanceRowToBeViewed.getAttribute('data-program-orientation-file');
-            const buttonToFile = {
-                pedagogyFile : pedagogyInnovationFile,
-                FdpFile : fdpProgramFile,
-                workShopDataFile : workShopFile,
-                invitingFile : invitingFacultyFile,
-                orientationFile : programOrientationFile
+            // const pedagogyFile = document.getElementById('pedagogyFile');
+            // const FdpFile = document.getElementById('FdpFile');
+            // const workShopDataFile = document.getElementById('workShopDataFile');
+            // const invitingFile = document.getElementById('invitingFile');
+            // const orientationFile = document.getElementById('orientationFile');
 
-                  }
-                  console.log('buttonToFile ===>>:', buttonToFile);
-                  document.addEventListener('click', function (event) {
-                    console.log('Clicked');
-                    const button = event.target.closest('button');
-                    console.log('Button:', button);
-                    if (button && button.id in buttonToFile) {
-                        const fileName = buttonToFile[button.id];
-                        console.log('FileName:', fileName);
-
-                        const fileUrl = `<%- BASE_URL %>teaching-excellance/download/${fileName}`;
-                        console.log('FileUrl:', fileUrl);
-
-                        downloadFile(fileName, fileUrl);
-                    }
-                });
             const viewPedagogyInnovation = document.getElementById('view-pedagogy-innovation');
             const viewPedagogyInnovationFile = document.getElementById('view-pedagogy-innovation-file');
             const viewPedagogyLink = document.getElementById('view-pedagogy-innovation-link');
@@ -667,11 +641,12 @@
             .then((data) => {
                 if(data.status === 'done'){
                     console.log('data ==>>', data);
+                    setFileNameInButtons(data);
                     viewPedagogyInnovation.innerText =  data.teachingExecellanceView.pedagogy_innovation;
                     viewPedagogyInnovationFile.innerText =  data.teachingExecellanceView.pedagogy_innovation_file;
                     viewPedagogyLink.innerText =  data.teachingExecellanceView.pedagogy_innovation_link;
                     viewFdpProgram.innerText =  data.teachingExecellanceView.fdp_program;
-                    viewFdpProgramFile.innerText =  data.teachingExecellanceView.fdp_program_file;
+                    viewFdpProgramFile.innerText = data.teachingExecellanceView.fdp_program_file;
                     viewFdpProgramLink.innerText =  data.teachingExecellanceView.fdp_program_link;
                     viewWorkShopDetails.innerText =  data.teachingExecellanceView.workshop_details;
                     viewWorkShopFile.innerText =  data.teachingExecellanceView.workshop_file;
@@ -720,11 +695,11 @@
             removeErrorMsg();
             submitBtn.classList.add('d-none');
             updateBtn.classList.remove('d-none');
-            pedagogyFile.classList.remove('d-none');
-            FdpFile.classList.remove('d-none');
-            workShopDataFile.classList.remove('d-none');
-            invitingFile.classList.remove('d-none');
-            orientationFile.classList.remove('d-none');
+            // pedagogyFile.classList.remove('d-none');
+            // FdpFile.classList.remove('d-none');
+            // workShopDataFile.classList.remove('d-none');
+            // invitingFile.classList.remove('d-none');
+            // orientationFile.classList.remove('d-none');
             teachingRowToBeUpdated = event.target.closest('tr');
             console.log('teachingRowToBeUpdated ==>>', teachingRowToBeUpdated);
             teachingId = event.target.getAttribute('data-teaching-id');
@@ -759,34 +734,12 @@
             programOrientation.value = teachingRowToBeUpdated.querySelector('.program-orientation').innerText;
             const programOrientationFile = teachingRowToBeUpdated.getAttribute('data-program-orientation-file');
             programOrientationLink.value = teachingRowToBeUpdated.getAttribute('data-program-orientation-link');
-            const buttonToFile = {
-                pedagogyFile : pedagogyInnovationFile,
-                FdpFile : fdpProgramFile,
-                workShopDataFile : workShopFile,
-                invitingFile : invitingFacultyFile,
-                orientationFile : programOrientationFile
-
-                  }
-                  console.log('buttonToFile ===>>:', buttonToFile);
-                  document.addEventListener('click', function (event) {
-                    console.log('Clicked');
-                    const button = event.target.closest('button');
-                    console.log('Button:', button);
-                    if (button && button.id in buttonToFile) {
-                        const fileName = buttonToFile[button.id];
-                        console.log('FileName:', fileName);
-
-                        const fileUrl = `<%- BASE_URL %>teaching-excellance/download/${fileName}`;
-                        console.log('FileUrl:', fileUrl);
-
-                        downloadFile(fileName, fileUrl);
-                    }
-                }); 
 
             $('#teaching-execellance-modal').modal('show');
         }
     
     })
+   
     
     const updatedTeachingExecellanceData = async(url) => {
         const updatedTeachingData = new FormData();
@@ -903,22 +856,80 @@
 
     };
 
-    updateBtn.addEventListener('click' , async() => {
-        formGroup = updateBtn.closest('.validate-input')
-        console.log("formGroup::::::::", formGroup)
-        formGroup.querySelectorAll('input[type="file"]')?.forEach(elm => {
-            console.log("elm:::::::::", elm);
-            elm.removeAttribute('data-validate')
-        })
-        const isValid = validateRequiredFormFields(updateBtn);
+    updateBtn.addEventListener('click', async () => {
+            formGroup = updateBtn.closest('.validate-input')
+            console.log("formGroup::::::::", formGroup)
+            formGroup.querySelectorAll('input[type="file"]')?.forEach(elm => {
+                console.log("elm:::::::::", elm);
+                elm.removeAttribute('data-validate')
+            })
+            const isValid = validateRequiredFormFields(updateBtn);
             if (isValid) {
                 await updatedTeachingExecellanceData('<%- BASE_URL %>teaching-excellance/update');
             }
             else {
                 console.log('Validation Failed');
             }
-    })
+        })
+    // for storing file path
+    // let teachingFileToBeDownload = {}
+    function setFileNameInButtons(result) {
+        console.log('result ===>>>', result);
+        const pedagogyFile = document.getElementById('pedagogy-file-view');
+        const FdpFile = document.getElementById('fdp-file-view');
+        const workShopDataFile = document.getElementById('work-shop-file-view');
+        const invitingFile = document.getElementById('inviting-file-view');
+        const orientationFile = document.getElementById('orientation-file-view');
+        pedagogyFile.setAttribute('data-filename' , result.teachingExecellanceView.pedagogy_innovation_file);
+        FdpFile.setAttribute('data-filename' , result.teachingExecellanceView.pedagogy_innovation_file)
+        workShopDataFile.setAttribute('data-filename' , result.teachingExecellanceView.workshop_file);
+        invitingFile.setAttribute('data-filename' , result.teachingExecellanceView.inviting_faculty_file);
+        console.log('invitingFile ===>>>::::', invitingFile)
+        orientationFile.setAttribute('data-filename' , result.teachingExecellanceView.program_orientation_file);
+        console.log('pedagogyFile in side setFileNameInButtons  ==>>', pedagogyFile);
+        console.log('workShopDataFile ==>>::::', workShopDataFile);
+        console.log('workShopDataFile actual data >>>::::', workShopDataFile.getAttribute('data-filename'));
+        const pedagogyDataFile = pedagogyFile.getAttribute('data-filename');
+        console.log('pedagogyDataFile ===>>>', pedagogyDataFile);
+        const fdpDataFile = FdpFile.getAttribute('data-filename');
+        const workShopFile = workShopDataFile.getAttribute('data-filename');
+        console.log('workShopFile ==>>>', workShopFile)
+        const invitingDataFile = invitingFile.getAttribute('data-filename');
+        const programDataFile = orientationFile.getAttribute('data-filename');
+        teachingFileToBeDownload = {
+                'pedagogyFile': pedagogyDataFile,
+                'FdpFile': fdpDataFile,
+                'workShopDataFile': workShopFile,
+                'invitingFile': invitingDataFile,
+                'orientationFile': programDataFile
+            };
+        }
 
+    document.addEventListener('click', function (event) {
+        const button = event.target.closest('button');
+        console.log('button ===>>>:::', button)
+        if (button && button.classList.contains('downoload-file')) {
+            const pedagogyFile = document.getElementById('pedagogy-file-view');
+            const FdpFile = document.getElementById('fdp-file-view');
+            const workShopDataFile = document.getElementById('work-shop-file-view');
+            const invitingFile = document.getElementById('inviting-file-view');
+            const orientationFile = document.getElementById('orientation-file-view');
+            const pedagogyDataFile = pedagogyFile.getAttribute('data-filename');
+            const FdpDataFile = FdpFile.getAttribute('data-filename');
+            const workShopFile =  workShopDataFile.getAttribute('data-filename');
+            const invitingDataFile = invitingFile.getAttribute('data-filename');
+            const orientationDataFile = orientationFile.getAttribute('data-filename');
+            console.log('orientationDataFile ==>>', orientationDataFile);
+            if (fileName) {
+                const fileUrl = `<%- BASE_URL %>teaching-excellance/download/${fileName}`;
+                downloadFile(fileName, fileUrl);
+            }
+        }
+    });
+
+
+
+ 
 </script>   
 <!-- footer section -->
 <%- include('./partials/pagination') %>
