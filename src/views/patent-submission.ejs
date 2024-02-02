@@ -8,7 +8,7 @@
 
 <!-- This is right side section -->
 <main class="main" id="mainContent">
-    <div class="base-section custom-section mt-5 p-5 ">
+    <div class="base-section coustom-section">
         <!--DASHBOARD CONTENT START-->
         <div class="errorHtml"></div>
         <div class="breadcrumbs-container">
@@ -20,7 +20,7 @@
             </ul>
         </div>
         <div class="card table-card">
-            <div class="table-card-header text-uppercase d-flex align-items-center justify-content-between">
+            <div class="table-card-header text-uppercase d-flex align-items-center justify-content-between p-1">
                 <div>
                     <h5>PATENT SUBMISSION LIST</h5>
                 </div>
@@ -29,7 +29,6 @@
                         data-toggle="modal" data-target="#patent-submission-modal">
                         <i class="fas fa-plus plus"></i>
                     </button>
-
                 </div>
             </div>
             <div class="card-body table-responsive">
@@ -340,7 +339,7 @@
                         <div class="box">
                             <div class="sub-title-text sub-title">
                                 <button class="btn btn-primary h-10 w-10" id="downloadButton">
-                                    <i class="fas fa-download"></i> Download patentDocument
+                                    <i class="fas fa-download text-danger"></i> Download patentDocument
                                 </button>
                             </div>
                             <label class="view-content" id="view-patent-file"></label>
@@ -567,8 +566,9 @@
                 console.log('data ready for view');
                 const patentSubmissionDataToBeViewed = event.target.closest('tr');
                 console.log('row to be viewed', patentSubmissionDataToBeViewed);
+                let patentFile = patentSubmissionDataToBeViewed.querySelector('.patent-file');
+                console.log('patentFile ==>>', patentFile)
                 document.getElementById('downloadButton').addEventListener('click', function () {
-                const patentFile = patentSubmissionDataToBeViewed.querySelector('.patent-file');
                 const fileName = patentFile.innerText.trim();
                 console.log('fileName ====>>>', fileName)
 
@@ -681,7 +681,7 @@
                 rowToBeUpdated.querySelector('.patent-stage').innerText = data.updatedPatentData.patentStage;
                 rowToBeUpdated.setAttribute('data-patent-date' , data.updatedPatentData.subMissionDate);
                 rowToBeUpdated.querySelector('.is-presenter').innerText = data.updatedPatentData.isPresentor;
-                document.querySelector('.patent-file').innerText = data.patentDocument;
+                rowToBeUpdated.querySelector('.patent-file').innerText = data.patentDocument;
             
             }
         })

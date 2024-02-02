@@ -378,7 +378,7 @@
                      <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
                             <div class="task-sub-title sub-title-text"><button class="btn btn-primary h-10 w-10" id="downloadButton">
-                                <i class="fas fa-download"></i> Download researchConsultancyDocument
+                                <i class="fas fa-download text-danger"></i> Download researchConsultancyDocument
                             </button></div>
                             <label class="view-content" id="view-supporting-document"></label>
                         </div>
@@ -545,7 +545,7 @@
                 const statusGranted = document.getElementById('granted');
                 const facultyTypeInternal = document.getElementById('internal');
                 const facultyTypeExternal = document.getElementById('external');
-                const supportingDocument = consultantRowToBeUpdated.getAttribute('data-supports-document');
+                const supportingDocument = consultantRowToBeUpdated.getAttribute('data-supporting-documents');
 
                 // assigning value with actuall value
                 const GrantProposalCategory = consultantRowToBeUpdated.getAttribute('data-grant-proposal');
@@ -766,8 +766,9 @@
             consultantRowToBeUpdated.setAttribute('data-grant-proposal' , data.updatedConsultant.grantProposalCategory)
             consultantRowToBeUpdated.setAttribute('data-submission-date' , data.updatedConsultant.submissionGrantDate);
             consultantRowToBeUpdated.setAttribute('data-faulty-type' , data.updatedConsultant.facultyType);
-            consultantRowToBeUpdated.setAttribute('data-supports-document' , data.updateFileName);
-            consultantRowToBeUpdated.setAttribute('data-funding-amount' , data.updatedConsultant.fundingAmount);
+            if(updatedSupportingDocument){
+                consultantRowToBeUpdated.setAttribute('data-supporting-documents' , data.updateFileName);
+            }
             consultantRowToBeUpdated.querySelector('.title-of-project').innerText = data.updatedConsultant.titleOfProject;
             consultantRowToBeUpdated.querySelector('.thurst-area').innerText = data.updatedConsultant.thurstAreaOfResearch;
             consultantRowToBeUpdated.querySelector('.funding-agency').innerText = data.updatedConsultant.fundingAgency;
@@ -775,7 +776,6 @@
            }
         })
         $('#consultancy-modal').modal('hide');
-        alert('data updated successfully');
     };
 
     updateBtn.addEventListener('click' , async() => {
@@ -788,6 +788,7 @@
         const isValid = validateRequiredFormFields(updateBtn);
             if (isValid) {
                 await updateResearchConsultancy('<%- BASE_URL %>research/research-project-consultancy/update');
+                alert(' Row Data Updated Successfully');
             }
             else {
                 console.log('Validation failed');

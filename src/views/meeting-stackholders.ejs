@@ -178,7 +178,7 @@
                             <div class=" d-flex">
                             <input type="file" name="rankingDocuments" data-validate="isEmpty,isExist,isFile" data-err-msg="File is required." id="ranking-documents" class="form-control " id="upload"
                                 required>
-                                <button class="download-btn" id="rankingFile">
+                                <button class="download-btn" id="rankingDataDocuments">
                                     <i class="fas fa-download text-danger"></i>
                                 </button>
                             </div>
@@ -202,7 +202,7 @@
                             <div class="d-flex">
                                 <input type="file" name="accreditationFile" id="accreditation-file" data-validate="isEmpty,isExist,isFile"
                                     data-err-msg="File is required." class="form-control " id="upload" required>
-                                <button class="download-btn" id="accreditationDataFile">
+                                <button class="download-btn" id="accreditationDataDocuments">
                                     <i class="fas fa-download text-danger"></i>
                                 </button>
                             </div>
@@ -227,7 +227,7 @@
                             <div class="d-flex">
                                 <input type="file" name="achievementsFile" id="achievements-file" class="form-control"
                                     data-validate="isEmpty,isExist,isFile" data-err-msg="File is required." required>
-                                <button class="download-btn" id="schoolFile">
+                                <button class="download-btn" id="schoolDataFile">
                                     <i class="fas fa-download text-danger"></i>
                                 </button>
                             </div>
@@ -252,7 +252,7 @@
                             <div class="d-flex">
                                 <input type="file" name="convocationFile" id="convocation-file" class="form-control " id="upload"
                                     data-validate="isEmpty,isExist,isFile" data-err-msg="File is required." required>
-                                <button class="download-btn" id="convocationDocuments">
+                                <button class="download-btn" id="convocationDataDocuments">
                                     <i class="fas fa-download text-danger"></i>
                                 </button>
                             </div>
@@ -276,7 +276,7 @@
                             <div class="d-flex">
                                 <input type="file" name="inauguralFile" id="inaugural-file" data-validate="isEmpty,isExist,isFile"
                                     data-err-msg="File is required." class="form-control " id="upload" required>
-                                <button class="download-btn" id="ProgramFile">
+                                <button class="download-btn" id="ProgramDataFile">
                                     <i class="fas fa-download text-danger"></i>
                                 </button>
                             </div>
@@ -300,7 +300,7 @@
                             <div class="d-flex">
                                 <input type="file" name="eventFile" id="event-file" class="form-control" data-validate="isEmpty,isExist,isFile"
                                     data-err-msg="File is required." id="upload" required>
-                                <button class="download-btn" id="nmimsEventFile">
+                                <button class="download-btn" id="nmimsEventDataFile">
                                     <i class="fas fa-download text-danger"></i>
                                 </button>
                             </div>
@@ -456,7 +456,7 @@
                         <div class="box">
                                 <div class="task-sub-title sub-title-text">
                                     <button class="btn btn-primary h-10 w-10" id="ProgramFile">
-                                        <i class="fas fa-download text-danger"></i> Convocation at NMIMS File
+                                        <i class="fas fa-download text-danger"></i> Inaugural Program File
                                     </button>
                                 </div>
                             <label class="view-content" id="view-inaugural-file"></label>
@@ -483,7 +483,7 @@
                         <div class="box">
                             <div class="task-sub-title sub-title-text">
                                 <button class="btn btn-primary h-10 w-10" id="nmimsEventFile">
-                                    <i class="fas fa-download text-danger"></i> Convocation at NMIMS File
+                                    <i class="fas fa-download text-danger"></i> Events at NMIMS File
                                 </button>
                             </div>
                             <label class="view-content" id="view-events-file"></label>
@@ -500,6 +500,7 @@
                 </div>
             <!-- footer button -->
             <div class="modal-footer">
+                <button type="button" class="d-none" id="downoladBtn"></button>
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
             </div>
         </div>
@@ -515,12 +516,12 @@
     const meetingStackholdersList = document.getElementById('meeting-stackholders-list')
     const submitBtn = document.getElementById('submit-btn');
     const updateBtn = document.getElementById('update-btn');
-    let rankingFile = document.getElementById('rankingFile');
-    let accreditationDataFile = document.getElementById('accreditationDataFile');
-    let schoolFile = document.getElementById('schoolFile');
-    let convocationDocuments = document.getElementById('convocationDocuments');
-    let ProgramFile = document.getElementById('ProgramFile');
-    let nmimsEventFile = document.getElementById('nmimsEventFile');
+    const rankingFile = document.getElementById('rankingFile');
+    const accreditationDataFile = document.getElementById('accreditationDataFile');
+    const schoolFile = document.getElementById('schoolFile');
+    const convocationDocuments = document.getElementById('convocationDocuments');
+    const ProgramFile = document.getElementById('ProgramFile');
+    const nmimsEventFile = document.getElementById('nmimsEventFile');
     let meetingId, meetingRowToBeUpdated;
     meetingSatckholdersAddModal.addEventListener('click', (event) => {
         if (event.target.tagName === 'BUTTON' && event.target.classList.contains('add-modal') || event.target.classList.contains('plus')) {
@@ -708,39 +709,44 @@
             console.log('clcikedd');
             const meetingRowToBeViewed = event.target.closest('tr');
             meetingId = event.target.getAttribute('data-meeting-id');
+            const downoladBtn = document.getElementById('downoladBtn')
+
             console.log('meetingId', meetingId);
             console.log('meetingRowToBeViewed ==>>>', meetingRowToBeViewed)
             let rankingDocuments = meetingRowToBeViewed.getAttribute('data-ranking-documents');
             console.log('rankingDocuments ==>>', rankingDocuments)
-            let accreditationFile = meetingRowToBeViewed.getAttribute('data-accreditation-documents');
-            let achievementsFile = meetingRowToBeViewed.getAttribute('data-achievements-documents');
-            let convocationFile = meetingRowToBeViewed.getAttribute('data-convocation-documents');
-            let inauguralProgramFile = meetingRowToBeViewed.getAttribute('data-inaugural-program-documents');
-            let eventFile = meetingRowToBeViewed.getAttribute('data-events-documents');
+            const accreditationFile = meetingRowToBeViewed.getAttribute('data-accreditation-documents');
+            const achievementsFile = meetingRowToBeViewed.getAttribute('data-achievements-documents');
+            const convocationFile = meetingRowToBeViewed.getAttribute('data-convocation-documents');
+            const inauguralProgramFile = meetingRowToBeViewed.getAttribute('data-inaugural-program-documents');
+            const eventFile = meetingRowToBeViewed.getAttribute('data-events-documents');
 
-             const buttonToFile = {
-                rankingFile: rankingDocuments,
-                accreditationDataFile: accreditationFile,
-                schoolFile: achievementsFile,
-                convocationDocuments: convocationFile,
-                ProgramFile: inauguralProgramFile,
-                nmimsEventFile: eventFile
-            }
-                  console.log('buttonToFile ===>>:', buttonToFile);
-                  document.addEventListener('click', function (event) {
-                    console.log('Clicked');
-                    const button = event.target.closest('button');
-                    console.log('Button:', button);
-                    if (button && button.id in buttonToFile) {
-                        const fileName = buttonToFile[button.id];
-                        console.log('FileName:', fileName);
+            const meetingFileToBeDownload = {
+                'rankingFile': { id: 'rankingFile', name: 'Ranking Report', file: rankingDocuments },
+                'accreditationDataFile': { id: 'accreditationDataFile', name: 'Accreditation Data', file: accreditationFile },
+                'schoolFile': { id: 'schoolFile', name: 'School Achievements', file: achievementsFile },
+                'convocationDocuments': { id: 'convocationDocuments', name: 'Convocation Documents', file: convocationFile },
+                'ProgramFile': { id: 'ProgramFile', name: 'Inaugural Program', file: inauguralProgramFile },
+                'nmimsEventFile': { id: 'nmimsEventFile', name: 'NMIMS Event', file: eventFile }
+            };
 
-                        const fileUrl = `<%- BASE_URL %>meeting-stackholders/download/${fileName}`;
-                        console.log('FileUrl:', fileUrl);
+            console.log('meetingFileToBeDownload ===>>>', meetingFileToBeDownload)
+            document.addEventListener('click', function (event) {
+                // event.preventDefault();
+                console.log('clickeddddd')
+                const button = event.target.closest('button');
+                if (button && button.id in meetingFileToBeDownload) {
+                    const { id, name, file } = meetingFileToBeDownload[button.id];
+                    console.log('Button ID:', id);
+                    console.log('Button Name:', name);
+                    console.log('File Name:', file);
 
-                        downloadFile(fileName, fileUrl);
-                    }
-                });
+                    const fileUrl = `<%- BASE_URL %>meeting-stackholders/download/${file}`;
+                    console.log('FileUrl:', fileUrl);
+                    downloadFile(file, fileUrl);
+                    event.preventDefault();
+                }
+            });
 
             const viewRankingDocuments = document.getElementById('view-ranking-file');
             const viewAccreditationFile = document.getElementById('view-accreditation-file');
@@ -804,12 +810,12 @@
             removeErrorMsg();
             submitBtn.classList.add('d-none');
             updateBtn.classList.remove('d-none');
-            rankingFile.classList.remove('d-none');
-            accreditationDataFile.classList.remove('d-none');
-            schoolFile.classList.remove('d-none');
-            convocationDocuments.classList.remove('d-none');
-            ProgramFile.classList.remove('d-none');
-            nmimsEventFile.classList.remove('d-none');
+            // rankingFile.classList.remove('d-none');
+            // accreditationDataFile.classList.remove('d-none');
+            // schoolFile.classList.remove('d-none');
+            // convocationDocuments.classList.remove('d-none');
+            // ProgramFile.classList.remove('d-none');
+            // nmimsEventFile.classList.remove('d-none');
             meetingRowToBeUpdated = event.target.closest('tr');
             meetingId = event.target.getAttribute('data-meeting-id');
             console.log('meetingId ::', meetingId);
@@ -848,29 +854,30 @@
             const convocationFile = meetingRowToBeUpdated.getAttribute('data-convocation-documents');
             const inauguralProgramFile = meetingRowToBeUpdated.getAttribute('data-inaugural-program-documents');
             const eventFile = meetingRowToBeUpdated.getAttribute('data-events-documents');
-            const buttonToFile = {
-                rankingFile: rankingDocuments,
-                accreditationDataFile: accreditationFile,
-                schoolFile: achievementsFile,
-                convocationDocuments: convocationFile,
-                ProgramFile: inauguralProgramFile,
-                nmimsEventFile: eventFile
-            }
-                  console.log('buttonToFile ===>>:', buttonToFile);
-                  document.addEventListener('click', function (event) {
-                    console.log('Clicked');
-                    const button = event.target.closest('button');
-                    console.log('Button:', button);
-                    if (button && button.id in buttonToFile) {
-                        const fileName = buttonToFile[button.id];
-                        console.log('FileName:', fileName);
+            // const meetingFileToBoDownload = {
+            //     'rankingFile': { id: 'rankingFile', name: 'Ranking Report', file: rankingDocuments },
+            //     'accreditationDataFile': { id: 'accreditationDataFile', name: 'Accreditation Data', file: accreditationFile },
+            //     'schoolFile': { id: 'schoolFile', name: 'School Achievements', file: achievementsFile },
+            //     'convocationDocuments': { id: 'convocationDocuments', name: 'Convocation Documents', file: convocationFile },
+            //     'ProgramFile': { id: 'ProgramFile', name: 'Inaugural Program', file: inauguralProgramFile },
+            //     'nmimsEventFile': { id: 'nmimsEventFile', name: 'NMIMS Event', file: eventFile }
+            // };
+            // console.log('meetingFileToBoDownload ===>>::', meetingFileToBoDownload)
+            // document.addEventListener('click', function (event) {
+            //     console.log('clickeddddd')
+            //     const button = event.target.closest('button');
+            //     if (button && button.id in meetingFileToBoDownload) {
+            //         const { id, name, file } = meetingFileToBoDownload[button.id];
+            //         console.log('Button ID:', id);
+            //         console.log('Button Name:', name);
+            //         console.log('File Name:', file);
 
-                        const fileUrl = `<%- BASE_URL %>meeting-stackholders/download/${fileName}`;
-                        console.log('FileUrl:', fileUrl);
+            //         const fileUrl = `<%- BASE_URL %>meeting-stackholders/download/${file}`;
+            //         console.log('FileUrl:', fileUrl);
 
-                        downloadFile(fileName, fileUrl);
-                    }
-                });
+            //         downloadFile(file, fileUrl);
+            //     }
+            // });
 
             $('#meeting-stackholders-modal').modal('show');
 
@@ -970,7 +977,7 @@
                 if (data.status === 'done') {
                     console.log('data ==>>', data);
                     if(updatedRankingDocuments){
-                        meetingRowToBeUpdated.setAttribute('data-ranking-document', data.rankingDocuments[0].filename);
+                        meetingRowToBeUpdated.setAttribute('data-ranking-documents', data.rankingDocuments[0].filename);
                     }
 
                     if(updatedAccredItationFile){

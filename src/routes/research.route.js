@@ -73,8 +73,8 @@ router.post('/research-project-consultancy/insert', upload.single('researchSuppo
 router.post('/research-project-consultancy/update', upload.single('researchSupportingDocument'), asyncErrorHandler(researchConsultancyController.updatedConsultantData));
 router.post('/research-project-consultancy/delete', asyncErrorHandler(researchConsultancyController.deleteResearchConsultant));
 router.post('/research-project-consultancy/view', asyncErrorHandler(researchConsultancyController.viewResearchProjectConsultancy));
-router.get('/patent-submission/download/:filename', researchConsultancyService.downloadFile);
-router.get('/patent-submission/viewing/:filename', researchConsultancyService.viewFile);
+router.get('/research-project-consultancy/download/:filename', researchConsultancyService.downloadFile);
+router.get('/research-project-consultancy/viewing/:filename', researchConsultancyService.viewFile);
 
 // book publication
 router.use('/book-publication-main', bookPublicationRoutes);
