@@ -888,44 +888,48 @@
         orientationFile.setAttribute('data-filename' , result.teachingExecellanceView.program_orientation_file);
         console.log('pedagogyFile in side setFileNameInButtons  ==>>', pedagogyFile);
         console.log('workShopDataFile ==>>::::', workShopDataFile);
-        console.log('workShopDataFile actual data >>>::::', workShopDataFile.getAttribute('data-filename'));
-        const pedagogyDataFile = pedagogyFile.getAttribute('data-filename');
-        console.log('pedagogyDataFile ===>>>', pedagogyDataFile);
-        const fdpDataFile = FdpFile.getAttribute('data-filename');
-        const workShopFile = workShopDataFile.getAttribute('data-filename');
-        console.log('workShopFile ==>>>', workShopFile)
-        const invitingDataFile = invitingFile.getAttribute('data-filename');
-        const programDataFile = orientationFile.getAttribute('data-filename');
-        teachingFileToBeDownload = {
-                'pedagogyFile': pedagogyDataFile,
-                'FdpFile': fdpDataFile,
-                'workShopDataFile': workShopFile,
-                'invitingFile': invitingDataFile,
-                'orientationFile': programDataFile
-            };
         }
 
-    document.addEventListener('click', function (event) {
-        const button = event.target.closest('button');
-        console.log('button ===>>>:::', button)
-        if (button && button.classList.contains('downoload-file')) {
-            const pedagogyFile = document.getElementById('pedagogy-file-view');
-            const FdpFile = document.getElementById('fdp-file-view');
-            const workShopDataFile = document.getElementById('work-shop-file-view');
-            const invitingFile = document.getElementById('inviting-file-view');
-            const orientationFile = document.getElementById('orientation-file-view');
-            const pedagogyDataFile = pedagogyFile.getAttribute('data-filename');
-            const FdpDataFile = FdpFile.getAttribute('data-filename');
-            const workShopFile =  workShopDataFile.getAttribute('data-filename');
-            const invitingDataFile = invitingFile.getAttribute('data-filename');
-            const orientationDataFile = orientationFile.getAttribute('data-filename');
-            console.log('orientationDataFile ==>>', orientationDataFile);
-            if (fileName) {
-                const fileUrl = `<%- BASE_URL %>teaching-excellance/download/${fileName}`;
-                downloadFile(fileName, fileUrl);
-            }
-        }
-    });
+        document.addEventListener('click', function (event) {
+                const button = event.target.closest('button');
+                console.log('button ===>>>:::', button);
+                // const pedagogyFile = document.getElementById('pedagogy-file-view');
+                // const FdpFile = document.getElementById('fdp-file-view');
+                // console.log(' FdpFile button id ==>>', FdpFile)
+                // const workShopDataFile = document.getElementById('work-shop-file-view');
+                // const invitingFile = document.getElementById('inviting-file-view');
+                // const orientationFile = document.getElementById('orientation-file-view');
+
+                // const pedagogyDataFile = pedagogyFile.getAttribute('data-filename');
+                // const FdpDataFile = FdpFile.getAttribute('data-filename');
+                // const workShopFile = workShopDataFile.getAttribute('data-filename');
+                // console.log('workShopFile inside if  ==>>', workShopFile)
+                // const invitingDataFile = invitingFile.getAttribute('data-filename');
+                // console.log('invitingDataFile ===>>>', invitingDataFile)
+                // const orientationDataFile = orientationFile.getAttribute('data-filename');
+
+                // const teachingFileToBeDownload = {
+                //     pedagogyFile : pedagogyDataFile,
+                //     FdpFile : FdpDataFile,
+                //     workShopDataFile : workShopFile,
+                //     invitingFile : invitingDataFile,
+                //     orientationFile : orientationDataFile
+                // };
+                // console.log('teachingFileToBeDownload ==>>> :::::', teachingFileToBeDownload);
+                if (button && button.id) {
+                    console.log('button in side if ==>>', button)
+                    const filename = button.getAttribute('data-filename');
+                    console.log('file ===>>>>', filename);
+
+                    if (filename) {
+                        const fileUrl = `<%- BASE_URL %>teaching-excellence/download/${filename}`;
+                        downloadFile(filename, fileUrl);
+                    }
+                }
+            });
+
+
+    
 
 
 

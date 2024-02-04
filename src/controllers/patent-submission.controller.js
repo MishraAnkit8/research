@@ -3,27 +3,27 @@ const clientScript = require('../../public/js/client');
 const path = require('path');
 
 module.exports.renderPatentSubMissionAndGrant = async(req, res, next) =>{
-    const fileuploadStatus = req.app.locals.fileuploadStatus;
-    console.log('fileuploadStatus===>',req.app.locals.fileuploadStatus )
-    const docuploadStatus = req.app.locals.docuploadStatus;
-    console.log('docuploadStatus ==>',req.app.locals.docuploadStatus )
-    const htmlVal = res.app.locals.htmlVal;
-    console.log('htmlVal ==>>', res.app.locals.htmlVal);
-    const errorMsg = res.app.locals.errorMsg;
-    req.app.locals.fileuploadStatus = false;
-    req.app.locals.docuploadStatus = false;
-    res.app.locals.htmlVal = '';
-    clientScript.includeHtml(htmlVal);
+    // const fileuploadStatus = req.app.locals.fileuploadStatus;
+    // console.log('fileuploadStatus===>',req.app.locals.fileuploadStatus )
+    // const docuploadStatus = req.app.locals.docuploadStatus;
+    // console.log('docuploadStatus ==>',req.app.locals.docuploadStatus )
+    // const htmlVal = res.app.locals.htmlVal;
+    // console.log('htmlVal ==>>', res.app.locals.htmlVal);
+    // const errorMsg = res.app.locals.errorMsg;
+    // req.app.locals.fileuploadStatus = false;
+    // req.app.locals.docuploadStatus = false;
+    // res.app.locals.htmlVal = '';
+    // clientScript.includeHtml(htmlVal);
    const patentSubmissionList = await patentSubmissionservice.fetchPatentForm();
    if(patentSubmissionList){
     
     res.render('patent-submission', {
-        title: 'File Upload Using Multer in Node.js and Express',
-        utils: clientScript,
-        fileuploadStatus: fileuploadStatus,
-        docuploadStatus: docuploadStatus,
-        errorMsg: errorMsg,
-        htmlVal: htmlVal,
+        // title: 'File Upload Using Multer in Node.js and Express',
+        // utils: clientScript,
+        // fileuploadStatus: fileuploadStatus,
+        // docuploadStatus: docuploadStatus,
+        // errorMsg: errorMsg,
+        // htmlVal: htmlVal,
         patentList : patentSubmissionList.rows,
         rowCount : patentSubmissionList.rowCount
       })
@@ -33,10 +33,10 @@ module.exports.renderPatentSubMissionAndGrant = async(req, res, next) =>{
 module.exports.insertPatentsubmission = async(req, res, next) => {
         console.log('patentData in Controller', req.body);
         const patentData = req.body;
-        const { filename, path: filePath } = req.file;
-        console.log('file data ==>>', req.file)
+        const { filename, path: filePath } = req.files;
+        console.log('file data ==>>', req.files)
         console.log('file name ==>', filename);
-        console.log('Controller for handleFileConversion ==>>', req.file)
+        console.log('Controller for handleFileConversion ==>>', req.files)
         const patentDataSubmission = await patentSubmissionservice.insertPatentFormData(req.body, filename);
         console.log('patentDataSubmissionrow count ==>>', patentDataSubmission);
         if(patentDataSubmission && patentDataSubmission.rows[0].id){

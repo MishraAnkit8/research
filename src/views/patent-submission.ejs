@@ -248,7 +248,7 @@
                             </label>
                             <div class="d-flex">
                                 <input type="file" name="patentFile" id="patent-file"
-                                    class="col-md-8 form-control " data-validate="isEmpty,isExist,isFile" data-err-msg="File is required." min='2000-01-01' max="2023-10-02" required>
+                                    class="col-md-8 form-control " data-validate="isEmpty,isExist,isFile" data-err-msg="File is required." required multiple>
                                 <a id="downloadLink" class="p-2" download="image" style="display: none;">
                                     <i class="fa-solid fa-download download text-danger"></i>
                                 </a>
@@ -372,7 +372,7 @@
     addNewPatentSubmission.addEventListener('click' , function(event){
         if(event.target.tagName === 'BUTTON' && event.target.classList.contains('add-modal') || event.target.classList.contains('plus')){
             submitBtn.classList.remove('d-none');
-            updatetBtn.classList.add('d-none');
+            updateBtn.classList.add('d-none');
             fileView.classList.add('d-none');
             modalImage.classList.add('d-none');
     
@@ -396,10 +396,20 @@
     
     const insertPatentforms = async (url) => {
         const patentData = new FormData();
-        
-        const patentSubmissionDocument = document.querySelector('input[type="file"]');
-        
-        patentData.append('patentFile', patentSubmissionDocument.files[0]);
+        const patentDataFiles = document.getElementById('patent-file').files;
+
+        // Check if any files are selected
+        if (patentDataFiles.length === 0) {
+            console.log('No file is selected.');
+            return;
+        }
+
+        // Append each selected file to FormData
+        for (let i = 0; i < patentDataFiles.length; i++) {
+            patentData.append('patentFiles', patentDataFiles[i]);
+        }
+
+        // patentData.append('patentFile', patentSubmissionDocument.files[0]);
         const selectedTypeOfInvention = document.getElementById('type-of-invention').value;
         patentData.append('typeOfInvention', selectedTypeOfInvention);
         
