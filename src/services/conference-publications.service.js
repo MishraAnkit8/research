@@ -6,7 +6,7 @@ const conferencePublicationModels = require('../models/conference-publications.m
 // uploaded file path for dowload
 const uploadFolder = path.join(__dirname, '..', '..', 'uploads');
 module.exports.downloadFile = (req, res) => {
-    const filename = req.params.filename;
+    const filename = req.params.fileName;
     const filePath = path.join(uploadFolder, filename);
     console.log("filePath ==>>", filePath);
     console.log("filename ==>>>", filename);

@@ -405,7 +405,7 @@
                     <!-- Supporting Document -->
                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
-                            <div class="task-sub-title sub-title-text"><button class="btn btn-primary h-10 w-10" id="downloadButton">
+                            <div class="task-sub-title sub-title-text"><button class="btn btn-primary h-10 w-10 download-file" id="book-publication-file-view">
                                     <i class="fas fa-download text-danger"></i> Download supportingDocuments
                                 </button>
                             </div>
@@ -673,31 +673,7 @@
         if (event.target.classList.contains('view')) {
             console.log('clickedddd');
             const bookPublicationRowToBeViewed = event.target.closest('tr');
-            console.log('bookPublicationRowToBeViewed ===>>>', bookPublicationRowToBeViewed)
-            document.getElementById('downloadButton').addEventListener('click', function () {
-                const fileName = bookPublicationRowToBeViewed.getAttribute('data-supporting-documents');
-                console.log('fileName ===>>>', fileName)
-
-                fetch(`<%- BASE_URL %>research/book-publication-main/book-publication/download/${fileName}`)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
-                        return response.blob();
-                    })
-                    .then(blob => {
-                        const link = document.createElement('a');
-                        link.href = window.URL.createObjectURL(blob);
-                        link.download = fileName;
-                        document.body.appendChild(link);
-                        link.click();
-                        document.body.removeChild(link);
-                    })
-                    .catch(error => {
-                        console.error('There was a problem with the fetch operation:', error);
-                    });
-            });
-           
+            console.log('bookPublicationRowToBeViewed ===>>>', bookPublicationRowToBeViewed);
             bookPublicationId = event.target.getAttribute('data-publication-id');
             console.log('bookPublicationId ==>>', bookPublicationId);
             const viewAuthorLastName = document.getElementById('view-last-name');
@@ -729,6 +705,7 @@
             .then((data) => {
                 if(data.status === 'done'){
                     console.log('data ==>>', data);
+                    setFileNameInButtons(data)
                     viewAuthorLastName.innerText = data.bookPublicationView.author_last_name;
                     viewBookTitle.innerText = data.bookPublicationView.book_title; 
                     viewEdition.innerText = data.bookPublicationView.edition; 
@@ -850,6 +827,22 @@
             }
     })
 
+    function setFileNameInButtons(data) {
+        console.log('data ==>>', data);
+        const bookPublicationFileView = document.getElementById('book-publication-file-view');
+        bookPublicationFileView.setAttribute('data-filename', data.bookPublicationView.supporting_documents);
+    }
+
+    document.addEventListener('click' , function(event) {
+        const button = event.target.closest('button');
+        console.log('button  ===>>', button);
+        if(button && button.id && button.classList.contains('download-file')){
+            const fileName = button.getAttribute('data-filename');
+            console.log('fileName ==>>>', fileName);
+            const fileUrl = `<%- BASE_URL %>research/book-publication-main/book-publication/download/${fileName}`;
+            downloadFile(fileName, fileUrl);
+        }
+    })
 
 
 </script>

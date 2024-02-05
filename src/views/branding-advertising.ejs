@@ -1055,16 +1055,16 @@
                 removeErrorMsg();
                 submitBtn.classList.add('d-none');
                 updateBtn.classList.remove('d-none');
-                facultyRecogdocuments.classList.remove('d-none'); 
-                facultyAwardsDoc.classList.remove('d-none'); 
-                staffAwardsDoc.classList.remove('d-none'); 
-                alumniAwardsDoc.classList.remove('d-none');
-                studentAwardsDoc.classList.remove('d-none'); 
-                linkageDocment.classList.remove('d-none'); 
-                conferenceFile.classList.remove('d-none');
-                organisingConFile.classList.remove('d-none');
-                eventsFiles.classList.remove('d-none'); 
-                newsPaperfile.classList.remove('d-none'); 
+                // facultyRecogdocuments.classList.remove('d-none'); 
+                // facultyAwardsDoc.classList.remove('d-none'); 
+                // staffAwardsDoc.classList.remove('d-none'); 
+                // alumniAwardsDoc.classList.remove('d-none');
+                // studentAwardsDoc.classList.remove('d-none'); 
+                // linkageDocment.classList.remove('d-none'); 
+                // conferenceFile.classList.remove('d-none');
+                // organisingConFile.classList.remove('d-none');
+                // eventsFiles.classList.remove('d-none'); 
+                // newsPaperfile.classList.remove('d-none'); 
 
                 advertisingRowToBeUpdated = event.target.closest('tr')
                 
@@ -1115,16 +1115,6 @@
                 newsPaperArticleLink.value = advertisingRowToBeUpdated.getAttribute('data-newspaper-article-link');
                 const facultyRecognitionDocuments = advertisingRowToBeUpdated.getAttribute('data-faculty-recognition-documents');
                 console.log('facultyRecognitionDocument ==>>', facultyRecognitionDocuments)
-                // const facultyAwardDocuments = advertisingRowToBeUpdated.getAttribute('data-faculty-award-documents');
-                // const staffAwardDocuments = advertisingRowToBeUpdated.getAttribute('data-staff-award-documents');
-                // const alumniAwardDocuments = advertisingRowToBeUpdated.getAttribute('data-alumni-award-documents');
-                // const studentAwardDocuments = advertisingRowToBeUpdated.getAttribute('data-student-award-documents');
-                // console.log('studentAwardDocuments ==>>>', studentAwardDocuments)
-                // const internationalLinkageDocuments = advertisingRowToBeUpdated.getAttribute('data-international-linkage-documents');
-                // const conferenceParticipationDocuments = advertisingRowToBeUpdated.getAttribute('data-conference-participation-documents');
-                // const organisingConferenceDocuments = advertisingRowToBeUpdated.getAttribute('data-organising-conference-documents');
-                // const studentEventParticipationDocuments = advertisingRowToBeUpdated.getAttribute('data-student-event-participation-documents');
-                // const newspaperArticleDocuments = advertisingRowToBeUpdated.getAttribute('data-newspaper-article-documents');
                 $('#branding-advertising-modal').modal('show');
             }
         })
@@ -1357,7 +1347,7 @@
             console.log('result ===>>', result);
             const facultyRecogdocuments = document.getElementById('faculty-recog-documents-view');
             const facultyAwardsDoc = document.getElementById('faculty-awards-doc-view');
-            const staffAwardsDoc = document.getElementById('staf-aAwards-doc-view');
+            const staffAwardsDoc = document.getElementById('staff-awards-doc-view');
             const alumniAwardsDoc = document.getElementById('alumni-awards-doc-view');
             const studentAwardsDoc = document.getElementById('student-awards-doc-view');
             const linkageDocment = document.getElementById('linkage-docment-view');
@@ -1376,23 +1366,17 @@
             eventsFiles.setAttribute('data-filename' , result.brandingAndAdvertisingview[0].student_event_participation_documents);
             newsPaperfile.setAttribute('data-filename' , result.brandingAndAdvertisingview[0].newspaper_article_documents);
         };
-
+        // for dowloading file
         document.addEventListener('click' , function(event) {
             const button = event.target.closest('button');
             console.log('button ===>>>:::', button);
-            if (button && button.id) {
-                    console.log('button in side if ==>>', button)
-                    const filename = button.getAttribute('data-filename');
-                    console.log('filename ====>>>', filename);
-
-                    if (filename) {
-                        const fileUrl = `<%- BASE_URL %>teaching-excellence/download/${filename}`;
-                        downloadFile(filename, fileUrl);
-                    }
-                }
-
-
-
+            if (button && button.id && button.classList.contains('download-file')) {
+                console.log('button in side if ==>>', button)
+                const fileName = button.getAttribute('data-filename');
+                console.log('filename ====>>>', fileName);
+                const fileUrl = `<%- BASE_URL %>branding-advertising/download/${fileName}`;
+                downloadFile(fileName, fileUrl);
+            }
         })
 
 </script>

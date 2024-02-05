@@ -112,9 +112,11 @@ function handleFilePreviewAndDownload(filename, imageRoute, fileRoute) {
     }
 }
 
-// Example usage:
+
 //  for download file function
 function downloadFile(fileName, fileUrl) {
+    console.log('fileName in side public folder ==>>', fileName)
+    console.log('file url in side public folder ==>>', fileUrl)
     fetch(fileUrl)
         .then(response => {
             if (!response.ok) {

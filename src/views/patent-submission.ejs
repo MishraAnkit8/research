@@ -239,7 +239,6 @@
                             </label>
                         </div>
                     </div>
-                    <!-- Upload Supporting Documents-->
                      <!-- Upload Supporting Documents-->
                      <div class="form-group col-lg-6 col-md-8 col-sm-12 mb-4">
                         <div class="col-lg-6 col-md-8 col-sm-12">
@@ -338,7 +337,7 @@
                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
                             <div class="sub-title-text sub-title">
-                                <button class="btn btn-primary h-10 w-10" id="downloadButton">
+                                <button class="btn btn-primary h-10 w-10 download-file" id="patent-data-file-view">
                                     <i class="fas fa-download text-danger"></i> Download patentDocument
                                 </button>
                             </div>
@@ -396,20 +395,14 @@
     
     const insertPatentforms = async (url) => {
         const patentData = new FormData();
-        const patentDataFiles = document.getElementById('patent-file').files;
-
-        // Check if any files are selected
-        if (patentDataFiles.length === 0) {
-            console.log('No file is selected.');
-            return;
-        }
-
-        // Append each selected file to FormData
+        const patentDataFiles = document.querySelector('input[type="file"]');
+        // patentFile
+        console.log('patentDataFiles ==>>', patentDataFiles)
         for (let i = 0; i < patentDataFiles.length; i++) {
-            patentData.append('patentFiles', patentDataFiles[i]);
+            console.log('file name  ==>>', i)
+            patentData.append('patentDocument', patentDataFiles[i]);
         }
-
-        // patentData.append('patentFile', patentSubmissionDocument.files[0]);
+    
         const selectedTypeOfInvention = document.getElementById('type-of-invention').value;
         patentData.append('typeOfInvention', selectedTypeOfInvention);
         
@@ -578,29 +571,6 @@
                 console.log('row to be viewed', patentSubmissionDataToBeViewed);
                 let patentFile = patentSubmissionDataToBeViewed.querySelector('.patent-file');
                 console.log('patentFile ==>>', patentFile)
-                document.getElementById('downloadButton').addEventListener('click', function () {
-                const fileName = patentFile.innerText.trim();
-                console.log('fileName ====>>>', fileName)
-
-                fetch(`<%- BASE_URL %>research/patent-submission/download/${fileName}`)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
-                        return response.blob();
-                    })
-                    .then(blob => {
-                        const link = document.createElement('a');
-                        link.href = window.URL.createObjectURL(blob);
-                        link.download = fileName;
-                        document.body.appendChild(link);
-                        link.click();
-                        document.body.removeChild(link);
-                    })
-                    .catch(error => {
-                        console.error('There was a problem with the fetch operation:', error);
-                    });
-            });
                 patentId = event.target.getAttribute('data-patent-id')
                 $('#patent-submission-modal-view').modal('show');
                 const viewTypeOfInvetion = document.getElementById('view-type-of-invetion');
@@ -627,6 +597,7 @@
                     .then((data) => {
                         if (data.status === 'done') {
                             console.log('data', data)
+                            setFileNameInButtons(data) 
                             viewTitleOfinvetion.innerText = data.patentData[0].title_of_invention;
                             viewTypeOfInvetion.innerText = data.patentData[0].type_of_invention;
                             viewApplicationNum.innerText = data.patentData[0].application_no;
@@ -635,6 +606,7 @@
                             viewPatentStage.innerText = data.patentData[0].patent_stage;
                             viewIsPresenter.innerText = data.patentData[0].is_presenter;
                             viewUploadedDoc.innerText = data.patentData[0].patent_file;
+
                         }
                     })
             }
@@ -716,6 +688,26 @@
        else{
         alert('Validation Failed');
        }
+    })
+
+
+
+   function setFileNameInButtons(data) {
+        console.log('data ==>>>', data);
+        patetDataFileView = document.getElementById('patent-data-file-view');
+        patetDataFileView.setAttribute('data-filename', data.patentData[0].patent_file);
+    } 
+
+    document.addEventListener('click' , function(event) {
+        const button = event.target.closest('button');
+        console.log('button');
+        if(button && button.id && button.classList.contains('download-file')){
+            console.log('button.id ==>>', button.id);
+            const fileName = button.getAttribute('data-filename');
+            console.log('fileName ==>>', fileName);
+            const fileUrl = `<%- BASE_URL %>research/patent-submission/download/${fileName}`;
+            downloadFile(fileName, fileUrl);
+        }
     })
 
 </script>

@@ -427,7 +427,7 @@
                     <!--Convocation at NMIMS file -->
                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
-                            <div class="task-sub-title sub-title-text ">  <button class="btn btn-primary h-10 w-10 download-file" id="convocation-documents-file-convocation-documents-file-view">
+                            <div class="task-sub-title sub-title-text ">  <button class="btn btn-primary h-10 w-10 download-file" id="convocation-documents-file-view">
                                 <i class="fas fa-download text-danger"></i> Convocation at NMIMS File
                             </button>
                         </div>
@@ -455,7 +455,7 @@
                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
                                 <div class="task-sub-title sub-title-text">
-                                    <button class="btn btn-primary h-10 w-10 download-file" id="program-file">
+                                    <button class="btn btn-primary h-10 w-10 download-file" id="program-file-view">
                                         <i class="fas fa-download text-danger"></i> Inaugural Program File
                                     </button>
                                 </div>
@@ -709,39 +709,6 @@
             console.log('meetingRowToBeViewed ==>>>', meetingRowToBeViewed)
             let rankingDocuments = meetingRowToBeViewed.getAttribute('data-ranking-documents');
             console.log('rankingDocuments ==>>', rankingDocuments)
-            // const accreditationFile = meetingRowToBeViewed.getAttribute('data-accreditation-documents');
-            // const achievementsFile = meetingRowToBeViewed.getAttribute('data-achievements-documents');
-            // const convocationFile = meetingRowToBeViewed.getAttribute('data-convocation-documents');
-            // const inauguralProgramFile = meetingRowToBeViewed.getAttribute('data-inaugural-program-documents');
-            // const eventFile = meetingRowToBeViewed.getAttribute('data-events-documents');
-
-            // const meetingFileToBeDownload = {
-            //     'rankingFile': { id: 'rankingFile', name: 'Ranking Report', file: rankingDocuments },
-            //     'accreditationDataFile': { id: 'accreditationDataFile', name: 'Accreditation Data', file: accreditationFile },
-            //     'schoolFile': { id: 'schoolFile', name: 'School Achievements', file: achievementsFile },
-            //     'convocationDocuments': { id: 'convocationDocuments', name: 'Convocation Documents', file: convocationFile },
-            //     'ProgramFile': { id: 'ProgramFile', name: 'Inaugural Program', file: inauguralProgramFile },
-            //     'nmimsEventFile': { id: 'nmimsEventFile', name: 'NMIMS Event', file: eventFile }
-            // };
-
-            // console.log('meetingFileToBeDownload ===>>>', meetingFileToBeDownload)
-            // document.addEventListener('click', function (event) {
-            //     // event.preventDefault();
-            //     console.log('clickeddddd')
-            //     const button = event.target.closest('button');
-            //     if (button && button.id in meetingFileToBeDownload) {
-            //         const { id, name, file } = meetingFileToBeDownload[button.id];
-            //         console.log('Button ID:', id);
-            //         console.log('Button Name:', name);
-            //         console.log('File Name:', file);
-
-            //         const fileUrl = `<%- BASE_URL %>meeting-stackholders/download/${file}`;
-            //         console.log('FileUrl:', fileUrl);
-            //         downloadFile(file, fileUrl);
-            //         event.preventDefault();
-            //     }
-            // });
-
             const viewRankingDocuments = document.getElementById('view-ranking-file');
             const viewAccreditationFile = document.getElementById('view-accreditation-file');
             const viewAchievementsFile = document.getElementById('view-achievement-file');
@@ -1037,7 +1004,7 @@
         const convocationDataDocuments = document.getElementById('convocation-documents-file-view');
         const ProgramFile = document.getElementById('program-file-view');
         const nmimsEventFile = document.getElementById('nmims-event-file-view');
-        rankingFile.setAttribute('data-filenam', result.meetingStackholderView.ranking_documents);
+        rankingFile.setAttribute('data-filename', result.meetingStackholderView.ranking_documents);
         accreditationDataFile.setAttribute('data-filename' , result.meetingStackholderView.accreditation_documents);
         schoolFile.setAttribute('data-filename', result.meetingStackholderView.achievements_documents);
         convocationDataDocuments.setAttribute('data-filename', result.meetingStackholderView.convocation_documents);
@@ -1047,19 +1014,16 @@
     }
     
     document.addEventListener('click', function (event) {
-                const button = event.target.closest('button');
-                console.log('button ===>>>:::', button);
-                if (button && button.id) {
-                    console.log('button  id in side if ==>>', button.id)
-                    const filename = button.getAttribute('data-filename');
-                    console.log('file ===>>>>', filename);
-
-                    if (filename) {
-                        const fileUrl = `<%- BASE_URL %>teaching-excellence/download/${filename}`;
-                        downloadFile(filename, fileUrl);
-                    }
-                }
-            });
+            const button = event.target.closest('button');
+            console.log('button ===>>>:::', button);
+            if (button && button.id && button.classList.contains('download-file')) {
+                console.log('button  id in side if ==>>', button.id)
+                const fileName = button.getAttribute('data-filename');
+                console.log('file ===>>>>', fileName);
+                const fileUrl = `<%- BASE_URL %>meeting-stackholders/download/${fileName}`;
+                downloadFile(fileName, fileUrl);
+            }
+        });
 
 </script>
 <!-- footer section -->

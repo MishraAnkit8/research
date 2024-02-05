@@ -33,8 +33,8 @@ router.post('/book-publication/insert', upload.single('researchSupportingDocumen
 router.post('/book-publication/update',  upload.single('researchSupportingDocument'), asyncErrorHandler(bookPublicationController.updateBookPublication));
 router.post('/book-publication/delete', asyncErrorHandler(bookPublicationController.deleteBookPublication));
 router.post('/book-publication/view', asyncErrorHandler(bookPublicationController.viewBookPublication));
-router.get('/book-publication/download/:filename', bookPublicationService.downloadFile);
-router.get('/book-publication/viewing/:filename', bookPublicationService.viewFile);
+router.get('/book-publication/download/:fileName', bookPublicationService.downloadFile);
+router.get('/book-publication/viewing/:fileName', bookPublicationService.viewFile);
 
 //edited book publication
 
@@ -43,8 +43,8 @@ router.post('/edited-book-publication/insert',  upload.single('researchSupportin
 router.post('/edited-book-publication/update',  upload.single('researchSupportingDocument'), asyncErrorHandler(editedBookPublication.updateEditedBookPublication));
 router.post('/edited-book-publication/view',  asyncErrorHandler(editedBookPublication.viewEditedBookPublication));
 router.post('/edited-book-publication/delete', asyncErrorHandler(editedBookPublication.deleteEditedBookPublication));
-router.get('/edited-book-publication/download/:filename', editedBookService.downloadFile);
-router.get('/edited-book-publication/viewing/:filename', editedBookService.viewFile);
+router.get('/edited-book-publication/download/:fileName', editedBookService.downloadFile);
+router.get('/edited-book-publication/viewing/:fileName', editedBookService.viewFile);
 
 //book chapter
 
@@ -53,8 +53,8 @@ router.post('/book-chapter-publication/insert', upload.single('researchSupportin
 router.post('/book-chapter-publication/update',  upload.single('researchSupportingDocument'), asyncErrorHandler(bookChapterController.updateBookChapterData));
 router.post('/book-chapter-publication/view',  asyncErrorHandler(bookChapterController.viewBookChapterData));
 router.post('/book-chapter-publication/delete', asyncErrorHandler(bookChapterController.deleteBookChapterData));
-router.get('/book-chapter-publication/download/:filename', bookChapterServices.downloadFile);
-router.get('/book-chapter-publication/viewing/:filename', bookChapterServices.viewFile);
+router.get('/book-chapter-publication/download/:fileName', bookChapterServices.downloadFile);
+router.get('/book-chapter-publication/viewing/:fileName', bookChapterServices.viewFile);
 
 
 module.exports = router;

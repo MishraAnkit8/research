@@ -29,7 +29,7 @@ router.post('/update', upload.fields([
 ]),asyncErrorHandler(meetingStackholderController.updateMeetingStackholders));
 router.post('/view' , asyncErrorHandler(meetingStackholderController.viewMeetingData));
 router.post('/delete' , asyncErrorHandler(meetingStackholderController.deleteMeetingStackholders));
-router.get('/download/:filename', meetingStackHolderServices.downloadFile);
-router.get('/viewing/:filename', meetingStackHolderServices.viewFile);
+router.get('/download/:fileName', meetingStackHolderServices.downloadFile);
+router.get('/viewing/:fileName', meetingStackHolderServices.viewFile);
 
 module.exports = router;

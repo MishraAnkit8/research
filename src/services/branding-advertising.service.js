@@ -6,10 +6,10 @@ const brandingAndAdvertisingModels = require('../models/branding-advertising.mod
 const uploadFolder = path.join(__dirname, '..', '..', 'uploads');
 console.log('uploadFolder in side branding ==>>>', uploadFolder)
 module.exports.downloadFile = (req, res) => {
-    const filename = req.params.filename;
+    const filename = req.params.fileName;
+    console.log("filename ==>>>", filename);
     const filePath = path.join(uploadFolder, filename);
     console.log("filePath ==>>", filePath);
-    console.log("filename ==>>>", filename);
   
     const originalFilename = filename.split('_').slice(1).join('_');
   

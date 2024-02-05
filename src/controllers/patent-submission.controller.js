@@ -33,11 +33,11 @@ module.exports.renderPatentSubMissionAndGrant = async(req, res, next) =>{
 module.exports.insertPatentsubmission = async(req, res, next) => {
         console.log('patentData in Controller', req.body);
         const patentData = req.body;
-        const { filename, path: filePath } = req.files;
+        // const { filename, path: filePath } = req.files;
         console.log('file data ==>>', req.files)
-        console.log('file name ==>', filename);
+        // console.log('file name ==>', filename);
         console.log('Controller for handleFileConversion ==>>', req.files)
-        const patentDataSubmission = await patentSubmissionservice.insertPatentFormData(req.body, filename);
+        const patentDataSubmission = await patentSubmissionservice.insertPatentFormData(req.body, req.files);
         console.log('patentDataSubmissionrow count ==>>', patentDataSubmission);
         if(patentDataSubmission && patentDataSubmission.rows[0].id){
             res.json({

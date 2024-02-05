@@ -27,7 +27,7 @@ router.post('/update', upload.fields([
 ]),asyncErrorHandler(teachingExecellanceController.updatTeachingData));
 router.post('/delete', asyncErrorHandler(teachingExecellanceController.deleteTeachingExecellance));
 router.post('/view', asyncErrorHandler(teachingExecellanceController.viewTeachingExecellance));
-router.get('/download/:filename', teachingExecellanceServices.downloadFile);
-router.get('/viewing/:filename', teachingExecellanceServices.viewFile);
+router.get('/download/:fileName', teachingExecellanceServices.downloadFile);
+router.get('/viewing/:fileName', teachingExecellanceServices.viewFile);
 
 module.exports = router;

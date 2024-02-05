@@ -377,7 +377,7 @@
                      <!-- Upload Supporting Documents -->
                      <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
-                            <div class="task-sub-title sub-title-text"><button class="btn btn-primary h-10 w-10" id="downloadButton">
+                            <div class="task-sub-title sub-title-text"><button class="btn btn-primary h-10 w-10 download-file" id="consultancy-file-view">
                                 <i class="fas fa-download text-danger"></i> Download researchConsultancyDocument
                             </button></div>
                             <label class="view-content" id="view-supporting-document"></label>
@@ -656,29 +656,6 @@
                 console.log('consultantRowToBeViewed ==>>', consultantRowToBeViewed);
                 consultantId = event.target.getAttribute('data-consultancy-id');
                 console.log('consultantId ==>>', consultantId);
-                document.getElementById('downloadButton').addEventListener('click', function () {
-                const fileName = consultantRowToBeViewed.getAttribute('data-supporting-documents');
-                console.log('fileName ===>', fileName)
-
-                fetch(`<%- BASE_URL %>research/research-project-consultancy/download/${fileName}`)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
-                        return response.blob();
-                    })
-                    .then(blob => {
-                        const link = document.createElement('a');
-                        link.href = window.URL.createObjectURL(blob);
-                        link.download = fileName;
-                        document.body.appendChild(link);
-                        link.click();
-                        document.body.removeChild(link);
-                    })
-                    .catch(error => {
-                        console.error('There was a problem with the fetch operation:', error);
-                    });
-            });
                 const viewGrantProposalCategory = document.getElementById('view-grant-proposal');
                 const viewTypeOfGrant = document.getElementById('view-grant-type');
                 const viewTitleOfProject = document.getElementById('view-project-title');
@@ -702,6 +679,7 @@
                 .then((data) => {
                     if(data.status === 'done'){
                         console.log('data ==>>' , data)
+                        setFileNameInButtons(data) 
                         viewGrantProposalCategory.innerText = data.consultantData.grant_proposal_category;
                         viewTypeOfGrant.innerText = data.consultantData.type_of_grant;
                         viewTitleOfProject.innerText = data.consultantData.title_of_project;
@@ -793,6 +771,24 @@
             else {
                 console.log('Validation failed');
             }
+    });
+    // for file setattribute in button
+        function setFileNameInButtons(data) {
+            console.log('data ==>>', data);
+            const researchConFile = document.getElementById('consultancy-file-view');
+            console.log('researchConFile ==>>', researchConFile);
+            researchConFile.setAttribute('data-filename', data.consultantData.supporting_documents);
+        }
+
+    document.addEventListener('click' , function(event) {
+        const button = event.target.closest('button');
+        // console.log('button  ===>>', button);
+        if(button && button.id && button.classList.contains('download-file')){
+            const fileName = button.getAttribute('data-filename');
+            console.log('fileName ==>>>', fileName);
+            const fileUrl = `<%- BASE_URL %>research/research-project-consultancy/download/${fileName}`;
+            downloadFile(fileName, fileUrl);
+        }
     })
     
 </script>

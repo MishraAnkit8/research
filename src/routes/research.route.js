@@ -55,8 +55,8 @@ router.post('/conference-publication/update', upload.fields([
     { name: 'conferenceDocument', maxCount: 1 },
     { name: 'conferenceProof', maxCount: 1 },
 ]),asyncErrorHandler(conferenceController.updateConferencePublication));
-router.get('/conference-publication/download/:filename', conferenceServices.downloadFile);
-router.get('/conference-publication/viewing/:filename', conferenceServices.viewFile);
+router.get('/conference-publication/download/:fileName', conferenceServices.downloadFile);
+router.get('/conference-publication/viewing/:fileName', conferenceServices.viewFile);
 
 //patent submission form
 router.get('/patent-submission', asyncErrorHandler(patentSubmission.renderPatentSubMissionAndGrant));
@@ -64,8 +64,8 @@ router.post('/patent-submission/insert', upload.array('patentFile' ,5), asyncErr
 router.post('/patent-submission/update', upload.array('patentFile'), asyncErrorHandler(patentSubmission.updatePatentSubMissiom));
 router.post('/patent-submission/delete', asyncErrorHandler(patentSubmission.deletePatentData));
 router.post('/patent-submission/view', asyncErrorHandler(patentSubmission.viewPatentSubmissionData));
-router.get('/patent-submission/download/:filename', patentSubmissionServices.downloadFile);
-router.get('/patent-submission/viewing/:filename', patentSubmissionServices.viewFile);
+router.get('/patent-submission/download/:fileName', patentSubmissionServices.downloadFile);
+router.get('/patent-submission/viewing/:fileName', patentSubmissionServices.viewFile);
 
 //research project consultancy
 router.get('/research-project-consultancy', asyncErrorHandler(researchConsultancyController.renderResearchProjectConsultancy));
@@ -73,8 +73,8 @@ router.post('/research-project-consultancy/insert', upload.single('researchSuppo
 router.post('/research-project-consultancy/update', upload.single('researchSupportingDocument'), asyncErrorHandler(researchConsultancyController.updatedConsultantData));
 router.post('/research-project-consultancy/delete', asyncErrorHandler(researchConsultancyController.deleteResearchConsultant));
 router.post('/research-project-consultancy/view', asyncErrorHandler(researchConsultancyController.viewResearchProjectConsultancy));
-router.get('/research-project-consultancy/download/:filename', researchConsultancyService.downloadFile);
-router.get('/research-project-consultancy/viewing/:filename', researchConsultancyService.viewFile);
+router.get('/research-project-consultancy/download/:fileName', researchConsultancyService.downloadFile);
+router.get('/research-project-consultancy/viewing/:fileName', researchConsultancyService.viewFile);
 
 // book publication
 router.use('/book-publication-main', bookPublicationRoutes);
