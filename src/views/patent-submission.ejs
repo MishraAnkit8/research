@@ -395,12 +395,14 @@
     
     const insertPatentforms = async (url) => {
         const patentData = new FormData();
-        const patentDataFiles = document.querySelector('input[type="file"]');
+        const patentFiles = document.getElementById('patent-file');
         // patentFile
         console.log('patentDataFiles ==>>', patentDataFiles)
-        for (let i = 0; i < patentDataFiles.length; i++) {
-            console.log('file name  ==>>', i)
-            patentData.append('patentDocument', patentDataFiles[i]);
+        const patentFilesData = patentFiles.files;
+        console.log('files ===>>>', files)
+        for (let i = 0; i < patentFilesData.length; i++) {
+            console.log('file name  ==>>', patentFilesData[i].name);
+            patentData.append('patentFilesData', patentFilesData[i]);
         }
     
         const selectedTypeOfInvention = document.getElementById('type-of-invention').value;
@@ -445,7 +447,7 @@
                             <td class="application-no">${data.patentData.applicationNum}</td>
                             <td class="is-presenter">${data.patentData.isPresentor}</td>
                             <td class="achive-sdg">${data.patentData.achiveSdg}</td>
-                            <td class="patent-file">${data.filename}</td>
+                            <td class="patent-file">${data.patentFilesData}</td>
                             <td class="cell ">
                                 <label class="view" data-patent-id="${patentId}"><i class="fa-solid fa-eye view text-danger"
                                     data-patent-id="${patentId}"></i></label>
@@ -457,7 +459,7 @@
 
                 patenetSubMissionList.appendChild(newPatentRow);
                 $('#patent-submission-modal').modal('hide');
-                    alert('data is inserted  successFully');
+                    alert('Data Inserted  SuccessFully');
                     
             }
         })
@@ -633,13 +635,30 @@
         updatedPatentData.append('applicationNum', updatedApplicationNum);
         updatedPatentData.append('subMissionDate', updatedSubMissionDate);
         updatedPatentData.append('isPresentor', updatedIs_Presenter);
-        let updatedPatentFileInput = document.querySelector('input[type="file"]');
-        if (updatedPatentFileInput.files.length > 0) {
-            updatedPatentData.append('patentFile', updatedPatentFileInput.files[0]);
+        
+        // let updatedPatentFileInput = document.querySelector('input[type="file"]');
+        // if (updatedPatentFileInput.files.length > 0) {
+        //     updatedPatentData.append('patentFile', updatedPatentFileInput.files[0]);
+        // }
+        // else{
+        //     updatedPatentFileInput = null;
+        //     updatedPatentData.append('patentFile', updatedPatentFileInput);
+        // }
+
+        const updatedPatentFiles = document.getElementById('patent-file');
+        // patentFile
+        console.log('updatedPatentFiles ==>>', updatedPatentFiles)
+        const updatedPatentFilesData = updatedPatentFiles.files;
+        if (updatedPatentFilesData) {
+            console.log('files data ===>>>', updatedPatentFilesData)
+            for (let i = 0; i < updatedPatentFilesData.length; i++) {
+                console.log('file name  ==>>', updatedPatentFilesData[i].name);
+                updatedPatentData.append('patentFilesData', updatedPatentFilesData[i]);
+            }
         }
         else{
-            updatedPatentFileInput = null;
-            updatedPatentData.append('patentFile', updatedPatentFileInput);
+            updatedPatentFilesData = null
+            updatedPatentData.append('patentFilesData', updatedPatentFilesData)
         }
 
 
@@ -663,7 +682,9 @@
                 rowToBeUpdated.querySelector('.patent-stage').innerText = data.updatedPatentData.patentStage;
                 rowToBeUpdated.setAttribute('data-patent-date' , data.updatedPatentData.subMissionDate);
                 rowToBeUpdated.querySelector('.is-presenter').innerText = data.updatedPatentData.isPresentor;
-                rowToBeUpdated.querySelector('.patent-file').innerText = data.patentDocument;
+                if(updatedPatentFilesData){
+                    rowToBeUpdated.querySelector('.patent-file').innerText = data.patentDocument;
+                }
             
             }
         })
@@ -703,10 +724,25 @@
         console.log('button');
         if(button && button.id && button.classList.contains('download-file')){
             console.log('button.id ==>>', button.id);
-            const fileName = button.getAttribute('data-filename');
-            console.log('fileName ==>>', fileName);
-            const fileUrl = `<%- BASE_URL %>research/patent-submission/download/${fileName}`;
-            downloadFile(fileName, fileUrl);
+            const fileData = button.getAttribute('data-filename');
+            console.log('fileName ==>>', fileData);
+            const fileArray = fileData.split(',');
+            console.log('fileArray ===>>>', fileArray)
+            console.log('0 index value ==>>>', fileArray[0])
+            for(let i = 0; i<= fileArray.length-1; i++){
+                const fileName = fileArray[i];
+                console.log('fileName ===>>>', fileName)
+                if(fileName){
+                    const fileUrl = `<%- BASE_URL %>research/patent-submission/download/${fileName}`;
+                     downloadFile(fileName, fileUrl)
+                }
+            }
+            // fileArray.forEach(fileName => {
+            //     if (fileName.trim !== '') {
+            //         const fileUrl = `<%- BASE_URL %>research/patent-submission/download/${fileName}`;
+            //         downloadFile(fileName, fileUrl);
+            //     }
+            // })
         }
     })
 

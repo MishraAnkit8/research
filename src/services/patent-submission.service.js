@@ -8,7 +8,7 @@ const patentFormsModels = require('../models/patent-submission.models');
 const uploadFolder = path.join(__dirname, '..', '..', 'uploads');
 
 module.exports.downloadFile = (req, res) => {
-    const filename = req.params.filename;
+    const filename = req.params.fileName;
     const filePath = path.join(uploadFolder, filename);
     console.log("filePath ==>>", filePath);
     console.log("filename ==>>>", filename);
@@ -54,29 +54,52 @@ module.exports.fetchPatentForm = async() => {
     return patentSubmissionForm;
 }
 
-module.exports.insertPatentFormData = async(body , file) => {
+module.exports.insertPatentFormData = async(body , files) => {
     console.log('patentData in service', body);
-    console.log('file name in service ==>>', file);
-    const insertPatentData = await patentFormsModels.insertPatentData(body, file);
+    console.log('file name in service ==>>', files);
+    const patentFilesData = files;
+    console.log('patentFilesData ===>>>>', patentFilesData);
+    var patentDataBaseFiles = '';
+    for (let i = 0 ; i<= patentFilesData.length-1; i++){
+        if(patentFilesData[i] && patentFilesData[i].filename){
+            patentDataBaseFiles += patentFilesData[i].filename + ',';
+        }
+    }
+    console.log('patentDataBaseFiles patent file stringfy data inside service ==>>>', patentDataBaseFiles)
+    const insertPatentData = await patentFormsModels.insertPatentData(body, patentDataBaseFiles);
     console.log('insert Id ', insertPatentData.rows[0])
-    return insertPatentData; 
+    const patentId = insertPatentData.rows[0];
+    return { insertPatentData,
+            patentDataBaseFiles,
+            patentId 
+    }
 }
 
 
-module.exports.updatPatentSubmission = async(body) => {
+module.exports.updatPatentSubmission = async(body, patentId, files) => {
     console.log('updated Data in Service ::', body)
     const updatedPatentData = body;
-    const patentId = body.patentId;
-    if(body.patentDocument){
-        const patentDocument = body.patentDocument;
+    console.log('updatedPatentData ====>>>', updatedPatentData);
+    console.log('patentId ===>>>', patentId);
+    if(files){
+        console.log('files ===>>>', files)
+        const patentDocument = files;
+        var patentDataFiles = '';
+        for(let i = 0; i<= patentDocument.length-1; i++){
+            if(patentDocument[i] && patentDocument[i].filename){
+                patentDataFiles += patentDocument[i].filename + ',';
+            }
+        }
+        console.log('patentDataFiles ===>>>', patentDataFiles)
         console.log('file name  In service ==>>', patentDocument)
         console.log('ID in service >>', body.patentId)
-        const upadtedPatentSubmissionData = await patentFormsModels.updatePatentsubmissionData(updatedPatentData, patentId, patentDocument );
+        const upadtedPatentSubmissionData = await patentFormsModels.updatePatentsubmissionData(updatedPatentData, patentId, patentDataFiles);
         console.log('Id for updation  ==>>', patentId);
         if(upadtedPatentSubmissionData && upadtedPatentSubmissionData.rowCount === 1){
             return{
                 status : 'done',
-                massage : 'data updated successFully'
+                massage : 'data updated successFully',
+                patentDataFiles
             }
         }
     }
