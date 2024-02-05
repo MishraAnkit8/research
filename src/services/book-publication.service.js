@@ -4,10 +4,9 @@ const path = require('path');
 const bookPublicationModel = require('../models/book-publication.models');
 // uploaded file path for dowload
 const uploadFolder = path.join(__dirname, '..', '..', 'uploads');
-console.log('uploadFolder ==>>', uploadFolder)
 
 module.exports.downloadFile = (req, res) => {
-    const filename = req.params.filename;
+    const filename = req.params.fileName;
     const filePath = path.join(uploadFolder, filename);
     console.log("filePath ==>>", filePath);
     console.log("filename ==>>>", filename);
@@ -52,20 +51,44 @@ module.exports.fetchBookPublicationData = async() => {
     return bookPublicationdata
 }
 
-module.exports.insertBookPublication = async(bookPublicationData, filename) => {
-    const insertBookPublication = await bookPublicationModel.insertBookPublicationData(bookPublicationData , filename);
+module.exports.insertBookPublication = async(body, files) => {
+  console.log('files ====>>>', files);
+  const bookPublicationData = body;
+  console.log('Data in Service ===>>>', bookPublicationData);
+  var bookPublicationfileData = '';
+  for(let i = 0; i <= files.length - 1; i++){
+    if(files && files[i].filename){
+      console.log('file name ==>>', files[i].filename)
+      bookPublicationfileData += files[i].filename + ',';
+    }
+  }
+  console.log('bookPublicationfileData In service ===>>>', bookPublicationfileData)
+    const insertBookPublication = await bookPublicationModel.insertBookPublicationData(bookPublicationData , bookPublicationfileData);
+    console.log('insertBookPublication Id ==>>', insertBookPublication.rows[0].id)
+    const bookPublicationId = insertBookPublication.rows[0].id;
     if(insertBookPublication){
-        return insertBookPublication.rows[0].id;
+        return{ 
+        insertBookPublication,
+        bookPublicationfileData,
+        bookPublicationId
+        }
     }
 }
 
-module.exports.updateBookPublication = async(bookPublicationId, updatedBookPublicationData, updatedFile) => {
-    if(updatedFile){
-        const updatedBookPublication = await bookPublicationModel.updatedBookPublication(bookPublicationId , updatedBookPublicationData, updatedFile);
+module.exports.updateBookPublication = async(bookPublicationId, updatedBookPublicationData, files) => {
+    if(files){
+      console.log('updated Files ===>>> in service ===>>>', files);
+      var upadteDataFileString = '';
+      for(let i = 0; i <= files.length - 1 ; i++){
+        upadteDataFileString += files[i].filename + ',';
+      }
+      console.log('Stringify Data upadteDataFileString ==>>', upadteDataFileString)
+        const updatedBookPublication = await bookPublicationModel.updatedBookPublication(bookPublicationId , updatedBookPublicationData, upadteDataFileString);
         if(updatedBookPublication && updatedBookPublication.rowCount === 1) {
             return {
                 status : 'done',
-                massage : 'date updated successfully'
+                massage : 'date updated successfully',
+                upadteDataFileString
             }
         }
         

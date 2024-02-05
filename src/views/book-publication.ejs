@@ -259,7 +259,7 @@
                             </label>
                             <div class="d-flex">
                                 <input type="file" name="researchSupportingDocument" id="supporting-documents"data-validate="isEmpty,isExist,isFile" data-err-msg="File is required."
-                                    class="col-md-8 form-control " min='2000-01-01' max="2023-10-02" required>
+                                    class="col-md-8 form-control " required multiple>
                                 <a id="downloadLink" class="p-2" download="image" style="display: none;">
                                     <i class="fa-solid fa-download download text-danger"></i>
                                 </a>
@@ -434,7 +434,7 @@
     const downloadLink = document.getElementById('downloadLink');
 
     const addNewBookPublication = document.getElementById('book-publication-form');
-    let bookPublicationId , bookPublicationRowToBeUpdated, supportingDocuments;
+    let bookPublicationId , bookPublicationRowToBeUpdated
 
     addNewBookPublication.addEventListener('click' , function(event) {
         if(event.target.tagName === 'BUTTON' && event.target.classList.contains('add-modal') || event.target.classList.contains('plus')){
@@ -498,7 +498,16 @@
         const nmimsAuthors = document.getElementById('nmims-authors').value;
         const nmimsCampusAuthors = document.getElementById('nmims-campus-authors').value;
         const nmimsSchoolAuthors = document.getElementById('nmims-school-authors').value;
-        supportingDocuments = document.querySelector('input[type="file"]');
+        const supportingDocuments = document.getElementById('supporting-documents');
+        const bookPublicationDataFiles = supportingDocuments.files;
+        console.log('bookPublicationDataFiles ===>>>>', bookPublicationDataFiles);
+        for(let i = 0; i <= bookPublicationDataFiles.length - 1; i++){
+            if(bookPublicationDataFiles && bookPublicationDataFiles[i].name){
+            console.log('files name ==>>>', bookPublicationDataFiles[i].name);
+            bookPublicationData.append('researchSupportingDocument' , bookPublicationDataFiles[i]);
+            }
+        }
+
 
         // appending value
         bookPublicationData.append('authorLastName' , authorLastName);
@@ -516,7 +525,6 @@
         bookPublicationData.append('nmimsAuthors' , nmimsAuthors);
         bookPublicationData.append('nmimsCampusAuthors' , nmimsCampusAuthors);
         bookPublicationData.append('nmimsSchoolAuthors' , nmimsSchoolAuthors);
-        bookPublicationData.append('researchSupportingDocument' , supportingDocuments.files[0]);
 
         fetch(url , {
             method : 'POST',
@@ -746,7 +754,22 @@
         const updatedNmimsAuthors = document.getElementById('nmims-authors').value;
         const updatedNmimsCampusAuthors = document.getElementById('nmims-campus-authors').value;
         const updatedNmimsSchoolAuthors = document.getElementById('nmims-school-authors').value;
-        let updatedDocuments = document.querySelector('input[type="file"]');
+        // let updatedDocuments = document.querySelector('input[type="file"]');
+        const updatedDocuments = document.getElementById('supporting-documents');
+        const bookPublicationDataFiles = updatedDocuments.files;
+        console.log('bookPublicationDataFiles ===>>>>', bookPublicationDataFiles);
+        if(bookPublicationDataFiles){
+            for (let i = 0; i <= bookPublicationDataFiles.length - 1; i++) {
+                if (bookPublicationDataFiles && bookPublicationDataFiles[i].name) {
+                    console.log('files name ==>>>', bookPublicationDataFiles[i].name);
+                    updatedBookPublicationData.append('researchSupportingDocument', bookPublicationDataFiles[i]);
+                }
+            }
+        }
+        else{
+            bookPublicationDataFiles = null;
+            updatedBookPublicationData.append('researchSupportingDocument' , bookPublicationDataFiles);
+        }
         updatedBookPublicationData.append('bookPublicationId' , bookPublicationId);
         updatedBookPublicationData.append('authorLastName' , updatedaAuthorLastName);
         updatedBookPublicationData.append('bookTitle' , updatedBookTitle);
@@ -763,14 +786,6 @@
         updatedBookPublicationData.append('nmimsAuthors' , updatedNmimsAuthors);
         updatedBookPublicationData.append('nmimsCampusAuthors' , updatedNmimsCampusAuthors);
         updatedBookPublicationData.append('nmimsSchoolAuthors' , updatedNmimsSchoolAuthors);
-        if(updatedDocuments && updatedDocuments.files && updatedDocuments.files.length > 0){
-            console.log('updatedDocuments ==>>', updatedDocuments);
-            updatedBookPublicationData.append('researchSupportingDocument' , updatedDocuments.files[0]);
-         }
-        else{
-            updatedDocuments = null;
-            updatedBookPublicationData.append('researchSupportingDocument' , updatedDocuments);
-        }
         fetch(url , {
             method : 'POST',
             body : updatedBookPublicationData
@@ -806,7 +821,7 @@
             .catch((error) => {
                 console.log('Eroor ::', error);
             })
-            $('#book-publication-modal').modal('hide');
+            // $('#book-publication-modal').modal('hide');
     }
 
     updateBtn.addEventListener('click' , async() => {
@@ -837,10 +852,20 @@
         const button = event.target.closest('button');
         console.log('button  ===>>', button);
         if(button && button.id && button.classList.contains('download-file')){
-            const fileName = button.getAttribute('data-filename');
-            console.log('fileName ==>>>', fileName);
-            const fileUrl = `<%- BASE_URL %>research/book-publication-main/book-publication/download/${fileName}`;
-            downloadFile(fileName, fileUrl);
+            const fileDataString = button.getAttribute('data-filename');
+            console.log('fileName ==>>>', fileDataString);
+            const fileArray = fileDataString.split(',');
+            console.log('fileArray ===>>>', fileArray);
+            if (fileArray.length > 0) {
+                for (let i = 0; i <= fileArray.length - 1; i++) {
+                    const fileName = fileArray[i];
+                    console.log('fileName ====>>>>', fileName)
+                    if(fileName){
+                        const fileUrl = `<%- BASE_URL %>research/book-publication-main/book-publication/download/${fileName}`;
+                        downloadFile(fileName, fileUrl);
+                    }
+                }
+            }
         }
     })
 

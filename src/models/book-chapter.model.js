@@ -13,7 +13,7 @@ module.exports.fetchEditedBookPublication = async() => {
     return autoDbR.query(sql)
 }
 
-module.exports.insertBookChapterData = async(bookChapter, filename) => {
+module.exports.insertBookChapterData = async(bookChapter, bookChapterDataFiles) => {
     const {authorName, bookTitle, edition, editorName, bookEditor, chapterTitle, volumeNumber, publisherCategory, pageNumber, publisherName, publicationYear,
         bookUrl, doiBookId, isbnNo, numberOfNmimsAuthors, nmimsAuthors, nmimsCampusAuthors, nmimsSchoolAuthors} = bookChapter
     let sql = {
@@ -21,21 +21,21 @@ module.exports.insertBookChapterData = async(bookChapter, filename) => {
             publication_year, book_url, doi_id, isbn, number_of_nmims_authors, nmims_authors, nmims_campus_authors, nmims_school_authors, supporting_documents)
             VALUES ($1, $2 , $3 ,$4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19) RETURNING id `,
         values : [authorName, bookTitle, edition, editorName, bookEditor, chapterTitle, volumeNumber, publisherCategory, pageNumber, publisherName, publicationYear,
-            bookUrl, doiBookId, isbnNo, numberOfNmimsAuthors, nmimsAuthors, nmimsCampusAuthors, nmimsSchoolAuthors, filename]
+            bookUrl, doiBookId, isbnNo, numberOfNmimsAuthors, nmimsAuthors, nmimsCampusAuthors, nmimsSchoolAuthors, bookChapterDataFiles]
     }
     console.log('sql ===>>', sql)
     return autoDbW.query(sql)
 }
 
-module.exports.updatedBookChapter = async(bookChapterId, updatedBookChapterPublication, updatedFile) => {
-    if(updatedFile){
+module.exports.updatedBookChapter = async(bookChapterId, updatedBookChapterPublication, updateBookChapterDataFiles) => {
+    if(updateBookChapterDataFiles){
         const {authorName, bookTitle, edition, editorName, bookEditor, chapterTitle, volumeNumber, publisherCategory, pageNumber, publisherName, publicationYear,
             bookUrl, doiBookId, isbnNo, numberOfNmimsAuthors, nmimsAuthors, nmimsCampusAuthors, nmimsSchoolAuthors} = updatedBookChapterPublication;                      
         let sql = {
             text : `UPDATE book_chapter_publications SET author_name = $2, book_title = $3, edition = $4, editor_name = $5, book_editor = $6, chapter_title = $7, volume_number = $8, publisher_category = $9, page_number = $10, publisher_name = $11, 
                    publication_year = $12, book_url = $13, doi_id = $14, isbn = $15, number_of_nmims_authors = $16, nmims_authors = $17, nmims_campus_authors = $18, nmims_school_authors = $19, supporting_documents = $20 WHERE id = $1`,
             values : [bookChapterId, authorName, bookTitle, edition, editorName, bookEditor, chapterTitle, volumeNumber, publisherCategory, pageNumber, publisherName, publicationYear,
-                bookUrl, doiBookId, isbnNo, numberOfNmimsAuthors, nmimsAuthors, nmimsCampusAuthors, nmimsSchoolAuthors, updatedFile]
+                bookUrl, doiBookId, isbnNo, numberOfNmimsAuthors, nmimsAuthors, nmimsCampusAuthors, nmimsSchoolAuthors, updateBookChapterDataFiles]
         }
         return autoDbW.query(sql)
 

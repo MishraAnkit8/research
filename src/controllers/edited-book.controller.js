@@ -14,15 +14,18 @@ module.exports.renderEdietedBookPublication = async(req, res, next) => {
 module.exports.insertEditedBookPublication = async(req, res, next) => {
     const editedBook  = req.body;
     console.log('editedBookPublication ==>>', editedBook);
-    const filename =  req.file.filename;
+    // const filename =  req.file.filename;
     console.log('data in controller ==>>', req.body);
-    const insertEditedBookPublication = await editedBookPublication.insertEditedBookPublication(editedBook, filename);
+    const insertEditedBookPublication = await editedBookPublication.insertEditedBookPublication(editedBook, req.files);
+    const filename = insertEditedBookPublication.editedBookFilesData;
+    const editedBookId = insertEditedBookPublication.editedBookId;
+    console.log('returning id in controller ===>>>', editedBookId)
     if(insertEditedBookPublication){
         res.status(200).send({
             status : 'done',
             editedBooKData : editedBook,
-            editedBookId  : insertEditedBookPublication,
-            filename : filename
+            editedBookId,
+            filename
         })
     }
 

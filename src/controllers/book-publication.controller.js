@@ -14,30 +14,32 @@ module.exports.renderBookPublication = async(req, res, next) => {
 
 module.exports.insertBookPublication = async(req, res, next) => {
     const bookPublicationData  = req.body;
-    const filename =  req.file.filename;
     console.log('data in controller ==>>', req.body);
-    const insertBookPublicarionData = await bookPublicationService.insertBookPublication(bookPublicationData, filename);
+    console.log('files in controller ==>>>', req.files);
+    const insertBookPublicarionData = await bookPublicationService.insertBookPublication(req.body, req.files);
+    console.log('insertBookPublicarionData ID in Controller ===>>>', insertBookPublicarionData.bookPublicationId)
     if(insertBookPublicarionData){
         res.status(200).send({
             status : 'done',
             bookPublicationData : bookPublicationData,
-            bookPublicationId  : insertBookPublicarionData,
-            filename : filename
+            bookPublicationId  : insertBookPublicarionData.bookPublicationId,
+            filename : insertBookPublicarionData.bookPublicationfileData
         })
     }
-
 }
+
 module.exports.updateBookPublication = async(req, res, next) => {
     console.log('data comming from frontend ==>>', req.body);
     const bookPublicationId  = req.body.bookPublicationId ;
     console.log('id ==', bookPublicationId )
     const updatedBookPublicationData = req.body;
-    updatedBookPublicationData.researchSupportingDocument = req.file ? req.file.filename : null;
-    console.log(' updatedFile in controller ==>>', req.file);
-    if(req.file) {
-        const updatedFile = req.file.filename;
-        const updatedBookPublication = await bookPublicationService.updateBookPublication( bookPublicationId, updatedBookPublicationData, updatedFile);
+    if(req.files) {
+        console.log('files in controller ===>>>>', req.files)
+        // const updatedFiles = req.body.researchSupportingDocument;
+        // console.log('updatedFiles ===>>>>', updatedFiles)
+        const updatedBookPublication = await bookPublicationService.updateBookPublication( bookPublicationId, updatedBookPublicationData, req.files);
         console.log('updatedBookPublication ==>>>', updatedBookPublication);
+        const updatedFile = updatedBookPublication.upadteDataFileString;
         if(updatedBookPublication.status === 'done'){
             res.status(200).send({
                 status : 'done',

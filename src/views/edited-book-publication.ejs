@@ -273,7 +273,7 @@
                                 Upload Supporting Documents
                             </label>
                            <div class="d-flex">
-                             <input type="file" name="researchSupportingDocument" id="supporting-documents" data-validate="isEmpty,isExist,isFile" data-err-msg="File is required."  class="col-md-8 form-control " min='2000-01-01' max="2023-10-02" required>
+                             <input type="file" name="researchSupportingDocument" id="supporting-documents" data-validate="isEmpty,isExist,isFile" data-err-msg="File is required."  class="col-md-8 form-control " required multiple>
                                 <a id="downloadLink" class="p-2" download="image" style="display: none;">
                                     <i class="fa-solid fa-download download text-danger"></i>
                                 </a>
@@ -433,7 +433,7 @@
                      <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
                             <div class="task-sub-title sub-title-text"><button class="btn btn-primary h-10 w-10 download-file" id="edited-book-file-view">
-                                    <i class="fas fa-download"></i> Download supportingDocuments
+                                    <i class="fas fa-download text-danger"></i> Download supportingDocuments
                                 </button></div>
                             <label class="view-content" id="view-support-document"></label>
                         </div>
@@ -533,9 +533,19 @@
         const nmimsAuthors = document.getElementById('nmims-authors').value;
         const nmimsCampusAuthors = document.getElementById('nmims-campus-authors').value;
         const nmimsSchoolAuthors = document.getElementById('nmims-school-authors').value;
-        const supportingDocuments = document.querySelector('input[type="file"]');
+        const supportingDocuments = document.getElementById('supporting-documents');
+        // appending value and for files to upload multiple value
+        const editedBookFilesData = supportingDocuments.files;
+        if(editedBookFilesData.length > 0){
+            for(let i = 0; i<= editedBookFilesData.length - 1; i++){
+                console.log('filename ===>>', editedBookFilesData[i].name)
+                if(editedBookFilesData && editedBookFilesData[i].name){
+                    editedBook.append('researchSupportingDocument' , editedBookFilesData[i]);
 
-        // appending value
+                }
+            }
+        }
+
         editedBook.append('authorName' , authorName);
         editedBook.append('bookTitle' , bookTitle);
         editedBook.append('edition' , edition);
@@ -553,7 +563,6 @@
         editedBook.append('nmimsAuthors' , nmimsAuthors);
         editedBook.append('nmimsCampusAuthors' , nmimsCampusAuthors);
         editedBook.append('nmimsSchoolAuthors' , nmimsSchoolAuthors);
-        editedBook.append('researchSupportingDocument' , supportingDocuments.files[0]);
 
         fetch(url , {
             method : 'POST',
@@ -798,7 +807,20 @@
         const updatedNmimsAuthors = document.getElementById('nmims-authors').value;
         const updatedNmimsCampusAuthors = document.getElementById('nmims-campus-authors').value;
         const updatedNmimsSchoolAuthors = document.getElementById('nmims-school-authors').value;
-        let updatedDocuments = document.getElementById('supporting-documents');
+        const updatedDocuments = document.getElementById('supporting-documents');
+        const updateEditedFilesData = updatedDocuments.files;
+        if(updateEditedFilesData.length > 0){
+            for(let i = 0; i <= updateEditedFilesData.length - 1; i++){
+                if(updateEditedFilesData && updateEditedFilesData[i].name){
+                    updatededitedBook.append('researchSupportingDocument' , updateEditedFilesData[i]);
+                }
+            }
+        }
+        
+        else{
+            updateEditedFilesData = null;
+            updatededitedBook.append('researchSupportingDocument' , updateEditedFilesData)
+        }
         updatededitedBook.append('editedBookId' , editedBookId);
         updatededitedBook.append('authorName' , updatedAuthorName);
         updatededitedBook.append('bookTitle' , updatedBookTitle);
@@ -817,15 +839,6 @@
         updatededitedBook.append('nmimsAuthors' , updatedNmimsAuthors);
         updatededitedBook.append('nmimsCampusAuthors' , updatedNmimsCampusAuthors);
         updatededitedBook.append('nmimsSchoolAuthors' , updatedNmimsSchoolAuthors);
-
-         if(updatedDocuments && updatedDocuments.files && updatedDocuments.files.length > 0){
-            console.log('updatedDocuments ==>>', updatedDocuments);
-            updatededitedBook.append('researchSupportingDocument' , updatedDocuments.files[0]);
-         }
-        else{
-            updatedDocuments = null;
-            updatededitedBook.append('researchSupportingDocument' , updatedDocuments);
-        }
 
         fetch(url , {
             method : 'POST',

@@ -5,7 +5,7 @@ const editedBookPublicationModel = require('../models/edited-book.model');
 const uploadFolder = path.join(__dirname, '..', '..', 'uploads');
 
 module.exports.downloadFile = (req, res) => {
-    const filename = req.params.filename;
+    const filename = req.params.fileName;
     const filePath = path.join(uploadFolder, filename);
     console.log("filePath ==>>", filePath);
     console.log("filename ==>>>", filename);
@@ -29,7 +29,7 @@ module.exports.downloadFile = (req, res) => {
   
 
 module.exports.viewFile = (req, res, next) => {
-const filename = req.params.filename;
+const filename = req.params.fileName;
   const filePath = path.join(uploadFolder, filename);
   console.log("filePath ==>>", filePath);
   console.log("filename ==>>>", filename);
@@ -52,10 +52,24 @@ module.exports.fetchEditedBookPublicationData = async() => {
     return editedBookPublicationdata
 }
 
-module.exports.insertEditedBookPublication = async(editedBook , filename) => {
-    const insertEitedBookData = await editedBookPublicationModel.insertEditedBook(editedBook, filename);
+module.exports.insertEditedBookPublication = async(editedBook , files) => {
+    console.log('files ===>>>', files);
+    var editedBookFilesData = '';
+    if(files){
+      for(let i = 0; i <= files.length - 1; i++){
+        if(files && files[i].filename){
+          editedBookFilesData += files[i].filename + ',';
+        }
+      }
+    }
+    console.log('editedBookFilesData in service ===>>>>', editedBookFilesData);
+    const insertEitedBookData = await editedBookPublicationModel.insertEditedBook(editedBook, editedBookFilesData);
+    const editedBookId = insertEitedBookData.rows[0].id;
     if(insertEitedBookData){
-        return insertEitedBookData.rows[0].id;
+        return {
+          editedBookId,
+          editedBookFilesData
+        }
     }
 }
 

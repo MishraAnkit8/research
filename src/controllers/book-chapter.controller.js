@@ -15,15 +15,17 @@ module.exports.renderBookChapterPublication = async(req, res, next) => {
 module.exports.insertBookChapterPublication = async(req, res, next) => {
     const bookChapter  = req.body;
     console.log('bookChapter ==>>', bookChapter);
-    const filename =  req.file.filename;
-    console.log('data in controller ==>>', req.body);
-    const insertBookChapterData = await bookChapterServices.insertBookChapter(bookChapter, filename);
+    // const filename =  req.file.filename;
+    console.log('files  in controller ==>>', req.files);
+    const insertBookChapterData = await bookChapterServices.insertBookChapter(bookChapter, req.files);
+    const bookChapterId = insertBookChapterData.bookChapterId;
+    const filename = insertBookChapterData.bookChapterDataFiles;
     if(insertBookChapterData){
         res.status(200).send({
             status : 'done',
             bookChapter : bookChapter,
-            bookChapterId  : insertBookChapterData,
-            filename : filename
+            bookChapterId,
+            filename
         })
     }
 
@@ -33,9 +35,11 @@ module.exports.updateBookChapterData = async(req, res, next) => {
     const bookChapterId  = req.body.bookChapterId;
     console.log('id ==', bookChapterId)
     const updatedBookChapterPublication = req.body;
-    if(req.file){
-        const updatedFile = req.file.filename;
-        const updatedBookChapterData = await bookChapterServices.updatedBookChapter(bookChapterId, updatedBookChapterPublication, updatedFile);
+    if(req.files){
+        console.log('files ===>>>', req.files);
+        const updatedBookChapterData = await bookChapterServices.updatedBookChapter(bookChapterId, updatedBookChapterPublication, req.files);
+        const updatedFile = updatedBookChapterData.updateBookChapterDataFiles;
+        console.log('updatedFile ===>>>>', updatedFile)
         if(updatedBookChapterData.status === 'done'){
             res.status(200).send({
                 status : 'done',

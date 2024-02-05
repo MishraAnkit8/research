@@ -275,7 +275,7 @@
                             </label>
                             <div class="d-flex">
                                 <input type="file" name="researchSupportingDocument" id="supporting-documents"data-validate="isEmpty,isExist,isFile" data-err-msg="File is required."
-                                    class="col-md-8 form-control " min='2000-01-01' max="2023-10-02" required>
+                                    class="col-md-8 form-control " required multiple>
                                 <a id="downloadLink" class="p-2" download="image" style="display: none;">
                                     <i class="fa-solid fa-download download text-danger"></i>
                                 </a>
@@ -293,7 +293,7 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-primary d-none" id="submit-btn">Submit</button>
-                <button type="button" class="btn btn-primary d-none" id="update-btn">update</button>
+                <button type="button" class="btn btn-primary d-none" id="update-btn">Update</button>
             </div>
         </div>
     </div>
@@ -492,7 +492,7 @@
             const BookEditor = document.getElementById('book-editor')
             const nmimsCampusAuthors = document.getElementById('nmims-campus-authors');
             const nmimsSchoolAuthors = document.getElementById('nmims-school-authors');
-            const supportingDocuments = document.querySelector('input[type="file"]')
+            const supportingDocuments = document.querySelector('input[type="file"]');
 
             // making input fields empty
             authorName.value = '';
@@ -536,9 +536,19 @@
         const nmimsAuthors = document.getElementById('nmims-authors').value;
         const nmimsCampusAuthors = document.getElementById('nmims-campus-authors').value;
         const nmimsSchoolAuthors = document.getElementById('nmims-school-authors').value;
-        const supportingDocuments = document.querySelector('input[type="file"]')
+        // supporting data files and  appending value
+        const supportingDocuments = document.getElementById('supporting-documents');
+        const bookchapterFilesData = supportingDocuments.files;
+        if(bookchapterFilesData){
+            for(let i = 0; i<= bookchapterFilesData.length - 1; i++ ){
+                if(bookchapterFilesData && bookchapterFilesData[i].name){
+                    console.log('bookchapterFilesData[i].name ===>>>>', bookchapterFilesData[i].name);
+                    bookChapter.append('researchSupportingDocument' , bookchapterFilesData[i]);
 
-        // appending value
+                }
+            }
+        }
+
         bookChapter.append('authorName' , authorName);
         bookChapter.append('bookTitle' , bookTitle);
         bookChapter.append('edition' , edition);
@@ -557,7 +567,6 @@
         bookChapter.append('nmimsAuthors' , nmimsAuthors);
         bookChapter.append('nmimsCampusAuthors' , nmimsCampusAuthors);
         bookChapter.append('nmimsSchoolAuthors' , nmimsSchoolAuthors);
-        bookChapter.append('researchSupportingDocument' , supportingDocuments.files[0]);
 
         fetch(url , {
             method : 'POST',
@@ -601,7 +610,6 @@
                             </td> `;
             bookChapterList.append(newBookChapter);
             $('#book-chapter-modal').modal('hide');
-            alert('Data Inserted Successfully');
            }
         })
     }
@@ -611,7 +619,7 @@
             if (isValid) {
                 await insertbookChapter('<%- BASE_URL %>research/book-publication-main/book-chapter-publication/insert');
                 indexValue += 1
-                console.log('data inserted successfully');
+                console.log('Data Inserted Successfully');
             }
             else {
                 alert('Validation Failed');
@@ -808,7 +816,19 @@
         const updatedNmimsAuthors = document.getElementById('nmims-authors').value;
         const updatedNmimsCampusAuthors = document.getElementById('nmims-campus-authors').value;
         const updatedNmimsSchoolAuthors = document.getElementById('nmims-school-authors').value;
-        let updatedDocuments = document.getElementById('supporting-documents');
+        // for multiple files uploading
+        const updatedDocuments = document.getElementById('supporting-documents');
+        const updatedBookchapterDataFiles = updatedDocuments.files;
+        if(updatedBookchapterDataFiles.length > 0){
+            for(let i = 0; i <= updatedBookchapterDataFiles.length - 1; i++ ){
+                console.log('file name ==>>>', updatedBookchapterDataFiles[i].name);
+                updatedBookChapter.append('researchSupportingDocument' , updatedBookchapterDataFiles[i]);
+            }
+        }
+        else{
+            updatedBookchapterDataFiles = null;
+            updatedBookChapter.append('researchSupportingDocument' , updatedBookchapterDataFiles);
+         }
         updatedBookChapter.append('bookChapterId' , bookChapterId);
         updatedBookChapter.append('authorName' , updatedAuthorName);
         updatedBookChapter.append('bookTitle' , updatedBookTitle);
@@ -828,12 +848,7 @@
         updatedBookChapter.append('nmimsAuthors' , updatedNmimsAuthors);
         updatedBookChapter.append('nmimsCampusAuthors' , updatedNmimsCampusAuthors);
         updatedBookChapter.append('nmimsSchoolAuthors' , updatedNmimsSchoolAuthors);
-        if(updatedDocuments && updatedDocuments.files && updatedDocuments.files.length > 0){
-            updatedBookChapter.append('researchSupportingDocument' , updatedDocuments.files[0]);
-         }
-         else{
-            updatedDocuments = null;
-         }
+      
         fetch(url, {
             method : 'POST',
             body : updatedBookChapter
@@ -857,7 +872,7 @@
                 bookChapterRowToBeUpdated.setAttribute('data-nmims-authors' , data.updatedBookChapter.nmimsAuthors);
                 bookChapterRowToBeUpdated.setAttribute('data-nmims-campus-authors' , data.updatedBookChapter.nmimsCampusAuthors);
                 bookChapterRowToBeUpdated.setAttribute('data-nmims-school-authors' , data.updatedBookChapter.nmimsSchoolAuthors);
-                if(updatedDocuments){
+                if(updatedBookchapterDataFiles){
                     bookChapterRowToBeUpdated.setAttribute('data-supporting-documents' , data.updatedFile);
                 }
                 bookChapterRowToBeUpdated.querySelector('.author-name').innerText = data.updatedBookChapter.authorName;
@@ -900,10 +915,17 @@
         const button = event.target.closest('button');
         console.log('button  ===>>', button);
         if(button && button.id && button.classList.contains('download-file')){
-            const fileName = button.getAttribute('data-filename');
-            console.log('fileName ==>>>', fileName);
-            const fileUrl = `<%- BASE_URL %>research/book-publication-main/book-chapter-publication/download/${fileName}`;
-            downloadFile(fileName, fileUrl);
+            const fileString = button.getAttribute('data-filename');
+            console.log('fileString ==>>>', fileString);
+            const fileArray = fileString.split(',');
+            console.log('fileArray ==>>>', fileArray);
+            for(let i = 0; i <= fileArray.length - 1; i++){
+                const fileName = fileArray[i];
+                if(fileName){
+                    const fileUrl = `<%- BASE_URL %>research/book-publication-main/book-chapter-publication/download/${fileName}`;
+                    downloadFile(fileName, fileUrl);
+                }
+            }
         }
     })
 

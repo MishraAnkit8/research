@@ -6,12 +6,11 @@ const bookChapterModels = require('../models/book-chapter.model');
 const uploadFolder = path.join(__dirname, '..', '..', 'uploads');
 
 module.exports.downloadFile = (req, res) => {
-    const filename = req.params.filename;
+    const filename = req.params.fileName;
     const filePath = path.join(uploadFolder, filename);
     console.log("filePath ==>>", filePath);
     console.log("filename ==>>>", filename);
   
-    //  original filename from the provided filename
     const originalFilename = filename.split('_').slice(1).join('_');
   
     // PDF
@@ -30,7 +29,7 @@ module.exports.downloadFile = (req, res) => {
   
 
 module.exports.viewFile = (req, res, next) => {
-const filename = req.params.filename;
+const filename = req.params.fileName;
   const filePath = path.join(uploadFolder, filename);
   console.log("filePath ==>>", filePath);
   console.log("filename ==>>>", filename);
@@ -53,20 +52,41 @@ module.exports.fetchBookChapter= async() => {
     return BookChapterData
 }
 
-module.exports.insertBookChapter = async(bookChapter , filename) => {
-    const bookChapterInsertedData = await bookChapterModels.insertBookChapterData(bookChapter, filename);
+module.exports.insertBookChapter = async(bookChapter , files) => {
+    var bookChapterDataFiles = '';
+    if(files){
+      for(let i = 0; i <= files.length - 1; i++){
+          if(files && files[i].filename){
+            bookChapterDataFiles += files[i].filename + ',';
+          }
+      }
+    }
+    const bookChapterInsertedData = await bookChapterModels.insertBookChapterData(bookChapter, bookChapterDataFiles);
+    const bookChapterId = bookChapterInsertedData.rows[0].id;
+    console.log('bookChapterId ===>>>', bookChapterId)
     if(bookChapterInsertedData){
-        return bookChapterInsertedData.rows[0].id;
+        return{
+          bookChapterId,
+          bookChapterDataFiles
+        } 
     }
 }
 
-module.exports.updatedBookChapter = async(bookChapterId, updatedBookChapterPublication, updatedFile) => {
-    if(updatedFile){
-        const updatedBookChapterData = await bookChapterModels.updatedBookChapter(bookChapterId , updatedBookChapterPublication, updatedFile);
+module.exports.updatedBookChapter = async(bookChapterId, updatedBookChapterPublication, files) => {
+    if(files){
+        var updateBookChapterDataFiles = '';
+        for(let i = 0; i<= files.length - 1 ; i++){
+          if(files  && files[i].filename){
+            updateBookChapterDataFiles += files[i].filename + ',';
+          }
+        }
+        console.log('updateBookChapterDataFiles ===>>>>', updateBookChapterDataFiles)
+        const updatedBookChapterData = await bookChapterModels.updatedBookChapter(bookChapterId , updatedBookChapterPublication, updateBookChapterDataFiles);
         if(updatedBookChapterData && updatedBookChapterData.rowCount === 1) {
             return {
                 status : 'done',
-                massage : 'date updated successfully'
+                massage : 'date updated successfully',
+                updateBookChapterDataFiles
             }
         }
     }
