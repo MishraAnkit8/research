@@ -35,14 +35,18 @@ module.exports.updateEditedBookPublication = async(req, res, next) => {
     const editedBookId  = req.body.editedBookId;
     console.log('id ==', editedBookId)
     const updatedEditedBookPublication = req.body;
-    if(req.file){
-        const updatedFile = req.file.filename;
-        const updatedEditedBookData = await editedBookPublication.updateEditedBook(editedBookId, updatedEditedBookPublication, updatedFile);
+    if(req.files){
+        // const updatedFile = req.file.filename;
+        console.log('files in controller ===>>>', req.files)
+        const updatedEditedBookData = await editedBookPublication.updateEditedBook(editedBookId, updatedEditedBookPublication, req.files);
+        const updatedEditedBookFiles = updatedEditedBookData.updatedEditedBookFiles;
+        console.log('updated files data in controller ===>>>', updatedEditedBookFiles)
         if(updatedEditedBookData.status === 'done'){
             res.status(200).send({
                 status : 'done',
                 updatedEditedBook : updatedEditedBookPublication,
-                editedBookId : editedBookId 
+                editedBookId : editedBookId,
+                updatedEditedBookFiles 
             })
         }
     }

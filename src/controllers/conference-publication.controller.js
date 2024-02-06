@@ -1,27 +1,14 @@
 const conferencePublicationServices = require('../services/conference-publications.service');
 const clientScript = require('../../public/js/client');
 const path = require('path');
+const upload = require('../../multer');
 
 module.exports.renderConferencePage = async(req, res, next) => {
-    const fileuploadStatus = req.app.locals.fileuploadStatus;
-    console.log('fileuploadStatus===>',req.app.locals.fileuploadStatus);
-    const docuploadStatus = req.app.locals.docuploadStatus;
-    const htmlVal = res.app.locals.htmlVal;
-    const errorMsg = res.app.locals.errorMsg;
-    req.app.locals.fileuploadStatus = false;
-    req.app.locals.docuploadStatus = false;
-    res.app.locals.htmlVal = '';
-    clientScript.includeHtml(htmlVal);
     const conferenceData = await conferencePublicationServices.fetchConferencePublication()
     res.render('conference-publication' , {
         status : 'done',
         conferenceData : conferenceData.rows,
         rowCount : conferenceData.rowCount,
-        utils: clientScript,
-        fileuploadStatus: fileuploadStatus,
-        docuploadStatus: docuploadStatus,
-        errorMsg: errorMsg,
-        htmlVal: htmlVal,
     })
 };
 
@@ -30,17 +17,19 @@ module.exports.renderConferencePage = async(req, res, next) => {
 module.exports.insertConferencePublicationSData = async (req, res, next) => {
      const conferencePublications = req.body;
      console.log('Data comming From Template', req.body);
-     const { conferenceDocument, conferenceProof } = req.files;
-     console.log('Conference Document:', conferenceDocument[0].filename);
-     console.log('Conference Proof:', conferenceProof[0].filename);
+     console.log('files in controller ==>>>', req.files)
      const insertConferenceDataForm = await conferencePublicationServices.insertConferenceData(req.body, req.files);
+    const conferenceDocumentData = insertConferenceDataForm.insertConferenceDataForm;
+    const conferenceProofData = insertConferenceDataForm.conferenceProofData;
+    const conferenceId = insertConferenceDataForm.conferenceId;
+    console.log('conferenceId ==>>>', conferenceId)
      if(insertConferenceDataForm){
         res.status(200).send({
             status : 'done',
             conferenceData : conferencePublications,
-            conferenceId : insertConferenceDataForm.rows[0].id,
-            ConferenceDocument : conferenceDocument[0].filename,
-            ConferenceProof : conferenceProof[0].filename
+            conferenceId ,
+            conferenceDocumentData,
+            conferenceProofData
         })
      }
   
@@ -67,12 +56,13 @@ module.exports.deleteConferencePublication = async(req, res, next) => {
 module.exports.updateConferencePublication = async(req, res, next) => {
     const conferenceId = req.body.id;
     console.log('id for updation', conferenceId)
+    console.log('files in side controller ==>>', req.files);
     console.log('data in controller for updation ==>>', req.body);
     const upadtedConferenceData = req.body;
-    console.log('fielses in controller :', req.files);
-    const {conferenceProof , conferenceDocument} = req.files;
-    const ConferenceFileToBeUpdate = {conferenceProof , conferenceDocument}
-    const updateConference = await conferencePublicationServices.updatedConferencePublication(req.body, ConferenceFileToBeUpdate);
+    // console.log('fielses in controller :', req.files);
+    // const {conferenceProof , conferenceDocument} = req.files;
+    // const ConferenceFileToBeUpdate = {conferenceProof , conferenceDocument}
+    const updateConference = await conferencePublicationServices.updatedConferencePublication(req.body, req.files);
     if(updateConference){
         res.status(200).send({
             status : updateConference.status,

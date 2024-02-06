@@ -73,14 +73,21 @@ module.exports.insertEditedBookPublication = async(editedBook , files) => {
     }
 }
 
-module.exports.updateEditedBook = async(editedBookId , updatedEditedBookPublication, updatedFile) => {
+module.exports.updateEditedBook = async(editedBookId , updatedEditedBookPublication, files) => {
     console.log('data in service ==>>', updatedEditedBookPublication)
-    if(updatedFile){
-        const updatedEditedBookData = await editedBookPublicationModel.updatedEditedBookPublication(editedBookId , updatedEditedBookPublication, updatedFile);
+    if(files){
+        var  updatedEditedBookFiles = '';
+        for (let i = 0; i <= files.length - 1; i++){
+            if(files[i].filename){
+              updatedEditedBookFiles += files[i].filename + ',';
+            }
+        }
+        const updatedEditedBookData = await editedBookPublicationModel.updatedEditedBookPublication(editedBookId , updatedEditedBookPublication, updatedEditedBookFiles);
         if(updatedEditedBookData && updatedEditedBookData.rowCount === 1) {
             return {
                 status : 'done',
-                massage : 'date updated successfully'
+                massage : 'date updated successfully',
+                updatedEditedBookFiles
             }
         }
     }

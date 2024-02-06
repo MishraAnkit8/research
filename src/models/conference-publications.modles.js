@@ -20,7 +20,7 @@ module.exports.viewConferenceData = async(conferenceId) => {
     return autoDbW.query(sql);
 };
 
-module.exports.insertConferencePublication = async(conferencePublications, conferenceProof, conferenceDocument) => {
+module.exports.insertConferencePublication = async(conferencePublications, conferenceProofData, conferenceDocumentData) => {
     const {titleOfPaper,  nameAndPlace, procedingDetail, publisherCategory, isPresenter, authorType, publicationDetails, 
         volAndIssueNo, issnIsbnNo, doiWebLink, awardForPresentation} = conferencePublications;
         console.log('conferencePublications data in models' , conferencePublications);
@@ -30,7 +30,7 @@ module.exports.insertConferencePublication = async(conferencePublications, confe
                        vol_and_issue_no, issn_isbn_no, doi_weblink, award_for_presentation,upload_files, upload_proof)
                        VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING id `,
                 values : [titleOfPaper,  nameAndPlace, procedingDetail, publisherCategory, isPresenter, authorType, publicationDetails, 
-                    volAndIssueNo, issnIsbnNo, doiWebLink, awardForPresentation, conferenceDocument, conferenceProof]
+                    volAndIssueNo, issnIsbnNo, doiWebLink, awardForPresentation, conferenceDocumentData, conferenceProofData]
 
            }
            console.log('sql ==>', sql)

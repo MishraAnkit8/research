@@ -294,9 +294,9 @@
                         <div class="form-group">
                             <label for="upload" class="form-label fw-bold ">Upload Files</label>
                             <div class="d-flex">
-                                <input type="file" id="conference-file" data-validate="isEmpty,isExist,isFile" data-err-msg="File is required"
-                                    name="conferenceDocument" class="form-control" required>
-                                <button id="downloadConferenceFile" class="download-btn"><i class="fas fa-download text-danger"></i></button>
+                                <input type="file" id="conference-documnets" data-validate="isEmpty,isExist,isFile" data-err-msg="File is required"
+                                    name="conferenceDocument" class="form-control" required multiple>
+                                <button id="download-conference-file" class="download-btn"><i class="fas fa-download text-danger"></i></button>
                             </div>
                         </div>
                     </div>
@@ -306,9 +306,9 @@
                             <label for="upload"  class="form-label fw-bold ">Upload
                                 Proof</label>
                             <div class="d-flex">
-                                <input type="file" id="conference-proof" data-validate="isEmpty,isExist,isFile" data-err-msg="File is required."
-                                    name="conferenceProof" class="form-control " required>
-                                <button class="download-btn" id="downloadConferenceProof"><i class="fas fa-download text-danger"></i></button>
+                                <input type="file" id="conference-proofs" data-validate="isEmpty,isExist,isFile" data-err-msg="File is required."
+                                    name="conferenceProof" class="form-control " required multiple>
+                                <button class="download-btn" id="download-conference-proof"><i class="fas fa-download text-danger"></i></button>
                             </div>
                         </div>
                     </div>
@@ -458,15 +458,13 @@
     const conferenceAddModal = document.getElementById('confrence-modal-form');
     const submitBtn = document.getElementById('submit-btn');
     const updateBtn = document.getElementById('update-btn');
-    let downloadConferenceProof = document.getElementById('downloadConferenceProof');
-    let downloadConferenceFile  = document.getElementById('downloadConferenceFile');
     //modal for button visualization
     conferenceAddModal.addEventListener('click' , function(event){
         if(event.target.tagName === 'BUTTON' && event.target.classList.contains('add-modal') || event.target.classList.contains('plus')){
             updateBtn.classList.add('d-none');
             submitBtn.classList.remove('d-none');
-            downloadConferenceFile.classList.add('d-none');
-            downloadConferenceProof.classList.add('d-none');
+            // downloadConferenceFile.classList.add('d-none');
+            // downloadConferenceProof.classList.add('d-none');
             const titleOfPaper = document.getElementById('title-of-paper');      
             const nameAndPlace = document.getElementById('name-and-place');
             const procedingDetail = document.getElementById('proceedings-detail');
@@ -490,8 +488,6 @@
     
     const insertConferencePublicationForm = async (url) => {
         const conferenceData = new FormData();
-        const conferenceDocument = document.querySelector('input[name="conferenceDocument"]');
-        const conferenceProof = document.querySelector('input[name="conferenceProof"]');
         const titleOfPaper = document.getElementById('title-of-paper').value;       
         const nameAndPlace = document.getElementById('name-and-place').value;
         const procedingDetail = document.getElementById('proceedings-detail').value;
@@ -503,10 +499,32 @@
         const selectIsPresenter = document.querySelector('input[name="is-presenter"]:checked').value;
         const selectAuthortype = document.querySelector('input[name="author-type"]:checked').value;
         const selectAward = document.querySelector('input[name="award-for-presentation"]:checked').value;
+        // const conferenceDocument = document.querySelector('input[name="conferenceDocument"]');
+        // const conferenceProof = document.querySelector('input[name="conferenceProof"]');
+        const conferenceDocument = document.getElementById('conference-documnets');
+        const conferenceProof  = document.getElementById('conference-proofs');
+        const conferenceDocumentsData = conferenceDocument.files;
+        const conferenceProofsData = conferenceProof.files;
+        // for conference documents
+        if(conferenceDocumentsData.length > 0){
+            for(let i = 0; i <= conferenceDocumentsData.length - 1; i++){
+                console.log('conferenceDocumentsData file name ==>>', conferenceDocumentsData[i].name);
+                if(conferenceDocumentsData[i].name){
+                    conferenceData.append('conferenceDocument' , conferenceDocumentsData[i]);
+                }
+            }
+        }
+        // for conference proof
+        if(conferenceProofsData.length > 0){
+            for(let i = 0; i <= conferenceProofsData.length - 1; i++){
+                console.log('conferenceProofsData file name ==>', conferenceProofsData[i].name);
+                if(conferenceProofsData[i].name){
+                    conferenceData.append('conferenceProof' , conferenceProofsData[i]);
+                }
+            }
+        }
 
-    //    for setup of key value paire to send form data
-        conferenceData.append('conferenceDocument' , conferenceDocument.files[0]);
-        conferenceData.append('conferenceProof' , conferenceProof.files[0]);
+       // for setup of key value paire to send form data
         conferenceData.append('titleOfPaper' , titleOfPaper);
         conferenceData.append('nameAndPlace' , nameAndPlace);
         conferenceData.append('procedingDetail' , procedingDetail);
@@ -536,9 +554,9 @@
                 newConferenceFormData.setAttribute('data-publication-details' , data.conferenceData.publicationDetails);
                 newConferenceFormData.setAttribute('data-vol-and-issue-no' , data.conferenceData.volAndIssueNo);
                 newConferenceFormData.setAttribute('data-doi-weblink' , data.conferenceData.doiWebLink);
-                newConferenceFormData.setAttribute('data-upload-files' , data.ConferenceDocument);
+                newConferenceFormData.setAttribute('data-upload-files' , data.conferenceDocumentData);
                 newConferenceFormData.setAttribute('data-award-for-presentation' , data.conferenceData.isPresenter);
-                newConferenceFormData.setAttribute('data-upload-proof' , data.ConferenceProof);
+                newConferenceFormData.setAttribute('data-upload-proof' , data.conferenceProofData);
                 newConferenceFormData.innerHTML = `
                     <td>${indexValue}</td>
                     <td class="title-of-paper">${data.conferenceData.titleOfPaper}</td>
@@ -557,6 +575,7 @@
                 conferencePublicationList.append(newConferenceFormData)
             }
             $('#conference-publication-modal').modal('hide');
+            indexValue += 1;
             alert('Data Inserted Successfully');
         })
         .catch((error) => {
@@ -569,7 +588,6 @@
         const isValid = validateRequiredFormFields(submitBtn);
             if (isValid) {
                 await insertConferencePublicationForm('<%- BASE_URL %>research/conference-publication/insert');
-                indexValue += 1;
             }
             else {
                 alert('Validation Failed');
@@ -691,8 +709,8 @@
             $('#conference-publication-modal').modal('show');
             updateBtn.classList.remove('d-none');
             submitBtn.classList.add('d-none');
-            downloadConferenceFile.classList.remove('d-none');
-            downloadConferenceProof.classList.remove('d-none');
+            // downloadConferenceFile.classList.remove('d-none');
+            // downloadConferenceProof.classList.remove('d-none');
             const titleOfPaper = document.getElementById('title-of-paper');      
             const nameAndPlace = document.getElementById('name-and-place');
             const procedingDetail = document.getElementById('proceedings-detail');
@@ -758,22 +776,6 @@
            if (conferenceProofName && conferenceProof) {
                 conferenceProofName.textContent = conferenceProof
             }
-            //  fecth api for download view 
-            // const buttonToFile = {
-            //     downloadConferenceFile: conferenceDocumentData,
-            //     downloadConferenceProof: conferenceProof,
-            // };
-            // document.addEventListener('click', function (event) {
-            //     const button = event.target.closest('button');
-
-            //     if (button && button.id in buttonToFile) {
-            //         const fileName = buttonToFile[button.id];
-            //         const fileUrl = `<%- BASE_URL %>research/conference-publication/download/${fileName}`;
-
-            //         downloadFile(fileName, fileUrl);
-            //     }
-            // });
- 
         }
     });
 
@@ -791,24 +793,39 @@
         const updatedIssnIsbnNo = document.getElementById('issn-isbn-no').value;
         const updatedDoiWebLink = document.getElementById('doi-weblink').value;
         const updatedAward = document.querySelector('input[name="award-for-presentation"]:checked').value;
-        let updatedConferenceFile = document.querySelector('input[name="conferenceDocument"]');
-        let updatedConferenceProof = document.querySelector('input[name="conferenceProof"]');
-        
+        const updatedConferenceFiles = document.getElementById('conference-documnets');
+        const updatedConferenceProof = document.getElementById('conference-proofs');
+
+        let updatedConferenceFilesData = updatedConferenceFiles.files;
+        let updatedConferenceProofsData = updatedConferenceProof.files;
+
         // appending currunt updated value 
         updatedConferenceData.append('conferenceId', conferenceId)
-        if (updatedConferenceFile && updatedConferenceFile.files && updatedConferenceFile.files.length > 0) {
-            updatedConferenceData.append('conferenceDocument', updatedConferenceFile.files[0]);
+        // for conferenceDocument
+        if (updatedConferenceFilesData && updatedConferenceFilesData.length > 0) {
+            for(let i = 0 ; i <= updatedConferenceFilesData.length - 1; i++){
+                if(updatedConferenceFilesData[i].name){
+                    updatedConferenceData.append('conferenceDocument', updatedConferenceFilesData[i]);
+                }
+            }
         }
         else{
-            updatedConferenceFile = null;
-            updatedConferenceData.append('conferenceDocument', updatedConferenceFile);
+            updatedConferenceFilesData = null;
+            updatedConferenceData.append('conferenceDocument', updatedConferenceFilesData);
         }
-        if (updatedConferenceProof && updatedConferenceProof.files && updatedConferenceProof.files.length > 0) {
-            updatedConferenceData.append('conferenceProof', updatedConferenceProof.files[0])
+        // for conferenceProof files
+
+        if (updatedConferenceProofsData && updatedConferenceProofsData.length > 0) {
+            for(let i = 0; i <= updatedConferenceProofsData.length - 1; i++){
+                if(updatedConferenceProofsData[i].name){
+                    console.log('updatedConferenceProofsData[i].name')
+                    updatedConferenceData.append('conferenceProof', updatedConferenceProofsData[i])
+                }
+            }
         }
         else{
-            updatedConferenceProof = null;
-            updatedConferenceData.append('conferenceProof', updatedConferenceProof)
+            updatedConferenceProofsData = null;
+            updatedConferenceData.append('conferenceProof', updatedConferenceProofsData)
         }
         updatedConferenceData.append('titleOfPaper' , updatedTitleOfPaper);
         updatedConferenceData.append('nameAndPlace' ,updatedNameAndPlace);
@@ -842,11 +859,11 @@
                 conferenceRowToBeUpdated.setAttribute('data-publication-details' , data.upadtedConferenceData.publicationDetails);
                 conferenceRowToBeUpdated.setAttribute('data-vol-and-issue-no' , data.upadtedConferenceData.volAndIssueNo);
                 conferenceRowToBeUpdated.setAttribute('data-doi-weblink' , data.upadtedConferenceData.doiWebLink);
-                if(updatedConferenceFile){
+                if(updatedConferenceFilesData){
                     conferenceRowToBeUpdated.setAttribute('data-upload-files' , data.ConferenceFileList.conferenceDocument[0].filename);
                 }
                 conferenceRowToBeUpdated.setAttribute('data-award-for-presentation' , data.upadtedConferenceData.isPresenter);
-                if(updatedConferenceProof){
+                if(updatedConferenceProofsData){
                     conferenceRowToBeUpdated.setAttribute('data-upload-proof' , data.ConferenceFileList.conferenceProof[0].filename);
                 }
             }

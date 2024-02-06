@@ -7,7 +7,7 @@ const researchCunsultancyModel = require('../models/research-consultancy.models'
 const uploadFolder = path.join(__dirname, '..', '..', 'uploads');
 
 module.exports.downloadFile = (req, res) => {
-    const filename = req.params.filename;
+    const filename = req.params.fileName;
     const filePath = path.join(uploadFolder, filename);
     console.log("filePath ==>>", filePath);
     console.log("filename ==>>>", filename);
@@ -56,23 +56,39 @@ module.exports.fetchResearConsultacyData = async() => {
     return researchConsultancyData
 }
 
-module.exports.insertResearchConsultancyData = async(body , filename) => {
+module.exports.insertResearchConsultancyData = async(body , files) => {
     const researchCunsultancyData = body
-    const researchProjectConsultancy = await researchCunsultancyModel.insertResearhcProjectConstancyData(researchCunsultancyData , filename)
+    console.log('files in service ===>>>', files);
+    var consultancyDataFiles = '';
+    for (let i = 0; i <= files.length - 1; i++){
+          if(files[i].filename){
+            consultancyDataFiles += files[i].filename + ',';
+          }
+    }
+    console.log('consultancyDataFiles ===>>>>', consultancyDataFiles)
+    const researchProjectConsultancy = await researchCunsultancyModel.insertResearhcProjectConstancyData(researchCunsultancyData , consultancyDataFiles)
     if(researchProjectConsultancy && researchProjectConsultancy.rows[0].id) {
         return {
             status : 'done',
             consultantId : researchProjectConsultancy.rows[0].id,
-            massage : 'data inserted successfully'
+            massage : 'data inserted successfully',
+            consultancyDataFiles
         }
     }
 }
 
-module.exports.updateResearchConstant = async(consultantId, updatedConsultant, updateFileName) => {
-  if(updateFileName){
-    const updateResearchProjectConstant = await researchCunsultancyModel.updateResearchConsultantData(consultantId ,updatedConsultant, updateFileName);
+module.exports.updateResearchConstant = async(consultantId, updatedConsultant, files) => {
+  if(files){
+    var updatedConsultantFilesData = '';
+    for(let i =0; i <= files.length - 1; i++){
+      if(files[i].filename){
+        updatedConsultantFilesData += files[i].filename  + ',';
+      }
+    }
+    console.log('files name  in services ==>>>', updatedConsultantFilesData)
+    const updateResearchProjectConstant = await researchCunsultancyModel.updateResearchConsultantData(consultantId ,updatedConsultant, updatedConsultantFilesData);
     if(updateResearchProjectConstant && updateResearchProjectConstant.rowCount === 1){
-        return updateResearchProjectConstant
+      return { updateResearchProjectConstant, updatedConsultantFilesData };
     }
   }
   else{

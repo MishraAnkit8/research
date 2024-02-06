@@ -36,9 +36,9 @@ router.post('/journal-paper/view', asyncErrorHandler(journalController.viewJourn
 
 
 //case studies
-router.get('/case-study', asyncErrorHandler(caseStudyController.renderCaseStudy) );
+router.get('/case-study', asyncErrorHandler(caseStudyController.renderCaseStudy));
 router.post('/case-study/insert', validateCaseStudy, asyncErrorHandler(caseStudyController.insertCaseStudies));
-router.post('/case-study/delete',  asyncErrorHandler(caseStudyController.delCaseStudies));
+router.post('/case-study/delete', asyncErrorHandler(caseStudyController.delCaseStudies));
 router.post('/case-study/view', asyncErrorHandler(caseStudyController.caseStudyView));
 router.post('/case-study/update', asyncErrorHandler(caseStudyController.updatedCaseStudies));
 
@@ -46,21 +46,20 @@ router.post('/case-study/update', asyncErrorHandler(caseStudyController.updatedC
 //conference-publication
 router.get('/conference-publication', asyncErrorHandler(conferenceController.renderConferencePage));
 router.post('/conference-publication/insert', upload.fields([
-    { name: 'conferenceDocument', maxCount: 1 },
-    { name: 'conferenceProof', maxCount: 1 },
-]),asyncErrorHandler(conferenceController.insertConferencePublicationSData));
+    { name: 'conferenceDocument', maxCount: 5 },
+    { name: 'conferenceProof', maxCount: 5 }]), asyncErrorHandler(conferenceController.insertConferencePublicationSData));
 router.post('/conference-publication/view', asyncErrorHandler(conferenceController.viewConferencePublication));
 router.post('/conference-publication/delete', asyncErrorHandler(conferenceController.deleteConferencePublication));
 router.post('/conference-publication/update', upload.fields([
-    { name: 'conferenceDocument', maxCount: 1 },
-    { name: 'conferenceProof', maxCount: 1 },
-]),asyncErrorHandler(conferenceController.updateConferencePublication));
+    { name: 'conferenceDocument', maxCount: 5 },
+    { name: 'conferenceProof', maxCount: 5 }])
+    , asyncErrorHandler(conferenceController.updateConferencePublication));
 router.get('/conference-publication/download/:fileName', conferenceServices.downloadFile);
 router.get('/conference-publication/viewing/:fileName', conferenceServices.viewFile);
 
 //patent submission form
 router.get('/patent-submission', asyncErrorHandler(patentSubmission.renderPatentSubMissionAndGrant));
-router.post('/patent-submission/insert', upload.array('patentFilesData' ,5), asyncErrorHandler(patentSubmission.insertPatentsubmission));
+router.post('/patent-submission/insert', upload.array('patentFilesData', 5), asyncErrorHandler(patentSubmission.insertPatentsubmission));
 router.post('/patent-submission/update', upload.array('patentFilesData', 5), asyncErrorHandler(patentSubmission.updatePatentSubMissiom));
 router.post('/patent-submission/delete', asyncErrorHandler(patentSubmission.deletePatentData));
 router.post('/patent-submission/view', asyncErrorHandler(patentSubmission.viewPatentSubmissionData));
@@ -69,8 +68,8 @@ router.get('/patent-submission/viewing/:fileName', patentSubmissionServices.view
 
 //research project consultancy
 router.get('/research-project-consultancy', asyncErrorHandler(researchConsultancyController.renderResearchProjectConsultancy));
-router.post('/research-project-consultancy/insert', upload.single('researchSupportingDocument'), asyncErrorHandler(researchConsultancyController.insertResearchConsultancyData));
-router.post('/research-project-consultancy/update', upload.single('researchSupportingDocument'), asyncErrorHandler(researchConsultancyController.updatedConsultantData));
+router.post('/research-project-consultancy/insert', upload.array('researchSupportingDocument', 5), asyncErrorHandler(researchConsultancyController.insertResearchConsultancyData));
+router.post('/research-project-consultancy/update', upload.array('researchSupportingDocument', 5), asyncErrorHandler(researchConsultancyController.updatedConsultantData));
 router.post('/research-project-consultancy/delete', asyncErrorHandler(researchConsultancyController.deleteResearchConsultant));
 router.post('/research-project-consultancy/view', asyncErrorHandler(researchConsultancyController.viewResearchProjectConsultancy));
 router.get('/research-project-consultancy/download/:fileName', researchConsultancyService.downloadFile);

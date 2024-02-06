@@ -276,7 +276,7 @@
                             <div class="d-flex">
                                 <input type="file" name="researchSupportingDocument" id="supporting-documents"
                                 data-validate="isEmpty,isExist,isFile" data-err-msg="File is required."
-                                    class="col-md-8 form-control " min='2000-01-01' max="2023-10-02" required>
+                                    class="col-md-8 form-control " required multiple>
                                 <a id="downloadLink" class="p-2" download="image" style="display: none;">
                                     <i class="fa-solid fa-download download text-danger"></i>
                                 </a>
@@ -428,7 +428,7 @@
             const submissionGrantDate = document.getElementById('submission-grant-date');
             const facultyTypeInternal = document.getElementById('internal');
             const facultyTypeExternal = document.getElementById('external');
-            const supportingDocument = document.querySelector('input[type="file"]');
+            const supportingDocument = document.getElementById('supporting-documents');
 
             titleOfProject.value = '';
             thurstAreaOfResearch.value = '';
@@ -451,7 +451,17 @@
         const statusOfResearchProject = document.querySelector('input[name="research-project-status"]:checked').value;
         const submissionGrantDate = document.getElementById('submission-grant-date').value;
         const facultyType = document.querySelector('input[name="faculty-type"]:checked').value;
-        const supportingDocument = document.querySelector('input[type="file"]');
+        const supportingDocument = document.getElementById('supporting-documents');
+        const consultancyFilesData = supportingDocument.files;
+        if(consultancyFilesData.length > 0){
+            for(let i = 0; i <= consultancyFilesData.length - 1; i++ ){
+                if(consultancyFilesData[i].name){
+                    console.log('file name  ===>>>', consultancyFilesData[i].name);
+                    researchConsultancyData.append('researchSupportingDocument' , consultancyFilesData[i]);
+
+                }
+            }
+        }
 
         // appending into form
         researchConsultancyData.append('grantProposalCategory' , grantProposalCategory);
@@ -463,7 +473,6 @@
         researchConsultancyData.append('statusOfResearchProject' , statusOfResearchProject);
         researchConsultancyData.append('submissionGrantDate' , submissionGrantDate);
         researchConsultancyData.append('facultyType' , facultyType);
-        researchConsultancyData.append('researchSupportingDocument' , supportingDocument.files[0]);
 
         fetch(url , {
             method : 'POST',
@@ -482,7 +491,7 @@
                 newResearchConsultant.setAttribute('data-grant-proposal' , data.researchConsultantData.grantProposalCategory)
                 newResearchConsultant.setAttribute('data-submission-date' , data.researchConsultantData.submissionGrantDate);
                 newResearchConsultant.setAttribute('data-faulty-type' , data.researchConsultantData.facultyType);
-                newResearchConsultant.setAttribute('data-supporting-documents' , data.researchConsultantData.filename);
+                newResearchConsultant.setAttribute('data-supporting-documents' , data.researchConsultantData.consultancyFileName);
                 newResearchConsultant.innerHTML = `
                         <td>${indexValue}</td>
                         <td class="title-of-project">${data.researchConsultantData.titleOfProject}</td>
@@ -710,7 +719,21 @@
         const updatedStatusOfResearchProject = document.querySelector('input[name="research-project-status"]:checked').value;
         const updatedSubmissionGrantDate = document.getElementById('submission-grant-date').value;
         const updatedFacultyType = document.querySelector('input[name="faculty-type"]:checked').value;
-        let updatedSupportingDocument = document.querySelector('input[type="file"]');
+        const updatedSupportingDocument = document.getElementById('supporting-documents');
+
+        let updatedConsultantFiles = updatedSupportingDocument.files;
+        if(updatedConsultantFiles.length > 0){
+            for(let i = 0; i <= updatedConsultantFiles.length - 1; i++){
+                console.log('file name ==>>>', updatedConsultantFiles[i].name);
+                if(updatedConsultantFiles[i].name){
+                    updatedConsultantData.append('researchSupportingDocument' , updatedConsultantFiles[i]);
+                }
+            }
+        }
+        else{
+            updatedConsultantFiles = null;
+            updatedConsultantData.append('researchSupportingDocument' , updatedConsultantFiles);
+        }
 
         updatedConsultantData.append('consultantId' , consultantId);
         updatedConsultantData.append('grantProposalCategory' ,updatedGrantProposalCategory);
@@ -722,13 +745,6 @@
         updatedConsultantData.append('statusOfResearchProject' , updatedStatusOfResearchProject);
         updatedConsultantData.append('submissionGrantDate' , updatedSubmissionGrantDate);
         updatedConsultantData.append('facultyType' , updatedFacultyType);
-        if(updatedSupportingDocument && updatedSupportingDocument.files && updatedSupportingDocument.files.length > 0){
-            updatedConsultantData.append('researchSupportingDocument' , updatedSupportingDocument.files[0]);
-        }
-        else{
-            updatedSupportingDocument = null;
-            updatedConsultantData.append('researchSupportingDocument' , updatedSupportingDocument);
-        }
         
         fetch(url , {
             method : 'POST',
@@ -744,8 +760,8 @@
             consultantRowToBeUpdated.setAttribute('data-grant-proposal' , data.updatedConsultant.grantProposalCategory)
             consultantRowToBeUpdated.setAttribute('data-submission-date' , data.updatedConsultant.submissionGrantDate);
             consultantRowToBeUpdated.setAttribute('data-faulty-type' , data.updatedConsultant.facultyType);
-            if(updatedSupportingDocument){
-                consultantRowToBeUpdated.setAttribute('data-supporting-documents' , data.updateFileName);
+            if(updatedConsultantFiles){
+                consultantRowToBeUpdated.setAttribute('data-supporting-documents' , data.updatedConsultantFilesString);
             }
             consultantRowToBeUpdated.querySelector('.title-of-project').innerText = data.updatedConsultant.titleOfProject;
             consultantRowToBeUpdated.querySelector('.thurst-area').innerText = data.updatedConsultant.thurstAreaOfResearch;
@@ -754,6 +770,7 @@
            }
         })
         $('#consultancy-modal').modal('hide');
+        alert(' Row Data Updated Successfully');
     };
 
     updateBtn.addEventListener('click' , async() => {
@@ -766,28 +783,38 @@
         const isValid = validateRequiredFormFields(updateBtn);
             if (isValid) {
                 await updateResearchConsultancy('<%- BASE_URL %>research/research-project-consultancy/update');
-                alert(' Row Data Updated Successfully');
             }
             else {
                 console.log('Validation failed');
             }
     });
+
     // for file setattribute in button
-        function setFileNameInButtons(data) {
-            console.log('data ==>>', data);
-            const researchConFile = document.getElementById('consultancy-file-view');
-            console.log('researchConFile ==>>', researchConFile);
-            researchConFile.setAttribute('data-filename', data.consultantData.supporting_documents);
+    function setFileNameInButtons(data) {
+        console.log('data ==>>', data);
+        const researchConFile = document.getElementById('consultancy-file-view');
+        console.log('researchConFile ==>>', researchConFile);
+        researchConFile.setAttribute('data-filename', data.consultantData.supporting_documents);
         }
 
     document.addEventListener('click' , function(event) {
         const button = event.target.closest('button');
-        // console.log('button  ===>>', button);
         if(button && button.id && button.classList.contains('download-file')){
-            const fileName = button.getAttribute('data-filename');
-            console.log('fileName ==>>>', fileName);
-            const fileUrl = `<%- BASE_URL %>research/research-project-consultancy/download/${fileName}`;
-            downloadFile(fileName, fileUrl);
+            console.log('button  ===>>', button)
+            const fileString = button.getAttribute('data-filename');
+            console.log('filestring name ==>>>', fileString);
+            const fileArray = fileString.split(',');
+            console.log('fileArray ===>>>', fileArray);
+            if(fileArray.length > 0){
+                for(let i = 0; i <= fileArray.length - 1; i++){
+                    const fileName = fileArray[i];
+                    console.log('fileName ===>>>', fileName);
+                    if(fileName){
+                        const fileUrl = `<%- BASE_URL %>research/research-project-consultancy/download/${fileName}`;
+                        downloadFile(fileName, fileUrl);
+                    }
+                }
+            }
         }
     })
     

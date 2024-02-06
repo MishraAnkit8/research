@@ -11,7 +11,6 @@ module.exports.downloadFile = (req, res) => {
     console.log("filePath ==>>", filePath);
     console.log("filename ==>>>", filename);
   
-    // Extract the original filename from the provided filename
     const originalFilename = filename.split('_').slice(1).join('_');
   
     // Set the content type header to force the browser to treat it as a PDF
@@ -57,13 +56,34 @@ module.exports.insertConferenceData = async(body , files) => {
     console.log('data in service' , body);
     const conferencePublications = body;
     console.log('files in service ==>' , files);
-    const conferenceDocument = files.conferenceDocument[0].filename;
-    const conferenceProof = files.conferenceProof[0].filename
-    console.log('conferenceDocument:' , conferenceDocument);
-    console.log('conferenceProof:' , conferenceProof);
-    const insertConferencePublication = await conferencePublicationModels.insertConferencePublication(conferencePublications, conferenceDocument, conferenceProof);
+    var conferenceDocumentData = '';
+    var conferenceProofData = '';
+
+    if(files.conferenceDocument && files.conferenceProof){
+      console.log('conferenceProof Data in services :' , files.conferenceDocument);
+      console.log('conferenceDocument in services' , files.conferenceProof);
+      for(let i = 0; i <= files.conferenceDocument.length - 1; i++){
+        if(files.conferenceDocument[i].filename){
+          conferenceDocumentData += files.conferenceDocument[i].filename + ',';
+        }
+      }
+      for(let i = 0; i <= files.conferenceProof.length - 1; i++){
+        if(files.conferenceProof[i].filename){
+          conferenceProofData += files.conferenceProof[i].filename + ',';
+        }
+      }
+    }
+    console.log('conferenceDocumentData string in service ===>>>', conferenceDocumentData)
+    console.log('conferenceProofData string in service  ==>>>', conferenceProofData)
+    const insertConferencePublication = await conferencePublicationModels.insertConferencePublication(conferencePublications, conferenceDocumentData, conferenceProofData);
+    const conferenceId = insertConferencePublication.rows[0].id;
+
     if(insertConferencePublication && insertConferencePublication.rows[0].id){
-        return insertConferencePublication
+        return{
+          conferenceId,
+          conferenceDocumentData,
+          conferenceProofData
+        } 
     }
     
 }
@@ -85,10 +105,11 @@ module.exports.deleteConferencePublicationData = async(body) => {
     }
 }
 
-module.exports.updatedConferencePublication = async (body, ConferenceFileToBeUpdate) => {
+module.exports.updatedConferencePublication = async (body, files) => {
     console.log('data in service' , body);
     const upadtedConferenceData = body
     const conferenceId =  body.conferenceId;
+    console.log('files in side service ===>>>',files);
     const updateConferencePublicationData = await conferencePublicationModels.updateConferencePublication(upadtedConferenceData, conferenceId, ConferenceFileToBeUpdate);
     if(updateConferencePublicationData && updateConferencePublicationData.rowCount === 1){
         console.log('updateConferencePublicationData in service ==>>', updateConferencePublicationData);

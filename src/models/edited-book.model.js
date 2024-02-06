@@ -27,15 +27,15 @@ module.exports.insertEditedBook = async(editedBook, editedBookFilesData) => {
     return autoDbW.query(sql)
 }
 
-module.exports.updatedEditedBookPublication = async(editedBookId, updatedEditedBookPublication, updatedFile) => {
-    if(updatedFile) {
+module.exports.updatedEditedBookPublication = async(editedBookId, updatedEditedBookPublication, updatedEditedBookFiles) => {
+    if(updatedEditedBookFiles) {
         const {authorName, bookTitle, edition, editorName, chapterTitle, publicationPlace, publisherCategory, pageNumber, publisherName, publicationYear,
             bookUrl, doiBookId, isbnNo, numberOfNmimsAuthors, nmimsAuthors, nmimsCampusAuthors, nmimsSchoolAuthors} = updatedEditedBookPublication;                      
         let sql = {
             text : `UPDATE edited_book_publications SET author_name = $2, book_title = $3, edition = $4, editor_name = $5, chapter_title = $6, publication_place = $7, publisher_category = $8, page_number = $9, publisher_name = $10, 
                    publication_year = $11, book_url = $12, doi_id = $13, isbn_no = $14, number_of_nmims_authors = $15, nmims_authors = $16, nmims_campus_authors = $17, nmims_school_authors = $18, supporting_documents = $19 WHERE id = $1`,
             values : [editedBookId, authorName, bookTitle, edition, editorName, chapterTitle, publicationPlace, publisherCategory, pageNumber, publisherName, publicationYear,
-                bookUrl, doiBookId, isbnNo, numberOfNmimsAuthors, nmimsAuthors, nmimsCampusAuthors, nmimsSchoolAuthors, updatedFile]
+                bookUrl, doiBookId, isbnNo, numberOfNmimsAuthors, nmimsAuthors, nmimsCampusAuthors, nmimsSchoolAuthors, updatedEditedBookFiles]
         }
         return autoDbW.query(sql)
 

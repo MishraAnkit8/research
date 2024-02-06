@@ -138,6 +138,24 @@ function downloadFile(fileName, fileUrl) {
 }
 
 
+
+// for download function files
+// function handleButtonClick(event) {
+//     const button = event.target.closest('button');
+//     console.log('button  ===>>', button);
+    
+//     if (button && button.id && button.classList.contains('download-file')) {
+//         const fileName = button.getAttribute('data-filename');
+//         console.log('fileName ==>>>', fileName);
+        
+//         const fileUrl = `<%- BASE_URL %>research/book-publication-main/edited-book-publication/download/${fileName}`;
+//         downloadFile(fileName, fileUrl);
+//     }
+// }
+
+// document.addEventListener('click', handleButtonClick);
+
+
   
   
 

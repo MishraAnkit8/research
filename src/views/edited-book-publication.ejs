@@ -84,7 +84,7 @@
                             <td class="author-first-name"><%- editedBook.author_name %></td>
                             <td class="publication-year"><%- editedBook.publication_year %></td>
                             <td class="book-title"><%- editedBook.book_title %></td>
-                            <td class="isbn-no"><%- editedBook.isbn %></td>
+                            <td class="isbn-no"><%- editedBook.isbn_no %></td>
                             <td class="publisher-name"><%- editedBook.publisher_name %></td>
                             <td>
                                 <label class="view" data-editedBook-id="<%- editedBook.id %>"><i class="fa-solid fa-eye view text-danger"
@@ -768,7 +768,7 @@
                     viewEdition.innerText = data.editedBookView.edition;
                     viewEditorName.innerText = data.editedBookView.editor_name; 
                     viewChapterTitle.innerText = data.editedBookView.chapter_title;  
-                    viewIsbnNo.innerText = data.editedBookView.isbn; 
+                    viewIsbnNo.innerText = data.editedBookView.isbn_no; 
                     viewPublicationPlace.innerText = data.editedBookView.publication_place;
                     viewPublisherCategory.innerText = data.editedBookView.publisher_category 
                     viewPageNumber .innerText = data.editedBookView.page_number; 
@@ -862,7 +862,9 @@
                 editedBookRowToBeUpdated.setAttribute('data-nmims-authors' , data.updatedEditedBook.nmimsAuthors);
                 editedBookRowToBeUpdated.setAttribute('data-nmims-campus-authors' , data.updatedEditedBook.nmimsCampusAuthors);
                 editedBookRowToBeUpdated.setAttribute('data-nmims-school-authors' , data.updatedEditedBook.nmimsSchoolAuthors);
-                editedBookRowToBeUpdated.setAttribute('data-supporting-documents' , data.updatedEditedBook.supportingDocuments);
+                if(updateEditedFilesData){
+                    editedBookRowToBeUpdated.setAttribute('data-supporting-documents' , data.updatedEditedBookFiles.supportingDocuments);
+                }
                 editedBookRowToBeUpdated.querySelector('.author-first-name').innerText = data.updatedEditedBook.authorName;
                 editedBookRowToBeUpdated.querySelector('.book-title').innerText = data.updatedEditedBook.bookTitle;
                 editedBookRowToBeUpdated.querySelector('.publisher-name').innerText = data.updatedEditedBook.publisherName;
@@ -874,7 +876,6 @@
                 console.log('Eroor ::', error);
             })
             $('#edited-book-modal').modal('hide');
-            alert('Row Data Updated Successfully');
     };
 
     updateBtn.addEventListener('click' , async() => {
@@ -886,7 +887,8 @@
         })
         const isValid = validateRequiredFormFields(submitBtn);
             if (isValid) {
-                await updateEditedBookPublication('<%- BASE_URL %>research/book-publication-main/edited-book-publication/update')
+                await updateEditedBookPublication('<%- BASE_URL %>research/book-publication-main/edited-book-publication/update');
+                alert('Row Data Updated Successfully');
             }
             else {
                 alert('Validation Failed');
@@ -900,14 +902,26 @@
         editedBookFileView.setAttribute('data-filename', data.editedBookView.supporting_documents);
     }
 
+    // for dowloadingfiles
     document.addEventListener('click' , function(event) {
         const button = event.target.closest('button');
-        console.log('button  ===>>', button);
+        // console.log('button  ===>>', button);
         if(button && button.id && button.classList.contains('download-file')){
-            const fileName = button.getAttribute('data-filename');
-            console.log('fileName ==>>>', fileName);
-            const fileUrl = `<%- BASE_URL %>research/book-publication-main/edited-book-publication/download/${fileName}`;
-            downloadFile(fileName, fileUrl);
+            console.log('button  ===>>', button);
+            const fileStrings = button.getAttribute('data-filename');
+            console.log('fileName ==>>>', fileStrings);
+            const fileArray = fileStrings.split(',');
+            console.log('fileArray ===>>>', fileArray);
+            if (fileArray.length) {
+                for (let i = 0; i <= fileArray.length - 1; i++) {
+                    const fileName = fileArray[i];
+                    console.log('fileName ===>>>', fileName);
+                    if(fileName){
+                        const fileUrl = `<%- BASE_URL %>research/book-publication-main/edited-book-publication/download/${fileName}`;
+                        downloadFile(fileName, fileUrl);
+                    }
+                }
+            }
         }
     })
 
