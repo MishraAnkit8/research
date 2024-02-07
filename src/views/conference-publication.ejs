@@ -413,7 +413,7 @@
                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
                             <div class="task-sub-title sub-title-text"><button class="btn btn-primary h-10 w-10 download-file" id="conference-doc-file-view" >
-                                <i class="fas fa-download text danger"></i> Download ConferenceDocument
+                                <i class="fas fa-download text-danger"></i> Download ConferenceDocument
                             </button>
                         </div>
                             <label class="view-content" id="view-conference-document"></label>
@@ -499,8 +499,6 @@
         const selectIsPresenter = document.querySelector('input[name="is-presenter"]:checked').value;
         const selectAuthortype = document.querySelector('input[name="author-type"]:checked').value;
         const selectAward = document.querySelector('input[name="award-for-presentation"]:checked').value;
-        // const conferenceDocument = document.querySelector('input[name="conferenceDocument"]');
-        // const conferenceProof = document.querySelector('input[name="conferenceProof"]');
         const conferenceDocument = document.getElementById('conference-documnets');
         const conferenceProof  = document.getElementById('conference-proofs');
         const conferenceDocumentsData = conferenceDocument.files;
@@ -629,27 +627,6 @@
             const conferenceRowToBeViewed = event.target.closest('tr');
             conferenceId = event.target.getAttribute('data-conference-id');
             console.log('conferenceId ==>>', conferenceId);
-            downloadConferenceFile.classList.remove('d-none');
-            downloadConferenceProof.classList.remove('d-none');
-            let conferenceFile = conferenceRowToBeViewed.getAttribute('data-upload-files');
-            console.log('files name ==>>>', conferenceFile)
-            let conferenceProof = conferenceRowToBeViewed.getAttribute('data-upload-proof');
-            console.log('conferenceProof ==>>', conferenceProof)
-            const buttonToFile = {
-                downloadConferenceFile: conferenceFile,
-                downloadConferenceProof: conferenceProof,
-            };
-            document.addEventListener('click', function (event) {
-                const button = event.target.closest('button');
-                console.log('button ==>>', button)
-                if (button && button.id in buttonToFile) {
-                    const fileName = buttonToFile[button.id];
-                    const fileUrl = `<%- BASE_URL %>research/conference-publication/download/${fileName}`;
-
-                    downloadFile(fileName, fileUrl);
-                }
-            });
-
             const viewConferenceDocument = document.getElementById('view-conference-document');
             const viewConferenceProof = document.getElementById('view-conference-proof');
             const viewTitleOfPaper = document.getElementById('view-title-of-paper');     
@@ -818,7 +795,7 @@
         if (updatedConferenceProofsData && updatedConferenceProofsData.length > 0) {
             for(let i = 0; i <= updatedConferenceProofsData.length - 1; i++){
                 if(updatedConferenceProofsData[i].name){
-                    console.log('updatedConferenceProofsData[i].name')
+                    console.log('updatedConferenceProofsData[i].name ==>>>', updatedConferenceProofsData[i].name);
                     updatedConferenceData.append('conferenceProof', updatedConferenceProofsData[i])
                 }
             }
@@ -860,14 +837,15 @@
                 conferenceRowToBeUpdated.setAttribute('data-vol-and-issue-no' , data.upadtedConferenceData.volAndIssueNo);
                 conferenceRowToBeUpdated.setAttribute('data-doi-weblink' , data.upadtedConferenceData.doiWebLink);
                 if(updatedConferenceFilesData){
-                    conferenceRowToBeUpdated.setAttribute('data-upload-files' , data.ConferenceFileList.conferenceDocument[0].filename);
+                    conferenceRowToBeUpdated.setAttribute('data-upload-files' , data.confernceDocString);
                 }
                 conferenceRowToBeUpdated.setAttribute('data-award-for-presentation' , data.upadtedConferenceData.isPresenter);
                 if(updatedConferenceProofsData){
-                    conferenceRowToBeUpdated.setAttribute('data-upload-proof' , data.ConferenceFileList.conferenceProof[0].filename);
+                    conferenceRowToBeUpdated.setAttribute('data-upload-proof' , data.conferenceProofString);
                 }
             }
-        })
+        });
+        alert('Data Updated Succesfully');
         $('#conference-publication-modal').modal('hide');
     };
 
@@ -881,7 +859,6 @@
         const isValid = validateRequiredFormFields(updateBtn);
             if (isValid) {
                 await updateConferencePublication('<%- BASE_URL %>research/conference-publication/update');
-                alert('Data Updated Succesfully');
             }
             else {
                 alert('Validation Failed');
@@ -900,12 +877,22 @@
 
     document.addEventListener('click' , function(event) {
         const button = event.target.closest('button');
-        console.log('button  ===>>', button);
         if(button && button.id && button.classList.contains('download-file')){
-            const fileName = button.getAttribute('data-filename');
-            console.log('fileName ==>>>', fileName);
-            const fileUrl = `<%- BASE_URL %>research/conference-publication/download/${fileName}`;
-            downloadFile(fileName, fileUrl);
+            console.log('button  ===>>', button);
+            const fileString = button.getAttribute('data-filename');
+            console.log('fileString ==>>>', fileString);
+            const fileArray = fileString.split(',');
+            console.log('fileArray ===>>', fileArray);
+            if(fileArray.length > 0){
+                for(let i = 0; i <= fileArray.length - 1; i++){
+                    const fileName = fileArray[i];
+                    console.log('fileName ===>>>', fileName)
+                    if(fileName){
+                        const fileUrl = `<%- BASE_URL %>research/conference-publication/download/${fileName}`;
+                        downloadFile(fileName, fileUrl);
+                    }
+                }
+            }
         }
     })
 

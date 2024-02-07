@@ -110,18 +110,44 @@ module.exports.updatedConferencePublication = async (body, files) => {
     const upadtedConferenceData = body
     const conferenceId =  body.conferenceId;
     console.log('files in side service ===>>>',files);
+    const conferenceDocumentFiles = files.conferenceDocument;
+    const conferenceProofFiles = files.conferenceProof;
+    var confernceDocString = '';
+    var conferenceProofString = '';
+    // conference document Sting 
+    if (conferenceDocumentFiles) {
+      for (let i = 0; i <= conferenceDocumentFiles.length - 1; i++) {
+        if (conferenceDocumentFiles[i].filename) {
+          confernceDocString += conferenceDocumentFiles[i].filename + ",";
+        }
+      }
+    }
+
+    // for conference proog string
+    if(conferenceProofFiles){
+      for (let i = 0; i <= conferenceProofFiles.length - 1; i++) {
+        if (conferenceProofFiles[i].filename) {
+          conferenceProofString += conferenceProofFiles[i].filename + ",";
+        }
+      }
+    }
+    console.log('confernceDocString in service ==>>', confernceDocString);
+    console.log('conferenceProofString in service ==>>', conferenceProofString);
+    const ConferenceFileToBeUpdate = {confernceDocString , conferenceProofString}
     const updateConferencePublicationData = await conferencePublicationModels.updateConferencePublication(upadtedConferenceData, conferenceId, ConferenceFileToBeUpdate);
     if(updateConferencePublicationData && updateConferencePublicationData.rowCount === 1){
         console.log('updateConferencePublicationData in service ==>>', updateConferencePublicationData);
         return {
             status : 'done',
-            massage : 'data updated successfully'
+            massage : 'data updated successfully',
+            confernceDocString : confernceDocString,
+            conferenceProofString : conferenceProofString
         }
     }
     else{
         return {
             status : 'failed',
-            massage : 'failed to update'
+            massage : 'failed to update',
         }
     }
      

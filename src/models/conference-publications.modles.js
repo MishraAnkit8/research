@@ -50,10 +50,11 @@ module.exports.updateConferencePublication = async(upadtedConferenceData, confer
     console.log('Id for Updation in models ==>>>', conferenceId);
     const {titleOfPaper,  nameAndPlace, procedingDetail, publisherCategory, isPresenter, authorType, publicationDetails, 
         volAndIssueNo, issnIsbnNo, doiWebLink, awardForPresentation} = upadtedConferenceData;
+    console.log('ConferenceFileToBeUpdate in models ===>>>', ConferenceFileToBeUpdate);
     
-    const conferenceDocument = ConferenceFileToBeUpdate.conferenceDocument ? ConferenceFileToBeUpdate.conferenceDocument[0].filename : null;
+    const conferenceDocument = ConferenceFileToBeUpdate.confernceDocString ? ConferenceFileToBeUpdate.confernceDocString : null;
     console.log('conferenceDocument ==>> ::::', conferenceDocument)
-    const conferenceProof = ConferenceFileToBeUpdate.conferenceProof ? ConferenceFileToBeUpdate.conferenceProof[0].filename : null;
+    const conferenceProof = ConferenceFileToBeUpdate.conferenceProofString ? ConferenceFileToBeUpdate.conferenceProofString : null;
 
     const conferenceFilesarray = {conferenceDocument , conferenceProof}
     console.log('conferenceFiles  =>>', conferenceFilesarray)

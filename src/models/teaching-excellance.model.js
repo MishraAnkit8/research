@@ -12,7 +12,7 @@ module.exports.fetchTeachingExecellance = async() => {
     return autoDbR.query(sql);
 }
 
-module.exports.insertTeachingExecellanceData = async(teachingExecellance, pedagogyInnovationFile, fdpProgramFile, workShopFile, invitingFacultyFile, programOrientationFile) => {
+module.exports.insertTeachingExecellanceData = async(teachingExecellance, teachingFilesArrayData) => {
     const {pedagogyInnovation, pedagogyLink, fdpProgram, fdpProgramLink, workShopDetails, workShopLink, invitingFaculty, 
         invitingFacultyLink, programOrientation, programOrientationLink} = teachingExecellance;
     let sql = {
@@ -20,9 +20,10 @@ module.exports.insertTeachingExecellanceData = async(teachingExecellance, pedago
              workshop_link, inviting_faculty, inviting_faculty_link, program_orientation, program_orientation_link,
             pedagogy_innovation_file, fdp_program_file, workshop_file, inviting_faculty_file, program_orientation_file) VALUES($1, $2 , $3 ,$4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) RETURNING id`,
         values : [pedagogyInnovation, pedagogyLink, fdpProgram, fdpProgramLink, workShopDetails, workShopLink, invitingFaculty, 
-            invitingFacultyLink, programOrientation, programOrientationLink, pedagogyInnovationFile, fdpProgramFile, workShopFile, invitingFacultyFile, programOrientationFile]
+            invitingFacultyLink, programOrientation, programOrientationLink, teachingFilesArrayData.pedagogyInnovationFileString, teachingFilesArrayData.fdpProgramFileString, teachingFilesArrayData.workShopFileString, teachingFilesArrayData.invitingFacultyFileString, teachingFilesArrayData.programOrientationFileString]
     }
-    
+    console.log('data inserted successfully ==>>', sql);
+    console.log('autoDbW.query(sql) in models ===>>', autoDbW.query(sql));
     return autoDbW.query(sql)
 }
 
@@ -32,11 +33,11 @@ module.exports.updateTeachingExecellance = async(teachingId, updatedTeachingExec
         invitingFacultyLink, programOrientation, programOrientationLink} = updatedTeachingExecellance;
 
     
-        const pedagogyInnovationFile = teachingDocumentToBeUpdate.pedagogyInnovationFile ? teachingDocumentToBeUpdate.pedagogyInnovationFile[0].filename : null;
-        const fdpProgramFile = teachingDocumentToBeUpdate.fdpProgramFile ? teachingDocumentToBeUpdate.fdpProgramFile[0].filename : null;
-        const workShopFile = teachingDocumentToBeUpdate.workShopFile ? teachingDocumentToBeUpdate.workShopFile[0].filename : null;
-        const invitingFacultyFile = teachingDocumentToBeUpdate.invitingFacultyFile ? teachingDocumentToBeUpdate.invitingFacultyFile[0].filename : null;
-        const programOrientationFile = teachingDocumentToBeUpdate.programOrientationFile ? teachingDocumentToBeUpdate.programOrientationFile[0].filename : null;
+        const pedagogyInnovationFile = teachingDocumentToBeUpdate.pedagogyInnovationFileString ? teachingDocumentToBeUpdate.pedagogyInnovationFileString : null;
+        const fdpProgramFile = teachingDocumentToBeUpdate.fdpProgramFileString ? teachingDocumentToBeUpdate.fdpProgramFileString : null;
+        const workShopFile = teachingDocumentToBeUpdate.workShopFileString ? teachingDocumentToBeUpdate.workShopFileString : null;
+        const invitingFacultyFile = teachingDocumentToBeUpdate.invitingFacultyFileString ? teachingDocumentToBeUpdate.invitingFacultyFileString : null;
+        const programOrientationFile = teachingDocumentToBeUpdate.programOrientationFileString ? teachingDocumentToBeUpdate.programOrientationFileString : null;
 
         const filesArray = [
             pedagogyInnovationFile,

@@ -62,13 +62,15 @@ module.exports.updateConferencePublication = async(req, res, next) => {
     // console.log('fielses in controller :', req.files);
     // const {conferenceProof , conferenceDocument} = req.files;
     // const ConferenceFileToBeUpdate = {conferenceProof , conferenceDocument}
-    const updateConference = await conferencePublicationServices.updatedConferencePublication(req.body, req.files);
-    if(updateConference){
+    const updatedConference = await conferencePublicationServices.updatedConferencePublication(req.body, req.files);
+    console.log('updatedConference in controller ===>>>', updatedConference)
+    if(updatedConference){
         res.status(200).send({
-            status : updateConference.status,
-            masssage : updateConference.massage,
+            status : updatedConference.status,
+            masssage : updatedConference.massage,
             upadtedConferenceData,
-            ConferenceFileList : ConferenceFileToBeUpdate
+            confernceDocString : updatedConference.confernceDocString,
+            conferenceProofString : updatedConference.conferenceProofString
         })
     }
     else{

@@ -12,18 +12,18 @@ const router = express.Router();
 // teaching execellance
 router.get('/', asyncErrorHandler(teachingExecellanceController.renderTeachingExecellance));
 router.post('/insert', upload.fields([
-    { name: 'pedagogyInnovationFile', maxCount: 1 },
-    { name: 'fdpProgramFile', maxCount: 1 },
-    { name: 'workShopFile', maxCount: 1 },
-    { name: 'invitingFacultyFile', maxCount: 1 },
-    { name: 'programOrientationFile', maxCount: 1 }
+    { name: 'pedagogyInnovationFile', maxCount: 5 },
+    { name: 'fdpProgramFile', maxCount: 5 },
+    { name: 'workShopFile', maxCount: 5 },
+    { name: 'invitingFacultyFile', maxCount: 5 },
+    { name: 'programOrientationFile', maxCount: 5 }
 ]),asyncErrorHandler(teachingExecellanceController.insertTeachingExecellance));
 router.post('/update', upload.fields([
-    { name: 'pedagogyInnovationFile', maxCount: 1 },
-    { name: 'fdpProgramFile', maxCount: 1 },
-    { name: 'workShopFile', maxCount: 1 },
-    { name: 'invitingFacultyFile', maxCount: 1 },
-    { name: 'programOrientationFile', maxCount: 1 }
+    { name: 'pedagogyInnovationFile', maxCount: 5 },
+    { name: 'fdpProgramFile', maxCount: 5 },
+    { name: 'workShopFile', maxCount: 5 },
+    { name: 'invitingFacultyFile', maxCount: 5 },
+    { name: 'programOrientationFile', maxCount: 5 }
 ]),asyncErrorHandler(teachingExecellanceController.updatTeachingData));
 router.post('/delete', asyncErrorHandler(teachingExecellanceController.deleteTeachingExecellance));
 router.post('/view', asyncErrorHandler(teachingExecellanceController.viewTeachingExecellance));
