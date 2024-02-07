@@ -13,7 +13,7 @@ module.exports.fetchMeetingStackholdersData = async() => {
     return autoDbR.query(sql);
 }
 
-module.exports.insertMeetingStackholders = async(meetingStackholderData, rankingDocuments, accreditationFile, achievementsFile, convocationFile, inauguralProgramFile, eventFile) => {
+module.exports.insertMeetingStackholders = async(meetingStackholderData, meetingFilesData) => {
     const {ranking, rankingLink, accreditation, accreditationLink, achievements, achievementsLink, convocation, convocationLink, 
         inauguralProgram, inauguralProgramLink, events, eventsLink } = meetingStackholderData;
     let sql = {
@@ -21,22 +21,22 @@ module.exports.insertMeetingStackholders = async(meetingStackholderData, ranking
             achievements_link, convocation, convocation_link, inaugural_program, inaugural_program_link, events, events_link, 
             ranking_documents, accreditation_documents, achievements_documents, convocation_documents, inaugural_program_documents, events_documents) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18) RETURNING id`,
         values : [ranking, rankingLink, accreditation, accreditationLink, achievements, achievementsLink, convocation, convocationLink, 
-            inauguralProgram, inauguralProgramLink, events, eventsLink, rankingDocuments, accreditationFile, achievementsFile, convocationFile, inauguralProgramFile, eventFile]
+            inauguralProgram, inauguralProgramLink, events, eventsLink, meetingFilesData.rankingDocuments, meetingFilesData.accreditationFile, meetingFilesData.achievementsFile, meetingFilesData.convocationFile, meetingFilesData.inauguralProgramFile, meetingFilesData.eventFile]
     }
     console.log('sql ==>>', sql)
     return autoDbW.query(sql)
 }
 
-module.exports.updateMeetingData = async(meetingId, updateMeetingData, meetingDocumentToBeUpdate) => {
+module.exports.updateMeetingData = async(meetingId, updateMeetingData, updatedMeetingFilesData) => {
     const {ranking, rankingLink, accreditation, accreditationLink, achievements, achievementsLink, convocation, convocationLink, 
         inauguralProgram, inauguralProgramLink, events, eventsLink} = updateMeetingData;
     
-        const rankingDocuments = meetingDocumentToBeUpdate.rankingDocuments ? meetingDocumentToBeUpdate.rankingDocuments[0].filename : null;
-        const accreditationFile = meetingDocumentToBeUpdate.accreditationFile ? meetingDocumentToBeUpdate.accreditationFile[0].filename : null;
-        const achievementsFile = meetingDocumentToBeUpdate.achievementsFile ? meetingDocumentToBeUpdate.achievementsFile[0].filename : null;
-        const convocationFile = meetingDocumentToBeUpdate.convocationFile ? meetingDocumentToBeUpdate.convocationFile[0].filename : null;
-        const inauguralProgramFile = meetingDocumentToBeUpdate.inauguralProgramFile ? meetingDocumentToBeUpdate.inauguralProgramFile[0].filename : null;
-        const eventFile = meetingDocumentToBeUpdate.eventFile ? meetingDocumentToBeUpdate.eventFile[0].filename : null;
+        const rankingDocuments = updatedMeetingFilesData.rankingDocuments ? updatedMeetingFilesData.rankingDocuments : null;
+        const accreditationFile = updatedMeetingFilesData.accreditationFile ? updatedMeetingFilesData.accreditationFile : null;
+        const achievementsFile = updatedMeetingFilesData.achievementsFile ? updatedMeetingFilesData.achievementsFile : null;
+        const convocationFile = updatedMeetingFilesData.convocationFile ? updatedMeetingFilesData.convocationFile : null;
+        const inauguralProgramFile = updatedMeetingFilesData.inauguralProgramFile ? updatedMeetingFilesData.inauguralProgramFile : null;
+        const eventFile = updatedMeetingFilesData.eventFile ? updatedMeetingFilesData.eventFile : null;
 
         const filesArray = [
             rankingDocuments,
@@ -128,6 +128,7 @@ module.exports.updateMeetingData = async(meetingId, updateMeetingData, meetingDo
 }
 
 module.exports.viewMeeting = async(meetingId) => {
+    console.log('meetingId in models  ===>', meetingId)
     let sql = {
         text : `SELECT * FROM meeting_stackholders WHERE id = $1`,
         values : [meetingId]

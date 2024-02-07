@@ -49,31 +49,142 @@ module.exports.fetchMeetingData = async() => {
 }
 
 module.exports.insertMeetingStackholder = async(body, files) => {
-    const rankingDocuments = files.rankingDocuments[0].filename;
-    console.log('rankingDocuments ==>', rankingDocuments)
-    const accreditationFile = files.accreditationFile[0].filename;
-    const achievementsFile = files.achievementsFile[0].filename;
-    const convocationFile = files.convocationFile[0].filename;
-    const inauguralProgramFile = files.inauguralProgramFile[0].filename;
-    const eventFile = files.eventFile[0].filename;
+    // const rankingDocuments = files.rankingDocuments[0].filename;
+    // console.log('rankingDocuments ==>', rankingDocuments)
+    // const accreditationFile = files.accreditationFile[0].filename;
+    // const achievementsFile = files.achievementsFile[0].filename;
+    // const convocationFile = files.convocationFile[0].filename;
+    // const inauguralProgramFile = files.inauguralProgramFile[0].filename;
+    // const eventFile = files.eventFile[0].filename;
+    let meetingFilesData = {};
+    if(Object.keys(files).length > 0){
+      console.log('files in services ===>>>', files);
+      const rankingDocumentsData = files.rankingDocuments;
+      const accreditationFilesData = files.accreditationFile;
+      const achievementsFilesData = files.achievementsFile;
+      const convocationFilesData = files.convocationFile;
+      const inauguralProgramFilesData = files.inauguralProgramFile;
+      const  eventFilesData = files.eventFile;
+      const containerArray = [
+        rankingDocumentsData,
+        accreditationFilesData,
+        achievementsFilesData,
+        convocationFilesData,
+        inauguralProgramFilesData,
+        eventFilesData
+      ];
+
+      console.log('containerArray ===>>>', containerArray);
+
+      let meetingFilesDataKeys = [
+        'rankingDocuments',
+        'accreditationFile',
+        'achievementsFile',
+        'convocationFile',
+        'inauguralProgramFile',
+        'eventFile',
+      ];
+
+      let meetingFilesArrayStringValue = [];
+      if(containerArray.length > 0){
+        for(let file = 0; file <= containerArray.length - 1; file++){
+            var fileString = '';
+            if(containerArray[file]){
+              for(let i = 0; i  <= containerArray[file].length - 1; i++){
+                if(containerArray[file][i].filename){
+                  console.log('filename inside loop ===>>>', containerArray[file][i].filename);
+                  fileString += containerArray[file][i].filename + ',';
+                }
+              }
+              meetingFilesArrayStringValue.push(fileString);
+            }
+        }
+      }
+      console.log('meetingFilesArrayStringValue ===>>>', meetingFilesArrayStringValue);
+      for(let i =0; i <= meetingFilesDataKeys.length - 1; i++){
+          const keys = meetingFilesDataKeys[i];
+          const values = meetingFilesArrayStringValue[i];
+          meetingFilesData[keys] = values;
+      }
+    }
+    console.log('meetingFilesData inservice ====>>>', meetingFilesData)
     const meetingStackholderData = body;
     console.log('meetingStackholderData  ==>>', meetingStackholderData)
-    const insertmMeetingStackholderData = await meetingModels.insertMeetingStackholders(meetingStackholderData, rankingDocuments, accreditationFile, achievementsFile, convocationFile, inauguralProgramFile, eventFile);
+    const insertmMeetingStackholderData = await meetingModels.insertMeetingStackholders(meetingStackholderData, meetingFilesData);
     console.log('insertmMeetingStackholderData ==>>', insertmMeetingStackholderData.rows[0].id);
+    const meetingId = insertmMeetingStackholderData.rows[0].id
     if(insertmMeetingStackholderData){
-        return insertmMeetingStackholderData.rows[0].id;
+        return {
+          meetingId,
+          meetingFilesData
+        }
     }
 
 
 }
 
-module.exports.updateMeetingStackholders = async(meetingId, updateMeetingData, meetingDocumentToBeUpdate) => {
+module.exports.updateMeetingStackholders = async(meetingId, updateMeetingData, files) => {
     console.log('data in service ==>>', updateMeetingData)
-    const updatedMeeting = await meetingModels.updateMeetingData(meetingId, updateMeetingData, meetingDocumentToBeUpdate);
+    // console.log('files data in in service ===>>>', files);
+    let updatedMeetingFilesData = {};
+    if(Object.keys(files).length > 0){
+      console.log('files in services ===>>>', files);
+      const rankingDocumentsData = files.rankingDocuments;
+      const accreditationFilesData = files.accreditationFile;
+      const achievementsFilesData = files.achievementsFile;
+      const convocationFilesData = files.convocationFile;
+      const inauguralProgramFilesData = files.inauguralProgramFile;
+      const  eventFilesData = files.eventFile;
+      const containerArray = [
+        rankingDocumentsData,
+        accreditationFilesData,
+        achievementsFilesData,
+        convocationFilesData,
+        inauguralProgramFilesData,
+        eventFilesData
+      ];
+
+      console.log('containerArray ===>>>', containerArray);
+
+      let meetingFilesDataKeys = [
+        'rankingDocuments',
+        'accreditationFile',
+        'achievementsFile',
+        'convocationFile',
+        'inauguralProgramFile',
+        'eventFile',
+      ];
+
+      let meetingFilesArrayStringValue = [];
+      if(containerArray.length > 0){
+        for(let file = 0; file <= containerArray.length - 1; file++){
+            var fileString = '';
+            if(containerArray[file]){
+              for(let i = 0; i  <= containerArray[file].length - 1; i++){
+                if(containerArray[file][i].filename){
+                  console.log('filename inside loop ===>>>', containerArray[file][i].filename);
+                  fileString += containerArray[file][i].filename + ',';
+                }
+              }
+              meetingFilesArrayStringValue.push(fileString);
+            }
+        }
+      }
+      console.log('meetingFilesArrayStringValue ===>>>', meetingFilesArrayStringValue);
+      for(let i =0; i <= meetingFilesDataKeys.length - 1; i++){
+          const keys = meetingFilesDataKeys[i];
+          const values = meetingFilesArrayStringValue[i];
+          updatedMeetingFilesData[keys] = values;
+      }
+
+    }
+    console.log('updatedMeetingFilesData in serices ==>>>', updatedMeetingFilesData)
+    const updatedMeeting = await meetingModels.updateMeetingData(meetingId, updateMeetingData, updatedMeetingFilesData);
     if(updatedMeeting && updatedMeeting.rowCount === 1){
         return{
             status : 'done',
-            massage : 'data updated successfully'
+            massage : 'data updated successfully',
+            updatedMeetingFilesData
         }
     }
 }

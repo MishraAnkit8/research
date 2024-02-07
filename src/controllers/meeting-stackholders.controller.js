@@ -13,14 +13,22 @@ module.exports.renderMeetingStackholders = async(req, res, next) => {
 module.exports.insertMeetingStackholders = async(req, res, next) => {
     console.log('data in controller ==>>>', req.body);
     const meetingData = req.body;
-    console.log('files ==>>', req.files);
-    const {rankingDocuments, accreditationFile, achievementsFile, convocationFile, inauguralProgramFile, eventFile} = req.files
+    console.log('files in controller ==>>', req.files);
+    // const {rankingDocuments, accreditationFile, achievementsFile, convocationFile, inauguralProgramFile, eventFile} = req.files
     const meetingStackholdersData = await meetingServices.insertMeetingStackholder(req.body, req.files);
+    const meetingId = meetingStackholdersData.meetingId;
+    const rankingDocuments = meetingStackholdersData.meetingFilesData.rankingDocuments;
+    const accreditationFile = meetingStackholdersData.meetingFilesData.accreditationFile; 
+    const achievementsFile = meetingStackholdersData.meetingFilesData.achievementsFile 
+    const convocationFile = meetingStackholdersData.meetingFilesData.convocationFile; 
+    const inauguralProgramFile = meetingStackholdersData.meetingFilesData.inauguralProgramFile; 
+    const eventFile = meetingStackholdersData.meetingFilesData.eventFile;
+
     if(meetingStackholdersData) {
         res.status(200).send({
             status : 'done',
             meetingData : meetingData,
-            meetingId : meetingStackholdersData,
+            meetingId,
             rankingDocuments,
             accreditationFile, 
             achievementsFile, 
@@ -36,9 +44,16 @@ module.exports.updateMeetingStackholders = async(req, res, next) => {
     const updateMeetingData = req.body;
     console.log('updateMeetingData ==>>', updateMeetingData)
     const meetingId = req.body.meetingId;
-    const {rankingDocuments, accreditationFile, achievementsFile, convocationFile, inauguralProgramFile, eventFile} = req.files;
-    const meetingDocumentToBeUpdate = {rankingDocuments, accreditationFile, achievementsFile, convocationFile, inauguralProgramFile, eventFile};
-    const updateMeetingStackholdersData = await meetingServices.updateMeetingStackholders(meetingId, req.body, meetingDocumentToBeUpdate);
+    // const {rankingDocuments, accreditationFile, achievementsFile, convocationFile, inauguralProgramFile, eventFile} = req.files;
+    console.log('files data in controller ==>>', req.files)
+    // const meetingDocumentToBeUpdate = {rankingDocuments, accreditationFile, achievementsFile, convocationFile, inauguralProgramFile, eventFile};
+    const updateMeetingStackholdersData = await meetingServices.updateMeetingStackholders(meetingId, req.body, req.files);
+    const rankingDocuments = updateMeetingStackholdersData.updatedMeetingFilesData.rankingDocuments;
+    const accreditationFile = updateMeetingStackholdersData.updatedMeetingFilesData.accreditationFile; 
+    const achievementsFile = updateMeetingStackholdersData.updatedMeetingFilesData.achievementsFile 
+    const convocationFile = updateMeetingStackholdersData.updatedMeetingFilesData.convocationFile; 
+    const inauguralProgramFile = updateMeetingStackholdersData.updatedMeetingFilesData.inauguralProgramFile; 
+    const eventFile = updateMeetingStackholdersData.updatedMeetingFilesData.eventFile;
     if(updateMeetingStackholdersData.status === 'done'){
         res.status(200).send({
             status : 'done',
