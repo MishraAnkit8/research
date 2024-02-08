@@ -248,10 +248,7 @@
                             <div class="d-flex">
                                 <input type="file" name="patentFile" id="patent-file"
                                     class="col-md-8 form-control " data-validate="isEmpty,isExist,isFile" data-err-msg="File is required." required multiple>
-                                <a id="downloadLink" class="p-2" download="image" style="display: none;">
-                                    <i class="fa-solid fa-download download text-danger"></i>
-                                </a>
-                                <img id="modalImage" class="img-fluid col-md-4 rounded file-style modal-file file-view" alt="Image Preview">
+                                    <button class="download-btn download-file" id="patent-file-edit"><i class="fas fa-download text-danger"></i></button>
                             </div>
                         </div>
                     </div>
@@ -362,8 +359,8 @@
     let indexValue = parseInt(rowIndex, 10);
     const addNewPatentSubmission = document.getElementById('add-patent-submission');
     const submitBtn = document.getElementById('submit-btn');
-    const updateBtn = document.getElementById('update-btn');
-    const fileView = document.getElementById('file-view');
+    // const updateBtn = document.getElementById('update-btn');
+    // const fileView = document.getElementById('file-view');
     const downloadLink = document.getElementById('downloadLink');
     const patenetSubMissionList = document.getElementById('patent-submisson-list');
     let patentId, rowToBeUpdated;
@@ -372,8 +369,11 @@
         if(event.target.tagName === 'BUTTON' && event.target.classList.contains('add-modal') || event.target.classList.contains('plus')){
             submitBtn.classList.remove('d-none');
             updateBtn.classList.add('d-none');
-            fileView.classList.add('d-none');
-            modalImage.classList.add('d-none');
+            // fileView.classList.add('d-none');
+            // modalImage.classList.add('d-none'); 
+            //d-none download button
+            const patentDataFiles = document.getElementById('patent-file-edit');
+            patentDataFiles.classList.add('d-none');
     
             const typeOfInvention = document.getElementById('type-of-invention');
             const titleOfInvention = document.getElementById('title-of-invention');
@@ -484,11 +484,12 @@
             if (event.target.classList.contains('edit')) {
                 submitBtn.classList.add('d-none');
                 updateBtn.classList.remove('d-none');
-                fileView.classList.remove('d-none');
-                modalImage.classList.remove('d-none');
+                // fileView.classList.remove('d-none');
+                // modalImage.classList.remove('d-none');
                 removeErrorMsg();
                 rowToBeUpdated = event.target.closest('tr');
-                console.log('rowToBeUpdated ==>>', rowToBeUpdated);
+                // function call for download button
+                setFileNameAttributeToBeDownload(setFileNameAttributeToBeDownload(data))
                 patentId = event.target.getAttribute('data-patent-id');
                 console.log('Id For Updation', patentId);
                 $('#patent-submission-modal').modal('show');
@@ -524,16 +525,16 @@
                 } else {
                     isPresenterNo.checked = true;
                 }
-                // for file and image view and download
-                const imageRoute = '<%- BASE_URL %>research/patent-submission/viewing/';
-                const fileRoute = '<%- BASE_URL %>research/patent-submission/download/';
-                if(imageRoute){
-                    modalImage.classList.remove('d-none');
-                }
-                else{
-                    modalImage.classList.add('d-none');
-                }
-                handleFilePreviewAndDownload(supportingDocuments, imageRoute, fileRoute);
+                // // for file and image view and download
+                // const imageRoute = '<%- BASE_URL %>research/patent-submission/viewing/';
+                // const fileRoute = '<%- BASE_URL %>research/patent-submission/download/';
+                // if(imageRoute){
+                //     modalImage.classList.remove('d-none');
+                // }
+                // else{
+                //     modalImage.classList.add('d-none');
+                // }
+                // handleFilePreviewAndDownload(supportingDocuments, imageRoute, fileRoute);
             }
 
             //   for delete patent submission form
@@ -661,7 +662,6 @@
             updatedPatentData.append('patentFilesData', updatedPatentFilesData)
         }
 
-
         // fetch api
         fetch(url , {
             method : 'POST',
@@ -712,7 +712,7 @@
     })
 
 
-
+    //  set file string into button
     function setFileNameInButtons(data) {
         console.log('data ==>>>', data);
         patetDataFileView = document.getElementById('patent-data-file-view');
@@ -720,27 +720,38 @@
     } 
 
     // for downloading file for that we are using this listner
-    document.addEventListener('click' , function(event) {
-        const button = event.target.closest('button');
-        // console.log('button');
-        if(button && button.id && button.classList.contains('download-file')){
-            console.log('button.id ==>>', button.id);
-            const fileData = button.getAttribute('data-filename');
-            console.log('fileName ==>>', fileData);
-            const fileArray = fileData.split(',');
-            console.log('fileArray ===>>>', fileArray)
-            console.log('0 index value ==>>>', fileArray[0])
-            for(let i = 0; i<= fileArray.length-1; i++){
-                const fileName = fileArray[i];
-                console.log('fileName ===>>>', fileName)
-                if(fileName){
-                    const fileUrl = `<%- BASE_URL %>research/patent-submission/download/${fileName}`;
-                     downloadFile(fileName, fileUrl)
+    document.addEventListener('click', function (event) {
+            const button = event.target.closest('button');
+            // console.log('button');
+            if (button && button.id && button.classList.contains('download-file')) {
+                console.log('button.id ==>>', button.id);
+                const fileData = button.getAttribute('data-filename');
+                console.log('fileName ==>>', fileData);
+                const fileArray = fileData.split(',');
+                console.log('fileArray ===>>>', fileArray)
+                console.log('0 index value ==>>>', fileArray[0])
+                for (let i = 0; i <= fileArray.length - 1; i++) {
+                    const fileName = fileArray[i];
+                    console.log('fileName ===>>>', fileName)
+                    if (fileName) {
+                        const fileUrl = `<%- BASE_URL %>research/patent-submission/download/${fileName}`;
+                        downloadFile(fileName, fileUrl)
+                    }
                 }
-            }
-        }
+     }
     })
 
+    // set string file value into button
+    function setFileNameAttributeToBeDownload(data) {
+            console.log('data row in side function ===>>', data);
+            const patentDataFiles = document.getElementById('patent-file-edit');
+            patentDataFiles.classList.remove('d-none');
+            const patentDataString = data.getAttribute('data-supporting-documents');
+
+            // setAttribute into button
+            patentDataFiles.setAttribute('data-filename', patentDataString);
+
+        };
 
 </script>
 <!-- footer section -->

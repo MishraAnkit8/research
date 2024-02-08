@@ -175,7 +175,7 @@
                         <div class="d-flex">
                             <input type="file" name="pedagogyInnovationFile" id="pedagogy-innovation-file"
                                 data-validate="isEmpty,isExist,isFile" data-err-msg="File is required." class="form-control" required multiple>
-                            <button class="download-btn" id="pedagogyFile">
+                            <button class="download-btn download-file" id="pedagogy-file-edit">
                                 <i class="fas fa-download text-danger"></i>
                             </button>
                         </div>
@@ -201,7 +201,7 @@
                         <div class="d-flex">
                             <input type="file" name="fdpProgramFile" id="fdp-program-file"
                                 data-validate="isEmpty,isExist,isFile" data-err-msg="File is required." class="form-control" required multiple>
-                            <button class="download-btn" id="FdpFile">
+                            <button class="download-btn download-file" id="fdp-file-edit">
                                 <i class="fas fa-download text-danger"></i>
                             </button>
                         </div>
@@ -225,7 +225,7 @@
                         <div class="d-flex">
                             <input type="file" name="workShopFile" id="work-shop-file" class="form-control"
                                 data-validate="isEmpty,isExist,isFile" data-err-msg="file is required." required multiple>
-                            <button class="download-btn" id="workShopDataFile">
+                            <button class="download-btn download-file" id="work-shop-file-edit">
                                 <i class="fas fa-download text-danger"></i>
                             </button>
                         </div>
@@ -249,7 +249,7 @@
                         <div class="d-flex">
                             <input type="file" name="invitingFacultyFile" id="inviting-faculty-file" data-validate="isEmpty,isExist,isFile"
                                 data-err-msg="File is required." class="form-control " required multiple>
-                            <button class="download-btn" id="invitingFile">
+                            <button class="download-btn download-file" id="inviting-file-edit">
                                 <i class="fas fa-download text-danger"></i>
                             </button>
                         </div>
@@ -273,7 +273,7 @@
                         <div class="d-flex">
                             <input type="file" name="programOrientationFile" class="form-control file-err"
                                 data-validate="isEmpty,isExist,isFile" data-err-msg="File is required." id="program-orientation-file" required multiple>
-                            <button class="download-btn" id="orientationFile">
+                            <button class="download-btn download-file" id="orientation-file-edit">
                                 <i class="fas fa-download text-danger"></i>
                             </button>
                         </div>
@@ -471,12 +471,18 @@
             // for button visualization
             submitBtn.classList.remove('d-none');
             updateBtn.classList.add('d-none');
-            pedagogyFile.classList.add('d-none');
-            FdpFile.classList.add('d-none');
-            workShopDataFile.classList.add('d-none');
-            invitingFile.classList.add('d-none');
-            orientationFile.classList.add('d-none');
+            const pedagogyDataFiles = document.getElementById('pedagogy-file-edit');
+            const FdpDataFiles = document.getElementById('fdp-file-edit');
+            const workShopDataFiles = document.getElementById('work-shop-file-edit');
+            const invitingDataFiles = document.getElementById('inviting-file-edit');
+            const orientationDataFiles = document.getElementById('orientation-file-edit');
 
+            // making download button d-none
+            pedagogyDataFiles.classList.add('d-none');
+            FdpDataFiles.classList.add('d-none');
+            workShopDataFiles.classList.add('d-none');
+            invitingDataFiles.classList.add('d-none');
+            orientationDataFiles.classList.add('d-none');
             const pedagogyInnovation = document.getElementById('pedagogy-innovation');
             const pedagogyLink = document.getElementById('pedagogy-innovation-link');
             const fdpProgram = document.getElementById('fdp-program');
@@ -729,13 +735,10 @@
             removeErrorMsg();
             submitBtn.classList.add('d-none');
             updateBtn.classList.remove('d-none');
-            // pedagogyFile.classList.remove('d-none');
-            // FdpFile.classList.remove('d-none');
-            // workShopDataFile.classList.remove('d-none');
-            // invitingFile.classList.remove('d-none');
-            // orientationFile.classList.remove('d-none');
             teachingRowToBeUpdated = event.target.closest('tr');
-            console.log('teachingRowToBeUpdated ==>>', teachingRowToBeUpdated);
+            // console.log('teachingRowToBeUpdated ==>>', teachingRowToBeUpdated);
+            // function call for stablish download button
+            setFileNameAttributeToBeDownload(teachingRowToBeUpdated)
             teachingId = event.target.getAttribute('data-teaching-id');
             console.log('id for updated ==>>', teachingId);
 
@@ -841,50 +844,15 @@
         }
         updatedTeachingData.append('teachingId' , teachingId)
         updatedTeachingData.append('pedagogyInnovation' , updatedPedagogyInnovation);
-        // if(updatedPedagogyInnovationFile && updatedPedagogyInnovationFile.files && updatedPedagogyInnovationFile.files.length > 0){
-        //     updatedTeachingData.append('pedagogyInnovationFile' , updatedPedagogyInnovationFile.files[0]); 
-        // }
-        // else{
-        //     updatedPedagogyInnovationFile = null;
-        //     updatedTeachingData.append('pedagogyInnovationFile' , updatedPedagogyInnovationFile); 
-
-        // }
         updatedTeachingData.append('pedagogyLink' , updatedPedagogyLink);
         updatedTeachingData.append('fdpProgram' , updatedFdpProgram);
-        // if(updatedFdpProgramFile && updatedFdpProgramFile.files && updatedFdpProgramFile.files.length > 0){
-        //     updatedTeachingData.append('fdpProgramFile' , updatedFdpProgramFile.files[0]); 
-        // }
-        // else{
-        //     updatedFdpProgramFile = null;
-        //     updatedTeachingData.append('fdpProgramFile' , updatedFdpProgramFile); 
-        // }
         updatedTeachingData.append('fdpProgramLink' , updatedFdpProgramLink);
         updatedTeachingData.append('workShopDetails' , updatedWorkShopDetails); 
-        // if(updatedWorkShopFile  &&  updatedWorkShopFile.files && updatedWorkShopFile.files.length > 0){
-        //     updatedTeachingData.append('workShopFile' , updatedWorkShopFile.files[0]); 
-        // }
-        // else{
-        //     updatedWorkShopFile = null;
-        //     updatedTeachingData.append('workShopFile' , updatedWorkShopFile); 
-        // }
         updatedTeachingData.append('workShopLink' , updatedWorkShopLink); 
         updatedTeachingData.append('invitingFaculty' , updatedInvitingFaculty); 
-        // if(updatedInvitingFacultyFile && updatedInvitingFacultyFile.files && updatedInvitingFacultyFile.files.length > 0){
-        //     updatedTeachingData.append('invitingFacultyFile' , updatedInvitingFacultyFile.files[0]); 
-        // }
-        // else{
-        //     updatedInvitingFacultyFile = null;
-        //     updatedTeachingData.append('invitingFacultyFile' , updatedInvitingFacultyFile); 
-        // }
         updatedTeachingData.append('invitingFacultyLink' , updatedInvitingFacultyLink);
         updatedTeachingData.append('programOrientation' , updatedProgramOrientation) 
-        // if(updatedProgramOrientationFile && updatedProgramOrientationFile.files && updatedProgramOrientationFile.files.length > 0){
-        //     updatedTeachingData.append('programOrientationFile' , updatedProgramOrientationFile.files[0]); 
-        // }
-        // else{
-        //     updatedProgramOrientationFile = null;
-        //     updatedTeachingData.append('programOrientationFile' , updatedProgramOrientationFile); 
-        // }
+ 
         updatedTeachingData.append('programOrientationLink' , updatedProgramOrientationLink);
 
         fetch(url , {
@@ -902,31 +870,45 @@
                 teachingRowToBeUpdated.querySelector('.workshop-details').innerText = data.updatedTeachingExecellance.workShopDetails;
                 teachingRowToBeUpdated.querySelector('.inviting-faculty').innerText = data.updatedTeachingExecellance.invitingFaculty;
                 teachingRowToBeUpdated.querySelector('.program-orientation').innerText = data.updatedTeachingExecellance.programOrientation;
-                if(upadtedPedagogyInnovationFiles){
-                    teachingRowToBeUpdated.setAttribute('data-pedagogy-innovation-file' , data.pedagogyInnovationFile);
+                // for setAttribute to the files in table row
+                if (dataFilesArray.length > 0) {
+                    const pedagogyInnovationFile = data.pedagogyInnovationFile;
+                    const fdpProgramFile = data.fdpProgramFile;
+                    const workShopFile = data.workShopFile;
+                    const invitingFacultyFile = data.invitingFacultyFile;
+                    const programOrientationFile = data.programOrientationFile;
+
+                    // files array container
+                    const filesStrinContainer = [
+                        pedagogyInnovationFile,
+                        fdpProgramFile,
+                        workShopFile,
+                        invitingFacultyFile,
+                        programOrientationFile
+                    ];
+
+                    // setattribute keyName array
+                    const setAttributKeyName = [
+                        'data-pedagogy-innovation-file',
+                        'data-fdp-program-file',
+                        'data-workshop-file',
+                        'data-inviting-faculty-file',
+                        'data-program-orientation-file'
+                    ];
+                    // set attribut for files in table row
+
+                    for (let i = 0; i <= dataFilesArray.length - 1; i++) {
+                        const valueString = filesStrinContainer[i];
+                        if (valueString) {
+                            const setAtrKeyName = setAttributKeyName[i];
+                            teachingRowToBeUpdated.setAttribute(setAtrKeyName, valueString)
+                        }
+                    }
                 }
-                
-                if(upadtedFdpProgramFiles){
-                    teachingRowToBeUpdated.setAttribute('data-fdp-program-file' , data.fdpProgramFile); 
-                }
-                
-                if(upadtedWorkShopFiles){
-                    teachingRowToBeUpdated.setAttribute('data-workshop-file' , data.workShopFile); 
-                }
-                
                 teachingRowToBeUpdated.setAttribute('data-pedagogy-innovation-link' , data.updatedTeachingExecellance.pedagogyLink);
                 teachingRowToBeUpdated.setAttribute('data-fdp-program-link' , data.updatedTeachingExecellance.fdpProgramLink); 
                 teachingRowToBeUpdated.setAttribute('data-workshop-link' , data.updatedTeachingExecellance.workShopLink); 
-                
-                if(upadtedInvitingFacultyFiles){
-                    teachingRowToBeUpdated.setAttribute('data-inviting-faculty-file' , data.invitingFacultyFile); 
-                }
                 teachingRowToBeUpdated.setAttribute('data-inviting-faculty-link' , data.updatedTeachingExecellance.invitingFacultyLink); 
-                
-                if(upadtedProgramOrientationFiles){
-                    teachingRowToBeUpdated.setAttribute('data-program-orientation-file' , data.programOrientationFile); 
-                } 
-
                 teachingRowToBeUpdated.setAttribute('data-program-orientation-link' , data.updatedTeachingExecellance.programOrientationLink);
             }
             $('#teaching-execellance-modal').modal('hide');
@@ -989,7 +971,34 @@
                 }
             }
         });
+   // setAttribut for download inside edit button
+    function setFileNameAttributeToBeDownload(data) {
+        console.log('data inside my fuction ==>>', data);
+        const pedagogyDataFiles = document.getElementById('pedagogy-file-edit');
+        const FdpDataFiles = document.getElementById('fdp-file-edit');
+        const workShopDataFiles = document.getElementById('work-shop-file-edit');
+        const invitingDataFiles = document.getElementById('inviting-file-edit');
+        const orientationDataFiles = document.getElementById('orientation-file-edit');
+        // storing file string value into variable
+        pedagogyDataFiles.classList.remove('d-none');
+        FdpDataFiles.classList.remove('d-none');
+        workShopDataFiles.classList.remove('d-none');
+        invitingDataFiles.classList.remove('d-none');
+        orientationDataFiles.classList.remove('d-none');
 
+        const pedagogyDataString = data.getAttribute('data-pedagogy-innovation-file');
+        const FdpDataString = data.getAttribute('data-fdp-program-file');
+        const workShopDataString = data.getAttribute('data-workshop-file');
+        const invitingDataString = data.getAttribute('data-inviting-faculty-file');
+        const orientationDataString = data.getAttribute('data-program-orientation-file');
+
+        // set the value into the download button
+        pedagogyDataFiles.setAttribute('data-filename', pedagogyDataString);
+        FdpDataFiles.setAttribute('data-filename', FdpDataString);
+        workShopDataFiles.setAttribute('data-filename', workShopDataString);
+        invitingDataFiles.setAttribute('data-filename', invitingDataString);
+        orientationDataFiles.setAttribute('data-filename', orientationDataString);
+    }
 
  
 </script>   

@@ -296,7 +296,7 @@
                             <div class="d-flex">
                                 <input type="file" id="conference-documnets" data-validate="isEmpty,isExist,isFile" data-err-msg="File is required"
                                     name="conferenceDocument" class="form-control" required multiple>
-                                <button id="download-conference-file" class="download-btn"><i class="fas fa-download text-danger"></i></button>
+                                <button id="conference-file-edit" class="download-btn download-file"><i class="fas fa-download text-danger"></i></button>
                             </div>
                         </div>
                     </div>
@@ -308,7 +308,7 @@
                             <div class="d-flex">
                                 <input type="file" id="conference-proofs" data-validate="isEmpty,isExist,isFile" data-err-msg="File is required."
                                     name="conferenceProof" class="form-control " required multiple>
-                                <button class="download-btn" id="download-conference-proof"><i class="fas fa-download text-danger"></i></button>
+                                <button class="download-btn download-file" id="conference-proof-edit"><i class="fas fa-download text-danger"></i></button>
                             </div>
                         </div>
                     </div>
@@ -686,8 +686,7 @@
             $('#conference-publication-modal').modal('show');
             updateBtn.classList.remove('d-none');
             submitBtn.classList.add('d-none');
-            // downloadConferenceFile.classList.remove('d-none');
-            // downloadConferenceProof.classList.remove('d-none');
+            setFileNameAttributeToBeDownload(conferenceRowToBeUpdated);
             const titleOfPaper = document.getElementById('title-of-paper');      
             const nameAndPlace = document.getElementById('name-and-place');
             const procedingDetail = document.getElementById('proceedings-detail');
@@ -894,7 +893,20 @@
                 }
             }
         }
-    })
+    });
+
+    // set string file value into button
+    function setFileNameAttributeToBeDownload(data){
+        // console.log('data row in side function ===>>', data);
+        const conferenceDocFiles = document.getElementById('conference-file-edit');
+        const conferenceProofFiles = document.getElementById('conference-proof-edit');
+        const conferenceDocString = data.getAttribute('data-upload-files');
+        const conferenceProofString = data.getAttribute('data-upload-proof');
+
+        //  setAttribute in button
+        conferenceDocFiles.setAttribute('data-filename', conferenceDocString);
+        conferenceProofFiles.setAttribute('data-filename' , conferenceProofString);
+    };
 
 
 </script>

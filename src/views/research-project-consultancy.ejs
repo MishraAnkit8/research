@@ -277,10 +277,7 @@
                                 <input type="file" name="researchSupportingDocument" id="supporting-documents"
                                 data-validate="isEmpty,isExist,isFile" data-err-msg="File is required."
                                     class="col-md-8 form-control " required multiple>
-                                <a id="downloadLink" class="p-2" download="image" style="display: none;">
-                                    <i class="fa-solid fa-download download text-danger"></i>
-                                </a>
-                                <img id="modalImage" class="img-fluid col-md-4 rounded file-style modal-file file-view" alt="Image Preview">
+                                <button class="download-btn download-file" id="consultancy-file-edit"><i class="fas fa-download text-danger"></i></button>
                             </div>
                         </div>
                     </div>
@@ -401,98 +398,97 @@
     const researchProjectConsultancyList = document.getElementById('consultancy-list');
     const submitBtn = document.getElementById('submit-btn');
     const updateBtn = document.getElementById('update-btn');
-     // for image preview and download file
-     const fileView = document.getElementById('file-view');
-    const downloadLink = document.getElementById('downloadLink');
     let consultantId, consultantRowToBeUpdated ;
     const addResearchConsultancyModal = document.getElementById('add-research-project-consultancy');
     
-    addResearchConsultancyModal.addEventListener('click', function(event) {
-        if(event.target.tagName === 'BUTTON' && event.target.classList.contains('add-modal') || event.target.classList.contains('plus')){
-            submitBtn.classList.remove('d-none');
-            updateBtn.classList.add('d-none');
-            fileView.classList.add('d-none');
-            modalImage.classList.add('d-none');
-            const isGrantProposalCategoryGoverement = document.getElementById('goverment');
-            const isGrantProposalCategoryNonGoverement = document.getElementById('non-goverment');
-            const grantResearchProject = document.getElementById('research');
-            const grantConsultancy = document.getElementById('consultancy');
-            const grantCapacityBuilding = document.getElementById('capacity');
-            const titleOfProject = document.getElementById('title-of-project');
-            const thurstAreaOfResearch = document.getElementById('thurst-area');
-            const fundingAgency = document.getElementById('funding-agency');
-            const fundingAmount = document.getElementById('funding-amount');
-            const statusSubmitted = document.getElementById('submitted');
-            const statusPresentationHeld = document.getElementById('presentation-held');
-            const statusGranted = document.getElementById('granted');
-            const submissionGrantDate = document.getElementById('submission-grant-date');
-            const facultyTypeInternal = document.getElementById('internal');
-            const facultyTypeExternal = document.getElementById('external');
+    addResearchConsultancyModal.addEventListener('click', function (event) {
+            if (event.target.tagName === 'BUTTON' && event.target.classList.contains('add-modal') || event.target.classList.contains('plus')) {
+                submitBtn.classList.remove('d-none');
+                updateBtn.classList.add('d-none');
+                // d-none download button
+                const consultancyDataFiles = document.getElementById('consultancy-file-edit');
+                consultancyDataFiles.classList.add('d-none');
+
+                const isGrantProposalCategoryGoverement = document.getElementById('goverment');
+                const isGrantProposalCategoryNonGoverement = document.getElementById('non-goverment');
+                const grantResearchProject = document.getElementById('research');
+                const grantConsultancy = document.getElementById('consultancy');
+                const grantCapacityBuilding = document.getElementById('capacity');
+                const titleOfProject = document.getElementById('title-of-project');
+                const thurstAreaOfResearch = document.getElementById('thurst-area');
+                const fundingAgency = document.getElementById('funding-agency');
+                const fundingAmount = document.getElementById('funding-amount');
+                const statusSubmitted = document.getElementById('submitted');
+                const statusPresentationHeld = document.getElementById('presentation-held');
+                const statusGranted = document.getElementById('granted');
+                const submissionGrantDate = document.getElementById('submission-grant-date');
+                const facultyTypeInternal = document.getElementById('internal');
+                const facultyTypeExternal = document.getElementById('external');
+                const supportingDocument = document.getElementById('supporting-documents');
+
+                titleOfProject.value = '';
+                thurstAreaOfResearch.value = '';
+                fundingAgency.value = '';
+                fundingAmount.value = '';
+                statusGranted.checked = false;
+                submissionGrantDate.value = '';
+                supportingDocument.value = '';
+            }
+        });
+
+    const insertResearchConsultancyForm = async (url) => {
+            const researchConsultancyData = new FormData();
+            const grantProposalCategory = document.querySelector('input[name="grant-proposal"]:checked').value;
+            const typeOfGrant = document.querySelector('input[name="type-of-grant"]:checked').value;
+            const titleOfProject = document.getElementById('title-of-project').value;
+            const thurstAreaOfResearch = document.getElementById('thurst-area').value;
+            const fundingAgency = document.getElementById('funding-agency').value;
+            const fundingAmount = document.getElementById('funding-amount').value;
+            const statusOfResearchProject = document.querySelector('input[name="research-project-status"]:checked').value;
+            const submissionGrantDate = document.getElementById('submission-grant-date').value;
+            const facultyType = document.querySelector('input[name="faculty-type"]:checked').value;
             const supportingDocument = document.getElementById('supporting-documents');
+            const consultancyFilesData = supportingDocument.files;
+            if (consultancyFilesData.length > 0) {
+                for (let i = 0; i <= consultancyFilesData.length - 1; i++) {
+                    if (consultancyFilesData[i].name) {
+                        console.log('file name  ===>>>', consultancyFilesData[i].name);
+                        researchConsultancyData.append('researchSupportingDocument', consultancyFilesData[i]);
 
-            titleOfProject.value = '';
-            thurstAreaOfResearch.value = '';
-            fundingAgency.value = '';
-            fundingAmount.value = '';
-            statusGranted.checked = false; 
-            submissionGrantDate.value = '';
-            supportingDocument.value = '';     
-        }
-    })
-
-    const insertResearchConsultancyForm = async(url) => {
-        const researchConsultancyData = new FormData();
-        const grantProposalCategory = document.querySelector('input[name="grant-proposal"]:checked').value;
-        const typeOfGrant = document.querySelector('input[name="type-of-grant"]:checked').value;
-        const titleOfProject = document.getElementById('title-of-project').value;
-        const thurstAreaOfResearch = document.getElementById('thurst-area').value;
-        const fundingAgency = document.getElementById('funding-agency').value;
-        const fundingAmount = document.getElementById('funding-amount').value;
-        const statusOfResearchProject = document.querySelector('input[name="research-project-status"]:checked').value;
-        const submissionGrantDate = document.getElementById('submission-grant-date').value;
-        const facultyType = document.querySelector('input[name="faculty-type"]:checked').value;
-        const supportingDocument = document.getElementById('supporting-documents');
-        const consultancyFilesData = supportingDocument.files;
-        if(consultancyFilesData.length > 0){
-            for(let i = 0; i <= consultancyFilesData.length - 1; i++ ){
-                if(consultancyFilesData[i].name){
-                    console.log('file name  ===>>>', consultancyFilesData[i].name);
-                    researchConsultancyData.append('researchSupportingDocument' , consultancyFilesData[i]);
-
+                    }
                 }
             }
-        }
 
-        // appending into form
-        researchConsultancyData.append('grantProposalCategory' , grantProposalCategory);
-        researchConsultancyData.append('typeOfGrant' , typeOfGrant);
-        researchConsultancyData.append('titleOfProject' , titleOfProject);
-        researchConsultancyData.append('thurstAreaOfResearch' , thurstAreaOfResearch);
-        researchConsultancyData.append('fundingAgency' , fundingAgency);
-        researchConsultancyData.append('fundingAmount' , fundingAmount);
-        researchConsultancyData.append('statusOfResearchProject' , statusOfResearchProject);
-        researchConsultancyData.append('submissionGrantDate' , submissionGrantDate);
-        researchConsultancyData.append('facultyType' , facultyType);
+            // appending into form
+            researchConsultancyData.append('grantProposalCategory', grantProposalCategory);
+            researchConsultancyData.append('typeOfGrant', typeOfGrant);
+            researchConsultancyData.append('titleOfProject', titleOfProject);
+            researchConsultancyData.append('thurstAreaOfResearch', thurstAreaOfResearch);
+            researchConsultancyData.append('fundingAgency', fundingAgency);
+            researchConsultancyData.append('fundingAmount', fundingAmount);
+            researchConsultancyData.append('statusOfResearchProject', statusOfResearchProject);
+            researchConsultancyData.append('submissionGrantDate', submissionGrantDate);
+            researchConsultancyData.append('facultyType', facultyType);
 
-        fetch(url , {
-            method : 'POST',
-            body : researchConsultancyData
-        })
-        .then((result) => {
-            return result.json()
-        })
-        .then((data) => {
-            if(data.status === 'done'){
-                console.log('data ==>>', data);
-                const consultantId = data.consultantId
-                console.log('id ==', consultantId)
-                const newResearchConsultant = document.createElement('tr');
-                newResearchConsultant.setAttribute('data-grant-type' , data.researchConsultantData.typeOfGrant);
-                newResearchConsultant.setAttribute('data-grant-proposal' , data.researchConsultantData.grantProposalCategory)
-                newResearchConsultant.setAttribute('data-submission-date' , data.researchConsultantData.submissionGrantDate);
-                newResearchConsultant.setAttribute('data-faulty-type' , data.researchConsultantData.facultyType);
-                newResearchConsultant.setAttribute('data-supporting-documents' , data.researchConsultantData.consultancyFileName);
-                newResearchConsultant.innerHTML = `
+            fetch(url, {
+                method: 'POST',
+                body: researchConsultancyData
+            })
+                .then((result) => {
+                    return result.json()
+                })
+                .then((data) => {
+                    if (data.status === 'done') {
+                        console.log('data ==>>', data);
+                        const consultantId = data.consultantId
+                        console.log('id ==', consultantId)
+                        const newResearchConsultant = document.createElement('tr');
+                        newResearchConsultant.setAttribute('data-grant-type', data.researchConsultantData.typeOfGrant);
+                        newResearchConsultant.setAttribute('data-grant-proposal', data.researchConsultantData.grantProposalCategory)
+                        newResearchConsultant.setAttribute('data-submission-date', data.researchConsultantData.submissionGrantDate);
+                        newResearchConsultant.setAttribute('data-faulty-type', data.researchConsultantData.facultyType);
+                        newResearchConsultant.setAttribute('data-supporting-documents', data.researchConsultantData.consultancyFileName);
+                        newResearchConsultant.innerHTML = `
                         <td>${indexValue}</td>
                         <td class="title-of-project">${data.researchConsultantData.titleOfProject}</td>
                         <td class="thurst-area">${data.researchConsultantData.thurstAreaOfResearch}</td>
@@ -511,12 +507,12 @@
                         researchProjectConsultancyList.appendChild(newResearchConsultant);
                         $('#consultancy-modal').modal('hide');
                         alert('Data Inserted  SuccessFully');
-            }
-        })
-    }
+                    }
+                })
+        }
     
     submitBtn.addEventListener('click', async () => {
-        const isValid = validateRequiredFormFields(submitBtn);
+            const isValid = validateRequiredFormFields(submitBtn);
             if (isValid) {
                 await insertResearchConsultancyForm('<%- BASE_URL %>research/research-project-consultancy/insert');
                 indexValue += 1
@@ -524,20 +520,22 @@
             else {
                 console.log('validation failed');
             }
-    });
+        });
 
-    researchProjectConsultancyList.addEventListener('click' , function(event) {
-        console.log('clikedddd')
-            if(event.target.classList.contains('edit')){
+    researchProjectConsultancyList.addEventListener('click', function (event) {
+            console.log('clikedddd')
+            if (event.target.classList.contains('edit')) {
                 console.log('clikedddd2');
                 removeErrorMsg();
                 submitBtn.classList.add('d-none');
                 updateBtn.classList.remove('d-none');
-                fileView.classList.remove('d-none');
-                 modalImage.classList.remove('d-none');
+                // fileView.classList.remove('d-none');
+                //  modalImage.classList.remove('d-none');
                 $('#consultancy-modal').modal('show');
                 consultantRowToBeUpdated = event.target.closest('tr');
-                console.log('consultantRowToBeUpdated ==>>', consultantRowToBeUpdated)
+                console.log('consultantRowToBeUpdated ==>>', consultantRowToBeUpdated);
+                // function call for download button
+                setFileNameAttributeToBeDownload(consultantRowToBeUpdated);
                 consultantId = event.target.getAttribute('data-consultancy-id');
                 console.log('consultantId ==>>', consultantId);
                 const isGrantProposalCategoryGoverement = document.getElementById('goverment');
@@ -558,59 +556,59 @@
 
                 // assigning value with actuall value
                 const GrantProposalCategory = consultantRowToBeUpdated.getAttribute('data-grant-proposal');
-                if(GrantProposalCategory === 'Goverment'){
+                if (GrantProposalCategory === 'Goverment') {
                     isGrantProposalCategoryGoverement.checked = true;
                 }
-                else{
+                else {
                     isGrantProposalCategoryNonGoverement.checked = true;
                 }
                 const grantType = consultantRowToBeUpdated.getAttribute('data-grant-type');
                 console.log('grantType', grantType)
-                if(grantType){
-                    if(grantType === 'Research Project'){
+                if (grantType) {
+                    if (grantType === 'Research Project') {
                         grantResearchProject.checked = true;
                         grantConsultancy.checked = false;
                         grantCapacityBuilding.checked = false;
                     }
-                    else if(grantType === 'Consultancy'){
-                            grantConsultancy.checked = true;
-                            grantResearchProject.checked = false;
-                            grantCapacityBuilding.checked = false;
-                        }
-                    else if (grantType === 'Capacity Building'){
+                    else if (grantType === 'Consultancy') {
+                        grantConsultancy.checked = true;
+                        grantResearchProject.checked = false;
+                        grantCapacityBuilding.checked = false;
+                    }
+                    else if (grantType === 'Capacity Building') {
                         grantCapacityBuilding.checked = true;
                         grantResearchProject.checked = false;
                         grantConsultancy.checked = false;
                     }
 
-                    const imageRoute = '<%- BASE_URL %>research/research-project-consultancy/viewing/';
-                    const fileRoute = '<%- BASE_URL %>research/research-project-consultancy/download/';
-                    if(imageRoute){
-                        modalImage.classList.remove('d-none');
-                    }
-                    else{
-                        modalImage.classList.add('d-none');
-                    }
-                    handleFilePreviewAndDownload(supportingDocument, imageRoute, fileRoute);
-            }
-                
+                    // const imageRoute = '<%- BASE_URL %>research/research-project-consultancy/viewing/';
+                    // const fileRoute = '<%- BASE_URL %>research/research-project-consultancy/download/';
+                    // if(imageRoute){
+                    //     modalImage.classList.remove('d-none');
+                    // }
+                    // else{
+                    //     modalImage.classList.add('d-none');
+                    // }
+                    // handleFilePreviewAndDownload(supportingDocument, imageRoute, fileRoute);
+                }
+
                 document.getElementById('title-of-project').value = titleOfProject.innerText.trim();
                 document.getElementById('thurst-area').value = thurstAreaOfResearch.innerText.trim();
                 document.getElementById('funding-agency').value = fundingAgency.innerText.trim();
                 document.getElementById('funding-amount').value = fundingAmount.innerText.trim();
                 const projectStatus = consultantRowToBeUpdated.querySelector('.research-project-status');
-                if(projectStatus){
-                    if(projectStatus.innerText === 'Presentation held'){
+                if (projectStatus) {
+                    if (projectStatus.innerText === 'Presentation held') {
                         statusPresentationHeld.checked = true;
                         statusGranted.checked = false;
                         statusSubmitted.checked = false;
                     }
-                    if(projectStatus.innerText === 'Submitted'){
+                    if (projectStatus.innerText === 'Submitted') {
                         statusPresentationHeld.checked = false;
                         statusGranted.checked = false;
                         statusSubmitted.checked = true;
                     }
-                    if(projectStatus.innerText === 'Granted'){
+                    if (projectStatus.innerText === 'Granted') {
                         statusPresentationHeld.checked = false;
                         statusGranted.checked = true;
                         statusSubmitted.checked = false;
@@ -621,45 +619,45 @@
                 console.log('formattedDate ==>>', formattedDate)
                 document.getElementById('submission-grant-date').value = formattedDate;
                 const facultyType = consultantRowToBeUpdated.getAttribute('data-faulty-type');
-                if(facultyType === 'External'){
+                if (facultyType === 'External') {
                     facultyTypeExternal.checked = true;
                 }
-                else{
+                else {
                     facultyTypeInternal.checked = true;
                 }
                 const supportingDocuments = consultantRowToBeUpdated.getAttribute('data-supporting-documents');
                 console.log('supportingDocuments ==>>', supportingDocuments)
             }
             //for delete
-            if(event.target.classList.contains('delete')){
+            if (event.target.classList.contains('delete')) {
                 console.log('clekeddddd');
                 const consultantRowToBEDeleted = event.target.closest('tr');
                 console.log('consultantRowToBEDeleted  ==>>', consultantRowToBEDeleted);
                 consultantId = event.target.getAttribute('data-consultancy-id');
                 console.log('consultantId ===>>', consultantId);
                 let confirmDelete = confirm("Do you want to delete the Consultancy?");
-                if(!confirmDelete) {
+                if (!confirmDelete) {
                     return;
                 }
-                fetch('<%- BASE_URL %>research/research-project-consultancy/delete' , {
-                    method : 'POST',
-                    headers : {
-                        'content-type' : 'application/json'
+                fetch('<%- BASE_URL %>research/research-project-consultancy/delete', {
+                    method: 'POST',
+                    headers: {
+                        'content-type': 'application/json'
                     },
-                    body : JSON.stringify({consultantId})
+                    body: JSON.stringify({ consultantId })
                 })
-                .then((result) => {
-                    return result.json()
-                })
-                .then((data) => {
-                    if(data.status === 'done'){
-                        consultantRowToBEDeleted.remove();
-                        location.reload();
-                    }
-                })
+                    .then((result) => {
+                        return result.json()
+                    })
+                    .then((data) => {
+                        if (data.status === 'done') {
+                            consultantRowToBEDeleted.remove();
+                            location.reload();
+                        }
+                    })
             }
 
-            if(event.target.classList.contains('view')){
+            if (event.target.classList.contains('view')) {
                 console.log('clickeddddd');
                 const consultantRowToBeViewed = event.target.closest('tr');
                 console.log('consultantRowToBeViewed ==>>', consultantRowToBeViewed);
@@ -675,32 +673,32 @@
                 const viewSubmissionGrantDate = document.getElementById('view-date');
                 const viewFacultyType = document.getElementById('view-faculty-type');
                 const viewSupportingDocument = document.getElementById('view-supporting-document');
-                fetch('<%- BASE_URL %>research/research-project-consultancy/view' , {
-                    method : 'POST',
-                    headers : {
-                        'content-type' : 'application/json'
+                fetch('<%- BASE_URL %>research/research-project-consultancy/view', {
+                    method: 'POST',
+                    headers: {
+                        'content-type': 'application/json'
                     },
-                    body : JSON.stringify({consultantId})
+                    body: JSON.stringify({ consultantId })
                 })
-                .then((result) => {
-                    return result.json()
-                })
-                .then((data) => {
-                    if(data.status === 'done'){
-                        console.log('data ==>>' , data)
-                        setFileNameInButtons(data) 
-                        viewGrantProposalCategory.innerText = data.consultantData.grant_proposal_category;
-                        viewTypeOfGrant.innerText = data.consultantData.type_of_grant;
-                        viewTitleOfProject.innerText = data.consultantData.title_of_project;
-                        viewThurstAreaOfResearch.innerText = data.consultantData.thrust_area_of_research; 
-                        viewFundingAgency.innerText = data.consultantData.name_of_funding_agency; 
-                        viewFundingAmount.innerText = data.consultantData.funding_amount;
-                        viewStatusOfResearchProject.innerText = data.consultantData.status_of_research_project;
-                        viewSubmissionGrantDate.innerText = data.consultantData.submission_grant_date.split('T')[0];               
-                        viewFacultyType.innerText = data.consultantData.faculty_type;
-                        viewSupportingDocument.innerText = data.consultantData.supporting_documents; 
-                    }
-                })
+                    .then((result) => {
+                        return result.json()
+                    })
+                    .then((data) => {
+                        if (data.status === 'done') {
+                            console.log('data ==>>', data)
+                            setFileNameInButtons(data)
+                            viewGrantProposalCategory.innerText = data.consultantData.grant_proposal_category;
+                            viewTypeOfGrant.innerText = data.consultantData.type_of_grant;
+                            viewTitleOfProject.innerText = data.consultantData.title_of_project;
+                            viewThurstAreaOfResearch.innerText = data.consultantData.thrust_area_of_research;
+                            viewFundingAgency.innerText = data.consultantData.name_of_funding_agency;
+                            viewFundingAmount.innerText = data.consultantData.funding_amount;
+                            viewStatusOfResearchProject.innerText = data.consultantData.status_of_research_project;
+                            viewSubmissionGrantDate.innerText = data.consultantData.submission_grant_date.split('T')[0];
+                            viewFacultyType.innerText = data.consultantData.faculty_type;
+                            viewSupportingDocument.innerText = data.consultantData.supporting_documents;
+                        }
+                    })
 
                 $('#research-consultancy-view').modal('show');
 
@@ -795,28 +793,41 @@
         const researchConFile = document.getElementById('consultancy-file-view');
         console.log('researchConFile ==>>', researchConFile);
         researchConFile.setAttribute('data-filename', data.consultantData.supporting_documents);
-        }
+        };
 
-    document.addEventListener('click' , function(event) {
-        const button = event.target.closest('button');
-        if(button && button.id && button.classList.contains('download-file')){
-            console.log('button  ===>>', button)
-            const fileString = button.getAttribute('data-filename');
-            console.log('filestring name ==>>>', fileString);
-            const fileArray = fileString.split(',');
-            console.log('fileArray ===>>>', fileArray);
-            if(fileArray.length > 0){
-                for(let i = 0; i <= fileArray.length - 1; i++){
-                    const fileName = fileArray[i];
-                    console.log('fileName ===>>>', fileName);
-                    if(fileName){
-                        const fileUrl = `<%- BASE_URL %>research/research-project-consultancy/download/${fileName}`;
-                        downloadFile(fileName, fileUrl);
+    // addEventListener for click download file
+    document.addEventListener('click', function (event) {
+            const button = event.target.closest('button');
+            if (button && button.id && button.classList.contains('download-file')) {
+                console.log('button  ===>>', button)
+                const fileString = button.getAttribute('data-filename');
+                console.log('filestring name ==>>>', fileString);
+                const fileArray = fileString.split(',');
+                console.log('fileArray ===>>>', fileArray);
+                if (fileArray.length > 0) {
+                    for (let i = 0; i <= fileArray.length - 1; i++) {
+                        const fileName = fileArray[i];
+                        console.log('fileName ===>>>', fileName);
+                        if (fileName) {
+                            const fileUrl = `<%- BASE_URL %>research/research-project-consultancy/download/${fileName}`;
+                            downloadFile(fileName, fileUrl);
+                        }
                     }
                 }
             }
-        }
-    })
+        });
+
+    // set value into button inside
+    function setFileNameAttributeToBeDownload(data) {
+            console.log('data row in side function ===>>', data);
+            const consultancyDataFiles = document.getElementById('consultancy-file-edit');
+            consultancyDataFiles.classList.remove('d-none');
+            const consultancyDataString = data.getAttribute('data-supporting-documents');
+
+            // setAttribute into button
+            consultancyDataFiles.setAttribute('data-filename', consultancyDataString);
+
+        };
     
 </script>
 <!-- inline javascript -->
