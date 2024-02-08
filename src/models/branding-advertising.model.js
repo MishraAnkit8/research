@@ -14,9 +14,7 @@ module.exports.fetchBrandingAndadvertising = async() => {
     return autoDbR.query(sql);
 }
 
-module.exports.insertBrandingAndAdvertisingData = async(advertisingData, facultyRecognitionDocuments,
-    facultyAwardDocuments, staffAwardDocuments, alumniAwardDocuments, studentAwardDocuments, internationalLinkageDocuments, conferenceParticipationDocuments, organisingConferenceDocuments,
-    studentEventParticipationDocuments, newsPaperArticleDocuments) => {
+module.exports.insertBrandingAndAdvertisingData = async(advertisingData, brandingFilesContainer) => {
         const {facultyRecognition, facultyRecognitionLink, facultyAward, facultyAwardLink, staffAward, staffAwardLink, alumniAward, alumniAwardLink,
             studentAward, studentAwardLink, internationalLinkage, internationalLinkageLink, conferenceParticipation, conferenceParticipationLink, organisingConference,
             organisingConferenceLink, studentEventParticipation, studentEventParticipationLink, newsPaperArticle, newsPaperArticleLink } = advertisingData;
@@ -30,17 +28,17 @@ module.exports.insertBrandingAndAdvertisingData = async(advertisingData, faculty
                  VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27 , $28, $29, $30) RETURNING id`,
             values : [facultyRecognition, facultyRecognitionLink, facultyAward, facultyAwardLink, staffAward, staffAwardLink, alumniAward, alumniAwardLink,
                 studentAward, studentAwardLink, internationalLinkage, internationalLinkageLink, conferenceParticipation, conferenceParticipationLink, organisingConference,
-                organisingConferenceLink, studentEventParticipation, studentEventParticipationLink, newsPaperArticle, newsPaperArticleLink, facultyRecognitionDocuments,
-                facultyAwardDocuments, staffAwardDocuments, alumniAwardDocuments, studentAwardDocuments, internationalLinkageDocuments, conferenceParticipationDocuments, organisingConferenceDocuments,
-                studentEventParticipationDocuments, newsPaperArticleDocuments]
+                organisingConferenceLink, studentEventParticipation, studentEventParticipationLink, newsPaperArticle, newsPaperArticleLink, brandingFilesContainer.facultyRecognitionDocuments,
+                brandingFilesContainer.facultyAwardDocuments, brandingFilesContainer.staffAwardDocuments, brandingFilesContainer.alumniAwardDocuments, brandingFilesContainer.studentAwardDocuments, brandingFilesContainer.internationalLinkageDocuments, brandingFilesContainer.conferenceParticipationDocuments, brandingFilesContainer.organisingConferenceDocuments,
+                brandingFilesContainer.studentEventParticipationDocuments, brandingFilesContainer.newspaperArticleDocuments]
         }
         console.log('sql ==>>', sql);
         return autoDbW.query(sql);
 
 }
 
-module.exports.updateBrandingAdvertising = async (advertisingId, updatedAdvertisingData, filesToUpdate) => {
-    console.log('filesToUpdate in models ==>>', filesToUpdate);
+module.exports.updateBrandingAdvertising = async (advertisingId, updatedAdvertisingData, updatedBrandingFilesData) => {
+    console.log('updatedBrandingFilesData in models ==>>', updatedBrandingFilesData);
     const {
         facultyRecognition, facultyRecognitionLink, facultyAward, facultyAwardLink,
         staffAward, staffAwardLink, alumniAward, alumniAwardLink,
@@ -50,18 +48,18 @@ module.exports.updateBrandingAdvertising = async (advertisingId, updatedAdvertis
         newsPaperArticle, newsPaperArticleLink
     } = updatedAdvertisingData;
 
-    console.log('filesToUpdate.facultyRecognitionDocuments  ==>>>', filesToUpdate.facultyRecognitionDocuments);
+    console.log('updatedBrandingFilesData.facultyRecognitionDocuments  ==>>>', updatedBrandingFilesData.facultyRecognitionDocuments);
 
-    const facultyRecognitionDocuments = filesToUpdate.facultyRecognitionDocuments ? filesToUpdate.facultyRecognitionDocuments[0].filename : null;
-    const facultyAwardDocuments = filesToUpdate.facultyAwardDocuments ? filesToUpdate.facultyAwardDocuments[0].filename : null;
-    const staffAwardDocuments = filesToUpdate.staffAwardDocuments ? filesToUpdate.staffAwardDocuments[0].filename : null;
-    const alumniAwardDocuments = filesToUpdate.alumniAwardDocuments ? filesToUpdate.alumniAwardDocuments[0].filename : null;
-    const studentAwardDocuments = filesToUpdate.studentAwardDocuments ? filesToUpdate.studentAwardDocuments[0].filename : null;
-    const internationalLinkageDocuments = filesToUpdate.internationalLinkageDocuments ? filesToUpdate.internationalLinkageDocuments[0].filename : null;
-    const conferenceParticipationDocuments = filesToUpdate.conferenceParticipationDocuments ? filesToUpdate.conferenceParticipationDocuments[0].filename : null;
-    const organisingConferenceDocuments = filesToUpdate.organisingConferenceDocuments ? filesToUpdate.organisingConferenceDocuments[0].filename : null;
-    const studentEventParticipationDocuments = filesToUpdate.studentEventParticipationDocuments ? filesToUpdate.studentEventParticipationDocuments[0].filename : null;
-    const newspaperArticleDocuments = filesToUpdate.newspaperArticleDocuments ? filesToUpdate.newspaperArticleDocuments[0].filename : null;
+    const facultyRecognitionDocuments = updatedBrandingFilesData.facultyRecognitionDocuments ? updatedBrandingFilesData.facultyRecognitionDocuments : null;
+    const facultyAwardDocuments = updatedBrandingFilesData.facultyAwardDocuments ? updatedBrandingFilesData.facultyAwardDocuments : null;
+    const staffAwardDocuments = updatedBrandingFilesData.staffAwardDocuments ? updatedBrandingFilesData.staffAwardDocuments : null;
+    const alumniAwardDocuments = updatedBrandingFilesData.alumniAwardDocuments ? updatedBrandingFilesData.alumniAwardDocuments : null;
+    const studentAwardDocuments = updatedBrandingFilesData.studentAwardDocuments ? updatedBrandingFilesData.studentAwardDocuments : null;
+    const internationalLinkageDocuments = updatedBrandingFilesData.internationalLinkageDocuments ? updatedBrandingFilesData.internationalLinkageDocuments : null;
+    const conferenceParticipationDocuments = updatedBrandingFilesData.conferenceParticipationDocuments ? updatedBrandingFilesData.conferenceParticipationDocuments : null;
+    const organisingConferenceDocuments = updatedBrandingFilesData.organisingConferenceDocuments ? updatedBrandingFilesData.organisingConferenceDocuments : null;
+    const studentEventParticipationDocuments = updatedBrandingFilesData.studentEventParticipationDocuments ? updatedBrandingFilesData.studentEventParticipationDocuments : null;
+    const newspaperArticleDocuments = updatedBrandingFilesData.newspaperArticleDocuments ? updatedBrandingFilesData.newspaperArticleDocuments : null;
     console.log('newspaperArticleDocuments ==>>', newspaperArticleDocuments)
     const filesArray = [
         facultyRecognitionDocuments,
@@ -123,7 +121,8 @@ module.exports.updateBrandingAdvertising = async (advertisingId, updatedAdvertis
         });
 
     console.log('setStatements ==>>>', setStatements);
-//checking if any field emty then it should then make them null     
+    
+    //checking if any field emty then it should then make them null     
     const updateDocument = fieldsToUpdate.map(fieldInfo => {
         const condition = fieldInfo.value;
         if(condition){

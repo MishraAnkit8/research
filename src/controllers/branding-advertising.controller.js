@@ -13,17 +13,25 @@ module.exports.renderBrandingAndAdvertising = async(req, res, next) => {
 module.exports.insertBrandingAndAdvertising = async(req, res, next) => {
     const advertisingData = req.body;
     console.log('data comming from frontend ==>>', advertisingData);
-    console.log('files ==>>', res.files);
-    const {facultyRecognitionDocuments, facultyAwardDocuments, staffAwardDocuments, alumniAwardDocuments, studentAwardDocuments, internationalLinkageDocuments, conferenceParticipationDocuments, organisingConferenceDocuments,
-            studentEventParticipationDocuments, newspaperArticleDocuments} = req.files;
-
+    console.log('files in controller  ==>>', res.files);
     const brandingAndAdvertising = await brandingAndAdvertisingServices.insertBrandingAdvertising(req.body, req.files);
-    console.log('brandingAndAdvertising ==>>', brandingAndAdvertising)
+    console.log('brandingAndAdvertising ==>>', brandingAndAdvertising);
+    const advertisingId = brandingAndAdvertising.advertisingId;
+    const facultyRecognitionDocuments = brandingAndAdvertising.brandingFilesContainer.facultyRecognitionDocuments;
+    const facultyAwardDocuments = brandingAndAdvertising.brandingFilesContainer.facultyAwardDocuments;
+    const staffAwardDocuments = brandingAndAdvertising.brandingFilesContainer.staffAwardDocuments;
+    const alumniAwardDocuments = brandingAndAdvertising.brandingFilesContainer.alumniAwardDocuments;
+    const studentAwardDocuments = brandingAndAdvertising.brandingFilesContainer.studentAwardDocuments;
+    const internationalLinkageDocuments = brandingAndAdvertising.brandingFilesContainer.internationalLinkageDocuments;
+    const conferenceParticipationDocuments = brandingAndAdvertising.brandingFilesContainer.conferenceParticipationDocuments;
+    const organisingConferenceDocuments = brandingAndAdvertising.brandingFilesContainer.organisingConferenceDocuments;
+    const studentEventParticipationDocuments = brandingAndAdvertising.brandingFilesContainer.studentEventParticipationDocuments;
+    const newspaperArticleDocuments = brandingAndAdvertising.brandingFilesContainer.newspaperArticleDocuments;
     if(brandingAndAdvertising){
         res.status(200).send({
             status : "done" ,
             advertisingData : advertisingData,
-            advertisingId : brandingAndAdvertising,
+            advertisingId,
             facultyRecognitionDocuments,
             facultyAwardDocuments,
             staffAwardDocuments,
@@ -43,15 +51,25 @@ module.exports.updateBrandingAdvertising = async(req, res, next) => {
     const advertisingId = req.body.advertisingId;
     console.log('files in controller ===>>', req.files)
     console.log('updated advertising data ==>>', updatedAdvertisingData);
-    const {facultyRecognitionDocuments, facultyAwardDocuments, staffAwardDocuments, alumniAwardDocuments, studentAwardDocuments, internationalLinkageDocuments, conferenceParticipationDocuments, organisingConferenceDocuments,
-            studentEventParticipationDocuments, newspaperArticleDocuments} = req.files;
+    // const {facultyRecognitionDocuments, facultyAwardDocuments, staffAwardDocuments, alumniAwardDocuments, studentAwardDocuments, internationalLinkageDocuments, conferenceParticipationDocuments, organisingConferenceDocuments,
+    //         studentEventParticipationDocuments, newspaperArticleDocuments} = req.files;
             
-    const filesToUpdate = {
-                facultyRecognitionDocuments, facultyAwardDocuments, staffAwardDocuments, alumniAwardDocuments, studentAwardDocuments,
-                internationalLinkageDocuments, conferenceParticipationDocuments, organisingConferenceDocuments, studentEventParticipationDocuments, newspaperArticleDocuments
-            };
-    const updatedAdvertising = await brandingAndAdvertisingServices.updateBrandingAndAdvertising(advertisingId, updatedAdvertisingData, filesToUpdate);
-    console.log('updatedAdvertising in controller for update ===>>>:::', updatedAdvertising)
+    // const filesToUpdate = {
+    //             facultyRecognitionDocuments, facultyAwardDocuments, staffAwardDocuments, alumniAwardDocuments, studentAwardDocuments,
+    //             internationalLinkageDocuments, conferenceParticipationDocuments, organisingConferenceDocuments, studentEventParticipationDocuments, newspaperArticleDocuments
+    //         };
+    const updatedAdvertising = await brandingAndAdvertisingServices.updateBrandingAndAdvertising(advertisingId, updatedAdvertisingData, req.files);
+    console.log('updatedAdvertising in controller for update ===>>>:::', updatedAdvertising);
+    const facultyRecognitionDocuments = updatedAdvertising.updatedBrandingFilesData.facultyRecognitionDocuments;
+    const facultyAwardDocuments = updatedAdvertising.updatedBrandingFilesData.facultyAwardDocuments;
+    const staffAwardDocuments = updatedAdvertising.updatedBrandingFilesData.staffAwardDocuments;
+    const alumniAwardDocuments = updatedAdvertising.updatedBrandingFilesData.alumniAwardDocuments;
+    const studentAwardDocuments = updatedAdvertising.updatedBrandingFilesData.studentAwardDocuments;
+    const internationalLinkageDocuments = updatedAdvertising.updatedBrandingFilesData.internationalLinkageDocuments;
+    const conferenceParticipationDocuments = updatedAdvertising.updatedBrandingFilesData.conferenceParticipationDocuments;
+    const organisingConferenceDocuments = updatedAdvertising.updatedBrandingFilesData.organisingConferenceDocuments;
+    const studentEventParticipationDocuments = updatedAdvertising.updatedBrandingFilesData.studentEventParticipationDocuments;
+    const newspaperArticleDocuments = updatedAdvertising.updatedBrandingFilesData.newspaperArticleDocuments;
     if(updatedAdvertising.status === 'done'){
         res.status(200).send({
             status : 'done',

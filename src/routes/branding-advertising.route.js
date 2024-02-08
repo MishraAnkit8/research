@@ -11,35 +11,35 @@ const router = express.Router();
 // branding and advertising
 router.get('/' , asyncErrorHandler(brandingAndAdvertisingController.renderBrandingAndAdvertising));
 router.post('/insert', upload.fields([
-    { name: 'facultyRecognitionDocuments', maxCount: 1 },
-    { name: 'facultyAwardDocuments', maxCount: 1 },
-    { name: 'staffAwardDocuments', maxCount: 1 },
-    { name: 'alumniAwardDocuments', maxCount: 1 },
-    { name: 'studentAwardDocuments', maxCount: 1 },
-    { name: 'internationalLinkageDocuments', maxCount: 1 },
-    { name: 'conferenceParticipationDocuments', maxCount: 1 },
-    { name: 'organisingConferenceDocuments', maxCount: 1 },
-    { name: 'studentEventParticipationDocuments', maxCount: 1 },
-    { name: 'newspaperArticleDocuments', maxCount: 1 }
+    { name: 'facultyRecognitionDocuments', maxCount: 5 },
+    { name: 'facultyAwardDocuments', maxCount: 5 },
+    { name: 'staffAwardDocuments', maxCount: 5 },
+    { name: 'alumniAwardDocuments', maxCount: 5 },
+    { name: 'studentAwardDocuments', maxCount: 5 },
+    { name: 'internationalLinkageDocuments', maxCount: 5 },
+    { name: 'conferenceParticipationDocuments', maxCount: 5 },
+    { name: 'organisingConferenceDocuments', maxCount: 5 },
+    { name: 'studentEventParticipationDocuments', maxCount: 5 },
+    { name: 'newspaperArticleDocuments', maxCount: 5 }
 ]) , asyncErrorHandler(brandingAndAdvertisingController.insertBrandingAndAdvertising));
 
 router.post('/update', upload.fields([
-    { name: 'facultyRecognitionDocuments', maxCount: 1 },
-    { name: 'facultyAwardDocuments', maxCount: 1 },
-    { name: 'staffAwardDocuments', maxCount: 1 },
-    { name: 'alumniAwardDocuments', maxCount: 1 },
-    { name: 'studentAwardDocuments', maxCount: 1 },
-    { name: 'internationalLinkageDocuments', maxCount: 1 },
-    { name: 'conferenceParticipationDocuments', maxCount: 1 },
-    { name: 'organisingConferenceDocuments', maxCount: 1 },
-    { name: 'studentEventParticipationDocuments', maxCount: 1 },
-    { name: 'newspaperArticleDocuments', maxCount: 1 }
+    { name: 'facultyRecognitionDocuments', maxCount: 5 },
+    { name: 'facultyAwardDocuments', maxCount: 5 },
+    { name: 'staffAwardDocuments', maxCount: 5 },
+    { name: 'alumniAwardDocuments', maxCount: 5 },
+    { name: 'studentAwardDocuments', maxCount: 5 },
+    { name: 'internationalLinkageDocuments', maxCount: 5 },
+    { name: 'conferenceParticipationDocuments', maxCount: 5 },
+    { name: 'organisingConferenceDocuments', maxCount: 5 },
+    { name: 'studentEventParticipationDocuments', maxCount: 5 },
+    { name: 'newspaperArticleDocuments', maxCount: 5 }
 ]), asyncErrorHandler(brandingAndAdvertisingController.updateBrandingAdvertising));
 
 router.post('/view' , asyncErrorHandler(brandingAndAdvertisingController.viewBrandingadvertising));
 router.post('/delete' , asyncErrorHandler(brandingAndAdvertisingController.deleteBrandingAdvertising));
-router.get('/download/:filename', brandingandAdvertisingServices.downloadFile);
-router.get('/viewing/:filename', brandingandAdvertisingServices.viewFile);
+router.get('/download/:fileName', brandingandAdvertisingServices.downloadFile);
+router.get('/viewing/:fileName', brandingandAdvertisingServices.viewFile);
 
 
 
