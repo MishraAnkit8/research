@@ -91,12 +91,28 @@ function initializePagination() {
       }
     }
   
+    // function updateNextPrevButtons(currentPage) {
+    //   document.getElementById("prevBtn").disabled = currentPage === 1;
+    //   document.getElementById("nextBtn").disabled = currentPage === totalPages;
+    //   document.getElementById("prevBtn").classList.remove("d-none"); // Show the buttons
+    //   document.getElementById("nextBtn").classList.remove("d-none"); // Show the buttons
+    // }
+    // displaying next and prev button
     function updateNextPrevButtons(currentPage) {
-      document.getElementById("prevBtn").disabled = currentPage === 1;
-      document.getElementById("nextBtn").disabled = currentPage === totalPages;
-      document.getElementById("prevBtn").classList.remove("d-none"); // Show the buttons
-      document.getElementById("nextBtn").classList.remove("d-none"); // Show the buttons
+      let prevBtn = document.getElementById("prevBtn");
+      let nextBtn = document.getElementById("nextBtn");
+      
+      if (totalPages <= 1) { // If there is only one page or no pages, hide both buttons
+        prevBtn.classList.add("d-none");
+        nextBtn.classList.add("d-none");
+      } else {
+        prevBtn.disabled = currentPage === 1;
+        nextBtn.disabled = currentPage === totalPages;
+        prevBtn.classList.remove("d-none"); // Show the buttons
+        nextBtn.classList.remove("d-none"); // Show the buttons
+      }
     }
+    
   
     function filterRows(searchKeyword) {
       rows.forEach(function (row) {

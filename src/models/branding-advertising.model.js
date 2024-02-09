@@ -191,6 +191,6 @@ module.exports.brandingAndadvertisingDelete = async(advertisingId) => {
         text : `DELETE FROM branding_and_advertising WHERE id = $1`,
         values : [advertisingId]
     }
-    
+    console.log('sql ==>>', sql)
     return autoDbW.query(sql);
 }
