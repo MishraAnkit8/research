@@ -1,0 +1,133 @@
+<%- include('./partials/head') %>
+
+<%- include('./partials/header') %>
+<!-- This is left sidebar  -->
+<%- include('./partials/left-sidebar') %>
+<!-- inline css -->
+<!-- Navbar section -->
+<main class="main" id="main-content">
+    <div class="base-section coustom-section">
+        <div class="main-content">
+            <div id="accordion">
+                <div class="card">
+                  <div class="card-header" id="research-chronicle">
+                    <h5 class="mb-0">
+                      <button class="btn offset-btn-item-link" data-toggle="collapse" data-target="#vc-collapse" aria-expanded="true" aria-controls="vc-collapse">
+                        From Vice Chancellor's Desk #1
+                      </button>
+                    </h5>
+                  </div>
+              
+                  <div id="vc-collapse" class="collapse show" aria-labelledby="research-chronicle" data-parent="#accordion">
+                    <div class="card-body">
+                        <strong >From Vice Chancellor's Desk</strong>
+                        <div id="vc-editor">
+                            <p>This is some sample content.</p>
+                        </div>
+                        <button type="button" class="btn btn-primary insert-chronicle">Submit</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card-header" id="research-heading">
+                    <h5 class="mb-0">
+                      <button class="btn offset-btn-item-link collapsed" data-toggle="collapse" data-target="#research" aria-expanded="false" aria-controls="research">
+                        Research #2
+                      </button>
+                    </h5>
+                  </div>
+                  <div id="research" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+                    <div class="card-body">
+                        <strong> Research </strong>
+                        <div id="research-editor">
+                            <p>This is some sample content.</p>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card-header" id="meeting-header">
+                    <h5 class="mb-0">
+                      <button class="btn offset-btn-item-link collapsed" data-toggle="collapse" data-target="#meeting-collapse" aria-expanded="false" aria-controls="meeting-collapse">
+                         Meeting Stackholders #3
+                      </button>
+                    </h5>
+                  </div>
+                  <div id="meeting-collapse" class="collapse" aria-labelledby="meeting-header" data-parent="#accordion">
+                    <div class="card-body">
+                        <strong> Meeting Stackholders </strong>
+                        <div id="meeting-stackholders-editor">
+                            <p>This is some sample content.</p>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- ankit -->
+                <div class="card">
+                    <div class="card-header" id="branding-header">
+                      <h5 class="mb-0">
+                        <button class="btn offset-btn-item-link collapsed" data-toggle="collapse" data-target="#branding-collapse" aria-expanded="false" aria-controls="branding-collapse">
+                          Branding #4
+                        </button>
+                      </h5>
+                    </div>
+                    <div id="branding-collapse" class="collapse" aria-labelledby="branding-header" data-parent="#accordion">
+                        <div class="card-body">
+                            <strong> Branding </strong>
+                            <div id="branding-editor">
+                                <p>This is some sample content.</p>
+                            </div>
+                        </div>
+                    </div>
+                  </div>
+              </div>
+        </div>
+    </div>
+  </main>
+<script src="https://cdn.ckeditor.com/ckeditor5/41.1.0/classic/ckeditor.js"></script>
+<script>
+
+    let idContainerArray = [
+        "#vc-editor",
+        "#research-editor",
+        "#meeting-stackholders-editor",
+        "#branding-editor"
+    ];
+    for(let i = 0; i <= idContainerArray.length - 1; i++){
+        ClassicEditor
+        .create( document.querySelector( idContainerArray[i] ) )
+        .catch( error => {
+            console.error( error );
+        } );
+    }
+//  function for insert Chronicle Edition Data 
+    const insertChronicleEdition = async(url) => {
+      const chronicleEditionData = new FormData();
+      const vcEditorData = document.getElementById('vc-editor').value;
+      console.log('value ==>>', vcEditorData);
+      chronicleEditionData.append('vcEditor', vcEditorData);
+
+      fetch(url , {
+        method : 'POST',
+        body : chronicleEditionData
+      })
+      .then((result) => {
+        return result.json();
+      })
+      .then((data) => {
+        if(data){
+          console.log('data ==>>>', data)
+        }
+      })
+
+    }
+  document.addEventListener('click' ,async function(event){
+    const button = event.target.closest('button');
+    console.log('button ==>>', button);
+    if(button && button.classList.contains('insert-chronicle')){
+        await insertChronicleEdition('<%- BASE_URL %>chronicle-edition/insert')
+    }
+  })
+</script>
+ <%- include('./partials/footer') %>
+ <%- include('./partials/footer-end') %>
