@@ -5,16 +5,27 @@ const moment = require('moment');
 const autoDbR = dbPoolManager.get('autoDbR', autoriders_read_db);
 const autoDbW = dbPoolManager.get('autoDbW', autoriders_write_db);
 
-module.exports.fetchVcEditorData = async() =>{
+module.exports.fetchEditorData = async() =>{
     const sql = {
-        text : `SELECT * FROM vc_editor_table ORDER BY id`,
+      text: `
+          SELECT 'vc_editor_table' AS table_name, id, vc_editor_data AS editor_data FROM vc_editor_table
+          UNION ALL
+          SELECT 'research_editor_table' AS table_name, id, research_editor_data AS editor_data FROM research_editor_table
+          UNION ALL
+          SELECT 'meeting_editor_table' AS table_name, id, meeting_editor_data AS editor_data FROM meeting_editor_table
+          UNION ALL
+          SELECT 'branding_editor_table' AS table_name, id, branding_editor_data AS editor_data FROM branding_editor_table
+          ORDER BY table_name, id
+      `,
+    };
 
-    }
-    return autoDbR.query(sql);
+    console.log('sql ===>>>', sql);
+    return autoDbR.query(sql)
+
 };
 
 module.exports.insertVcEditorData = async(body) => {
-    const vcEditorData = body.vcEditorDataPlainText;
+    const vcEditorData = body.editorDataPlainText;
     console.log("data in models ==>>", vcEditorData);
 
     let sql = {

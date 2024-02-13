@@ -2,7 +2,7 @@ const chronicleModels = require('../models/chronicle-edition.model');
 
 
 module.exports.renderChronicleEdition = async(req, res, next) => {
-    const renderVcEditorData = await chronicleModels.fetchVcEditorData();
+    const renderVcEditorData = await chronicleModels.fetchEditorData();
     return renderVcEditorData
     
 }

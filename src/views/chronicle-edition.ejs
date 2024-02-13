@@ -63,7 +63,9 @@
                 <div class="form-group col-lg-2 col-md-6 col-sm-12 mb-4">Research</div>
                 <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4">Meeting Stakeholders Aspiration</div>
                 <div class="form-group col-lg-2 col-md-6 col-sm-12 mb-4">Branding</div>
-                <div class="form-group col-lg-2 col-md-6 col-sm-12 mb-4">ACTION</div>
+                <div class="form-group col-lg-2 col-md-6 col-sm-12 mb-4">
+                  <a href="<%- BASE_URL %>chronicle-page"><i class="fa-solid fa-eye view text-danger"></i></a>
+                </div>
               </div>
             </div>
             <div class="d-flex justify-content-between">
@@ -94,7 +96,6 @@
                     <div class="card-body">
                         <strong >From Vice Chancellor's Desk</strong>
                         <div id="vc-data-editor">
-                            <p>This is some sample content.</p>
                         </div>
                         <button id="vc-data" type="button" class="btn btn-primary insert-chronicle">Submit</button>
                     </div>
@@ -112,7 +113,6 @@
                     <div class="card-body">
                         <strong> Research </strong>
                         <div id="research-data-editor">
-                            <p>This is some sample content.</p>
                         </div>
                         <button id="research-data" type="button" class="btn btn-primary insert-chronicle">Submit</button>
                     </div>
@@ -130,7 +130,6 @@
                     <div class="card-body">
                         <strong> Meeting Stackholders </strong>
                         <div id="meeting-data-editor">
-                            <p>This is some sample content.</p>
                         </div>
                         <button id="meeting-data" type="button" class="btn btn-primary insert-chronicle">Submit</button>
                     </div>
@@ -148,7 +147,7 @@
                         <div class="card-body">
                             <strong> Branding </strong>
                             <div id="advertising-data-editor">
-                                <p>This is some sample content.</p>
+  
                             </div>
                             <button id="advertising-data" type="button" class="btn btn-primary insert-chronicle">Submit</button>
 
@@ -181,6 +180,8 @@
           // Store the editor instance using its ID
           editorInstances[id] = editor;
           console.log(`editorInstances[id] ===>>>> ${id}`, editor);
+          const currentDate = getCurrentDateTime();
+          editor.setData(`<p>Date: ${currentDate}</p>`);
         })
         .catch(error => {
           console.error(`Error initializing CKEditor for ${id}:`, error);
@@ -240,6 +241,12 @@
         await insertChronicleEdition(`/chronicle-edition/${buttonId}/insert`, editorId);
       }
     });
+
+
+    function getCurrentDateTime() {
+            const now = new Date();
+            return `${now.toLocaleDateString()} ${now.toLocaleTimeString()}`;
+        }
 
   </script>
 <%- include('./partials/pagination') %>
