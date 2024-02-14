@@ -44,7 +44,8 @@ module.exports.renderChronicleEditionPage = async(req, res, next)  => {
         "Research",
         "Meeting Stakeholders Aspiration",
         "Branding"   
-    ]
+    ];
+    
     console.log('headingContainer ==>>>', headingContainer)
     for (const key in vcEditorData) {
         console.log("ID:", key);
