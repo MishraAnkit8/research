@@ -34,14 +34,16 @@ module.exports.renderChronicleEditionPage = async(req, res, next)  => {
     const meetingeditotData = dataByTableAndId.meeting_editor_table;
     const researchEditorData = dataByTableAndId.research_editor_table;
     // data array ontainer
-    const dataContainerArray = [vcEditorData, brandingEditorData, meetingeditotData, researchEditorData];
+    const dataContainerArray = [vcEditorData, researchEditorData, meetingeditotData, brandingEditorData];
     console.log('dataContainerArray ==>>>', dataContainerArray)
     console.log('vcEditorData ==>>>', vcEditorData);
+
+    // heading container array
     const headingContainer = [
         "From Vice Chancellor's Desk",
         "Research",
         "Meeting Stakeholders Aspiration",
-        "Branding"
+        "Branding"   
     ]
     console.log('headingContainer ==>>>', headingContainer)
     for (const key in vcEditorData) {
