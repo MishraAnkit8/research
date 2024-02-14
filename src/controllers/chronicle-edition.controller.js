@@ -34,7 +34,7 @@ module.exports.renderChronicleEdition = async (req, res, next) => {
       console.log("valueName ===>>>", valueName);
       const dataValues = chronicleData.rows[i].editor_data;
       // data container object
-      const dataObj = {};
+      let dataObj = {};
       dataObj[dataKeyName] = dataValues;
       datValueArray.push(dataObj);
       // id container object
@@ -42,7 +42,7 @@ module.exports.renderChronicleEdition = async (req, res, next) => {
       idObj[keyName] = valueName;
       chronicleIds.push(idObj);
     }
-    datValueArray.push(dataObj);
+    // datValueArray.push(dataObj);
   }
 
   console.log("chronicleIds ==>>", chronicleIds);
