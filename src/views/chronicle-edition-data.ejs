@@ -1,44 +1,61 @@
 <%- include('./partials/head') %>
 <title>chronicle edition</title>
 <style>
-    .custom-background{
-        background-color: #c2dce7;
+    /* .custom-background{
+        background-color: #b7d1eb;
     }
     .list-item {
     list-style-type: disc;
-  }
+  } */
+
+    .modal-lg {
+        width: 500vh;
+    }
+
+
 </style>
 </head>
 <body>
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-6 chronicle-body text-center pt-3 custom-background">
-                <img class="img-fluid" src="<%- BASE_URL %>image/nmims.png" alt="nmims image">
-                <div class="pt-5">
-                    <ul>
-                        <% dataContainerArray.forEach((data, index)=> { %>
-                            <hr/>
-                            <% const heading=headingContainer[index] || '' ; %>
-                                <% if (heading) { %>
-                                    <li>
-                                        <p class="text-start fw-bold fs-5">
-                                            <%= heading %>
-                                        </p>
-                                    </li>
-                                <% } %>
-                                <% for (const key in data) { %>
-                                    <li class="text-start">
-                                        <ul>
-                                            <% data[key].forEach(item=> { %>
-                                                <li class="text-start list-item"> <%= item %> </li>
-                                            <% }); %>
-                                         </ul>
-                                    </li>
-                                   <% } %>
-                            <% }); %>
-                    </ul>
+    <div class="row justify-content-center">
+        <div class="col-md-6 chronicle-body text-center pt-3 custom-background">
+            <img class="img-fluid" src="<%- BASE_URL %>image/nmims.png" alt="nmims image">
+            <div class="pt-5">
+                <ul>
+                    <% dataContainerArray.forEach((data, index)=> { %>
+                        <% const heading=headingContainer[index] || '' ; %>
+                            <% if (heading) { %>
+                                <li >
+                                    <p class="text-start fw-bold fs-5" >
+                                        <%- heading %>
+                                    </p>
+                                </li>
+                            <% } %>
+                            <% for (const key in data) { %>
+                                <li class="text-start" >
+                                    <ul >
+                                        <% data[key].forEach(item=> { %>
+                                            <% if (item.startsWith('Date:')) { %>
+                                                <li style="background-color:#b7d1eb" class="text-start list-item">
+                                                    <%- '\n' + item %>
+                                                </li>
+                                            <% } else { %>
+                                                <li  class="text-start" > <%- item %> </li>
+                                            <% } %>
+                                        <% }); %>
+                                    </ul>
+                                </li>
+                            <% } %>
+                            <hr />
+                    <% }); %>
+                </ul>
+                <div class="container text-start">
+                    <div class="lead text-start fs-4 fw-bold">© NMIMS Deemed-to-be University</div>
+                    <small class="text-start">Mumbai | Shirpur | Bengaluru | Hyderabad | Indore | Navi Mumbai |
+                        Dhule | Chandigarh</small>
+                    <div class="text-start"><a href="https://www.nmims.edu">www.nmims.edu</a></div>
                 </div>
             </div>
         </div>
+    </div>
 </body>
 </html>

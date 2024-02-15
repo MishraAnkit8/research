@@ -1,8 +1,12 @@
 const chronicleEditionService = require('../services/chronicle-editor.service');
+const cheerio = require('cheerio');
+const ejs = require('ejs');
+const fs = require('fs');
 
 module.exports.renderChronicleEditionPage = async(req, res, next)  => {
     const chronicleDataController = await chronicleEditionService.renderChronicleEdition();
     console.log('chronicleDataController ==>>>', chronicleDataController.rows);
+
     let brandingData = [];
     let meetingData = [];
     let researchData = [];
@@ -37,6 +41,10 @@ module.exports.renderChronicleEditionPage = async(req, res, next)  => {
     const dataContainerArray = [vcEditorData, researchEditorData, meetingeditotData, brandingEditorData];
     console.log('dataContainerArray ==>>>', dataContainerArray)
     console.log('vcEditorData ==>>>', vcEditorData);
+    // const base64Data = vcEditorData['1'][0];
+    // console.log('base64Data ==>>>', base64Data)
+    
+    
 
     // heading container array
     const headingContainer = [
@@ -45,16 +53,26 @@ module.exports.renderChronicleEditionPage = async(req, res, next)  => {
         "Meeting Stakeholders Aspiration",
         "Branding"   
     ];
-    
+
     console.log('headingContainer ==>>>', headingContainer)
     for (const key in vcEditorData) {
         console.log("ID:", key);
         vcEditorData[key].forEach(item => console.log(item));
       }
-
     res.render('chronicle-edition-data' , {
+        status : 'Done',
         dataContainerArray,
         headingContainer
+        
     })
 }
+
+
+
+
+
+
+
+
+
 

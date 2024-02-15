@@ -55,8 +55,9 @@ module.exports.renderChronicleEdition = async (req, res, next) => {
   });
 };
 
+
 module.exports.insertVcData = async (req, res, next) => {
-  console.log("data comming from frontend in insertVcData  ==>>", req.body);
+  // console.log("data comming from frontend in insertVcData  ==>>", req.body);
   const insertVcEditorData = await chronicleService.insertVcDataService(
     req.body
   );
@@ -67,6 +68,7 @@ module.exports.insertVcData = async (req, res, next) => {
     });
   }
 };
+
 
 module.exports.insertResearchData = async (req, res, next) => {
   console.log(

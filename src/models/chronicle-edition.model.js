@@ -25,21 +25,21 @@ module.exports.fetchEditorData = async() =>{
 };
 
 module.exports.insertVcEditorData = async(body) => {
-    const vcEditorData = body.editorDataPlainText;
-    console.log("data in models ==>>", vcEditorData);
+    const vcEditorData = body.chronicalEditorData;
+    // console.log("data in models ==>>", vcEditorData);
 
     let sql = {
       text : `INSERT INTO vc_editor_table (vc_editor_data) VALUES($1)  RETURNING id `,
       values : [vcEditorData]
     }
-    console.log("sql ==>>>", sql);
+    // console.log("sql ==>>>", sql);
     const result = await autoDbW.query(sql);
-    console.log('result ===>>>', result.rows)
+    // console.log('result ===>>>', result.rows)
     return result.rows
 };
 
 module.exports.insertResearchEditor = async(body) => {
-    const researchEditorData = body.editorDataPlainText;
+    const researchEditorData = body.chronicalEditorData;
     console.log("data in models ==>>", researchEditorData);
 
     let sql = {
@@ -53,7 +53,7 @@ module.exports.insertResearchEditor = async(body) => {
 };
 
 module.exports.insertMeetingEditor = async(body) => {
-    const meetingEditorData = body.editorDataPlainText;
+    const meetingEditorData = body.chronicalEditorData;
     console.log("data in models ==>>", meetingEditorData);
 
     let sql = {
@@ -67,7 +67,7 @@ module.exports.insertMeetingEditor = async(body) => {
 };
 
 module.exports.insertBrandingeditor = async(body) => {
-    const brandingEditorData = body.editorDataPlainText;
+    const brandingEditorData = body.chronicalEditorData;
     console.log("data in models ==>>", brandingEditorData);
 
     let sql = {

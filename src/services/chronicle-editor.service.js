@@ -7,12 +7,12 @@ module.exports.renderChronicleEdition = async(req, res, next) => {
     
 }
 
-module.exports.insertVcDataService = async(body) => {
-    console.log('Chronicle Data in service  ==>>', body);
+module.exports.insertVcDataService = async (body) => {
+    console.log("data in service ==>>>", body);
     const vcEditorData = await chronicleModels.insertVcEditorData(body);
-    console.log('vcEditorData in service ==>>>', vcEditorData)
-    return vcEditorData
-}
+    console.log("vcEditorData in service ==>>>", vcEditorData);
+    return vcEditorData;
+};
 
 module.exports.insertResearchDataService = async(body) => {
     console.log('insertResearchDataService Data in service  ==>>', body);
