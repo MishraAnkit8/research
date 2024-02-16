@@ -156,10 +156,21 @@ function downloadFile(fileName, fileUrl) {
 // document.addEventListener('click', handleButtonClick);
 
 
-  
-  
+// // Get the dropdown icon element
+// const dropdownIcon = document.getElementById('dropdown-icon');
 
-  
-  
+// // Add an event listener to toggle the icon class when the dropdown is shown or hidden
+// $('#research').on('show.bs.collapse', function () {
+//     dropdownIcon.classList.remove('fa-angle-down');
+//     dropdownIcon.classList.add('fa-angle-up');
+// }).on('hide.bs.collapse', function () {
+//     dropdownIcon.classList.remove('fa-angle-up');
+//     dropdownIcon.classList.add('fa-angle-down');
+// });
+
+
+
+
+
   
   
