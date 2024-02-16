@@ -59,12 +59,12 @@ module.exports.renderChronicleEditionPage = async(req, res, next)  => {
         console.log("ID:", key);
         vcEditorData[key].forEach(item => console.log(item));
       }
-    res.render('chronicle-edition-data' , {
-        status : 'Done',
+      res.status(200).render('chronicle-edition-data' , {
+        status: 'Done',
         dataContainerArray,
         headingContainer
-        
-    })
+    });
+    
 }
 
 
