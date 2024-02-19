@@ -69,76 +69,99 @@ function formatDateToYYYYMMDD(inputDateString) {
   }
 
 // for popup image preview modal
-const modalImage = document.getElementById('modalImage');
-function openModal(imageUrl) {
-    modalImage.src = imageUrl;
-    console.log('imageUrl ==>>>', imageUrl)
-  }
+// const modalImage = document.getElementById('modalImage');
+// function openModal(imageUrl) {
+//     modalImage.src = imageUrl;
+//     console.log('imageUrl ==>>>', imageUrl)
+//   }
 
-function handleFilePreviewAndDownload(filename, imageRoute, fileRoute) {
-    const downloadLink = document.getElementById('downloadLink');
-    // for checking image extension preview
-    const fileExtension = (filename || '').split('.').pop().toLowerCase();
-    const allowedImageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
-    const isImage = allowedImageExtensions.includes(fileExtension);
+// function handleFilePreviewAndDownload(filename, imageRoute, fileRoute) {
+//     const downloadLink = document.getElementById('downloadLink');
+//     // for checking image extension preview
+//     const fileExtension = (filename || '').split('.').pop().toLowerCase();
+//     const allowedImageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+//     const isImage = allowedImageExtensions.includes(fileExtension);
 
-    console.log('isImage ===>>>:::::::', isImage);
-    if (isImage) {
-        const fetchUrl = `${imageRoute}${filename}`;
-        console.log('fetchUrl ==>>>', fetchUrl);
-        // Display image preview modal
-        openModal(fetchUrl);
-        $('#imageModal').modal('show');
+//     console.log('isImage ===>>>:::::::', isImage);
+//     if (isImage) {
+//         const fetchUrl = `${imageRoute}${filename}`;
+//         console.log('fetchUrl ==>>>', fetchUrl);
+//         // Display image preview modal
+//         openModal(fetchUrl);
+//         $('#imageModal').modal('show');
 
-        // Hide download link
-        downloadLink.style.display = 'none';
-    } else {
-        const fileDownloadURL = `${fileRoute}${filename}`;
-        console.log('fileDownloadURL ==>>', fileDownloadURL);
+//         // Hide download link
+//         downloadLink.style.display = 'none';
+//     } else {
+//         const fileDownloadURL = `${fileRoute}${filename}`;
+//         console.log('fileDownloadURL ==>>', fileDownloadURL);
 
-        // Hide image preview modal
-        $('#imageModal').modal('hide');
+//         // Hide image preview modal
+//         $('#imageModal').modal('hide');
 
-        // Create a link element for download
-        downloadLink.href = fileDownloadURL;
-        downloadLink.download = filename;
-        modalImage.src  = '';
-        if (modalImage.parentNode) {
-            modalImage.parentNode.removeChild(modalImage);
-        }
+//         // Create a link element for download
+//         downloadLink.href = fileDownloadURL;
+//         downloadLink.download = filename;
+//         modalImage.src  = '';
+//         if (modalImage.parentNode) {
+//             modalImage.parentNode.removeChild(modalImage);
+//         }
     
-        // Show download link
-        downloadLink.style.display = 'block';
-    }
-}
+//         // Show download link
+//         downloadLink.style.display = 'block';
+//     }
+// }
 
 
 //  for download file function
-let alertShown = false;
 function downloadFile(fileName, fileUrl) {
-    console.log('fileName in side public folder ==>>', fileName)
-    console.log('file url in side public folder ==>>', fileUrl)
-    fetch(fileUrl)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.blob();
-        })
-        .then(blob => {
-            const link = document.createElement('a');
-            link.href = window.URL.createObjectURL(blob);
-            link.download = fileName;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        })
-        .catch(error => {
-            console.error('There was a problem with the fetch operation:', error);
-            alert('File is not available');
-        });
+  console.log("fileName in side public folder ==>>", fileName);
+  console.log("file url in side public folder ==>>", fileUrl);
+  fetch(fileUrl)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.blob();
+    })
+    .then((blob) => {
+      const link = document.createElement("a");
+      link.href = window.URL.createObjectURL(blob);
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    })
+    .catch((error) => {
+      console.error("There was a problem with the fetch operation:", error);
+    });
 }
 
+
+// function fileContainerData(fileArray) {
+//     // console.log('fileUrl inside public folder ===>>>', fileUrl);
+//   console.log("fileArray inside public folder :::::: ===>>>");
+//   //Promise.all to wait for all downloads to finish
+//   Promise.all(fileArray)
+//     .then((values) => {
+//       console.log("All files downloaded successfully", values);
+//     })
+//     .catch((error) => {
+//       console.error("error ::::", error);
+//     });
+// }
+
+//
+
+
+// function downloadFiles(fileArray) {
+//     const promises = fileArray.map(file => downloadFile(file.fileName, file.fileUrl));
+//     return Promise.all(promises)
+//         .catch(error => {
+//             console.error('There was a problem downloading files:', error);
+//             alert('Some files are not available');
+//         });
+// }
 
 
 // for download function files
@@ -169,6 +192,8 @@ function downloadFile(fileName, fileUrl) {
 //     dropdownIcon.classList.remove('fa-angle-up');
 //     dropdownIcon.classList.add('fa-angle-down');
 // });
+
+
 
 
 
