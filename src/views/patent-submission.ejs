@@ -61,15 +61,15 @@
                 </div>
                 <table class="table custom-table research-pagination" id="patent-submisson-list">
                     <thead>
-                        <th>#</th>
-                        <th>Type of Invention</th>
-                        <th>Title of Invention</th>
-                        <th>Patent Stage</th>
-                        <th>Application Number</th>
-                        <th>Are you the Presenter</th>
-                        <th>Are you achieve SDG ?</th>
-                        <th>upload documents</th>
-                        <th>Action</th>
+                        <th class="col-lg-1">#</th>
+                        <th class="col-lg-1">Type of Invention</th>
+                        <th class="col-lg-1">Title of Invention</th>
+                        <th class="col-lg-1">Patent Stage</th>
+                        <th class="col-lg-1">Application Number</th>
+                        <th class="col-lg-1">Are you the Presenter</th>
+                        <th class="col-lg-1">Are you achieve SDG ?</th>
+                        <th class="col-lg-1">upload documents</th>
+                        <th class="col-lg-1">Action</th>
                     </thead>
                     <% patentList.forEach(function(patent,index) {%>
                         <tr data-patent-id="<%- patent.id %>" data-patent-date="<%- patent.date %>">
@@ -155,7 +155,7 @@
 <div class="modal fade " id="patent-submission-modal" tabindex="-1" role="dialog" aria-labelledby="patent-submission-modal"
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable modal-lg modal-fullscreen p-5" role="document">
-        <div class="modal-content validate-input">
+        <div class="modal-content modal-content-data validate-input">
             <div class="modal-header">
                 <h5 class="modal-title" id="patent-study">Patent Submission </h5>
                 <div type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -247,15 +247,15 @@
                             </label>
                             <div class="d-flex">
                                 <input type="file" name="patentFile" id="patent-file"
-                                    class="col-md-8 form-control " data-validate="isEmpty,isExist,isFile" data-err-msg="File is required." required multiple>
+                                    class="col-md-12 form-control " data-validate="isEmpty,isExist,isFile" data-err-msg="File is required." required multiple>
                                     <button class="download-btn download-file" id="patent-file-edit"><i class="fas fa-download text-danger"></i></button>
                             </div>
                         </div>
                     </div>
-                    <div class="form-group col-lg-6 col-md-2 col-sm-12 mb-4">
+                    <!-- <div class="form-group col-lg-6 col-md-2 col-sm-12 mb-4">
                         <div id="file-view" class="h-10 w-10">
                         </div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
             <!-- Add your modal footer buttons if needed -->
@@ -359,7 +359,7 @@
     let indexValue = parseInt(rowIndex, 10);
     const addNewPatentSubmission = document.getElementById('add-patent-submission');
     const submitBtn = document.getElementById('submit-btn');
-    // const updateBtn = document.getElementById('update-btn');
+    const updateBtn = document.getElementById('update-btn');
     // const fileView = document.getElementById('file-view');
     const downloadLink = document.getElementById('downloadLink');
     const patenetSubMissionList = document.getElementById('patent-submisson-list');
@@ -372,7 +372,7 @@
             // fileView.classList.add('d-none');
             // modalImage.classList.add('d-none'); 
             //d-none download button
-            const patentDataFiles = document.getElementById('patent-file-edit');
+            const patentDataFiles = document.querySelector('#patent-file-edit');
             patentDataFiles.classList.add('d-none');
     
             const typeOfInvention = document.getElementById('type-of-invention');
@@ -489,7 +489,7 @@
                 removeErrorMsg();
                 rowToBeUpdated = event.target.closest('tr');
                 // function call for download button
-                setFileNameAttributeToBeDownload(setFileNameAttributeToBeDownload(data))
+                setFileNameAttributeToBeDownload(rowToBeUpdated);
                 patentId = event.target.getAttribute('data-patent-id');
                 console.log('Id For Updation', patentId);
                 $('#patent-submission-modal').modal('show');
