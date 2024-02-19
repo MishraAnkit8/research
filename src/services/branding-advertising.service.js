@@ -1,49 +1,5 @@
-const fs = require('fs');
-const path = require('path');
-
 const brandingAndAdvertisingModels = require('../models/branding-advertising.model');
-// uploaded file path for dowload
-const uploadFolder = path.join(__dirname, '..', '..', 'uploads');
-console.log('uploadFolder in side branding ==>>>', uploadFolder)
-module.exports.downloadFile = (req, res) => {
-    const filename = req.params.fileName;
-    console.log("filename ==>>>", filename);
-    const filePath = path.join(uploadFolder, filename);
-    console.log("filePath ==>>", filePath);
-  
-    const originalFilename = filename.split('_').slice(1).join('_');
-  
-    // Set the content type header to force the browser to treat it as a PDF
-    res.setHeader('Content-Type', 'application/pdf');
-  
-    // Set the filename for the download
-    res.download(filePath, originalFilename, (err) => {
-      if (err) {
-        console.error("Error downloading file:", err);
-        res.status(500).send("Error downloading file");
-      } else {
-        console.log('File downloaded successfully');
-      }
-    });
-  };
-  
-module.exports.viewFile = (req, res, next) => {
-const filename = req.params.filename;
-  const filePath = path.join(uploadFolder, filename);
-  console.log("filePath ==>>", filePath);
-  console.log("filename ==>>>", filename);
 
-  fs.access(filePath, fs.constants.R_OK, (err) => {
-    if (err) {
-      console.error('Error accessing file:', err);
-      res.status(404).send('File not found');
-    } else {
-      //  file to the response for download
-      const stream = fs.createReadStream(filePath);
-      stream.pipe(res);
-    }
-  });
-}
 
 
 module.exports.fetchBrandingandAdvertisingData = async() => {

@@ -6,6 +6,9 @@ const upload = require('../../multer');
 // middlewre for valiadtion and errorHandler
 const { asyncErrorHandler } = require('../middleware/error.middleware');
 
+//middleware for download file
+const downloadFileService = require('../middleware/download-file.middleware');
+
 
 const bookPublicationMainController = require('../controllers/book-publication-main.controller');
 
@@ -33,8 +36,8 @@ router.post('/book-publication/insert', upload.array('researchSupportingDocument
 router.post('/book-publication/update',  upload.array('researchSupportingDocument', 5), asyncErrorHandler(bookPublicationController.updateBookPublication));
 router.post('/book-publication/delete', asyncErrorHandler(bookPublicationController.deleteBookPublication));
 router.post('/book-publication/view', asyncErrorHandler(bookPublicationController.viewBookPublication));
-router.get('/book-publication/download/:fileName', bookPublicationService.downloadFile);
-router.get('/book-publication/viewing/:fileName', bookPublicationService.viewFile);
+router.get('/book-publication/download/:fileName', downloadFileService.downloadFile);
+router.get('/book-publication/viewing/:fileName', downloadFileService.viewFile);
 
 //edited book publication
 
@@ -43,8 +46,8 @@ router.post('/edited-book-publication/insert',  upload.array('researchSupporting
 router.post('/edited-book-publication/update',  upload.array('researchSupportingDocument', 5), asyncErrorHandler(editedBookPublication.updateEditedBookPublication));
 router.post('/edited-book-publication/view',  asyncErrorHandler(editedBookPublication.viewEditedBookPublication));
 router.post('/edited-book-publication/delete', asyncErrorHandler(editedBookPublication.deleteEditedBookPublication));
-router.get('/edited-book-publication/download/:fileName', editedBookService.downloadFile);
-router.get('/edited-book-publication/viewing/:fileName', editedBookService.viewFile);
+router.get('/edited-book-publication/download/:fileName', downloadFileService.downloadFile);
+router.get('/edited-book-publication/viewing/:fileName', downloadFileService.viewFile);
 
 //book chapter
 
@@ -53,8 +56,8 @@ router.post('/book-chapter-publication/insert', upload.array('researchSupporting
 router.post('/book-chapter-publication/update',  upload.array('researchSupportingDocument' , 5), asyncErrorHandler(bookChapterController.updateBookChapterData));
 router.post('/book-chapter-publication/view',  asyncErrorHandler(bookChapterController.viewBookChapterData));
 router.post('/book-chapter-publication/delete', asyncErrorHandler(bookChapterController.deleteBookChapterData));
-router.get('/book-chapter-publication/download/:fileName', bookChapterServices.downloadFile);
-router.get('/book-chapter-publication/viewing/:fileName', bookChapterServices.viewFile);
+router.get('/book-chapter-publication/download/:fileName', downloadFileService.downloadFile);
+router.get('/book-chapter-publication/viewing/:fileName', downloadFileService.viewFile);
 
 
 module.exports = router;

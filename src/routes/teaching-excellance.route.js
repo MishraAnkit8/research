@@ -7,6 +7,9 @@ const teachingExecellanceServices = require('../services/teaching-excellance.ser
 // middleware for server side validation and error handler
 const { asyncErrorHandler } = require('../middleware/error.middleware');
 
+//middleware for download file
+const downloadFileService = require('../middleware/download-file.middleware');
+
 const router = express.Router();
 
 // teaching execellance
@@ -27,7 +30,7 @@ router.post('/update', upload.fields([
 ]),asyncErrorHandler(teachingExecellanceController.updatTeachingData));
 router.post('/delete', asyncErrorHandler(teachingExecellanceController.deleteTeachingExecellance));
 router.post('/view', asyncErrorHandler(teachingExecellanceController.viewTeachingExecellance));
-router.get('/download/:fileName', teachingExecellanceServices.downloadFile);
-router.get('/viewing/:fileName', teachingExecellanceServices.viewFile);
+router.get('/download/:fileName', downloadFileService.downloadFile);
+router.get('/viewing/:fileName', downloadFileService.viewFile);
 
 module.exports = router;

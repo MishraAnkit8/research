@@ -1,8 +1,16 @@
 const express = require('express');
 const upload = require('../../multer');
 
+// middlewre for valiadtion and errorHandler
 const { asyncErrorHandler } = require('../middleware/error.middleware');
+
+//middleware for download file
+const downloadFileService = require('../middleware/download-file.middleware');
+
+//branding advertising controller
 const brandingAndAdvertisingController = require('../controllers/branding-advertising.controller');
+
+//branding advertising service
 const brandingandAdvertisingServices = require('../services/branding-advertising.service');
 
 
@@ -38,8 +46,8 @@ router.post('/update', upload.fields([
 
 router.post('/view' , asyncErrorHandler(brandingAndAdvertisingController.viewBrandingadvertising));
 router.post('/delete' , asyncErrorHandler(brandingAndAdvertisingController.deleteBrandingAdvertising));
-router.get('/download/:fileName', brandingandAdvertisingServices.downloadFile);
-router.get('/viewing/:fileName', brandingandAdvertisingServices.viewFile);
+router.get('/download/:fileName', downloadFileService.downloadFile);
+router.get('/viewing/:fileName', downloadFileService.viewFile);
 
 
 

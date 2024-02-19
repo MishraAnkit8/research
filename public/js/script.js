@@ -114,6 +114,7 @@ function handleFilePreviewAndDownload(filename, imageRoute, fileRoute) {
 
 
 //  for download file function
+let alertShown = false;
 function downloadFile(fileName, fileUrl) {
     console.log('fileName in side public folder ==>>', fileName)
     console.log('file url in side public folder ==>>', fileUrl)
@@ -134,6 +135,7 @@ function downloadFile(fileName, fileUrl) {
         })
         .catch(error => {
             console.error('There was a problem with the fetch operation:', error);
+            alert('File is not available');
         });
 }
 
