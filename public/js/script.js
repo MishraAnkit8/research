@@ -114,7 +114,7 @@ function formatDateToYYYYMMDD(inputDateString) {
 
 
 //  for download file function
-function downloadFile(fileName, fileUrl) {
+function  downloadFile(fileName, fileUrl) {
   console.log("fileName in side public folder ==>>", fileName);
   console.log("file url in side public folder ==>>", fileUrl);
   fetch(fileUrl)

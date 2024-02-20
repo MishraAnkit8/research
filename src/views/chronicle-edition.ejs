@@ -193,8 +193,9 @@
     </div>
   </div>
   <script src="https://cdn.ckeditor.com/ckeditor5/41.1.0/super-build/ckeditor.js"></script>
-
+  <script type="module" src="<%- BASE_URL %>js/customPlugin.js"></script>
   <!-- <script src="https://cdn.ckeditor.com/ckeditor5/41.1.0/classic/ckeditor.js"></script> -->
+
   <script>
 
     const idContainerArray = [
@@ -230,7 +231,7 @@
             'link', 'uploadImage', 'blockQuote', 'insertTable', 'mediaEmbed', 'codeBlock', 'htmlEmbed', '|',
             'specialCharacters', 'horizontalLine', 'pageBreak', '|',
             'textPartLanguage', '|',
-            'sourceEditing'
+            'sourceEditing',
           ],
           contentsCss: [
             'styles.css'
@@ -346,6 +347,27 @@
           editorInstances[id] = editor;
           const currentDate = getCurrentDate();
           editor.setData(`<p>Date: ${currentDate}</p>`);
+
+          // Adding a button with an icon to the toolbar
+          editor.ui.getEditableElement().parentElement.insertBefore(
+            editor.ui.view.toolbar.element,
+            editor.ui.getEditableElement()
+          );
+
+          editor.ui.view.toolbar.element.appendChild(createButton('My Custom Button', 'ck-icon-clock'));
+
+          // Check if the icon font is loaded, if not, load it dynamically
+          if (!document.fonts.check('1em "CKEditor Icons"')) {
+            const iconFont = new FontFace('CKEditor Icons', 'url(<%- BASE_URL %>icons/timestamp.png)', {
+              style: 'normal',
+              weight: '400'
+            });
+            iconFont.load().then(() => {
+              document.fonts.add(iconFont);
+            }).catch(error => {
+              console.error('Error loading icon font:', error);
+            });
+          }
         })
         .catch(error => {
           console.error(`Error initializing CKEditor for ${id}:`, error);
@@ -412,6 +434,17 @@
       const options = { day: 'numeric', month: 'long', year: 'numeric' };
       return now.toLocaleDateString('en-US', options);
     }
+
+    // Function to create a button with a label and icon class
+function createButton(label, iconClass) {
+    const button = document.createElement('button');
+    button.innerHTML = label;
+    button.classList.add('ck-button'); // Adding CKEditor button class
+    const icon = document.createElement('span');
+    icon.classList.add('ck-icon', iconClass); // Adding CKEditor icon class
+    button.appendChild(icon);
+    return button;
+}
 
   </script>
 <%- include('./partials/pagination') %>

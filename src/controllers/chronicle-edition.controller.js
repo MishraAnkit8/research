@@ -51,7 +51,7 @@ module.exports.renderChronicleEdition = async (req, res, next) => {
   res.render("chronicle-edition", {
     chronicleDataObj: chronicleDataObj,
     chronicleIds: chronicleIds,
-    rowCount: rowCount,
+    rowCount: rowCount
   });
 };
 
