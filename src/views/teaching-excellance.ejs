@@ -950,27 +950,49 @@
         console.log('pedagogyFile in side setFileNameInButtons  ==>>', pedagogyFile);
         console.log('workShopDataFile ==>>::::', workShopDataFile);
         }
-    //for dowload file
-    document.addEventListener('click', function (event) {
+
+    //eventlistner for download files
+    document.addEventListener('click', async function (event) {
             const button = event.target.closest('button');
-            // console.log('button ===>>>:::', button);
             if (button && button.id && button.classList.contains('download-file')) {
-                console.log('button in side if ==>>', button)
-                const filestrings = button.getAttribute('data-filename');
-                console.log('filestrings ===>>>>', filestrings);
-                const fileArray = filestrings.split(',');
-                console.log('fileArray ===>>>', fileArray);
-                for(let i = 0; i <= fileArray.length - 1; i++){
-                    const fileName = fileArray[i];
-                    console.log('fileName ===>>>', fileName);
-                    if(fileName){
-                        const fileUrl = `<%- BASE_URL %>teaching-excellance/download/${fileName}`;
-                        console.log('fileUrl ===>>>', fileUrl)
-                        downloadFile(fileName, fileUrl);
+                console.log('button ===>>>', button)
+                try {
+                    const fileDataString = button.getAttribute('data-filename');
+                    if (!fileDataString) {
+                        throw new Error('Data filename attribute not found on button.');
                     }
+
+                    const fileArray = fileDataString.split(',').map(fileName => fileName.trim()).filter(Boolean); 
+                    if (fileArray.length === 0) {
+                        throw new Error('No file names found in data filename attribute.');
+                    }
+
+                    const downloadPromises = fileArray.map(async (fileName) => {
+                        console.log('fileName ===>>>', fileName)
+                        const fileUrl = `<%- BASE_URL %>teaching-excellance/download/${fileName}`;
+                        downloadFile(fileName, fileUrl)
+                        try {
+                            const response = await fetch(fileUrl);
+                            if (!response.ok) {
+                                throw new Error(`Failed to download file: ${fileName}`);
+                            }
+                            console.log('File downloaded successfully:', fileName);
+                            return fileName;
+                        } catch (error) {
+                            console.error('Error downloading file:', error);
+                            throw error;
+                        }
+                    });
+
+                    const downloadedFiles = await Promise.all(downloadPromises);
+                    console.log('All files downloaded successfully:', downloadedFiles);
+                } catch (error) {
+                    console.error('Error downloading files:', error);
+                    alert(`There was a problem downloading files: ${error.message}`);
                 }
             }
         });
+
    // setAttribut for download inside edit button
     function setFileNameAttributeToBeDownload(data) {
         console.log('data inside my fuction ==>>', data);

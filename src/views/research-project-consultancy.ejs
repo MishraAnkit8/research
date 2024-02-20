@@ -795,27 +795,48 @@
         researchConFile.setAttribute('data-filename', data.consultantData.supporting_documents);
         };
 
-    // addEventListener for click download file
-    document.addEventListener('click', function (event) {
+    //eventlistner for download files
+    document.addEventListener('click', async function (event) {
             const button = event.target.closest('button');
             if (button && button.id && button.classList.contains('download-file')) {
-                console.log('button  ===>>', button)
-                const fileString = button.getAttribute('data-filename');
-                console.log('filestring name ==>>>', fileString);
-                const fileArray = fileString.split(',');
-                console.log('fileArray ===>>>', fileArray);
-                if (fileArray.length > 0) {
-                    for (let i = 0; i <= fileArray.length - 1; i++) {
-                        const fileName = fileArray[i];
-                        console.log('fileName ===>>>', fileName);
-                        if (fileName) {
-                            const fileUrl = `<%- BASE_URL %>research/research-project-consultancy/download/${fileName}`;
-                            downloadFile(fileName, fileUrl);
-                        }
+                console.log('button ===>>>', button)
+                try {
+                    const fileDataString = button.getAttribute('data-filename');
+                    if (!fileDataString) {
+                        throw new Error('Data filename attribute not found on button.');
                     }
+
+                    const fileArray = fileDataString.split(',').map(fileName => fileName.trim()).filter(Boolean); 
+                    if (fileArray.length === 0) {
+                        throw new Error('No file names found in data filename attribute.');
+                    }
+
+                    const downloadPromises = fileArray.map(async (fileName) => {
+                        console.log('fileName ===>>>', fileName)
+                        const fileUrl = `<%- BASE_URL %>research/research-project-consultancy/download/${fileName}`;
+                        downloadFile(fileName, fileUrl)
+                        try {
+                            const response = await fetch(fileUrl);
+                            if (!response.ok) {
+                                throw new Error(`Failed to download file: ${fileName}`);
+                            }
+                            console.log('File downloaded successfully:', fileName);
+                            return fileName;
+                        } catch (error) {
+                            console.error('Error downloading file:', error);
+                            throw error;
+                        }
+                    });
+
+                    const downloadedFiles = await Promise.all(downloadPromises);
+                    console.log('All files downloaded successfully:', downloadedFiles);
+                } catch (error) {
+                    console.error('Error downloading files:', error);
+                    alert(`There was a problem downloading files: ${error.message}`);
                 }
             }
         });
+
 
     // set value into button inside
     function setFileNameAttributeToBeDownload(data) {
