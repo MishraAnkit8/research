@@ -2,7 +2,7 @@
 // This is navbar toggle arrow <<
 const closeToggleBtn = document.getElementById("closeToggleBtn");
 const leftSideBar = document.getElementById("leftSideBar");
-const mainContent = document.getElementById("mainContent");
+const mainContent = document.getElementById("main-content");
 const navbarHeading = document.getElementById("navbarHeading");
 var hamburger = document.getElementById("hamburger");
 
