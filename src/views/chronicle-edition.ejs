@@ -193,7 +193,6 @@
     </div>
   </div>
   <script src="https://cdn.ckeditor.com/ckeditor5/41.1.0/super-build/ckeditor.js"></script>
-  <script type="module" src="<%- BASE_URL %>js/customPlugin.js"></script>
   <!-- <script src="https://cdn.ckeditor.com/ckeditor5/41.1.0/classic/ckeditor.js"></script> -->
 
   <script>
@@ -345,29 +344,61 @@
           console.log(`CKEditor initialized successfully for ${id}`);
           // Store the editor instance using its ID
           editorInstances[id] = editor;
-          const currentDate = getCurrentDate();
-          editor.setData(`<p>Date: ${currentDate}</p>`);
+
+          // const currentDate = getCurrentDate();
+          // editor.setData(`<p>Date: ${currentDate}</p>`);
 
           // Adding a button with an icon to the toolbar
           editor.ui.getEditableElement().parentElement.insertBefore(
             editor.ui.view.toolbar.element,
             editor.ui.getEditableElement()
           );
+          
+          // Create a button element
+          const buttonElement = document.createElement('button');
+          buttonElement.classList.add('ck', 'ck-button', 'ck-off');
+          buttonElement.type = 'button';
+          buttonElement.tabIndex = '-1';
 
-          editor.ui.view.toolbar.element.appendChild(createButton('My Custom Button', 'ck-icon-clock'));
+          // Add ARIA attributes
+          buttonElement.setAttribute('aria-labelledby', 'ck-editor__aria-label_e0d2de3a778d1fd978e3d5ef78eb2a327');
+          buttonElement.setAttribute('aria-pressed', 'false');
+          buttonElement.setAttribute('data-cke-tooltip-text', 'Time&Date');
+          buttonElement.setAttribute('data-cke-tooltip-position', 's');
 
-          // Check if the icon font is loaded, if not, load it dynamically
-          if (!document.fonts.check('1em "CKEditor Icons"')) {
-            const iconFont = new FontFace('CKEditor Icons', 'url(<%- BASE_URL %>icons/timestamp.png)', {
-              style: 'normal',
-              weight: '400'
-            });
-            iconFont.load().then(() => {
-              document.fonts.add(iconFont);
-            }).catch(error => {
-              console.error('Error loading icon font:', error);
-            });
-          }
+          // Create an imgElement element
+          const imgElement = document.createElement('img');
+          imgElement.src = '<%- BASE_URL %>icons/timestamp.png';
+          imgElement.setAttribute('class', 'ck ck-icon ck-reset_all-excluded ck-icon_inherit-color ck-button__icon');
+          imgElement.setAttribute('viewBox', '0 0 20 20');
+
+          // Create the path for the SVG icon
+          const pathElement = document.createElementNS("http://www.w3.org/2000/svg", "path");
+          pathElement.setAttribute('d', 'M7 16.4c-.8-.4-1.5-.9-2.2-1.5a.6.6 0 0 1-.2-.5l.3-.6h1c1 1.2 2.1 1.7 3.7 1.7 1 0 1.8-.3 2.3-.6.6-.4.6-1.2.6-1.3.2-1.2-.9-2.1-.9-2.1h2.1c.3.7.4 1.2.4 1.7v.8l-.6 1.2c-.6.8-1.1 1-1.6 1.2a6 6 0 0 1-2.4.6c-1 0-1.8-.3-2.5-.6zM6.8 9 6 8.3c-.4-.5-.5-.8-.5-1.6 0-.7.1-1.3.5-1.8.4-.6 1-1 1.6-1.3a6.3 6.3 0 0 1 4.7 0 4 4 0 0 1 1.7 1l.3.7c0 .1.2.4-.2.7-.4.2-.9.1-1 0a3 3 0 0 0-1.2-1c-.4-.2-1-.3-2-.4-.7 0-1.4.2-2 .6-.8.6-1 .8-1 1.5 0 .8.5 1 1.2 1.5.6.4 1.1.7 1.9 1H6.8z');
+
+          // Append the pathElement to the imgElement element
+          imgElement.appendChild(pathElement);
+
+          // Append the imgElement to the button element
+          buttonElement.appendChild(imgElement);
+
+          // span element for the text content
+          const spanElement = document.createElement('span');
+          spanElement.classList.add('ck', 'ck-button__label');
+          spanElement.textContent = 'Time&Date';
+
+          // append the text content to the button element
+          buttonElement.appendChild(spanElement);
+
+          // add time and date property
+          buttonElement.addEventListener('click', function () {
+            insertDateTime(editor); // Call your function when the button is clicked
+          });
+
+          // Append the button to wherever you want it in the document
+          editor.ui.view.toolbar.element.appendChild(buttonElement);
+
+
         })
         .catch(error => {
           console.error(`Error initializing CKEditor for ${id}:`, error);
@@ -429,23 +460,48 @@
     });
 
 
-    function getCurrentDate() {
-      const now = new Date();
-      const options = { day: 'numeric', month: 'long', year: 'numeric' };
-      return now.toLocaleDateString('en-US', options);
-    }
+    // function getCurrentDate() {
+    //   const now = new Date();
+    //   const options = { day: 'numeric', month: 'long', year: 'numeric' };
+    //   return now.toLocaleDateString('en-US', options);
+    // }
 
-    // Function to create a button with a label and icon class
-function createButton(label, iconClass) {
-    const button = document.createElement('button');
-    button.innerHTML = label;
-    button.classList.add('ck-button'); // Adding CKEditor button class
-    const icon = document.createElement('span');
-    icon.classList.add('ck-icon', iconClass); // Adding CKEditor icon class
-    button.appendChild(icon);
-    return button;
-}
+    function insertDateTime(editor) {
+        const currentDate = new Date();
+        const options = {
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric',
+          hour: 'numeric',
+          minute: 'numeric',
+          second: 'numeric'
+        };
+        // for getting date string only 
+        // var dateTimeString = currentDate.toLocaleString(); 
+        const dateTimeString = currentDate.toLocaleString(undefined, options);
+        editor.model.change(writer => {
+          writer.insertText(dateTimeString, editor.model.document.selection.getFirstPosition());
+        });
+      }
 
+      // Function to create a button with a label and icon class
+      function createButton(label, iconClass) {
+          const button = document.createElement('button');
+          button.innerHTML = label;
+          button.classList.add('ck-button'); // Adding CKEditor button class
+          const icon = document.createElement('span');
+          icon.classList.add('ck-icon', iconClass); // Adding CKEditor icon class
+          button.appendChild(icon);
+          return button;
+        }
+
+      // function createButton(label, iconClass) {
+      //     const imgTag = document.createElement('img');
+      //     imgTag.innerHTML = label;
+      //     imgTag.classList.add('ck-icon', iconClass);
+      //     return imgTag;
+      //   }
+        
   </script>
 <%- include('./partials/pagination') %>
 <%- include('./partials/footer') %>
