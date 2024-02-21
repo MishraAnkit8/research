@@ -9,28 +9,45 @@ module.exports.renderChronicleEdition = async(req, res, next) => {
 
 module.exports.insertVcDataService = async (body) => {
     console.log("data in service ==>>>", body);
-    const vcEditorData = await chronicleModels.insertVcEditorData(body);
+    const chronicleEditorData = body.chronicleEditorData;
+    console.log('chronicleEditorData  in service ===>>', chronicleEditorData);
+    const chronicleDate = body.chronicleDate;
+    console.log('chronicleDate in service ===>>>', chronicleDate)
+
+    const vcEditorData = await chronicleModels.insertVcEditorData(chronicleEditorData, chronicleDate);
     console.log("vcEditorData in service ==>>>", vcEditorData);
     return vcEditorData;
 };
 
 module.exports.insertResearchDataService = async(body) => {
     console.log('insertResearchDataService Data in service  ==>>', body);
-    const researchEditorData = await chronicleModels.insertResearchEditor(body);
+    const chronicleEditorData = body.chronicleEditorData;
+    console.log('chronicleEditorData  in service ===>>', chronicleEditorData);
+    const chronicleDate = body.chronicleDate;
+    console.log('chronicleDate in service ===>>>', chronicleDate)
+    const researchEditorData = await chronicleModels.insertResearchEditor(chronicleEditorData, chronicleDate);
     console.log('researchEditorData in service ==>>>', researchEditorData)
     return researchEditorData
 }
 
 module.exports.insertMeetingDataService = async(body) => {
     console.log('insertMeetingDataService Data in service  ==>>', body);
-    const meetingEditorData = await chronicleModels.insertMeetingEditor(body);
+    const chronicleEditorData = body.chronicleEditorData;
+    console.log('chronicleEditorData  in service ===>>', chronicleEditorData);
+    const chronicleDate = body.chronicleDate;
+    console.log('chronicleDate in service ===>>>', chronicleDate)
+    const meetingEditorData = await chronicleModels.insertMeetingEditor(chronicleEditorData, chronicleDate);
     console.log('meetingEditorData in service ==>>>', meetingEditorData)
     return meetingEditorData
 }
 
 module.exports.insertBrandingDataService = async(body) => {
     console.log('insertBrandingDataService  Data in service  ==>>', body);
-    const brandingEditorData = await chronicleModels.insertBrandingeditor(body);
+    const chronicleEditorData = body.chronicleEditorData;
+    console.log('chronicleEditorData  in service ===>>', chronicleEditorData);
+    const chronicleDate = body.chronicleDate;
+    console.log('chronicleDate in service ===>>>', chronicleDate)
+    const brandingEditorData = await chronicleModels.insertBrandingeditor(chronicleEditorData, chronicleDate);
     console.log('brandingEditorData in service ==>>>', brandingEditorData)
     return brandingEditorData
 }

@@ -11,6 +11,14 @@
   .text-content * {
     background-color: #b7d1eb !important;
   }
+
+  .text-content * .text-date{
+    font-size: 20px;
+    font-weight: bolder;
+  }
+  /* ul * {
+    background-color: #b7d1eb 
+  } */
 </style>
 </head>
 <body>
@@ -18,34 +26,55 @@
         <div class="col-md-6 chronicle-body text-center pt-3 custom-background">
             <img class="img-fluid" src="<%- BASE_URL %>image/nmims.png" alt="nmims image">
             <div class="pt-5">
-                <ul>
-                    <% dataContainerArray.forEach((data, index)=> { %>
-                        <% const heading=headingContainer[index] || '' ; %>
-                            <% if (heading) { %>
+                <ul class="text-content">
+                    <% dataContainerArray.forEach((data, index) => { %>
+                        <% const heading = headingContainer[index] || ''; %>
+                        
+                        <% if (heading) { %>
+                            <li class="list-item">
+                                <p class="text-start fw-bold fs-5">
+                                    <%= heading %>
+                                </p>
+                            </li>
+                        <% } %>
+                
+                        <% if (Array.isArray(data)) { %>
+                            <% const date = data[0]; %>
+                            <% const items = data.slice(1); %>
+                            
+                            <% if (date) { %>
                                 <li class="list-item">
-                                    <p class="text-start fw-bold fs-5" >
-                                        <%- heading %>
+                                        <%- formatDate(date) %>
+                                </li>
+                            <% } %>
+                            
+                            <% items.forEach(item => { %>
+                                <li class="text-start">
+                                    <ul>
+                                        <li class="text-start text-content">
+                                            <%- item %>
+                                        </li>
+                                    </ul>
+                                </li>
+                            <% }); %>
+                        <% } else if (typeof data === 'object') { %>
+                            <% for (const key in data) { %>
+                                <li class="text-start">
+                                    <p class="text-start text-content">
+                                        <%- key %>: <%- data[key] %>
                                     </p>
                                 </li>
                             <% } %>
-                            <% for (const key in data) { %>
-                                <li class="text-start" >
-                                    <ul >
-                                        <% data[key].forEach(item=> { %>
-                                            <% if (item.startsWith('Date:')) { %>
-                                                <li class="text-content text-start list-item">
-                                                    <%- '\n' + item %>
-                                                </li>
-                                            <% } else { %>
-                                                <li   class="text-start text-content" > <%- item %> </li>
-                                            <% } %>
-                                        <% }); %>
-                                    </ul>
-                                </li>
-                            <% } %>
-                            <hr />
+                        <% } else { %>
+                            <li class="text-start">
+                                <p class="text-start">
+                                    <%= data %>
+                                </p>
+                            </li>
+                        <% } %>
+                        <hr />
                     <% }); %>
-                </ul>
+                </ul>               
                 <div class="container text-start">
                     <div class="lead text-start fs-4 fw-bold">© NMIMS Deemed-to-be University</div>
                     <small class="text-start">Mumbai | Shirpur | Bengaluru | Hyderabad | Indore | Navi Mumbai |

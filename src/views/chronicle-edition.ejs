@@ -97,7 +97,7 @@
   <div class="modal fade fullscreen" id="chronicle-edition" tabindex="-1"
     role="dialog" aria-labelledby="chronicle-edition" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document" >
-      <div class="modal-content" style="width: 78vw !important;">
+      <div class="modal-content validate-input" style="width: 78vw !important;">
         <div class="modal-header">
           <h5 style="padding-left: 40%;" class="modal-title" id="chronicle-data"> Chronicle Edition </h5>
           <div type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -105,7 +105,13 @@
           </div>
         </div>
         <div class="modal-body">
-          <div class="main-content">
+          <div class="row">
+            <div class="form-group card">
+              <label for="date" class="card-header text-center fs-5 fw-normal">
+                  Date of Writing Chronicle Edition
+                  <input type="date"  id="chronicle-date" data-validate="isEmpty,isExist"  data-err-msg="Date is required." required>
+              </label>
+          </div>
             <div id="accordion">
               <div class="card">
                 <div class="card-header" id="research-chronicle">
@@ -411,11 +417,16 @@
       const editor = editorInstances[editorId];
       console.log('editor ==>>>', editor)
       if (editor) {
-        const chronicalEditorData = editor.getData();
-        console.log('chronicalEditorData ===>>>>', chronicalEditorData)
-        if (chronicalEditorData) {
+        const chronicleEditorData = editor.getData();
+        console.log('chronicleEditorData ===>>>>', chronicleEditorData)
+        if (chronicleEditorData) {
+          const chronicleDate = document.getElementById('chronicle-date').value;
+          console.log('chronicleDate ===>>>', chronicleDate)
+          
           const editorData = {
-            chronicalEditorData: chronicalEditorData
+            chronicleEditorData: chronicleEditorData,
+            chronicleDate : chronicleDate
+
           };
 
           await fetch(url, {
@@ -449,13 +460,22 @@
 
     // Event listener for the submit button
     document.addEventListener('click', async function (event) {
+      
       const button = event.target.closest('button');
       if (button && button.classList.contains('insert-chronicle')) {
         const buttonId = button.id;
-        console.log('buttonId ===>>>', buttonId);
-        const editorId = `#${buttonId}-editor`;
-        console.log('editorId ===>>>', editorId)
-        await insertChronicleEdition(`<%- BASE_URL %>chronicle-edition/${buttonId}/insert`, editorId);
+        console.log('buttonId ===>>>', buttonId)
+
+        const isValid = validateRequiredFormFields(document.querySelector('.insert-chronicle'));
+        if (isValid) {
+          console.log('buttonId ===>>>', buttonId);
+          const editorId = `#${buttonId}-editor`;
+          console.log('editorId ===>>>', editorId)
+          await insertChronicleEdition(`<%- BASE_URL %>chronicle-edition/${buttonId}/insert`, editorId);
+        }
+        else{
+          alert('Validation Failed');
+        }
       }
     });
 
