@@ -2,12 +2,13 @@ const chronicleEditionService = require('../services/chronicle-editor.service');
 
 module.exports.renderChronicleEditionPage = async(req, res, next)  => {
     const chronicleDataController = await chronicleEditionService.renderChronicleEdition();
-    console.log('chronicleDataController ==>>>', chronicleDataController.rows);
+    const chronicleEditorData = chronicleDataController.renderVcEditorData;
+    // console.log('chronicleEditorData ==>>>', chronicleEditorData.rows);
 
-    const chronicleData = chronicleDataController.rows;
-    console.log("chronicleData ==>>>", chronicleData);
-    const dateString = chronicleData[0].date;
-    console.log('dateString ===>>', dateString);
+    const chronicleData = chronicleEditorData.rows;
+    console.log("chronicleData in controller ==>>>", chronicleData);
+    // const dateString = chronicleData[0].date;
+    // console.log('dateString ===>>', dateString);
     for(let i = 0; i <= chronicleData.length - 1; i++){
         console.log('table name  ==>>', chronicleData[i].table_name);
         console.log(' data value ==>>', chronicleData[i].editor_data);

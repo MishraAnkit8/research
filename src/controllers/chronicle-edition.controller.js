@@ -2,59 +2,91 @@ const chronicleService = require("../services/chronicle-editor.service");
 
 module.exports.renderChronicleEdition = async (req, res, next) => {
   const chronicleData = await chronicleService.renderChronicleEdition();
-  console.log("chronicleData ==>>", chronicleData);
-  const rowCount = chronicleData.rowCount;
-  console.log("rowCount ==>>", rowCount);
-  const idTableNameMap = {};
-  for (const row of chronicleData.rows) {
-      if (!idTableNameMap[row.id]) {
-          idTableNameMap[row.id] = [];
-      }
-      idTableNameMap[row.id].push(row.table_name);
-  }
-  console.log('idTableNameMap:', idTableNameMap);
+  // console.log("chronicleData in fetchVcOfficeData ==>>", chronicleData.fetchVcOfficeData);
+  // console.log("chronicleData in fetchResearchData ==>>", chronicleData.fetchResearchData);
+  // console.log("chronicleData in fetchMeetingData ==>>", chronicleData.fetchMeetingData);
+  // console.log("chronicleData in controller ==>>", chronicleData.fetchBrandingData);
+  // for vc data
+  const vcOfficeEditor = chronicleData.fetchVcOfficeData;
+  const vcOfficeData = vcOfficeEditor.rows;
+  // console.log('vcOfficeData ===>>>>', vcOfficeData);
+
+  // for research editor
+  const researchEditor = chronicleData.fetchResearchData;
+  const researchData = researchEditor.rows;
+  // console.log('researchData ===>>>', researchData)
+
+  // for meetingEditor
+  const meetingEditor = chronicleData.fetchMeetingData;
+  const meetingData = meetingEditor.rows;
+  // console.log('meetingData ===>>', meetingData);
+
+  // for brandingEditor
+  const brandingEditor = chronicleData.fetchBrandingData;
+  const brandingData = brandingEditor.rows;
+  // console.log('brandingEditor ===>>>>', brandingData)
+
+  const dataContainerArray = [vcOfficeData, researchData, meetingData, brandingData];
+  console.log('dataContainerArray ===>>>',dataContainerArray)
+
+
+ 
+  // const rowCount = chronicleData.rowCount;
+  // console.log("rowCount ==>>", rowCount);
+  // const idTableNameMap = {};
+  // for (const row of chronicleData.rows) {
+  //     if (!idTableNameMap[row.id]) {
+  //         idTableNameMap[row.id] = [];
+  //     }
+  //     idTableNameMap[row.id].push(row.table_name);
+  // }
+  // console.log('idTableNameMap:', idTableNameMap);
   
-  let idsArray = ["brandingId", "meetingId", "researchId", "vcId"];
+  // let idsArray = ["brandingId", "meetingId", "researchId", "vcId"];
 
-  let valuesArray = ["brandingData", "meetingData", "researchData", "vcData"];
+  // let valuesArray = ["brandingData", "meetingData", "researchData", "vcData"];
 
-  let chronicleDataObj = [];
+  // let chronicleDataObj = [];
 
-  const chronicleIds = [];
-  const dividedRow = rowCount % 4;
-  console.log("dividedRow ==>>>", dividedRow);
-  const loopIteration = rowCount - dividedRow;
+  // const chronicleIds = [];
+  // const dividedRow = rowCount % 4;
+  // console.log("dividedRow ==>>>", dividedRow);
+  // const loopIteration = rowCount - dividedRow;
 
-  for (let j = 1; j <= dividedRow; j++) {
-    const datValueArray = []
-    for (let i = 0; i <= loopIteration - 1; i++) {
-      const keyName = idsArray[i];
-      const dataKeyName = valuesArray[i];
-      const valueName = chronicleData.rows[j].id;
-      console.log("valueName ===>>>", valueName);
-      const dataValues = chronicleData.rows[i].editor_data;
-      // data container object
-      let dataObj = {};
-      dataObj[dataKeyName] = dataValues;
-      datValueArray.push(dataObj);
-      // id container object
-      const idObj = {};
-      idObj[keyName] = valueName;
-      chronicleIds.push(idObj);
-    }
-    // datValueArray.push(dataObj);
-  }
+  // for (let j = 1; j <= dividedRow; j++) {
+  //   const datValueArray = []
+  //   for (let i = 0; i <= loopIteration - 1; i++) {
+  //     const keyName = idsArray[i];
+  //     const dataKeyName = valuesArray[i];
+  //     const valueName = chronicleData.rows[j].id;
+  //     console.log("valueName ===>>>", valueName);
+  //     const dataValues = chronicleData.rows[i].editor_data;
+  //     // data container object
+  //     let dataObj = {};
+  //     dataObj[dataKeyName] = dataValues;
+  //     datValueArray.push(dataObj);
+  //     // id container object
+  //     const idObj = {};
+  //     idObj[keyName] = valueName;
+  //     chronicleIds.push(idObj);
+  //   }
+  //   // datValueArray.push(dataObj);
+  // }
 
-  console.log("chronicleIds ==>>", chronicleIds);
+  // console.log("chronicleIds ==>>", chronicleIds);
 
-  console.log("chronicleDataObj ==>>", chronicleDataObj);
+  // console.log("chronicleDataObj ==>>", chronicleDataObj);
   res.render("chronicle-edition", {
-    chronicleDataObj: chronicleDataObj,
-    chronicleIds: chronicleIds,
-    rowCount: rowCount
+    // chronicleDataObj: chronicleDataObj,
+    // chronicleIds: chronicleIds,
+    // rowCount: rowCount
   });
 };
 
+module.exports.renderVcOfficeChronicle = async(req, res, next) => {
+  const vcOfficeRenderdData = await chronicleService.renderVcOfficeData();
+  console.log('vcOfficeRenderdData in controller ===>>>', vcOfficeRenderdData);
+}
 
 module.exports.insertVcData = async (req, res, next) => {
   // console.log("data comming from frontend in insertVcData  ==>>", req.body);
@@ -80,16 +112,9 @@ module.exports.insertResearchData = async (req, res, next) => {
 };
 
 module.exports.insertMeetingData = async (req, res, next) => {
-  console.log(
-    "data comming from frontend in insertMeetingData  ==>>",
-    req.body
-  );
-  const insertMeetingEditorData =
-    await chronicleService.insertMeetingDataService(req.body);
-  console.log(
-    "chronicleDataToBeInserted in controller ==>>",
-    insertMeetingEditorData
-  );
+  // console.log("data comming from frontend in insertMeetingData  ==>>",req.body);
+  const insertMeetingEditorData = await chronicleService.insertMeetingDataService(req.body);
+  // console.log("chronicleDataToBeInserted in controller ==>>", insertMeetingEditorData);
   if (insertMeetingEditorData) {
     res.status(200).send({
       status: "done",
@@ -98,13 +123,9 @@ module.exports.insertMeetingData = async (req, res, next) => {
 };
 
 module.exports.insertBrandingData = async (req, res, next) => {
-  console.log("data comming from frontend in Branding  ==>>", req.body);
-  const insertBrandingEditorData =
-    await chronicleService.insertBrandingDataService(req.body);
-  console.log(
-    "chronicleDataToBeInserted in controller ==>>",
-    insertBrandingEditorData
-  );
+  // console.log("data comming from frontend in Branding  ==>>", req.body);
+  const insertBrandingEditorData = await chronicleService.insertBrandingDataService(req.body);
+  console.log("chronicleDataToBeInserted in controller ==>>", insertBrandingEditorData);
   if (insertBrandingEditorData) {
     res.status(200).send({
       status: "done",
