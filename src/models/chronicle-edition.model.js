@@ -8,13 +8,13 @@ const autoDbW = dbPoolManager.get('autoDbW', autoriders_write_db);
 module.exports.fetchEditorData = async() =>{
     const sql = {
       text: `
-          SELECT 'vc_editor_table' AS table_name, id, vc_editor_data AS editor_data, date as date FROM vc_editor_table
+          SELECT 'vc_editor_table' AS table_name, id, editor_data AS editor_data, date as date FROM vc_editor_table
           UNION ALL
-          SELECT 'research_editor_table' AS table_name, id, research_editor_data AS editor_data, date as date FROM research_editor_table
+          SELECT 'research_editor_table' AS table_name, id, editor_data AS editor_data, date as date FROM research_editor_table
           UNION ALL
-          SELECT 'meeting_editor_table' AS table_name, id, meeting_editor_data AS editor_data, date as date FROM meeting_editor_table
+          SELECT 'meeting_editor_table' AS table_name, id, editor_data AS editor_data, date as date FROM meeting_editor_table
           UNION ALL
-          SELECT 'branding_editor_table' AS table_name, id, branding_editor_data AS editor_data, date as date FROM branding_editor_table
+          SELECT 'branding_editor_table' AS table_name, id, editor_data AS editor_data, date as date FROM branding_editor_table
           ORDER BY table_name, id
       `,
     };
@@ -72,7 +72,7 @@ module.exports.insertVcEditorData = async(chronicleEditorData, chronicleDate) =>
     console.log('chronicleEditionData data in models ==>>>', chronicleDate) 
 
     let sql = {
-      text : `INSERT INTO vc_editor_table (date,vc_editor_data) VALUES($1,$2)  RETURNING id `,
+      text : `INSERT INTO vc_editor_table (date, editor_data) VALUES($1,$2)  RETURNING id `,
       values : [chronicleDate, chronicleEditorData]
     }
     console.log("sql insertVcEditorData ==>>>", sql);
@@ -83,7 +83,7 @@ module.exports.insertVcEditorData = async(chronicleEditorData, chronicleDate) =>
 
 module.exports.insertResearchEditor = async(chronicleEditorData, chronicleDate) => {
     let sql = {
-      text : `INSERT INTO research_editor_table (date, research_editor_data) VALUES($1, $2) RETURNING id `,
+      text : `INSERT INTO research_editor_table (date, editor_data) VALUES($1, $2) RETURNING id `,
       values : [chronicleDate, chronicleEditorData]
     }
     console.log("sql insertResearchEditor ==>>>", sql);
@@ -96,7 +96,7 @@ module.exports.insertMeetingEditor = async(chronicleEditorData, chronicleDate) =
   console.log('chronicleDate ===>>>', chronicleDate)
 
     let sql = {
-      text : `INSERT INTO meeting_editor_table (date, meeting_editor_data) VALUES($1, $2) RETURNING id `,
+      text : `INSERT INTO meeting_editor_table (date, editor_data) VALUES($1, $2) RETURNING id `,
       values : [chronicleDate, chronicleEditorData]
     }
     console.log("sql insertMeetingEditor ==>>>", sql);
@@ -109,7 +109,7 @@ module.exports.insertBrandingeditor = async(chronicleEditorData, chronicleDate) 
   console.log()
 
     let sql = {
-      text : `INSERT INTO branding_editor_table (date, branding_editor_data) VALUES($1, $2)  RETURNING id `,
+      text : `INSERT INTO branding_editor_table (date, editor_data) VALUES($1, $2)  RETURNING id `,
       values : [chronicleDate, chronicleEditorData]
     }
     console.log("sql insertBrandingeditor ==>>>", sql);

@@ -1,6 +1,8 @@
 const chronicleService = require("../services/chronicle-editor.service");
 
 module.exports.renderChronicleEdition = async (req, res, next) => {
+  const dataId = req.params.id;
+  console.log('dataId ====>>>', dataId)
   const chronicleData = await chronicleService.renderChronicleEdition();
   // console.log("chronicleData in fetchVcOfficeData ==>>", chronicleData.fetchVcOfficeData);
   // console.log("chronicleData in fetchResearchData ==>>", chronicleData.fetchResearchData);
@@ -9,13 +11,33 @@ module.exports.renderChronicleEdition = async (req, res, next) => {
   // for vc data
   const vcOfficeEditor = chronicleData.fetchVcOfficeData;
   const vcOfficeData = vcOfficeEditor.rows;
-  // console.log('vcOfficeData ===>>>>', vcOfficeData);
+  console.log('vcOfficeData ===>>>>', vcOfficeData);
+  // const date = vcOfficeData[0].date; 
+  // const createdBy = vcOfficeData[0].created_by;
+  // console.log('createdBy ===>>>', createdBy)
+  // console.log('vcId ===>>>', vcId)
+  const chronicleEditorData = [];
+
+  // function for frmate date and time
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+    const day = date.getDate();
+    const month = date.getMonth() + 1; // Months are zero-based
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  }
+
+  // type  of editor container array
+  const typeContainerArray = [
+    "From Vice Chancellor's Desk",
+    "Research",
+    "Meeting Stakeholders Aspiration",
+    "Branding"
+  ];
 
   // for research editor
   const researchEditor = chronicleData.fetchResearchData;
   const researchData = researchEditor.rows;
-  // console.log('researchData ===>>>', researchData)
-
   // for meetingEditor
   const meetingEditor = chronicleData.fetchMeetingData;
   const meetingData = meetingEditor.rows;
@@ -25,61 +47,35 @@ module.exports.renderChronicleEdition = async (req, res, next) => {
   const brandingEditor = chronicleData.fetchBrandingData;
   const brandingData = brandingEditor.rows;
   // console.log('brandingEditor ===>>>>', brandingData)
-
+  //editor date container array
   const dataContainerArray = [vcOfficeData, researchData, meetingData, brandingData];
-  console.log('dataContainerArray ===>>>',dataContainerArray)
+  // append data in chronicleEditorData 
+  for (let i = 0; i < dataContainerArray.length; i++) {
+    const relatedEditorData = dataContainerArray[i];
+    
+    for (const item of relatedEditorData) {
+      const type = typeContainerArray[i];
+      chronicleEditorData.push([item.id, type, item.created_by, formatDate(item.date), formatDate(item.updated_at), item.editor_data]);
+    }
+  }
+
+  // sort chronicleEditorData by date 
+  function sortByDate(a, b) {
+    const dateA = new Date(a[3].split('/').reverse().join('/')); 
+    const dateB = new Date(b[3].split('/').reverse().join('/'));
+    return dateA - dateB;
+  };
+
+  chronicleEditorData.sort(sortByDate);
+  console.log('chronicleEditorData Data ==>>>:', chronicleEditorData);
+
+  // console.log('dataContainerArray ===>>>',dataContainerArray)
+  // console.log('vcOfficeData ===>>>', dataContainerArray.vcOfficeData)
 
 
- 
-  // const rowCount = chronicleData.rowCount;
-  // console.log("rowCount ==>>", rowCount);
-  // const idTableNameMap = {};
-  // for (const row of chronicleData.rows) {
-  //     if (!idTableNameMap[row.id]) {
-  //         idTableNameMap[row.id] = [];
-  //     }
-  //     idTableNameMap[row.id].push(row.table_name);
-  // }
-  // console.log('idTableNameMap:', idTableNameMap);
-  
-  // let idsArray = ["brandingId", "meetingId", "researchId", "vcId"];
 
-  // let valuesArray = ["brandingData", "meetingData", "researchData", "vcData"];
-
-  // let chronicleDataObj = [];
-
-  // const chronicleIds = [];
-  // const dividedRow = rowCount % 4;
-  // console.log("dividedRow ==>>>", dividedRow);
-  // const loopIteration = rowCount - dividedRow;
-
-  // for (let j = 1; j <= dividedRow; j++) {
-  //   const datValueArray = []
-  //   for (let i = 0; i <= loopIteration - 1; i++) {
-  //     const keyName = idsArray[i];
-  //     const dataKeyName = valuesArray[i];
-  //     const valueName = chronicleData.rows[j].id;
-  //     console.log("valueName ===>>>", valueName);
-  //     const dataValues = chronicleData.rows[i].editor_data;
-  //     // data container object
-  //     let dataObj = {};
-  //     dataObj[dataKeyName] = dataValues;
-  //     datValueArray.push(dataObj);
-  //     // id container object
-  //     const idObj = {};
-  //     idObj[keyName] = valueName;
-  //     chronicleIds.push(idObj);
-  //   }
-  //   // datValueArray.push(dataObj);
-  // }
-
-  // console.log("chronicleIds ==>>", chronicleIds);
-
-  // console.log("chronicleDataObj ==>>", chronicleDataObj);
   res.render("chronicle-edition", {
-    // chronicleDataObj: chronicleDataObj,
-    // chronicleIds: chronicleIds,
-    // rowCount: rowCount
+    chronicleEditorData
   });
 };
 

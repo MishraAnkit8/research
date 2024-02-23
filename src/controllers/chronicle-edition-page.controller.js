@@ -1,71 +1,101 @@
 const chronicleEditionService = require('../services/chronicle-editor.service');
 
 module.exports.renderChronicleEditionPage = async(req, res, next)  => {
-    const chronicleDataController = await chronicleEditionService.renderChronicleEdition();
-    const chronicleEditorData = chronicleDataController.renderVcEditorData;
-    // console.log('chronicleEditorData ==>>>', chronicleEditorData.rows);
+  const dataId = req.params.id;
+  console.log('dataId ====>>>', dataId);
 
-    const chronicleData = chronicleEditorData.rows;
-    console.log("chronicleData in controller ==>>>", chronicleData);
-    // const dateString = chronicleData[0].date;
-    // console.log('dateString ===>>', dateString);
-    for(let i = 0; i <= chronicleData.length - 1; i++){
-        console.log('table name  ==>>', chronicleData[i].table_name);
-        console.log(' data value ==>>', chronicleData[i].editor_data);
-        console.log('editor date ==>>', chronicleData[i].date)
-        console.log(' table id ==>>', chronicleData[i].id);
+  const chronicleDataController = await chronicleEditionService.renderChronicleEdition();
 
+  console.log(' supporting text ===>>>', req.params.textdata)
+  // for vc data
+  const vcOfficeEditor = chronicleDataController.fetchVcOfficeData;
+  const vcOfficeData = vcOfficeEditor.rows;
+    // for research
+  const researchEditor = chronicleDataController.fetchResearchData;
+  const researchData = researchEditor.rows;
+  // for meetingEditor
+  const meetingEditor = chronicleDataController.fetchMeetingData;
+  const meetingData = meetingEditor.rows;
+  // console.log('meetingData ===>>', meetingData);
+
+  // for brandingEditor
+  const brandingEditor = chronicleDataController.fetchBrandingData;
+  const brandingData = brandingEditor.rows;
+  console.log('brandingEditor ===>>>>', brandingData)
+
+  console.log("vcOfficeData ===>>>>", vcOfficeData);
+  //for vc data view 
+  if (req.params.textdata === "vcOfficeData") {
+    const desiredData = vcOfficeData.find((item) => item.id == dataId);
+
+    if (desiredData) {
+      const viewDataById = desiredData.editor_data;
+      console.log("viewDataById =====>>>>", viewDataById);
+      res.status(200).render("chronicle-edition-data", {
+        status: "Done",
+        viewDataById,
+      });
+    } else {
+      console.log("Data not found for ID:", dataId);
+      // Handle the case when data is not found for the given ID
+      res.status(404).send("Data not found");
     }
-    const dataByTableAndId = {};
+  }
 
-    // Group editor_data by table_name and id
-    chronicleData.forEach((data) => {
-      const { table_name, id, editor_data, date} = data;
-      console.log('data in controller ===>>>', data)
-      if (!dataByTableAndId[table_name]) {
-        dataByTableAndId[table_name] = {};
+   // for meeting data
+   if (req.params.textdata === "meetingData") {
+    const desiredData = meetingData.find((item) => item.id == dataId);
+
+    if (desiredData) {
+      const viewDataById = desiredData.editor_data;
+      console.log("viewDataById =====>>>>", viewDataById);
+      res.status(200).render("chronicle-edition-data", {
+        status: "Done",
+        viewDataById,
+      });
+    } else {
+      console.log("Data not found for ID:", dataId);
+      // Handle the case when data is not found for the given ID
+      res.status(404).send("Data not found");
+    }
+  }
+
+   // for reseach data
+   if (req.params.textdata === "researchData") {
+    const desiredData = researchData.find((item) => item.id == dataId);
+
+    if (desiredData) {
+      const viewDataById = desiredData.editor_data;
+      console.log("viewDataById =====>>>>", viewDataById);
+      res.status(200).render("chronicle-edition-data", {
+        status: "Done",
+        viewDataById,
+      });
+    } else {
+      console.log("Data not found for ID:", dataId);
+      // Handle the case when data is not found for the given ID
+      res.status(404).send("Data not found");
+    }
+  }
+
+    // for branding data
+    if (req.params.textdata === "brandingData") {
+      const desiredData = brandingData.find((item) => item.id == dataId);
+  
+      if (desiredData) {
+        const viewDataById = desiredData.editor_data;
+        console.log("viewDataById =====>>>>", viewDataById);
+        res.status(200).render("chronicle-edition-data", {
+          status: "Done",
+          viewDataById,
+        });
+      } else {
+        console.log("Data not found for ID:", dataId);
+        // Handle the case when data is not found for the given ID
+        res.status(404).send("Data not found");
       }
-      if (!dataByTableAndId[table_name][id]) {
-        dataByTableAndId[table_name][id] = [];
-      }
-      dataByTableAndId[table_name][id].push( date );
-
-      dataByTableAndId[table_name][id].push( editor_data );
-    });
-    console.log('dataByTableAndId ====.>>', dataByTableAndId)
-    console.log('dataByTableAndId ==>>>', dataByTableAndId.vc_editor_table);
-    const vcEditorData = dataByTableAndId.vc_editor_table;
-    const brandingEditorData = dataByTableAndId.branding_editor_table;
-    const meetingeditotData = dataByTableAndId.meeting_editor_table;
-    const researchEditorData = dataByTableAndId.research_editor_table;
-    // data array ontainer
-    const dataContainerArray = [vcEditorData, researchEditorData, meetingeditotData, brandingEditorData];
-    console.log('dataContainerArray ==>>>', dataContainerArray)
-    console.log('vcEditorData ==>>>', vcEditorData);
-    
-    
-
-    // heading container array
-    const headingContainer = [
-        "From Vice Chancellor's Desk",
-        "Research",
-        "Meeting Stakeholders Aspiration",
-        "Branding"   
-    ];
-
-    console.log('headingContainer ==>>>', headingContainer)
-    for (const key in vcEditorData) {
-        console.log("ID:", key);
-        vcEditorData[key].forEach(item => console.log(item));
-      }
-      res.status(200).render('chronicle-edition-data' , {
-        status: 'Done',
-        dataContainerArray,
-        headingContainer
-    });
-    
+    }
 }
-
 
 
 

@@ -40,54 +40,16 @@ figure * {
             <img class="img-fluid" src="<%- BASE_URL %>image/nmims.png" alt="nmims image">
             <div class="pt-5">
                 <ul class="text-content">
-                    <% dataContainerArray.forEach((data, index) => { %>
-                        <% const heading = headingContainer[index] || ''; %>
-                        
-                        <% if (heading) { %>
-                            <li class="list-item">
-                                <p class="text-start fw-bold fs-5">
-                                    <%= heading %>
-                                </p>
-                            </li>
-                        <% } %>
-                
-                        <% if (Array.isArray(data)) { %>
-                            <% const date = data[0]; %>
-                            <% const items = data.slice(1); %>
-                            
-                            <% if (date) { %>
-                                <li class="list-item text-date">
-                                        <%- formatDate(date) %>
-                                </li>
-                            <% } %>
-                            
-                            <% items.forEach(item => { %>
-                                <li class="text-start">
-                                    <ul>
-                                        <li class="text-start text-content">
-                                            <%- item %>
-                                        </li>
-                                    </ul>
-                                </li>
-                            <% }); %>
-                        <% } else if (typeof data === 'object') { %>
-                            <% for (const key in data) { %>
-                                <li class="text-start">
-                                    <p class="text-start text-content text-date">
-                                       <span> <%- key %></span> :<span>  <%- data[key] %> </span>
-                                    </p>
-                                </li>
-                            <% } %>
-                        <% } else { %>
-                            <li class="text-start">
-                                <p class="text-start">
-                                    <%- data %>
-                                </p>
-                            </li>
-                        <% } %>
-                        <hr />
-                    <% }); %>
-                </ul>               
+                    <% if (viewDataById) { %>
+                        <li class="list-item">
+                            <%- viewDataById %>
+                        </li>
+                    <% } else { %>
+                        <li class="list-item">
+                            No data available
+                        </li>
+                    <% } %>
+                </ul>                               
                 <div class="container text-start">
                     <div class="lead text-start fs-4 fw-bold">© NMIMS Deemed-to-be University</div>
                     <small class="text-start">Mumbai | Shirpur | Bengaluru | Hyderabad | Indore | Navi Mumbai |
@@ -97,5 +59,6 @@ figure * {
             </div>
         </div>
     </div>
+    <script></script>
 </body>
 </html>

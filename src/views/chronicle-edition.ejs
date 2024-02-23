@@ -37,7 +37,7 @@
             </div>
             <div class="">
                 <button style="text-align: end;" id="chronicle-edition-add-modal" type="button" class="btn btn-primary add-modal" data-toggle="modal"
-                    data-target="#chronicle-edition">
+                    data-target="#chronicle-edition-modal">
                     <i  class="fas fa-plus plus"></i></button>
                 </button>
             </div>
@@ -70,29 +70,41 @@
                     </div>
                 </div>
             </div>
-            <table class="table custom-table table-responsive research-pagination" id="journal-paper-list">
+            <table class="table custom-table research-pagination" id="chronicle-list">
               <thead>
-                <th class="form-group col-lg-1 col-md-6 col-sm-12 mb-4">#</th>
-                <th class="form-group col-lg-2 col-md-6 col-sm-12 mb-4">Type</th>
-                <th class="form-group col-lg-2 col-md-6 col-sm-12 mb-4">Date</th>
-                <th class="form-group col-lg-3 col-md-6 col-sm-12 mb-4">Created By</th>
-                <th class="form-group col-lg-2 col-md-6 col-sm-12 mb-4">Updated By</th>
-                <th class="form-group col-lg-2 col-md-6 col-sm-12 mb-4">Action</th>
+                  <tr>
+                      <th class="col-lg-1 text-start">#</th>
+                      <th class="col-lg-1">Type</th>
+                      <th class="col-lg-1">Created By</th>
+                      <th class="col-lg-1">Created Date</th>
+                      <th class="col-lg-1">Updated Date</th>
+                      <th class="col-lg-1">Action</th>
+                  </tr>
               </thead>
-              <tr class="row">
-                <td class="form-group col-lg-1 col-md-6 col-sm-12 mb-4">#</td>
-                <td class="form-group col-lg-2 col-md-6 col-sm-12 mb-4">VC Office</td>
-                <td class="form-group col-lg-2 col-md-6 col-sm-12 mb-4">Research</td>
-                <td class="form-group col-lg-3 col-md-6 col-sm-12 mb-4">Meeting Stakeholders Aspiration</td>
-                <td class="form-group col-lg-2 col-md-6 col-sm-12 mb-4">Branding</td>
-                <td class="form-group col-lg-2 col-md-6 col-sm-12 mb-4">
-                  <label for="view"><a href="<%- BASE_URL %>chronicle-page"><i class="fa-solid fa-eye view text-danger"></i></a></label>
-                  <label class="edit"><i class="fa fa-edit edit text-danger"></i></label>
-                  <label class="delete"><i class="fa-solid fa-trash delete text-danger"></i></label>
-                </td>
-              </tr>
-            </table>
-            <div class="d-flex justify-content-between">
+              <tbody>
+                  <% for (let i = 0; i < chronicleEditorData.length; i++) { %>
+                      <tr class="row" data-chronicle-id="<%= chronicleEditorData[i][0] %>">
+                          <td class="col-lg-1 text-start"><%= i + 1 %></td>
+                          <td class="data-text" class="col-lg-1 head-text"><%= chronicleEditorData[i][1] %></td>
+                          <td class="col-lg-1 head-text"><%= chronicleEditorData[i][2] %></td>
+                          <td class="col-lg-1 head-text"><%= chronicleEditorData[i][3] %></td>
+                          <td class="col-lg-1 head-text"><%= chronicleEditorData[i][4] %></td>
+                          <td class="col-lg-1">
+                              <label class="view" data-chronicle-id="<%= chronicleEditorData[i][0] %>">
+                                  <i class="fa-solid fa-eye view text-danger" data-chronicle-id="<%= chronicleEditorData[i][0] %>"></i>
+                              </label>
+                              <label class="edit" data-chronicle-id="<%= chronicleEditorData[i][0] %>">
+                                  <i class="fa fa-edit edit text-danger" data-chronicle-id="<%= chronicleEditorData[i][0] %>"></i>
+                              </label>
+                              <label class="delete" data-chronicle-id="<%= chronicleEditorData[i][0] %>">
+                                  <i class="fa-solid fa-trash delete text-danger" data-chronicle-id="<%= chronicleEditorData[i][0] %>"></i>
+                              </label>
+                          </td>
+                      </tr>
+                  <% } %>
+              </tbody>
+          </table>  
+          <div class="d-flex justify-content-between">
                 <div>
                     <label >Total entries : 
                     </label>
@@ -108,8 +120,8 @@
     </div>
   </main>
   <!-- modal form  for chronicle edition -->
-  <div class="modal fade fullscreen" id="chronicle-edition" tabindex="-1"
-    role="dialog" aria-labelledby="chronicle-edition" aria-hidden="true">
+  <div class="modal fade fullscreen" id="chronicle-edition-modal" tabindex="-1"
+    role="dialog" aria-labelledby="chronicle-edition-modal" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document" >
       <div class="modal-content validate-input" style="width: 78vw !important;">
         <div class="modal-header">
@@ -142,7 +154,9 @@
                     <strong>From Vice Chancellor's Desk</strong>
                     <div id="vc-data-editor">
                     </div>
-                    <button id="vc-data" type="button" class="btn btn-primary insert-chronicle">Submit</button>
+                    <button id="vc-data" type="button" class="btn btn-primary insert-chronicle d-none">Submit</button>
+                    <button id="vc-data" type="button" class="btn btn-primary upadte-chronicle d-none">Update</button>
+
                   </div>
                 </div>
               </div>
@@ -178,8 +192,8 @@
                     <strong> Meeting Stackholders </strong>
                     <div id="meeting-data-editor">
                     </div>
-                    <button id="meeting-data" type="button" class="btn btn-primary insert-chronicle">Submit</button>
-                  </div>
+                    <button id="advertising-data" type="button" class="btn btn-primary insert-chronicle d-none">Submit</button>
+                    <button id="advertising-data" type="button" class="btn btn-primary update-chronicle d-none">Update</button>                  </div>
                 </div>
               </div>
               <div class="card">
@@ -197,8 +211,8 @@
                     <div id="advertising-data-editor">
   
                     </div>
-                    <button id="advertising-data" type="button" class="btn btn-primary insert-chronicle">Submit</button>
-  
+                    <button id="advertising-data" type="button" class="btn btn-primary insert-chronicle d-none">Submit</button>
+                    <button id="advertising-data" type="button" class="btn btn-primary update-chronicle d-none">Update</button>
                   </div>
                 </div>
               </div>
@@ -217,6 +231,18 @@
 
   <script>
 
+    const chronicleDataList = document.getElementById('chronicle-list');
+    let submitBtn = document.querySelector('.insert-chronicle');
+    let updateBtn = document.querySelector('.update-chronicle');
+  
+    const chronicleRecordToBeAddModal = document.getElementById('chronicle-edition-add-modal');
+    chronicleRecordToBeAddModal.addEventListener('click' , (event) => {
+      if (event.target.tagName === 'BUTTON' && event.target.classList.contains('add-modal') || event.target.classList.contains('plus')) {
+          console.log('clickeddd');
+          submitBtn.classList.remove('d-none');
+          updateBtn.classList.add('d-none');
+      }
+    })
     const idContainerArray = [
       "#vc-data-editor",
       "#advertising-data-editor",
@@ -528,7 +554,51 @@
       //     button.appendChild(icon);
       //     return button;
       //   }
-        
+
+
+
+      chronicleDataList.addEventListener('click', (event) => {
+          if (event.target.classList.contains('view')) {
+            console.log('clicked to view class');
+            const closestRow = event.target.closest('tr');
+            const editorType = closestRow.querySelector('.data-text');
+            const chronicleId = event.target.getAttribute('data-chronicle-id');
+            console.log('chronicleId ==>>', chronicleId);
+            console.log('closestRow ====>>>>', closestRow);
+            console.log('editorType ===>>>', editorType.innerText);
+            // for From Vice Chancellor's Desk
+            if (editorType.innerText === "From Vice Chancellor's Desk") {
+               const editorText = 'vcOfficeData';
+              window.location.href = `<%- BASE_URL %>chronicle-page/textdata/${editorText}/id/${chronicleId}`;
+            }
+            // Meeting Stakeholders Aspiration
+            if (editorType.innerText === "Meeting Stakeholders Aspiration") {
+               const editorText = 'meetingData';
+               window.location.href = `<%- BASE_URL %>chronicle-page/textdata/${editorText}/id/${chronicleId}`;
+            }
+            // for Research
+            if (editorType.innerText === "Research") {
+               const editorText = 'researchData';
+              window.location.href = `<%- BASE_URL %>chronicle-page/textdata/${editorText}/id/${chronicleId}`;
+            } 
+            // Branding
+            if (editorType.innerText === "Branding") {
+              const editorText = 'brandingData';
+              window.location.href = `<%- BASE_URL %>chronicle-page/textdata/${editorText}/id/${chronicleId}`;
+            } 
+            
+          }
+
+          // for update button
+          if(event.target.classList.contains('edit')){
+            console.log('edit button clicked')
+            submitBtn.classList.add('d-none');
+            updateBtn.classList.remove('d-none');
+            $('#chronicle-edition-modal').modal('show');
+          }
+        });
+
+
   </script>
 <%- include('./partials/pagination') %>
 <%- include('./partials/footer') %>

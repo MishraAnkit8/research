@@ -5,7 +5,12 @@ const chroniclePageController = require('../controllers/chronicle-edition-page.c
 
 const router = express.Router();
 
-router.get('/', chroniclePageController.renderChronicleEditionPage);
+router.get("/textdata/:textdata/id/:id", chroniclePageController.renderChronicleEditionPage);
+// router.get("/textdata/:textdata/id/:id", chroniclePageController.renderChronicleEditionPage);
+// router.get("/textdata/:textdata/id/:id", chroniclePageController.renderChronicleEditionPage);
+// router.get("/textdata/:textdata/id/:id", chroniclePageController.renderChronicleEditionPage);
+
+
 
 
 
