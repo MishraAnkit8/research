@@ -1,5 +1,14 @@
 const chronicleService = require("../services/chronicle-editor.service");
 
+
+function formatDate(dateString) {
+  const date = new Date(dateString);
+  const day = date.getDate();
+  const month = date.getMonth() + 1; // Months are zero-based
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`;
+}
+
 module.exports.renderChronicleEdition = async (req, res, next) => {
   const dataId = req.params.id;
   console.log('dataId ====>>>', dataId)
@@ -19,13 +28,6 @@ module.exports.renderChronicleEdition = async (req, res, next) => {
   const chronicleEditorData = [];
 
   // function for frmate date and time
-  function formatDate(dateString) {
-    const date = new Date(dateString);
-    const day = date.getDate();
-    const month = date.getMonth() + 1; // Months are zero-based
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
-  }
 
   // type  of editor container array
   const typeContainerArray = [
@@ -128,3 +130,83 @@ module.exports.insertBrandingData = async (req, res, next) => {
     });
   }
 };
+
+
+module.exports.updateVcData = async(req, res, next) => {
+  const updatedChronicleEditorData = req.body.updatedChronicleEditorData;
+  const updatedChronicleDate = req.body.updatedChronicleDate;
+  const chronicleDate  = formatDate(updatedChronicleDate)
+  const chronicleId = req.body.chronicleId;
+  const currentDate = new Date();
+  const updatedAt = formatDate(currentDate);
+  // console.log('data comming from frontend ====>>>', req.body);
+  const updatedVcData = await chronicleService.updatedVcOfficeData(req.body);
+  if(updatedVcData){
+    res.status(200).send({
+      status : 'done',
+      updatedChronicleEditorData,
+      chronicleDate,
+      updatedAt
+
+    })
+  }
+}
+
+module.exports.updateMeetingData = async(req, res, next) => {
+  const updatedChronicleEditorData = req.body.updatedChronicleEditorData;
+  const updatedChronicleDate = req.body.updatedChronicleDate;
+  const chronicleDate  = formatDate(updatedChronicleDate)
+  const chronicleId = req.body.chronicleId;
+  const currentDate = new Date();
+  const updatedAt = formatDate(currentDate);
+  const updatedMeetingData = await chronicleService.updatedMeetingStackholder(req.body);
+  if(updatedMeetingData){
+    res.status(200).send({
+      status : 'done',
+      updatedChronicleEditorData,
+      chronicleDate,
+      updatedAt
+
+    })
+  }
+  
+}
+
+module.exports.updateResearchData = async(req, res, next) => {
+  const updatedChronicleEditorData = req.body.updatedChronicleEditorData;
+  const updatedChronicleDate = req.body.updatedChronicleDate;
+  const chronicleDate  = formatDate(updatedChronicleDate)
+  const chronicleId = req.body.chronicleId;
+  const currentDate = new Date();
+  const updatedAt = formatDate(currentDate);
+  const updatedResearchData = await chronicleService.updatedResearch(req.body);
+  if(updatedResearchData){
+    res.status(200).send({
+      status : 'done',
+      updatedChronicleEditorData,
+      chronicleDate,
+      updatedAt
+
+    })
+  }
+}
+
+module.exports.updateBrandingData = async(req, res, next) => {
+  const updatedChronicleEditorData = req.body.updatedChronicleEditorData;
+  const updatedChronicleDate = req.body.updatedChronicleDate;
+  const chronicleDate  = formatDate(updatedChronicleDate)
+  const chronicleId = req.body.chronicleId;
+  const currentDate = new Date();
+  const updatedAt = formatDate(currentDate);
+  
+  const updatedBrandingData = await chronicleService.updatedBrandingAdvertising(req.body);
+  if(updatedBrandingData){
+    res.status(200).send({
+      status : 'done',
+      updatedChronicleEditorData,
+      chronicleDate,
+      updatedAt
+
+    })
+  }
+}

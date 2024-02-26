@@ -11,6 +11,12 @@ router.post('/research-data/insert', asyncErrorHandler(chronicleController.inser
 router.post('/meeting-data/insert', asyncErrorHandler(chronicleController.insertMeetingData));
 router.post('/advertising-data/insert', asyncErrorHandler(chronicleController.insertBrandingData));
 
+// for update
+router.post('/vc-data/update', asyncErrorHandler(chronicleController.updateVcData));
+router.post('/research-data/update', asyncErrorHandler(chronicleController.updateResearchData));
+router.post('/meeting-data/update', asyncErrorHandler(chronicleController.updateMeetingData));
+router.post('/advertising-data/update', asyncErrorHandler(chronicleController.updateBrandingData));
+
 
 
 

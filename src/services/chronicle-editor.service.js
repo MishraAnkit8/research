@@ -66,3 +66,41 @@ module.exports.insertBrandingDataService = async(body) => {
     console.log('brandingEditorData in service ==>>>', brandingEditorData)
     return brandingEditorData
 }
+
+//update vc office data
+module.exports.updatedVcOfficeData = async(body) => {
+    console.log('body data in service =====>>>>>', body);
+    const updateVcOfficeContent = await chronicleModels.updateVcData(body);
+    if(updateVcOfficeContent.rowCount == 1){
+        console.log('updateVcOfficeContent in service ===>>>', updateVcOfficeContent);
+        return updateVcOfficeContent
+    }
+
+
+};
+
+//update meeting content
+module.exports.updatedMeetingStackholder = async(body) => {
+    const updateMeetingContent = await chronicleModels.renderMeetingData(body);
+    if(updateMeetingContent.rowCount == 1){
+        return updateMeetingContent
+    }
+
+}
+
+//update research content
+module.exports.updatedResearch = async(body) => {
+    const updateRearchContent = await chronicleModels.updateResearchData(body);
+    if(updateRearchContent.rowcount === 1){
+        return updateRearchContent
+    }
+
+};
+
+//update branding content
+module.exports.updatedBrandingAdvertising = async() => {
+    const updateBrandingContent = await chronicleModels.updateBrandingData(body);
+    if(updateBrandingContent.rowCount == 1){
+        return updateBrandingContent
+    }
+}

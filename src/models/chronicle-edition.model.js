@@ -116,3 +116,62 @@ module.exports.insertBrandingeditor = async(chronicleEditorData, chronicleDate) 
     const result = await autoDbW.query(sql);
     return result.rows
 };
+
+
+// update vc content
+module.exports.updateVcData = async (body) => {
+  console.log("data in model ====>>>", body);
+  const updatedChronicleEditorData = body.updatedChronicleEditorData;
+  console.log('updatedChronicleEditorData in model ===>>', updatedChronicleEditorData);
+  const updatedChronicleDate = body.updatedChronicleDate;
+  console.log('updatedChronicleDate in model ===>>>', updatedChronicleDate);
+  const chronicleId = body.chronicleId;
+  console.log('chronicleId ====>>>', chronicleId);
+
+  let sql = {
+    text : `UPDATE vc_editor_table SET date = $2,  editor_data= $3, updated_at = CURRENT_TIMESTAMP WHERE id = $1`,
+    values : [chronicleId, updatedChronicleDate, updatedChronicleEditorData]
+}
+  console.log('sql ====>>>', sql);
+  return autoDbW.query(sql);
+
+};
+
+// update meeting content
+module.exports.updateMeetingData = async () => {
+  const updatedChronicleEditorData = body.updatedChronicleEditorData;
+  const updatedChronicleDate = body.updatedChronicleDate;
+  const chronicleId = body.chronicleId;
+  let sql = {
+    text : `UPDATE meeting_editor_table SET date = $2,  editor_data= $3, updated_at = CURRENT_TIMESTAMP WHERE id = $1`,
+    values : [chronicleId, updatedChronicleDate, updatedChronicleEditorData]
+}
+  console.log('sql ====>>>', sql);
+  return autoDbW.query(sql);
+};
+
+// upadate research content
+module.exports.updateResearchData = async () => {
+  const updatedChronicleEditorData = body.updatedChronicleEditorData;
+  const updatedChronicleDate = body.updatedChronicleDate;
+  const chronicleId = body.chronicleId;
+  let sql = {
+    text : `UPDATE research_editor_table SET date = $2,  editor_data= $3, updated_at = CURRENT_TIMESTAMP WHERE id = $1`,
+    values : [chronicleId, updatedChronicleDate, updatedChronicleEditorData]
+}
+  console.log('sql ====>>>', sql);
+  return autoDbW.query(sql);
+};
+
+// update branding content
+module.exports.updateBrandingData = async () => {
+  const updatedChronicleEditorData = body.updatedChronicleEditorData;
+  const updatedChronicleDate = body.updatedChronicleDate;
+  const chronicleId = body.chronicleId;
+  let sql = {
+    text : `UPDATE branding_editor_table SET date = $2,  editor_data= $3, updated_at = CURRENT_TIMESTAMP WHERE id = $1`,
+    values : [chronicleId, updatedChronicleDate, updatedChronicleEditorData]
+}
+  console.log('sql ====>>>', sql);
+  return autoDbW.query(sql);
+};
