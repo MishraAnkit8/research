@@ -1131,70 +1131,69 @@
           console.log('editor ==>>>', editor)
           if (editor) {
             const updatedChronicleEditorData = editor.getData();
-            console.log('updatedChronicleEditorData ===>>>>', updatedChronicleEditorData)
+            console.log('updatedChronicleEditorData ===>>>>', updatedChronicleEditorData);
             if (updatedChronicleEditorData) {
-              const vcDate = document.getElementById('vc-content-date');
-              const researchDate = document.getElementById('research-content-date');
-              const meetingDate = document.getElementById('meeting-content-date');
-              const brandingDate = document.getElementById('branding-content-date');
-              const dateContainer = [
-                vcDate.value,
-                researchDate.value,
-                meetingDate.value,
-                brandingDate.value,
-              ];
-              console.log('dateContainer ====>>>', dateContainer)
-              // console.log('vcDate ===>>>',vcDate);
-              // console.log('researchDate ===>>', researchDate.value);
-              // console.log('meetingDate ===>>>', meetingDate.value);
-              // console.log('brandingDate ====>>>>', brandingDate.value);
-
-              for (let i = 0; i <= dateContainer.length - 1; i++) {
-                const updatedChronicleDate = dateContainer[i];
-                if (updatedChronicleDate) {
-                  console.log('updatedChronicleDate ====>>>', updatedChronicleDate);
-                  const updatedEditorData = {
-                    chronicleId: chronicleId,
-                    updatedChronicleEditorData: updatedChronicleEditorData,
-                    updatedChronicleDate: updatedChronicleDate
-                  };
-                  console.log('updatedEditorData ===>>>', updatedEditorData)
-                  await fetch(url, {
-                    method: 'POST',
-                    headers: {
-                      'content-type': 'application/json'
-                    },
-                    body: JSON.stringify(updatedEditorData)
-                  })
-                    .then(response => {
-                      if (response.ok) {
-                        return response.json()
-                      }
-                    })
-                    .then(data => {
-                      if (data.status === 'done') {
-                        console.log('Server response:', data);
-                        editorDataToBeUpdate.querySelector('.created-date').innerText = data.chronicleDate;
-                        editorDataToBeUpdate.setAttribute('editor-data-content', data.updatedChronicleEditorData);
-                        editorDataToBeUpdate.querySelector('.updated-at').innerText = data.updatedAt;
-                        alert('Content Updated SuccessFully')
-                      }
-                      else{
-                        console.log('data ====>>>', data.status);
-                      }
-                      
-                    })
-                    .catch(error => {
-                      console.error('Error sending data to server:', error);
-                    });
-
-                }
+              const vcDate = document.getElementById('vc-content-date').value;
+              const researchDate = document.getElementById('research-content-date').value;
+              const meetingDate = document.getElementById('meeting-content-date').value;
+              const brandingDate = document.getElementById('branding-content-date').value;
+              console.log('vcDate ===>>', vcDate)
+              let updatedChronicleDate;
+              // check vc date
+              if (vcDate) {
+                updatedChronicleDate = vcDate;
               }
+              //check research date
+              if (researchDate) {
+                updatedChronicleDate = researchDate;
+              }
+              //check meeting date
+              if (meetingDate) {
+                updatedChronicleDate = meetingDate;
+              }
+              //check branding date
+              if (brandingDate) {
+                updatedChronicleDate = brandingDate;
+              }
+              //  payload object 
+              const updatedEditorData = {
+                chronicleId: chronicleId,
+                updatedChronicleEditorData: updatedChronicleEditorData,
+                updatedChronicleDate: updatedChronicleDate
+              };
+              console.log('updatedEditorData ===>>>', updatedEditorData)
+              await fetch(url, {
+                method: 'POST',
+                headers: {
+                  'content-type': 'application/json'
+                },
+                body: JSON.stringify(updatedEditorData)
+              })
+                .then(response => {
+                  if (response.ok) {
+                    return response.json()
+                  }
+                })
+                .then(data => {
+                  if (data.status === 'done') {
+                    console.log('Server response:', data);
+                    editorDataToBeUpdate.querySelector('.created-date').innerText = data.chronicleDate;
+                    editorDataToBeUpdate.setAttribute('editor-data-content', data.updatedChronicleEditorData);
+                    editorDataToBeUpdate.querySelector('.updated-at').innerText = data.updatedAt;
+                    alert('Content Updated Successfully');
+                  }
 
-            } else {
-              console.error('CKEditor instance not available.');
+                  $('#vc-modal').modal('hide');
+                  $('#research-modal').modal('hide');
+                  $('#meeting-modal').modal('hide');
+                  $('#branding-modal').modal('hide');
+                })
+                .catch(error => {
+                  console.error('Error sending data to server:', error);
+                });
             }
-          } else {
+          }
+          else {
             console.error(`CKEditor instance not found for ${editorId}`);
           }
 
@@ -1346,6 +1345,8 @@
               const isoDateStr = `${year}-${month}-${day}`;
               return isoDateStr;
             }
+
+
   </script>
 <%- include('./partials/pagination') %>
 <%- include('./partials/footer') %>
