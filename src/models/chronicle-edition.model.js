@@ -49,7 +49,7 @@ module.exports.renderMeetingData = async() => {
   let sql = {
     text : `SELECT * FROM meeting_editor_table ORDER BY id`
   }
-  // console.log('sql ====>>>>', sql)
+  console.log('sql ==== herererererer>>>>', sql)
   return autoDbR.query(sql)
 }
 
@@ -138,7 +138,7 @@ module.exports.updateVcData = async (body) => {
 };
 
 // update meeting content
-module.exports.updateMeetingData = async () => {
+module.exports.updateMeetingData = async (body) => {
   const updatedChronicleEditorData = body.updatedChronicleEditorData;
   const updatedChronicleDate = body.updatedChronicleDate;
   const chronicleId = body.chronicleId;
@@ -151,7 +151,7 @@ module.exports.updateMeetingData = async () => {
 };
 
 // upadate research content
-module.exports.updateResearchData = async () => {
+module.exports.updateResearchData = async (body) => {
   const updatedChronicleEditorData = body.updatedChronicleEditorData;
   const updatedChronicleDate = body.updatedChronicleDate;
   const chronicleId = body.chronicleId;
@@ -164,7 +164,7 @@ module.exports.updateResearchData = async () => {
 };
 
 // update branding content
-module.exports.updateBrandingData = async () => {
+module.exports.updateBrandingData = async (body) => {
   const updatedChronicleEditorData = body.updatedChronicleEditorData;
   const updatedChronicleDate = body.updatedChronicleDate;
   const chronicleId = body.chronicleId;
@@ -174,4 +174,50 @@ module.exports.updateBrandingData = async () => {
 }
   console.log('sql ====>>>', sql);
   return autoDbW.query(sql);
+};
+
+
+
+module.exports.deleteVcEditorContent = async(body) => {
+      const chronicleId = body.chronicleId;
+
+      let sql = {
+        text : `DELETE FROM vc_editor_table WHERE id = $1 `,
+        values : [chronicleId]
+    };
+    console.log('sql ==>>'. sql)
+    return autoDbR.query(sql);
+};
+
+module.exports.deleteMeetingEditorContent = async(body) => {
+  const chronicleId = body.chronicleId;
+
+  let sql = {
+    text : `DELETE FROM meeting_editor_table WHERE id = $1 `,
+    values : [chronicleId]
+};
+console.log('sql ==>>'. sql)
+return autoDbR.query(sql);
+};
+
+module.exports.deleteResearchEditorContent = async(body) => {
+  const chronicleId = body.chronicleId;
+
+  let sql = {
+    text : `DELETE FROM research_editor_table WHERE id = $1 `,
+    values : [chronicleId]
+};
+console.log('sql ==>>'. sql)
+return autoDbR.query(sql);
+};
+
+module.exports.deleteBrandingEditorContnent = async(body) => {
+  const chronicleId = body.chronicleId;
+
+  let sql = {
+    text : `DELETE FROM branding_editor_table WHERE id = $1 `,
+    values : [chronicleId]
+};
+console.log('sql ==>>'. sql)
+return autoDbR.query(sql);
 };
