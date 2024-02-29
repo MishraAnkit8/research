@@ -1,16 +1,16 @@
-const { autoriders_read_db, autoriders_write_db } = require('../../config/db-configs');
+const { research_read_db, research_write_db } = require('../../config/db-configs');
 const dbPoolManager = require('../../config/db-pool-manager');
 const moment = require('moment');
 
-const autoDbR = dbPoolManager.get('autoDbR', autoriders_read_db);
-const autoDbW = dbPoolManager.get('autoDbW', autoriders_write_db);
+const researchDbR = dbPoolManager.get('researchDbR', research_read_db);
+const researchDbW = dbPoolManager.get('researchDbW', research_write_db);
 
 module.exports.fetchCaseStudy = async() =>{
     const sql = {
         text : `SELECT * FROM case_studies ORDER BY id`,
 
     }
-    return autoDbR.query(sql);
+    return researchDbR.query(sql);
 };
 
 module.exports.insertDataIntoCaseStudies = ({caseStudyData}) => {
@@ -24,7 +24,7 @@ module.exports.insertDataIntoCaseStudies = ({caseStudyData}) => {
                  numberOfNmimsAuthors, nmimsAuthors, nmimsCampusAuthors, nmimsSchoolAuthors, publisherCategory]
     }
     console.log('sql ==>>', sql)
-    return autoDbW.query(sql);
+    return researchDbW.query(sql);
 }
 
 module.exports.deleteCaseStudies = ({caseStudyId}) => {
@@ -32,7 +32,7 @@ module.exports.deleteCaseStudies = ({caseStudyId}) => {
         text : `DELETE FROM case_studies WHERE id = $1` ,
         values : [caseStudyId]
     }
-    return autoDbW.query(sql);
+    return researchDbW.query(sql);
 }
 
 module.exports.viewCaseStudyData = async (caseStudyId) => {
@@ -40,7 +40,7 @@ module.exports.viewCaseStudyData = async (caseStudyId) => {
         text : `  SELECT * FROM case_studies WHERE id = $1 `,
         values : [caseStudyId]
     }
-    return autoDbR.query(sql)
+    return researchDbR.query(sql)
 
 }
 
@@ -56,5 +56,5 @@ module.exports.updateCaseStudies = async ({caseStudyId, updatedCaseStudies}) => 
             numberOfNmimsAuthors, nmimsAuthors, nmimsCampusAuthors, nmimsSchoolAuthors, publisherCategory]
 
     }
-    return autoDbW.query(sql);
+    return researchDbW.query(sql);
 }

@@ -1,9 +1,9 @@
-const { autoriders_read_db, autoriders_write_db } = require('../../config/db-configs');
+const { research_read_db, research_write_db } = require('../../config/db-configs');
 const dbPoolManager = require('../../config/db-pool-manager');
 const moment = require('moment');
 
-const autoDbR = dbPoolManager.get('autoDbR', autoriders_read_db);
-const autoDbW = dbPoolManager.get('autoDbW', autoriders_write_db);
+const researchDbR = dbPoolManager.get('researchDbR', research_read_db);
+const researchDbW = dbPoolManager.get('researchDbW', research_write_db);
 
 module.exports.insertOTP = (otp, otpType, userLid, otpForLid) => {
     const currentDate = moment().format('YYYY-MM-DD HH:mm:ss');
@@ -16,7 +16,7 @@ module.exports.insertOTP = (otp, otpType, userLid, otpForLid) => {
         values: [otp, otpForLid, userLid, currentDate, userLid, otpType],
     };
     
-    return autoDbW.query(sql);
+    return researchDbW.query(sql);
 }
 
 module.exports.getOTP = (otpType, userLid) => {
@@ -27,5 +27,5 @@ module.exports.getOTP = (otpType, userLid) => {
         values: [deviceToken, userLid, currentDate],
     };
     
-    return autoDbR.query(sql);
+    return researchDbR.query(sql);
 }

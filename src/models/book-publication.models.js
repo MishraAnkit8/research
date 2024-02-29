@@ -1,16 +1,16 @@
-const { autoriders_read_db, autoriders_write_db } = require('../../config/db-configs');
+const { research_read_db, research_write_db } = require('../../config/db-configs');
 const dbPoolManager = require('../../config/db-pool-manager');
 const moment = require('moment');
 
-const autoDbR = dbPoolManager.get('autoDbR', autoriders_read_db);
-const autoDbW = dbPoolManager.get('autoDbW', autoriders_write_db);
+const researchDbR = dbPoolManager.get('researchDbR', research_read_db);
+const researchDbW = dbPoolManager.get('researchDbW', research_write_db);
 
 module.exports.fetchBookPublication = async() => {
     let sql = {
         text : `SELECT * FROM book_publications ORDER BY id`
     }
     console.log('sql ==>', sql)
-    return autoDbR.query(sql)
+    return researchDbR.query(sql)
 }
 
 module.exports.insertBookPublicationData = async(bookPublicationData, bookPublicationfileData) => {
@@ -24,7 +24,7 @@ module.exports.insertBookPublicationData = async(bookPublicationData, bookPublic
             bookUrl, doiBookId, isbnNo, numberOfNmimsAuthors, nmimsAuthors, nmimsCampusAuthors, nmimsSchoolAuthors, bookPublicationfileData]
     }
     console.log('sql ===>>', sql)
-    return autoDbW.query(sql)
+    return researchDbW.query(sql)
 }
 
 module.exports.updatedBookPublication = async(bookPublicationId, updatedBookPublicationData, upadteDataFileString) => {
@@ -37,7 +37,7 @@ module.exports.updatedBookPublication = async(bookPublicationId, updatedBookPubl
         values : [bookPublicationId,  authorLastName, bookTitle, edition, publicationPlace, publisherCategory, volumeNumber, publisherName, publicationYear,
                   bookUrl, doiBookId, isbnNo, numberOfNmimsAuthors, nmimsAuthors, nmimsCampusAuthors, nmimsSchoolAuthors, upadteDataFileString]
     }
-    return autoDbW.query(sql)
+    return researchDbW.query(sql)
  }
  else{
     const { authorLastName, bookTitle, edition, publicationPlace, publisherCategory, volumeNumber, publisherName, publicationYear,
@@ -48,7 +48,7 @@ module.exports.updatedBookPublication = async(bookPublicationId, updatedBookPubl
         values : [bookPublicationId,  authorLastName, bookTitle, edition, publicationPlace, publisherCategory, volumeNumber, publisherName, publicationYear,
                   bookUrl, doiBookId, isbnNo, numberOfNmimsAuthors, nmimsAuthors, nmimsCampusAuthors, nmimsSchoolAuthors]
     }
-    return autoDbW.query(sql)
+    return researchDbW.query(sql)
  }
     
 }
@@ -58,7 +58,7 @@ module.exports.deleteBookPublicationData = async(bookPublicationId) => {
         text : `DELETE FROM book_publications WHERE id = $1`,
         values : [bookPublicationId]
     }
-    return autoDbW.query(sql);
+    return researchDbW.query(sql);
 }
 
 module.exports.viewBookPublicationData = async(bookPublicationId) => {
@@ -66,6 +66,6 @@ module.exports.viewBookPublicationData = async(bookPublicationId) => {
         text : `SELECT * FROM book_publications WHERE id = $1`,
         values : [bookPublicationId]
     }
-    return autoDbW.query(sql);
+    return researchDbW.query(sql);
 }
 

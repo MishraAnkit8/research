@@ -1,15 +1,15 @@
-const { autoriders_read_db, autoriders_write_db } = require('../../config/db-configs');
+const { research_read_db, research_write_db } = require('../../config/db-configs');
 const dbPoolManager = require('../../config/db-pool-manager');
 const moment = require('moment');
 
-const autoDbR = dbPoolManager.get('autoDbR', autoriders_read_db);
-const autoDbW = dbPoolManager.get('autoDbW', autoriders_write_db);
+const researchDbR = dbPoolManager.get('researchDbR', research_read_db);
+const researchDbW = dbPoolManager.get('researchDbW', research_write_db);
 
 module.exports.fetchPatentSubMissionForms = async() => {
     let sql = {
         text :`SELECT * FROM patent_submissions ORDER BY id`
     }
-    return autoDbR.query(sql)
+    return researchDbR.query(sql)
 }
 
 module.exports.insertPatentData = async(patentData, patentDataBaseFiles) => {
@@ -22,7 +22,7 @@ module.exports.insertPatentData = async(patentData, patentDataBaseFiles) => {
         values : [typeOfInvention, titleOfInvention, patentStage, achiveSdg, applicationNum, subMissionDate, isPresentor, patentDataBaseFiles]
     }
     console.log('sql ==>>', sql)
-    return autoDbW.query(sql);
+    return researchDbW.query(sql);
 
 }
 
@@ -37,7 +37,7 @@ module.exports.updatePatentsubmissionData = async(updatedPatentData, patentId, p
         
         }
         console.log('Sql ==>>', sql);
-        return autoDbW.query(sql)
+        return researchDbW.query(sql)
     }
     else{
         const {typeOfInvention, titleOfInvention, patentStage, achiveSdg, applicationNum, subMissionDate, isPresentor} = updatedPatentData 
@@ -48,7 +48,7 @@ module.exports.updatePatentsubmissionData = async(updatedPatentData, patentId, p
         
         }
         console.log('Sql ==>>', sql);
-        return autoDbW.query(sql)
+        return researchDbW.query(sql)
     }
 }
 
@@ -59,7 +59,7 @@ module.exports.deletePatentSubmissionData = async(patentId) => {
         values : [patentId]
     }
     console.log('sql qury for delete ==>', sql)
-    return autoDbW.query(sql)
+    return researchDbW.query(sql)
 }
 
 module.exports.viewPatentSubmission = async(patentId) => {
@@ -69,5 +69,5 @@ module.exports.viewPatentSubmission = async(patentId) => {
         values : [patentId]
     }
     console.log('sql qury for view', sql);
-    return autoDbR.query(sql);
+    return researchDbR.query(sql);
 }

@@ -1,15 +1,15 @@
-const { autoriders_read_db, autoriders_write_db } = require('../../config/db-configs');
+const { research_read_db, research_write_db } = require('../../config/db-configs');
 const dbPoolManager = require('../../config/db-pool-manager');
 const moment = require('moment');
 
-const autoDbR = dbPoolManager.get('autoDbR', autoriders_read_db);
-const autoDbW = dbPoolManager.get('autoDbW', autoriders_write_db);
+const researchDbR = dbPoolManager.get('researchDbR', research_read_db);
+const researchDbW = dbPoolManager.get('researchDbW', research_write_db);
 
 module.exports.fetchResearchConsultancy = async() => {
     let sql = {
         text : `SELECT * FROM research_project_consultancy ORDER BY id`,
     }
-    return autoDbR.query(sql);
+    return researchDbR.query(sql);
 }
 
 module.exports.insertResearhcProjectConstancyData = async(researchCunsultancyData, consultancyDataFiles) => {
@@ -22,7 +22,7 @@ module.exports.insertResearhcProjectConstancyData = async(researchCunsultancyDat
             submissionGrantDate, facultyType, consultancyDataFiles]
     }
 
-    return autoDbW.query(sql)
+    return researchDbW.query(sql)
 }
 
 module.exports.updateResearchConsultantData = async(consultantId, updatedConsultant, updatedConsultantFilesData) => {
@@ -35,7 +35,7 @@ module.exports.updateResearchConsultantData = async(consultantId, updatedConsult
             values : [consultantId, titleOfProject, grantProposalCategory, typeOfGrant, thurstAreaOfResearch, fundingAgency, fundingAmount, statusOfResearchProject,
                 submissionGrantDate, facultyType, updatedConsultantFilesData]
         }
-        return autoDbW.query(sql)
+        return researchDbW.query(sql)
 
     }
     else{
@@ -47,7 +47,7 @@ module.exports.updateResearchConsultantData = async(consultantId, updatedConsult
             values : [consultantId, titleOfProject, grantProposalCategory, typeOfGrant, thurstAreaOfResearch, fundingAgency, fundingAmount, statusOfResearchProject,
                 submissionGrantDate, facultyType]
         }
-        return autoDbW.query(sql)
+        return researchDbW.query(sql)
     }
    
 }
@@ -58,7 +58,7 @@ module.exports.deleteResearchConsultantData = async(consultantId) => {
         text : `DELETE FROM research_project_consultancy WHERE id = $1`,
         values : [consultantId]
     }
-    return autoDbW.query(sql)
+    return researchDbW.query(sql)
 }
 
 module.exports.viewResearchConsultancy = async(consultantId) => {
@@ -68,5 +68,5 @@ module.exports.viewResearchConsultancy = async(consultantId) => {
         values : [consultantId]
     }
     console.log('sql ==>>', sql);
-    return autoDbR.query(sql)
+    return researchDbR.query(sql)
 }

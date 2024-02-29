@@ -1,9 +1,9 @@
-const { autoriders_read_db, autoriders_write_db } = require('../../config/db-configs');
+const { research_read_db, research_write_db } = require('../../config/db-configs');
 const dbPoolManager = require('../../config/db-pool-manager');
 const moment = require('moment');
 
-const autoDbR = dbPoolManager.get('autoDbR', autoriders_read_db);
-const autoDbW = dbPoolManager.get('autoDbW', autoriders_write_db);
+const researchDbR = dbPoolManager.get('researchDbR', research_read_db);
+const researchDbW = dbPoolManager.get('researchDbW', research_write_db);
 
 // for fetching journal paper data 
 module.exports.fetchResearchSeminar = () => {
@@ -11,7 +11,7 @@ module.exports.fetchResearchSeminar = () => {
         text : 'SELECT * FROM research_seminars  ORDER BY id',
 
     };
-    return autoDbR.query(sql);
+    return researchDbR.query(sql);
 };
 
 // for inserting journal paper  data
@@ -24,7 +24,7 @@ module.exports.createResearchSeminar = ({seminarDetails}) => {
 
         values : [year, school, campus, NmimsFaculty, publisherCategory, titleOfPaper, journalName, publisher, pages, issnNo, dateOfPublishing, impactFactor, scsCiteScore, scsIndexed, wosIndexed, gsIndexed, abcdIndexed, ugcIndexed, webLink, uid ]
     };
-    return autoDbW.query(sql);
+    return researchDbW.query(sql);
 }
 // for deleting journal paper  data 
 module.exports.deleteRsearchSeminar =  async({seminarId}) => {
@@ -32,7 +32,7 @@ module.exports.deleteRsearchSeminar =  async({seminarId}) => {
         text : `DELETE FROM research_seminars WHERE id = $1 `,
         values : [seminarId]
     };
-    return autoDbW.query(sql);
+    return researchDbW.query(sql);
 
 }
 // for updating 
@@ -44,7 +44,7 @@ module.exports.updateRsearchSeminar = async ({seminarId , updateResearchSeminar}
           pages = $10, issn_no = $11, date_of_publishing = $12, impact_factor = $13, scs_cite_score = $14, scs_indexed = $15, wos_indexed = $16, gs_indexed = $17, abdc_indexed = $18, ugc_indexed = $19, web_link = $20, uid = $21  WHERE id = $1`,
         values : [seminarId, year, school, campus, NmimsFaculty, publisherCategory, titleOfPaper, journalName, publisher, pages, issnNo, dateOfPublishing, impactFactor, scsCiteScore, scsIndexed, wosIndexed, gsIndexed, abcdIndexed, ugcIndexed, webLink, uid ]
     };
-    return autoDbW.query(sql);
+    return researchDbW.query(sql);
  
 };
 
@@ -57,5 +57,5 @@ module.exports.viewRsearchSeminarData = async ({seminarId}) => {
         values : [seminarId]
     }
     console.log('sql ==>>>', sql)
-    return autoDbR.query(sql);
+    return researchDbR.query(sql);
 }

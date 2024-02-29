@@ -1,9 +1,9 @@
-const { autoriders_read_db, autoriders_write_db } = require('../../config/db-configs');
+const { research_read_db, research_write_db } = require('../../config/db-configs');
 const dbPoolManager = require('../../config/db-pool-manager');
 const moment = require('moment');
 
-const autoDbR = dbPoolManager.get('autoDbR', autoriders_read_db);
-const autoDbW = dbPoolManager.get('autoDbW', autoriders_write_db);
+const researchDbR = dbPoolManager.get('researchDbR', research_read_db);
+const researchDbW = dbPoolManager.get('researchDbW', research_write_db);
 
 module.exports.fetchEditorData = async() =>{
     const sql = {
@@ -20,7 +20,7 @@ module.exports.fetchEditorData = async() =>{
     };
 
     // console.log('sql ===>>>', sql);
-    return autoDbR.query(sql)
+    return researchDbR.query(sql)
 
 };
 
@@ -30,7 +30,7 @@ module.exports.fetchVcOfficeData = async() => {
     text : `SELECT * FROM vc_editor_table ORDER BY id`
   }
   // console.log('sql ====>>>>', sql)
-  return autoDbR.query(sql)
+  return researchDbR.query(sql)
 }
 
 // fetch research_editor_table
@@ -40,7 +40,7 @@ module.exports.renderResearchData = async() => {
     text : `SELECT * FROM research_editor_table ORDER BY id`
   }
   // console.log('sql ====>>>>', sql)
-  return autoDbR.query(sql)
+  return researchDbR.query(sql)
 }
 
 // fetch meeting_editor_table
@@ -50,7 +50,7 @@ module.exports.renderMeetingData = async() => {
     text : `SELECT * FROM meeting_editor_table ORDER BY id`
   }
   console.log('sql ==== herererererer>>>>', sql)
-  return autoDbR.query(sql)
+  return researchDbR.query(sql)
 }
 
 // fetch branding data
@@ -60,7 +60,7 @@ module.exports.renderBrandingData = async() => {
     text : `SELECT * FROM branding_editor_table ORDER BY id`
   }
   // console.log('sql ====>>>>', sql)
-  return autoDbR.query(sql)
+  return researchDbR.query(sql)
 }
 
 module.exports.insertVcEditorData = async(chronicleEditorData, chronicleDate) => {
@@ -76,7 +76,7 @@ module.exports.insertVcEditorData = async(chronicleEditorData, chronicleDate) =>
       values : [chronicleDate, chronicleEditorData]
     }
     console.log("sql insertVcEditorData ==>>>", sql);
-    const result = await autoDbW.query(sql);
+    const result = await researchDbW.query(sql);
     // console.log('result ===>>>', result.rows)
     return result.rows
 };
@@ -87,7 +87,7 @@ module.exports.insertResearchEditor = async(chronicleEditorData, chronicleDate) 
       values : [chronicleDate, chronicleEditorData]
     }
     console.log("sql insertResearchEditor ==>>>", sql);
-    const result = await autoDbW.query(sql);
+    const result = await researchDbW.query(sql);
     // console.log('result ===>>>', result.rows)
     return result.rows
 };
@@ -100,7 +100,7 @@ module.exports.insertMeetingEditor = async(chronicleEditorData, chronicleDate) =
       values : [chronicleDate, chronicleEditorData]
     }
     console.log("sql insertMeetingEditor ==>>>", sql);
-    const result = await autoDbW.query(sql);
+    const result = await researchDbW.query(sql);
     console.log('result ===>>>', result.rows)
     return result.rows
 };
@@ -113,7 +113,7 @@ module.exports.insertBrandingeditor = async(chronicleEditorData, chronicleDate) 
       values : [chronicleDate, chronicleEditorData]
     }
     console.log("sql insertBrandingeditor ==>>>", sql);
-    const result = await autoDbW.query(sql);
+    const result = await researchDbW.query(sql);
     return result.rows
 };
 
@@ -133,7 +133,7 @@ module.exports.updateVcData = async (body) => {
     values : [chronicleId, updatedChronicleDate, updatedChronicleEditorData]
 }
   console.log('sql ====>>>', sql);
-  return autoDbW.query(sql);
+  return researchDbW.query(sql);
 
 };
 
@@ -147,7 +147,7 @@ module.exports.updateMeetingData = async (body) => {
     values : [chronicleId, updatedChronicleDate, updatedChronicleEditorData]
 }
   console.log('sql ====>>>', sql);
-  return autoDbW.query(sql);
+  return researchDbW.query(sql);
 };
 
 // upadate research content
@@ -160,7 +160,7 @@ module.exports.updateResearchData = async (body) => {
     values : [chronicleId, updatedChronicleDate, updatedChronicleEditorData]
 }
   console.log('sql ====>>>', sql);
-  return autoDbW.query(sql);
+  return researchDbW.query(sql);
 };
 
 // update branding content
@@ -173,7 +173,7 @@ module.exports.updateBrandingData = async (body) => {
     values : [chronicleId, updatedChronicleDate, updatedChronicleEditorData]
 }
   console.log('sql ====>>>', sql);
-  return autoDbW.query(sql);
+  return researchDbW.query(sql);
 };
 
 
@@ -186,7 +186,7 @@ module.exports.deleteVcEditorContent = async(body) => {
         values : [chronicleId]
     };
     console.log('sql ==>>'. sql)
-    return autoDbR.query(sql);
+    return researchDbR.query(sql);
 };
 
 module.exports.deleteMeetingEditorContent = async(body) => {
@@ -197,7 +197,7 @@ module.exports.deleteMeetingEditorContent = async(body) => {
     values : [chronicleId]
 };
 console.log('sql ==>>'. sql)
-return autoDbR.query(sql);
+return researchDbR.query(sql);
 };
 
 module.exports.deleteResearchEditorContent = async(body) => {
@@ -208,7 +208,7 @@ module.exports.deleteResearchEditorContent = async(body) => {
     values : [chronicleId]
 };
 console.log('sql ==>>'. sql)
-return autoDbR.query(sql);
+return researchDbR.query(sql);
 };
 
 module.exports.deleteBrandingEditorContnent = async(body) => {
@@ -219,5 +219,5 @@ module.exports.deleteBrandingEditorContnent = async(body) => {
     values : [chronicleId]
 };
 console.log('sql ==>>'. sql)
-return autoDbR.query(sql);
+return researchDbR.query(sql);
 };

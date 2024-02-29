@@ -1,15 +1,15 @@
-const { autoriders_read_db, autoriders_write_db } = require('../../config/db-configs');
+const { research_read_db, research_write_db } = require('../../config/db-configs');
 const dbPoolManager = require('../../config/db-pool-manager');
 const moment = require('moment');
 
-const autoDbR = dbPoolManager.get('autoDbR', autoriders_read_db);
-const autoDbW = dbPoolManager.get('autoDbW', autoriders_write_db);
+const researchDbR = dbPoolManager.get('researchDbR', research_read_db);
+const researchDbW = dbPoolManager.get('researchDbW', research_write_db);
 
 module.exports.fetchConferencePublication = async() => {
     let sql = {
         text : `SELECT * FROM  conference_publications ORDER BY id `
     }
-    return autoDbR.query(sql);
+    return researchDbR.query(sql);
 }
 
 module.exports.viewConferenceData = async(conferenceId) => {
@@ -17,7 +17,7 @@ module.exports.viewConferenceData = async(conferenceId) => {
         text : `SELECT * FROM conference_publications WHERE id = $1`,
         values : [conferenceId]
     }
-    return autoDbW.query(sql);
+    return researchDbW.query(sql);
 };
 
 module.exports.insertConferencePublication = async(conferencePublications, conferenceProofData, conferenceDocumentData) => {
@@ -34,7 +34,7 @@ module.exports.insertConferencePublication = async(conferencePublications, confe
 
            }
            console.log('sql ==>', sql)
-    return autoDbW.query(sql);
+    return researchDbW.query(sql);
 };
 
 module.exports.DeleteConference = async({conferenceId}) => {
@@ -43,7 +43,7 @@ module.exports.DeleteConference = async({conferenceId}) => {
         text : `DELETE FROM conference_publications WHERE id =$1`,
         values : [conferenceId]
     }
-    return autoDbW.query(sql);
+    return researchDbW.query(sql);
 }
 
 module.exports.updateConferencePublication = async(upadtedConferenceData, conferenceId, ConferenceFileToBeUpdate) => {
@@ -128,7 +128,7 @@ module.exports.updateConferencePublication = async(upadtedConferenceData, confer
     };
 
     console.log('sql ==>>', sql);
-    return autoDbW.query(sql);
+    return researchDbW.query(sql);
 
 }
 
@@ -138,5 +138,5 @@ module.exports.viewConferencePublication = async(conferenceId) => {
         text : `SELECT * FROM  conference_publications WHERE id = $1`,
         values : [conferenceId]
     }
-    return autoDbR.query(sql);
+    return researchDbR.query(sql);
 }

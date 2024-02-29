@@ -1,9 +1,9 @@
-const { autoriders_read_db, autoriders_write_db } = require('../../config/db-configs');
+const { research_read_db, research_write_db } = require('../../config/db-configs');
 const dbPoolManager = require('../../config/db-pool-manager');
 const moment = require('moment');
 
-const autoDbR = dbPoolManager.get('autoDbR', autoriders_read_db);
-const autoDbW = dbPoolManager.get('autoDbW', autoriders_write_db);
+const researchDbR = dbPoolManager.get('researchDbR', research_read_db);
+const researchDbW = dbPoolManager.get('researchDbW', research_write_db);
 
 module.exports.fetchBrandingAndadvertising = async() => {
     let sql = {
@@ -11,7 +11,7 @@ module.exports.fetchBrandingAndadvertising = async() => {
     }
     console.log('sql ==>>', sql);
 
-    return autoDbR.query(sql);
+    return researchDbR.query(sql);
 }
 
 module.exports.insertBrandingAndAdvertisingData = async(advertisingData, brandingFilesContainer) => {
@@ -33,7 +33,7 @@ module.exports.insertBrandingAndAdvertisingData = async(advertisingData, brandin
                 brandingFilesContainer.studentEventParticipationDocuments, brandingFilesContainer.newspaperArticleDocuments]
         }
         console.log('sql ==>>', sql);
-        return autoDbW.query(sql);
+        return researchDbW.query(sql);
 
 }
 
@@ -171,7 +171,7 @@ module.exports.updateBrandingAdvertising = async (advertisingId, updatedAdvertis
     };
 
     console.log('sql ==>>', sql);
-    return autoDbW.query(sql);
+    return researchDbW.query(sql);
 };
 
 
@@ -183,7 +183,7 @@ module.exports.brandingAndadvertisingview = async(advertisingId) => {
         values : [advertisingId]
     }
     console.log('sql ==>>', sql);
-    return autoDbR.query(sql);
+    return researchDbR.query(sql);
 }
 
 module.exports.brandingAndadvertisingDelete = async(advertisingId) => {
@@ -192,5 +192,5 @@ module.exports.brandingAndadvertisingDelete = async(advertisingId) => {
         values : [advertisingId]
     }
     console.log('sql ==>>', sql)
-    return autoDbW.query(sql);
+    return researchDbW.query(sql);
 }

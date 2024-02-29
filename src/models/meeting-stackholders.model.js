@@ -1,16 +1,16 @@
-const { autoriders_read_db, autoriders_write_db } = require('../../config/db-configs');
+const { research_read_db, research_write_db } = require('../../config/db-configs');
 const dbPoolManager = require('../../config/db-pool-manager');
 const moment = require('moment');
 
-const autoDbR = dbPoolManager.get('autoDbR', autoriders_read_db);
-const autoDbW = dbPoolManager.get('autoDbW', autoriders_write_db);
+const researchDbR = dbPoolManager.get('researchDbR', research_read_db);
+const researchDbW = dbPoolManager.get('researchDbW', research_write_db);
 
 module.exports.fetchMeetingStackholdersData = async() => {
     let sql = {
         text : `SELECT * FROM meeting_stackholders ORDER BY id`
     }
     console.log('sql ==>>', sql);
-    return autoDbR.query(sql);
+    return researchDbR.query(sql);
 }
 
 module.exports.insertMeetingStackholders = async(meetingStackholderData, meetingFilesData) => {
@@ -24,7 +24,7 @@ module.exports.insertMeetingStackholders = async(meetingStackholderData, meeting
             inauguralProgram, inauguralProgramLink, events, eventsLink, meetingFilesData.rankingDocuments, meetingFilesData.accreditationFile, meetingFilesData.achievementsFile, meetingFilesData.convocationFile, meetingFilesData.inauguralProgramFile, meetingFilesData.eventFile]
     }
     console.log('sql ==>>', sql)
-    return autoDbW.query(sql)
+    return researchDbW.query(sql)
 }
 
 module.exports.updateMeetingData = async(meetingId, updateMeetingData, updatedMeetingFilesData) => {
@@ -123,7 +123,7 @@ module.exports.updateMeetingData = async(meetingId, updateMeetingData, updatedMe
         };
 
         console.log('sql ==>>', sql);
-        return autoDbW.query(sql);
+        return researchDbW.query(sql);
 
 }
 
@@ -134,7 +134,7 @@ module.exports.viewMeeting = async(meetingId) => {
         values : [meetingId]
     }
     console.log('sql ==>>', sql);
-    return autoDbR.query(sql)
+    return researchDbR.query(sql)
 }
 
 module.exports.deleteMeetingStackholders = async(meetingId) => {
@@ -143,5 +143,5 @@ module.exports.deleteMeetingStackholders = async(meetingId) => {
         values : [meetingId]
     }
     console.log('sql ==>>', sql)
-    return autoDbW.query(sql)
+    return researchDbW.query(sql)
 }

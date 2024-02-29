@@ -1,6 +1,6 @@
 const dotenv = require('dotenv');
 
-const autoriders_read_db = {
+const research_read_db = {
   host: process.env.DB_HOST_1,
   user: process.env.DB_USER_1,
   password: process.env.DB_PASS_1,
@@ -13,7 +13,7 @@ const autoriders_read_db = {
   connectionTimeoutMillis: 2000,
 };
 
-const autoriders_write_db = {
+const research_write_db = {
   host: process.env.DB_HOST_1,
   user: process.env.DB_USER_1,
   password: process.env.DB_PASS_1,
@@ -27,4 +27,4 @@ const autoriders_write_db = {
 };
 
 
-module.exports = { autoriders_read_db, autoriders_write_db }
+module.exports = { research_read_db, research_write_db }
