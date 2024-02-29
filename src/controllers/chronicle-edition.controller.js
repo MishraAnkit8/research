@@ -116,6 +116,12 @@ module.exports.insertVcData = async (req, res, next) => {
       chronicleId
     });
   }
+  else{
+    res.status(500).send({
+      status : 'Failed',
+      massage : 'Internal Server error'
+    })
+  }
 };
 
 

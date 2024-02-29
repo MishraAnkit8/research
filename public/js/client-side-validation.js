@@ -163,7 +163,13 @@ function selectElemToBeValidated(validateInputWrapper) {
 }
 
 function toggleErrorState(formGroup, errorMsg, errorElem, isValidElem) {
+    console.group('formGroup =====>>>>>', formGroup)
     console.log('errorElem', errorElem, 'isValid', isValidElem);
+    const labelElement = formGroup.querySelector('label');
+    const inputElement = labelElement.querySelector('input');
+    const editorValidation = document.querySelector('.editor-validation');
+    console.log('inputElement ===>>>', inputElement)
+
     if (!errorElem && !isValidElem) {
         console.log('Adding error message');
         const errorDiv = document.createElement('div');
@@ -171,10 +177,18 @@ function toggleErrorState(formGroup, errorMsg, errorElem, isValidElem) {
         errorDiv.innerText = errorMsg;
         formGroup.appendChild(errorDiv);
         formGroup.classList.add('error');
+        labelElement.classList.add('error-empty-msg');
+        inputElement.classList.add('error-border');
+
+        // divElementEditor.classList.add('error-empty-msg');
     } else if (errorElem && isValidElem) {
         console.log('Removing error message');
         formGroup.removeChild(errorElem);
+        inputElement.classList.remove('error-border');
+        labelElement.classList.remove('error-empty-msg');
+        // divElementEditor.classList.remove('error-empty-msg');
         formGroup.classList.remove('error');
+
     }
 }
 
