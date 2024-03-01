@@ -1,5 +1,11 @@
 <%- include('./partials/head') %>
 <!-- inline css -->
+<style>
+        .search-input{
+            width: 200px;
+            border: 1px solid red;
+        }
+</style>
 <!-- Navbar section -->
 <%- include('./partials/header') %>
 
@@ -227,15 +233,25 @@
                         <label for="is-presenter" class="form-label fw-bold mb-3">Are you the Presenter
                             ?</label><br>
                         <div class="form-check-inline">
-                            <label for="internal" class="form-check-label">
-                                <input type="radio" class="form-check-input" id="is-award-yes" name="is-presenter" value="yes">
-                                yes
+                            <label for="internal" class="form-check-label enter-faculty-type">
+                                <input type="radio" class="form-check-input enternal-type" id="is-award-yes" name="is-presenter" value="Enternal">
+                               <span id="enternal-text">Enternal</span>
                             </label>
+                            <div class="col-lg-1 p-6 w-100 d-none" id="employee-list">
+                                <select id="emp-name" style="width: 200px;"> 
+                                    <option value="">select employee name</option>
+                                    <% employeesList.forEach(function(employee) { %>
+                                        <option value="<%= employee.employee_name %>">
+                                           <%= employee.employee_name %>
+                                        </option>
+                                    <% }); %>
+                                </select>
+                            </div>
                         </div>
                         <div class="form-check-inline">
-                            <label for="no" class="form-check-label">
-                                <input type="radio" class="form-check-input" id="is-award-no" name="is-presenter" value="no" checked>
-                                no
+                            <label for="is-award-no"   class="form-check-label external-faculty">
+                                <input type="radio" class="form-check-input" id="is-award-no" name="is-presenter" value="External" checked>
+                                <span id="external-text">External</span>
                             </label>
                         </div>
                     </div>
@@ -350,8 +366,10 @@
         </div>
     </div>
 </div>
-
+<div id="employeesListData" data-employees='<%- JSON.stringify(employeesList) %>' style="display: none;"></div>
 <!-- inline script -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tom-select/2.3.1/js/tom-select.complete.min.js" integrity="sha512-zdXqksVc9s0d2eoJGdQ2cEhS4mb62qJueasTG4HjCT9J8f9x5gXCQGSdeilD+C7RqvUi1b4DdD5XaGjJZSlP9Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
 <script>
     //   for index icrement
     const rowCount = document.getElementById('row-count');
@@ -397,9 +415,8 @@
         const patentData = new FormData();
         const patentFiles = document.getElementById('patent-file');
         // patentFile
-        console.log('patentDataFiles ==>>', patentDataFiles)
         const patentFilesData = patentFiles.files;
-        console.log('files ===>>>', files)
+        console.log('patentFilesData ===>>>', patentFilesData)
         for (let i = 0; i < patentFilesData.length; i++) {
             console.log('file name  ==>>', patentFilesData[i].name);
             patentData.append('patentFilesData', patentFilesData[i]);
@@ -421,10 +438,13 @@
         patentData.append('applicationNum', applicationNum);
 
         const subMissionDate = document.getElementById('date').value;
+        console.log('subMissionDate ===>>>', subMissionDate);
         patentData.append('subMissionDate', subMissionDate);
 
-        const selectIsPresentor = document.querySelector('input[name="is-presenter"]:checked').value;
-        patentData.append('isPresentor', selectIsPresentor);
+        const selectIsPresentor = document.querySelector('input[name="is-presenter"]:checked');
+        await enternalFacultyDropDown(selectIsPresentor, patentData);
+        // console.log('selectIsPresentor ====>>>', selectIsPresentor);
+        // patentData.append('isPresentor', selectIsPresentor);
 
         fetch(url, {
             method: 'POST',
@@ -513,10 +533,10 @@
                 const patentfile = rowToBeUpdated.querySelector('.patent-file');
                 const supportingDocuments = patentfile.innerText.trim();
                 console.log('supportingDocuments ==>>', supportingDocuments)
-                if (rowToBeUpdated.querySelector('.achive-sdg').innerText === 'yes') {
-                    achiveSdgYes.checked = true;
-                } else {
+                if (rowToBeUpdated.querySelector('.achive-sdg').innerText === 'External') {
                     achiveSdgNo.checked = true;
+                } else {
+                    achiveSdgYes.checked = true;
                 }
                 applicationNum.value = rowToBeUpdated.querySelector('.application-no').innerText;
                 date.value = formattedDate;
@@ -773,6 +793,61 @@
             patentDataFiles.setAttribute('data-filename', patentDataString);
 
         };
+   
+
+
+   async function enternalFacultyDropDown(selectIsPresentor, patentData){
+        console.log('selectIsPresentor in side my function ====>>>', selectIsPresentor);
+        const presentertype = selectIsPresentor.value;
+        console.log('presentertype ===>>>', presentertype);
+        console.log('storedSelectedValue in side my fuction ======', storedSelectedValue)
+        patentData.append('isPresentor', storedSelectedValue);
+        
+        
+    
+    }
+    // EVENT LIST THAT WILL USE USE TO OPEN DROP DOWN LIST  
+    const externaltype = document.querySelector('.external-faculty');
+    const enternalFacultyType = document.getElementById('is-award-yes');
+    const externalFacultyType = document.getElementById('is-award-no');
+    const employeeList = document.getElementById('employee-list');
+
+    const enternalText = document.getElementById('enternal-text');
+    enternalFacultyType.addEventListener('click' , (event) => {
+        console.log('clicked ::::::::::::');
+        // externaltype.classList.add('d-none');
+        // enternalText.classList.add('d-none');
+        employeeList.classList.remove('d-none');
+    })
+
+    externalFacultyType.addEventListener('click' , (event => {
+        console.log('clciked ====');
+        employeeList.classList.add('d-none');
+    }))
+    
+    // employeesListData data came from backend
+    const employeesListData = document.getElementById('employeesListData').dataset.employees;
+    const employeesDataObj = JSON.parse(employeesListData);
+    let employeeListArray = [];
+
+   
+    // Now you can work with the employeesList data in your JavaScript code
+    console.log(employeesDataObj);
+    // ajax for search bar to search employee name 
+    new TomSelect("#emp-name");
+    let storedSelectedValue;
+    const employeeDropdown = document.getElementById("emp-name");
+    employeeDropdown.addEventListener("change", function() {
+         const selectedValue = this.value;
+         storedSelectedValue = selectedValue;
+        // console.log("Selected value:", selectedValue);
+        
+    });
+
+   
+
+
+    
 
 </script>
 <!-- footer section -->

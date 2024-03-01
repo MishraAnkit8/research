@@ -6,10 +6,24 @@ const researchDbR = dbPoolManager.get('researchDbR', research_read_db);
 const researchDbW = dbPoolManager.get('researchDbW', research_write_db);
 
 module.exports.fetchPatentSubMissionForms = async() => {
-    let sql = {
-        text :`SELECT * FROM patent_submissions ORDER BY id`
-    }
-    return researchDbR.query(sql)
+    let patentSubmissionSql = {
+        text: `SELECT * FROM patent_submissions ORDER BY id`
+    };
+    let employeeSql = {
+        text: `SELECT * FROM employee_table ORDER BY id`
+    };
+
+    console.log('patentSubmissionSql ===>>>', patentSubmissionSql);
+    console.log('employeeSql ===>>>', employeeSql)
+    const patentSubmissionsPromise = researchDbR.query(patentSubmissionSql);
+    const employeesPromise = researchDbR.query(employeeSql);
+
+    const [patentSubmissionsResult, employeesList] = await Promise.all([patentSubmissionsPromise, employeesPromise]);
+
+    return {
+        patentSubmissions: patentSubmissionsResult,
+        employeesList: employeesList
+    };
 }
 
 module.exports.insertPatentData = async(patentData, patentDataBaseFiles) => {

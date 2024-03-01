@@ -3,6 +3,7 @@ const patentFormsModels = require('../models/patent-submission.models');
 
 module.exports.fetchPatentForm = async() => {
     const patentSubmissionForm = await patentFormsModels.fetchPatentSubMissionForms();
+    console.log('patentSubmissionForm ====>>>', patentSubmissionForm)
     return patentSubmissionForm;
 }
 
