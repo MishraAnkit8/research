@@ -27,26 +27,58 @@ module.exports.fetchPatentSubMissionForms = async() => {
 }
 
 module.exports.insertPatentData = async(patentData, patentDataBaseFiles) => {
-    const {typeOfInvention, titleOfInvention, patentStage, achiveSdg, applicationNum, subMissionDate, isPresentor} = patentData;
+    console.log('patentData inside models ===>>>', patentData)
+    const externalEmpName = patentData.externalAuthors;
+    console.log('externalEmpName ====>>>>>', externalEmpName);
+    const internalAuthors = patentData.internalAuthors;
+    console.log('internalAuthors ====>>>', internalAuthors);
+    const authorName = externalEmpName ?? internalAuthors;
+    console.log('authorName === >>>.', authorName)
+    const {typeOfInvention, titleOfInvention, patentStage, sdgGoals, applicationNum, subMissionDate} = patentData;
    
     console.log('file ==>', patentDataBaseFiles)
     console.log("patentData::::::", patentData)
-    let sql = {
-        text : `INSERT INTO  patent_submissions (type_of_invention, title_of_invention,  patent_stage, achieve_sdg, application_no, date, is_presenter, patent_file) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id`,
-        values : [typeOfInvention, titleOfInvention, patentStage, achiveSdg, applicationNum, subMissionDate, isPresentor, patentDataBaseFiles]
+    let patentDataSql = {
+        text : `INSERT INTO  patent_submissions (type_of_invention, title_of_invention,  patent_stage, sdg_goals, application_no, date, author_type, patent_file) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id`,
+        values : [typeOfInvention, titleOfInvention, patentStage, sdgGoals, applicationNum, subMissionDate, authorName, patentDataBaseFiles]
     }
-    console.log('sql ==>>', sql)
-    return researchDbW.query(sql);
+   
+    if(externalEmpName){
+        let externalEmpSql = {
+            text : `INSERT INTO external_emp(external_emp_name) VALUES ($1) RETURNING id`,
+            values : [externalEmpName]
+        }
+        console.log('externalEmpSql ===>>>', externalEmpSql)
+        console.log('patentDataSql ==>>', patentDataSql);
+        const externalEmpTable = researchDbW.query(externalEmpSql);
+        const patentSubmissionTable = researchDbW.query(patentDataSql);
+        const [patentTable, externalEmp] = await Promise.all([patentSubmissionTable, externalEmpTable]);
+        return {
+            externalEmp : externalEmp,
+            patentTable : patentTable
+            
+        }
+    }
+
+    else{
+        console.log('patentDataSql ==>>', patentDataSql);
+        const patentSubmissionTable = await researchDbW.query(patentDataSql);
+        return {
+            patentTable : patentSubmissionTable
+        }
+    }
+  
 
 }
 
 module.exports.updatePatentsubmissionData = async(updatedPatentData, patentId, patentDataFiles) => {
     if(patentDataFiles) {
         console.log('filename in models ==>', patentDataFiles )
-        const {typeOfInvention, titleOfInvention, patentStage, achiveSdg, applicationNum, subMissionDate, isPresentor} = updatedPatentData 
+        console.log('updatedPatentData in models ======>>>>>', updatedPatentData);
+        const {typeOfInvention, titleOfInvention, patentStage, achiveSdg, applicationNum, subMissionDate, isPresentor} = updatedPatentData ;
         let sql = {
-            text : `UPDATE patent_submissions  SET type_of_invention = $2,  title_of_invention = $3, patent_stage = $4, achieve_sdg = $5, 
-                  application_no = $6, date = $7, is_presenter =$8 , patent_file = $9 WHERE id = $1`,
+            text : `UPDATE patent_submissions  SET type_of_invention = $2,  title_of_invention = $3, patent_stage = $4, sdg_goals = $5, 
+                  application_no = $6, date = $7, author_type =$8 , patent_file = $9 WHERE id = $1`,
             values : [patentId , typeOfInvention, titleOfInvention, patentStage, achiveSdg, applicationNum, subMissionDate, isPresentor, patentDataFiles]
         
         }
@@ -54,15 +86,21 @@ module.exports.updatePatentsubmissionData = async(updatedPatentData, patentId, p
         return researchDbW.query(sql)
     }
     else{
-        const {typeOfInvention, titleOfInvention, patentStage, achiveSdg, applicationNum, subMissionDate, isPresentor} = updatedPatentData 
-        let sql = {
-            text : `UPDATE patent_submissions  SET type_of_invention = $2,  title_of_invention = $3, patent_stage = $4, achieve_sdg = $5, 
-                  application_no = $6, date = $7, is_presenter =$8 WHERE id = $1`,
-            values : [patentId , typeOfInvention, titleOfInvention, patentStage, achiveSdg, applicationNum, subMissionDate, isPresentor]
+        console.log('updatedPatentData in models ======>>>>>', updatedPatentData);
+        const internalAuthors = updatedPatentData.internalAuthors;
+        const externalAuthors = updatedPatentData.externalAuthors;
+        const authorName = !internalAuthors && !externalAuthors ? updatedPatentData.authorName : internalAuthors ?? externalAuthors;
+
+
+        const {typeOfInvention, titleOfInvention, patentStage, sdgGoals, applicationNum, subMissionDate} = updatedPatentData 
+        let patentSql = {
+            text : `UPDATE patent_submissions  SET type_of_invention = $2,  title_of_invention = $3, patent_stage = $4, sdg_goals = $5, 
+                  application_no = $6, date = $7, author_type =$8 WHERE id = $1`,
+            values : [patentId , typeOfInvention, titleOfInvention, patentStage, sdgGoals, applicationNum, subMissionDate, authorName]
         
         }
-        console.log('Sql ==>>', sql);
-        return researchDbW.query(sql)
+        console.log('patentSql ==>>', patentSql);
+        return researchDbW.query(patentSql);
     }
 }
 
@@ -79,7 +117,7 @@ module.exports.deletePatentSubmissionData = async(patentId) => {
 module.exports.viewPatentSubmission = async(patentId) => {
     console.log('id' , patentId)
     let sql = {
-        text : `SELECT type_of_invention, title_of_invention,  patent_stage, achieve_sdg, application_no, TO_CHAR(date, 'DD-MM-YYYY') as date, is_presenter, patent_file FROM patent_submissions WHERE id = $1`,
+        text : `SELECT type_of_invention, title_of_invention,  patent_stage, sdg_goals, application_no, TO_CHAR(date, 'DD-MM-YYYY') as date, author_type, patent_file FROM patent_submissions WHERE id = $1`,
         values : [patentId]
     }
     console.log('sql qury for view', sql);

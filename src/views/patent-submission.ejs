@@ -72,8 +72,8 @@
                         <th class="col-lg-1">Title of Invention</th>
                         <th class="col-lg-1">Patent Stage</th>
                         <th class="col-lg-1">Application Number</th>
-                        <th class="col-lg-1">Are you the Presenter</th>
-                        <th class="col-lg-1">Are you achieve SDG ?</th>
+                        <th class="col-lg-1">Author Name</th>
+                        <th class="col-lg-1">Sustainable Development Goals (SDG)</th>
                         <th class="col-lg-1">upload documents</th>
                         <th class="col-lg-1">Action</th>
                     </thead>
@@ -84,8 +84,8 @@
                             <td class="title-of-invention col-lg-1"><%- patent.title_of_invention %></td>
                             <td class="patent-stage col-lg-1"><%- patent.patent_stage %></td>
                             <td class="application-no col-lg-1"><%- patent.application_no %></td>
-                            <td class="is-presenter col-lg-1"><%- patent.is_presenter %></td>
-                            <td class="achive-sdg col-lg-1"><%- patent.achieve_sdg %></td>
+                            <td class="is-presenter col-lg-1"><%- patent.author_type %></td>
+                            <td class="achive-sdg col-lg-1"><%- patent.sdg_goals %></td>
                             <td class="patent-file col-lg-1"><%- patent.patent_file %></td>
                             <td class="col-lg-1">
                                 <label class="view" data-patent-id="<%- patent.id %>"><i class="fa-solid fa-eye view text-danger"
@@ -200,16 +200,16 @@
                     </div>
 
                     <!-- Sustainable Development Goals (SDG) [dropdown list to be added] ? -->
-                    <div form-group class="col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="achive-sdg" class="mb-2 fw-bold" aria-required="true">Sustainable Development Goals (SDG)?</label><br>
-                        <label for="yes">
-                            <input type="radio" name="achive-sdg" id="yes" value="yes">
-                            Yes
-                        </label>
-                        <label for="no">
-                            <input type="radio" name="achive-sdg" id="no" value="no" checked>
-                            No
-                        </label>
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="sdg-goals" class="form-label fw-bold ">Sustainable Development Goals (SDG)?</label>
+                        <select class="form-control gap-10" id="sdg-goals" data-validate="isEmpty,isExist"
+                            data-err-msg="This field is required and select value " required>
+                            <option value="" selected>Select option</option>
+                            <option value="No Poverty" >SDG 1: No Poverty</option>
+                            <option value="Zero Hunger">SDG 2: Zero Hunger</option>
+                            <option value="Good Health and Well-being">SDG 3: Good Health and Well-being</option>
+                            <option value="Quality Education">SDG 4: Quality Education</option>
+                        </select>
                     </div>
             
                     <!-- Application Number -->
@@ -234,7 +234,7 @@
                             ?</label><br>
                         <div class="form-check-inline">
                             <label for="internal" class="form-check-label enter-faculty-type">
-                                <input type="radio" class="form-check-input enternal-type" id="is-award-yes" name="is-presenter" value="Enternal">
+                                <input type="radio" class="form-check-input enternal-type" name="author-type" id="is-internal" >
                                <span id="enternal-text">Internal</span>
                             </label>
                             <div class="col-lg-1 p-6 w-100 d-none" id="employee-list">
@@ -249,12 +249,21 @@
                             </div>
                         </div>
                         <div class="form-check-inline">
-                            <label for="is-award-no"   class="form-check-label external-faculty">
-                                <input type="radio" class="form-check-input" id="is-award-no" name="is-presenter" value="External" checked>
+                            <label for="is-external"   class="form-check-label external-faculty">
+                                <input type="radio" class="form-check-input" id="is-external" name="author-type" value="External" >
                                 <span id="external-text">External</span>
                             </label>
+                            
                         </div>
                     </div>
+                    <div id="author-details" class="form-group col-lg-6 col-md-8 col-sm-12 mb-4 d-none">
+                        <div class="author-details-section col-lg-6 col-md-8 col-sm-12">
+                          <label for="author-name " class="form-label fw-bold">Author Name:</label>
+                          <input type="text" id="author-name" class="col-md-12 form-control" placeholder="Enter author name">
+                          <button id="add-more-details" class="btn col-md-12 btn-md btn-primary" type="button">Add More Details</button>
+                        </div>
+                      
+                      </div>
                      <!-- Upload Supporting Documents-->
                      <div class="form-group col-lg-6 col-md-8 col-sm-12 mb-4">
                         <div class="col-lg-6 col-md-8 col-sm-12">
@@ -263,22 +272,24 @@
                             </label>
                             <div class="d-flex">
                                 <input type="file" name="patentFile" id="patent-file"
-                                    class="col-md-12 form-control " data-validate="isEmpty,isExist,isFile" data-err-msg="File is required." required multiple>
+                                    class="col-md-12 form-control" data-validate="isEmpty,isExist,isFile" data-err-msg="File is required." required multiple>
                                     <button class="download-btn download-file" id="patent-file-edit"><i class="fas fa-download text-danger"></i></button>
                             </div>
                         </div>
                     </div>
+                    
                     <!-- <div class="form-group col-lg-6 col-md-2 col-sm-12 mb-4">
                         <div id="file-view" class="h-10 w-10">
                         </div>
                     </div> -->
                 </div>
             </div>
+            
             <!-- Add your modal footer buttons if needed -->
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-md btn-primary d-none" id="submit-btn">Submit</button>
-                <button class="btn btn-md btn-primary d-none" id="update-btn">update</button>
+                <button class="btn btn-md btn-primary d-none" id="update-btn">Update</button>
             </div>
         </div>
     </div>
@@ -382,6 +393,8 @@
     const downloadLink = document.getElementById('downloadLink');
     const patenetSubMissionList = document.getElementById('patent-submisson-list');
     let patentId, rowToBeUpdated;
+    let storedFacultyValue;
+   
 
     addNewPatentSubmission.addEventListener('click' , function(event){
         if(event.target.tagName === 'BUTTON' && event.target.classList.contains('add-modal') || event.target.classList.contains('plus')){
@@ -396,17 +409,24 @@
             const typeOfInvention = document.getElementById('type-of-invention');
             const titleOfInvention = document.getElementById('title-of-invention');
             const patentStage = document.getElementById('patent-stage');
+            const sdgGoals = document.getElementById('sdg-goals');
             const applicationNum = document.getElementById('application-no');
             const subMissionDate = document.getElementById('date');
             const patentSubmissionDocument = document.querySelector('input[type="file"]');
+            const isInternalFaculty = document.getElementById('is-internal');
+            const isExternalFaculty = document.getElementById('is-external');
+
 
             // for making input field empty
             typeOfInvention.value = '';
             titleOfInvention.value = '';
             patentStage.value = '';
             applicationNum.value = '';
+            sdgGoals.value = '';
             patentSubmissionDocument.value = '';
             date.value = '';
+            isInternalFaculty.checked = false;
+            isExternalFaculty.checked = false;
 
         }
     })
@@ -428,9 +448,10 @@
         const titleOfInvention = document.getElementById('title-of-invention').value;
         patentData.append('titleOfInvention', titleOfInvention);
 
-        const selectAchiveSdg = document.querySelector('input[name="achive-sdg"]:checked').value;
-        patentData.append('achiveSdg', selectAchiveSdg);
-        
+        // patentData.append('achiveSdg', selectAchiveSdg);
+        const sdgGoals = document.getElementById('sdg-goals').value
+        console.log('sdgGoals ====>>>>>', sdgGoals)
+        patentData.append('sdgGoals' , sdgGoals)
         const selectPatentStage = document.getElementById('patent-stage').value;
         patentData.append('patentStage', selectPatentStage);
 
@@ -440,9 +461,10 @@
         const subMissionDate = document.getElementById('date').value;
         console.log('subMissionDate ===>>>', subMissionDate);
         patentData.append('subMissionDate', subMissionDate);
-
-        const selectIsPresentor = document.querySelector('input[name="is-presenter"]:checked');
-        await enternalFacultyDropDown(selectIsPresentor, patentData);
+        
+        const authorType = document.querySelector('input[name="author-type"]:checked');
+        await enternalFacultyDropDown(authorType, patentData);
+        // await setExternalValue(selectIsPresentor, patentData);
         // console.log('selectIsPresentor ====>>>', selectIsPresentor);
         // patentData.append('isPresentor', selectIsPresentor);
 
@@ -465,8 +487,8 @@
                             <td class="title-of-invention">${data.patentData.titleOfInvention}</td>
                             <td class="patent-stage">${data.patentData.patentStage}</td>
                             <td class="application-no">${data.patentData.applicationNum}</td>
-                            <td class="is-presenter">${data.patentData.isPresentor}</td>
-                            <td class="achive-sdg">${data.patentData.achiveSdg}</td>
+                            <td class="is-presenter">${data.authorName}</td>
+                            <td class="achive-sdg">${data.patentData.sdgGoals}</td>
                             <td class="patent-file">${data.patentFilesData}</td>
                             <td class="cell ">
                                 <label class="view" data-patent-id="${patentId}"><i class="fa-solid fa-eye view text-danger"
@@ -478,7 +500,7 @@
                            </td> `;
 
                 patenetSubMissionList.appendChild(newPatentRow);
-                $('#patent-submission-modal').modal('hide');
+                // $('#patent-submission-modal').modal('hide');
                     alert('Data Inserted  SuccessFully');
                     
             }
@@ -519,8 +541,8 @@
                 const achiveSdgYes = document.getElementById('yes');
                 const achiveSdgNo = document.getElementById('no');
                 const applicationNum = document.getElementById('application-no');
-                const isPresenterYes = document.getElementById('is-award-yes');
-                const isPresenterNo = document.getElementById('is-award-no');
+                const isPresenterYes = document.getElementById('is-internal');
+                const isPresenterNo = document.getElementById('is-external');
 
                 const subMissionDate = rowToBeUpdated.getAttribute('data-patent-date');
                 console.log('patentDate ==>>', subMissionDate)
@@ -533,14 +555,20 @@
                 const patentfile = rowToBeUpdated.querySelector('.patent-file');
                 const supportingDocuments = patentfile.innerText.trim();
                 console.log('supportingDocuments ==>>', supportingDocuments)
-                if (rowToBeUpdated.querySelector('.achive-sdg').innerText === 'External') {
+                
+                if (rowToBeUpdated.querySelector('.achive-sdg').innerText === 'Yes') {
                     achiveSdgNo.checked = true;
                 } else {
                     achiveSdgYes.checked = true;
                 }
                 applicationNum.value = rowToBeUpdated.querySelector('.application-no').innerText;
                 date.value = formattedDate;
-                if (rowToBeUpdated.querySelector('.is-presenter').innerText === 'yes') {
+                const facultyText = rowToBeUpdated.querySelector('.is-presenter');
+                console.log('facultyText value ==>>>', facultyText);
+                console.log('facultyText ===>>>>', facultyText.innerText)
+                storedFacultyValue = facultyText.innerText;
+                console.log('storedFacultyValue ====>>>>>', storedFacultyValue);
+                if (rowToBeUpdated.querySelector('.is-presenter').innerText === 'Internal') {
                     isPresenterYes.checked = true;
                 } else {
                     isPresenterNo.checked = true;
@@ -610,9 +638,8 @@
                     headers: {
                         'content-type': 'application/json'
                     },
-                    body: JSON.stringify({
-                        patentId
-                    })
+                    body: JSON.stringify({patentId}
+                         )
                 })
                     .then((result) => {
                         return result.json();
@@ -628,14 +655,14 @@
                             viewDate.innerText = data.patentData[0].date.split('T')[0];
                             viewPatentStage.innerText = data.patentData[0].patent_stage;
                             viewIsPresenter.innerText = data.patentData[0].is_presenter;
-                            viewUploadedDoc.innerText = data.patentData[0].patent_file;
+                            // viewUploadedDoc.innerText = data.patentData[0].patent_file;
 
                         }
                     })
             }
 
         })
-
+    // update function for update the record
     const updatePatentSubmissiom = async(url) => {
         console.log('clickedd');
         const updatedTypeOfInvention = document.getElementById('type-of-invention').value;
@@ -644,7 +671,8 @@
         const updatedAchiveSdg =  document.querySelector('input[name="achive-sdg"]:checked').value
         const updatedApplicationNum = document.getElementById('application-no').value;
         const updatedSubMissionDate = document.getElementById('date').value;
-        const updatedIs_Presenter = document.querySelector('input[name="is-presenter"]:checked').value; 
+        const updatedIs_Presenter = document.querySelector('input[name="is-presenter"]:checked').value;
+        //function call for set the value of radio button 
 
         const updatedPatentData = new FormData();
         // Append the updated values to FormData
@@ -655,7 +683,8 @@
         updatedPatentData.append('achiveSdg', updatedAchiveSdg);
         updatedPatentData.append('applicationNum', updatedApplicationNum);
         updatedPatentData.append('subMissionDate', updatedSubMissionDate);
-        updatedPatentData.append('isPresentor', updatedIs_Presenter);
+        await updateAuthorType(updatedIs_Presenter, updatedPatentData);
+        // updatedPatentData.append('isPresentor', updatedIs_Presenter);
         
         // let updatedPatentFileInput = document.querySelector('input[type="file"]');
         // if (updatedPatentFileInput.files.length > 0) {
@@ -701,7 +730,7 @@
                 rowToBeUpdated.querySelector('.application-no').innerText = data.updatedPatentData.applicationNum;
                 rowToBeUpdated.querySelector('.patent-stage').innerText = data.updatedPatentData.patentStage;
                 rowToBeUpdated.setAttribute('data-patent-date' , data.updatedPatentData.subMissionDate);
-                rowToBeUpdated.querySelector('.is-presenter').innerText = data.updatedPatentData.isPresentor;
+                rowToBeUpdated.querySelector('.is-presenter').innerText = data.authorName;
                 if(updatedPatentFilesData){
                     rowToBeUpdated.querySelector('.patent-file').innerText = data.patentDocument;
                 }
@@ -795,34 +824,69 @@
         };
    
 
-
-   async function enternalFacultyDropDown(selectIsPresentor, patentData){
-        console.log('selectIsPresentor in side my function ====>>>', selectIsPresentor);
-        const presentertype = selectIsPresentor.value;
+    // function for add drop down list or  add new faculty data
+   async function enternalFacultyDropDown(authorType, patentData){
+        console.log('authorType in side my function ====>>>', authorType);
+        const presentertype = authorType.value;
         console.log('presentertype ===>>>', presentertype);
-        console.log('storedSelectedValue in side my fuction ======', storedSelectedValue)
-        patentData.append('isPresentor', storedSelectedValue);
-        
-        
-    
+        if(presentertype === 'Enternal'){
+            console.log('storedSelectedValue in side my fuction ======', enternalAuthorValue);
+            externalAuthorValue = '';
+            patentData.append('internalAuthors', enternalAuthorValue);
+        }
+        else{
+            console.log('externalAuthorValue inside  function ===>>>', externalAuthorValue)
+            patentData.append('externalAuthors', externalAuthorValue);
+            enternalAuthorValue = '';
+        }
     }
+
+    // fuction for updated faculty type
+    async function updateAuthorType(updatedIs_Presenter, updatedPatentData){
+
+        console.log('updatedIs_Presenter in side my function ====>>>', updatedIs_Presenter);
+        // const authorType = updatedIs_Presenter.value;
+        // console.log('authorType ===>>>', authorType);
+        ('storedFacultyValue ===>>>', storedFacultyValue)
+        console.log('updatedIs_Presenter ====>>>', updatedIs_Presenter);
+        if (!externalAuthorValue && !enternalAuthorValue){
+            updatedPatentData.append('authorName', storedFacultyValue);
+
+        }
+        else if(updatedIs_Presenter === 'Internal'){
+            console.log('storedSelectedValue in side my fuction =>', enternalAuthorValue);
+            externalAuthorValue = '';
+            updatedPatentData.append('internalAuthors', enternalAuthorValue);
+        }
+        else{
+            console.log('externalAuthorValue inside  function ===>>>', externalAuthorValue);
+            updatedPatentData.append('externalAuthors', externalAuthorValue);
+            enternalAuthorValue = '';
+        }
+    }
+
     // EVENT LIST THAT WILL USE USE TO OPEN DROP DOWN LIST  
     const externaltype = document.querySelector('.external-faculty');
-    const enternalFacultyType = document.getElementById('is-award-yes');
-    const externalFacultyType = document.getElementById('is-award-no');
+    const enternalFacultyType = document.getElementById('is-internal');
+    const externalFacultyType = document.getElementById('is-external');
     const employeeList = document.getElementById('employee-list');
+    const authorDetails = document.getElementById('author-details');
 
     const enternalText = document.getElementById('enternal-text');
+    // making d-none external faculty
     enternalFacultyType.addEventListener('click' , (event) => {
         console.log('clicked ::::::::::::');
         // externaltype.classList.add('d-none');
         // enternalText.classList.add('d-none');
         employeeList.classList.remove('d-none');
-    })
+        authorDetails.classList.add('d-none');
 
+    })
+    //making d-none internal faculty
     externalFacultyType.addEventListener('click' , (event => {
         console.log('clciked ====');
         employeeList.classList.add('d-none');
+        authorDetails.classList.remove('d-none');
     }))
 
     // employeesListData data came from backend
@@ -831,18 +895,100 @@
     let employeeListArray = [];
 
    
-    // Now you can work with the employeesList data in your JavaScript code
     console.log(employeesDataObj);
     // ajax for search bar to search employee name 
     new TomSelect("#emp-name");
-    let storedSelectedValue;
+  
     const employeeDropdown = document.getElementById("emp-name");
     employeeDropdown.addEventListener("change", function() {
          const selectedValue = this.value;
-         storedSelectedValue = selectedValue;
-        // console.log("Selected value:", selectedValue);
+         enternalAuthorValue = selectedValue;
+        console.log("enternalAuthorValue value:", enternalAuthorValue);
         
     });
+
+
+
+    
+    const addMoreDetailsButton = document.getElementById("add-more-details");
+    let authorName
+    let storedSelectedValue;
+    var enternalAuthorValue;
+    var externalAuthorValue
+    let additionalDetails = []; 
+    //event listner for store external value
+    addMoreDetailsButton.addEventListener('click' , (event) => {
+        console.log('clickeddddd')
+        
+        const authorNameInput = document.getElementById("author-name");
+        authorName = authorNameInput.value;
+        console.log('authorNameInput ===>>>>', authorNameInput.value)
+        externalAuthorValue = authorNameInput.value;
+        console.log('storedSelectedValue inside external listner ===>>>', externalAuthorValue);
+       
+
+     
+    })
+
+
+
+
+    // // Event listener for "Add More Details" button
+    // addMoreDetailsButton.addEventListener("click", function () {
+    //     // Create a new section for additional details
+    //     const newDetailsSection = document.createElement("div");
+    //     newDetailsSection.classList.add("author-details-section");
+
+    //     // Add a label and input field for the new detail
+    //     const label = document.createElement("label");
+    //     label.textContent = "Additional Detail:";
+    //     newDetailsSection.appendChild(label);
+
+    //     const inputField = document.createElement("input");
+    //     inputField.type = "text";
+    //     inputField.placeholder = "Enter additional detail";
+    //     newDetailsSection.appendChild(inputField);
+
+    //     // Append the new section to the author details container
+    //     const authorDetailsContainer = document.getElementById("author-details");
+    //     authorDetailsContainer.appendChild(newDetailsSection);
+
+    //     // Add a button to remove the newly added section
+    //     const removeButton = document.createElement("button");
+    //     removeButton.classList.add("btn-danger")
+    //     removeButton.textContent = "Remove";
+    //     removeButton.classList.add("remove-details-button");
+    //     newDetailsSection.appendChild(removeButton);
+
+    //     // Event listener for the "Remove" button
+    //     removeButton.addEventListener("click", function () {
+    //         // Remove the clicked section from the DOM and update the `additionalDetails` array
+    //         authorDetailsContainer.removeChild(this.parentElement);
+    //         const index = additionalDetails.findIndex(
+    //             (detail) => detail.label === this.previousSibling.textContent
+    //         );
+    //         additionalDetails.splice(index, 1);
+    //     });
+
+    //     // Update the `additionalDetails` array with the newly added detail
+    //     additionalDetails.push({
+    //         label: "Additional Detail:",
+    //         value: inputField.value, // Initially empty, user will fill it
+    //     });
+    // });
+
+    //         // Function to get all author details (including name and additional details)
+    //         function getAuthorDetails() {
+    //             const authorName = authorNameInput.value;
+    //             const details = {
+    //                 name: authorName,
+    //                 additionalDetails: additionalDetails,
+    //             };
+    //             return details;
+    //         }
+
+
+
 
    
 

@@ -9,24 +9,37 @@ module.exports.fetchPatentForm = async() => {
 
 module.exports.insertPatentFormData = async(body , files) => {
     console.log('patentData in service', body);
+    const externalAuthors = body.externalAuthors;
+    const internalAuthors = body.internalAuthors;
+    console.log('internalAuthors ====>>>>>', internalAuthors)
+    const authorName = externalAuthors ?? internalAuthors
+    console.log('authorName ====>>>>', authorName)
+    console.log('externalAuthors ====>>>>>', externalAuthors);
     console.log('file name in service ==>>', files);
     const patentFilesData = files;
     console.log('patentFilesData ===>>>>', patentFilesData);
     var patentDataBaseFiles = '';
     for (let i = 0 ; i<= patentFilesData.length-1; i++){
         if(patentFilesData[i] && patentFilesData[i].filename){
-            patentDataBaseFiles += patentFilesData[i].filename + ',';
-        }
+                patentDataBaseFiles += patentFilesData[i].filename + ',';
+            }
     }
     console.log('patentDataBaseFiles patent file stringfy data inside service ==>>>', patentDataBaseFiles)
+    
     const insertPatentData = await patentFormsModels.insertPatentData(body, patentDataBaseFiles);
-    console.log('insert Id ', insertPatentData.rows[0])
-    const patentId = insertPatentData.rows[0];
+    console.log('insertPatentData in service ====>>>', insertPatentData);
+    const insertPatentSubmissionData = insertPatentData.patentTable.rows;
+    // console.log('insertPatentSubmissionData ===>>>', insertPatentSubmissionData)
+    const patentId = insertPatentData.patentTable.rows[0];
+    
+        
     return { insertPatentData,
-            patentDataBaseFiles,
-            patentId 
+                patentDataBaseFiles,
+                patentId,
+                authorName 
+        }
     }
-}
+   
 
 
 module.exports.updatPatentSubmission = async(body, patentId, files) => {

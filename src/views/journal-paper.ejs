@@ -62,13 +62,14 @@
                 <table class="table custom-table table-responsive research-pagination" id="journal-paper-list">
                     <thead>
                         <th class="col-lg-1" >#</th>
-                        <th class="col-lg-1">Year</th>
+                        <th class="col-lg-1">Year Of Publishing</th>
                         <th class="col-lg-1">School</th>
                         <th class="col-lg-1">Campus</th>
                         <th class="col-lg-1">Policy Cadre</th>
                         <th class="col-lg-1">Publisher</th>
                         <th class="col-lg-1">All authors</th>
                         <th class="col-lg-1">Total No. of Authors</th>
+
                         <th class="col-lg-1">Name of NMIMS Authors</th>
                         <th class="col-lg-1">Journal Name</th>
                         <th class="col-lg-1">Action</th>
@@ -77,9 +78,9 @@
                         <tr scope="row" data-count-other-faculty ="<%- journalPaper.count_other_faculty %>" data-nmims-author-count="<%- journalPaper.nmims_authors_count %> "
                             data-pages="<%- journalPaper.pages %>" data-issn-no="<%- journalPaper.issn_no %>" data-scs-cite-score="<%- journalPaper.scs_cite_score %>"
                             data-impact-factor="<%- journalPaper.impact_factor %>" data-scs-indexed="<%- journalPaper.scs_indexed %>" data-wos-indexed="<%- journalPaper.wos_indexed %>"
-                            data-gs-indexed="<%- journalPaper.gs_indexed %>" data-title-of-paper="<%- journalPaper.title_of_paper %>" data-abdc-indexed="<%- journalPaper.abdc_indexed %>" data-ugc-indexed="<%- journalPaper.ugc_indexed %>"
-                            data-web-link="<%- journalPaper.web_link %>" data-uid="<%- journalPaper.uid %>" data-date-of-publishing="<%- journalPaper.date_of_publishing %>"
-                            data-journal-category="<%- journalPaper.journal_category %>" data-nmims-authors-count="<%- journalPaper. nmims_authors_count%>">
+                            data-title-of-paper="<%- journalPaper.title_of_paper %>" data-abdc-indexed="<%- journalPaper.abdc_indexed %>" data-ugc-indexed="<%- journalPaper.ugc_indexed %>"
+                            data-web-link="<%- journalPaper.web_link_doi_number %>"  data-date-of-publishing="<%- journalPaper.date_of_publishing %>"
+                            data-journal-category="<%- journalPaper.journal_category %>" data-nmims-authors-count="<%- journalPaper. nmims_authors_count%>" data-foreign-authors="<%- journalPaper.foreign_authors %>" data-foreign-authors-o="<%- journal-paper.numbers_foreign_authors %>">
                             <td class="" id="rowCount"> <%- index + 1 %> </td>
                             <td class="year col-lg-1"> <%- journalPaper.year %> </td>
                             <td class="school col-lg-1"> <%- journalPaper.school %> </td>
@@ -218,6 +219,18 @@
                         <input type="text" name="journal-name" id="journal-name" data-validate="isEmpty,isAlphabeticWords,isLength:2:255" data-err-msg="This field is required and min length > 1." class="form-control"
                              required>
                     </div>
+                    <!-- Name Of Foreign Authors -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="foreign-authors" class="form-label fw-bold">Name Of Foreign Authors </label>
+                        <input type="text" name="foreign-authors" id="foreign-authors" data-validate="isEmpty,isAlphabeticWords,isLength:2:255" data-err-msg="This field is required and min length > 1." class="form-control"
+                             required>
+                    </div>
+                    <!-- Number Of Foreign Authors -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="foreign-authors-number" class="form-label fw-bold">Number Of Foreign Authors</label>
+                        <input type="number" name="journal-name" id="foreign-authors-number" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required" class="form-control"
+                             required>
+                    </div>
                     <!-- Publisher -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="publisher" class="form-label fw-bold"> Publisher </label>
@@ -240,23 +253,41 @@
                     </div>
                     <!-- SCS Cite Score -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="scs-cite-score" class="form-label fw-bold">SCS Cite Score</label>
+                        <label for="scs-cite-score" class="form-label fw-bold">Scopus Cite Score</label>
                         <input type="number" name="scsCiteScores" id="scs-cite-score" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required." class="form-control" required>
                     </div>
                     <!-- Impact Factor -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="impact-factor" class="form-label fw-bold">Impact Factor</label>
+                        <label for="impact-factor" class="form-label fw-bold">Impact Factor As Per Clarivate Analytics </label>
                         <input type="text" name="impactFactors" id="impact-factor" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="This field is required and min length > 1."   class="form-control" required>
                     </div>
                     <!-- SCS Indexed -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="scs-indexed" class="form-label fw-bold">SCS Indexed</label>
-                        <input type="number" name="scs-indexed" id="scs-indexed" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required"   class="form-control" required>
+                        <label for="scs-indexed" class="form-label fw-bold">Scopus Indexed</label>
+                        <div class="form-check-inline">
+                            <label for="inter-national" class="form-check-label">
+                                <input type="radio" class="form-check-input" id="scopus-yes" name="scopus-category" value="Yes"> Yes
+                            </label>
+                        </div>
+                        <div class="form-check-inline">
+                            <label for="national" class="form-check-label">
+                                <input type="radio" class="form-check-input" id="scopus-no" name="scopus-category" value="No" checked> No
+                            </label>
+                        </div>
                     </div>
                     <!-- WoS Indexed -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="wos-indexed" class="form-label fw-bold">WoS Indexed</label>
-                        <input type="number" name="wos-indexed" id="wos-indexed"data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required"  class="form-control" required>
+                        <div class="form-check-inline">
+                            <label for="wos-index-yes" class="form-check-label">
+                                <input type="radio" class="form-check-input" id="wos-index-yes" name="wos-index-category" value="Yes"> Yes
+                            </label>
+                        </div>
+                        <div class="form-check-inline">
+                            <label for="wos-index-no" class="form-check-label">
+                                <input type="radio" class="form-check-input" id="wos-index-no" name="wos-index-category" value="No" checked> No
+                            </label>
+                        </div>
                     </div>
                     <!-- GS Indexed -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
@@ -266,17 +297,35 @@
                     <!-- ABDC Indexed -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="gs-index" class="form-label fw-bold">ABDC Indexed</label>
-                        <input type="number" name="abdc-indexed" id="abdc-indexed" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required" class="form-control" required>
+                        <div class="form-check-inline">
+                            <label for="abdc-index-yes" class="form-check-label">
+                                <input type="radio" class="form-check-input" id="abdc-index-yes" name="abdc-index-category" value="Yes"> Yes
+                            </label>
+                        </div>
+                        <div class="form-check-inline">
+                            <label for="abdc-index-no" class="form-check-label">
+                                <input type="radio" class="form-check-input" id="abdc-index-no" name="abdc-index-category" value="No" checked> No
+                            </label>
+                        </div>
                     </div>
                     <!-- UGC Indexed -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="ugc-indexed" class="form-label fw-bold">UGC Indexed</label>
-                        <input type="number" name="abdc-indexed" id="ugc-indexed" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required"  class="form-control" required>
+                        <div class="form-check-inline">
+                            <label for="ugc-index-yes" class="form-check-label">
+                                <input type="radio" class="form-check-input" id="ugc-index-yes" name="ugc-index-category" value="Yes"> Yes
+                            </label>
+                        </div>
+                        <div class="form-check-inline">
+                            <label for="ugc-index-no" class="form-check-label">
+                                <input type="radio" class="form-check-input" id="ugc-index-no" name="ugc-index-category" value="No" checked> No
+                            </label>
+                        </div>
                     </div>
                     <!-- Weblink-DOI Number -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="web-link" class="form-label fw-bold">WEB Link</label>
-                        <input type="text" name="webLinks" id="web-link"  data-validate="isEmpty,isNotNumber,isExist"  data-err-msg="This field is required and min length > 1."  class="form-control" required>
+                        <label for="web-link" class="form-label fw-bold">WEB Link DOI NUMBER</label>
+                        <input type="text" name="webLinks" id="web-link-num"  data-validate="isEmpty,isNotNumber,isExist"  data-err-msg="This field is required and min length > 1."  class="form-control" required>
                     </div>
                     <!-- UID -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
@@ -295,7 +344,7 @@
                     </div>
                      <!-- Research Journal Paper  -->
                      <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="journal-category" id="journal-category" class="form-label fw-bold mb-3">Research Journal Paper</label><br>
+                        <label for="journal-category" id="journal-category" class="form-label fw-bold mb-3">International/National Journal</label><br>
                         <div class="form-check-inline">
                             <label for="inter-national" class="form-check-label">
                                 <input type="radio" class="form-check-input" id="inter-national" name="journal-category" value="International"> International
@@ -550,12 +599,12 @@
             document.getElementById('issn-no').value = '';
             document.getElementById('scs-cite-score').value = '';
             document.getElementById('impact-factor').value = '';
-            document.getElementById('scs-indexed').value = '';
-            document.getElementById('wos-indexed').value = '';
-            document.getElementById('gs-indexed').value = '';
-            document.getElementById('abdc-indexed').value = '';
-            document.getElementById('ugc-indexed').value = '';
-            document.getElementById('web-link').value = '';
+            // document.getElementById('scs-indexed').value = '';
+            // document.getElementById('wos-indexed').value = '';
+            // document.getElementById('gs-indexed').value = '';
+            // document.getElementById('abdc-indexed').value = '';
+            // document.getElementById('ugc-indexed').value = '';
+            document.getElementById('web-link-num').value = '';
             document.getElementById('uid').value = '';
             document.getElementById('date-of-publishing').value = '';
             document.getElementById('title-of-paper').value = '';
@@ -579,21 +628,24 @@
         journalDetails.totalAuthors = document.getElementById('total-authors').value;
         journalDetails.nmimsAuthors = document.getElementById('nmims-authors').value;
         journalDetails.journalName = document.getElementById('journal-name').value;
+        journalDetails.foreignAuthors = document.getElementById('foreign-authors').value;
+        journalDetails.foreignAuthorsNumbers = document.getElementById('foreign-authors-number').value;
         journalDetails.countOtherFaculty = document.getElementById('count-other-faculty').value;
         journalDetails.pages = document.getElementById('pages').value;
         journalDetails.issnNo = document.getElementById('issn-no').value;
         journalDetails.scsCiteScore = document.getElementById('scs-cite-score').value;
         journalDetails.impactFactor = document.getElementById('impact-factor').value;
-        journalDetails.scsIndexed = document.getElementById('scs-indexed').value;
-        journalDetails.wosIndexed = document.getElementById('wos-indexed').value;
-        journalDetails.gsIndexed = document.getElementById('gs-indexed').value;
-        journalDetails.abcdIndexed = document.getElementById('abdc-indexed').value;
-        journalDetails.ugcIndexed = document.getElementById('ugc-indexed').value;
-        journalDetails.webLink = document.getElementById('web-link').value;
-        journalDetails.uid = document.getElementById('uid').value;
+        journalDetails.scsIndexedCategory = document.getElementById('scs-indexed').value;
+        journalDetails.wosIndexedCatgory = document.getElementById('input[name="wos-index-category"]:checked').value;
+        journalDetails.scsIndexedCategory = document.querySelector('input[name="scopus-category"]:checked').value;
+        journalDetails.abcdIndexedCategory = document.getElementById('input[name="abdc-index-category"]:checked').value;
+        journalDetails.ugcIndexedCategory = document.getElementById('input[name="ugc-index-category"]:checked').value;
+        journalDetails.webLinkNumber = document.getElementById('web-link-num').value;
+        // journalDetails.uid = document.getElementById('uid').value;
         journalDetails.dateOfPublishing = document.getElementById('date-of-publishing').value;
         journalDetails.titleOfPaper = document.getElementById('title-of-paper').value;
-        journalDetails.journalCategory = document.querySelector('input[name="journal-category"]:checked').value;        journalDetails.nmimsAuthorsCount = document.getElementById('nmims-authors-count').value;
+        journalDetails.journalCategory = document.querySelector('input[name="journal-category"]:checked').value;
+        journalDetails.nmimsAuthorsCount = document.getElementById('nmims-authors-count').value;
 
         // inserting data from frontEnd
         console.log('journalDetails==>>', journalDetails);

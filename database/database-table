@@ -1,15 +1,17 @@
--- FOR RESEARCH JPOUNAL PAPER
+-- FOR RESEARCH JPOUNAL PAPER updated at 4-03-2024
 
-  CREATE TABLE journal_papers (
+   CREATE TABLE journal_papers (
     id SERIAL PRIMARY KEY,
     year INTEGER,
     school VARCHAR(255),
     campus VARCHAR(255),
     policy_cadre VARCHAR(255),
-    journal_category VARCHAR(20) CHECK(journal_category IN ('International', 'National')),
+    journal_category VARCHAR(50),
     all_authors VARCHAR(255),
     total_authors INTEGER,
     nmims_authors VARCHAR(255),
+	foreign_authors VARCHAR(255),
+	numbers_foreign_authors INTEGER,
     nmims_authors_count INTEGER,
     count_other_faculty INTEGER,
     title_of_paper VARCHAR(255),
@@ -20,14 +22,14 @@
     date_of_publishing DATE,
     impact_factor VARCHAR(255),
     scs_cite_score INTEGER,
-    scs_indexed VARCHAR(255),
-    wos_indexed VARCHAR(255),
-    gs_indexed VARCHAR(255),
-    abdc_indexed VARCHAR(255),
-    ugc_indexed VARCHAR(255),
-    web_link VARCHAR(255),
-    uid INTEGER
-);
+    scs_indexed VARCHAR(50),
+    wos_indexed VARCHAR(50),
+--     gs_indexed VARCHAR(255),
+    abdc_indexed VARCHAR(50),
+    ugc_indexed VARCHAR(50),
+    web_link_doi_number INTEGER
+	  );
+--     uid INTEGER
 
 
 -- FOR RESEARC PROJECT CONSULTANCY
@@ -47,16 +49,16 @@ CREATE TABLE research_project_consultancy (
     -- updated supporting_documents VARCHAR(50) to supporting_documents VARCHAR(255)
 );
 	
--- FOR FOR PATENT SUBMISSION
+-- FOR FOR PATENT SUBMISSION updated on 4/03/2024
 CREATE TABLE patent_submissions (
     id SERIAL PRIMARY KEY,
     type_of_invention VARCHAR(255),
     title_of_invention VARCHAR(255),
     patent_stage VARCHAR(255),
-    achieve_sdg VARCHAR(3) CHECK(achieve_sdg IN('yes', 'no')),
+    sdg_goals VARCHAR(255),
     application_no INTEGER,
     date DATE,
-    is_presenter VARCHAR(50),  --updated is_presenter 
+    author_type VARCHAR(255),  --updated is_presenter 
     patent_file VARCHAR(255)
 );
 
@@ -357,4 +359,17 @@ CREATE TABLE branding_editor_table (
     editor_data Text,
     created_by VARCHAR(255)
 );
+
+-- internal employee table
+create table employee_table(
+	id SERIAL PRIMARY KEY,
+	employee_name varchar(255)
+);
+
+-- external employee table
+CREATE table external_emp(
+	id serial primary key,
+	external_emp_name varchar(255)
+	);
+
 
