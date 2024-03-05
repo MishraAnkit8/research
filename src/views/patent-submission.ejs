@@ -84,7 +84,14 @@
                             <td class="title-of-invention col-lg-1"><%- patent.title_of_invention %></td>
                             <td class="patent-stage col-lg-1"><%- patent.patent_stage %></td>
                             <td class="application-no col-lg-1"><%- patent.application_no %></td>
-                            <td class="is-presenter col-lg-1"><%- patent.author_type %></td>
+                            <td class="is-presenter col-lg-1" data-author-table="<%- patent.author_type?.table %>">
+                                <% if (patent.author_type && patent.author_type.authorName) { %>
+                                    <%- patent.author_type.authorName %>
+                                <% } else { %>
+                                    N/A
+                                <% } %>
+                            </td>
+                            
                             <td class="sdg-goals col-lg-1"><%- patent.sdg_goals %></td>
                             <td class="patent-file col-lg-1"><%- patent.patent_file %></td>
                             <td class="col-lg-1">
@@ -240,7 +247,7 @@
                             <div class="col-lg-1 p-6 w-100 d-none" id="employee-list">
                                 <select id="emp-name" style="width: 200px;"> 
                                     <option value="">select employee name</option>
-                                    <% employeesList.forEach(function(employee) { %>
+                                    <% internalEmpList.forEach(function(employee) { %>
                                         <option value="<%= employee.employee_name %>">
                                            <%= employee.employee_name %>
                                         </option>
@@ -377,7 +384,7 @@
         </div>
     </div>
 </div>
-<div id="employeesListData" data-employees='<%- JSON.stringify(employeesList) %>' style="display: none;"></div>
+<div id="employeesListData" data-employees='<%- JSON.stringify(internalEmpList) %>' style="display: none;"></div>
 <!-- inline script -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tom-select/2.3.1/js/tom-select.complete.min.js" integrity="sha512-zdXqksVc9s0d2eoJGdQ2cEhS4mb62qJueasTG4HjCT9J8f9x5gXCQGSdeilD+C7RqvUi1b4DdD5XaGjJZSlP9Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
@@ -542,6 +549,17 @@
                 const applicationNum = document.getElementById('application-no');
                 const isPresenterYes = document.getElementById('is-internal');
                 const isPresenterNo = document.getElementById('is-external');
+                const tdElement = rowToBeUpdated.querySelector('.is-presenter'); 
+                const authorTable = tdElement.getAttribute('data-author-table');
+                // console.log(authorTable); 
+                // const tableName = rowToBeUpdated.getAttribute('data-author-table');
+                console.log('authorTable ===>>>>>', authorTable)
+                if(authorTable == 'internalEmpList'){
+                    isPresenterYes.checked = true;
+                }
+                else{
+                    isPresenterNo.checked = true;
+                }
 
                 const subMissionDate = rowToBeUpdated.getAttribute('data-patent-date');
                 console.log('patentDate ==>>', subMissionDate)
@@ -564,7 +582,7 @@
                 console.log('facultyText ===>>>>', facultyText.innerText)
                 storedFacultyValue = facultyText.innerText;
                 console.log('storedFacultyValue ====>>>>>', storedFacultyValue);
-                if (rowToBeUpdated.querySelector('.is-presenter').innerText === 'Internal') {
+                if (rowToBeUpdated.querySelector('.is-presenter').innerText === 'internalEmpList') {
                     isPresenterYes.checked = true;
                 } else {
                     isPresenterNo.checked = true;
@@ -669,7 +687,9 @@
         const updatedSdgGoals =  document.getElementById('sdg-goals').value
         const updatedApplicationNum = document.getElementById('application-no').value;
         const updatedSubMissionDate = document.getElementById('date').value;
-        const updatedIs_Presenter = document.querySelector('input[name="is-presenter"]:checked').value;
+        let updatedIs_Presenter = document.querySelector('input[name="is-presenter"]:checked');
+        console.log('updatedIs_Presenter ====>>>>', updatedIs_Presenter.value)
+        
         //function call for set the value of radio button 
 
         const updatedPatentData = new FormData();
@@ -678,10 +698,17 @@
         updatedPatentData.append('typeOfInvention', updatedTypeOfInvention);
         updatedPatentData.append('titleOfInvention', updatedTitleOfInvention);
         updatedPatentData.append('patentStage', updatedPatentStage);
-        updatedPatentData.append('achiveSdg', updatedAchiveSdg);
+        updatedPatentData.append('achiveSdg', updatedSdgGoals);
         updatedPatentData.append('applicationNum', updatedApplicationNum);
         updatedPatentData.append('subMissionDate', updatedSubMissionDate);
-        await updateAuthorType(updatedIs_Presenter, updatedPatentData);
+        if(updatedIs_Presenter){
+            await updateAuthorType(updatedIs_Presenter, updatedPatentData);
+        }
+        else{
+            updatedIs_Presenter = null;
+            updatedPatentData.append('authorName', updatedIs_Presenter)
+        }
+        
         // updatedPatentData.append('isPresentor', updatedIs_Presenter);
         
         // let updatedPatentFileInput = document.querySelector('input[type="file"]');
@@ -825,25 +852,19 @@
     // function for add drop down list or  add new faculty data
    async function enternalFacultyDropDown(authorType, patentData){
         console.log('authorType in side my function ====>>>', authorType);
-        console.log('enternalAuthorValue ====>>>>>', enternalAuthorValue)
-        const enternaltype = document.getElementById('is-internal').value;
-        const externalType = document.getElementById('is-external').value;
-        console.log('presentertype ===>>>', presentertype);
-       if (enternaltype === 'Internal') {
+        console.log('enternalAuthorValue ====>>>>>', enternalAuthorValue);
+
+       const presentertype = authorType.value;
+       console.log('presentertype ===>>>', presentertype);
+       if (presentertype === 'Internal') {
            console.log('storedSelectedValue inside my function ======', enternalAuthorValue);
            externalAuthorValue = '';
            patentData.append('internalAuthors', enternalAuthorValue);
-       }
-       if(presentertype === 'External'){
+       } else {
            console.log('externalAuthorValue inside function ===>>>', externalAuthorValue);
            patentData.append('externalAuthors', externalAuthorValue);
-           enternalAuthorValue = '';
+           enternalAuthorValue = ''; 
        }
-    //  else {
-    //        console.log('externalAuthorValue inside function ===>>>', externalAuthorValue);
-    //        patentData.append('externalAuthors', externalAuthorValue);
-    //        enternalAuthorValue = '';
-    //    }
     }
 
     // fuction for updated faculty type

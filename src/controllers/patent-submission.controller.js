@@ -2,15 +2,106 @@ const patentSubmissionservice = require('../services/patent-submission.service')
 
 
 module.exports.renderPatentSubMissionAndGrant = async(req, res, next) =>{
-   const patentSubmissionList = await patentSubmissionservice.fetchPatentForm();
-   console.log('patentSubmissionList ===>>>', patentSubmissionList.patentSubmissions.rows);
-   console.log('employee List ====>>>', patentSubmissionList.employeesList.rows);
-   if(patentSubmissionList){
+    const patentSubmissionList = await patentSubmissionservice.fetchPatentForm();
+    console.log('patentSubmissionList ===>>>', patentSubmissionList.patentSubmissions.rows);
+    const patentList = patentSubmissionList.patentSubmissions.rows;
+    console.log('employee List ====>>>', patentSubmissionList.internalEmpList.rows);
+    console.log('external emp list ====>>>>>>>', patentSubmissionList.externalEmpList.rows);
+    const internalEmpList = patentSubmissionList.internalEmpList.rows;
+    const  externalEmpList = patentSubmissionList.externalEmpList.rows;
+    console.log('patentList =====>>>>>', patentList)
+    let authorNameArray = [];
+    for (let i = 0; i < patentList.length; i++) {
+         
+        const authorName = patentList[i].author_type;
+        authorNameArray.push(authorName);
+    }
+
+    const resultArray = [];
+    console.log('internalEmpList ===>>>', internalEmpList);
+    for (let i = 0; i <= internalEmpList.length - 1; i++) {
+         
+        const authorName = internalEmpList[i].employee_name;
+        // console.log('authorName ====>>>>', authorName)
+        resultArray.push({ authorName, table: 'internalEmpList' });
+    }
+
+    for (let i = 0; i <= externalEmpList.length - 1; i++) {
+         
+        const authorName = externalEmpList[i].external_emp_name;
+        // console.log('authorName ====>>>>', authorName)
+        resultArray.push({ authorName, table: 'externalEmpList' });
+    }
     
+
+    
+
+
+// for (const name of authorNameArray) {
+//     let foundInInternal = false;
+//     for (const item of internalEmpList) {
+//         if (item.name === name) {
+//             resultArray.push({ name, table: 'internalEmpList' });
+//             foundInInternal = true;
+//             break;
+//         }
+//     }
+//     if (!foundInInternal) {
+//         for (const item of externalEmpList) {
+//             if (item.external_emp_name === name) {
+//                 resultArray.push({ external_emp_name, table: 'externalEmpList' });
+//                 break;
+//             }
+//         }
+//     }
+// }
+
+// console.log('resultArray ======>>>>>', resultArray);
+const uniqueResults = [...new Set(resultArray.map(JSON.stringify))].map(JSON.parse);
+
+// patentList.forEach((patent) => {
+//         uniqueResults.forEach((result) => {
+//       if (patent.authorName === result.authorName) {
+//             const authorName = patent.authorName;
+//         matchedPatentsWithKey.push({authorName, table: result.table });
+//       }
+//     })
+//     });
+const matchedPatentsWithKey = [];
+
+for (const uniqueResult of uniqueResults) {
+    const uniqName = uniqueResult.authorName;
+    const tableName = uniqueResult.table;
+    
+    // Check if uniqName exists in patentList
+    const authorExists = patentList.some(patent => patent.author_type === uniqName);
+    
+    if (authorExists) {
+        const index = patentList.findIndex(patent => patent.author_type === uniqName);
+    if (index !== -1) {
+        patentList[index].author_type = { authorName: uniqName, table: tableName };
+    }
+        matchedPatentsWithKey.push({ authorName: uniqName, table: tableName });
+    }
+}
+
+console.log('patentList =====>>>>>>', patentList)
+
+console.log('matchedPatentsWithKey:', matchedPatentsWithKey);
+
+
+
+
+
+// console.log('uniqueResults unidq array result ====>>>>>', uniqueResults);
+console.log('matchedPatentsWithKey ====>>>>>>>>', matchedPatentsWithKey)
+
+   if(patentSubmissionList){
     res.render('patent-submission', {
         patentList : patentSubmissionList.patentSubmissions.rows,
         rowCount : patentSubmissionList.patentSubmissions.rowCount,
-        employeesList : patentSubmissionList.employeesList.rows
+        internalEmpList : patentSubmissionList.internalEmpList.rows,
+        externalEmpList : patentSubmissionList.externalEmpList.rows
       })
 }
 };

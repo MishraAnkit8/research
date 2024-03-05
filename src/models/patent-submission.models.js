@@ -9,20 +9,27 @@ module.exports.fetchPatentSubMissionForms = async() => {
     let patentSubmissionSql = {
         text: `SELECT * FROM patent_submissions ORDER BY id`
     };
-    let employeeSql = {
+    let internalEmpSql = {
         text: `SELECT * FROM employee_table ORDER BY id`
     };
+    
+    let externalEmpSql = {
+        text: `SELECT * FROM external_emp ORDER BY id`
+    }
 
+    console.log('externalEmpSql ===<>>>>', externalEmpSql);
     console.log('patentSubmissionSql ===>>>', patentSubmissionSql);
-    console.log('employeeSql ===>>>', employeeSql)
+    console.log('internalEmpSql ===>>>', internalEmpSql)
     const patentSubmissionsPromise = researchDbR.query(patentSubmissionSql);
-    const employeesPromise = researchDbR.query(employeeSql);
+    const internalEmpPromise = researchDbR.query(internalEmpSql);
+    const externalEmpPromise = researchDbR.query(externalEmpSql)
 
-    const [patentSubmissionsResult, employeesList] = await Promise.all([patentSubmissionsPromise, employeesPromise]);
+    const [patentSubmissionsResult, internalEmpList, externalEmpList] = await Promise.all([patentSubmissionsPromise, internalEmpPromise, externalEmpPromise]);
 
     return {
         patentSubmissions: patentSubmissionsResult,
-        employeesList: employeesList
+        internalEmpList: internalEmpList,
+        externalEmpList : externalEmpList
     };
 }
 
@@ -75,11 +82,11 @@ module.exports.updatePatentsubmissionData = async(updatedPatentData, patentId, p
     if(patentDataFiles) {
         console.log('filename in models ==>', patentDataFiles )
         console.log('updatedPatentData in models ======>>>>>', updatedPatentData);
-        const {typeOfInvention, titleOfInvention, patentStage, achiveSdg, applicationNum, subMissionDate, isPresentor} = updatedPatentData ;
+        const {typeOfInvention, titleOfInvention, patentStage, updatedSdgGoals, applicationNum, subMissionDate, isPresentor} = updatedPatentData ;
         let sql = {
             text : `UPDATE patent_submissions  SET type_of_invention = $2,  title_of_invention = $3, patent_stage = $4, sdg_goals = $5, 
                   application_no = $6, date = $7, author_type =$8 , patent_file = $9 WHERE id = $1`,
-            values : [patentId , typeOfInvention, titleOfInvention, patentStage, achiveSdg, applicationNum, subMissionDate, isPresentor, patentDataFiles]
+            values : [patentId , typeOfInvention, titleOfInvention, patentStage, updatedSdgGoals, applicationNum, subMissionDate, isPresentor, patentDataFiles]
         
         }
         console.log('Sql ==>>', sql);
