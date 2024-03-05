@@ -3,6 +3,7 @@ const journalPaperService = require('../services/journal-paper.service');
 
 module.exports.renderJournalPaper = async (req, res, next) => {
     const journalList = await journalPaperService.renderJournalPaper();
+    console.log('journalList ====>>>>', journalList.rows)
     
     res.render('journal-paper', {
         journalData : journalList.rows,
@@ -16,10 +17,13 @@ module.exports.createJournalPaper = async (req, res, next) => {
     console.log('data in controller', req.body);
     const journalPaperData = await journalPaperService.insertJournalPapper(req.body) ;
     console.log(" journalPaperData ===>" , journalPaperData);
+    const rowCount = journalPaperData.rowCount;
+    console.log('rowCount ===>>>', rowCount);
     if(journalPaperData && journalPaperData.rows[0].id) {
         res.status(200).send({
             status : 'done',
-            journalPaperId : journalPaperData.rows[0].id
+            journalPaperId : journalPaperData.rows[0].id,
+            rowCount
         });
     }
     else {

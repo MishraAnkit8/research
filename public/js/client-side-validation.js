@@ -163,7 +163,7 @@ function selectElemToBeValidated(validateInputWrapper) {
 }
 
 function toggleErrorState(formGroup, errorMsg, errorElem, isValidElem) {
-    console.group('formGroup =====>>>>>', formGroup)
+    console.log('formGroup =====>>>>>', formGroup)
     console.log('errorElem', errorElem, 'isValid', isValidElem);
     // const labelElement = formGroup.querySelector('label');
     // const inputElement = labelElement.querySelector('input');

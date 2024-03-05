@@ -150,55 +150,55 @@ module.exports.validateJournalPaper = [
     .isInt()
     .withMessage("scs cite score should be integer"),
     
- check("journalDetails.scsIndexed")
+ check("journalDetails.scsIndexedCategory")
     .notEmpty()
-    .withMessage("scs indexed is required")
-    .bail()
-    .isInt()
-    .withMessage("scs indexed should be integer"),
-    
- check("journalDetails.wosIndexed")
-    .notEmpty()
-    .withMessage("wos indexed is required")
-    .bail()
-    .isInt()
-    .withMessage("wos indexed  should be integer"),
-
- check("journalDetails.gsIndexed")
-    .notEmpty()
-    .withMessage("gs indexed is required")
-    .bail()
-    .isInt()
-    .withMessage("gs indexed  should be integer"),
-
- check("journalDetails.abcdIndexed")
-    .notEmpty()
-    .withMessage("abcd indexedis required")
-    .bail()
-    .isInt()
-    .withMessage("abcd indexed should be integer"), 
-
-    check("journalDetails.ugcIndexed")
-    .notEmpty()
-    .withMessage("ugc indexed is required")
-    .bail()
-    .bail()
-    .isInt()
-    .withMessage("ugc indexed should be integer"),
-    
- check("journalDetails.webLink")
-    .notEmpty()
-    .withMessage("webLink is required")
+    .withMessage("scs indexed category is required")
     .bail()
     .isString()
-    .withMessage("webLink  should be string"),
-
- check("journalDetails.uid")
+    .withMessage("scs indexed category should be string"),
+    
+ check("journalDetails.wosIndexedCatgory")
     .notEmpty()
-    .withMessage("uid is required")
+    .withMessage("wos indexed catgory is required")
+    .bail()
+    .isString()
+    .withMessage("wos indexed catgory  should be String"),
+
+ check("journalDetails.foreignAuthors")
+    .notEmpty()
+    .withMessage("foreign authors  is required")
+    .bail()
+    .isString()
+    .withMessage("foreign authors should be String"),
+
+ check("journalDetails.abcdIndexedCategory")
+    .notEmpty()
+    .withMessage("abcd indexed category  required")
+    .bail()
+    .isString()
+    .withMessage("abcd indexed category should be String"), 
+
+    check("journalDetails.ugcIndexedCategory")
+    .notEmpty()
+    .withMessage("ugc indexed category is required")
+    .bail()
+    .bail()
+    .isString()
+    .withMessage("ugc indexed category should be integer"),
+    
+ check("journalDetails.webLinkNumber")
+    .notEmpty()
+    .withMessage("webLinkNumber is required")
+    .bail()
+    .isString()
+    .withMessage("webLinkNumber  should be Number"),
+
+ check("journalDetails.foreignAuthorsNumbers")
+    .notEmpty()
+    .withMessage("foreignAuthorsNumbers is required")
     .bail()
     .isInt()
-    .withMessage("uid should be integer"),
+    .withMessage("foreignAuthorsNumbers should be integer"),
 
   validationHandler, // Handler for validation errors
 ];

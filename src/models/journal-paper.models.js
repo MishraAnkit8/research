@@ -17,15 +17,28 @@ module.exports.fetchJournalPaper = () => {
 
 // for inserting journal paper  data
 module.exports.createJournalPaper = ({journalDetails}) => {
-    console.log('journalDetails in models ==>>', journalDetails)
-    const {year, school, campus, policyCadre, journalCategory, allAuthors, totalAuthors, nmimsAuthors, nmimsAuthorsCount, countOtherFaculty, titleOfPaper, journalName, publisher, pages, issnNo, dateOfPublishing, impactFactor, scsCiteScore, scsIndexed, wosIndexed, gsIndexed, abcdIndexed, ugcIndexed, webLink, uid } = journalDetails ;
+    console.log('journalDetails in models ==>>', journalDetails);
+    const {
+        year, school, campus, policyCadre, journalCategory, allAuthors, totalAuthors, nmimsAuthors,
+        journalName, foreignAuthors, foreignAuthorsNumbers, nmimsAuthorsCount, countOtherFaculty, 
+        titleOfPaper, publisher, pages, issnNo, dateOfPublishing, impactFactor, scsCiteScore, 
+        scsIndexedCategory, wosIndexedCatgory, abdcIndexedCategory, ugcIndexedCategory, webLinkNumber
+    } = journalDetails;
 
     let sql = {
-        text : `INSERT INTO journal_papers (year, school, campus, policy_cadre, journal_category, all_authors,
-              total_authors, nmims_authors, nmims_authors_count, count_other_faculty, title_of_paper, journal_name, publisher, 
-              pages, issn_no, date_of_publishing, impact_factor, scs_cite_score, scs_indexed, wos_indexed, gs_indexed, abdc_indexed, ugc_indexed, web_link, uid)  VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25) RETURNING id ` ,
-
-        values : [year, school, campus, policyCadre, journalCategory, allAuthors, totalAuthors, nmimsAuthors, nmimsAuthorsCount, countOtherFaculty, titleOfPaper, journalName, publisher, pages, issnNo, dateOfPublishing, impactFactor, scsCiteScore, scsIndexed, wosIndexed, gsIndexed, abcdIndexed, ugcIndexed, webLink, uid ]
+        text: `INSERT INTO journal_papers (
+            year, school, campus, policy_cadre, journal_category, all_authors,
+            total_authors, nmims_authors, foreign_authors, numbers_foreign_authors, nmims_authors_count,
+            count_other_faculty, title_of_paper, journal_name, publisher, pages, issn_no,
+            date_of_publishing, impact_factor, scs_cite_score, scs_indexed, wos_indexed,
+            abdc_indexed, ugc_indexed, web_link_doi_number
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25) RETURNING id`,
+        values: [
+            year, school, campus, policyCadre, journalCategory, allAuthors, totalAuthors, nmimsAuthors,
+            foreignAuthors, foreignAuthorsNumbers, nmimsAuthorsCount, countOtherFaculty, titleOfPaper,
+            journalName, publisher, pages, issnNo, dateOfPublishing, impactFactor, scsCiteScore,
+            scsIndexedCategory, wosIndexedCatgory, abdcIndexedCategory, ugcIndexedCategory, webLinkNumber
+        ]
     };
     console.log('sql ==>>', sql)
     return researchDbW.query(sql);
@@ -42,12 +55,31 @@ module.exports.deleteJournalPaper =  async({journalPaperId}) => {
 }
 // for updating 
 module.exports.updateJournalPaperData = async ({journalPaperId, updateJournalDetails}) => {
-    const {year, school, campus, policyCadre, journalCategory, allAuthors, totalAuthors, nmimsAuthors, nmimsAuthorsCount, countOtherFaculty, titleOfPaper, journalName, publisher, pages, issnNo, dateOfPublishing, impactFactor, scsCiteScore, scsIndexed, wosIndexed, gsIndexed, abcdIndexed, ugcIndexed, webLink, uid } = updateJournalDetails;
+        console.log('updateJournalDetails ==== in models ===>>>', )
+    const {
+        year, school, campus, policyCadre, journalCategory, allAuthors, totalAuthors, nmimsAuthors,
+        foreignAuthors, foreignAuthorsNumbers, nmimsAuthorsCount, countOtherFaculty, 
+        titleOfPaper, journalName, publisher, pages, issnNo, dateOfPublishing, impactFactor, scsCiteScore, 
+        scsIndexedCategory, wosIndexedCategory, abdcIndexedCategory, ugcIndexedCategory, webLinkNumber
+    } = updateJournalDetails;
+    
     let sql = {
-         text : ` UPDATE journal_papers SET year = $2, school = $3, campus = $4, policy_cadre = $5, journal_category = $6, all_authors = $7, total_authors = $8, nmims_authors = $9, nmims_authors_count = $10, count_other_faculty = $11, title_of_paper = $12, journal_name = $13, publisher = $14, pages = $15, issn_no = $16, date_of_publishing = $17, impact_factor =  $18, scs_cite_score = $19, scs_indexed = $20, wos_indexed = $21, gs_indexed = $22, abdc_indexed = $23, ugc_indexed = $24, web_link = $25, uid = $26 WHERE id = $1`,
-        values : [journalPaperId, year, school, campus, policyCadre, journalCategory, allAuthors, totalAuthors, nmimsAuthors, nmimsAuthorsCount,  countOtherFaculty, titleOfPaper, journalName, publisher, pages, issnNo, dateOfPublishing, impactFactor, scsCiteScore, scsIndexed, wosIndexed, gsIndexed, abcdIndexed, ugcIndexed, webLink, uid ]
+        text: `UPDATE journal_papers SET
+            year = $2, school = $3, campus = $4, policy_cadre = $5, journal_category = $6, all_authors = $7,
+            total_authors = $8, nmims_authors = $9, foreign_authors = $10, numbers_foreign_authors = $11,
+            nmims_authors_count = $12, count_other_faculty = $13, title_of_paper = $14, journal_name = $15,
+            publisher = $16, pages = $17, issn_no = $18, date_of_publishing = $19, impact_factor = $20,
+            scs_cite_score = $21, scs_indexed = $22, wos_indexed = $23, abdc_indexed = $24, ugc_indexed = $25,
+            web_link_doi_number = $26 WHERE id = $1`,
+        values: [
+            journalPaperId, year, school, campus, policyCadre, journalCategory, allAuthors, totalAuthors, nmimsAuthors,
+            foreignAuthors, foreignAuthorsNumbers, nmimsAuthorsCount, countOtherFaculty, 
+            titleOfPaper, journalName, publisher, pages, issnNo, dateOfPublishing, impactFactor, scsCiteScore, 
+            scsIndexedCategory, wosIndexedCategory, abdcIndexedCategory, ugcIndexedCategory, webLinkNumber
+        ]
     };
-    return researchDbW.query(sql);
+    console.log('sql ====>>>>', sql);
+    return researchDbW.query(sql);    
  
 };
 
@@ -55,11 +87,14 @@ module.exports.updateJournalPaperData = async ({journalPaperId, updateJournalDet
 
 module.exports.viewJournalPaperData = async ({journalPaperId}) => {
     const sql = {
-        text : `SELECT year, school, campus, policy_cadre, journal_category, all_authors,
-        total_authors, nmims_authors, nmims_authors_count, count_other_faculty, title_of_paper, journal_name, publisher, 
-        pages, issn_no, TO_CHAR(date_of_publishing, 'DD-MM-YYYY') as date_of_publishing, impact_factor, scs_cite_score, scs_indexed, wos_indexed, gs_indexed, abdc_indexed, ugc_indexed, web_link, uid FROM journal_papers WHERE id = $1 `,
+        text : `SELECT  year, school, campus, policy_cadre, journal_category, all_authors,
+        total_authors, nmims_authors, foreign_authors, numbers_foreign_authors, nmims_authors_count,
+        count_other_faculty, title_of_paper, journal_name, publisher, pages, issn_no,
+        TO_CHAR(date_of_publishing, 'DD-MM-YYYY'), impact_factor, scs_cite_score, scs_indexed, wos_indexed,
+        abdc_indexed, ugc_indexed, web_link_doi_number FROM journal_papers WHERE id = $1 `,
         values : [journalPaperId]
     }
     console.log('sql ==>>', sql)
     return researchDbR.query(sql);
+   
 }
