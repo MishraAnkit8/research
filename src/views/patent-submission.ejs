@@ -25,7 +25,7 @@
                 <li class="breadcrumb-link">PATENT SUBMISSION</li>
             </ul>
         </div>
-        <div >
+        <div>
             <div class="table-card-header text-uppercase d-flex align-items-center justify-content-between">
                 <div>
                     <h5 class="pl-2">PATENT SUBMISSION LIST</h5>
@@ -78,13 +78,14 @@
                         <th class="col-lg-1">Action</th>
                     </thead>
                     <% patentList.forEach(function(patent,index) {%>
-                        <tr data-patent-id="<%- patent.id %>" data-patent-date="<%- patent.date %>">
+                        <tr data-patent-id="<%- patent.id %>" data-patent-date="<%- patent.date %>"  data-author-type="<%- patent.author_type ? patent.author_type.authorName : '' %>"
+                            data-author-table="<%- patent.author_type ? patent.author_type.table : '' %>">
                             <td ><%- index+1 %></td>
                             <td class="type-of-invention col-lg-1"><%- patent.type_of_invention %></td>
                             <td class="title-of-invention col-lg-1"><%- patent.title_of_invention %></td>
                             <td class="patent-stage col-lg-1"><%- patent.patent_stage %></td>
                             <td class="application-no col-lg-1"><%- patent.application_no %></td>
-                            <td class="is-presenter col-lg-1" data-author-table="<%- patent.author_type?.table %>">
+                            <td class="is-presenter col-lg-1">
                                 <% if (patent.author_type && patent.author_type.authorName) { %>
                                     <%- patent.author_type.authorName %>
                                 <% } else { %>
@@ -384,10 +385,9 @@
         </div>
     </div>
 </div>
-<div id="employeesListData" data-employees='<%- JSON.stringify(internalEmpList) %>' style="display: none;"></div>
+<div id="employees-list-data" data-employees='<%- JSON.stringify(internalEmpList) %>' style="display: none;"></div>
 <!-- inline script -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tom-select/2.3.1/js/tom-select.complete.min.js" integrity="sha512-zdXqksVc9s0d2eoJGdQ2cEhS4mb62qJueasTG4HjCT9J8f9x5gXCQGSdeilD+C7RqvUi1b4DdD5XaGjJZSlP9Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
 <script>
     //   for index icrement
     const rowCount = document.getElementById('row-count');
@@ -471,10 +471,6 @@
         
         const authorType = document.querySelector('input[name="author-type"]:checked');
         await enternalFacultyDropDown(authorType, patentData);
-        // await setExternalValue(selectIsPresentor, patentData);
-        // console.log('selectIsPresentor ====>>>', selectIsPresentor);
-        // patentData.append('isPresentor', selectIsPresentor);
-
         fetch(url, {
             method: 'POST',
             body: patentData
@@ -547,19 +543,19 @@
                 const patentStage = document.getElementById('patent-stage');
                 const sdgGoals = document.getElementById('sdg-goals');
                 const applicationNum = document.getElementById('application-no');
-                const isPresenterYes = document.getElementById('is-internal');
-                const isPresenterNo = document.getElementById('is-external');
-                const tdElement = rowToBeUpdated.querySelector('.is-presenter'); 
-                const authorTable = tdElement.getAttribute('data-author-table');
-                // console.log(authorTable); 
-                // const tableName = rowToBeUpdated.getAttribute('data-author-table');
-                console.log('authorTable ===>>>>>', authorTable)
-                if(authorTable == 'internalEmpList'){
-                    isPresenterYes.checked = true;
+                const internalAuthor = document.getElementById('is-internal');
+                const externalAuthor = document.getElementById('is-external');
+                const authorName = rowToBeUpdated.getAttribute('data-author-type');
+                const authorTable = rowToBeUpdated.getAttribute('data-author-table');
+                console.log('authorTable ====>>>', authorTable)
+                console.log('authorType ====>>>', authorName)
+                if (authorTable === 'internalEmpList') {
+                    internalAuthor.checked = true;
                 }
-                else{
-                    isPresenterNo.checked = true;
+                else {
+                    externalAuthor.checked = true;
                 }
+               
 
                 const subMissionDate = rowToBeUpdated.getAttribute('data-patent-date');
                 console.log('patentDate ==>>', subMissionDate)
@@ -573,7 +569,7 @@
                 console.log('sdgGoals ====>>>', sdgGoals.value);
                 const patentfile = rowToBeUpdated.querySelector('.patent-file');
                 const supportingDocuments = patentfile.innerText.trim();
-                console.log('supportingDocuments ==>>', supportingDocuments)
+                console.log('supportingDocuments ==>>', supportingDocuments);
                 
                 applicationNum.value = rowToBeUpdated.querySelector('.application-no').innerText;
                 date.value = formattedDate;
@@ -582,11 +578,7 @@
                 console.log('facultyText ===>>>>', facultyText.innerText)
                 storedFacultyValue = facultyText.innerText;
                 console.log('storedFacultyValue ====>>>>>', storedFacultyValue);
-                if (rowToBeUpdated.querySelector('.is-presenter').innerText === 'internalEmpList') {
-                    isPresenterYes.checked = true;
-                } else {
-                    isPresenterNo.checked = true;
-                }
+               
 
                 $('#patent-submission-modal').modal('show');
                 // // for file and image view and download
@@ -687,43 +679,25 @@
         const updatedSdgGoals =  document.getElementById('sdg-goals').value
         const updatedApplicationNum = document.getElementById('application-no').value;
         const updatedSubMissionDate = document.getElementById('date').value;
-        let updatedIs_Presenter = document.querySelector('input[name="is-presenter"]:checked');
-        console.log('updatedIs_Presenter ====>>>>', updatedIs_Presenter.value)
+        const updatedAuthorType = document.querySelector('input[name="author-type"]:checked')
         
-        //function call for set the value of radio button 
-
         const updatedPatentData = new FormData();
         // Append the updated values to FormData
         updatedPatentData.append('patentId' , patentId) ;
         updatedPatentData.append('typeOfInvention', updatedTypeOfInvention);
         updatedPatentData.append('titleOfInvention', updatedTitleOfInvention);
         updatedPatentData.append('patentStage', updatedPatentStage);
-        updatedPatentData.append('achiveSdg', updatedSdgGoals);
+        updatedPatentData.append('sdgGoals', updatedSdgGoals);
         updatedPatentData.append('applicationNum', updatedApplicationNum);
         updatedPatentData.append('subMissionDate', updatedSubMissionDate);
-        if(updatedIs_Presenter){
-            await updateAuthorType(updatedIs_Presenter, updatedPatentData);
-        }
-        else{
-            updatedIs_Presenter = null;
-            updatedPatentData.append('authorName', updatedIs_Presenter)
-        }
-        
-        // updatedPatentData.append('isPresentor', updatedIs_Presenter);
-        
-        // let updatedPatentFileInput = document.querySelector('input[type="file"]');
-        // if (updatedPatentFileInput.files.length > 0) {
-        //     updatedPatentData.append('patentFile', updatedPatentFileInput.files[0]);
-        // }
-        // else{
-        //     updatedPatentFileInput = null;
-        //     updatedPatentData.append('patentFile', updatedPatentFileInput);
-        // }
+        //function call for set the value of radio button 
+        await updateAuthorType(updatedAuthorType, updatedPatentData, storedFacultyValue);
 
         const updatedPatentFiles = document.getElementById('patent-file');
         // patentFile
-        console.log('updatedPatentFiles ==>>', updatedPatentFiles)
+        console.log('updatedPatentFiles ==>>', updatedPatentFiles);
         const updatedPatentFilesData = updatedPatentFiles.files;
+        console.log('updatedPatentFilesData ======>>>>', updatedPatentFilesData);
         if (updatedPatentFilesData) {
             console.log('files data ===>>>', updatedPatentFilesData)
             for (let i = 0; i < updatedPatentFilesData.length; i++) {
@@ -751,7 +725,7 @@
                 console.log('updated data title ===>', data.updatedPatentData.typeOfInvention);
                 rowToBeUpdated.querySelector('.title-of-invention').innerText = data.updatedPatentData.titleOfInvention;
                 rowToBeUpdated.querySelector('.type-of-invention').innerText = data.updatedPatentData.typeOfInvention;
-                rowToBeUpdated.querySelector('.sdg-goals').innerText = data.updatedPatentData.achiveSdg;
+                rowToBeUpdated.querySelector('.sdg-goals').innerText = data.updatedPatentData.sdgGoals;
                 rowToBeUpdated.querySelector('.application-no').innerText = data.updatedPatentData.applicationNum;
                 rowToBeUpdated.querySelector('.patent-stage').innerText = data.updatedPatentData.patentStage;
                 rowToBeUpdated.setAttribute('data-patent-date' , data.updatedPatentData.subMissionDate);
@@ -847,46 +821,6 @@
             patentDataFiles.setAttribute('data-filename', patentDataString);
 
         };
-   
-
-    // function for add drop down list or  add new faculty data
-   async function enternalFacultyDropDown(authorType, patentData){
-        console.log('authorType in side my function ====>>>', authorType);
-        console.log('enternalAuthorValue ====>>>>>', enternalAuthorValue);
-
-       const presentertype = authorType.value;
-       console.log('presentertype ===>>>', presentertype);
-       if (presentertype === 'Internal') {
-           console.log('storedSelectedValue inside my function ======', enternalAuthorValue);
-           externalAuthorValue = '';
-           patentData.append('internalAuthors', enternalAuthorValue);
-       } else {
-           console.log('externalAuthorValue inside function ===>>>', externalAuthorValue);
-           patentData.append('externalAuthors', externalAuthorValue);
-           enternalAuthorValue = ''; 
-       }
-    }
-
-    // fuction for updated faculty type
-    async function updateAuthorType(updatedIs_Presenter, updatedPatentData){
-
-        console.log('updatedIs_Presenter in side my function ====>>>', updatedIs_Presenter);
-        // const authorType = updatedIs_Presenter.value;
-        // console.log('authorType ===>>>', authorType);
-        ('storedFacultyValue ===>>>', storedFacultyValue)
-        console.log('updatedIs_Presenter ====>>>', updatedIs_Presenter);
-        if (!externalAuthorValue && !enternalAuthorValue) {
-            updatedPatentData.append('authorName', storedFacultyValue);
-        } else if (updatedIs_Presenter === 'Internal') {
-            console.log('storedSelectedValue inside my function =>', enternalAuthorValue);
-            externalAuthorValue = '';
-            updatedPatentData.append('internalAuthors', enternalAuthorValue);
-        } else {
-            console.log('externalAuthorValue inside function ===>>>', externalAuthorValue);
-            updatedPatentData.append('externalAuthors', externalAuthorValue);
-            enternalAuthorValue = '';
-        }
-    }
 
     // EVENT LIST THAT WILL USE USE TO OPEN DROP DOWN LIST  
     const externaltype = document.querySelector('.external-faculty');
@@ -906,19 +840,56 @@
 
     })
     //making d-none internal faculty
-    externalFacultyType.addEventListener('click' , (event => {
-        console.log('clciked ====');
-        employeeList.classList.add('d-none');
-        authorDetails.classList.remove('d-none');
-    }))
+    externalFacultyType.addEventListener('click', (event => {
+            console.log('clciked ====');
+            employeeList.classList.add('d-none');
+            authorDetails.classList.remove('d-none');
+        }))
+
+
+    // function for add drop down list or  add new faculty data
+    async function enternalFacultyDropDown(authorType, patentData) {
+            console.log('authorType in side my function ====>>>', authorType);
+            console.log('enternalAuthorValue ====>>>>>', enternalAuthorValue);
+
+            const presentertype = authorType.value;
+            console.log('presentertype ===>>>', presentertype);
+            if (presentertype === 'Internal') {
+                console.log('storedSelectedValue inside my function ======', enternalAuthorValue);
+                externalAuthorValue = '';
+                patentData.append('internalAuthors', enternalAuthorValue);
+            } else {
+                console.log('externalAuthorValue inside function ===>>>', externalAuthorValue);
+                patentData.append('externalAuthors', externalAuthorValue);
+                enternalAuthorValue = '';
+            }
+        }
+
+    // fuction for updated faculty type
+    async function updateAuthorType(updatedAuthorType, updatedPatentData, storedFacultyValue) {
+            console.log('storedFacultyValue in side update function ===>>>', storedFacultyValue)
+            // console.log('updatedAuthorType ====>>>', updatedAuthorType.value);
+            if (!externalAuthorValue && !enternalAuthorValue) {
+                updatedPatentData.append('authorName', storedFacultyValue);
+            } else if (updatedAuthorType.value === 'Internal') {
+                console.log('storedSelectedValue inside my function =>', enternalAuthorValue);
+                externalAuthorValue = '';
+                updatedPatentData.append('internalAuthors', enternalAuthorValue);
+            } else {
+                console.log('externalAuthorValue inside function ===>>>', externalAuthorValue);
+                updatedPatentData.append('externalAuthors', externalAuthorValue);
+                enternalAuthorValue = '';
+            }
+
+        }
 
     // employeesListData data came from backend
-    const employeesListData = document.getElementById('employeesListData').dataset.employees;
+    const employeesListData = document.getElementById('employees-list-data').dataset.employees;
     const employeesDataObj = JSON.parse(employeesListData);
     let employeeListArray = [];
 
    
-    console.log(employeesDataObj);
+    // console.log(employeesDataObj);
     // ajax for search bar to search employee name 
     new TomSelect("#emp-name");
   
@@ -931,8 +902,6 @@
     });
 
 
-
-    
     const addMoreDetailsButton = document.getElementById("add-more-details");
     let authorName
     let storedSelectedValue;
@@ -948,75 +917,9 @@
         console.log('authorNameInput ===>>>>', authorNameInput.value)
         externalAuthorValue = authorNameInput.value;
         console.log('storedSelectedValue inside external listner ===>>>', externalAuthorValue);
-       
-
      
     })
 
-
-
-
-    // // Event listener for "Add More Details" button
-    // addMoreDetailsButton.addEventListener("click", function () {
-    //     // Create a new section for additional details
-    //     const newDetailsSection = document.createElement("div");
-    //     newDetailsSection.classList.add("author-details-section");
-
-    //     // Add a label and input field for the new detail
-    //     const label = document.createElement("label");
-    //     label.textContent = "Additional Detail:";
-    //     newDetailsSection.appendChild(label);
-
-    //     const inputField = document.createElement("input");
-    //     inputField.type = "text";
-    //     inputField.placeholder = "Enter additional detail";
-    //     newDetailsSection.appendChild(inputField);
-
-    //     // Append the new section to the author details container
-    //     const authorDetailsContainer = document.getElementById("author-details");
-    //     authorDetailsContainer.appendChild(newDetailsSection);
-
-    //     // Add a button to remove the newly added section
-    //     const removeButton = document.createElement("button");
-    //     removeButton.classList.add("btn-danger")
-    //     removeButton.textContent = "Remove";
-    //     removeButton.classList.add("remove-details-button");
-    //     newDetailsSection.appendChild(removeButton);
-
-    //     // Event listener for the "Remove" button
-    //     removeButton.addEventListener("click", function () {
-    //         // Remove the clicked section from the DOM and update the `additionalDetails` array
-    //         authorDetailsContainer.removeChild(this.parentElement);
-    //         const index = additionalDetails.findIndex(
-    //             (detail) => detail.label === this.previousSibling.textContent
-    //         );
-    //         additionalDetails.splice(index, 1);
-    //     });
-
-    //     // Update the `additionalDetails` array with the newly added detail
-    //     additionalDetails.push({
-    //         label: "Additional Detail:",
-    //         value: inputField.value, // Initially empty, user will fill it
-    //     });
-    // });
-
-    //         // Function to get all author details (including name and additional details)
-    //         function getAuthorDetails() {
-    //             const authorName = authorNameInput.value;
-    //             const details = {
-    //                 name: authorName,
-    //                 additionalDetails: additionalDetails,
-    //             };
-    //             return details;
-    //         }
-
-
-
-
-   
-
-
-    
 
 </script>
 <!-- footer section -->

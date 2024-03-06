@@ -50,43 +50,43 @@ module.exports.insertPatentData = async(patentData, patentDataBaseFiles) => {
         values : [typeOfInvention, titleOfInvention, patentStage, sdgGoals, applicationNum, subMissionDate, authorName, patentDataBaseFiles]
     }
    
-    if(externalEmpName){
-        let externalEmpSql = {
-            text : `INSERT INTO external_emp(external_emp_name) VALUES ($1) RETURNING id`,
-            values : [externalEmpName]
-        }
-        console.log('externalEmpSql ===>>>', externalEmpSql)
-        console.log('patentDataSql ==>>', patentDataSql);
-        const externalEmpTable = researchDbW.query(externalEmpSql);
-        const patentSubmissionTable = researchDbW.query(patentDataSql);
-        const [patentTable, externalEmp] = await Promise.all([patentSubmissionTable, externalEmpTable]);
-        return {
-            externalEmp : externalEmp,
-            patentTable : patentTable
-            
-        }
-    }
-
-    else{
-        console.log('patentDataSql ==>>', patentDataSql);
-        const patentSubmissionTable = await researchDbW.query(patentDataSql);
-        return {
-            patentTable : patentSubmissionTable
-        }
+    if (externalEmpName) {
+      let externalEmpSql = {
+        text: `INSERT INTO external_emp(external_emp_name) VALUES ($1) RETURNING id`,
+        values: [externalEmpName],
+      };
+    console.log("externalEmpSql ===>>>", externalEmpSql);
+    console.log("patentDataSql ==>>", patentDataSql);
+    const externalEmpTable = researchDbW.query(externalEmpSql);
+    const patentSubmissionTable = researchDbW.query(patentDataSql);
+    const [patentTable, externalEmp] = await Promise.all([patentSubmissionTable, externalEmpTable]);
+    return {
+        externalEmp: externalEmp,
+        patentTable: patentTable,
+      };
+    } else {
+      console.log("patentDataSql ==>>", patentDataSql);
+      const patentSubmissionTable = await researchDbW.query(patentDataSql);
+      return {
+        patentTable: patentSubmissionTable,
+      };
     }
   
 
 }
 
 module.exports.updatePatentsubmissionData = async(updatedPatentData, patentId, patentDataFiles) => {
+    const internalAuthors = updatedPatentData.internalAuthors;
+    const externalAuthors = updatedPatentData.externalAuthors;
+    const authorName = !internalAuthors && !externalAuthors ? updatedPatentData.authorName : internalAuthors ?? externalAuthors;
     if(patentDataFiles) {
         console.log('filename in models ==>', patentDataFiles )
         console.log('updatedPatentData in models ======>>>>>', updatedPatentData);
-        const {typeOfInvention, titleOfInvention, patentStage, updatedSdgGoals, applicationNum, subMissionDate, isPresentor} = updatedPatentData ;
+        const {typeOfInvention, titleOfInvention, patentStage, sdgGoals, applicationNum, subMissionDate} = updatedPatentData ;
         let sql = {
             text : `UPDATE patent_submissions  SET type_of_invention = $2,  title_of_invention = $3, patent_stage = $4, sdg_goals = $5, 
                   application_no = $6, date = $7, author_type =$8 , patent_file = $9 WHERE id = $1`,
-            values : [patentId , typeOfInvention, titleOfInvention, patentStage, updatedSdgGoals, applicationNum, subMissionDate, isPresentor, patentDataFiles]
+            values : [patentId , typeOfInvention, titleOfInvention, patentStage, sdgGoals, applicationNum, subMissionDate, authorName, patentDataFiles]
         
         }
         console.log('Sql ==>>', sql);
@@ -94,16 +94,11 @@ module.exports.updatePatentsubmissionData = async(updatedPatentData, patentId, p
     }
     else{
         console.log('updatedPatentData in models ======>>>>>', updatedPatentData);
-        const internalAuthors = updatedPatentData.internalAuthors;
-        const externalAuthors = updatedPatentData.externalAuthors;
-        const authorName = !internalAuthors && !externalAuthors ? updatedPatentData.authorName : internalAuthors ?? externalAuthors;
-
-
         const {typeOfInvention, titleOfInvention, patentStage, sdgGoals, applicationNum, subMissionDate} = updatedPatentData 
         let patentSql = {
             text : `UPDATE patent_submissions  SET type_of_invention = $2,  title_of_invention = $3, patent_stage = $4, sdg_goals = $5, 
                   application_no = $6, date = $7, author_type =$8 WHERE id = $1`,
-            values : [patentId , typeOfInvention, titleOfInvention, patentStage, sdgGoals, applicationNum, subMissionDate, authorName]
+            values : [patentId, typeOfInvention, titleOfInvention, patentStage, sdgGoals, applicationNum, subMissionDate, authorName]
         
         }
         console.log('patentSql ==>>', patentSql);

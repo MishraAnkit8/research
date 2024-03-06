@@ -5,13 +5,57 @@ const path = require('path');
 module.exports.renderResearchProjectConsultancy = async(req, res, next) => {
 
     const researchcConsultancyData = await researchConsultancyService.fetchResearConsultacyData();
-    if(researchcConsultancyData){
-        res.render('research-project-consultancy' , {
-            reseachConsultancyDataList : researchcConsultancyData.rows,
-            rowCount : researchcConsultancyData.rowCount
-        })
+    // Destructuring for easier access
+    const { researchConsultancyList, internalEmpList, externalEmpList } = researchcConsultancyData;
+
+    // Logging for debugging
+    console.log('researchcConsultancyData ===>>>', researchConsultancyList.rows);
+    console.log('employee List ====>>>', internalEmpList.rows);
+    console.log('external emp list ====>>>>>>>', externalEmpList.rows);
+
+    // Extract author names from patentList
+    const authorNameArray = researchConsultancyList.rows.map(research => research.faculty_type);
+
+    // Consolidate internal and external employee lists with additional info
+    const resultArray = [
+        ...internalEmpList.rows.map(emp => ({ authorName: emp.employee_name, table: 'internalEmpList' })),
+        ...externalEmpList.rows.map(emp => ({ authorName: emp.external_emp_name, table: 'externalEmpList' }))
+    ];
+
+
+    // Deduplicate resultArray while preserving object structure
+    const uniqueResults = Array.from(new Set(resultArray.map(JSON.stringify))).map(JSON.parse);
+
+    // Match unique results with patents and modify faculty_type with matched info
+    const matchedPatentsWithKey = uniqueResults.filter(uniqueResult => {
+        const authorExists = researchConsultancyList.rows.some(patent => patent.faculty_type === uniqueResult.authorName);
+        if (authorExists) {
+            const index = researchConsultancyList.rows.findIndex(patent => patent.faculty_type === uniqueResult.authorName);
+            if (index !== -1) {
+                researchConsultancyList.rows[index].faculty_type = { authorName: uniqueResult.authorName, table: uniqueResult.table };
+            }
+            return true;
+        }
+        return false;
+    });
+
+    // Final logging
+    console.log('researchConsultancyList =====>>>>>>', researchConsultancyList.rows);
+    // console.log('matchedPatentsWithKey ====>>>>>>>>', matchedPatentsWithKey);
+    // console.log('rowCount ===>>>>', researchConsultancyList.rowCount)
+    // console.log('internalEmpList.rows ===>>>', internalEmpList.rows);
+  
+
+    // Render view with structured data
+    if (researchcConsultancyData) {
+        res.render('research-project-consultancy', {
+            reseachConsultancyDataList: researchConsultancyList.rows,
+            rowCount: researchConsultancyList.rowCount,
+            internalEmpList: internalEmpList.rows,
+            externalEmpList: externalEmpList.rows,
+            rowCount : researchConsultancyList.rowCount
+        });
     }
-    
 }
 
 module.exports.insertResearchConsultancyData = async(req, res, next) => {
@@ -21,23 +65,35 @@ module.exports.insertResearchConsultancyData = async(req, res, next) => {
     // console.log('file name ', filename);
     console.log('files in controllerr ==>>>', req.files);
     const researchConsultancyData = await researchConsultancyService.insertResearchConsultancyData(req.body, req.files);
-    console.log('consultantId',researchConsultancyData.consultantId)
+    console.log('consultantId in controller ===>>>>.',researchConsultancyData.consultantId);
+    const authorName = researchConsultancyData.authorName;
     const consultancyFileName = researchConsultancyData.consultancyDataFiles;
-    if(researchConsultancyData){
+
+    if(researchConsultancyData && researchConsultancyData.consultantId && authorName && consultancyFileName){
         res.status(200).send({
-            status : 'done',
-            massage : 'data inserted successfully',
+            status : 'Done',
+            massage : 'Data Inserted Successfully',
             consultancyFileName,
             consultantId : researchConsultancyData.consultantId,
-            researchConsultantData : researchConsultantData
-
+            researchConsultantData : researchConsultantData,
+            authorName
         })
+    }
+    else{
+        res.status(500).send({
+            status : 'Failed',
+            massage : 'Internal Server Error',
+        })
+
     }
 
 }
 
 module.exports.updatedConsultantData = async(req, res, next) => {
     console.log('data comming from templates ==>>', req.body);
+    const updatedConsultantData = req.body;
+    const authorName = !updatedConsultantData.internalAuthors && !updatedConsultantData.externalAuthors ? updatedConsultantData.authorName : updatedConsultantData.internalAuthors ?? updatedConsultantData.externalAuthors;
+
     if(req.files){
         console.log(' updated file name ==>', req.files);
         const consultantId = req.body.consultantId
@@ -50,7 +106,8 @@ module.exports.updatedConsultantData = async(req, res, next) => {
                 status : 'done',
                 massage : 'updated successfully',
                 updatedConsultant,
-                updatedConsultantFilesString
+                updatedConsultantFilesString,
+                authorName
             })
         }
     }

@@ -2,12 +2,18 @@ const researchCunsultancyModel = require('../models/research-consultancy.models'
 
 module.exports.fetchResearConsultacyData = async() => {
     const researchConsultancyData = await researchCunsultancyModel.fetchResearchConsultancy();
-    console.log('researchConsultancyData', researchConsultancyData.rows[0]);
+    // console.log('researchConsultancyData', researchConsultancyData.rows[0]);
     return researchConsultancyData
 }
 
 module.exports.insertResearchConsultancyData = async(body , files) => {
     const researchCunsultancyData = body
+    const externalAuthors = body.externalAuthors;
+    const internalAuthors = body.internalAuthors;
+    console.log('internalAuthors ====>>>>>', internalAuthors)
+    const authorName = externalAuthors ?? internalAuthors
+    console.log('authorName ====>>>>', authorName)
+    console.log('externalAuthors ====>>>>>', externalAuthors);
     console.log('files in service ===>>>', files);
     var consultancyDataFiles = '';
     for (let i = 0; i <= files.length - 1; i++){
@@ -16,13 +22,16 @@ module.exports.insertResearchConsultancyData = async(body , files) => {
           }
     }
     console.log('consultancyDataFiles ===>>>>', consultancyDataFiles)
-    const researchProjectConsultancy = await researchCunsultancyModel.insertResearhcProjectConstancyData(researchCunsultancyData , consultancyDataFiles)
-    if(researchProjectConsultancy && researchProjectConsultancy.rows[0].id) {
+    const researchProjectConsultancy = await researchCunsultancyModel.insertResearhcProjectConstancyData(researchCunsultancyData , consultancyDataFiles);
+    const consultantId = researchProjectConsultancy.researchConTable.rows[0];
+    console.log('consultantId ===>>>>', consultantId);
+    if(researchProjectConsultancy) {
         return {
             status : 'done',
-            consultantId : researchProjectConsultancy.rows[0].id,
+            consultantId,
             massage : 'data inserted successfully',
-            consultancyDataFiles
+            consultancyDataFiles,
+            authorName
         }
     }
 }

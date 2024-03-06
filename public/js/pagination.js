@@ -127,11 +127,9 @@ function initializePagination() {
 
 
   const searchEmpName = document.getElementById('search-employee-name');
-  console.log('searchEmpName ===>>>>', searchEmpName);
+  // console.log('searchEmpName ===>>>>', searchEmpName);
 
-
-
-    //  this is function call that enables pagination  logic
+  //  this is function call that enables pagination  logic
   
     initializePagination();
   

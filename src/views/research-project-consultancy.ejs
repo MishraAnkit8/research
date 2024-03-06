@@ -18,7 +18,7 @@
                 <li class="breadcrumb-link">RESEARCH PROJECT CONSULTANCY</li>
             </ul>
         </div>
-        <div >
+        <div>
             <div class="table-card-header text-uppercase d-flex align-items-center justify-content-between">
                 <div>
                     <h5 class="pl-2">RESEARCH PROJECT CONSULTANCY</h5>
@@ -68,13 +68,14 @@
                         <th class="col-lg-1"> Project Status</th>
                         <th class="col-lg-1">Action</th>
                     </thead>
-                    <% reseachConsultancyDataList.forEach(function(consultancy,index) { %>
+                    <% reseachConsultancyDataList.forEach(function(consultancy, index) { %>
                         <tr scope="row" data-consultancy-id="<%- consultancy.id %>" data-grant-type="<%- consultancy.type_of_grant %>"
                             data-grant-proposal="<%- consultancy.grant_proposal_category %>"
                             data-submission-date="<%- consultancy.submission_grant_date.toISOString().split('T')[0] %>"
-                            data-faulty-type="<%- consultancy.faculty_type %>"
+                            data-author-type="<%- consultancy.faculty_type ? consultancy.faculty_type.authorName : '' %>"
+                            data-author-table="<%- consultancy.faculty_type ? consultancy.faculty_type.table : '' %>"
                             data-supporting-documents="<%- consultancy.supporting_documents %>">
-                            <td><%- index+1 %></td>
+                            <td><%- index + 1 %></td>
                             <td class="title-of-project col-lg-1"><%- consultancy.title_of_project %> </td>
                             <td class="thurst-area col-lg-1"><%- consultancy.thrust_area_of_research %></td>
                             <td class="funding-agency col-lg-1"><%- consultancy.name_of_funding_agency %></td>
@@ -91,22 +92,23 @@
                                         data-consultancy-id="<%- consultancy.id %>"></i></label>
                             </td>
                         </tr>
-                
-                        <% }); %>
+                    <% }); %>                    
                 </table>
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <label> Total entries: <%- rowCount %> </label>
-                        <label class="d-none" id="row-count"> <%- rowCount %> </label>
-                    </div>
-                    <div>
-                        <button id="prevBtn" class="btn btn-primary">Previous</button>
-                        <button id="nextBtn" class="btn btn-primary">Next</button>
-                        <p id="pagination" class="pagination-search"></p>
-                    </div>
-                </div>
             </div>
         </div>
+        <div class="d-flex justify-content-between">
+            <div>
+                <label >Total entries : <%- rowCount %>
+                </label>
+                <label class="d-none" id="row-count"> <%- rowCount %></label>
+            </div>
+            <div>
+                <button id="prevBtn" class="btn btn-primary">Previous</button>
+                <button id="nextBtn" class="btn btn-primary">Next</button>
+                <p id="pagination" class="pagination-search"></p>
+            </div>
+        </div>
+          
         <!--Import Modal -->
         <div class="modal fade" id="open-program-modal" tabindex="-1" aria-labelledby="open-program-modal"
             aria-hidden="true">
@@ -253,20 +255,40 @@
                     </div>
                     <!-- if faculty choose internal Authors then show search bar -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="faculty-type" class="form-label fw-bold mb-3">Faculty Type</label><br>
+                        <label for="is-presenter" class="form-label fw-bold mb-3">Faculty type</label><br>
                         <div class="form-check-inline">
-                            <label for="Internal" class="form-check-label">
-                                <input type="radio" class="form-check-input" id="internal" name="faculty-type"
-                                    value="Internal" checked> Internal
+                            <label for="internal" class="form-check-label enter-faculty-type">
+                                <input type="radio" class="form-check-input enternal-type" name="author-type" id="is-internal" value="Internal">
+                               <span id="enternal-text">Internal</span>
                             </label>
+                            <div class="col-lg-1 p-6 w-100 d-none" id="employee-list">
+                                <select id="emp-name" style="width: 200px;"> 
+                                    <option value="">select employee name</option>
+                                    <% internalEmpList.forEach(function(employee) { %>
+                                        <option value="<%= employee.employee_name %>">
+                                           <%= employee.employee_name %>
+                                        </option>
+                                    <% }); %>
+                                </select>
+                            </div>
                         </div>
                         <div class="form-check-inline">
-                            <label for="External" class="form-check-label">
-                                <input type="radio" class="form-check-input" id="external" name="faculty-type"
-                                    value="External"> External
+                            <label for="is-external"   class="form-check-label external-faculty">
+                                <input type="radio" class="form-check-input" id="is-external" name="author-type" value="External" >
+                                <span id="external-text">External</span>
                             </label>
+                            
                         </div>
                     </div>
+                    <div id="author-details" class="form-group col-lg-6 col-md-8 col-sm-12 mb-4 d-none">
+                        <div class="author-details-section col-lg-6 col-md-8 col-sm-12">
+                          <label for="author-name " class="form-label fw-bold">Author Name:</label>
+                          <input type="text" id="author-name" class="col-md-12 form-control" placeholder="Enter author name">
+                          <button id="add-more-details" class="btn col-md-12 btn-md btn-primary" type="button">Add More Details</button>
+                        </div>
+                      
+                    </div>
+
                     <!-- Upload Supporting Documents-->
                     <div class="form-group col-lg-6 col-md-8 col-sm-12 mb-4">
                         <div class="col-lg-6 col-md-8 col-sm-12">
@@ -275,14 +297,11 @@
                             </label>
                             <div class="d-flex">
                                 <input type="file" name="researchSupportingDocument" id="supporting-documents"
-                                data-validate="isEmpty,isExist,isFile" data-err-msg="File is required."
-                                class="col-md-12 form-control" required multiple>
-                                <button class="download-btn download-file" id="consultancy-file-edit"><i class="fas fa-download text-danger"></i></button>
+                                    data-validate="isEmpty,isExist,isFile" data-err-msg="File is required." class="col-md-12 form-control"
+                                    required multiple>
+                                <button class="download-btn download-file" id="consultancy-file-edit"><i
+                                        class="fas fa-download text-danger"></i></button>
                             </div>
-                        </div>
-                    </div>
-                    <div class="form-group col-lg-6 col-md-2 col-sm-12 mb-4">
-                        <div id="file-view" class="h-10 w-10">
                         </div>
                     </div>
                 </div>
@@ -389,6 +408,10 @@
         </div>
     </div>
 </div>
+
+<div id="employees-list-data" data-employees='<%- JSON.stringify(internalEmpList) %>' style="display: none;"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tom-select/2.3.1/js/tom-select.complete.min.js" integrity="sha512-zdXqksVc9s0d2eoJGdQ2cEhS4mb62qJueasTG4HjCT9J8f9x5gXCQGSdeilD+C7RqvUi1b4DdD5XaGjJZSlP9Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
 <!-- inline javascript -->
 <script>
     //   for index icrement
@@ -399,6 +422,7 @@
     const submitBtn = document.getElementById('submit-btn');
     const updateBtn = document.getElementById('update-btn');
     let consultantId, consultantRowToBeUpdated ;
+    let storedFacultyValue;
     const addResearchConsultancyModal = document.getElementById('add-research-project-consultancy');
     
     addResearchConsultancyModal.addEventListener('click', function (event) {
@@ -425,6 +449,8 @@
                 const facultyTypeInternal = document.getElementById('internal');
                 const facultyTypeExternal = document.getElementById('external');
                 const supportingDocument = document.getElementById('supporting-documents');
+                const isInternalFaculty = document.getElementById('is-internal');
+                const isExternalFaculty = document.getElementById('is-external');
 
                 titleOfProject.value = '';
                 thurstAreaOfResearch.value = '';
@@ -433,6 +459,8 @@
                 statusGranted.checked = false;
                 submissionGrantDate.value = '';
                 supportingDocument.value = '';
+                isInternalFaculty.checked = false;
+                isExternalFaculty.checked = false;
             }
         });
 
@@ -446,7 +474,8 @@
             const fundingAmount = document.getElementById('funding-amount').value;
             const statusOfResearchProject = document.querySelector('input[name="research-project-status"]:checked').value;
             const submissionGrantDate = document.getElementById('submission-grant-date').value;
-            const facultyType = document.querySelector('input[name="faculty-type"]:checked').value;
+            const authorType = document.querySelector('input[name="author-type"]:checked').value;
+            await enternalFacultyDropDown(authorType, researchConsultancyData);
             const supportingDocument = document.getElementById('supporting-documents');
             const consultancyFilesData = supportingDocument.files;
             if (consultancyFilesData.length > 0) {
@@ -468,14 +497,17 @@
             researchConsultancyData.append('fundingAmount', fundingAmount);
             researchConsultancyData.append('statusOfResearchProject', statusOfResearchProject);
             researchConsultancyData.append('submissionGrantDate', submissionGrantDate);
-            researchConsultancyData.append('facultyType', facultyType);
+            // researchConsultancyData.append('facultyType', facultyType);
 
             fetch(url, {
                 method: 'POST',
                 body: researchConsultancyData
             })
                 .then((result) => {
-                    return result.json()
+                    if (!result.ok) {
+                        throw new Error('Server responded with a non-OK status');
+                    }
+                    return result.json();
                 })
                 .then((data) => {
                     if (data.status === 'done') {
@@ -486,7 +518,7 @@
                         newResearchConsultant.setAttribute('data-grant-type', data.researchConsultantData.typeOfGrant);
                         newResearchConsultant.setAttribute('data-grant-proposal', data.researchConsultantData.grantProposalCategory)
                         newResearchConsultant.setAttribute('data-submission-date', data.researchConsultantData.submissionGrantDate);
-                        newResearchConsultant.setAttribute('data-faulty-type', data.researchConsultantData.facultyType);
+                        newResearchConsultant.setAttribute('data-author-type', data.authorName);
                         newResearchConsultant.setAttribute('data-supporting-documents', data.researchConsultantData.consultancyFileName);
                         newResearchConsultant.innerHTML = `
                         <td>${indexValue}</td>
@@ -505,10 +537,19 @@
                         </td>`;
 
                         researchProjectConsultancyList.appendChild(newResearchConsultant);
-                        $('#consultancy-modal').modal('hide');
-                        alert('Data Inserted  SuccessFully');
+                        // $('#consultancy-modal').modal('hide');
+                        alert(`${data.massage}`);
+                    }
+                    
+                    else{
+                        alert(`${data.massage}`);
                     }
                 })
+                .catch((error) => {
+                    // This will catch network errors and errors thrown from the .then block above
+                    console.error('Error:', error);
+                    alert('An error occurred. Please try again later.');
+                });
         }
     
     submitBtn.addEventListener('click', async () => {
@@ -550,8 +591,8 @@
                 const statusSubmitted = document.getElementById('submitted');
                 const statusPresentationHeld = document.getElementById('presentation-held');
                 const statusGranted = document.getElementById('granted');
-                const facultyTypeInternal = document.getElementById('internal');
-                const facultyTypeExternal = document.getElementById('external');
+                const internalAuthor = document.getElementById('is-internal');
+                const externalAuthor = document.getElementById('is-external');
                 const supportingDocument = consultantRowToBeUpdated.getAttribute('data-supporting-documents');
 
                 // assigning value with actuall value
@@ -618,12 +659,16 @@
                 const formattedDate = formatDateToYYYYMMDD(submissionGrantDate);
                 console.log('formattedDate ==>>', formattedDate)
                 document.getElementById('submission-grant-date').value = formattedDate;
-                const facultyType = consultantRowToBeUpdated.getAttribute('data-faulty-type');
-                if (facultyType === 'External') {
-                    facultyTypeExternal.checked = true;
+                const authorName = consultantRowToBeUpdated.getAttribute('data-author-type');
+                const authorTable = consultantRowToBeUpdated.getAttribute('data-author-table');
+                storedFacultyValue = authorName;
+                console.log('authorTable ====>>>', authorTable)
+                console.log('authorName ====>>>', authorName)
+                if (authorTable === 'internalEmpList') {
+                    internalAuthor.checked = true;
                 }
                 else {
-                    facultyTypeInternal.checked = true;
+                    externalAuthor.checked = true;
                 }
                 const supportingDocuments = consultantRowToBeUpdated.getAttribute('data-supporting-documents');
                 console.log('supportingDocuments ==>>', supportingDocuments)
@@ -716,7 +761,8 @@
         const updatedFundingAmount = document.getElementById('funding-amount').value;
         const updatedStatusOfResearchProject = document.querySelector('input[name="research-project-status"]:checked').value;
         const updatedSubmissionGrantDate = document.getElementById('submission-grant-date').value;
-        const updatedFacultyType = document.querySelector('input[name="faculty-type"]:checked').value;
+        const updatedAuthorType = document.querySelector('input[name="faculty-type"]:checked');
+        await updateAuthorType(updatedAuthorType, updatedConsultantData, storedFacultyValue)
         const updatedSupportingDocument = document.getElementById('supporting-documents');
 
         let updatedConsultantFiles = updatedSupportingDocument.files;
@@ -742,7 +788,7 @@
         updatedConsultantData.append('fundingAmount' , updatedFundingAmount);
         updatedConsultantData.append('statusOfResearchProject' , updatedStatusOfResearchProject);
         updatedConsultantData.append('submissionGrantDate' , updatedSubmissionGrantDate);
-        updatedConsultantData.append('facultyType' , updatedFacultyType);
+        // updatedConsultantData.append('facultyType' , updatedFacultyType);
         
         fetch(url , {
             method : 'POST',
@@ -757,7 +803,7 @@
             consultantRowToBeUpdated.setAttribute('data-grant-type' , data.updatedConsultant.typeOfGrant);
             consultantRowToBeUpdated.setAttribute('data-grant-proposal' , data.updatedConsultant.grantProposalCategory)
             consultantRowToBeUpdated.setAttribute('data-submission-date' , data.updatedConsultant.submissionGrantDate);
-            consultantRowToBeUpdated.setAttribute('data-faulty-type' , data.updatedConsultant.facultyType);
+            consultantRowToBeUpdated.setAttribute('data-author-type' , data.authorName);
             if(updatedConsultantFiles){
                 consultantRowToBeUpdated.setAttribute('data-supporting-documents' , data.updatedConsultantFilesString);
             }
@@ -849,6 +895,105 @@
             consultancyDataFiles.setAttribute('data-filename', consultancyDataString);
 
         };
+
+
+       // EVENT LIST THAT WILL USE USE TO OPEN DROP DOWN LIST  
+        const externaltype = document.querySelector('.external-faculty');
+        const enternalFacultyType = document.getElementById('is-internal');
+        const externalFacultyType = document.getElementById('is-external');
+        const employeeList = document.getElementById('employee-list');
+        const authorDetails = document.getElementById('author-details');
+
+    const enternalText = document.getElementById('enternal-text');
+
+    // function for add drop down list or  add new faculty data
+    async function enternalFacultyDropDown(authorType, researchConsultancyData) {
+        console.log('authorType in side my function ====>>>', authorType);
+        console.log('enternalAuthorValue ====>>>>>', enternalAuthorValue);
+
+        const facultytype = authorType.value;
+        console.log('facultytype ===>>>', facultytype);
+        if (authorType === 'Internal') {
+            console.log('storedSelectedValue inside my function ======', enternalAuthorValue);
+            externalAuthorValue = '';
+            researchConsultancyData.append('internalAuthors', enternalAuthorValue);
+        } else {
+            console.log('externalAuthorValue inside function ===>>>', externalAuthorValue);
+            researchConsultancyData.append('externalAuthors', externalAuthorValue);
+            enternalAuthorValue = '';
+            }
+        }
+
+    // fuction for updated faculty type
+    async function updateAuthorType(updatedAuthorType, updatedConsultantData, storedFacultyValue) {
+            console.log('storedFacultyValue in side update function ===>>>', storedFacultyValue)
+            // console.log('updatedAuthorType ====>>>', updatedAuthorType.value);
+            if (!externalAuthorValue && !enternalAuthorValue) {
+                updatedConsultantData.append('authorName', storedFacultyValue);
+            } else if (updatedAuthorType.value === 'Internal') {
+                console.log('storedSelectedValue inside my function =>', enternalAuthorValue);
+                externalAuthorValue = '';
+                updatedConsultantData.append('internalAuthors', enternalAuthorValue);
+            } else {
+                console.log('externalAuthorValue inside function ===>>>', externalAuthorValue);
+                updatedConsultantData.append('externalAuthors', externalAuthorValue);
+                enternalAuthorValue = '';
+            }
+
+        }
+
+    // making d-none external faculty
+    enternalFacultyType.addEventListener('click' , (event) => {
+        console.log('clicked ::::::::::::');
+        // externaltype.classList.add('d-none');
+        // enternalText.classList.add('d-none');
+        employeeList.classList.remove('d-none');
+        authorDetails.classList.add('d-none');
+
+    })
+    //making d-none internal faculty
+    externalFacultyType.addEventListener('click' , (event => {
+        console.log('clciked ====');
+        employeeList.classList.add('d-none');
+        authorDetails.classList.remove('d-none');
+    }))
+
+    // employeesListData data came from backend
+    const employeesListData = document.getElementById('employees-list-data').dataset.employees;
+    const employeesDataObj = JSON.parse(employeesListData);
+    let employeeListArray = [];
+
+   
+    // console.log(employeesDataObj);
+    // ajax for search bar to search employee name 
+    new TomSelect("#emp-name");
+  
+    const employeeDropdown = document.getElementById("emp-name");
+    employeeDropdown.addEventListener("change", function() {
+         const selectedValue = this.value;
+         enternalAuthorValue = selectedValue;
+        console.log("enternalAuthorValue value:", enternalAuthorValue);
+        
+    });
+
+    const addMoreDetailsButton = document.getElementById("add-more-details");
+    let authorName
+    let storedSelectedValue;
+    var enternalAuthorValue;
+    var externalAuthorValue;
+    let additionalDetails = []; 
+    //event listner for store external value
+    addMoreDetailsButton.addEventListener('click' , (event) => {
+        console.log('clickeddddd')
+        
+        const authorNameInput = document.getElementById("author-name");
+        authorName = authorNameInput.value;
+        console.log('authorNameInput ===>>>>', authorNameInput.value)
+        externalAuthorValue = authorNameInput.value;
+        console.log('storedSelectedValue inside external listner ===>>>', externalAuthorValue);
+     
+    })
+
     
 </script>
 <!-- inline javascript -->

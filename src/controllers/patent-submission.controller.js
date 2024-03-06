@@ -33,40 +33,8 @@ module.exports.renderPatentSubMissionAndGrant = async(req, res, next) =>{
         resultArray.push({ authorName, table: 'externalEmpList' });
     }
     
-
-    
-
-
-// for (const name of authorNameArray) {
-//     let foundInInternal = false;
-//     for (const item of internalEmpList) {
-//         if (item.name === name) {
-//             resultArray.push({ name, table: 'internalEmpList' });
-//             foundInInternal = true;
-//             break;
-//         }
-//     }
-//     if (!foundInInternal) {
-//         for (const item of externalEmpList) {
-//             if (item.external_emp_name === name) {
-//                 resultArray.push({ external_emp_name, table: 'externalEmpList' });
-//                 break;
-//             }
-//         }
-//     }
-// }
-
-// console.log('resultArray ======>>>>>', resultArray);
 const uniqueResults = [...new Set(resultArray.map(JSON.stringify))].map(JSON.parse);
 
-// patentList.forEach((patent) => {
-//         uniqueResults.forEach((result) => {
-//       if (patent.authorName === result.authorName) {
-//             const authorName = patent.authorName;
-//         matchedPatentsWithKey.push({authorName, table: result.table });
-//       }
-//     })
-//     });
 const matchedPatentsWithKey = [];
 
 for (const uniqueResult of uniqueResults) {
@@ -135,6 +103,7 @@ module.exports.insertPatentsubmission = async(req, res, next) => {
 
         }
 }
+// for update patent submission
 module.exports.updatePatentSubMissiom = async(req, res, next) => {
     console.log('data in controller' , req.body);
     console.log('ID in controller ==>', req.body.patentId);
