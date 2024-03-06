@@ -157,7 +157,7 @@ module.exports.validateJournalPaper = [
     .isString()
     .withMessage("scs indexed category should be string"),
     
- check("journalDetails.wosIndexedCatgory")
+ check("journalDetails.wosIndexedCategory")
     .notEmpty()
     .withMessage("wos indexed catgory is required")
     .bail()
@@ -186,12 +186,12 @@ module.exports.validateJournalPaper = [
     .isString()
     .withMessage("ugc indexed category should be integer"),
     
- check("journalDetails.webLinkNumber")
-    .notEmpty()
-    .withMessage("webLinkNumber is required")
-    .bail()
-    .isInt()
-    .withMessage("webLinkNumber  should be Number"),
+//  check("journalDetails.webLinkNumber")
+//     .notEmpty()
+//     .withMessage("webLinkNumber is required")
+//     .bail()
+//     .isInt()
+//     .withMessage("webLinkNumber  should be Number"),
 
  check("journalDetails.foreignAuthorsNumbers")
     .notEmpty()

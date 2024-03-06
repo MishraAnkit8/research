@@ -16,12 +16,12 @@ module.exports.fetchJournalPaper = () => {
 };
 
 // for inserting journal paper  data
-module.exports.createJournalPaper = ({journalDetails}) => {
+module.exports.createJournalPaper = async ({ journalDetails }) => {
     console.log('journalDetails in models ==>>', journalDetails);
     const {
         year, school, campus, policyCadre, journalCategory, allAuthors, totalAuthors, nmimsAuthors,
-        journalName, foreignAuthors, foreignAuthorsNumbers, nmimsAuthorsCount, countOtherFaculty, 
-        titleOfPaper, publisher, pages, issnNo, dateOfPublishing, impactFactor, scsCiteScore, 
+        journalName, foreignAuthors, foreignAuthorsNumbers, nmimsAuthorsCount, countOtherFaculty,
+        titleOfPaper, publisher, pages, issnNo, dateOfPublishing, impactFactor, scsCiteScore,
         scsIndexedCategory, wosIndexedCategory, abdcIndexedCategory, ugcIndexedCategory, webLinkNumber, nmimsStudentAuthors,
         countStudentAuthors
     } = journalDetails;
@@ -36,14 +36,28 @@ module.exports.createJournalPaper = ({journalDetails}) => {
         ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27) RETURNING id`,
         values: [
             year, school, campus, policyCadre, journalCategory, allAuthors, totalAuthors, nmimsAuthors,
-            foreignAuthors, foreignAuthorsNumbers, nmimsAuthorsCount, countOtherFaculty, 
-            titleOfPaper, journalName, publisher, pages, issnNo, dateOfPublishing, impactFactor, scsCiteScore, 
+            foreignAuthors, foreignAuthorsNumbers, nmimsAuthorsCount, countOtherFaculty,
+            titleOfPaper, journalName, publisher, pages, issnNo, dateOfPublishing, impactFactor, scsCiteScore,
             scsIndexedCategory, wosIndexedCategory, abdcIndexedCategory, ugcIndexedCategory, webLinkNumber, nmimsStudentAuthors,
             countStudentAuthors
         ]
     };
-    console.log('sql ==>>', sql)
-    return researchDbW.query(sql);
+
+    console.log('sql ==>>', sql);
+
+    try {
+        const result = await researchDbW.query(sql);
+        console.log('Inserted row with id:', result.rows[0].id);
+        return { success: true, id: result.rows[0].id };
+    } catch (error) {
+        if (error.code === '23505' && error.constraint === 'your_constraint_name') {
+            console.error('Insertion failed. web_link_doi_number already exists.');
+            return { success: false, error: 'web_link_doi_number already exists' };
+        } else {
+            console.error('Error occurred:', error.message);
+            return { success: false, error: error.message };
+        }
+    }
 }
 // for deleting journal paper  data 
 module.exports.deleteJournalPaper =  async({journalPaperId}) => {

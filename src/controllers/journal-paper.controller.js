@@ -15,23 +15,52 @@ module.exports.renderJournalPaper = async (req, res, next) => {
 
 module.exports.createJournalPaper = async (req, res, next) => {
     console.log('data in controller', req.body);
-    const journalPaperData = await journalPaperService.insertJournalPapper(req.body) ;
+    const journalPaperData = await journalPaperService.insertJournalPapper(req.body);
     console.log(" journalPaperData ===>" , journalPaperData);
-    const rowCount = journalPaperData.rowCount;
-    console.log('rowCount ===>>>', rowCount);
-    if(journalPaperData && journalPaperData.rows[0].id) {
-        res.status(200).send({
-            status : 'done',
-            journalPaperId : journalPaperData.rows[0].id,
-            rowCount
-        });
-    }
-    else {
+    const successCondition = journalPaperData.success;
+    console.log('successMassage ====>>>>>', successCondition)
+    if(successCondition === false){
+        const errorMassage = journalPaperData.error;
         res.status(500).send({
-            status : 'failed',
-            'massage' : 'failed to insert new row'
-        });
-    };
+            status : 'Failed',
+            errorMassage : errorMassage
+        })
+    }
+    
+   
+    // if(journalPaperData.success === "false"){
+    //     console.log('yes condtion is failed')
+    // }
+    // if(journalPaperData && journalPaperData.rows[0].id) {
+    //     const rowCount = journalPaperData.rowCount;
+    //     console.log('rowCount ===>>>', rowCount);
+    //     res.status(200).send({
+    //         status : 'done',
+    //         journalPaperId : journalPaperData.rows[0].id,
+    //         rowCount
+    //     });
+    // }
+    // else if(journalPaperData.success === "false"){
+    //         res.status(500).send({
+    //             status : 'False',
+    //             errorMsg : journalPaperData.error
+    //         })
+    //     }
+
+//     const errorMsg = journalPaperData.error;
+//     console.log('errorMsg ====>>>>', errorMsg)
+//     if(journalPaperData.success === "false"){
+//         res.status(500).send({
+//             status : 'False',
+//             errorMsg : errorMsg
+//         })
+//     }
+//     else{
+//         const rowCount = journalPaperData.rowCount;
+//         console.log('rowCount ===>>>', rowCount);
+//   }
+ 
+
 };
 
 
