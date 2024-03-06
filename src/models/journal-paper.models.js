@@ -22,7 +22,8 @@ module.exports.createJournalPaper = ({journalDetails}) => {
         year, school, campus, policyCadre, journalCategory, allAuthors, totalAuthors, nmimsAuthors,
         journalName, foreignAuthors, foreignAuthorsNumbers, nmimsAuthorsCount, countOtherFaculty, 
         titleOfPaper, publisher, pages, issnNo, dateOfPublishing, impactFactor, scsCiteScore, 
-        scsIndexedCategory, wosIndexedCatgory, abdcIndexedCategory, ugcIndexedCategory, webLinkNumber
+        scsIndexedCategory, wosIndexedCategory, abdcIndexedCategory, ugcIndexedCategory, webLinkNumber, nmimsStudentAuthors,
+        countStudentAuthors
     } = journalDetails;
 
     let sql = {
@@ -31,13 +32,14 @@ module.exports.createJournalPaper = ({journalDetails}) => {
             total_authors, nmims_authors, foreign_authors, numbers_foreign_authors, nmims_authors_count,
             count_other_faculty, title_of_paper, journal_name, publisher, pages, issn_no,
             date_of_publishing, impact_factor, scs_cite_score, scs_indexed, wos_indexed,
-            abdc_indexed, ugc_indexed, web_link_doi_number
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25) RETURNING id`,
+            abdc_indexed, ugc_indexed, web_link_doi_number, names_nmims_student_author, no_nmims_student_author
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27) RETURNING id`,
         values: [
             year, school, campus, policyCadre, journalCategory, allAuthors, totalAuthors, nmimsAuthors,
-            foreignAuthors, foreignAuthorsNumbers, nmimsAuthorsCount, countOtherFaculty, titleOfPaper,
-            journalName, publisher, pages, issnNo, dateOfPublishing, impactFactor, scsCiteScore,
-            scsIndexedCategory, wosIndexedCatgory, abdcIndexedCategory, ugcIndexedCategory, webLinkNumber
+            foreignAuthors, foreignAuthorsNumbers, nmimsAuthorsCount, countOtherFaculty, 
+            titleOfPaper, journalName, publisher, pages, issnNo, dateOfPublishing, impactFactor, scsCiteScore, 
+            scsIndexedCategory, wosIndexedCategory, abdcIndexedCategory, ugcIndexedCategory, webLinkNumber, nmimsStudentAuthors,
+            countStudentAuthors
         ]
     };
     console.log('sql ==>>', sql)
@@ -56,11 +58,16 @@ module.exports.deleteJournalPaper =  async({journalPaperId}) => {
 // for updating 
 module.exports.updateJournalPaperData = async ({journalPaperId, updateJournalDetails}) => {
         console.log('updateJournalDetails ==== in models ===>>>', )
+        console.log('abdcIndexedCategory ===>>>', updateJournalDetails.abdcIndexedCategory);
+        console.log('ugcIndexedCategory ===>>>', updateJournalDetails.ugcIndexedCategory);
+        console.log('wosIndexedCategory ===>>>', updateJournalDetails.wosIndexedCategory);
+        console.log('scsIndexedCategory ===>>>', updateJournalDetails.scsIndexedCategory);
     const {
         year, school, campus, policyCadre, journalCategory, allAuthors, totalAuthors, nmimsAuthors,
-        foreignAuthors, foreignAuthorsNumbers, nmimsAuthorsCount, countOtherFaculty, 
-        titleOfPaper, journalName, publisher, pages, issnNo, dateOfPublishing, impactFactor, scsCiteScore, 
-        scsIndexedCategory, wosIndexedCategory, abdcIndexedCategory, ugcIndexedCategory, webLinkNumber
+        journalName, foreignAuthors, foreignAuthorsNumbers, nmimsAuthorsCount, countOtherFaculty, 
+        titleOfPaper, publisher, pages, issnNo, dateOfPublishing, impactFactor, scsCiteScore, 
+        scsIndexedCategory, wosIndexedCategory, abdcIndexedCategory, ugcIndexedCategory, webLinkNumber, nmimsStudentAuthors,
+        countStudentAuthors
     } = updateJournalDetails;
     
     let sql = {
@@ -70,12 +77,13 @@ module.exports.updateJournalPaperData = async ({journalPaperId, updateJournalDet
             nmims_authors_count = $12, count_other_faculty = $13, title_of_paper = $14, journal_name = $15,
             publisher = $16, pages = $17, issn_no = $18, date_of_publishing = $19, impact_factor = $20,
             scs_cite_score = $21, scs_indexed = $22, wos_indexed = $23, abdc_indexed = $24, ugc_indexed = $25,
-            web_link_doi_number = $26 WHERE id = $1`,
+            web_link_doi_number = $26, names_nmims_student_author = $27, no_nmims_student_author = $28 WHERE id = $1`,
         values: [
             journalPaperId, year, school, campus, policyCadre, journalCategory, allAuthors, totalAuthors, nmimsAuthors,
             foreignAuthors, foreignAuthorsNumbers, nmimsAuthorsCount, countOtherFaculty, 
             titleOfPaper, journalName, publisher, pages, issnNo, dateOfPublishing, impactFactor, scsCiteScore, 
-            scsIndexedCategory, wosIndexedCategory, abdcIndexedCategory, ugcIndexedCategory, webLinkNumber
+            scsIndexedCategory, wosIndexedCategory, abdcIndexedCategory, ugcIndexedCategory, webLinkNumber, nmimsStudentAuthors,
+            countStudentAuthors
         ]
     };
     console.log('sql ====>>>>', sql);
@@ -91,7 +99,7 @@ module.exports.viewJournalPaperData = async ({journalPaperId}) => {
         total_authors, nmims_authors, foreign_authors, numbers_foreign_authors, nmims_authors_count,
         count_other_faculty, title_of_paper, journal_name, publisher, pages, issn_no,
         TO_CHAR(date_of_publishing, 'DD-MM-YYYY'), impact_factor, scs_cite_score, scs_indexed, wos_indexed,
-        abdc_indexed, ugc_indexed, web_link_doi_number FROM journal_papers WHERE id = $1 `,
+        abdc_indexed, ugc_indexed, web_link_doi_number, names_nmims_student_author, no_nmims_student_author FROM journal_papers WHERE id = $1 `,
         values : [journalPaperId]
     }
     console.log('sql ==>>', sql)

@@ -80,7 +80,8 @@
                             data-impact-factor="<%- journalPaper.impact_factor %>" data-scs-indexed="<%- journalPaper.scs_indexed %>" data-wos-indexed="<%- journalPaper.wos_indexed %>"
                             data-title-of-paper="<%- journalPaper.title_of_paper %>" data-abdc-indexed="<%- journalPaper.abdc_indexed %>" data-ugc-indexed="<%- journalPaper.ugc_indexed %>"
                             data-web-link-number="<%- journalPaper.web_link_doi_number %>"  data-date-of-publishing="<%- journalPaper.date_of_publishing %>"
-                            data-journal-category="<%- journalPaper.journal_category %>" data-nmims-authors-count="<%- journalPaper. nmims_authors_count %>" data-foreign-authors="<%- journalPaper.foreign_authors %>" data-foreign-authors-count="<%- journalPaper.numbers_foreign_authors %>">
+                            data-journal-category="<%- journalPaper.journal_category %>" data-nmims-authors-count="<%- journalPaper. nmims_authors_count %>" data-foreign-authors="<%- journalPaper.foreign_authors %>" data-foreign-authors-count="<%- journalPaper.numbers_foreign_authors %>"
+                            data-names-nmims-student-author="<%- journalPaper.names_nmims_student_author %>" data-no-nmims-student-author="<%- journalPaper.no_nmims_student_author %>">
                             <td class="" id="row-count"> <%- index + 1 %> </td>
                             <td class="year col-lg-1"> <%- journalPaper.year %> </td>
                             <td class="school col-lg-1"> <%- journalPaper.school %> </td>
@@ -266,11 +267,16 @@
                         <label for="web-link" class="form-label fw-bold">WEB Link DOI No.</label>
                         <input type="number" name="webLinks" id="web-link-num"  data-validate="isEmpty,isNumber"  data-err-msg="Numeric value is required."  class="form-control" required>
                     </div>
-                    <!-- UID -->
-                    <!-- <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="uid" class="form-label fw-bold">UID</label>
-                        <input type="number" name="uid-number" id="uid" class="form-control" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required" required>
-                    </div> -->
+                    <!-- Names of NMIMS Student  Author-->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="names-nmims-student-author" class="form-label fw-bold">Names of NMIMS Student  Author</label>
+                        <input type="text"  id="names-nmims-student-author" class="form-control" data-validate="isEmpty,isAlphabeticWords,isNotNumber" data-err-msg="This field is required and min length > 1" required>
+                    </div>
+                    <!-- NO. OF NMIMS Student  Authors-->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="no-nmims-student-author" class="form-label fw-bold">NO. OF NMIMS Student  Authors</label>
+                        <input type="number"  id="no-nmims-student-author" class="form-control" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required" required>
+                    </div>
                     <!-- Date of Publishing -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="date-of-publishing" class="form-label fw-bold">Date of Publishing</label>
@@ -498,6 +504,22 @@
                             <label class="view-content" id="view-foreign-authors"></label>
                         </div>
                     </div>
+
+                       <!--Names of NMIMS Student  Author-->
+                       <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="sub-title-text sub-title">Names of NMIMS Student  Author:</div>
+                            <label class="view-content" id="view-names-nmims-student-author"></label>
+                        </div>
+                    </div>
+
+                       <!--NO. OF NMIMS Student  Authors-->
+                       <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="sub-title-text sub-title">NO. OF NMIMS Student  Authors:</div>
+                            <label class="view-content" id="view-no-nmims-student-author"></label>
+                        </div>
+                    </div>
                     <!--abdc-indexed-->
                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
@@ -610,6 +632,8 @@
             document.getElementById('title-of-paper').value = '';
             // 
             document.getElementById('nmims-authors-count').value = '';
+            document.getElementById('names-nmims-student-author').value = '';
+            document.getElementById('no-nmims-student-author').value = '';
         }
     })
 
@@ -629,6 +653,8 @@
         journalDetails.nmimsAuthors = document.getElementById('nmims-authors').value;
         journalDetails.journalName = document.getElementById('journal-name').value;
         journalDetails.foreignAuthors = document.getElementById('foreign-authors').value;
+        journalDetails.nmimsStudentAuthors = document.getElementById('names-nmims-student-author').value;
+        journalDetails.countStudentAuthors = document.getElementById('no-nmims-student-author').value;
         journalDetails.foreignAuthorsNumbers = document.getElementById('foreign-authors-number').value;
         journalDetails.countOtherFaculty = document.getElementById('count-other-faculty').value;
         journalDetails.pages = document.getElementById('pages').value;
@@ -636,7 +662,7 @@
         journalDetails.scsCiteScore = document.getElementById('scs-cite-score').value;
         journalDetails.impactFactor = document.getElementById('impact-factor').value;
         // journalDetails.scsIndexedCategory = document.getElementById('scs-indexed').value;
-        journalDetails.wosIndexedCatgory = document.querySelector('input[name="wos-index-category"]:checked').value;
+        journalDetails.wosIndexedCategory = document.querySelector('input[name="wos-index-category"]:checked').value;
         journalDetails.scsIndexedCategory = document.querySelector('input[name="scopus-category"]:checked').value;
         journalDetails.abdcIndexedCategory = document.querySelector('input[name="abdc-index-category"]:checked').value;
         journalDetails.ugcIndexedCategory = document.querySelector('input[name="ugc-index-category"]:checked').value;
@@ -679,7 +705,7 @@
                     newJournalPaper.setAttribute('data-scs-cite-score', journalDetails.scsCiteScore);
                     newJournalPaper.setAttribute('data-impact-factor', journalDetails.impactFactor);
                     newJournalPaper.setAttribute('data-scs-indexed', journalDetails.scsIndexedCategory);
-                    newJournalPaper.setAttribute('data-wos-indexed', journalDetails.wosIndexedCatgory);
+                    newJournalPaper.setAttribute('data-wos-indexed', journalDetails.wosIndexedCategory);
                     newJournalPaper.setAttribute('data-foreign-authors-count', journalDetails.foreignAuthorsNumbers);
                     newJournalPaper.setAttribute('data-abdc-indexed', journalDetails.abdcIndexedCategory);
                     newJournalPaper.setAttribute('data-ugc-indexed', journalDetails.ugcIndexedCategory);
@@ -689,6 +715,8 @@
                     newJournalPaper.setAttribute('data-title-of-paper', journalDetails.titleOfPaper);
                     newJournalPaper.setAttribute('data-journal-category' , journalDetails.journalCategory);
                     newJournalPaper.setAttribute('data-nmims-author-count', journalDetails.nmimsAuthorsCount);
+                    newJournalPaper.setAttribute('data-names-nmims-student-author' , journalDetails.nmimsStudentAuthors);
+                    newJournalPaper.setAttribute('data-nmims-author-count', journalDetails.countStudentAuthors);
                     newJournalPaper.innerHTML = `
                             <td class="cell" id="rowCount">${indexValue + rouCount}</td>
                             <td class="year">${journalDetails.year}</td>
@@ -796,6 +824,10 @@
             const ugcIndexedCategory = rowToBeUpdated.getAttribute('data-ugc-indexed');
             const webLinkNumber = rowToBeUpdated.getAttribute('data-web-link-number');
             const foreignAuthors = rowToBeUpdated.getAttribute('data-foreign-authors');
+            const nmimsStudentAuthors = rowToBeUpdated.getAttribute('data-names-nmims-student-author');
+            console.log('nmimsStudentAuthors ===>>>', nmimsStudentAuthors)
+            const countStudentAuthors = rowToBeUpdated.getAttribute('data-no-nmims-student-author');
+            console.log('countStudentAuthors ===>>>>', countStudentAuthors)
             const scsIndexedCategory = rowToBeUpdated.getAttribute('data-scs-indexed');
             const nmimsAuthorsCount = rowToBeUpdated.getAttribute('data-nmims-author-count');
             const journalCategoryNational = document.getElementById('national');
@@ -809,7 +841,6 @@
             const wosIndexedNo = document.getElementById('wos-index-no');
             const ugcIndexedYes = document.getElementById('ugc-index-yes');
             const ugcIndexedNo = document.getElementById('ugc-index-no');
-
             // for displaying alredy stored value
             document.getElementById('year').value = year.innerText.trim();
             console.log('=====>>>>>', year.innerText.trim())
@@ -832,6 +863,8 @@
             document.getElementById('web-link-num').value = webLinkNumber;
             document.getElementById('foreign-authors-number').value = foreignAuthorsNumbers.trim();
             document.getElementById('nmims-authors-count').value = nmimsAuthorsCount.trim();
+            document.getElementById('names-nmims-student-author').value = nmimsStudentAuthors.trim();
+            document.getElementById('no-nmims-student-author').value = countStudentAuthors.trim();
             console.log('nmimsAuthorsCount ==>>', nmimsAuthorsCount);
             // For journal category
             journalCategoryNational.checked = journalCategory === 'National';
@@ -876,6 +909,7 @@
             const viewWebLinkNumber = document.getElementById('view-web-link-doi-number');
             const viewPages = document.getElementById('view-pages');
             const viewScsCiteScore = document.getElementById('view-scs-cite-score');
+            console.log('viewScsCiteScore ===>>>', viewScsCiteScore)
             const viewImpactFactor = document.getElementById('view-impact-factor');
             const viewScsIndexedCategory = document.getElementById('view-scs-indexed-category');
             const viewWosIndexedCategory = document.getElementById('view-wos-indexed-category');
@@ -885,6 +919,8 @@
             const viewNumberOfForeignAuthors = document.getElementById('view-foreign-authors-number');
             const viewTitle = document.getElementById('view-title-of-paper');
             const viewJournalCategory = document.getElementById('view-journal-category');
+            const viewNameStudentAuthor = document.getElementById('view-names-nmims-student-author');
+            const viewCountStudentAuthor = document.getElementById('view-no-nmims-student-author')
             
             const viewNmimsAuthorsCount = document.getElementById('view-nmims-authors-count');
 
@@ -920,15 +956,17 @@
                     viewPages.innerText = data[0].pages;
                     viewScsCiteScore.innerText = data[0].scs_cite_score;
                     viewImpactFactor.innerText = data[0].impact_factor;
-                    viewScsCiteScore.innerText = data[0].scs_indexed;
+                    viewScsIndexedCategory.innerText = data[0].scs_indexed;
                     viewForeignAuthors.innerText = data[0].foreign_authors;
                     viewUgcIndexedCategory.innerText = data[0].ugc_indexed;
-                    viewDateOfPublishing.innerText = data[0].date_of_publishing;
+                    viewDateOfPublishing.innerText = data[0].to_char;
                     viewTitle.innerText = data[0].title_of_paper;
                     viewJournalCategory.innerText = data[0].journal_category;
                     viewWosIndexedCategory.innerText = data[0].wos_indexed;
                     viewNumberOfForeignAuthors.innerText = data[0].numbers_foreign_authors;
                     viewNmimsAuthorsCount.innerText = data[0].nmims_authors_count;
+                    viewNameStudentAuthor.innerText = data[0].names_nmims_student_author;
+                    viewCountStudentAuthor.innerText = data[0].no_nmims_student_author;
 
                 }).catch((error) => {
                     console.log('error:', error);
@@ -959,12 +997,15 @@
         const updatedScsCiteScore = document.getElementById('scs-cite-score').value;
         const updatedForeignAuthors = document.getElementById('foreign-authors').value;
         const updatedForeignAuthorsNumbers = document.getElementById('foreign-authors-number').value;
+        const updatedNmimsStudentAuthors = document.getElementById('names-nmims-student-author').value;
+        const updatedCountNmimsStudentAuthor = document.getElementById('no-nmims-student-author').value
         const updatedWebLinkNumber = document.getElementById('web-link-num').value;
         const updatedNmimsAuthorsCount = document.getElementById('nmims-authors-count').value;
         const updatedScsIndexedCategory = document.querySelector('input[name="scopus-category"]:checked').value
         const updatedAbdcIndexCategory = document.querySelector('input[name="abdc-index-category"]:checked').value;
         const updatedUgcIndexedCategory = document.querySelector('input[name="ugc-index-category"]:checked').value;
         const updatedWosIndexedCategory = document.querySelector('input[name="wos-index-category"]:checked').value;
+        console.log('updatedWosIndexedCategory ===>>>>>', updatedWosIndexedCategory)
         const updatedJournalCategory = document.querySelector('input[name="journal-category"]:checked').value;
 
         let updatedJournalPaperDetails = {};
@@ -995,6 +1036,10 @@
         updatedJournalPaperDetails.journalCategory = updatedJournalCategory;
         updatedJournalPaperDetails.nmimsAuthorsCount = updatedNmimsAuthorsCount;
         updatedJournalPaperDetails.scsIndexedCategory = updatedScsIndexedCategory;
+        updatedJournalPaperDetails.nmimsStudentAuthors = updatedNmimsStudentAuthors;
+        updatedJournalPaperDetails.countStudentAuthors = updatedCountNmimsStudentAuthor;
+
+        
 
         // sending  updated data to database by fetch api for update the value in db
         fetch(url, {

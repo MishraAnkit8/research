@@ -171,7 +171,7 @@ module.exports.validateJournalPaper = [
     .isString()
     .withMessage("foreign authors should be String"),
 
- check("journalDetails.abcdIndexedCategory")
+ check("journalDetails.abdcIndexedCategory")
     .notEmpty()
     .withMessage("abcd indexed category  required")
     .bail()
@@ -190,7 +190,7 @@ module.exports.validateJournalPaper = [
     .notEmpty()
     .withMessage("webLinkNumber is required")
     .bail()
-    .isString()
+    .isInt()
     .withMessage("webLinkNumber  should be Number"),
 
  check("journalDetails.foreignAuthorsNumbers")
@@ -199,6 +199,20 @@ module.exports.validateJournalPaper = [
     .bail()
     .isInt()
     .withMessage("foreignAuthorsNumbers should be integer"),
+
+check("journalDetails.nmimsStudentAuthors")
+    .notEmpty()
+    .withMessage("Names of NMIMS Student  Author is required")
+    .bail()
+    .isString()
+    .withMessage("Names of NMIMS Student  Author  should be Number"),
+
+ check("journalDetails.countStudentAuthors")
+    .notEmpty()
+    .withMessage("NO. OF NMIMS Student  Authors is required")
+    .bail()
+    .isInt()
+    .withMessage("NO. OF NMIMS Student  Authors should be integer"),
 
   validationHandler, // Handler for validation errors
 ];
