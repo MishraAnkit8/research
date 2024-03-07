@@ -205,7 +205,7 @@
                     <!-- Name of NMIMS Authors -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="nmims-authors" class="form-label fw-bold">Names Of NMIMS Authors</label>
-                        <input type="text" name="nmims-authors" id="nmims-authors" data-validate="isEmpty,isAlphabeticWords,isLength:2:255"  data-err-msg="This field is required and min length > 1." class="form-control"
+                        <input type="text" name="nmims-authors" id="nmims-authors" data-validate="isEmpty,isLength:2:255"  data-err-msg="This field is required and min length > 1." class="form-control"
                              required>
                     </div>
                     <!-- No. of NMIMS Authors -->
@@ -217,14 +217,14 @@
                     <!-- Journal Name -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="journalName" class="form-label fw-bold">Journal Name</label>
-                        <input type="text" name="journal-name" id="journal-name" data-validate="isEmpty,isAlphabeticWords,isLength:2:255" data-err-msg="This field is required and min length > 1." class="form-control"
+                        <input type="text" name="journal-name" id="journal-name" data-validate="isEmpty,isLength:2:255" data-err-msg="This field is required and min length > 1." class="form-control"
                              required>
                     </div>
                     <!-- Name Of Foreign Authors -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="foreign-authors" class="form-label fw-bold">Names Of Foreign Authors </label>
-                        <input type="text" name="foreign-authors" id="foreign-authors" data-validate="isEmpty,isAlphabeticWords,isLength:2:255" data-err-msg="This field is required and min length > 1." class="form-control"
-                             required>
+                        <input type="text" name="foreign-authors" id="foreign-authors" data-validate="isEmpty,isLength:2:255"  data-err-msg="This field is required and min length > 1." class="form-control"
+                        required>
                     </div>
                     <!-- Number Of Foreign Authors -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
@@ -270,7 +270,8 @@
                     <!-- Names of NMIMS Student  Author-->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="names-nmims-student-author" class="form-label fw-bold">Names of NMIMS Student  Author</label>
-                        <input type="text"  id="names-nmims-student-author" class="form-control" data-validate="isEmpty,isAlphabeticWords,isNotNumber" data-err-msg="This field is required and min length > 1" required>
+                        <input type="text"  id="names-nmims-student-author" data-validate="isEmpty,isLength:2:255"  data-err-msg="This field is required and min length > 1." class="form-control"
+                        required>
                     </div>
                     <!-- NO. OF NMIMS Student  Authors-->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
@@ -585,6 +586,8 @@
     </div>
 </div>
 <!-- inline Javascript -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
     //for index icrement
     const rowCountIndex = document.getElementById('row-count');
@@ -742,6 +745,7 @@
                 else{
                     console.log('data in failed condition ====>>>>', data)
                     alert(`${data.massage}`)
+                    
                 }
             }).catch((error) => {
                 console.error("ERROR:", error);
@@ -1099,16 +1103,33 @@
                     rowToBeUpdated.setAttribute('data-journal-category' , updatedJournalCategory);
                     rowToBeUpdated.setAttribute('data-nmims-author-count', updatedNmimsAuthorsCount);
                     $('#journal-paper-modal').modal('hide');
-                    alert(`${data.massage}`);
+                    // alert(`${data.massage}`);
+                    Swal.fire({
+                        position: "top-center",
+                        icon: "success",
+                        title: `${data.massage}`,
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
                 }
                 else{
-                    alert(`${data.massage}`)
+                    Swal.fire({
+                        position: "top-center",
+                        icon: "error",
+                        title: "Updation Failed",
+                        color : "red",
+                        with : "20PX",
+                        html: `<span style="color: red;">${data.massage}</span>`,
+                        showConfirmButton: false,
+                    });
                 }
+                
                 
             })
             .catch((error) => {
                 console.log("ERROIR : ", error);
-                alert('An error occurred while updating the element');
+                // alert('An error occurred while updating the element');
+                Swal.fire("SweetAlert10 is working!");
                 $('#journal-paper-modal').modal('hide');
 
             })

@@ -165,10 +165,7 @@ function selectElemToBeValidated(validateInputWrapper) {
 function toggleErrorState(formGroup, errorMsg, errorElem, isValidElem) {
     console.log('formGroup =====>>>>>', formGroup)
     console.log('errorElem', errorElem, 'isValid', isValidElem);
-    // const labelElement = formGroup.querySelector('label');
-    // const inputElement = labelElement.querySelector('input');
-    // const editorValidation = document.querySelector('.editor-validation');
-    // console.log('inputElement ===>>>', inputElement)
+    
 
     if (!errorElem && !isValidElem) {
         console.log('Adding error message');
@@ -195,12 +192,14 @@ function toggleErrorState(formGroup, errorMsg, errorElem, isValidElem) {
 
 
 function isNumber(input) {
-    if (!input || input === '' || input < 1) {
+    // (!input || input === '' || input < 1)
+    if (!input || input === '') {
         return false;
     }
 
     for (let i = 0; i < input.length; i++) {
         const charCode = input.charCodeAt(i);
+        console.log('charCode ===>>>', charCode)
         if (charCode < 48 || charCode > 57) {
             return false;
         }
