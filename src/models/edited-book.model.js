@@ -23,8 +23,24 @@ module.exports.insertEditedBook = async(editedBook, editedBookFilesData) => {
         values : [authorName, bookTitle, edition, editorName, chapterTitle, publicationPlace, publisherCategory, pageNumber, publisherName, publicationYear,
             bookUrl, doiBookId, isbnNo, numberOfNmimsAuthors, nmimsAuthors, nmimsCampusAuthors, nmimsSchoolAuthors, editedBookFilesData]
     }
-    console.log('sql ===>>', sql)
-    return researchDbW.query(sql)
+    console.log('sql ==>>', sql);
+    //handling the condng by tre and catch
+    try {
+        const result = await researchDbW.query(sql);
+        console.log('Inserted row with id:', result.rows[0].id);
+        return { status: 'Done', id: result.rows[0].id};
+    } catch (error) {
+        console.log('error.code ====>>>', error.code)
+        console.log('error.constraint ====>>>>>', error.constraint);
+        console.log('error.message ====>>>', error.message);
+        if (error.code === '23505' && error.constraint === 'journal_papers_web_link_doi_number_key') {
+            console.error('Insertion failed. web_link_doi_number already exists.');
+            return { status: 'Failed', error: 'web_link_doi_number already exists' };
+        } else {
+            console.error('Error occurred::::::::::', error.message);
+            return { status: 'Failed', error: error.message };
+        }
+    }
 }
 
 module.exports.updatedEditedBookPublication = async(editedBookId, updatedEditedBookPublication, updatedEditedBookFiles) => {
@@ -37,7 +53,20 @@ module.exports.updatedEditedBookPublication = async(editedBookId, updatedEditedB
             values : [editedBookId, authorName, bookTitle, edition, editorName, chapterTitle, publicationPlace, publisherCategory, pageNumber, publisherName, publicationYear,
                 bookUrl, doiBookId, isbnNo, numberOfNmimsAuthors, nmimsAuthors, nmimsCampusAuthors, nmimsSchoolAuthors, updatedEditedBookFiles]
         }
-        return researchDbW.query(sql)
+        try {
+            const result = await researchDbW.query(sql);
+            if (result.rowCount > 0) {
+                console.log('sql ====>>>', sql)
+                console.log('Updated successful:', result.rowCount, 'Row(s) Updated.');
+                return { status: 'Done' };
+            } else {
+                console.log('No record found or updated with id:', journalPaperId);
+                return { status: 'Failed', error: 'No record found or updated' };
+            }
+        } catch (error) {
+            console.error('Error on update:', error.code, error.message);
+            return { status: 'Failed', error: error.message };
+        }
 
     }
 
@@ -50,7 +79,20 @@ module.exports.updatedEditedBookPublication = async(editedBookId, updatedEditedB
             values : [editedBookId, authorName, bookTitle, edition, editorName, chapterTitle, publicationPlace, publisherCategory, pageNumber, publisherName, publicationYear,
                 bookUrl, doiBookId, isbnNo, numberOfNmimsAuthors, nmimsAuthors, nmimsCampusAuthors, nmimsSchoolAuthors]
         }
-        return researchDbW.query(sql)
+        try {
+            const result = await researchDbW.query(sql);
+            if (result.rowCount > 0) {
+                console.log('sql ====>>>', sql)
+                console.log('Updated successful:', result.rowCount, 'Row(s) Updated.');
+                return { status: 'Done' };
+            } else {
+                console.log('No record found or updated with id:', journalPaperId);
+                return { status: 'Failed', error: 'No record found or updated' };
+            }
+        } catch (error) {
+            console.error('Error on update:', error.code, error.message);
+            return { status: 'Failed', error: error.message };
+        }
     }
    
     

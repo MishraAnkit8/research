@@ -8,55 +8,49 @@ module.exports.fetchBookChapter= async() => {
 }
 
 module.exports.insertBookChapter = async(bookChapter , files) => {
-    var bookChapterDataFiles = '';
-    if(files){
-      for(let i = 0; i <= files.length - 1; i++){
-          if(files && files[i].filename){
-            bookChapterDataFiles += files[i].filename + ',';
-          }
-      }
-    }
+    const bookChapterDataFiles = files?.map(file => file.filename).join(',');
+    console.log('updateBookChapterDataFiles ====>>>>', bookChapterDataFiles);
+    // var bookChapterDataFiles = '';
+    // if(files){
+    //   for(let i = 0; i <= files.length - 1; i++){
+    //       if(files && files[i].filename){
+    //         bookChapterDataFiles += files[i].filename + ',';
+    //       }
+    //   }
+    // }
     const bookChapterInsertedData = await bookChapterModels.insertBookChapterData(bookChapter, bookChapterDataFiles);
-    const bookChapterId = bookChapterInsertedData.rows[0].id;
-    console.log('bookChapterId ===>>>', bookChapterId)
-    if(bookChapterInsertedData){
-        return{
-          bookChapterId,
-          bookChapterDataFiles
-        } 
-    }
+    console.log('bookChapterInsertedData ===>>>>', bookChapterInsertedData);
+    const bookChapterId = bookChapterInsertedData.id;
+    console.log('bookChapterId ====>>>', bookChapterId);
+    // return{
+    //     bookChapterInsertedData,
+    //     bookChapterDataFiles
+    // }
+    return {
+        status: bookChapterInsertedData.status === 'Done' ? 'Done' : 'Failed',
+        message: bookChapterInsertedData.status === 'Done' ? `${bookChapterInsertedData.message}` : `${bookChapterInsertedData.message}`,
+        bookChapterDataFiles,
+        bookChapterId
+    };
 }
 
-module.exports.updatedBookChapter = async(bookChapterId, updatedBookChapterPublication, files) => {
-    if(files){
-        var updateBookChapterDataFiles = '';
-        for(let i = 0; i<= files.length - 1 ; i++){
-          if(files  && files[i].filename){
-            updateBookChapterDataFiles += files[i].filename + ',';
-          }
-        }
-        console.log('updateBookChapterDataFiles ===>>>>', updateBookChapterDataFiles)
-        const updatedBookChapterData = await bookChapterModels.updatedBookChapter(bookChapterId , updatedBookChapterPublication, updateBookChapterDataFiles);
-        if(updatedBookChapterData && updatedBookChapterData.rowCount === 1) {
-            return {
-                status : 'done',
-                massage : 'date updated successfully',
-                updateBookChapterDataFiles
-            }
-        }
-    }
-    else{
-        const updatedBookChapterData = await bookChapterModels.updatedBookChapter(bookChapterId , updatedBookChapterPublication);
-        if(updatedBookChapterData && updatedBookChapterData.rowCount === 1) {
-            return {
-                status : 'done',
-                massage : 'date updated successfully'
-            }
-        }
-    }
- 
+module.exports.updatedBookChapter = async (bookChapterId, updatedBookChapterPublication, files) => {
+    const updateBookChapterDataFiles = files?.map(file => file.filename).join(',');
+    console.log('updateBookChapterDataFiles ====>>>>', updateBookChapterDataFiles);
     
-}
+    const updatedBookChapterData = await bookChapterModels.updatedBookChapter(
+      bookChapterId,
+      updatedBookChapterPublication,
+      updateBookChapterDataFiles
+    );
+    console.log('updatedBookChapterData in service ====>>>', updatedBookChapterData);
+    return {
+        status: updatedBookChapterData.status === 'Done' ? 'Done' : 'Failed',
+        message: updatedBookChapterData.status === 'Done' ? `${updatedBookChapterData.message}` : `${updatedBookChapterData.message}`,
+        updateBookChapterDataFiles
+    };
+  };
+  
 
 module.exports.deleteBookChapterPublication = async({bookChapterId}) => {
     const bookChapterPublication = await bookChapterModels.deleteBookChapter(bookChapterId);

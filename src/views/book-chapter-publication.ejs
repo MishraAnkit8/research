@@ -239,8 +239,8 @@
                     </div>
                      <!-- DOI of Book Chapter -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="doi-book-id" class="form-label fw-bold">DOI of Book Chapter</label>
-                        <input type="number" name="doi-book-id" id="doi-book-id" class="form-control" data-validate="isEmpty,isNumber" data-err-msg="numeric value is required."required>
+                        <label for="doi-book-id" class="form-label fw-bold">DOI ID Of Book Chapter</label>
+                        <input type="number" name="doi-book-id" id="doi-book-id" class="form-control">
                     </div>
                      <!-- volume number -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
@@ -365,9 +365,9 @@
                         </div>
                     </div>
                     <!-- doi book id -->
-                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3 doi-book-id d-none">
                         <div class="box">
-                            <div class="task-sub-title sub-title-text">DOI Of Book :</div>
+                            <div class="task-sub-title sub-title-text">DOI ID Of Book :</div>
                             <label class="view-content" id="view-doi-book-id"></label>
                         </div>
                     </div>
@@ -453,6 +453,7 @@
     const rowCount = document.getElementById('row-count');
     let rowIndex = rowCount.innerText;
     let indexValue = parseInt(rowIndex, 10);
+    const doiIdBookDisplay = document.querySelector('.doi-book-id')
     
     const bookChapterList = document.getElementById('book-chapter-list');
     const submitBtn = document.getElementById('submit-btn');
@@ -576,8 +577,10 @@
             return result.json()
         })
         .then((data) => {
-           if(data.status === 'done'){
+           if(data.status === 'Done'){
             console.log('data ==>>', data)
+            const message = data.message;
+            console.log('message ====>>>>>', message)
             const newBookChapter = document.createElement('tr');
             newBookChapter.setAttribute('data-page-number' , data.bookChapter.pageNumber);
             newBookChapter.setAttribute('data-edition' , data.bookChapter.edition);
@@ -609,8 +612,40 @@
                                     data-bookChapter-id="${data.bookChapterId}"></i></label>
                             </td> `;
             bookChapterList.append(newBookChapter);
-            $('#book-chapter-modal').modal('hide');
+            Swal.fire({
+							position: "top-center",
+							icon: "success",
+							title: `${message}`,
+							showConfirmButton: false,
+							timer: 1500
+						});
+            // $('#book-chapter-modal').modal('hide');
            }
+           else{
+            const message = data.message;
+            console.log('data and message ===>>>', data, message)
+            Swal.fire({
+							position: "top-center",
+							icon: "error",
+							title: "Updation Failed",
+							color : "red",
+							with : "20PX",
+							html: `<span style="color: red;">${message}</span>`,
+							showConfirmButton: false,
+						});
+						
+           }
+        })
+        .catch((error) => {
+            Swal.fire({
+							position: "top-center",
+							icon: "error",
+							title: "Updation Failed",
+							color : "red",
+							with : "20PX",
+							html: `<span style="color: red;">${data.massage}</span>`,
+							showConfirmButton: false,
+						});
         })
     }
     
@@ -619,10 +654,15 @@
             if (isValid) {
                 await insertbookChapter('<%- BASE_URL %>research/book-publication-main/book-chapter-publication/insert');
                 indexValue += 1
-                console.log('Data Inserted Successfully');
             }
             else {
-                alert('Validation Failed');
+                Swal.fire({
+							position: "top-center",
+							icon: "error",
+							title: "Validation Failed",
+							color : "red",
+							showConfirmButton: false,
+						});
             }
     })
 
@@ -688,18 +728,7 @@
                 nmimsAuthors.value = bookChapterRowToBeUpdated.getAttribute('data-nmims-authors');
                 nmimsCampusAuthors.value = bookChapterRowToBeUpdated.getAttribute('data-nmims-campus-authors');
                 nmimsSchoolAuthors.value = bookChapterRowToBeUpdated.getAttribute('data-nmims-school-authors');
-                // for file preview
-                // const imageRoute = '<%- BASE_URL %>research/book-publication-main/book-chapter-publication/viewing/';
-                // const fileRoute = '<%- BASE_URL %>research/book-publication-main/book-chapter-publication/download/';
-                // if(imageRoute){
-                //     modalImage.classList.remove('d-none');
-                // }
-                // else{
-                //     modalImage.classList.add('d-none');
-                // }
-                // handleFilePreviewAndDownload(supportingDocuments, imageRoute, fileRoute);
-
-                // supportingDocuments.textContent = bookChapterRowToBeUpdated.getAttribute('data-supporting-documents');
+                supportingDocuments.textContent = bookChapterRowToBeUpdated.getAttribute('data-supporting-documents');
             };
 
             //  for delete book chapter   
@@ -708,10 +737,32 @@
                 const bookChapterPublicatRowToBeDeleted = event.target.closest('tr');
                 bookChapterId = event.target.getAttribute('data-bookChapter-id');
                 console.log('ID ==>>', bookChapterId);
-                let confirmDelete = confirm("Do you want to delete the Book chapter Publication?");
-                if (!confirmDelete) {
-                    return;
-                }
+                let confirmDelete = "Do you want to delete the journal?";
+				if (confirmDelete) {
+					Swal.fire({
+						title: "Are you sure?",
+						text: "You won't be able to revert this!",
+						icon: "warning",
+						showCancelButton: true,
+						confirmButtonColor: "#3085d6",
+						cancelButtonColor: "#d33",
+						confirmButtonText: "Yes, delete it!"
+					}).then((result) => {
+						if (result.isConfirmed) {
+							Swal.fire({
+								title: "Deleted!",
+								text: "Your Data has been deleted.",
+								icon: "success"
+							})
+							.then(()  => {
+								location.reload()
+							})
+						}
+					})
+				}
+				else{
+					return;
+				}
 
                 fetch('<%- BASE_URL %>research/book-publication-main/book-chapter-publication/delete', {
                     method: 'POST',
@@ -785,6 +836,11 @@
                             viewPublisherName.innerText = data.bookChapterView.publisher_name;
                             viewPublicationYear.innerText = data.bookChapterView.publication_year;
                             viewBookUrl.innerText = data.bookChapterView.book_url;
+                            if(!data.bookChapterView.doi_id){
+                                doiIdBookDisplay.classList.add('d-none')
+                            }else{
+                                doiIdBookDisplay.classList.remove('d-none');
+                            }
                             viewDoiBookId.innerText = data.bookChapterView.doi_id;
                             viewNumberOfNmimsAuthors.innerText = data.bookChapterView.number_of_nmims_authors;
                             viewNmimsAuthors.innerText = data.bookChapterView.nmims_authors;
@@ -820,7 +876,7 @@
         const updatedNmimsSchoolAuthors = document.getElementById('nmims-school-authors').value;
         // for multiple files uploading
         const updatedDocuments = document.getElementById('supporting-documents');
-        const updatedBookchapterDataFiles = updatedDocuments.files;
+        let updatedBookchapterDataFiles = updatedDocuments.files;
         if(updatedBookchapterDataFiles.length > 0){
             for(let i = 0; i <= updatedBookchapterDataFiles.length - 1; i++ ){
                 console.log('file name ==>>>', updatedBookchapterDataFiles[i].name);
@@ -859,9 +915,11 @@
             return result.json()
         })
         .then((data) => {
-            if(data.status === 'done'){
+            if(data.status === 'Done'){
                 console.log('data ==>>', data);
-                bookChapterRowToBeUpdated.setAttribute('data-page-number' , data.updatedBookChapter.pageNumber );
+                const message = data.message;
+                console.log('yes data inside message ===>>>', message)
+                bookChapterRowToBeUpdated.setAttribute('data-page-number' , data.updatedBookChapter.pageNumber);
                 bookChapterRowToBeUpdated.setAttribute('data-edition' , data.updatedBookChapter.edition);
                 bookChapterRowToBeUpdated.setAttribute('data-volume-number' , data.updatedBookChapter.volumeNumber);
                 bookChapterRowToBeUpdated.setAttribute('data-publisher-category' , data.updatedBookChapter.publisherCategory);
@@ -882,12 +940,42 @@
                 bookChapterRowToBeUpdated.querySelector('.publisher-name').innerText = data.updatedBookChapter.publisherName;
                 bookChapterRowToBeUpdated.querySelector('.isbn-no').innerText = data.updatedBookChapter.isbnNo;
                 bookChapterRowToBeUpdated.querySelector('.publication-year').innerText = data.updatedBookChapter.publicationYear;
+                $('#book-chapter-modal').modal('hide');
+                Swal.fire({
+							position: "top-center",
+							icon: "success",
+							title: `${message}`,
+							showConfirmButton: false,
+							timer: 1500
+						});
+                // $('#book-chapter-modal').modal('hide');
+                
                 }
+                else if(data.status ==='Failed'){
+                    console.log('data ===>>>', data)
+                    Swal.fire({
+							position: "top-center",
+							icon: "error",
+							title: "Updation Failed",
+							color : "red",
+							with : "20PX",
+							html: `<span style="color: red;">${data.message}</span>`,
+							showConfirmButton: false,
+						});
+                };
             })
             .catch((error) => {
                 console.log('Eroor ::', error);
+                Swal.fire({
+							position: "top-center",
+							icon: "error",
+							title: "Updation Failed",
+							color : "red",
+							with : "20PX",
+							html: `<span style="color: red;">${data.message}</span>`,
+							showConfirmButton: false,
+						});
             })
-            $('#book-chapter-modal').modal('hide');
     }
 
     updateBtn.addEventListener('click' , async() => {
@@ -900,10 +988,15 @@
         const isValid = validateRequiredFormFields(updateBtn);
             if (isValid) {
                 await updateBookChapter('<%- BASE_URL %>research/book-publication-main/book-chapter-publication/update');
-                alert('Data Updated Successfully');
             }
             else {
-                alert('Validation Failed');
+                Swal.fire({
+							position: "top-center",
+							icon: "error",
+							title: "Validation Failed",
+							color : "red",
+							showConfirmButton: false,
+						});
             }
     })
 

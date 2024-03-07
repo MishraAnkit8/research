@@ -740,15 +740,37 @@
                             </td>  ` ;
                     journalTable.appendChild(newJournalPaper);
                     $('#journal-paper-modal').modal('hide');
-                    alert(`${data.massage}`);
+                    Swal.fire({
+                        position: "top-center",
+                        icon: "success",
+                        title: `${data.massage}`,
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
                 }
                 else{
                     console.log('data in failed condition ====>>>>', data)
-                    alert(`${data.massage}`)
-                    
+                    Swal.fire({
+                        position: "top-center",
+                        icon: "error",
+                        title: "Updation Failed",
+                        color : "red",
+                        with : "20PX",
+                        html: `<span style="color: red;">${data.massage}</span>`,
+                        showConfirmButton: false,
+                    });  
                 }
             }).catch((error) => {
                 console.error("ERROR:", error);
+                Swal.fire({
+                        position: "top-center",
+                        icon: "error",
+                        title: "Updation Failed",
+                        color : "red",
+                        with : "20PX",
+                        html: `<span style="color: red;">${data.massage}</span>`,
+                        showConfirmButton: false,
+                    }); 
             })
     };
 
@@ -758,7 +780,13 @@
             await insertJournalPaper('<%- BASE_URL %>research/journal-paper/insert');
         }
         else {
-            alert('Validation Failed');
+            Swal.fire({
+                        position: "top-center",
+                        icon: "error",
+                        title: "Validation Failed",
+                        color : "red",
+                        showConfirmButton: false,
+                    });
         }
     });
 
@@ -769,12 +797,35 @@
             const journalPaperRowData = event.target.parentElement.parentElement.parentElement;
             const journalPaperId = event.target.getAttribute('data-journalPaper-id');
             console.log('journalPaperId for delete :', journalPaperId);
-            // fetching api for delete
-            let confirmDelete = confirm("Do you want to delete the journal?");
-            if (!confirmDelete) {
+            // confirm  alert api for delete
+            let confirmDelete = "Do you want to delete the journal?";
+            if (confirmDelete) {
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "You won't be able to revert this!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes, delete it!"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire({
+                            title: "Deleted!",
+                            text: "Your Data has been deleted.",
+                            icon: "success"
+                        })
+                        .then(()  => {
+                            location.reload()
+                        })
+                    }
+                })
+            }
+            else{
                 return;
             }
 
+            // fetch api for delete
             fetch('<%- BASE_URL %>research/journal-paper/delete', {
                 method: 'post',
                 headers: {
@@ -788,9 +839,10 @@
                 .then((data) => {
                     if (data.status === 'done') {
                         journalPaperRowData.remove();
-                        location.reload();
                     }
+                    
                 })
+                
                 .catch((error) => {
                     console.log(error)
                 });
@@ -1058,8 +1110,6 @@
         updatedJournalPaperDetails.nmimsStudentAuthors = updatedNmimsStudentAuthors;
         updatedJournalPaperDetails.countStudentAuthors = updatedCountNmimsStudentAuthor;
 
-        
-
         // sending  updated data to database by fetch api for update the value in db
         fetch(url, {
             method: 'post',
@@ -1129,7 +1179,15 @@
             .catch((error) => {
                 console.log("ERROIR : ", error);
                 // alert('An error occurred while updating the element');
-                Swal.fire("SweetAlert10 is working!");
+                Swal.fire({
+                        position: "top-center",
+                        icon: "error",
+                        title: "Updation Failed",
+                        color : "red",
+                        with : "20PX",
+                        html: `<span style="color: red;">${data.massage}</span>`,
+                        showConfirmButton: false,
+                    });
                 $('#journal-paper-modal').modal('hide');
 
             })
@@ -1141,7 +1199,13 @@
             await updateJournalPaper('<%- BASE_URL %>research/journal-paper/update');
         }
         else {
-            alert('Validation Failed');
+            Swal.fire({
+                        position: "top-center",
+                        icon: "error",
+                        title: "Validation Failed",
+                        color : "red",
+                        showConfirmButton: false,
+                    });
         }
     })
 </script>
