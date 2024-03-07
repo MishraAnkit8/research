@@ -265,7 +265,7 @@
                     <!-- Weblink-DOI Number -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="web-link" class="form-label fw-bold">WEB Link DOI No.</label>
-                        <input type="number" name="webLinks" id="web-link-num"  data-validate="isEmpty,isNumber"  data-err-msg="Numeric value is required."  class="form-control" required>
+                        <input type="number" name="webLinks" id="web-link-num"  class="form-control">
                     </div>
                     <!-- Names of NMIMS Student  Author-->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
@@ -535,7 +535,7 @@
                         </div>
                     </div>
                     <!--web-link -->
-                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3 web-link d-none">
                         <div class="box">
                             <div class="sub-title-text sub-title">Web Link DOI Number:</div>
                             <label class="view-content" id="view-web-link-doi-number"></label>
@@ -598,7 +598,9 @@
     const updateBtn = document.getElementById('update-btn');
     const closeBtn = document.getElementById('close-btn');
     const journalPaperAddModal = document.getElementById('journal-paper-add-modal');
+    
     let rowToBeUpdated, journalPaperId;
+    const doiLinkNumberClass = document.querySelector('.web-link');
 
     journalPaperAddModal.addEventListener('click', async function (event) {
         if (event.target.tagName === 'BUTTON' && event.target.classList.contains('add-modal') || event.target.classList.contains('plus')) {
@@ -734,12 +736,12 @@
                                 <label class="delete" data-journalPaper-id="${journalPaperId}"><i  data-journalPaper-id="${journalPaperId}" class="fa-solid fa-trash delete text-danger"></i></label>
                             </td>  ` ;
                     journalTable.appendChild(newJournalPaper);
-                    // $('#journal-paper-modal').modal('hide');
-                    alert('Data Inserted SuccessFully');
+                    $('#journal-paper-modal').modal('hide');
+                    alert(`${data.massage}`);
                 }
                 else{
                     console.log('data in failed condition ====>>>>', data)
-                    alert(`${data.errorMassage}`)
+                    alert(`${data.massage}`)
                 }
             }).catch((error) => {
                 console.error("ERROR:", error);
@@ -924,7 +926,8 @@
             const viewTitle = document.getElementById('view-title-of-paper');
             const viewJournalCategory = document.getElementById('view-journal-category');
             const viewNameStudentAuthor = document.getElementById('view-names-nmims-student-author');
-            const viewCountStudentAuthor = document.getElementById('view-no-nmims-student-author')
+            const viewCountStudentAuthor = document.getElementById('view-no-nmims-student-author');
+            
             
             const viewNmimsAuthorsCount = document.getElementById('view-nmims-authors-count');
 
@@ -955,7 +958,15 @@
                     viewCountFaculty.innerText = data[0].count_other_faculty;
                     viewIssNo.innerText = data[0].issn_no;
                     viewAbcdIndexedCategory.innerText = data[0].abdc_indexed;
-                    viewWebLinkNumber.innerText = data[0].web_link_doi_number;
+                    console.log('data[0].web_link_doi_number ===>>>', data[0].web_link_doi_number)
+                    if(data[0].web_link_doi_number === null){
+                        doiLinkNumberClass.classList.add('d-none');
+                    }
+                    else{
+                        doiLinkNumberClass.classList.remove('d-none');
+                        viewWebLinkNumber.innerText = data[0].web_link_doi_number;
+                    }
+                    
                     console.log('data[0].pages ===>>>', data[0].pages)
                     viewPages.innerText = data[0].pages;
                     viewScsCiteScore.innerText = data[0].scs_cite_score;
@@ -1059,7 +1070,7 @@
             .then((data) => {
                 console.log('data ==>>>', data);
 
-                if (data.status === 'done') {
+                if (data.status === 'Done') {
                     console.log('journalPaperId >>>> ', journalPaperId);
                     rowToBeUpdated.querySelector('.year').innerText = updatedJournalPaperDetails.year;
                     rowToBeUpdated.querySelector('.school').innerText = updatedJournalPaperDetails.school;
@@ -1087,9 +1098,13 @@
                     rowToBeUpdated.setAttribute('data-title-of-paper', updatedTitleOfPaper);
                     rowToBeUpdated.setAttribute('data-journal-category' , updatedJournalCategory);
                     rowToBeUpdated.setAttribute('data-nmims-author-count', updatedNmimsAuthorsCount);
+                    $('#journal-paper-modal').modal('hide');
+                    alert(`${data.massage}`);
                 }
-                $('#journal-paper-modal').modal('hide');
-                alert('Row Data Updated SuccessFully');
+                else{
+                    alert(`${data.massage}`)
+                }
+                
             })
             .catch((error) => {
                 console.log("ERROIR : ", error);

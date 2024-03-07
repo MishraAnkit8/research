@@ -35,17 +35,17 @@ module.exports.deleteJournalPaper = async (journalPaperId) => {
 module.exports.updateJournalPaper = async ({journalPaperId, updateJournalDetails}) => {
     const updateJournalData = await journalPaperModel.updateJournalPaperData({journalPaperId, updateJournalDetails});
     console.log('id for  updation in service', journalPaperId);
-    console.log('data is service ==>>>', updateJournalData.rows);
-    if(updateJournalData.rowCount == 1){
+    console.log('data is service ==>>>', updateJournalData);
+    if(updateJournalData.status === 'Done'){
         return {
-            status : 'done' ,
-            massage : 'data updated successfully'
+            status : 'Done' ,
+            massage : 'Data Updated Successfully'
         };
     }
     else{
         return {
-            status : 'failed' ,
-            massage : 'data is not updating'
+            status : 'Failed' ,
+            error : updateJournalData.error
         }
     };
 }

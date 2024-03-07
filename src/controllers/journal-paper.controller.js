@@ -17,50 +17,32 @@ module.exports.createJournalPaper = async (req, res, next) => {
     console.log('data in controller', req.body);
     const journalPaperData = await journalPaperService.insertJournalPapper(req.body);
     console.log(" journalPaperData ===>" , journalPaperData);
-    const successCondition = journalPaperData.success;
-    console.log('successMassage ====>>>>>', successCondition)
-    if(successCondition === false){
-        const errorMassage = journalPaperData.error;
-        res.status(500).send({
-            status : 'Failed',
-            errorMassage : errorMassage
+    if(journalPaperData.status === 'Done'){
+        const journalPaperId = journalPaperData.id;
+        const journalDetails = req.body;
+        console.log('journalDetails ====>>>>>', journalDetails);
+        res.status(200).send({
+            status : 'Done',
+            massage : 'Data Inserted SuccessFully',
+            journalDetails : journalDetails,
+            journalPaperId : journalPaperId
         })
     }
-    
-   
-    // if(journalPaperData.success === "false"){
-    //     console.log('yes condtion is failed')
-    // }
-    // if(journalPaperData && journalPaperData.rows[0].id) {
-    //     const rowCount = journalPaperData.rowCount;
-    //     console.log('rowCount ===>>>', rowCount);
-    //     res.status(200).send({
-    //         status : 'done',
-    //         journalPaperId : journalPaperData.rows[0].id,
-    //         rowCount
-    //     });
-    // }
-    // else if(journalPaperData.success === "false"){
-    //         res.status(500).send({
-    //             status : 'False',
-    //             errorMsg : journalPaperData.error
-    //         })
-    //     }
-
-//     const errorMsg = journalPaperData.error;
-//     console.log('errorMsg ====>>>>', errorMsg)
-//     if(journalPaperData.success === "false"){
-//         res.status(500).send({
-//             status : 'False',
-//             errorMsg : errorMsg
-//         })
-//     }
-//     else{
-//         const rowCount = journalPaperData.rowCount;
-//         console.log('rowCount ===>>>', rowCount);
-//   }
- 
-
+    else if(journalPaperData.status === 'Failed'){
+        if(journalPaperData.error === 'web_link_doi_number already exists'){
+            const errMsg = "WEB Link DOI Number should Be Uniq";
+            res.status(502).send({
+                status : 'Failed',
+                massage : errMsg
+            })
+        }
+        else{
+            res.status(500).send({
+                status : 'Failed',
+                massage : journalPaperData.error
+            })
+        }
+    }
 };
 
 
@@ -90,19 +72,29 @@ module.exports.updateJournalPaper = async (req, res, next) => {
     console.log('journalPaperId for updation in controller', journalPaperId)
     console.log('updateJournalDetails ==>>' , updateJournalDetails);
     const updatePaper = await journalPaperService.updateJournalPaper({journalPaperId, updateJournalDetails});
-    console.log('id for updation', updatePaper);
-    if(updatePaper.status === 'done'){
+    console.log('id for updation in controller', updatePaper);
+    if(updatePaper.status === 'Done'){
         res.status(200).send({
-            status : 'done',
+            status : 'Done',
             massage : updatePaper.massage
         });
     }
-    else{
-        res.status(500).send({
-            status  : 'failed',
-            massage : updatePaper.massage
-        });
-    };
+    else if(updatePaper.status === 'Failed'){
+        if(updatePaper.error === 'duplicate key value violates unique constraint "journal_papers_web_link_doi_number_key"'){
+            console.log('updatePaper.error =====>>>>>', updatePaper.error)
+            const errMsg = "WEB Link DOI Number should Be Uniq";
+            res.status(502).send({
+                status : 'Failed',
+                massage : errMsg
+            })
+        }
+        else{
+            res.status(500).send({
+                status : 'Failed',
+                massage : updatePaper.error
+            })
+        }
+    }
 };
 
 module.exports.viewJournalPaper = async(req, res, next) => {
