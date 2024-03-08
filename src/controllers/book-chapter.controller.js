@@ -91,10 +91,10 @@ module.exports.updateBookChapterData = async(req, res, next) => {
 module.exports.deleteBookChapterData = async(req, res, next) => {
     const bookChapterId = req.body.bookChapterId;
     const deletebookChapter = await bookChapterServices.deleteBookChapterPublication({bookChapterId});
-    if(deletebookChapter.status === 'done'){
+    if(deletebookChapter.status === 'Done'){
         res.status(200).send({
-            status : 'done',
-            massage : 'deleted successfully'
+            status : 'Done',
+            massage : 'Deleted successfully'
         })
     }
 }

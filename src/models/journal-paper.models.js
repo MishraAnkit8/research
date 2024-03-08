@@ -26,9 +26,6 @@ module.exports.createJournalPaper = async ({ journalDetails }) => {
         countStudentAuthors
     } = journalDetails;
 
-    // Converting empty strings to null for integer fields
-    // handling of webLinkNumberConverting empty strings to null for integer fields
-    const webLinkNumberParsed = webLinkNumber === "" ? null : parseInt(webLinkNumber, 10);
     let sql = {
         text: `INSERT INTO journal_papers (
             year, school, campus, policy_cadre, journal_category, all_authors,
@@ -41,29 +38,13 @@ module.exports.createJournalPaper = async ({ journalDetails }) => {
             year, school, campus, policyCadre, journalCategory, allAuthors, totalAuthors, nmimsAuthors,
             foreignAuthors, foreignAuthorsNumbers, nmimsAuthorsCount, countOtherFaculty,
             titleOfPaper, journalName, publisher, pages, issnNo, dateOfPublishing, impactFactor, scsCiteScore,
-            scsIndexedCategory, wosIndexedCategory, abdcIndexedCategory, ugcIndexedCategory, webLinkNumberParsed, nmimsStudentAuthors,
+            scsIndexedCategory, wosIndexedCategory, abdcIndexedCategory, ugcIndexedCategory, webLinkNumber, nmimsStudentAuthors,
             countStudentAuthors
         ]
     };
 
     console.log('sql ==>>', sql);
-    //handling the condng by tre and catch
-    try {
-        const result = await researchDbW.query(sql);
-        console.log('Inserted row with id:', result.rows[0].id);
-        return { status: 'Done', id: result.rows[0].id};
-    } catch (error) {
-        console.log('error.code ====>>>', error.code)
-        console.log('error.constraint ====>>>>>', error.constraint);
-        console.log('error.message ====>>>', error.message);
-        if (error.code === '23505' && error.constraint === 'journal_papers_web_link_doi_number_key') {
-            console.error('Insertion failed. web_link_doi_number already exists.');
-            return { status: 'Failed', error: 'web_link_doi_number already exists' };
-        } else {
-            console.error('Error occurred::::::::::', error.message);
-            return { status: 'Failed', error: error.message };
-        }
-    }
+    return researchDbW.query(sql);
 };
 
 // for deleting journal paper  data 
@@ -89,9 +70,6 @@ module.exports.updateJournalPaperData = async ({ journalPaperId, updateJournalDe
         countStudentAuthors
     } = updateJournalDetails;
 
-    // handling of webLinkNumberConverting empty strings to null for integer fields
-    const webLinkNumberParsed = webLinkNumber === "" ? null : parseInt(webLinkNumber, 10);
-
     let sql = {
         text: `UPDATE journal_papers SET
             year = $2, school = $3, campus = $4, policy_cadre = $5, journal_category = $6, all_authors = $7,
@@ -105,25 +83,14 @@ module.exports.updateJournalPaperData = async ({ journalPaperId, updateJournalDe
             journalPaperId, year, school, campus, policyCadre, journalCategory, allAuthors, totalAuthors, nmimsAuthors,
             foreignAuthors, foreignAuthorsNumbers, nmimsAuthorsCount, countOtherFaculty, 
             titleOfPaper, journalName, publisher, pages, issnNo, dateOfPublishing, impactFactor, scsCiteScore, 
-            scsIndexedCategory, wosIndexedCategory, abdcIndexedCategory, ugcIndexedCategory, webLinkNumberParsed, nmimsStudentAuthors,
+            scsIndexedCategory, wosIndexedCategory, abdcIndexedCategory, ugcIndexedCategory, webLinkNumber, nmimsStudentAuthors,
             countStudentAuthors
         ]
     };
 
-    try {
-        const result = await researchDbW.query(sql);
-        if (result.rowCount > 0) {
-            console.log('sql ====>>>', sql)
-            console.log('Updated successful:', result.rowCount, 'Row(s) Updated.');
-            return { status: 'Done' };
-        } else {
-            console.log('No record found or updated with id:', journalPaperId);
-            return { status: 'Failed', error: 'No record found or updated' };
-        }
-    } catch (error) {
-        console.error('Error on update:', error.code, error.message);
-        return { status: 'Failed', error: error.message };
-    }
+    console.log('sql ====>>>', sql);
+    return researchDbW.query(sql)
+
 };
 
 // for viewing 

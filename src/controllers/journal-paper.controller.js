@@ -17,31 +17,14 @@ module.exports.createJournalPaper = async (req, res, next) => {
     console.log('data in controller', req.body);
     const journalPaperData = await journalPaperService.insertJournalPapper(req.body);
     console.log(" journalPaperData ===>" , journalPaperData);
-    if(journalPaperData.status === 'Done'){
-        const journalPaperId = journalPaperData.id;
-        const journalDetails = req.body;
-        console.log('journalDetails ====>>>>>', journalDetails);
+    if(journalPaperData){
+        const journalPaperId = journalPaperData.rows[0].id;
         res.status(200).send({
-            status : 'Done',
-            massage : 'Data Inserted SuccessFully',
-            journalDetails : journalDetails,
-            journalPaperId : journalPaperId
+            status : "Done",
+            message : "Record Inserted  Successfully",
+            journalPaperId : journalPaperId,
+            journalPaperData : journalPaperData
         })
-    }
-    else if(journalPaperData.status === 'Failed'){
-        if(journalPaperData.error === 'web_link_doi_number already exists'){
-            const errMsg = "WEB Link DOI Number should Be Uniq";
-            res.status(502).send({
-                status : 'Failed',
-                massage : errMsg
-            })
-        }
-        else{
-            res.status(500).send({
-                status : 'Failed',
-                massage : journalPaperData.error
-            })
-        }
     }
 };
 
@@ -52,7 +35,7 @@ module.exports.delJournalPaper = async (req, res, next) => {
     const delJournalData = await journalPaperService.deleteJournalPaper(journalPaperId);
     if( delJournalData.status ===  'done'){
         res.status(200).send({
-            status : 'done' ,
+            status : 'Done' ,
             massage : delJournalData.massage
         });
     }
@@ -73,28 +56,34 @@ module.exports.updateJournalPaper = async (req, res, next) => {
     console.log('updateJournalDetails ==>>' , updateJournalDetails);
     const updatePaper = await journalPaperService.updateJournalPaper({journalPaperId, updateJournalDetails});
     console.log('id for updation in controller', updatePaper);
-    if(updatePaper.status === 'Done'){
-        res.status(200).send({
-            status : 'Done',
-            massage : updatePaper.massage
-        });
-    }
-    else if(updatePaper.status === 'Failed'){
-        if(updatePaper.error === 'duplicate key value violates unique constraint "journal_papers_web_link_doi_number_key"'){
-            console.log('updatePaper.error =====>>>>>', updatePaper.error)
-            const errMsg = "WEB Link DOI Number should Be Uniq";
-            res.status(502).send({
-                status : 'Failed',
-                massage : errMsg
-            })
-        }
-        else{
-            res.status(500).send({
-                status : 'Failed',
-                massage : updatePaper.error
-            })
-        }
-    }
+    res.status(200).send({
+        status : 'Done',
+        message : "Record Updated Successfully",
+        journalPaperId : journalPaperId,
+        updateJournalDetails : updateJournalDetails
+    })
+    // if(updatePaper.status === 'Done'){
+    //     res.status(200).send({
+    //         status : 'Done',
+    //         massage : updatePaper.massage
+    //     });
+    // }
+    // else if(updatePaper.status === 'Failed'){
+    //     if(updatePaper.error === 'duplicate key value violates unique constraint "journal_papers_web_link_doi_number_key"'){
+    //         console.log('updatePaper.error =====>>>>>', updatePaper.error)
+    //         const errMsg = "WEB Link DOI Number should Be Uniq";
+    //         res.status(502).send({
+    //             status : 'Failed',
+    //             massage : errMsg
+    //         })
+    //     }
+    //     else{
+    //         res.status(500).send({
+    //             status : 'Failed',
+    //             massage : updatePaper.error
+    //         })
+    //     }
+    // }
 };
 
 module.exports.viewJournalPaper = async(req, res, next) => {

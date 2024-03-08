@@ -230,12 +230,12 @@
                     <!-- ISBN Number -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="caseStudy" class="form-label fw-bold">ISBN Number</label>
-                        <input type="number" name="ISBN-Number" id="isbn-no" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required" class="form-control" required>
+                        <input type="number" name="ISBN-Number" id="isbn-no" class="form-control">
                     </div>
                     <!-- DOI of book -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="doi-book-id" class="form-label fw-bold">DOI of book</label>
-                        <input type="number" name="doi-book-id" id="doi-book-id" data-validate="isEmpty,isNumber" data-err-msg="Doi Book Id number should be uniq" class="form-control" required>
+                        <label for="doi-book-id" class="form-label fw-bold">DOI ID of book</label>
+                        <input type="number" name="doi-book-id" id="doi-book-id" class="form-control">
                     </div>
                     <!-- Place of Publication -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
@@ -364,9 +364,9 @@
                         </div>
                     </div>
                     <!-- doi book id -->
-                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3 doi-book-id">
                         <div class="box">
-                            <div class="task-sub-title sub-title-text">DOI Of Book :</div>
+                            <div class="task-sub-title sub-title-text">DOI ID Of Book :</div>
                             <label class="view-content" id="view-doi-book-id"></label>
                         </div>
                     </div>
@@ -456,6 +456,7 @@
     const updateBtn = document.getElementById('update-btn');
     const addnewEditedBook = document.getElementById('edited-book-add-modal');
     let editedBookId , editedBookRowToBeUpdated;
+    const doiIdBookClass = document.querySelector('.doi-book-id');
     // const fileView = document.getElementById('file-view');
     // const downloadLink = document.getElementById('downloadLink');
 
@@ -573,7 +574,7 @@
                     return result.json()
                 })
                 .then((data) => {
-                    if (data.status === 'done') {
+                    if (data.status === 'Done') {
                         console.log('data ==>>', data)
                         const newEditedBook = document.createElement('tr');
                         newEditedBook.setAttribute('data-page-number', data.editedBooKData.pageNumber);
@@ -589,8 +590,10 @@
                         newEditedBook.setAttribute('data-nmims-campus-authors', data.editedBooKData.nmimsCampusAuthors);
                         newEditedBook.setAttribute('data-nmims-school-authors', data.editedBooKData.nmimsSchoolAuthors);
                         newEditedBook.setAttribute('data-supporting-documents', data.editedBooKData.supportingDocuments);
+                        const sum = indexValue + Number(data.rowCount);
+                        console.log('sum ===>>>>', sum)
                         newEditedBook.innerHTML = `
-                        <td >${indexValue}</td>
+                            <td> ${sum}</td>
                             <td class="author-first-name">${data.editedBooKData.authorName}</td>
                             <td class="publication-year">${data.editedBooKData.publicationYear}</td>
                             <td class="book-title">${data.editedBooKData.bookTitle}</td>
@@ -605,20 +608,53 @@
                                     data-editedbook-id="${data.editedBookId}"></i></label>
                             </td> `;
                         editedBookList.append(newEditedBook);
-                        $('#edited-book-modal').modal('hide');
+                        // $('#edited-book-modal').modal('hide');
+                        Swal.fire({
+							position: "top-center",
+							icon: "success",
+							title: `${data.message}`,
+							showConfirmButton: false,
+							timer: 1500
+						});
                     }
-                })
+                    else{
+                        console.log('data ===>>:>>', data)
+                        Swal.fire({
+							position: "top-center",
+							icon: "error",
+							color : "red",
+							with : "20PX",
+							html: `<span style="color: red;">${data.message}</span>`,
+							showConfirmButton: false,
+						});
+                    }
+                }).catch((error) => {
+                    const message = 'Internal Server Error';
+                    console.log('error ===>>>>', error);
+                    Swal.fire({
+							position: "top-center",
+							icon: "error",
+							color : "red",
+							with : "20PX",
+							html: `<span style="color: red;">${message}</span>`,
+							showConfirmButton: false,
+						});
+                } )
         }
 
     submitBtn.addEventListener('click', async () => {
             const isValid = validateRequiredFormFields(submitBtn);
             if (isValid) {
-                await insertEditedBook('<%- BASE_URL %>research/book-publication-main/edited-book-publication/insert')
-                indexValue += 1
-                console.log('Data Inserted Successfully');
+                await insertEditedBook('<%- BASE_URL %>research/book-publication-main/edited-book-publication/insert');
             }
             else {
-                alert('Validation Failed');
+                Swal.fire({
+							position: "top-center",
+							icon: "error",
+							title: "Validation Failed",
+							color : "red",
+							showConfirmButton: false,
+						});
             }
         })
     
@@ -703,27 +739,50 @@
                 console.log('editedBookPublicatRowToBeDeleted ==>>', editedBookPublicatRowToBeDeleted)
                 editedBookId = event.target.getAttribute('data-editedbook-id');
                 console.log('ID ==>>', editedBookId);
-                let confirmDelete = confirm("Do you want to delete the Edited Book Publication?");
-                if (!confirmDelete) {
-                    return;
-                }
-                fetch('<%- BASE_URL %>research/book-publication-main/edited-book-publication/delete', {
-                    method: 'POST',
-                    headers: {
-                        'content-type': 'application/json'
-                    },
-                    body: JSON.stringify({ editedBookId })
-                })
-                    .then((result) => {
-                        return result.json()
-                    })
-                    .then((data) => {
-                        if (data.status === 'done') {
-                            console.log('data ==>>', data);
-                            editedBookPublicatRowToBeDeleted.remove();
-                            location.reload();
+                let confirmDelete = "Do you want to delete the Record Of  Publication?";
+                if (confirmDelete) {
+                    Swal.fire({
+                        title: "Are you sure?",
+                        text: "You won't be able to revert this!",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "Yes, delete it!"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Execute fetch request here after confirmation
+                            fetch('<%- BASE_URL %>research/book-publication-main/edited-book-publication/delete', {
+                                method: 'POST',
+                                headers: {
+                                    'content-type': 'application/json'
+                                },
+                                body: JSON.stringify({ editedBookId })
+                            })
+                                .then((result) => result.json())
+                                .then((data) => {
+                                    if (data.status === 'Done') {
+                                        console.log('data ==>>', data);
+                                        // Assuming bookPublicatRowToBeDeleted is correctly defined earlier in your code
+                                        editedBookPublicatRowToBeDeleted.remove();
+                                        Swal.fire({
+                                            title: "Deleted!",
+                                            text: "Record has been deleted.",
+                                            icon: "success"
+                                        }).then(() => {
+                                            location.reload();
+                                        });
+                                    }
+                                })
+                                .catch((error) => {
+                                    console.error('Error:', error);
+                                });
                         }
-                    })
+                    });
+                }
+                else {
+                    return
+                } 
             }
 
             // for view
@@ -778,7 +837,7 @@
                             viewPublisherName.innerText = data.editedBookView.publisher_name;
                             viewPublicationYear.innerText = data.editedBookView.publication_year;
                             viewBookUrl.innerText = data.editedBookView.book_url;
-                            viewDoiBookId.innerText = data.editedBookView.doi_id;
+                            data.editedBookView.doi_id ? (viewDoiBookId.innerText = data.editedBookView.doi_id, doiIdBookClass.classList.remove('d-none')) : doiIdBookClass.classList.add('d-none')
                             viewNumberOfNmimsAuthors.innerText = data.editedBookView.number_of_nmims_authors;
                             viewNmimsAuthors.innerText = data.editedBookView.nmims_authors;
                             viewNmimsCampusAuthors.innerText = data.editedBookView.nmims_campus_authors;
@@ -811,7 +870,7 @@
                 const updatedNmimsCampusAuthors = document.getElementById('nmims-campus-authors').value;
                 const updatedNmimsSchoolAuthors = document.getElementById('nmims-school-authors').value;
                 const updatedDocuments = document.getElementById('supporting-documents');
-                const updateEditedFilesData = updatedDocuments.files;
+                let updateEditedFilesData = updatedDocuments.files;
                 if (updateEditedFilesData.length > 0) {
                     for (let i = 0; i <= updateEditedFilesData.length - 1; i++) {
                         if (updateEditedFilesData && updateEditedFilesData[i].name) {
@@ -851,7 +910,7 @@
                         return result.json()
                     })
                     .then((data) => {
-                        if (data.status === 'done') {
+                        if (data.status === 'Done') {
                             console.log('data ==>>', data);
                             editedBookRowToBeUpdated.setAttribute('data-page-number', data.updatedEditedBook.pageNumber);
                             editedBookRowToBeUpdated.setAttribute('data-edition', data.updatedEditedBook.edition);
@@ -873,12 +932,43 @@
                             editedBookRowToBeUpdated.querySelector('.publisher-name').innerText = data.updatedEditedBook.publisherName;
                             editedBookRowToBeUpdated.querySelector('.isbn-no').innerText = data.updatedEditedBook.isbnNo;
                             editedBookRowToBeUpdated.querySelector('.publication-year').innerText = data.updatedEditedBook.publicationYear;
+                            Swal.fire({
+							position: "top-center",
+							icon: "success",
+							title: `${data.message}`,
+							showConfirmButton: false,
+							
+						});
+                        $('#edited-book-modal').modal('hide');
                         }
+                        else{
+                        console.log('data ===>>>>', data);
+                        Swal.fire({
+							position: "top-center",
+							icon: "error",
+							title: `${data.errorCode}`,
+                            // text: `${data.errorCode}`,
+							color : "red",
+							with : "20PX",
+							html: `<span style="color: red;">${data.message}</span>`,
+							showConfirmButton: false,
+						});
+                    }
                     })
                     .catch((error) => {
                         console.log('Eroor ::', error);
+                        const errTitle = error
+                        const message = "Internal Server Error";
+                        Swal.fire({
+							position: "top-center",
+							icon: "error",
+							title: `${errTitle}`,
+							color : "red",
+							with : "20PX",
+							html: `<span style="color: red;">${message}</span>`,
+							showConfirmButton: false,
+						});
                     })
-                $('#edited-book-modal').modal('hide');
             };
 
     updateBtn.addEventListener('click', async () => {
@@ -891,10 +981,16 @@
             const isValid = validateRequiredFormFields(submitBtn);
             if (isValid) {
                 await updateEditedBookPublication('<%- BASE_URL %>research/book-publication-main/edited-book-publication/update');
-                alert('Row Data Updated Successfully');
+                // alert('Row Data Updated Successfully');
             }
             else {
-                alert('Validation Failed');
+                Swal.fire({
+							position: "top-center",
+							icon: "error",
+							title: "Validation Failed",
+							color : "red",
+							showConfirmButton: false,
+						});
             }
 
         })

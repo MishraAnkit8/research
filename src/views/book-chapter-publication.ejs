@@ -619,7 +619,7 @@
 							showConfirmButton: false,
 							timer: 1500
 						});
-            // $('#book-chapter-modal').modal('hide');
+            $('#book-chapter-modal').modal('hide');
            }
            else{
             const message = data.message;
@@ -737,53 +737,53 @@
                 const bookChapterPublicatRowToBeDeleted = event.target.closest('tr');
                 bookChapterId = event.target.getAttribute('data-bookChapter-id');
                 console.log('ID ==>>', bookChapterId);
-                let confirmDelete = "Do you want to delete the journal?";
-				if (confirmDelete) {
-					Swal.fire({
-						title: "Are you sure?",
-						text: "You won't be able to revert this!",
-						icon: "warning",
-						showCancelButton: true,
-						confirmButtonColor: "#3085d6",
-						cancelButtonColor: "#d33",
-						confirmButtonText: "Yes, delete it!"
-					}).then((result) => {
-						if (result.isConfirmed) {
-							Swal.fire({
-								title: "Deleted!",
-								text: "Your Data has been deleted.",
-								icon: "success"
-							})
-							.then(()  => {
-								location.reload()
-							})
-						}
-					})
-				}
-				else{
-					return;
-				}
-
-                fetch('<%- BASE_URL %>research/book-publication-main/book-chapter-publication/delete', {
-                    method: 'POST',
-                    headers: {
-                        'content-type': 'application/json'
-                    },
-                    body: JSON.stringify({ bookChapterId })
-                })
-                    .then((result) => {
-                        return result.json()
-                    })
-                    .then((data) => {
-                        if (data.status === 'done') {
-                            console.log('data ==>>', data);
-                            bookChapterPublicatRowToBeDeleted.remove();
-                            location.reload();
+                let confirmDelete = "Do you want to delete the Book  Publication?";
+                if (confirmDelete) {
+                    Swal.fire({
+                        title: "Are you sure?",
+                        text: "You won't be able to revert this!",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "Yes, delete it!"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Execute fetch request here after confirmation
+                            fetch('<%- BASE_URL %>research/book-publication-main/book-chapter-publication/delete', {
+                                method: 'POST',
+                                headers: {
+                                    'content-type': 'application/json'
+                                },
+                                body: JSON.stringify({ bookChapterId })
+                            })
+                                .then((result) => result.json())
+                                .then((data) => {
+                                    if (data.status === 'Done') {
+                                        console.log('data ==>>', data);
+                                        // Assuming bookPublicatRowToBeDeleted is correctly defined earlier in your code
+                                        bookPublicatRowToBeDeleted.remove();
+                                        Swal.fire({
+                                            title: "Deleted!",
+                                            text: "Record has been deleted.",
+                                            icon: "success"
+                                        }).then(() => {
+                                            location.reload();
+                                        });
+                                    }
+                                })
+                                .catch((error) => {
+                                    console.error('Error:', error);
+                                });
                         }
-                    })
+                    });
+                }
+                else {
+                    return
+                }
             }
 
-            //  book chapter view
+            //  for  book chapter view
             if (event.target.classList.contains('view')) {
                 console.log('clickedddd');
                 const bookChapterRowToBeViewed = event.target.closest('tr');

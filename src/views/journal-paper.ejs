@@ -265,7 +265,7 @@
                     <!-- Weblink-DOI Number -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="web-link" class="form-label fw-bold">WEB Link DOI No.</label>
-                        <input type="number" name="webLinks" id="web-link-num"  class="form-control">
+                        <input type="number" name="webLinks" id="web-link-num"  class="form-control" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required" required>
                     </div>
                     <!-- Names of NMIMS Student  Author-->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
@@ -698,7 +698,7 @@
             })
             .then((data) => {
                 console.log('data ===>>>', data);
-                if (data.status === 'done') {
+                if (data.status === 'Done') {
                     journalPaperId = data.journalPaperId;
                     console.log('journalPaperId ==>', journalPaperId);
                     const rouCount = parseInt(data.rowCount, 10);
@@ -739,36 +739,37 @@
                                 <label class="delete" data-journalPaper-id="${journalPaperId}"><i  data-journalPaper-id="${journalPaperId}" class="fa-solid fa-trash delete text-danger"></i></label>
                             </td>  ` ;
                     journalTable.appendChild(newJournalPaper);
-                    $('#journal-paper-modal').modal('hide');
+                    // $('#journal-paper-modal').modal('hide');
                     Swal.fire({
-                        position: "top-center",
-                        icon: "success",
-                        title: `${data.massage}`,
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
+							position: "top-center",
+							icon: "success",
+							title: `${data.message}`,
+							showConfirmButton: false,
+							
+						});
                 }
                 else{
                     console.log('data in failed condition ====>>>>', data)
                     Swal.fire({
                         position: "top-center",
                         icon: "error",
-                        title: "Updation Failed",
+                        title: "Failed To Insert",
                         color : "red",
                         with : "20PX",
-                        html: `<span style="color: red;">${data.massage}</span>`,
                         showConfirmButton: false,
                     });  
                 }
             }).catch((error) => {
                 console.error("ERROR:", error);
+                const message = "Internal Server Error";
+                const errTitle = error
                 Swal.fire({
                         position: "top-center",
                         icon: "error",
-                        title: "Updation Failed",
+                        title: `${message}`,
                         color : "red",
                         with : "20PX",
-                        html: `<span style="color: red;">${data.massage}</span>`,
+                        html: `<span style="color: red;">${errTitle}</span>`,
                         showConfirmButton: false,
                     }); 
             })
@@ -798,7 +799,7 @@
             const journalPaperId = event.target.getAttribute('data-journalPaper-id');
             console.log('journalPaperId for delete :', journalPaperId);
             // confirm  alert api for delete
-            let confirmDelete = "Do you want to delete the journal?";
+            let confirmDelete = "Do you want to delete the Book  Publication?";
             if (confirmDelete) {
                 Swal.fire({
                     title: "Are you sure?",
@@ -810,42 +811,38 @@
                     confirmButtonText: "Yes, delete it!"
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        Swal.fire({
-                            title: "Deleted!",
-                            text: "Your Data has been deleted.",
-                            icon: "success"
+                        // Execute fetch request here after confirmation
+                        fetch('<%- BASE_URL %>research/journal-paper/delete', {
+                            method: 'POST',
+                            headers: {
+                                'content-type': 'application/json'
+                            },
+                            body: JSON.stringify({ journalPaperId })
                         })
-                        .then(()  => {
-                            location.reload()
-                        })
+                            .then((result) => result.json())
+                            .then((data) => {
+                                if (data.status === 'Done') {
+                                    console.log('data ==>>', data);
+                                    // Assuming bookPublicatRowToBeDeleted is correctly defined earlier in your code
+                                    journalPaperRowData.remove();
+                                    Swal.fire({
+                                        title: "Deleted!",
+                                        text: "Record has been deleted.",
+                                        icon: "success"
+                                    }).then(() => {
+                                        location.reload();
+                                    });
+                                }
+                            })
+                            .catch((error) => {
+                                console.error('Error:', error);
+                            });
                     }
-                })
-            }
-            else{
-                return;
-            }
-
-            // fetch api for delete
-            fetch('<%- BASE_URL %>research/journal-paper/delete', {
-                method: 'post',
-                headers: {
-                    'content-type': 'application/json'
-                },
-                body: JSON.stringify({ journalPaperId })
-            })
-                .then((result) => {
-                    return result.json();
-                })
-                .then((data) => {
-                    if (data.status === 'done') {
-                        journalPaperRowData.remove();
-                    }
-                    
-                })
-                
-                .catch((error) => {
-                    console.log(error)
                 });
+            }
+            else {
+                return
+            } 
         }
         // for updating 
         if (event.target.classList.contains('edit')) {
@@ -1015,14 +1012,7 @@
                     viewIssNo.innerText = data[0].issn_no;
                     viewAbcdIndexedCategory.innerText = data[0].abdc_indexed;
                     console.log('data[0].web_link_doi_number ===>>>', data[0].web_link_doi_number)
-                    if(data[0].web_link_doi_number === null){
-                        doiLinkNumberClass.classList.add('d-none');
-                    }
-                    else{
-                        doiLinkNumberClass.classList.remove('d-none');
-                        viewWebLinkNumber.innerText = data[0].web_link_doi_number;
-                    }
-                    
+                    viewWebLinkNumber.innerText = data[0].web_link_doi_number;
                     console.log('data[0].pages ===>>>', data[0].pages)
                     viewPages.innerText = data[0].pages;
                     viewScsCiteScore.innerText = data[0].scs_cite_score;
@@ -1157,7 +1147,7 @@
                     Swal.fire({
                         position: "top-center",
                         icon: "success",
-                        title: `${data.massage}`,
+                        title: `${data.message}`,
                         showConfirmButton: false,
                         timer: 1500
                     });
@@ -1169,7 +1159,6 @@
                         title: "Updation Failed",
                         color : "red",
                         with : "20PX",
-                        html: `<span style="color: red;">${data.massage}</span>`,
                         showConfirmButton: false,
                     });
                 }
@@ -1178,14 +1167,16 @@
             })
             .catch((error) => {
                 console.log("ERROIR : ", error);
+                const errTitle = "Internal Server Error";
+                const message = error
                 // alert('An error occurred while updating the element');
                 Swal.fire({
                         position: "top-center",
                         icon: "error",
-                        title: "Updation Failed",
+                        title: `${message}`,
                         color : "red",
                         with : "20PX",
-                        html: `<span style="color: red;">${data.massage}</span>`,
+                        html: `<span style="color: red;">${errTitle}</span>`,
                         showConfirmButton: false,
                     });
                 $('#journal-paper-modal').modal('hide');

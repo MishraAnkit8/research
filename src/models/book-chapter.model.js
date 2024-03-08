@@ -29,7 +29,7 @@ module.exports.insertBookChapterData = async(bookChapter, bookChapterDataFiles) 
     try {
         const result = await researchDbW.query(sql);
         console.log('Inserted row with id:', result.rows[0].id);
-        const message = 'Record Inserted with id:'
+        const message = 'Record Inserted With Id:'
         return { status: 'Done', id: result.rows[0].id, message};
     } catch (error) {
         // console.log('error.code ====>>>', error.code)

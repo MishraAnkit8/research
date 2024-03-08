@@ -186,12 +186,12 @@ module.exports.validateJournalPaper = [
     .isString()
     .withMessage("ugc indexed category should be integer"),
     
-//  check("journalDetails.webLinkNumber")
-//     .notEmpty()
-//     .withMessage("webLinkNumber is required")
-//     .bail()
-//     .isInt()
-//     .withMessage("webLinkNumber  should be Number"),
+ check("journalDetails.webLinkNumber")
+    .notEmpty()
+    .withMessage("webLinkNumber is required")
+    .bail()
+    .isInt()
+    .withMessage("webLinkNumber  should be Number"),
 
  check("journalDetails.foreignAuthorsNumbers")
     .notEmpty()

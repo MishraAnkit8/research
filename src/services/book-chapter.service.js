@@ -22,10 +22,6 @@ module.exports.insertBookChapter = async(bookChapter , files) => {
     console.log('bookChapterInsertedData ===>>>>', bookChapterInsertedData);
     const bookChapterId = bookChapterInsertedData.id;
     console.log('bookChapterId ====>>>', bookChapterId);
-    // return{
-    //     bookChapterInsertedData,
-    //     bookChapterDataFiles
-    // }
     return {
         status: bookChapterInsertedData.status === 'Done' ? 'Done' : 'Failed',
         message: bookChapterInsertedData.status === 'Done' ? `${bookChapterInsertedData.message}` : `${bookChapterInsertedData.message}`,
@@ -38,10 +34,7 @@ module.exports.updatedBookChapter = async (bookChapterId, updatedBookChapterPubl
     const updateBookChapterDataFiles = files?.map(file => file.filename).join(',');
     console.log('updateBookChapterDataFiles ====>>>>', updateBookChapterDataFiles);
     
-    const updatedBookChapterData = await bookChapterModels.updatedBookChapter(
-      bookChapterId,
-      updatedBookChapterPublication,
-      updateBookChapterDataFiles
+    const updatedBookChapterData = await bookChapterModels.updatedBookChapter(bookChapterId, updatedBookChapterPublication, updateBookChapterDataFiles
     );
     console.log('updatedBookChapterData in service ====>>>', updatedBookChapterData);
     return {
@@ -56,8 +49,8 @@ module.exports.deleteBookChapterPublication = async({bookChapterId}) => {
     const bookChapterPublication = await bookChapterModels.deleteBookChapter(bookChapterId);
     if(bookChapterPublication.rowCount === 1){
         return {
-            status : 'done',
-            massage : 'deleted successfully'
+            status : 'Done',
+            massage : 'Deleted successfully'
         }
     }
 }
