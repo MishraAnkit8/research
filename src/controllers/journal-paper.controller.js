@@ -62,28 +62,6 @@ module.exports.updateJournalPaper = async (req, res, next) => {
         journalPaperId : journalPaperId,
         updateJournalDetails : updateJournalDetails
     })
-    // if(updatePaper.status === 'Done'){
-    //     res.status(200).send({
-    //         status : 'Done',
-    //         massage : updatePaper.massage
-    //     });
-    // }
-    // else if(updatePaper.status === 'Failed'){
-    //     if(updatePaper.error === 'duplicate key value violates unique constraint "journal_papers_web_link_doi_number_key"'){
-    //         console.log('updatePaper.error =====>>>>>', updatePaper.error)
-    //         const errMsg = "WEB Link DOI Number should Be Uniq";
-    //         res.status(502).send({
-    //             status : 'Failed',
-    //             massage : errMsg
-    //         })
-    //     }
-    //     else{
-    //         res.status(500).send({
-    //             status : 'Failed',
-    //             massage : updatePaper.error
-    //         })
-    //     }
-    // }
 };
 
 module.exports.viewJournalPaper = async(req, res, next) => {

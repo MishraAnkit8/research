@@ -33,7 +33,7 @@ module.exports.insertConferencePublication = async(conferencePublications, confe
                     volAndIssueNo, issnIsbnNo, doiWebLink, awardForPresentation, conferenceDocumentData, conferenceProofData]
 
            }
-           console.log('sql ==>', sql)
+    console.log('sql ==>', sql)
     return researchDbW.query(sql);
 };
 
