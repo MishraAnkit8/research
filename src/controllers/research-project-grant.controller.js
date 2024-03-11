@@ -1,4 +1,4 @@
-const researchConsultancyService = require('../services/research-consultancy.service');
+const researchConsultancyService = require('../services/research-project-grant.service');
 const clientScript = require('../../public/js/client');
 const path = require('path');
 
@@ -48,7 +48,7 @@ module.exports.renderResearchProjectConsultancy = async(req, res, next) => {
 
     // Render view with structured data
     if (researchcConsultancyData) {
-        res.render('research-project-consultancy', {
+        res.render('research-project-grant', {
             reseachConsultancyDataList: researchConsultancyList.rows,
             rowCount: researchConsultancyList.rowCount,
             internalEmpList: internalEmpList.rows,
@@ -72,7 +72,7 @@ module.exports.insertResearchConsultancyData = async(req, res, next) => {
     if(researchConsultancyData && researchConsultancyData.consultantId && authorName && consultancyFileName){
         res.status(200).send({
             status : 'Done',
-            massage : 'Data Inserted Successfully',
+            message : 'Data Inserted Successfully',
             consultancyFileName,
             consultantId : researchConsultancyData.consultantId,
             researchConsultantData : researchConsultantData,
@@ -82,7 +82,7 @@ module.exports.insertResearchConsultancyData = async(req, res, next) => {
     else{
         res.status(500).send({
             status : 'Failed',
-            massage : 'Internal Server Error',
+            message : 'Internal Server Error',
         })
 
     }
@@ -91,39 +91,51 @@ module.exports.insertResearchConsultancyData = async(req, res, next) => {
 
 module.exports.updatedConsultantData = async(req, res, next) => {
     console.log('data comming from templates ==>>', req.body);
-    const updatedConsultantData = req.body;
-    const authorName = !updatedConsultantData.internalAuthors && !updatedConsultantData.externalAuthors ? updatedConsultantData.authorName : updatedConsultantData.internalAuthors ?? updatedConsultantData.externalAuthors;
-
-    if(req.files){
-        console.log(' updated file name ==>', req.files);
-        const consultantId = req.body.consultantId
-        const updatedConsultant = req.body;
-        const updateResearchConstantData = await researchConsultancyService.updateResearchConstant(consultantId, updatedConsultant, req.files);
-        const updatedConsultantFilesString = updateResearchConstantData.updatedConsultantFilesData;
-        console.log('updated files string in controller ====>>>>>', updatedConsultantFilesString)
-        if(updateResearchConstantData){
-            res.status(200).send({
-                status : 'done',
-                massage : 'updated successfully',
-                updatedConsultant,
-                updatedConsultantFilesString,
-                authorName
-            })
-        }
+    const consultantId = req.body.consultantId;
+    const updatedConsultant = req.body;
+    const authorName = !updatedConsultant.internalAuthors && !updatedConsultant.externalAuthors ? updatedConsultant.authorName : updatedConsultant.internalAuthors ?? updatedConsultant.externalAuthors;
+    const updatedResearchGrant = await researchConsultancyService.updateResearchConstant(consultantId, req.body, req.files);
+    console.log('updatedResearchGrant ====>>>>', updatedResearchGrant);
+    if(updatedResearchGrant.status === 'Done'){
+        res.status(200).send({
+            status : 'Done',
+            updatedConsultant : updatedConsultant,
+            authorName : authorName,
+            updatedConsultantFilesString : updatedResearchGrant.updatedConsultantFilesData,
+            message : updatedResearchGrant.message,
+            consultantId : consultantId
+        })
     }
 
-    else{
-        const consultantId = req.body.consultantId
-        const updatedConsultant = req.body;
-        const updateResearchConstantData = await researchConsultancyService.updateResearchConstant(consultantId, updatedConsultant);
-        if(updateResearchConstantData){
-            res.status(200).send({
-                status : 'done',
-                massage : 'updated successfully',
-                updatedConsultant
-            })
-        }
-    }
+    // if(req.files){
+    //     console.log(' updated file name ==>', req.files);
+    //     const consultantId = req.body.consultantId
+    //     const updatedConsultant = req.body;
+    //     const updatedConsultantFilesString = updateResearchConstantData.updatedConsultantFilesData;
+    //     console.log('updated files string in controller ====>>>>>', updatedConsultantFilesString)
+    //     if(updateResearchConstantData){
+    //         res.status(200).send({
+    //             status : 'Done',
+    //             message : 'Updated Successfully',
+    //             updatedConsultant,
+    //             updatedConsultantFilesString,
+    //             authorName
+    //         })
+    //     }
+    // }
+
+    // else{
+    //     const consultantId = req.body.consultantId
+    //     const updatedConsultant = req.body;
+    //     const updateResearchConstantData = await researchConsultancyService.updateResearchConstant(consultantId, updatedConsultant);
+    //     if(updateResearchConstantData){
+    //         res.status(200).send({
+    //             status : 'Done',
+    //             message : 'updated successfully',
+    //             updatedConsultant
+    //         })
+    //     }
+    // }
    
 }
 
@@ -131,16 +143,16 @@ module.exports.deleteResearchConsultant = async(req, res, next) => {
     console.log('body' , req.body);
     const consultantId = req.body;
     const deleteConstantData = await researchConsultancyService.deleteResearchConsultant(consultantId);
-    if(deleteConstantData.status === 'done'){
+    if(deleteConstantData.status === 'Done'){
         res.status(200).send({
-            status : 'done',
-            massage : 'deleted successfully'
+            status : 'Done',
+            message : 'Deleted successfully'
         })
     }
     else{
         res.status(500).send({
-            status : 'failed',
-            massage : 'internal server issue'
+            status : 'Failed',
+            message : 'Internal Server Issue'
         })
     }
 }
@@ -150,11 +162,27 @@ module.exports.viewResearchProjectConsultancy = async(req, res, next) => {
     console.log('consultantId  in controller ==>>', consultantId);
     const viewResearchConsultantData = await researchConsultancyService.viewReseachProjectData(consultantId);
     console.log('viewResearchConsultantData in controller ===>>', viewResearchConsultantData)
+    const sanctionGrantDate = formatDate(viewResearchConsultantData.sanction_grant_date);
+    const recievedAmountDate = formatDate(viewResearchConsultantData.recieved_amount_date);
+
+    console.log('sanctionGrantDate and recievedAmountDate ::::;', sanctionGrantDate, recievedAmountDate)
     if(viewResearchConsultantData){
         res.status(200).send({
-            status : 'done',
-            massage : 'successfull',
-            consultantData : viewResearchConsultantData
+            status : 'Done',
+            message : 'successfull',
+            consultantData : viewResearchConsultantData,
+            sanctionGrantDate : sanctionGrantDate,
+            recievedAmountDate : recievedAmountDate
         })
     }
 }
+
+
+
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    const day = date.getDate();
+    const month = date.getMonth() + 1; // Months are zero-based
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  }

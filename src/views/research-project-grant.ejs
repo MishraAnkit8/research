@@ -15,16 +15,16 @@
                 <li class="breadcrumb-link">
                     <a href="<%- BASE_URL %>research"> RESEARCH </a>
                 </li>
-                <li class="breadcrumb-link">RESEARCH PROJECT CONSULTANCY</li>
+                <li class="breadcrumb-link">RESEARCH PROJECT/GRANT</li>
             </ul>
         </div>
         <div>
             <div class="table-card-header text-uppercase d-flex align-items-center justify-content-between">
                 <div>
-                    <h5 class="pl-2">RESEARCH PROJECT CONSULTANCY</h5>
+                    <h5 class="pl-2">RESEARCH PROJECT/GRANT</h5>
                 </div>
                 <div >
-                    <button id="add-research-project-consultancy" type="button" class="btn btn-primary add-modal" data-toggle="modal" data-target="#consultancy-modal">
+                    <button id="add-research-project-grant" type="button" class="btn btn-primary add-modal" data-toggle="modal" data-target="#consultancy-modal">
                         <i class="fas fa-plus plus "></i>
                     </button>
                   
@@ -61,6 +61,8 @@
                 <table class="table custom-table table-responsive research-pagination" id="consultancy-list">
                     <thead>
                         <th class="col-lg-1">#</th>
+                        <th class="col-lg-1">School</th>
+                        <th class="col-lg-1">Campus</th>
                         <th class="col-lg-1">Title of Project</th>
                         <th class="col-lg-1">Thrust area of Research</th>
                         <th class="col-lg-1">Name of Funding Agency</th>
@@ -69,13 +71,19 @@
                         <th class="col-lg-1">Action</th>
                     </thead>
                     <% reseachConsultancyDataList.forEach(function(consultancy, index) { %>
-                        <tr scope="row" data-consultancy-id="<%- consultancy.id %>" data-grant-type="<%- consultancy.type_of_grant %>"
+                        <tr scope="row" data-consultancy-id="<%- consultancy.id %>" data-grant-type="<%- consultancy.type_of_research_grant %>"
                             data-grant-proposal="<%- consultancy.grant_proposal_category %>"
-                            data-submission-date="<%- consultancy.submission_grant_date.toISOString().split('T')[0] %>"
+                            data-sanction-date="<%- consultancy.sanction_grant_date.toISOString().split('T')[0] %>"
                             data-author-type="<%- consultancy.faculty_type ? consultancy.faculty_type.authorName : '' %>"
                             data-author-table="<%- consultancy.faculty_type ? consultancy.faculty_type.table : '' %>"
-                            data-supporting-documents="<%- consultancy.supporting_documents %>">
+                            data-faculty-dept="<%- consultancy.faculty_dept %>" data-scheme-name="<%- consultancy.scheme_name %>"
+                            data-recieved-amount="<%- consultancy.recieved_amount %>" data-principal-investigator="<%- consultancy.principal_investigator %>"
+                            data-co-investigator="<%- consultancy.co_investigator %>" data-total-grant-sanction-rupee="<%- consultancy.total_grant_sanction_rupees %>"
+                            data-supporting-documents="<%- consultancy.supporting_documents %>" data-recieved-amount-date="<%- consultancy.recieved_amount_date %>"
+                            data-project-duration="<%- consultancy.project_duration %>">
                             <td><%- index + 1 %></td>
+                            <td class="school col-lg-1"><%- consultancy.school %></td>
+                            <td class="campus col-lg-1"><%- consultancy.campus %></td>
                             <td class="title-of-project col-lg-1"><%- consultancy.title_of_project %> </td>
                             <td class="thurst-area col-lg-1"><%- consultancy.thrust_area_of_research %></td>
                             <td class="funding-agency col-lg-1"><%- consultancy.name_of_funding_agency %></td>
@@ -166,6 +174,23 @@
             </div>
             <div class="modal-body">
                 <div class="row">
+                    <!-- school -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="school" class="form-label fw-bold">School</label>
+                        <input type="text" name="school" id="school" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="This field is required and min length > 1." class="form-control"  required>
+                    </div>
+
+                    <!-- campus -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="school" class="form-label fw-bold">campus</label>
+                        <input type="text" name="campus" id="campus" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="This field is required and min length > 1." class="form-control" required>
+                    </div>
+
+                    <!-- faculty department -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="faculty-department" class="form-label fw-bold">Faculty Department</label>
+                        <input type="text" name="facult-department" id="faculty-department" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="This field is required and min length > 1." class="form-control" required>
+                    </div>
                     <!-- Grant Proposal -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="grant-proposal" class="form-label fw-bold mb-3">Grant Proposal</label><br>
@@ -177,8 +202,8 @@
                         </div>
                         <div class="form-check-inline">
                             <label for="non-Goverment" class="form-check-label">
-                                <input type="radio" class="form-check-input" id="non-goverment" name="grant-proposal"
-                                    value="NonGovernment" checked> NonGovernment
+                                <input type="radio" class="form-check-input" id="industry" name="grant-proposal"
+                                    value="Industry" checked> Industry
                             </label>
                         </div>
                     </div>
@@ -207,22 +232,46 @@
                     <!-- Title of Project -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="title-of-project" class="form-label fw-bold">Title of Project</label>
-                        <input type="text" name="titleOfProject" id="title-of-project" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="This field is required and min length > 1." class="form-control" placeholder="Title of Project" required>
+                        <input type="text" name="titleOfProject" id="title-of-project" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="This field is required and min length > 1." class="form-control"  required>
                     </div>
                     <!-- Thrust area of Research -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="thurst-area" class="form-label fw-bold">Thrust area of Research</label>
-                        <input type="text" name="thurst-area" id="thurst-area" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="This field is required and min length > 1." class="form-control" placeholder="Thrust area of Research" required> 
+                        <input type="text" name="thurst-area" id="thurst-area" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="This field is required and min length > 1." class="form-control"  required> 
                     </div>
                     <!-- Name of Funding Agency -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="funding-agency" class="form-label fw-bold">Name of Funding Agency</label>
-                        <input type="text" name="funding-agency" id="funding-agency" data-validate="isEmpty,isAlphabeticWords,isLength:2:255" data-err-msg="This field is required and min length > 1." class="form-control" placeholder="Name of Funding Agency" required>
+                        <input type="text" name="funding-agency" id="funding-agency" data-validate="isEmpty,isAlphabeticWords,isLength:2:255" data-err-msg="This field is required and min length > 1." class="form-control"  required>
                     </div>
                     <!-- Funding Amount -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="funding-amount" class="form-label fw-bold">Funding Amount</label>
-                        <input type="number" name="funding-amount" id="funding-amount" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required." class="form-control" placeholder="Funding Amount" required>
+                        <input type="number" name="funding-amount" id="funding-amount" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required." class="form-control" required>
+                    </div>
+
+                    <!-- scheme name  -->
+                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="scheme-name" class="form-label fw-bold">Name of the Scheme</label>
+                        <input type="text" name="scheme-name" id="scheme-name" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="This field is required and min length > 1." class="form-control" required>
+                    </div>
+
+                    <!-- Name of Principal Investigator  -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="principal-investigator" class="form-label fw-bold">Name of Principal Investigator</label>
+                        <input type="text" name="principla-investigator" id="principal-investigator" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="This field is required and min length > 1." class="form-control" required>
+                    </div>
+
+                    <!-- Name of Co-Investigators -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="co-investigators" class="form-label fw-bold">Name of Co-Investigators</label>
+                        <input type="text" name="co-investigator" id="co-investigators" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="This field is required and min length > 1." class="form-control" required>
+                    </div>
+
+                     <!-- Duration of the Project -->
+                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="duration-of-project" class="form-label fw-bold">Duration of the Project</label>
+                        <input type="text" name="project-duration" id="duration-of-project" data-validate="isEmpty,isAlphaNumeric,isExist" data-err-msg="This field is required and accept alpha numeric." class="form-control" required>
                     </div>
                     <!-- Status of Research Project -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
@@ -246,23 +295,24 @@
                             </label>
                         </div>
                     </div>
+                    
                     <!-- Submission/Grant date-->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="submission-grant-date" class="form-label fw-bold">
-                            Submission/Grant date
+                            Date of sanction of project
                         </label>
                         <input type="date" name="submission-grant-date" id="submission-grant-date" data-validate="isEmpty,isExist" data-err-msg="Date is required." class="form-control" required>
                     </div>
                     <!-- if faculty choose internal Authors then show search bar -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="is-presenter" class="form-label fw-bold mb-3">Faculty type</label><br>
+                        <label for="is-presenter" class="form-label fw-bold mb-3">Faculty Name</label><br>
                         <div class="form-check-inline">
                             <label for="internal" class="form-check-label enter-faculty-type">
                                 <input type="radio" class="form-check-input enternal-type" name="author-type" id="is-internal" value="Internal">
                                <span id="enternal-text">Internal</span>
                             </label>
                             <div class="col-lg-1 p-6 w-100 d-none" id="employee-list">
-                                <select id="emp-name" style="width: 200px;"> 
+                                <select id="emp-name" style="width: 200px;" multiple> 
                                     <option value="">select employee name</option>
                                     <% internalEmpList.forEach(function(employee) { %>
                                         <option value="<%= employee.employee_name %>">
@@ -289,19 +339,37 @@
                       
                     </div>
 
+                    <!-- Total Grant Sanctioned in Rupees -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="total-grant-sanction-rupees" class="form-label fw-bold">Total Grant Sanctioned in Rupees</label>
+                        <input type="number" name="funding-amount" id="total-grant-sanction-rupees" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required." class="form-control" required>
+                    </div>
+
+                    <!-- Amount received with date of receipt -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="recieved-amount" class="form-label fw-bold">Amount Received</label>
+                        <input type="number" name="funding-amount" id="recieved-amount" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required." class="form-control" required>
+                    </div>
+
+                    <!-- Amount received with date of receipt-->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="submission-grant-date" class="form-label fw-bold">
+                            Amount Received With Date
+                        </label>
+                        <input type="date" name="amount-recieved-date" id="amount-recieved-date" data-validate="isEmpty,isExist" data-err-msg="Date is required." class="form-control" required>
+                    </div>
+
                     <!-- Upload Supporting Documents-->
-                    <div class="form-group col-lg-6 col-md-8 col-sm-12 mb-4">
-                        <div class="col-lg-6 col-md-8 col-sm-12">
-                            <label for="supporting-documents" class="form-label fw-bold ">
-                                Upload Supporting Documents
-                            </label>
-                            <div class="d-flex">
-                                <input type="file" name="researchSupportingDocument" id="supporting-documents"
-                                    data-validate="isEmpty,isExist,isFile" data-err-msg="File is required." class="col-md-12 form-control"
-                                    required multiple>
-                                <button class="download-btn download-file" id="consultancy-file-edit"><i
-                                        class="fas fa-download text-danger"></i></button>
-                            </div>
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="supporting-documents" class="form-label fw-bold ">
+                            Upload Supporting Documents
+                        </label>
+                        <div class="d-flex">
+                            <input type="file" name="researchSupportingDocument" id="supporting-documents"
+                                data-validate="isEmpty,isExist,isFile" data-err-msg="File is required." class="col-md-12 form-control"
+                                required multiple>
+                            <button class="download-btn download-file" id="consultancy-file-edit"><i
+                                    class="fas fa-download text-danger"></i></button>
                         </div>
                     </div>
                 </div>
@@ -321,12 +389,27 @@
     <div class="modal-dialog modal-dialog-scrollable modal-lg modal-fullscreen p-5" role="document">
         <div class="modal-content modal-content-data">
             <div class="modal-header">
-                <h4 class="modal-title" >RESEARCH PROJECT CONSULTANCY </h4>
+                <h4 class="modal-title" >Research Projects/Grants </h4>
                 <div class="close" data-dismiss="modal" aria-label="Close">
                     <span type="button"  aria-hidden="true"><i class="fas fa-times  "></i></span>                </div>
             </div>
             <div class="modal-body">
                 <div class="row">
+                      <!-- school -->
+                      <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text">  School: </div>
+                            <label class="view-content" id="view-school-name"></label>
+                        </div>
+                    </div>
+
+                    <!-- campus name   -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text"> Campus : </div>
+                            <label class="view-content" id="view-campus-name"></label>
+                        </div>
+                    </div>
                     <!-- Grant Proposal -->
                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
@@ -379,15 +462,77 @@
                     <!-- Submission/Grant date -->
                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
-                            <div class="task-sub-title sub-title-text"> Submission/Grant Date: </div>
-                            <label class="view-content" id="view-date"></label>
+                            <div class="task-sub-title sub-title-text"> Date of sanction of project: </div>
+                            <label class="view-content" id="view-project-sanction-date"></label>
                         </div>
                     </div>
                     <!-- Faculty Type -->
                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
-                            <div class="task-sub-title sub-title-text"> Faculty Type: </div>
+                            <div class="task-sub-title sub-title-text"> Faculty Name: </div>
                             <label class="view-content" id="view-faculty-type"></label>
+                        </div>
+                    </div>
+                  
+
+                    <!-- Faculty Department -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text"> Faculty Department: </div>
+                            <label class="view-content" id="view-faculty-dept"></label>
+                        </div>
+                    </div>
+
+                    <!-- Name of the Scheme-->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text"> Name Of The Scheme: </div>
+                            <label class="view-content" id="view-scheme-name"></label>
+                        </div>
+                    </div>
+
+                    <!-- Duration of the Project -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text"> Duration of the Project: </div>
+                            <label class="view-content" id="view-project-duration"></label>
+                        </div>
+                    </div>
+
+                    <!-- Name of Principal Investigator -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text"> Name of Principal Investigator: </div>
+                            <label class="view-content" id="view-princilpal-investigator-name"></label>
+                        </div>
+                    </div>
+
+                    <!-- Name of Co-Investigators -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text"> Name of Co-Investigators: </div>
+                            <label class="view-content" id="view-co-investigator-name"></label>
+                        </div>
+                    </div>
+
+                    <!-- Total Grant Sanctioned in Rupees -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text"> Total Grant Sanctioned in Rupees: </div>
+                            <label class="view-content" id="view-total-grant-sanctioned-rupee"></label>
+                        </div>
+                    </div>
+                    
+                     <!-- Amount received with date of receipt -->
+                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text"> Amount received with date of receipt: </div>
+                            <div class="d-flex">
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <label class="view-content" id="view-recieved-amount"></label></div>
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3"><label class="view-content" id="view-amount-recieved-date"></label></div>
+                            </div>
+                            
                         </div>
                     </div>
                      <!-- Upload Supporting Documents -->
@@ -423,7 +568,7 @@
     const updateBtn = document.getElementById('update-btn');
     let consultantId, consultantRowToBeUpdated ;
     let storedFacultyValue;
-    const addResearchConsultancyModal = document.getElementById('add-research-project-consultancy');
+    const addResearchConsultancyModal = document.getElementById('add-research-project-grant');
     
     addResearchConsultancyModal.addEventListener('click', function (event) {
             if (event.target.tagName === 'BUTTON' && event.target.classList.contains('add-modal') || event.target.classList.contains('plus')) {
@@ -434,7 +579,7 @@
                 consultancyDataFiles.classList.add('d-none');
 
                 const isGrantProposalCategoryGoverement = document.getElementById('goverment');
-                const isGrantProposalCategoryNonGoverement = document.getElementById('non-goverment');
+                const isProposalCatIndustry = document.getElementById('industry');
                 const grantResearchProject = document.getElementById('research');
                 const grantConsultancy = document.getElementById('consultancy');
                 const grantCapacityBuilding = document.getElementById('capacity');
@@ -451,6 +596,18 @@
                 const supportingDocument = document.getElementById('supporting-documents');
                 const isInternalFaculty = document.getElementById('is-internal');
                 const isExternalFaculty = document.getElementById('is-external');
+                const school = document.getElementById('school')
+                const campus = document.getElementById('campus')
+                // const imstru  document.getElementById('industry').value = '';
+                const facultyDept =  document.getElementById('faculty-department')
+                const schemeName = document.getElementById('scheme-name')
+                const princlipalInvestigator =  document.getElementById('principal-investigator')
+                const coInvestigator =  document.getElementById('co-investigators')
+                const sanctionruppee = document.getElementById('total-grant-sanction-rupees')
+                const recievedAmout = document.getElementById('recieved-amount')
+                const amountRecievedDate = document.getElementById('amount-recieved-date')
+                document.getElementById('duration-of-project').value = '';
+
 
                 titleOfProject.value = '';
                 thurstAreaOfResearch.value = '';
@@ -461,6 +618,15 @@
                 supportingDocument.value = '';
                 isInternalFaculty.checked = false;
                 isExternalFaculty.checked = false;
+                school.value = ''; 
+                campus.value = ''; 
+                facultyDept.value = '';  
+                schemeName.value = ''; 
+                princlipalInvestigator.value = '';  
+                coInvestigator.value = ''; 
+                sanctionruppee.value = ''; 
+                recievedAmout.value = '';
+                amountRecievedDate.value = ''; 
             }
         });
 
@@ -472,9 +638,22 @@
             const thurstAreaOfResearch = document.getElementById('thurst-area').value;
             const fundingAgency = document.getElementById('funding-agency').value;
             const fundingAmount = document.getElementById('funding-amount').value;
+            const school = document.getElementById('school').value;
+            console.log('school ====>>>', school)
+            const campus = document.getElementById('campus').value;
+            // const industry =  document.getElementById('industry');
+            const facultyDept = document.getElementById('faculty-department').value;
+            const schemeName = document.getElementById('scheme-name').value;
+            const principalInvestigator = document.getElementById('principal-investigator').value;
+            const coInvestigator = document.getElementById('co-investigators').value;
+            const totalGrntSanctioRupee = document.getElementById('total-grant-sanction-rupees').value;
+            const recievedAmount =  document.getElementById('recieved-amount').value;
+            const recievedAmountDate = document.getElementById('amount-recieved-date').value;
             const statusOfResearchProject = document.querySelector('input[name="research-project-status"]:checked').value;
             const submissionGrantDate = document.getElementById('submission-grant-date').value;
             const authorType = document.querySelector('input[name="author-type"]:checked').value;
+            const projectDuration = document.getElementById('duration-of-project').value
+
             await enternalFacultyDropDown(authorType, researchConsultancyData);
             const supportingDocument = document.getElementById('supporting-documents');
             const consultancyFilesData = supportingDocument.files;
@@ -497,6 +676,17 @@
             researchConsultancyData.append('fundingAmount', fundingAmount);
             researchConsultancyData.append('statusOfResearchProject', statusOfResearchProject);
             researchConsultancyData.append('submissionGrantDate', submissionGrantDate);
+            researchConsultancyData.append('school', school);
+            researchConsultancyData.append('campus', campus);
+            researchConsultancyData.append('facultyDept', facultyDept);
+            researchConsultancyData.append('schemeName', schemeName);
+            researchConsultancyData.append('principalInvestigator', principalInvestigator);
+            researchConsultancyData.append('coInvestigator', coInvestigator);
+            researchConsultancyData.append('totalGrntSanctioRupee', totalGrntSanctioRupee);
+            researchConsultancyData.append('recievedAmount', recievedAmount);
+            researchConsultancyData.append('recievedAmountDate', recievedAmountDate);
+            researchConsultancyData.append('projectDuration' , projectDuration);
+
             // researchConsultancyData.append('facultyType', facultyType);
 
             fetch(url, {
@@ -510,7 +700,7 @@
                     return result.json();
                 })
                 .then((data) => {
-                    if (data.status === 'done') {
+                    if (data.status === 'Done') {
                         console.log('data ==>>', data);
                         const consultantId = data.consultantId
                         console.log('id ==', consultantId)
@@ -520,8 +710,17 @@
                         newResearchConsultant.setAttribute('data-submission-date', data.researchConsultantData.submissionGrantDate);
                         newResearchConsultant.setAttribute('data-author-type', data.authorName);
                         newResearchConsultant.setAttribute('data-supporting-documents', data.researchConsultantData.consultancyFileName);
+                        newResearchConsultant.setAttribute('data-recieved-amount-date', data.researchConsultantData.recievedAmountDate);
+                        newResearchConsultant.setAttribute('data-recieved-amount', data.researchConsultantData.recievedAmount);
+                        newResearchConsultant.setAttribute('data-total-grant-sanction-rupee', data.researchConsultantData.totalGrntSanctioRupee);
+                        newResearchConsultant.setAttribute('data-scheme-name', data.researchConsultantData.schemeName);
+                        newResearchConsultant.setAttribute('data-principal-investigator', data.researchConsultantData.principalInvestigator);
+                        newResearchConsultant.setAttribute('data-co-investigator', data.researchConsultantData.coInvestigator);
+                        newResearchConsultant.setAttribute('data-project-duration', data.researchConsultantData.projectDuration)
                         newResearchConsultant.innerHTML = `
                         <td>${indexValue}</td>
+                        <td class="school">${data.researchConsultantData.school}</td>
+                        <td class="campus">${data.researchConsultantData.campus}</td>
                         <td class="title-of-project">${data.researchConsultantData.titleOfProject}</td>
                         <td class="thurst-area">${data.researchConsultantData.thurstAreaOfResearch}</td>
                         <td class="funding-agency">${data.researchConsultantData.fundingAgency}</td>
@@ -538,28 +737,58 @@
 
                         researchProjectConsultancyList.appendChild(newResearchConsultant);
                         // $('#consultancy-modal').modal('hide');
-                        alert(`${data.massage}`);
+                        Swal.fire({
+							position: "top-center",
+							icon: "success",
+							title: `${data.message}`,
+							showConfirmButton: false
+							// timer: 1500
+						});
                     }
-                    
                     else{
-                        alert(`${data.massage}`);
+                        console.log('data ====>>>>>', data);
+                        Swal.fire({
+							position: "top-center",
+							icon: "error",
+							title: "Data Insertion Failed",
+							color : "red",
+							with : "20PX",
+							html: `<span style="color: red;">${data.message}</span>`,
+							showConfirmButton: false,
+						});
                     }
                 })
                 .catch((error) => {
                     // This will catch network errors and errors thrown from the .then block above
                     console.error('Error:', error);
+                    const message = error;
                     alert('An error occurred. Please try again later.');
+                    Swal.fire({
+							position: "top-center",
+							icon: "error",
+							title: "Data Insertion Failed",
+							color : "red",
+							with : "20PX",
+							html: `<span style="color: red;">${message}</span>`,
+							showConfirmButton: false,
+						});
                 });
         }
     
     submitBtn.addEventListener('click', async () => {
             const isValid = validateRequiredFormFields(submitBtn);
             if (isValid) {
-                await insertResearchConsultancyForm('<%- BASE_URL %>research/research-project-consultancy/insert');
+                await insertResearchConsultancyForm('<%- BASE_URL %>research/research-project-grant/insert');
                 indexValue += 1
             }
             else {
-                console.log('validation failed');
+                Swal.fire({
+							position: "top-center",
+							icon: "error",
+							title: "Validation Failed",
+							color : "red",
+							showConfirmButton: false,
+						});
             }
         });
 
@@ -580,7 +809,7 @@
                 consultantId = event.target.getAttribute('data-consultancy-id');
                 console.log('consultantId ==>>', consultantId);
                 const isGrantProposalCategoryGoverement = document.getElementById('goverment');
-                const isGrantProposalCategoryNonGoverement = document.getElementById('non-goverment');
+                const isGrantProposalCategoryIndustry = document.getElementById('industry');
                 const grantResearchProject = document.getElementById('research');
                 const grantConsultancy = document.getElementById('consultancy');
                 const grantCapacityBuilding = document.getElementById('capacity');
@@ -588,12 +817,23 @@
                 const thurstAreaOfResearch = consultantRowToBeUpdated.querySelector('.thurst-area');
                 const fundingAgency = consultantRowToBeUpdated.querySelector('.funding-agency');
                 const fundingAmount = consultantRowToBeUpdated.querySelector('.funding-amount');
+                const school = consultantRowToBeUpdated.querySelector('.school');
+                const campus = consultantRowToBeUpdated.querySelector('.campus');
                 const statusSubmitted = document.getElementById('submitted');
                 const statusPresentationHeld = document.getElementById('presentation-held');
                 const statusGranted = document.getElementById('granted');
                 const internalAuthor = document.getElementById('is-internal');
                 const externalAuthor = document.getElementById('is-external');
                 const supportingDocument = consultantRowToBeUpdated.getAttribute('data-supporting-documents');
+                const facultyDept = consultantRowToBeUpdated.getAttribute('data-faculty-dept');
+                console.log('facultyDept ====>>>>>', facultyDept)
+                const projectDuration = consultantRowToBeUpdated.getAttribute('data-project-duration');
+                const schemeName = consultantRowToBeUpdated.getAttribute('data-scheme-name');
+                const principalInvestigator = consultantRowToBeUpdated.getAttribute('data-principal-investigator');
+                const coInvestigator = consultantRowToBeUpdated.getAttribute('data-co-investigator');
+                const totalGrntSanctioRupee = consultantRowToBeUpdated.getAttribute('data-total-grant-sanction-rupee');
+                const recievedAmount = consultantRowToBeUpdated.getAttribute('data-recieved-amount');
+                const recievedAmountDate = consultantRowToBeUpdated.getAttribute('data-recieved-amount-date')
 
                 // assigning value with actuall value
                 const GrantProposalCategory = consultantRowToBeUpdated.getAttribute('data-grant-proposal');
@@ -601,7 +841,7 @@
                     isGrantProposalCategoryGoverement.checked = true;
                 }
                 else {
-                    isGrantProposalCategoryNonGoverement.checked = true;
+                    isGrantProposalCategoryIndustry.checked = true;
                 }
                 const grantType = consultantRowToBeUpdated.getAttribute('data-grant-type');
                 console.log('grantType', grantType)
@@ -622,19 +862,23 @@
                         grantConsultancy.checked = false;
                     }
 
-                    // const imageRoute = '<%- BASE_URL %>research/research-project-consultancy/viewing/';
-                    // const fileRoute = '<%- BASE_URL %>research/research-project-consultancy/download/';
-                    // if(imageRoute){
-                    //     modalImage.classList.remove('d-none');
-                    // }
-                    // else{
-                    //     modalImage.classList.add('d-none');
-                    // }
-                    // handleFilePreviewAndDownload(supportingDocument, imageRoute, fileRoute);
                 }
 
                 document.getElementById('title-of-project').value = titleOfProject.innerText.trim();
+                document.getElementById('school').value = school.innerText.trim();
+                document.getElementById('campus').value = campus.innerText.trim();
+                document.getElementById('faculty-department').value = facultyDept;
+                document.getElementById('scheme-name').value = schemeName;
+                document.getElementById('principal-investigator').value = principalInvestigator;
+                document.getElementById('co-investigators').value = coInvestigator;
+                document.getElementById('total-grant-sanction-rupees').value = totalGrntSanctioRupee;
+                document.getElementById('recieved-amount').value = recievedAmount;
+                const receivedAmountDateFormate = formatDateToYYYYMMDD(recievedAmountDate);
+                document.getElementById('duration-of-project').value = projectDuration;
+
+                document.getElementById('amount-recieved-date').value = receivedAmountDateFormate;
                 document.getElementById('thurst-area').value = thurstAreaOfResearch.innerText.trim();
+                console.log('thurstAreaOfResearch ===>>>>', thurstAreaOfResearch)
                 document.getElementById('funding-agency').value = fundingAgency.innerText.trim();
                 document.getElementById('funding-amount').value = fundingAmount.innerText.trim();
                 const projectStatus = consultantRowToBeUpdated.querySelector('.research-project-status');
@@ -680,26 +924,50 @@
                 console.log('consultantRowToBEDeleted  ==>>', consultantRowToBEDeleted);
                 consultantId = event.target.getAttribute('data-consultancy-id');
                 console.log('consultantId ===>>', consultantId);
-                let confirmDelete = confirm("Do you want to delete the Consultancy?");
-                if (!confirmDelete) {
-                    return;
-                }
-                fetch('<%- BASE_URL %>research/research-project-consultancy/delete', {
-                    method: 'POST',
-                    headers: {
-                        'content-type': 'application/json'
-                    },
-                    body: JSON.stringify({ consultantId })
-                })
-                    .then((result) => {
-                        return result.json()
-                    })
-                    .then((data) => {
-                        if (data.status === 'done') {
-                            consultantRowToBEDeleted.remove();
-                            location.reload();
-                        }
-                    })
+                let confirmDelete = "Do you want to delete the Book  Publication?";
+            if (confirmDelete) {
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "You won't be able to revert this!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes, delete it!"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Execute fetch request here after confirmation
+                        fetch('<%- BASE_URL %>research/research-project-grant/delete', {
+                            method: 'POST',
+                            headers: {
+                                'content-type': 'application/json'
+                            },
+                            body: JSON.stringify({ consultantId })
+                        })
+                            .then((result) => result.json())
+                            .then((data) => {
+                                if (data.status === 'Done') {
+                                    console.log('data ==>>', data);
+                                    // Assuming bookPublicatRowToBeDeleted is correctly defined earlier in your code
+                                    consultantRowToBEDeleted.remove();
+                                    Swal.fire({
+                                        title: "Deleted!",
+                                        text: "Record has been deleted.",
+                                        icon: "success"
+                                    }).then(() => {
+                                        location.reload();
+                                    });
+                                }
+                            })
+                            .catch((error) => {
+                                console.error('Error:', error);
+                            });
+                    }
+                });
+            }
+             else{
+                return
+             } 
             }
 
             if (event.target.classList.contains('view')) {
@@ -715,10 +983,21 @@
                 const viewFundingAgency = document.getElementById('view-funding-agency');
                 const viewFundingAmount = document.getElementById('view-funding-amount');
                 const viewStatusOfResearchProject = document.getElementById('view-project-status');
-                const viewSubmissionGrantDate = document.getElementById('view-date');
+                // const viewSubmissionGrantDate = document.getElementById('view-date');
                 const viewFacultyType = document.getElementById('view-faculty-type');
+                const viewSchool = document.getElementById('view-school-name');
+                const viewCampus = document.getElementById('view-campus-name');
+                const viewFacultyDept = document.getElementById('view-faculty-dept');
+                const viewSchemeName = document.getElementById('view-scheme-name');
+                const viewProjectDuration = document.getElementById('view-project-duration');
+                const viewProjectSancktionDate = document.getElementById('view-project-sanction-date');
+                const viewPrincipalInvestigatorName = document.getElementById('view-princilpal-investigator-name');
+                const viewCoInvestigatorName = document.getElementById('view-co-investigator-name');
+                const totalGrantSanctionedRupped = document.getElementById('view-total-grant-sanctioned-rupee');
+                const viwRecievedMoney = document.getElementById('view-recieved-amount');
+                const viewRecievedAmountDate = document.getElementById('view-amount-recieved-date'); 
                 const viewSupportingDocument = document.getElementById('view-supporting-document');
-                fetch('<%- BASE_URL %>research/research-project-consultancy/view', {
+                fetch('<%- BASE_URL %>research/research-project-grant/view', {
                     method: 'POST',
                     headers: {
                         'content-type': 'application/json'
@@ -729,7 +1008,7 @@
                         return result.json()
                     })
                     .then((data) => {
-                        if (data.status === 'done') {
+                        if (data.status === 'Done') {
                             console.log('data ==>>', data)
                             setFileNameInButtons(data)
                             viewGrantProposalCategory.innerText = data.consultantData.grant_proposal_category;
@@ -739,9 +1018,21 @@
                             viewFundingAgency.innerText = data.consultantData.name_of_funding_agency;
                             viewFundingAmount.innerText = data.consultantData.funding_amount;
                             viewStatusOfResearchProject.innerText = data.consultantData.status_of_research_project;
-                            viewSubmissionGrantDate.innerText = data.consultantData.submission_grant_date.split('T')[0];
+                            // viewSubmissionGrantDate.innerText = data.consultantData.submission_grant_date.split('T')[0];
                             viewFacultyType.innerText = data.consultantData.faculty_type;
                             viewSupportingDocument.innerText = data.consultantData.supporting_documents;
+                            // const viewFacultyType = document.getElementById('view-faculty-type');
+                            viewSchool.innerText = data.consultantData.school;
+                            viewCampus.innerText = data.consultantData.campus;
+                            viewFacultyDept.innerText = data.consultantData.faculty_dept;
+                            viewSchemeName.innerText = data.consultantData.scheme_name;
+                            viewProjectDuration.innerText = data.consultantData.project_duration;
+                            viewProjectSancktionDate.innerText = data.sanctionGrantDate;
+                            viewPrincipalInvestigatorName.innerText = data.consultantData.principal_investigator;
+                            viewCoInvestigatorName.innerText = data.consultantData.co_investigator;
+                            totalGrantSanctionedRupped.innerText = data.consultantData.total_grant_sanction_rupees;
+                            viwRecievedMoney.innerText = data.consultantData.recieved_amount;
+                            viewRecievedAmountDate.innerText = data.recievedAmountDate; 
                         }
                     })
 
@@ -757,11 +1048,22 @@
         const updatedTypeOfGrant = document.querySelector('input[name="type-of-grant"]:checked').value;
         const updatedTitleOfProject = document.getElementById('title-of-project').value;
         const updatedThurstAreaOfResearch = document.getElementById('thurst-area').value;
+        console.log('updatedThurstAreaOfResearch ===>>>', updatedThurstAreaOfResearch)
         const updatedFundingAgency = document.getElementById('funding-agency').value;
         const updatedFundingAmount = document.getElementById('funding-amount').value;
+        const updateProjectDuration = document.getElementById('duration-of-project').value;
         const updatedStatusOfResearchProject = document.querySelector('input[name="research-project-status"]:checked').value;
         const updatedSubmissionGrantDate = document.getElementById('submission-grant-date').value;
         const updatedAuthorType = document.querySelector('input[name="faculty-type"]:checked');
+        const updatedSchool = document.getElementById('school').value;
+        const updatedCampus = document.getElementById('campus').value;
+        const updatedFacultyDept = document.getElementById('faculty-department').value;
+        const updatedSchemeName = document.getElementById('scheme-name').value;
+        const updatedPrincipalInvestigator = document.getElementById('principal-investigator').value;
+        const updatedCoInvestigator = document.getElementById('co-investigators').value;
+        const updatedTotalGrntSanctionRupee = document.getElementById('total-grant-sanction-rupees').value;
+        const updatedRecievedAount = document.getElementById('recieved-amount').value;
+        const updatedRecievedAountDate = document.getElementById('amount-recieved-date').value;
         await updateAuthorType(updatedAuthorType, updatedConsultantData, storedFacultyValue)
         const updatedSupportingDocument = document.getElementById('supporting-documents');
 
@@ -788,6 +1090,16 @@
         updatedConsultantData.append('fundingAmount' , updatedFundingAmount);
         updatedConsultantData.append('statusOfResearchProject' , updatedStatusOfResearchProject);
         updatedConsultantData.append('submissionGrantDate' , updatedSubmissionGrantDate);
+        updatedConsultantData.append('school', updatedSchool);
+        updatedConsultantData.append('projectDuration' , updateProjectDuration);
+        updatedConsultantData.append('campus', updatedCampus);
+        updatedConsultantData.append('facultyDept', updatedFacultyDept);
+        updatedConsultantData.append('schemeName', updatedSchemeName);
+        updatedConsultantData.append('principalInvestigator', updatedPrincipalInvestigator);
+        updatedConsultantData.append('coInvestigator', updatedCoInvestigator);
+        updatedConsultantData.append('totalGrntSanctioRupee', updatedTotalGrntSanctionRupee);
+        updatedConsultantData.append('recievedAmount', updatedRecievedAount);
+        updatedConsultantData.append('recievedAmountDate', updatedRecievedAountDate);
         // updatedConsultantData.append('facultyType' , updatedFacultyType);
         
         fetch(url , {
@@ -798,23 +1110,52 @@
                 return result.json()
         })
         .then((data) => {
-           if(data.status === 'done'){
+           if(data.status === 'Done'){
             console.log('data ==>', data);
             consultantRowToBeUpdated.setAttribute('data-grant-type' , data.updatedConsultant.typeOfGrant);
             consultantRowToBeUpdated.setAttribute('data-grant-proposal' , data.updatedConsultant.grantProposalCategory)
             consultantRowToBeUpdated.setAttribute('data-submission-date' , data.updatedConsultant.submissionGrantDate);
             consultantRowToBeUpdated.setAttribute('data-author-type' , data.authorName);
-            if(updatedConsultantFiles){
-                consultantRowToBeUpdated.setAttribute('data-supporting-documents' , data.updatedConsultantFilesString);
-            }
+            updatedConsultantFiles = updatedConsultantFiles ? consultantRowToBeUpdated.setAttribute('data-supporting-documents' , data.updatedConsultantFilesString) : '';
+            consultantRowToBeUpdated.setAttribute('data-recieved-amount-date', data.updatedConsultant.recievedAmountDate);
+            consultantRowToBeUpdated.setAttribute('data-recieved-amount', data.updatedConsultant.recievedAmount);
+            consultantRowToBeUpdated.setAttribute('data-total-grant-sanction-rupee', data.updatedConsultant.totalGrntSanctioRupee);
+            consultantRowToBeUpdated.setAttribute('data-scheme-name', data.updatedConsultant.schemeName);
+            consultantRowToBeUpdated.setAttribute('data-project-duration', data.updatedConsultant.projectDuration);
+
+            consultantRowToBeUpdated.setAttribute('data-principal-investigator', data.updatedConsultant.principalInvestigator);
+            consultantRowToBeUpdated.setAttribute('data-co-investigator', data.updatedConsultant.coInvestigator);
             consultantRowToBeUpdated.querySelector('.title-of-project').innerText = data.updatedConsultant.titleOfProject;
             consultantRowToBeUpdated.querySelector('.thurst-area').innerText = data.updatedConsultant.thurstAreaOfResearch;
             consultantRowToBeUpdated.querySelector('.funding-agency').innerText = data.updatedConsultant.fundingAgency;
             consultantRowToBeUpdated.querySelector('.research-project-status').innerText = data.updatedConsultant.statusOfResearchProject;
+            consultantRowToBeUpdated.querySelector('.school').innerText = data.updatedConsultant.school;
+            consultantRowToBeUpdated.querySelector('.campus').innerText = data.updatedConsultant.campus;
+            Swal.fire({
+							position: "top-center",
+							icon: "success",
+							title: `${data.message}`,
+							showConfirmButton: false,
+							timer: 1500
+						});
+                        $('#consultancy-modal').modal('hide');
+           }
+           else{
+                        Swal.fire({
+							position: "top-center",
+							icon: "error",
+							title: "Updation Failed",
+							color : "red",
+							with : "20PX",
+							html: `<span style="color: red;">${data.message}</span>`,
+							showConfirmButton: false,
+						});
            }
         })
-        $('#consultancy-modal').modal('hide');
-        alert(' Row Data Updated Successfully');
+        .catch((error) => {
+            const message  = error 
+        })
+        
     };
 
     updateBtn.addEventListener('click' , async() => {
@@ -826,7 +1167,7 @@
         })
         const isValid = validateRequiredFormFields(updateBtn);
             if (isValid) {
-                await updateResearchConsultancy('<%- BASE_URL %>research/research-project-consultancy/update');
+                await updateResearchConsultancy('<%- BASE_URL %>research/research-project-grant/update');
             }
             else {
                 console.log('Validation failed');
@@ -859,7 +1200,7 @@
 
                     const downloadPromises = fileArray.map(async (fileName) => {
                         console.log('fileName ===>>>', fileName)
-                        const fileUrl = `<%- BASE_URL %>research/research-project-consultancy/download/${fileName}`;
+                        const fileUrl = `<%- BASE_URL %>research/research-project-grant/download/${fileName}`;
                         downloadFile(fileName, fileUrl)
                         try {
                             const response = await fetch(fileUrl);
@@ -969,30 +1310,46 @@
     new TomSelect("#emp-name");
   
     const employeeDropdown = document.getElementById("emp-name");
-    employeeDropdown.addEventListener("change", function() {
-         const selectedValue = this.value;
-         enternalAuthorValue = selectedValue;
-        console.log("enternalAuthorValue value:", enternalAuthorValue);
-        
-    });
+    employeeDropdown.addEventListener("change", function () {
+            const selectedValues = Array.from(this.options) // Get all selected options
+                .filter(option => option.selected) // Filter for selected options only
+                .map(option => option.value); // Extract the values of selected options
+            console.log('selectedValues ===>>>>', selectedValues);
+            // Clear enternalAuthorValue if no options are selected
+            if (selectedValues.length === 0) {
+                enternalAuthorValue = "";
+            } else {
+                // Update enternalAuthorValue with an array of selected values (for multiple selection)
+                enternalAuthorValue = selectedValues;
+            }
+
+            console.log("enternalAuthorValue values:", enternalAuthorValue);
+        });
 
     const addMoreDetailsButton = document.getElementById("add-more-details");
     let authorName
     let storedSelectedValue;
-    var enternalAuthorValue;
-    var externalAuthorValue;
+    let enternalAuthorValue;
+    let externalAuthorValue;
+    let externalAuthorNameString = [];
     let additionalDetails = []; 
     //event listner for store external value
-    addMoreDetailsButton.addEventListener('click' , (event) => {
-        console.log('clickeddddd')
-        
-        const authorNameInput = document.getElementById("author-name");
-        authorName = authorNameInput.value;
-        console.log('authorNameInput ===>>>>', authorNameInput.value)
-        externalAuthorValue = authorNameInput.value;
-        console.log('storedSelectedValue inside external listner ===>>>', externalAuthorValue);
-     
-    })
+    addMoreDetailsButton.addEventListener('click', (event) => {
+            console.log('clickeddddd');
+            const authorNameInput = document.getElementById("author-name");
+            const authorName = authorNameInput.value;
+            console.log('authorNameInput ===>>>>', authorNameInput.value);
+            // Append authorName to enternalAuthorValue, separating values with commas
+            enternalAuthorValue += (enternalAuthorValue ? ", " : "") + authorName;
+            let cleanedNames = enternalAuthorValue.replace("undefined", "").trim();
+            console.log('cleanedNames ===>>>', cleanedNames);
+            // externalAuthorNameString += (cleanedNames ? "," : "") + authorName;
+            externalAuthorNameString.push(cleanedNames);
+            console.log('externalAuthorNameString ====>>>', externalAuthorNameString)
+            // console.log('externalAuthorNameString ====>>>>', externalAuthorNameString)
+            console.log('storedSelectedValue inside external listner ===>>>', enternalAuthorValue);
+        });
+        console.log('externalAuthorNameString outside ====>>>', externalAuthorNameString)
 
     
 </script>

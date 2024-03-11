@@ -1,4 +1,4 @@
-const researchCunsultancyModel = require('../models/research-consultancy.models');
+const researchCunsultancyModel = require('../models/research-project-grant.models');
 
 module.exports.fetchResearConsultacyData = async() => {
     const researchConsultancyData = await researchCunsultancyModel.fetchResearchConsultancy();
@@ -27,7 +27,7 @@ module.exports.insertResearchConsultancyData = async(body , files) => {
     console.log('consultantId ===>>>>', consultantId);
     if(researchProjectConsultancy) {
         return {
-            status : 'done',
+            status : 'Done',
             consultantId,
             massage : 'data inserted successfully',
             consultancyDataFiles,
@@ -36,25 +36,16 @@ module.exports.insertResearchConsultancyData = async(body , files) => {
     }
 }
 
-module.exports.updateResearchConstant = async(consultantId, updatedConsultant, files) => {
-  if(files){
-    var updatedConsultantFilesData = '';
-    for(let i =0; i <= files.length - 1; i++){
-      if(files[i].filename){
-        updatedConsultantFilesData += files[i].filename  + ',';
-      }
-    }
-    console.log('files name  in services ==>>>', updatedConsultantFilesData)
-    const updateResearchProjectConstant = await researchCunsultancyModel.updateResearchConsultantData(consultantId ,updatedConsultant, updatedConsultantFilesData);
-    if(updateResearchProjectConstant && updateResearchProjectConstant.rowCount === 1){
-      return { updateResearchProjectConstant, updatedConsultantFilesData };
-    }
-  }
-  else{
-    const updateResearchProjectConstant = await researchCunsultancyModel.updateResearchConsultantData(consultantId ,updatedConsultant);
-    if(updateResearchProjectConstant && updateResearchProjectConstant.rowCount === 1){
-        return updateResearchProjectConstant
-    }
+module.exports.updateResearchConstant = async(consultantId, body, files) => {
+  const updatedResearchGrant = body;
+  const updatedConsultantFilesData = files ?.map(file => file.filename).join(',')
+  const updateResearchProjectConstant = await researchCunsultancyModel.updateResearchConsultantData(consultantId ,updatedResearchGrant, updatedConsultantFilesData);
+  console.log('updateResearchProjectConstant =====>>>>>', updateResearchProjectConstant);
+  return {
+    status : 'Done',
+    message : 'Updated successfully',
+    updateResearchProjectConstant,
+    updatedConsultantFilesData
   }
     
 }
@@ -64,8 +55,8 @@ module.exports.deleteResearchConsultant = async({consultantId}) => {
     const deleteRseachConsultancy = await researchCunsultancyModel.deleteResearchConsultantData(consultantId);
     if(deleteRseachConsultancy.rowCount === 1){
         return {
-            status : 'done',
-            massage : 'deleted successfully'
+            status : 'Done',
+            massage : 'Deleted Successfully'
         }
     }
 }

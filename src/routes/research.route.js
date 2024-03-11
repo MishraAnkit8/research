@@ -16,13 +16,13 @@ const caseStudyController = require('../controllers/case-study.controller');
 const journalController = require('../controllers/journal-paper.controller');
 const conferenceController = require('../controllers/conference-publication.controller');
 const patentSubmission = require('../controllers/patent-submission.controller');
-const researchConsultancyController = require('../controllers/research-project-consultancy.controller');
+const researchProjGrantController = require('../controllers/research-project-grant.controller');
 const bookPublicationRoutes = require('./book-publication-main.routes');
 const researchSeminarController = require('../controllers/research-seminar.controller')
 
 // services
 const patentSubmissionServices = require('../services/patent-submission.service');
-const researchConsultancyService = require('../services/research-consultancy.service');
+const researchProjGrantServices = require('../services/research-project-grant.service');
 const conferenceServices = require('../services/conference-publications.service');
 
 
@@ -69,14 +69,14 @@ router.post('/patent-submission/view', asyncErrorHandler(patentSubmission.viewPa
 router.get('/patent-submission/download/:fileName', downloadFileService.downloadFile);
 router.get('/patent-submission/viewing/:fileName', downloadFileService.viewFile);
 
-//research project consultancy
-router.get('/research-project-consultancy', asyncErrorHandler(researchConsultancyController.renderResearchProjectConsultancy));
-router.post('/research-project-consultancy/insert', upload.array('researchSupportingDocument', 5), asyncErrorHandler(researchConsultancyController.insertResearchConsultancyData));
-router.post('/research-project-consultancy/update', upload.array('researchSupportingDocument', 5), asyncErrorHandler(researchConsultancyController.updatedConsultantData));
-router.post('/research-project-consultancy/delete', asyncErrorHandler(researchConsultancyController.deleteResearchConsultant));
-router.post('/research-project-consultancy/view', asyncErrorHandler(researchConsultancyController.viewResearchProjectConsultancy));
-router.get('/research-project-consultancy/download/:fileName', downloadFileService.downloadFile);
-router.get('/research-project-consultancy/viewing/:fileName', downloadFileService.viewFile);
+//research project grant
+router.get('/research-project-grant', asyncErrorHandler(researchProjGrantController.renderResearchProjectConsultancy));
+router.post('/research-project-grant/insert', upload.array('researchSupportingDocument', 5), asyncErrorHandler(researchProjGrantController.insertResearchConsultancyData));
+router.post('/research-project-grant/update', upload.array('researchSupportingDocument', 5), asyncErrorHandler(researchProjGrantController.updatedConsultantData));
+router.post('/research-project-grant/delete', asyncErrorHandler(researchProjGrantController.deleteResearchConsultant));
+router.post('/research-project-grant/view', asyncErrorHandler(researchProjGrantController.viewResearchProjectConsultancy));
+router.get('/research-project-grant/download/:fileName', downloadFileService.downloadFile);
+router.get('/research-project-grant/viewing/:fileName', downloadFileService.viewFile);
 
 // book publication
 router.use('/book-publication-main', bookPublicationRoutes);
