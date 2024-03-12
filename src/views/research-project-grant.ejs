@@ -1019,7 +1019,7 @@
                             viewFundingAmount.innerText = data.consultantData.funding_amount;
                             viewStatusOfResearchProject.innerText = data.consultantData.status_of_research_project;
                             // viewSubmissionGrantDate.innerText = data.consultantData.submission_grant_date.split('T')[0];
-                            viewFacultyType.innerText = data.consultantData.faculty_type;
+                            viewFacultyType.innerText = data.consultantData.faculty_type.replace(/,/g, ' ');
                             viewSupportingDocument.innerText = data.consultantData.supporting_documents;
                             // const viewFacultyType = document.getElementById('view-faculty-type');
                             viewSchool.innerText = data.consultantData.school;
@@ -1245,13 +1245,63 @@
         const employeeList = document.getElementById('employee-list');
         const authorDetails = document.getElementById('author-details');
 
+        let authorName
+        let storedSelectedValue;
+        let enternalAuthorValue;
+        let externalAuthorValue;
+        let additionalDetails = []; 
+
     const enternalText = document.getElementById('enternal-text');
+    
+    // employeesListData data came from backend
+    const employeesListData = document.getElementById('employees-list-data').dataset.employees;
+    const employeesDataObj = JSON.parse(employeesListData);
+    let employeeListArray = [];
+
+   
+    // ajax for search bar to search employee name 
+    new TomSelect("#emp-name");
+  
+    const employeeDropdown = document.getElementById("emp-name");
+    employeeDropdown.addEventListener("change", function () {
+            const selectedValues = Array.from(this.options) // Get all selected options
+                .filter(option => option.selected) // Filter for selected options only
+                .map(option => option.value); // Extract the values of selected options
+            console.log('selectedValues ===>>>>', selectedValues);
+            // Clear enternalAuthorValue if no options are selected
+            selectedValues.length === 0 ? enternalAuthorValue = "" : enternalAuthorValue = selectedValues;
+            // if (selectedValues.length === 0) {
+            //     enternalAuthorValue = "";
+            // } else {
+            //     // Update enternalAuthorValue with an array of selected values (for multiple selection)
+            //     enternalAuthorValue = selectedValues;
+            // }
+            console.log("enternalAuthorValue values:", enternalAuthorValue);
+        });
+
+    const addMoreDetailsButton = document.getElementById("add-more-details");
+    const nameStringArray = []; // for storing current value of clicked
+    //event listner for store external value
+    addMoreDetailsButton.addEventListener('click', (event) => {
+        console.log('clickeddddd');
+        const authorNameInput = document.getElementById("author-name");
+        const authorName = authorNameInput.value;
+        console.log('authorNameInput ===>>>>', authorNameInput.value);
+        nameStringArray.push(authorName)
+        let nameString = '';
+        for(let i = 0; i <= nameStringArray.length -1 ; i++){
+            nameString += nameStringArray[i].split(',') + ','
+        }
+        externalAuthorValue = nameString;
+        console.log('nameString ===>>>', nameString)
+        console.log('nameStringArray ====>>>>', nameStringArray)
+        console.log('storedSelectedValue inside external listner ===>>>', externalAuthorValue);
+        });
 
     // function for add drop down list or  add new faculty data
     async function enternalFacultyDropDown(authorType, researchConsultancyData) {
         console.log('authorType in side my function ====>>>', authorType);
         console.log('enternalAuthorValue ====>>>>>', enternalAuthorValue);
-
         const facultytype = authorType.value;
         console.log('facultytype ===>>>', facultytype);
         if (authorType === 'Internal') {
@@ -1286,8 +1336,6 @@
     // making d-none external faculty
     enternalFacultyType.addEventListener('click' , (event) => {
         console.log('clicked ::::::::::::');
-        // externaltype.classList.add('d-none');
-        // enternalText.classList.add('d-none');
         employeeList.classList.remove('d-none');
         authorDetails.classList.add('d-none');
 
@@ -1299,57 +1347,7 @@
         authorDetails.classList.remove('d-none');
     }))
 
-    // employeesListData data came from backend
-    const employeesListData = document.getElementById('employees-list-data').dataset.employees;
-    const employeesDataObj = JSON.parse(employeesListData);
-    let employeeListArray = [];
-
-   
-    // console.log(employeesDataObj);
-    // ajax for search bar to search employee name 
-    new TomSelect("#emp-name");
-  
-    const employeeDropdown = document.getElementById("emp-name");
-    employeeDropdown.addEventListener("change", function () {
-            const selectedValues = Array.from(this.options) // Get all selected options
-                .filter(option => option.selected) // Filter for selected options only
-                .map(option => option.value); // Extract the values of selected options
-            console.log('selectedValues ===>>>>', selectedValues);
-            // Clear enternalAuthorValue if no options are selected
-            if (selectedValues.length === 0) {
-                enternalAuthorValue = "";
-            } else {
-                // Update enternalAuthorValue with an array of selected values (for multiple selection)
-                enternalAuthorValue = selectedValues;
-            }
-
-            console.log("enternalAuthorValue values:", enternalAuthorValue);
-        });
-
-    const addMoreDetailsButton = document.getElementById("add-more-details");
-    let authorName
-    let storedSelectedValue;
-    let enternalAuthorValue;
-    let externalAuthorValue;
-    let externalAuthorNameString = [];
-    let additionalDetails = []; 
-    //event listner for store external value
-    addMoreDetailsButton.addEventListener('click', (event) => {
-            console.log('clickeddddd');
-            const authorNameInput = document.getElementById("author-name");
-            const authorName = authorNameInput.value;
-            console.log('authorNameInput ===>>>>', authorNameInput.value);
-            // Append authorName to enternalAuthorValue, separating values with commas
-            enternalAuthorValue += (enternalAuthorValue ? ", " : "") + authorName;
-            let cleanedNames = enternalAuthorValue.replace("undefined", "").trim();
-            console.log('cleanedNames ===>>>', cleanedNames);
-            // externalAuthorNameString += (cleanedNames ? "," : "") + authorName;
-            externalAuthorNameString.push(cleanedNames);
-            console.log('externalAuthorNameString ====>>>', externalAuthorNameString)
-            // console.log('externalAuthorNameString ====>>>>', externalAuthorNameString)
-            console.log('storedSelectedValue inside external listner ===>>>', enternalAuthorValue);
-        });
-        console.log('externalAuthorNameString outside ====>>>', externalAuthorNameString)
+        
 
     
 </script>
