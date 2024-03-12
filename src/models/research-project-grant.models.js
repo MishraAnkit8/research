@@ -82,10 +82,19 @@ module.exports.insertResearhcProjectConstancyData = async(researchCunsultancyDat
 module.exports.updateResearchConsultantData = async(consultantId, updatedResearchGrant, updatedConsultantFilesData) => {
     console.log('updatedConsultant in model ===>>>>>', updatedResearchGrant)
     const internalAuthors = updatedResearchGrant.internalAuthors;
-    const externalAuthors = updatedResearchGrant.externalAuthors;
+    console.log('internalAuthors ===>>>', internalAuthors);
+    let externalAuthors = updatedResearchGrant.externalAuthors;
+    console.log('externalAuthors ====>>>>>', externalAuthors)
     const authorName = !internalAuthors && !externalAuthors ? updatedResearchGrant.authorName : internalAuthors ?? externalAuthors;
     const supportingDocuments = updatedConsultantFilesData ? updatedConsultantFilesData : null;
-    console.log('supportingDocuments ====>>>>', supportingDocuments)
+    console.log('supportingDocuments ====>>>>', supportingDocuments);
+    const externalEmpSql = externalAuthors
+    ? {
+        text: `INSERT INTO external_emp(external_emp_name) VALUES ($1) RETURNING id`,
+        values: [externalAuthors],
+      }
+    : null;
+    console.log('externalEmpSql ===>>>', externalEmpSql);
     const {school, campus, facultyDept, grantProposalCategory, typeOfGrant, titleOfProject, thurstAreaOfResearch, fundingAgency, fundingAmount,
         schemeName, statusOfResearchProject, submissionGrantDate, principalInvestigator, coInvestigator, totalGrntSanctioRupee, recievedAmount, recievedAmountDate, projectDuration} = updatedResearchGrant;
    
@@ -107,7 +116,15 @@ module.exports.updateResearchConsultantData = async(consultantId, updatedResearc
         values : values
     }
     console.log('sql ====>>>>>>>', sql)
-    return researchDbW.query(sql)
+
+   
+    const externalEmpTable = externalEmpSql != null ? researchDbW.query(externalEmpSql) : null;
+    const researchProjectTable = researchDbW.query(sql);
+    const [researchProTable, externalEmp] = await Promise.all([researchProjectTable, externalEmpTable]);
+    return {
+        researchProTable,
+        externalEmp
+    }
 
 
     // if(updatedConsultantFilesData){

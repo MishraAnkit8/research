@@ -23,7 +23,7 @@ module.exports.insertResearchConsultancyData = async(body , files) => {
     }
     console.log('consultancyDataFiles ===>>>>', consultancyDataFiles)
     const researchProjectConsultancy = await researchCunsultancyModel.insertResearhcProjectConstancyData(researchCunsultancyData , consultancyDataFiles);
-    const consultantId = researchProjectConsultancy.researchConTable.rows[0];
+    const consultantId = researchProjectConsultancy.researchConTable.rows[0].id;
     console.log('consultantId ===>>>>', consultantId);
     if(researchProjectConsultancy) {
         return {
@@ -62,6 +62,7 @@ module.exports.deleteResearchConsultant = async({consultantId}) => {
 }
 
 module.exports.viewReseachProjectData = async(consultantId) => {
+    console.log('consultantId in servicve ===>>>', consultantId)
     const researchConsultancy = await researchCunsultancyModel.viewResearchConsultancy(consultantId);
     console.log('researchConsultancy ==>>', researchConsultancy.rows[0])
     return researchConsultancy.rows[0]

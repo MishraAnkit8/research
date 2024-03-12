@@ -95,6 +95,10 @@ module.exports.updatedConsultantData = async(req, res, next) => {
     const updatedConsultant = req.body;
     const authorName = !updatedConsultant.internalAuthors && !updatedConsultant.externalAuthors ? updatedConsultant.authorName : updatedConsultant.internalAuthors ?? updatedConsultant.externalAuthors;
     const updatedResearchGrant = await researchConsultancyService.updateResearchConstant(consultantId, req.body, req.files);
+    // internalEmpList
+    // externalEmpList
+    const externalEmpList = updatedResearchGrant.externalEmp != null ? updatedResearchGrant.externalEmp : null;
+    console.log('externalEmpList ===>>>', externalEmpList)
     console.log('updatedResearchGrant ====>>>>', updatedResearchGrant);
     if(updatedResearchGrant.status === 'Done'){
         res.status(200).send({
@@ -103,7 +107,8 @@ module.exports.updatedConsultantData = async(req, res, next) => {
             authorName : authorName,
             updatedConsultantFilesString : updatedResearchGrant.updatedConsultantFilesData,
             message : updatedResearchGrant.message,
-            consultantId : consultantId
+            consultantId : consultantId,
+            tableName : externalEmpList ? 'externalEmpList' : 'internalEmpList'
         })
     }
 
@@ -158,7 +163,8 @@ module.exports.deleteResearchConsultant = async(req, res, next) => {
 }
 
 module.exports.viewResearchProjectConsultancy = async(req, res, next) => {
-    const {consultantId} = req.body;
+    console.log('body ===>>>', req.body.consultantId)
+    const consultantId = req.body.consultantId;
     console.log('consultantId  in controller ==>>', consultantId);
     const viewResearchConsultantData = await researchConsultancyService.viewReseachProjectData(consultantId);
     console.log('viewResearchConsultantData in controller ===>>', viewResearchConsultantData)
