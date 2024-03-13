@@ -32,14 +32,9 @@ module.exports.fetchResearchConsultancy = async() => {
     };
 }
 
-module.exports.insertResearhcProjectConstancyData = async(researchCunsultancyData, consultancyDataFiles) => {
-    console.log('researchCunsultancyData inside models ===>>>', researchCunsultancyData)
-    const externalEmpName = researchCunsultancyData.externalAuthors;
-    console.log('externalEmpName ====>>>>>', externalEmpName);
-    const internalAuthors = researchCunsultancyData.internalAuthors;
-    console.log('internalAuthors ====>>>', internalAuthors);
-    const authorName = externalEmpName ?? internalAuthors;
-    console.log('authorName === >>>.', authorName)
+module.exports.insertResearhcProjectConstancyData = async(researchCunsultancyData, consultancyDataFiles, internalNamesString, externalNamesString, authorNameString) => {
+    console.log('researchCunsultancyData inside models ===>>>', researchCunsultancyData);
+
     const {school, campus, facultyDept, grantProposalCategory, typeOfGrant, titleOfProject, thurstAreaOfResearch, fundingAgency, fundingAmount,
         schemeName, statusOfResearchProject, submissionGrantDate, principalInvestigator, coInvestigator, totalGrntSanctioRupee, recievedAmount, recievedAmountDate, projectDuration} = researchCunsultancyData
    
@@ -48,38 +43,66 @@ module.exports.insertResearhcProjectConstancyData = async(researchCunsultancyDat
         name_of_funding_agency, funding_amount, scheme_name, status_of_research_project, sanction_grant_date, 
         principal_investigator, co_investigator, total_grant_sanction_rupees, recieved_amount, recieved_amount_date, project_duration, faculty_type, supporting_documents) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20) RETURNING id`,
         values: [school, campus, facultyDept, grantProposalCategory, typeOfGrant, titleOfProject, thurstAreaOfResearch, fundingAgency, fundingAmount,
-            schemeName, statusOfResearchProject, submissionGrantDate, principalInvestigator, coInvestigator, totalGrntSanctioRupee, recievedAmount, recievedAmountDate, projectDuration, authorName, consultancyDataFiles]
+            schemeName, statusOfResearchProject, submissionGrantDate, principalInvestigator, coInvestigator, totalGrntSanctioRupee, recievedAmount, recievedAmountDate, projectDuration, authorNameString, consultancyDataFiles]
     };
-
-    // if external author is there then also insert into external_emp table
-    if (externalEmpName) {
-        let externalEmpSql = {
-          text: `INSERT INTO external_emp(external_emp_name) VALUES ($1) RETURNING id`,
-          values: [externalEmpName],
-        };
-      console.log("externalEmpSql ===>>>", externalEmpSql);
-      console.log("researchSql ==>>", researchSql);
-      const externalEmpTable = researchDbW.query(externalEmpSql);
-      const researchConsultancyTable = researchDbW.query(researchSql);
-      const [researchConTable, externalEmp] = await Promise.all([researchConsultancyTable, externalEmpTable]);
-      return {
-          externalEmp: externalEmp,
-          researchConTable: researchConTable,
-        };
-      } 
-    else {
-        console.log("researchSql ==>>", researchSql);
-        const researchConsultancyTable = await researchDbW.query(researchSql);
-        return {
-            researchConTable: researchConsultancyTable,
-        };
+    const externalNamesArray = externalNamesString.split(',').map(name => name.trim());
+    const externalEmpIds = [];
+    const externalEmpSql = externalNamesString
+    ? {
+        text: `INSERT INTO external_emp(external_emp_name) VALUES ($1) RETURNING id`,
+        values: [externalNamesString],
       }
+    : null;
 
-
-    // return researchDbW.query(researchSql)
+    //for separateid based on name in string in separate id by name
+      // const externalNamesArray = externalNamesString.split(',').map(name => name.trim());
+  // const externalEmpIds = [];
+  // const externalEmpSql = externalNamesString
+  // ? {
+  //     text: `INSERT INTO external_emp(external_emp_name) VALUES ($1) RETURNING id`,
+  //     values: [externalNamesString],
+  //   }
+  // : null;
+    // const externalNamesArray = externalNamesString
+    //     ? externalNamesString.split(",").map((name) => name.trim())
+    //     : [];
+    // console.log('externalNamesArray ===>>>', externalNamesArray)
+    // const externalEmpIds = [];
+    // let externalEmpTable;
+    
+    // Iterate over each name and execute INSERT query
+    // for (const name of externalNamesArray) {
+    //     if(name !== ''){
+    //         const externalEmpSql = {
+    //             text: `INSERT INTO external_emp(external_emp_name) VALUES ($1) RETURNING id`,
+    //             values: [name],
+    //           };
+    //           // Execute the query and push the returned ID into externalEmpIds array
+    //           let result = await researchDbW.query(externalEmpSql);
+    //           externalEmpIds.push(result.rows[0].id);
+    //           externalEmpTable = result;
+    //     }
+    // }
+    console.log('externalEmpSql ===>>>', externalEmpSql);
+    const externalEmpTable = externalEmpSql != null ? researchDbW.query(externalEmpSql) : null;
+    const researchConsultancyTable = researchDbW.query(researchSql);
+    const promises = [researchConsultancyTable, externalEmpTable];
+    return Promise.all(promises).then(
+        ([researchConsultancyTable, externalEmpTable]) => {
+            // console.log('researchConsultancyTable ===>>>', researchConsultancyTable);
+            // console.log('externalEmpTable ===>>>>', externalEmpTable);
+            return {status : "Done", message : 'Record Inserted Suuccessfully' , externalEmpId : externalEmpSql !== null ? externalEmpTable.rows[0].id : null,  consultantId : researchConsultancyTable.rows[0].id, rowCount : researchConsultancyTable.rowCount}
+        }
+    )
+    .catch((error) => {
+        console.log('error ====>>>>', error)
+        return{status : 'Failed' , message : error.message , errorCode : error.code}
+    })
 }
 
-module.exports.updateResearchConsultantData = async(consultantId, updatedResearchGrant, updatedConsultantFilesData) => {
+module.exports.updateResearchConsultantData = async(consultantId, updatedResearchGrant, updatedConsultantFilesData,
+    internalNamesString, externalNamesString) => {
+    const authorNameString = internalNamesString + externalNamesString
     console.log('updatedConsultant in model ===>>>>>', updatedResearchGrant)
     const internalAuthors = updatedResearchGrant.internalAuthors;
     console.log('internalAuthors ===>>>', internalAuthors);
@@ -88,10 +111,12 @@ module.exports.updateResearchConsultantData = async(consultantId, updatedResearc
     const authorName = !internalAuthors && !externalAuthors ? updatedResearchGrant.authorName : internalAuthors ?? externalAuthors;
     const supportingDocuments = updatedConsultantFilesData ? updatedConsultantFilesData : null;
     console.log('supportingDocuments ====>>>>', supportingDocuments);
-    const externalEmpSql = externalAuthors
+    const externalEmpId = externalNamesString && updatedResearchGrant.externalEmpId ? updatedResearchGrant.externalEmpId : null;
+    console.log('externalEmpId ====>>>>', externalEmpId)
+    const externalEmpSql = externalNamesString
     ? {
-        text: `INSERT INTO external_emp(external_emp_name) VALUES ($1) RETURNING id`,
-        values: [externalAuthors],
+        text: `UPDATE  external_emp SET external_emp_name = $2 WHERE id = $1`,
+        values: [externalEmpId, externalNamesString],
       }
     : null;
     console.log('externalEmpSql ===>>>', externalEmpSql);
@@ -101,14 +126,14 @@ module.exports.updateResearchConsultantData = async(consultantId, updatedResearc
 
     let baseQuery = `UPDATE research_project_grant SET school = $2, campus = $3, faculty_dept = $4, grant_proposal_category = $5, type_of_research_grant = $6, title_of_project = $7, thrust_area_of_research = $8, 
     name_of_funding_agency = $9, funding_amount = $10, scheme_name = $11, status_of_research_project = $12, sanction_grant_date = $13, 
-    principal_investigator = $14, co_investigator = $15, total_grant_sanction_rupees = $16, recieved_amount = $17, recieved_amount_date = $18, faculty_type = $19, project_duration = $20`;
+    principal_investigator = $14, co_investigator = $15, total_grant_sanction_rupees = $16, recieved_amount = $17, recieved_amount_date = $18, project_duration = $19, faculty_type = $20`;
     let documentsQuery =  supportingDocuments ? `, supporting_documents = $21` : '';
     console.log('documentsQuery ====>>>>', documentsQuery)
     let queryText = baseQuery + documentsQuery +  ` WHERE id = $1`;
     console.log('queryText ===>>>>', queryText)
 
     let values = [consultantId, school, campus, facultyDept, grantProposalCategory, typeOfGrant, titleOfProject, thurstAreaOfResearch, fundingAgency, fundingAmount,
-        schemeName, statusOfResearchProject, submissionGrantDate, principalInvestigator, coInvestigator, totalGrntSanctioRupee, recievedAmount, recievedAmountDate, projectDuration, authorName, ...(supportingDocuments ? [supportingDocuments] : [])];
+        schemeName, statusOfResearchProject, submissionGrantDate, principalInvestigator, coInvestigator, totalGrntSanctioRupee, recievedAmount, recievedAmountDate, projectDuration, authorNameString, ...(supportingDocuments ? [supportingDocuments] : [])];
     console.log('values ===>>>>', values)
 
     let sql  = {
@@ -116,15 +141,28 @@ module.exports.updateResearchConsultantData = async(consultantId, updatedResearc
         values : values
     }
     console.log('sql ====>>>>>>>', sql)
-
    
     const externalEmpTable = externalEmpSql != null ? researchDbW.query(externalEmpSql) : null;
     const researchProjectTable = researchDbW.query(sql);
-    const [researchProTable, externalEmp] = await Promise.all([researchProjectTable, externalEmpTable]);
-    return {
-        researchProTable,
-        externalEmp
-    }
+    const promises = [researchProjectTable, externalEmpTable];
+
+    return Promise.all(promises)
+      .then(([researchProTable, externalEmp]) => {
+        console.log('researchProTable ===>>>', researchProTable);
+        return {status : 'Done', message :'Updated successfully', researchProTable, externalEmp };
+      })
+      .catch(error => {
+        console.log('error ===>>>', error.message)
+        console.log('error.code ==>>>', error.code)
+        return{status : 'Failed' , message : error , errorCode : error.code}
+      });
+
+    // const [researchProTable, externalEmp] = await Promise.all([researchProjectTable, externalEmpTable]);
+    // console.log('researchProTable ===>>>', researchProTable)
+    // return {
+    //     researchProTable,
+    //     externalEmp
+    // }
 
 
     // if(updatedConsultantFilesData){

@@ -2,51 +2,123 @@ const researchCunsultancyModel = require('../models/research-project-grant.model
 
 module.exports.fetchResearConsultacyData = async() => {
     const researchConsultancyData = await researchCunsultancyModel.fetchResearchConsultancy();
-    // console.log('researchConsultancyData', researchConsultancyData.rows[0]);
-    return researchConsultancyData
+    console.log('researchConsultancyData in services ===>>>>>',researchConsultancyData.researchConsultancyList.rows)
+    // Logging for debugging
+    const reseachProjectGrantList = researchConsultancyData.researchConsultancyList.rows;
+    const externalEmpList = researchConsultancyData.externalEmpList.rows;
+    const internalEmpList = researchConsultancyData.internalEmpList.rows;
+
+    // Extract author names from patentList
+    const authorNameArray = researchConsultancyData.researchConsultancyList.rows.map(research => research.faculty_type);
+    // console.log('authorNameArray ===>>>>', authorNameArray)
+    // Consolidate internal and external employee lists with additional info
+    const resultArray = [
+        ...researchConsultancyData.internalEmpList.rows.map(emp => ({ authorName: emp.employee_name, table: 'internalEmpList' })),
+        ...researchConsultancyData.externalEmpList.rows.map(emp => ({ authorName: emp.external_emp_name, table: 'externalEmpList' }))
+    ];
+
+    console.log('resultArray ====>>>>>>', resultArray)
+
+     reseachProjectGrantList.map(project => {
+        console.log('project in service====>>>>', project.faculty_type);
+        const facultyTypeAuthors = project.faculty_type;
+        console.log('facultyTypeAuthors ===>>>>', facultyTypeAuthors);
+        const matchedAuthor = resultArray.find(item => item.authorName === facultyTypeAuthors);
+        project.faculty_type = matchedAuthor ? matchedAuthor : { authorName:facultyTypeAuthors, table : "internalEmpList"}
+        console.log('matchedAuthor ====>>>>', matchedAuthor)
+        
+    });
+    console.log('reseachProjectGrantList ===>>>', reseachProjectGrantList)
+    console.log('researchConsultancyData in  ankit services ===>>>>>',researchConsultancyData)
+    const rowCount = researchConsultancyData.researchConsultancyList.rowCount;
+    console.log('rowCount ===>>>', rowCount)
+
+    return {
+        reseachProjectGrantList : reseachProjectGrantList,
+        internalEmpList : internalEmpList,
+        externalEmpList : externalEmpList,
+        rowCount : rowCount
+    }
 }
 
 module.exports.insertResearchConsultancyData = async(body , files) => {
     const researchCunsultancyData = body
-    const externalAuthors = body.externalAuthors;
-    const internalAuthors = body.internalAuthors;
-    console.log('internalAuthors ====>>>>>', internalAuthors)
-    const authorName = externalAuthors ?? internalAuthors
-    console.log('authorName ====>>>>', authorName)
-    console.log('externalAuthors ====>>>>>', externalAuthors);
-    console.log('files in service ===>>>', files);
-    var consultancyDataFiles = '';
-    for (let i = 0; i <= files.length - 1; i++){
-          if(files[i].filename){
-            consultancyDataFiles += files[i].filename + ',';
-          }
-    }
+    const authorNameArray = JSON.parse(body.authorName);
+    //for storing internalNames and externalNames faculty name
+    const internalNames = [];
+    const externalNames = [];
+    authorNameArray.forEach((item) => {
+        item.internalEmpList ? internalNames.push(item.internalEmpList) : null;
+        item.externalEmpList ? externalNames.push(item.externalEmpList) : null;
+    });
+    // convert array into string
+    const internalNamesString = internalNames.join(", ");
+    const externalNamesString = externalNames.join(", ");
+    const authorNameString = internalNamesString + externalNamesString;
+    console.log("Internal Names updated:", internalNamesString);
+    console.log("External Names updated:", externalNamesString);
+    const consultancyDataFiles = files?.map(file => file.filename).join(',');
+    // for (let i = 0; i <= files.length - 1; i++){
+    //       if(files[i].filename){
+    //         consultancyDataFiles += files[i].filename + ',';
+    //       }
+    // }
     console.log('consultancyDataFiles ===>>>>', consultancyDataFiles)
-    const researchProjectConsultancy = await researchCunsultancyModel.insertResearhcProjectConstancyData(researchCunsultancyData , consultancyDataFiles);
-    const consultantId = researchProjectConsultancy.researchConTable.rows[0].id;
-    console.log('consultantId ===>>>>', consultantId);
-    if(researchProjectConsultancy) {
-        return {
-            status : 'Done',
-            consultantId,
-            massage : 'data inserted successfully',
-            consultancyDataFiles,
-            authorName
-        }
+    const researchProjectConsultancy = await researchCunsultancyModel.insertResearhcProjectConstancyData(researchCunsultancyData , consultancyDataFiles, internalNamesString, externalNamesString, authorNameString);
+    console.log('researchProjectConsultancy ===>>>' , researchProjectConsultancy);
+    return researchProjectConsultancy.status === "Done" ? {
+        status : "Done",
+        externalEmpId : researchProjectConsultancy.externalEmpId,
+        consultantId : researchProjectConsultancy.consultantId,
+        rowCount : researchProjectConsultancy.rowCount,
+        message : researchProjectConsultancy.message,
+        authorNameString : authorNameString,
+        externalNamesString : externalNamesString,
+        internalNamesString : internalNamesString,
+        consultancyDataFiles : consultancyDataFiles
+    } :
+    {   status : researchProjectConsultancy.status,
+        message : researchProjectConsultancy.message,
+        errorCode : researchProjectConsultancy.errorCode
     }
 }
 
 module.exports.updateResearchConstant = async(consultantId, body, files) => {
   const updatedResearchGrant = body;
+  console.log('body ====>>>>', body);
+  const authorNameArray = JSON.parse(body.authorName);
+  console.log('authorNameArray ===>>>', authorNameArray)
+
+  const internalNames = [];
+  const externalNames = [];
+
+  authorNameArray.forEach((item) => {
+    item.internalEmpList ? internalNames.push(item.internalEmpList) : null;
+    item.externalEmpList ? externalNames.push(item.externalEmpList) : null;
+  });
+  // convert array into string
+  const internalNamesString = internalNames.join(", ");
+  const externalNamesString = externalNames.join(", ");
+  const authorNameString = internalNamesString + externalNamesString;
+  console.log("Internal Names updated:", internalNamesString);
+  console.log("External Names updated:", externalNamesString);
   const updatedConsultantFilesData = files ?.map(file => file.filename).join(',')
-  const updateResearchProjectConstant = await researchCunsultancyModel.updateResearchConsultantData(consultantId ,updatedResearchGrant, updatedConsultantFilesData);
+  const updateResearchProjectConstant = await researchCunsultancyModel.updateResearchConsultantData(consultantId ,updatedResearchGrant, updatedConsultantFilesData, internalNamesString, externalNamesString);
   console.log('updateResearchProjectConstant =====>>>>>', updateResearchProjectConstant);
-  return {
-    status : 'Done',
-    message : 'Updated successfully',
+  return updateResearchProjectConstant.status === "Done" ? 
+   {
+    status : updateResearchProjectConstant.status,
+    message : updateResearchProjectConstant.message,
     updateResearchProjectConstant,
-    updatedConsultantFilesData
-  }
+    updatedConsultantFilesData,
+    authorNameString : authorNameString,
+    externalTableName : externalNamesString ? 'externalEmpList' : null,
+    intenalTableName : internalNamesString ? 'internalEmpList' : null
+  }:{
+    status: updateResearchProjectConstant.status,
+    message: updateResearchProjectConstant.message,
+    errorCode  : updateResearchProjectConstant.errorCode
+  };
     
 }
 

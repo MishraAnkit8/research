@@ -71,12 +71,13 @@
                         <th class="col-lg-1">Action</th>
                     </thead>
                     <% reseachConsultancyDataList.forEach(function(consultancy, index) { %>
+                        <% const externalEmp = externalEmpList[index]; %>
                         <tr scope="row" data-consultancy-id="<%- consultancy.id %>" data-grant-type="<%- consultancy.type_of_research_grant %>"
                             data-grant-proposal="<%- consultancy.grant_proposal_category %>"
                             data-sanction-date="<%- consultancy.sanction_grant_date.toISOString().split('T')[0] %>"
-                            data-author-type="<%- consultancy.faculty_type ? consultancy.faculty_type.authorName : '' %>"
-                            data-author-name="<%- consultancy.faculty_type %>"
-                            data-author-table="<%- consultancy.faculty_type ? consultancy.faculty_type.table : '' %>"
+                            data-author-name="<%- consultancy.faculty_type.authorName %>"
+                            data-external-id="<%- externalEmp ? externalEmp.id : '' %>" data-extrnal-emp="<%- externalEmp ? externalEmp.external_emp_name : '' %>"
+                            data-author-table="<%- consultancy.faculty_type.table %>"
                             data-faculty-dept="<%- consultancy.faculty_dept %>" data-scheme-name="<%- consultancy.scheme_name %>"
                             data-recieved-amount="<%- consultancy.recieved_amount %>" data-principal-investigator="<%- consultancy.principal_investigator %>"
                             data-co-investigator="<%- consultancy.co_investigator %>" data-total-grant-sanction-rupee="<%- consultancy.total_grant_sanction_rupees %>"
@@ -101,13 +102,13 @@
                                         data-consultancy-id="<%- consultancy.id %>"></i></label>
                             </td>
                         </tr>
-                    <% }); %>                    
+                    <% }); %>                                          
                 </table>
             </div>
         </div>
         <div class="d-flex justify-content-between">
             <div>
-                <label >Total entries : <%- rowCount %>
+               <label >Total entries : <%- rowCount %>
                 </label>
                 <label class="d-none" id="row-count"> <%- rowCount %></label>
             </div>
@@ -567,7 +568,7 @@
     const researchProjectConsultancyList = document.getElementById('consultancy-list');
     const submitBtn = document.getElementById('submit-btn');
     const updateBtn = document.getElementById('update-btn');
-    let consultantId, consultantRowToBeUpdated ;
+    let consultantId, consultantRowToBeUpdated, externalEmpId ;
     let storedFacultyValue;
     const employeeDropdown = document.getElementById("emp-name");
     const addMoreDetailsButton = document.getElementById("add-more-details");
@@ -611,8 +612,9 @@
                 const recievedAmout = document.getElementById('recieved-amount')
                 const amountRecievedDate = document.getElementById('amount-recieved-date')
                 document.getElementById('duration-of-project').value = '';
-
-
+                // externalAuthorValue = '';
+                const authorName = document.getElementById("author-name");
+                authorName.value = ''
                 titleOfProject.value = '';
                 thurstAreaOfResearch.value = '';
                 fundingAgency.value = '';
@@ -658,7 +660,7 @@
             const authorType = document.querySelector('input[name="author-type"]:checked').value;
             const projectDuration = document.getElementById('duration-of-project').value
 
-            await enternalFacultyDropDown(authorType, researchConsultancyData);
+            await insertFacultyNameString(authorType, researchConsultancyData);
             const supportingDocument = document.getElementById('supporting-documents');
             const consultancyFilesData = supportingDocument.files;
             if (consultancyFilesData.length > 0) {
@@ -698,31 +700,34 @@
                 body: researchConsultancyData
             })
                 .then((result) => {
-                    if (!result.ok) {
-                        throw new Error('Server responded with a non-OK status');
-                    }
                     return result.json();
                 })
                 .then((data) => {
                     if (data.status === 'Done') {
                         console.log('data ==>>', data);
                         const consultantId = data.consultantId
+                        const rowCountInteger = parseInt(data.rowCount, 10);
+                        const IndexEntry = rowCountInteger + indexValue
+                        console.log('IndexEntry ===>>>', IndexEntry);
                         console.log('id ==', consultantId)
                         const newResearchConsultant = document.createElement('tr');
                         newResearchConsultant.setAttribute('data-grant-type', data.researchConsultantData.typeOfGrant);
                         newResearchConsultant.setAttribute('data-grant-proposal', data.researchConsultantData.grantProposalCategory)
                         newResearchConsultant.setAttribute('data-submission-date', data.researchConsultantData.submissionGrantDate);
-                        newResearchConsultant.setAttribute('data-author-name', data.authorName);
-                        newResearchConsultant.setAttribute('data-supporting-documents', data.researchConsultantData.consultancyFileName);
+                        newResearchConsultant.setAttribute('data-author-name', data.authorNameString);
+                        newResearchConsultant.setAttribute('data-data-external-id', data.externalEmpId);
+                        newResearchConsultant.setAttribute('data-extrnal-emp', data.externalNamesString);
+                        newResearchConsultant.setAttribute('data-supporting-documents', data.consultancyFileName);
                         newResearchConsultant.setAttribute('data-recieved-amount-date', data.researchConsultantData.recievedAmountDate);
                         newResearchConsultant.setAttribute('data-recieved-amount', data.researchConsultantData.recievedAmount);
                         newResearchConsultant.setAttribute('data-total-grant-sanction-rupee', data.researchConsultantData.totalGrntSanctioRupee);
                         newResearchConsultant.setAttribute('data-scheme-name', data.researchConsultantData.schemeName);
                         newResearchConsultant.setAttribute('data-principal-investigator', data.researchConsultantData.principalInvestigator);
+                        newResearchConsultant.setAttribute('data-author-table' , data.tableName)
                         newResearchConsultant.setAttribute('data-co-investigator', data.researchConsultantData.coInvestigator);
                         newResearchConsultant.setAttribute('data-project-duration', data.researchConsultantData.projectDuration)
                         newResearchConsultant.innerHTML = `
-                        <td>${indexValue}</td>
+                        <td>${IndexEntry}</td>
                         <td class="school">${data.researchConsultantData.school}</td>
                         <td class="campus">${data.researchConsultantData.campus}</td>
                         <td class="title-of-project">${data.researchConsultantData.titleOfProject}</td>
@@ -754,7 +759,7 @@
                         Swal.fire({
 							position: "top-center",
 							icon: "error",
-							title: "Data Insertion Failed",
+							title: `${data.errorCode}`,
 							color : "red",
 							with : "20PX",
 							html: `<span style="color: red;">${data.message}</span>`,
@@ -766,7 +771,6 @@
                     // This will catch network errors and errors thrown from the .then block above
                     console.error('Error:', error);
                     const message = error;
-                    alert('An error occurred. Please try again later.');
                     Swal.fire({
 							position: "top-center",
 							icon: "error",
@@ -783,7 +787,7 @@
             const isValid = validateRequiredFormFields(submitBtn);
             if (isValid) {
                 await insertResearchConsultancyForm('<%- BASE_URL %>research/research-project-grant/insert');
-                indexValue += 1
+                
             }
             else {
                 Swal.fire({
@@ -813,6 +817,8 @@
                 // function call for download button
                 setFileNameAttributeToBeDownload(consultantRowToBeUpdated);
                 consultantId = event.target.getAttribute('data-consultancy-id');
+                externalEmpId = consultantRowToBeUpdated.getAttribute('data-external-id');
+                console.log('externalEmpId ===>>>>', externalEmpId)
                 console.log('consultantId ==>>', consultantId);
                 const isGrantProposalCategoryGoverement = document.getElementById('goverment');
                 const isGrantProposalCategoryIndustry = document.getElementById('industry');
@@ -881,7 +887,6 @@
                 document.getElementById('recieved-amount').value = recievedAmount;
                 const receivedAmountDateFormate = formatDateToYYYYMMDD(recievedAmountDate);
                 document.getElementById('duration-of-project').value = projectDuration;
-
                 document.getElementById('amount-recieved-date').value = receivedAmountDateFormate;
                 document.getElementById('thurst-area').value = thurstAreaOfResearch.innerText.trim();
                 console.log('thurstAreaOfResearch ===>>>>', thurstAreaOfResearch)
@@ -909,13 +914,12 @@
                 const formattedDate = formatDateToYYYYMMDD(submissionGrantDate);
                 console.log('formattedDate ==>>', formattedDate)
                 document.getElementById('submission-grant-date').value = formattedDate;
-                const authorName = consultantRowToBeUpdated.getAttribute('data-author-type');
+                const authorName = consultantRowToBeUpdated.getAttribute('data-author-name');
                 console.log('authorName ====>>>>', authorName)
                 const authorTable = consultantRowToBeUpdated.getAttribute('data-author-table');
-                const authorStoredName = consultantRowToBeUpdated.getAttribute('data-author-name');
-                console.log('authorStoredName :::::::', authorStoredName)
+                
                 storedFacultyValue = authorName;
-                console.log('authorTable ====>>>', authorTable)
+                console.log('storedFacultyValue ====>>>', storedFacultyValue)
                 // console.log('authorName ====>>>', authorName)
                 if (authorTable === 'internalEmpList') {
                     internalAuthor.checked = true;
@@ -1074,7 +1078,7 @@
         const updatedTotalGrntSanctionRupee = document.getElementById('total-grant-sanction-rupees').value;
         const updatedRecievedAount = document.getElementById('recieved-amount').value;
         const updatedRecievedAountDate = document.getElementById('amount-recieved-date').value;
-        await updateAuthorType(updatedAuthorType, updatedConsultantData, storedFacultyValue)
+        await updateFacultyNameString(updatedAuthorType, updatedConsultantData, storedFacultyValue)
         const updatedSupportingDocument = document.getElementById('supporting-documents');
 
         let updatedConsultantFiles = updatedSupportingDocument.files;
@@ -1090,7 +1094,7 @@
             updatedConsultantFiles = null;
             updatedConsultantData.append('researchSupportingDocument' , updatedConsultantFiles);
         }
-
+        updatedConsultantData.append('externalEmpId', externalEmpId)
         updatedConsultantData.append('consultantId' , consultantId);
         updatedConsultantData.append('grantProposalCategory' ,updatedGrantProposalCategory);
         updatedConsultantData.append('typeOfGrant' , updatedTypeOfGrant);
@@ -1151,10 +1155,13 @@
                         $('#consultancy-modal').modal('hide');
            }
            else{
+                        const message = data.message;
+                        console.log('data ===>>>', data)
+                        console.log('message ==:::', message);
                         Swal.fire({
 							position: "top-center",
 							icon: "error",
-							title: "Updation Failed",
+							title: `${data.errorCode}`,
 							color : "red",
 							with : "20PX",
 							html: `<span style="color: red;">${data.message}</span>`,
@@ -1256,9 +1263,8 @@
         const employeeList = document.getElementById('employee-list');
         const authorDetails = document.getElementById('author-details');
 
-        let authorName
         let storedSelectedValue;
-        let enternalAuthorValue;
+        let InternalAuthorValue;
         let externalAuthorValue;
         let additionalDetails = []; 
 
@@ -1272,24 +1278,29 @@
    
     // ajax for search bar to search employee name 
     new TomSelect("#emp-name");
-  
+    const authorNamesArray = [];
     // function for select author name from drop down list
+    
     function handleEmployeeDropdownChange() {
             const selectedValues = Array.from(employeeDropdown.options)
                 .filter(option => option.selected)
                 .map(option => option.value);
-            enternalAuthorValue = selectedValues.length === 0 ? "" : selectedValues;
-            console.log("Selected employee values:", enternalAuthorValue);
+            InternalAuthorValue = selectedValues.length === 0 ? "" : selectedValues;
+            authorNamesArray.push({'internalEmpList' : InternalAuthorValue})
+            console.log("Selected employee values:", InternalAuthorValue);
+            
         }
     
-    const nameStringArray = []; // for storing current value of clicked
-    //function for handle add more details
+
+    //function for handle add more details for storing current value of clicked
     function handleAddMoreDetailsClick() {
-        console.log('function')
+            const nameStringArray = [];
             const authorName = document.getElementById("author-name").value;
+            console.log('authorName ====>>>>', authorName)
             nameStringArray.push(authorName);
-            externalAuthorValue = nameStringArray.join(",");
+            externalAuthorValue = ',' + nameStringArray.join(",");
             console.log('nameStringArray ====>>>', nameStringArray.join(","))
+            authorNamesArray.push({'externalEmpList' : externalAuthorValue});
             console.log("Stored external author names:", externalAuthorValue);
         }
      //event listner for handleAddMoreDetailsClick and handleEmployeeDropdownChange
@@ -1297,41 +1308,35 @@
     employeeDropdown.addEventListener("change", handleEmployeeDropdownChange);
 
     // function for add drop down list or  add new faculty data
-    async function enternalFacultyDropDown(authorType, researchConsultancyData) {
+    async function insertFacultyNameString(authorType, researchConsultancyData) {
         console.log('authorType in side my function ====>>>', authorType);
-        console.log('enternalAuthorValue ====>>>>>', enternalAuthorValue);
+        // console.log('InternalAuthorValue ====>>>>>', InternalAuthorValue);
+        // console.log('externalAuthorValue ===>>>', externalAuthorValue)
         const facultytype = authorType.value;
         console.log('facultytype ===>>>', facultytype);
-        if (authorType === 'Internal') {
-            console.log('storedSelectedValue inside my function ======', enternalAuthorValue);
-            externalAuthorValue = '';
-            researchConsultancyData.append('internalAuthors', enternalAuthorValue);
-        } else {
-            console.log('externalAuthorValue inside function ===>>>', externalAuthorValue);
-            researchConsultancyData.append('externalAuthors', externalAuthorValue);
-            enternalAuthorValue = '';
-            }
+        console.log('authorNamesArray ===>>>>', authorNamesArray)
+        const authorNameSting = JSON.stringify(authorNamesArray);
+        researchConsultancyData.append('authorName', authorNameSting);
         }
 
     // fuction for updated faculty type
-    async function updateAuthorType(updatedAuthorType, updatedConsultantData, storedFacultyValue) {
+    async function updateFacultyNameString(updatedAuthorType, updatedConsultantData, storedFacultyValue) {
             console.log('storedFacultyValue in side update function ===>>>', storedFacultyValue)
             console.log('updatedAuthorType ====>>>', updatedAuthorType);
             console.log('externalAuthorValue ===>>>', externalAuthorValue);
-            console.log('enternalAuthorValue ====>>>>>', enternalAuthorValue);
-            if(updatedAuthorType === 'Internal'){
-                console.log('enternalAuthorValue in nside updated function>', enternalAuthorValue);
-                externalAuthorValue = '';
-                updatedConsultantData.append('internalAuthors', enternalAuthorValue);
+            console.log('InternalAuthorValue ====>>>>>', InternalAuthorValue);
+            console.log('storedFacultyValue ====>>> ', storedFacultyValue)
+            if(!externalAuthorValue && ! InternalAuthorValue){
+                updatedConsultantData.append('authorName', storedFacultyValue)
             }
-            else if(updatedAuthorType === 'External') {
-                console.log('externalAuthorValue inside function ===>>>', externalAuthorValue);
-                updatedConsultantData.append('externalAuthors', externalAuthorValue);
-                enternalAuthorValue = '';
+            else{
+                const updatedAuthorNameArrays = []
+                updatedAuthorNameArrays.push({'externalEmpList' : externalAuthorValue})
+                updatedAuthorNameArrays.push({'internalEmpList' : InternalAuthorValue})
+                const updatedAuthorNameString = JSON.stringify(updatedAuthorNameArrays);
+                console.log('updatedAuthorNameString ===>>>>', updatedAuthorNameString);
+                updatedConsultantData.append('authorName', updatedAuthorNameString)
             }
-            else {
-                updatedConsultantData.append('authorName', storedFacultyValue);
-            }  
         }
     
     function enternalFacultyDropDownList() {
