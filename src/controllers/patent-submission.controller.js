@@ -3,75 +3,13 @@ const patentSubmissionservice = require('../services/patent-submission.service')
 
 module.exports.renderPatentSubMissionAndGrant = async(req, res, next) =>{
     const patentSubmissionList = await patentSubmissionservice.fetchPatentForm();
-    console.log('patentSubmissionList ===>>>', patentSubmissionList.patentSubmissions.rows);
-    const patentList = patentSubmissionList.patentSubmissions.rows;
-    console.log('employee List ====>>>', patentSubmissionList.internalEmpList.rows);
-    console.log('external emp list ====>>>>>>>', patentSubmissionList.externalEmpList.rows);
-    const internalEmpList = patentSubmissionList.internalEmpList.rows;
-    const  externalEmpList = patentSubmissionList.externalEmpList.rows;
-    console.log('patentList =====>>>>>', patentList)
-    let authorNameArray = [];
-    for (let i = 0; i < patentList.length; i++) {
-         
-        const authorName = patentList[i].author_type;
-        authorNameArray.push(authorName);
-    }
-
-    const resultArray = [];
-    console.log('internalEmpList ===>>>', internalEmpList);
-    for (let i = 0; i <= internalEmpList.length - 1; i++) {
-         
-        const authorName = internalEmpList[i].employee_name;
-        // console.log('authorName ====>>>>', authorName)
-        resultArray.push({ authorName, table: 'internalEmpList' });
-    }
-
-    for (let i = 0; i <= externalEmpList.length - 1; i++) {
-         
-        const authorName = externalEmpList[i].external_emp_name;
-        // console.log('authorName ====>>>>', authorName)
-        resultArray.push({ authorName, table: 'externalEmpList' });
-    }
-    
-const uniqueResults = [...new Set(resultArray.map(JSON.stringify))].map(JSON.parse);
-
-const matchedPatentsWithKey = [];
-
-for (const uniqueResult of uniqueResults) {
-    const uniqName = uniqueResult.authorName;
-    const tableName = uniqueResult.table;
-    
-    // Check if uniqName exists in patentList
-    const authorExists = patentList.some(patent => patent.author_type === uniqName);
-    
-    if (authorExists) {
-        const index = patentList.findIndex(patent => patent.author_type === uniqName);
-    if (index !== -1) {
-        patentList[index].author_type = { authorName: uniqName, table: tableName };
-    }
-        matchedPatentsWithKey.push({ authorName: uniqName, table: tableName });
-    }
-}
-
-console.log('patentList =====>>>>>>', patentList)
-
-console.log('matchedPatentsWithKey:', matchedPatentsWithKey);
-
-
-
-
-
-// console.log('uniqueResults unidq array result ====>>>>>', uniqueResults);
-console.log('matchedPatentsWithKey ====>>>>>>>>', matchedPatentsWithKey)
-
-   if(patentSubmissionList){
+    console.log('patentSubmissionList ===>>>', patentSubmissionList)
     res.render('patent-submission', {
-        patentList : patentSubmissionList.patentSubmissions.rows,
-        rowCount : patentSubmissionList.patentSubmissions.rowCount,
-        internalEmpList : patentSubmissionList.internalEmpList.rows,
-        externalEmpList : patentSubmissionList.externalEmpList.rows
-      })
-}
+            patentSubmissionList : patentSubmissionList.patentSubmissionList,
+            internalEmpList : patentSubmissionList.internalEmpList,
+            externalEmpList : patentSubmissionList.externalEmpList,
+            rowCount : patentSubmissionList.rowCount
+        })
 };
 
 module.exports.insertPatentsubmission = async(req, res, next) => {
@@ -81,62 +19,44 @@ module.exports.insertPatentsubmission = async(req, res, next) => {
        
         console.log('patentFilesData ===>>>>::::', req.files)
         const patentDataSubmission = await patentSubmissionservice.insertPatentFormData(req.body, req.files);
-        // console.log('externalAuthorsr in  controller ==>>', patentDataSubmission.externalAuthors);
-        console.log('patentDataSubmission ====>>>', patentDataSubmission)
-        const authorName  = patentDataSubmission.authorName
-        console.log('authorName ===>>>>', authorName)
-        const patentFilesData = patentDataSubmission.patentDataBaseFiles;
-        const patentId = patentDataSubmission.patentId;
-        console.log('id in controller  ==>>', patentId)
-        console.log('v files string in controller ===>>>', patentFilesData)
-
-        if(patentDataSubmission && patentId){
-            res.json({
-            status : 'done',
-            massage : 'data inserted suceessfully',
-            patentFilesData,
-            patentData,
-            patentId,
-            authorName
-            
+        console.log('patentDataSubmission ===>>>>', patentDataSubmission);
+        // .replace(/,/g, ' ')
+        console.log('authorNameString ==')
+        const statusCode = patentDataSubmission.status === "Done" ? 200 : (patentDataSubmission.errorCode ? 400 : 500);
+        res.status(statusCode).send({
+            status : patentDataSubmission.status,
+            message : patentDataSubmission.message,
+            patentData : patentDataSubmission.status === "Done" ? patentData : null,
+            patentFilesData : patentDataSubmission.status === "Done" ? patentDataSubmission.patentDataFilesString : null,
+            externalEmpId :  patentDataSubmission.status === "Done" ?patentDataSubmission.externalEmpId : null,
+            patentId : patentDataSubmission.status === "Done" ? patentDataSubmission.patentId : null,
+            authorNameString : patentDataSubmission.status === "Done" ? patentDataSubmission.authorNameString.replace(/,/g, ' ') : null ,
+            internalNamesString : patentDataSubmission.status === "Done" ? patentDataSubmission.internalNamesString : null,
+            externalNamesString : patentDataSubmission.status === "Done" ? patentDataSubmission.externalNamesString : null,
+            rowCount : patentDataSubmission.status === "Done" ? patentDataSubmission.rowCount : null,
+            errorCode : patentDataSubmission.errorCode ? patentDataSubmission.errorCode : null
         })
-
-        }
 }
 // for update patent submission
 module.exports.updatePatentSubMissiom = async(req, res, next) => {
     console.log('data in controller' , req.body);
     console.log('ID in controller ==>', req.body.patentId);
-    const updatedPatentData = req.body;
     const  patentId = req.body.patentId;
-    const authorName = !updatedPatentData.internalAuthors && !updatedPatentData.externalAuthors ? updatedPatentData.authorName : updatedPatentData.internalAuthors ?? updatedPatentData.externalAuthors;
-    console.log('authorName in controller ====>>>', authorName);
-    if(req.files) {
-        console.log(' updated file in Cotroller ', req.files);
-        const updatedPatentSubmissionData = await patentSubmissionservice.updatPatentSubmission(req.body, patentId, req.files);
-        const patentDocument = updatedPatentSubmissionData.patentDataFiles;
-        console.log('updated patentDocument ===>>>', patentDocument);
-        if(updatedPatentSubmissionData.status === 'done'){
-            res.json({
-                status : 'done',
-                massage : 'Data updated successfully',
-                updatedPatentData : updatedPatentData,
-                patentDocument,
-                authorName
-            })
-        }
-    }
-    else{
-        const updatedPatentSubmissionData = await patentSubmissionservice.updatPatentSubmission(req.body, patentId);
-        if(updatedPatentSubmissionData.status === 'done'){
-            res.json({
-                status : 'done',
-                massage : 'Data updated successfully',
-                updatedPatentData : updatedPatentData,
-                authorName  
-            })
-        }
-    }
+    const updatedPatentSubmissionData = await patentSubmissionservice.updatPatentSubmission(req.body, patentId, req.files);
+    console.log('updatedPatentSubmissionData in controller ====>>>>>', updatedPatentSubmissionData);
+    const statusCode = updatedPatentSubmissionData.status === "Done" ? 200 : (updatedPatentSubmissionData.errorCode ? 400 : 500);
+    res.status(statusCode).send({
+        status : updatedPatentSubmissionData.status,
+        message : updatedPatentSubmissionData.message,
+        patentDocument : updatedPatentSubmissionData.patentDataFiles ? updatedPatentSubmissionData.patentDataFiles : null,
+        updatedPatentData : updatedPatentSubmissionData.updatedPatentData ? updatedPatentSubmissionData.updatedPatentData : null,
+        authorNameString : updatedPatentSubmissionData.authorNameString ? updatedPatentSubmissionData.authorNameString : null,
+        externalNamesString : updatedPatentSubmissionData.externalNamesString ? updatedPatentSubmissionData.externalNamesString : null,
+        internalNamesString : updatedPatentSubmissionData.internalNamesString ? updatedPatentSubmissionData.internalNamesString : null,
+        existingNameString : updatedPatentSubmissionData.existingNameString ? updatedPatentSubmissionData.existingNameString : null,
+        externalEmpId : updatedPatentSubmissionData.externalEmpId ? updatedPatentSubmissionData.externalEmpId : null,
+        errorCode : updatedPatentSubmissionData.errorCode ? updatedPatentSubmissionData.errorCode : null
+    })
 }
 
 module.exports.deletePatentData = async(req, res, next) => {

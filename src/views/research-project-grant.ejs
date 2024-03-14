@@ -931,13 +931,13 @@
                 console.log('supportingDocuments ==>>', supportingDocuments)
             }
             //for delete
-            if (event.target.classList.contains('delete')) {
-                console.log('clekeddddd');
-                const consultantRowToBEDeleted = event.target.closest('tr');
-                console.log('consultantRowToBEDeleted  ==>>', consultantRowToBEDeleted);
-                consultantId = event.target.getAttribute('data-consultancy-id');
-                console.log('consultantId ===>>', consultantId);
-                let confirmDelete = "Do you want to delete the Book  Publication?";
+        if (event.target.classList.contains('delete')) {
+            console.log('clekeddddd');
+            const consultantRowToBEDeleted = event.target.closest('tr');
+            console.log('consultantRowToBEDeleted  ==>>', consultantRowToBEDeleted);
+            consultantId = event.target.getAttribute('data-consultancy-id');
+            console.log('consultantId ===>>', consultantId);
+            let confirmDelete = "Do you want to delete the Book  Publication?";
             if (confirmDelete) {
                 Swal.fire({
                     title: "Are you sure?",
@@ -974,85 +974,93 @@
                             })
                             .catch((error) => {
                                 console.error('Error:', error);
+                                const message = error
+                                Swal.fire({
+                                    position: "top-center",
+                                    icon: "error",
+                                    title: `${message}`,
+                                    color: "red",
+                                    showConfirmButton: false,
+                                });
                             });
                     }
                 });
             }
-             else{
+            else {
                 return
-             } 
             }
-
-            if (event.target.classList.contains('view')) {
-                console.log('clickeddddd');
-                const consultantRowToBeViewed = event.target.closest('tr');
-                console.log('consultantRowToBeViewed ==>>', consultantRowToBeViewed);
-                consultantId = event.target.getAttribute('data-consultancy-id');
-                console.log('consultantId ==>>', consultantId);
-                const viewGrantProposalCategory = document.getElementById('view-grant-proposal');
-                const viewTypeOfGrant = document.getElementById('view-grant-type');
-                const viewTitleOfProject = document.getElementById('view-project-title');
-                const viewThurstAreaOfResearch = document.getElementById('view-thurst-aria');
-                const viewFundingAgency = document.getElementById('view-funding-agency');
-                const viewFundingAmount = document.getElementById('view-funding-amount');
-                const viewStatusOfResearchProject = document.getElementById('view-project-status');
-                // const viewSubmissionGrantDate = document.getElementById('view-date');
-                const viewFacultyType = document.getElementById('view-faculty-type');
-                const viewSchool = document.getElementById('view-school-name');
-                const viewCampus = document.getElementById('view-campus-name');
-                const viewFacultyDept = document.getElementById('view-faculty-dept');
-                const viewSchemeName = document.getElementById('view-scheme-name');
-                const viewProjectDuration = document.getElementById('view-project-duration');
-                const viewProjectSancktionDate = document.getElementById('view-project-sanction-date');
-                const viewPrincipalInvestigatorName = document.getElementById('view-princilpal-investigator-name');
-                const viewCoInvestigatorName = document.getElementById('view-co-investigator-name');
-                const totalGrantSanctionedRupped = document.getElementById('view-total-grant-sanctioned-rupee');
-                const viwRecievedMoney = document.getElementById('view-recieved-amount');
-                const viewRecievedAmountDate = document.getElementById('view-amount-recieved-date'); 
-                const viewSupportingDocument = document.getElementById('view-supporting-document');
-                fetch('<%- BASE_URL %>research/research-project-grant/view', {
-                    method: 'POST',
-                    headers: {
-                        'content-type': 'application/json'
-                    },
-                    body: JSON.stringify({ consultantId })
+        }
+            //for view data the form data
+        if (event.target.classList.contains('view')) {
+            console.log('clickeddddd');
+            const consultantRowToBeViewed = event.target.closest('tr');
+            console.log('consultantRowToBeViewed ==>>', consultantRowToBeViewed);
+            consultantId = event.target.getAttribute('data-consultancy-id');
+            console.log('consultantId ==>>', consultantId);
+            const viewGrantProposalCategory = document.getElementById('view-grant-proposal');
+            const viewTypeOfGrant = document.getElementById('view-grant-type');
+            const viewTitleOfProject = document.getElementById('view-project-title');
+            const viewThurstAreaOfResearch = document.getElementById('view-thurst-aria');
+            const viewFundingAgency = document.getElementById('view-funding-agency');
+            const viewFundingAmount = document.getElementById('view-funding-amount');
+            const viewStatusOfResearchProject = document.getElementById('view-project-status');
+            // const viewSubmissionGrantDate = document.getElementById('view-date');
+            const viewFacultyType = document.getElementById('view-faculty-type');
+            const viewSchool = document.getElementById('view-school-name');
+            const viewCampus = document.getElementById('view-campus-name');
+            const viewFacultyDept = document.getElementById('view-faculty-dept');
+            const viewSchemeName = document.getElementById('view-scheme-name');
+            const viewProjectDuration = document.getElementById('view-project-duration');
+            const viewProjectSancktionDate = document.getElementById('view-project-sanction-date');
+            const viewPrincipalInvestigatorName = document.getElementById('view-princilpal-investigator-name');
+            const viewCoInvestigatorName = document.getElementById('view-co-investigator-name');
+            const totalGrantSanctionedRupped = document.getElementById('view-total-grant-sanctioned-rupee');
+            const viwRecievedMoney = document.getElementById('view-recieved-amount');
+            const viewRecievedAmountDate = document.getElementById('view-amount-recieved-date');
+            const viewSupportingDocument = document.getElementById('view-supporting-document');
+            fetch('<%- BASE_URL %>research/research-project-grant/view', {
+                method: 'POST',
+                headers: {
+                    'content-type': 'application/json'
+                },
+                body: JSON.stringify({ consultantId })
+            })
+                .then((result) => {
+                    return result.json()
                 })
-                    .then((result) => {
-                        return result.json()
-                    })
-                    .then((data) => {
-                        if (data.status === 'Done') {
-                            console.log('data ==>>', data)
-                            setFileNameInButtons(data)
-                            viewGrantProposalCategory.innerText = data.consultantData.grant_proposal_category;
-                            viewTypeOfGrant.innerText = data.consultantData.type_of_grant;
-                            viewTitleOfProject.innerText = data.consultantData.title_of_project;
-                            viewThurstAreaOfResearch.innerText = data.consultantData.thrust_area_of_research;
-                            viewFundingAgency.innerText = data.consultantData.name_of_funding_agency;
-                            viewFundingAmount.innerText = data.consultantData.funding_amount;
-                            viewStatusOfResearchProject.innerText = data.consultantData.status_of_research_project;
-                            // viewSubmissionGrantDate.innerText = data.consultantData.submission_grant_date.split('T')[0];
-                            viewFacultyType.innerText = data.consultantData.faculty_type.replace(/,/g, ' ');
-                            viewSupportingDocument.innerText = data.consultantData.supporting_documents;
-                            // const viewFacultyType = document.getElementById('view-faculty-type');
-                            viewSchool.innerText = data.consultantData.school;
-                            viewCampus.innerText = data.consultantData.campus;
-                            viewFacultyDept.innerText = data.consultantData.faculty_dept;
-                            viewSchemeName.innerText = data.consultantData.scheme_name;
-                            viewProjectDuration.innerText = data.consultantData.project_duration;
-                            viewProjectSancktionDate.innerText = data.sanctionGrantDate;
-                            viewPrincipalInvestigatorName.innerText = data.consultantData.principal_investigator;
-                            viewCoInvestigatorName.innerText = data.consultantData.co_investigator;
-                            totalGrantSanctionedRupped.innerText = data.consultantData.total_grant_sanction_rupees;
-                            viwRecievedMoney.innerText = data.consultantData.recieved_amount;
-                            viewRecievedAmountDate.innerText = data.recievedAmountDate; 
-                        }
-                    })
+                .then((data) => {
+                    if (data.status === 'Done') {
+                        console.log('data ==>>', data)
+                        setFileNameInButtons(data)
+                        viewGrantProposalCategory.innerText = data.consultantData.grant_proposal_category;
+                        viewTypeOfGrant.innerText = data.consultantData.type_of_grant;
+                        viewTitleOfProject.innerText = data.consultantData.title_of_project;
+                        viewThurstAreaOfResearch.innerText = data.consultantData.thrust_area_of_research;
+                        viewFundingAgency.innerText = data.consultantData.name_of_funding_agency;
+                        viewFundingAmount.innerText = data.consultantData.funding_amount;
+                        viewStatusOfResearchProject.innerText = data.consultantData.status_of_research_project;
+                        // viewSubmissionGrantDate.innerText = data.consultantData.submission_grant_date.split('T')[0];
+                        viewFacultyType.innerText = data.consultantData.faculty_type.replace(/,/g, ' ');
+                        viewSupportingDocument.innerText = data.consultantData.supporting_documents;
+                        // const viewFacultyType = document.getElementById('view-faculty-type');
+                        viewSchool.innerText = data.consultantData.school;
+                        viewCampus.innerText = data.consultantData.campus;
+                        viewFacultyDept.innerText = data.consultantData.faculty_dept;
+                        viewSchemeName.innerText = data.consultantData.scheme_name;
+                        viewProjectDuration.innerText = data.consultantData.project_duration;
+                        viewProjectSancktionDate.innerText = data.sanctionGrantDate;
+                        viewPrincipalInvestigatorName.innerText = data.consultantData.principal_investigator;
+                        viewCoInvestigatorName.innerText = data.consultantData.co_investigator;
+                        totalGrantSanctionedRupped.innerText = data.consultantData.total_grant_sanction_rupees;
+                        viwRecievedMoney.innerText = data.consultantData.recieved_amount;
+                        viewRecievedAmountDate.innerText = data.recievedAmountDate;
+                    }
+                })
 
-                $('#research-consultancy-view').modal('show');
+            $('#research-consultancy-view').modal('show');
 
-            }
-        })
+        }
+    })
 
     const updateResearchConsultancy = async(url) => {
         console.log('clickeddd')
@@ -1171,8 +1179,14 @@
         })
         .catch((error) => {
             const message  = error 
-        })
-        
+            Swal.fire({
+						position: "top-center",
+						icon: "error",
+						title: `${message}`,
+						color : "red",
+						showConfirmButton: false,
+						});
+        })  
     };
 
     updateBtn.addEventListener('click' , async() => {
@@ -1188,7 +1202,13 @@
                 await updateResearchConsultancy('<%- BASE_URL %>research/research-project-grant/update');
             }
             else {
-                console.log('Validation failed');
+                Swal.fire({
+							position: "top-center",
+							icon: "error",
+							title: "Validation Failed",
+							color : "red",
+							showConfirmButton: false,
+						});
             }
     });
 
@@ -1356,9 +1376,7 @@
     //making d-none internal faculty
     externalFacultyType.addEventListener('click' , externalFacultyDetails)
 
-        
-
-    
+         
 </script>
 <!-- inline javascript -->
 <%- include('./partials/pagination') %>

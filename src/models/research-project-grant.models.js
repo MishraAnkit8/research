@@ -45,8 +45,8 @@ module.exports.insertResearhcProjectConstancyData = async(researchCunsultancyDat
         values: [school, campus, facultyDept, grantProposalCategory, typeOfGrant, titleOfProject, thurstAreaOfResearch, fundingAgency, fundingAmount,
             schemeName, statusOfResearchProject, submissionGrantDate, principalInvestigator, coInvestigator, totalGrntSanctioRupee, recievedAmount, recievedAmountDate, projectDuration, authorNameString, consultancyDataFiles]
     };
-    const externalNamesArray = externalNamesString.split(',').map(name => name.trim());
-    const externalEmpIds = [];
+    // const externalNamesArray = externalNamesString.split(',').map(name => name.trim());
+    // const externalEmpIds = [];
     const externalEmpSql = externalNamesString
     ? {
         text: `INSERT INTO external_emp(external_emp_name) VALUES ($1) RETURNING id`,
@@ -109,7 +109,6 @@ module.exports.updateResearchConsultantData = async(consultantId, updatedResearc
     console.log('internalAuthors ===>>>', internalAuthors);
     let externalAuthors = updatedResearchGrant.externalAuthors;
     console.log('externalAuthors ====>>>>>', externalAuthors)
-    const authorName = !internalAuthors && !externalAuthors ? updatedResearchGrant.authorName : internalAuthors ?? externalAuthors;
     const supportingDocuments = updatedConsultantFilesData ? updatedConsultantFilesData : null;
     console.log('supportingDocuments ====>>>>', supportingDocuments);
     const externalEmpId = externalNamesString && updatedResearchGrant.externalEmpId ? updatedResearchGrant.externalEmpId : null;

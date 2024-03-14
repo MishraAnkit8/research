@@ -33,77 +33,76 @@ module.exports.fetchPatentSubMissionForms = async() => {
     };
 }
 
-module.exports.insertPatentData = async(patentData, patentDataBaseFiles) => {
+module.exports.insertPatentData = async(patentData, patentDataFilesString, internalNamesString, externalNamesString) => {
     console.log('patentData inside models ===>>>', patentData)
-    const externalEmpName = patentData.externalAuthors;
-    console.log('externalEmpName ====>>>>>', externalEmpName);
-    const internalAuthors = patentData.internalAuthors;
-    console.log('internalAuthors ====>>>', internalAuthors);
-    const authorName = externalEmpName ?? internalAuthors;
-    console.log('authorName === >>>.', authorName)
+    const authorNamestring = internalNamesString + externalNamesString;
+    console.log('authorNamestring === >>>.', authorNamestring)
     const {typeOfInvention, titleOfInvention, patentStage, sdgGoals, applicationNum, subMissionDate} = patentData;
    
-    console.log('file ==>', patentDataBaseFiles)
-    console.log("patentData::::::", patentData)
+    console.log('patentDataFilesString ==>', patentDataFilesString)
+    //query for insert patent submission form
     let patentDataSql = {
         text : `INSERT INTO  patent_submissions (type_of_invention, title_of_invention,  patent_stage, sdg_goals, application_no, date, author_type, patent_file) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id`,
-        values : [typeOfInvention, titleOfInvention, patentStage, sdgGoals, applicationNum, subMissionDate, authorName, patentDataBaseFiles]
+        values : [typeOfInvention, titleOfInvention, patentStage, sdgGoals, applicationNum, subMissionDate, authorNamestring, patentDataFilesString]
     }
-   
-    if (externalEmpName) {
-      let externalEmpSql = {
+   //if externalNamesString insert external_emp table 
+    const externalEmpSql = externalNamesString
+    ? {
         text: `INSERT INTO external_emp(external_emp_name) VALUES ($1) RETURNING id`,
-        values: [externalEmpName],
-      };
+        values: [externalNamesString],
+      }
+    : null;
     console.log("externalEmpSql ===>>>", externalEmpSql);
     console.log("patentDataSql ==>>", patentDataSql);
-    const externalEmpTable = researchDbW.query(externalEmpSql);
+    const externalEmpTable = externalEmpSql != null ? researchDbW.query(externalEmpSql) : null;
     const patentSubmissionTable = researchDbW.query(patentDataSql);
-    const [patentTable, externalEmp] = await Promise.all([patentSubmissionTable, externalEmpTable]);
-    return {
-        externalEmp: externalEmp,
-        patentTable: patentTable,
-      };
-    } else {
-      console.log("patentDataSql ==>>", patentDataSql);
-      const patentSubmissionTable = await researchDbW.query(patentDataSql);
-      return {
-        patentTable: patentSubmissionTable,
-      };
-    }
-  
+    const promises = [externalEmpTable, patentSubmissionTable];
+    return Promise.all(promises).then(([externalEmpTable, patentSubmissionTable]) => {
+        return {status : "Done", message : "Record Inserted Successfully", externalEmpId : externalEmpSql !== null ? externalEmpTable.rows[0].id : null,  patentId : patentSubmissionTable.rows[0].id, rowCount : patentSubmissionTable.rowCount}
+    })
+    .catch((error) => {
+        console.log('error ====>>>>', error)
+        return{status : 'Failed' , message : error.message , errorCode : error.code}
+    })
+};
 
-}
+module.exports.updatePatentsubmissionData = async(updatedPatentData, patentId, patentDataFiles, internalNamesString, externalNamesString, existingNameString) => {
+    const authorNameString = internalNamesString + externalNamesString + existingNameString;
+    const supportingDocuments = patentDataFiles ? patentDataFiles : null;
+    const {typeOfInvention, titleOfInvention, patentStage, sdgGoals, applicationNum, subMissionDate} = updatedPatentData;
+    console.log('authorNameString in models ====>>>>', authorNameString);
 
-module.exports.updatePatentsubmissionData = async(updatedPatentData, patentId, patentDataFiles) => {
-    const internalAuthors = updatedPatentData.internalAuthors;
-    const externalAuthors = updatedPatentData.externalAuthors;
-    const authorName = !internalAuthors && !externalAuthors ? updatedPatentData.authorName : internalAuthors ?? externalAuthors;
-    if(patentDataFiles) {
-        console.log('filename in models ==>', patentDataFiles )
-        console.log('updatedPatentData in models ======>>>>>', updatedPatentData);
-        const {typeOfInvention, titleOfInvention, patentStage, sdgGoals, applicationNum, subMissionDate} = updatedPatentData ;
-        let sql = {
-            text : `UPDATE patent_submissions  SET type_of_invention = $2,  title_of_invention = $3, patent_stage = $4, sdg_goals = $5, 
-                  application_no = $6, date = $7, author_type =$8 , patent_file = $9 WHERE id = $1`,
-            values : [patentId , typeOfInvention, titleOfInvention, patentStage, sdgGoals, applicationNum, subMissionDate, authorName, patentDataFiles]
-        
-        }
-        console.log('Sql ==>>', sql);
-        return researchDbW.query(sql)
+    let baseQuery = `UPDATE patent_submissions  SET type_of_invention = $2,  title_of_invention = $3, patent_stage = $4, sdg_goals = $5, 
+                   application_no = $6, date = $7, author_type =$8`;
+    
+    //if file is there
+    let documentsQuery =  patentDataFiles ? `, patent_file = $9` : '';
+    let queryText = baseQuery + documentsQuery +  ` WHERE id = $1`;
+
+    let values = [patentId, typeOfInvention, titleOfInvention, patentStage, sdgGoals, applicationNum, subMissionDate, authorNameString, ...(supportingDocuments ? [supportingDocuments] : [])]
+    let patentsubmissonSql = {
+        text : queryText,
+        values : values
     }
-    else{
-        console.log('updatedPatentData in models ======>>>>>', updatedPatentData);
-        const {typeOfInvention, titleOfInvention, patentStage, sdgGoals, applicationNum, subMissionDate} = updatedPatentData 
-        let patentSql = {
-            text : `UPDATE patent_submissions  SET type_of_invention = $2,  title_of_invention = $3, patent_stage = $4, sdg_goals = $5, 
-                  application_no = $6, date = $7, author_type =$8 WHERE id = $1`,
-            values : [patentId, typeOfInvention, titleOfInvention, patentStage, sdgGoals, applicationNum, subMissionDate, authorName]
-        
-        }
-        console.log('patentSql ==>>', patentSql);
-        return researchDbW.query(patentSql);
-    }
+
+     let externalEmpSql = externalNamesString ? {
+        text: `INSERT INTO external_emp(external_emp_name) VALUES ($1) RETURNING id`,
+        values: [externalNamesString],
+     } : null
+    console.log('patentsubmissonSql ===>>>', patentsubmissonSql);
+
+    console.log('externalEmp ===>>>', externalEmpSql)
+
+    const externalEmpTable = externalEmpSql ? await researchDbW.query(externalEmpSql) : null;
+    const patentSubmissionTable = await researchDbW.query(patentsubmissonSql);
+    const promises = [externalEmpTable, patentSubmissionTable];
+    return Promise.all(promises).then(([externalEmpTable, patentSubmissionTable]) => {
+        return{status : 'Done', message : "Record Updated SuccessFully", externalEmpId : externalEmpTable !== null ? externalEmpTable.rows[0].id : null, patentSubmissionTable : patentSubmissionTable}
+    })
+    .catch((error) => {
+        console.error('error ===>>>', error);
+        return{status : 'Failed', message : error.message, errorCode : error.code}
+    })
 }
 
 module.exports.deletePatentSubmissionData = async(patentId) => {

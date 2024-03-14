@@ -1,38 +1,39 @@
 const conferencePublicationServices = require('../services/conference-publications.service');
-const clientScript = require('../../public/js/client');
-const path = require('path');
-const upload = require('../../multer');
 
 module.exports.renderConferencePage = async(req, res, next) => {
-    const conferenceData = await conferencePublicationServices.fetchConferencePublication()
+    const conferenceData = await conferencePublicationServices.fetchConferencePublication();
+    console.log('conferenceData ====>>>>>', conferenceData);
     res.render('conference-publication' , {
-        status : 'done',
-        conferenceData : conferenceData.rows,
+        status : 'Done',
+        conferenceData : conferenceData.conferenceDataList,
         rowCount : conferenceData.rowCount,
+        internalEmpList : conferenceData.internalEmpList,
+        externalEmpList : conferenceData.externalEmpList,
     })
 };
 
 
 
 module.exports.insertConferencePublicationSData = async (req, res, next) => {
-     const conferencePublications = req.body;
-     console.log('Data comming From Template', req.body);
-     console.log('files in controller ==>>>', req.files)
-     const insertConferenceDataForm = await conferencePublicationServices.insertConferenceData(req.body, req.files);
-    const conferenceDocumentData = insertConferenceDataForm.insertConferenceDataForm;
-    const conferenceProofData = insertConferenceDataForm.conferenceProofData;
-    const conferenceId = insertConferenceDataForm.conferenceId;
-    console.log('conferenceId ==>>>', conferenceId)
-     if(insertConferenceDataForm){
-        res.status(200).send({
-            status : 'done',
-            conferenceData : conferencePublications,
-            conferenceId ,
-            conferenceDocumentData,
-            conferenceProofData
-        })
-     }
-  
+    console.log('Data comming From Template', req.body);
+    console.log('files in controller ==>>>', req.files)
+    const insertConferenceDataForm = await conferencePublicationServices.insertConferenceData(req.body, req.files);
+    console.log('insertConferenceDataForm in controller ===>>>>', insertConferenceDataForm);
+    const statusCode = insertConferenceDataForm.status === "Done" ? 200 : (insertConferenceDataForm.errorCode ? 400 : 500);
+    res.status(statusCode).send({
+        status : insertConferenceDataForm.status,
+        message : insertConferenceDataForm.message,
+        conferenceId : insertConferenceDataForm.status === "Done" ? insertConferenceDataForm.conferenceId : null,
+        externalEmpId : insertConferenceDataForm.status === "Done" ? (insertConferenceDataForm.externalEmpId ? insertConferenceDataForm.externalEmpId : null) : null,
+        conferenceDocument : insertConferenceDataForm.status === "Done" ?  insertConferenceDataForm.conferenceDocument : null,
+        conferenceProofFile : insertConferenceDataForm.status === "Done" ? insertConferenceDataForm.conferenceProofFile : null,
+        rowCount :  insertConferenceDataForm.status === "Done" ? insertConferenceDataForm.rowCount : null,
+        conferenceData : insertConferenceDataForm.status === "Done" ? insertConferenceDataForm.conferencePublications : null,
+        authorNameString : insertConferenceDataForm.status === "Done" ? insertConferenceDataForm.authorNameString : null, 
+        internalNamesString : insertConferenceDataForm.status === "Done" ? insertConferenceDataForm.internalNamesString : null,
+        externalNamesString : insertConferenceDataForm.status === "Done" ? insertConferenceDataForm.externalNamesString : null,
+        errorCode : insertConferenceDataForm.errorCode ? insertConferenceDataForm.errorCode : null
+    })
 }
 
 module.exports.deleteConferencePublication = async(req, res, next) => {
@@ -59,9 +60,6 @@ module.exports.updateConferencePublication = async(req, res, next) => {
     console.log('files in side controller ==>>', req.files);
     console.log('data in controller for updation ==>>', req.body);
     const upadtedConferenceData = req.body;
-    // console.log('fielses in controller :', req.files);
-    // const {conferenceProof , conferenceDocument} = req.files;
-    // const ConferenceFileToBeUpdate = {conferenceProof , conferenceDocument}
     const updatedConference = await conferencePublicationServices.updatedConferencePublication(req.body, req.files);
     console.log('updatedConference in controller ===>>>', updatedConference)
     if(updatedConference){
