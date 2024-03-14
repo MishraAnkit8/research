@@ -273,7 +273,7 @@
                      <!-- Duration of the Project -->
                      <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="duration-of-project" class="form-label fw-bold">Duration of the Project</label>
-                        <input type="text" name="project-duration" id="duration-of-project" data-validate="isEmpty,isAlphaNumeric,isExist" data-err-msg="This field is required and accept alpha numeric." class="form-control" required>
+                        <input type="text" name="project-duration" id="duration-of-project" data-validate="isEmpty,isExist" data-err-msg="This field is required and accept alpha numeric." class="form-control" required>
                     </div>
                     <!-- Status of Research Project -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
@@ -528,7 +528,7 @@
                      <!-- Amount received with date of receipt -->
                      <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
-                            <div class="task-sub-title sub-title-text"> Amount received with date of receipt: </div>
+                            <div class="task-sub-title sub-title-text"> Amount Received With Date  </div>
                             <div class="d-flex">
                                 <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                                     <label class="view-content" id="view-recieved-amount"></label></div>
@@ -1325,12 +1325,14 @@
             console.log('updatedAuthorType ====>>>', updatedAuthorType);
             console.log('externalAuthorValue ===>>>', externalAuthorValue);
             console.log('InternalAuthorValue ====>>>>>', InternalAuthorValue);
-            console.log('storedFacultyValue ====>>> ', storedFacultyValue)
+            console.log('storedFacultyValue ====>>> ', storedFacultyValue);
+            const updatedAuthorNameArrays = [];
             if(!externalAuthorValue && ! InternalAuthorValue){
-                updatedConsultantData.append('authorName', storedFacultyValue)
+                updatedAuthorNameArrays.push({'existingNameValue' : storedFacultyValue})
+                const updatedAuthorNameString = JSON.stringify(updatedAuthorNameArrays);
+                updatedConsultantData.append('authorName', updatedAuthorNameString)
             }
             else{
-                const updatedAuthorNameArrays = []
                 updatedAuthorNameArrays.push({'externalEmpList' : externalAuthorValue})
                 updatedAuthorNameArrays.push({'internalEmpList' : InternalAuthorValue})
                 const updatedAuthorNameString = JSON.stringify(updatedAuthorNameArrays);

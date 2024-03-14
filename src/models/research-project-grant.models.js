@@ -101,8 +101,9 @@ module.exports.insertResearhcProjectConstancyData = async(researchCunsultancyDat
 }
 
 module.exports.updateResearchConsultantData = async(consultantId, updatedResearchGrant, updatedConsultantFilesData,
-    internalNamesString, externalNamesString) => {
-    const authorNameString = internalNamesString + externalNamesString
+    internalNamesString, externalNamesString, existingNameString) => {
+    const authorNameString = internalNamesString + externalNamesString + existingNameString;
+    console.log('authorNameString in models ====>>>>', authorNameString)
     console.log('updatedConsultant in model ===>>>>>', updatedResearchGrant)
     const internalAuthors = updatedResearchGrant.internalAuthors;
     console.log('internalAuthors ===>>>', internalAuthors);

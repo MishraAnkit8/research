@@ -86,24 +86,30 @@ module.exports.insertResearchConsultancyData = async(body , files) => {
 module.exports.updateResearchConstant = async(consultantId, body, files) => {
   const updatedResearchGrant = body;
   console.log('body ====>>>>', body);
-  const authorNameArray = JSON.parse(body.authorName);
-  console.log('authorNameArray ===>>>', authorNameArray)
+  console.log('body type ==>> ' , typeof  body.authorName)
+  const authorNameArray = JSON.parse(body.authorName) ? JSON.parse(body.authorName) : body.authorName ;
+ console.log('authorNameArray ===>>>', authorNameArray)
 
   const internalNames = [];
   const externalNames = [];
+  const existingName = [];
 
   authorNameArray.forEach((item) => {
     item.internalEmpList ? internalNames.push(item.internalEmpList) : null;
     item.externalEmpList ? externalNames.push(item.externalEmpList) : null;
+    item.existingNameValue ? existingName.push(item.existingNameValue) : null;
   });
   // convert array into string
   const internalNamesString = internalNames.join(", ");
   const externalNamesString = externalNames.join(", ");
-  const authorNameString = internalNamesString + externalNamesString;
+  const existingNameString = existingName.join(",");
+  const authorNameString = internalNamesString + externalNamesString + existingNameString;
   console.log("Internal Names updated:", internalNamesString);
   console.log("External Names updated:", externalNamesString);
+  console.log('storedNameString ===>>>', existingNameString);
+  console.log('authorNameString ====>>>', authorNameString);
   const updatedConsultantFilesData = files ?.map(file => file.filename).join(',')
-  const updateResearchProjectConstant = await researchCunsultancyModel.updateResearchConsultantData(consultantId ,updatedResearchGrant, updatedConsultantFilesData, internalNamesString, externalNamesString);
+  const updateResearchProjectConstant = await researchCunsultancyModel.updateResearchConsultantData(consultantId ,updatedResearchGrant, updatedConsultantFilesData, existingNameString, internalNamesString, externalNamesString);
   console.log('updateResearchProjectConstant =====>>>>>', updateResearchProjectConstant);
   return updateResearchProjectConstant.status === "Done" ? 
    {
@@ -113,7 +119,8 @@ module.exports.updateResearchConstant = async(consultantId, body, files) => {
     updatedConsultantFilesData,
     authorNameString : authorNameString,
     externalTableName : externalNamesString ? 'externalEmpList' : null,
-    intenalTableName : internalNamesString ? 'internalEmpList' : null
+    intenalTableName : internalNamesString ? 'internalEmpList' : null,
+    existingNameString : existingNameString ? 'existingNameValue' : null,
   }:{
     status: updateResearchProjectConstant.status,
     message: updateResearchProjectConstant.message,
