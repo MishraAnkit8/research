@@ -40,18 +40,12 @@ module.exports.deleteConferencePublication = async(req, res, next) => {
     const conferenceId = req.body;
     console.log('conferenceId in controller' , conferenceId);
     const deleteConferenceRequest = await conferencePublicationServices.deleteConferencePublicationData(conferenceId);
-    if(deleteConferenceRequest){
-        res.status(200).send({
-            status : 'done',
-            massage : 'data deleted successfully'
-        })
-    }
-    else{
-        res.status(500).send({
-            status : 'failed',
-            massage : 'failed to delete'
-        })
-    }
+    const statusCode = deleteConferenceRequest.status === "Done" ? 200 : (deleteConferenceRequest.errorCode ? 400 : 500);
+    res.status(statusCode).send({
+        status : deleteConferenceRequest.status,
+        message : deleteConferenceRequest.message,
+        errorCode : deleteConferenceRequest.errorCode ? deleteConferenceRequest.errorCode : null
+    })
 }
 
 module.exports.updateConferencePublication = async(req, res, next) => {
@@ -62,23 +56,19 @@ module.exports.updateConferencePublication = async(req, res, next) => {
     const upadtedConferenceData = req.body;
     const updatedConference = await conferencePublicationServices.updatedConferencePublication(req.body, req.files);
     console.log('updatedConference in controller ===>>>', updatedConference)
-    if(updatedConference){
-        res.status(200).send({
-            status : updatedConference.status,
-            masssage : updatedConference.massage,
-            upadtedConferenceData,
-            confernceDocString : updatedConference.confernceDocString,
-            conferenceProofString : updatedConference.conferenceProofString
-        })
-    }
-    else{
-        res.status(500).send({
-            status : 'failed',
-            massage : 'failed to update data',
-
-        })
-    }
-   
+    const statusCode = updatedConference.status === "Done" ? 200 :(updatedConference.errorCode ? 400 : 500)
+    res.status(statusCode).send({
+        status : updatedConference.status,
+        message : updatedConference.message,
+        confernceDocString : updatedConference.status === "Done" ? updatedConference.confernceDocString : null,
+        conferenceProofString : updatedConference.status === "Done" ? updatedConference.conferenceProofString : null,
+        internalNamesString : updatedConference.status === "Done" ? updatedConference.internalNamesString : null,
+        externalNamesString : updatedConference.status === "Done" ? updatedConference.externalNamesString : null,
+        existingNameString : updatedConference.status === "Done" ? updatedConference.existingNameString : null,
+        authorNameString : updatedConference.status === "Done" ? updatedConference.authorNameString : null,
+        upadtedConferenceData : updatedConference.status === "Done" ? updatedConference.upadtedConferenceData : null,
+        errorCode : updatedConference.errorCode ? updatedConference.errorCode : null
+    })
 }
 
 module.exports.viewConferencePublication = async(req, res, next) => {

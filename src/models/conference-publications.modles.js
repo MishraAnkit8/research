@@ -83,7 +83,15 @@ module.exports.DeleteConference = async({conferenceId}) => {
         text : `DELETE FROM conference_publications WHERE id =$1`,
         values : [conferenceId]
     }
-    return researchDbW.query(sql);
+    const conferenceTable = await researchDbW.query(sql);
+    const promises = [conferenceTable]
+    return Promise.all(promises).then(([conferenceTable]) => {
+        return {status : "Done" , message : "Record Delete Successfully"}
+    })
+    .catch((error) => {
+        console.log('errorrr ::::', error);
+        return {status : "Failed", message : error.message , errorCode : error.code}
+    })
 }
 
 module.exports.updateConferencePublication = async( upadtedConferenceData, conferenceId, confernceDocString,
@@ -93,12 +101,6 @@ module.exports.updateConferencePublication = async( upadtedConferenceData, confe
 
     const {titleOfPaper,  nameAndPlace, procedingDetail, publisherCategory, isPresenter, authorType, publicationDetails, 
         volAndIssueNo, issnIsbnNo, doiWebLink, awardForPresentation} = upadtedConferenceData;
-    // console.log('ConferenceFileToBeUpdate in models ===>>>', ConferenceFileToBeUpdate);
-    
-    // const conferenceDocument = ConferenceFileToBeUpdate.confernceDocString ? ConferenceFileToBeUpdate.confernceDocString : null;
-    // console.log('conferenceDocument ==>> ::::', conferenceDocument)
-    // const conferenceProof = ConferenceFileToBeUpdate.conferenceProofString ? ConferenceFileToBeUpdate.conferenceProofString : null;
-
     const conferenceFilesarray = {confernceDocString , conferenceProofString}
     console.log('conferenceFiles  =>>', conferenceFilesarray)
  
@@ -106,6 +108,7 @@ module.exports.updateConferencePublication = async( upadtedConferenceData, confe
         { field: 'title_of_paper', value: titleOfPaper },
         { field: 'name_and_place', value: nameAndPlace },
         { field: 'proceedings_detail', value: procedingDetail },
+        {field: 'doi_weblink' ,value : doiWebLink},
         { field: 'publisher_category', value: publisherCategory },
         { field: 'is_presenter', value: isPresenter },
         { field: 'author_type', value: authorNameString },
@@ -123,14 +126,14 @@ module.exports.updateConferencePublication = async( upadtedConferenceData, confe
         .map((fieldInfo, index) => {
             console.log('dataCondition ===>>>:::::', fieldInfo.value);
             console.log('index ==>>', index);
-            console.log('fieldInfo.field ====>>>>>', fieldInfo.field);
+            console.log(`fieldInfo.field ===>>>> ::::: ${fieldInfo.field} = $${index + 2}`)
             console.log('condition == ==>>>::::', true);
             return { statement: `${fieldInfo.field} = $${index + 2}`, dataCondition: `${fieldInfo.value}` };
         });
 
     console.log('setStatements ==>>>', setStatements);
 
-    const updateDocument = conferenceFieldToBeUpdate.map(fieldInfo => {
+    const updatedConferenceData = conferenceFieldToBeUpdate.map(fieldInfo => {
         const condition = fieldInfo.value;
         if(condition){
             console.log('condition ==>>::::', condition)
@@ -147,14 +150,14 @@ module.exports.updateConferencePublication = async( upadtedConferenceData, confe
         }
     }).filter(value => value !== null);
 
-    console.log('updateDocument ====::::>>>', updateDocument)
+    console.log('updatedConferenceData ====::::>>>', updatedConferenceData)
     
-    const updateConferenceData = [
+    const updatedConferenceValues = [
         conferenceId,
-        ...updateDocument,
+        ...updatedConferenceData,
     ];
 
-    console.log('updateConferenceData ==>>>', updateConferenceData);
+    console.log('updatedConferenceValues ==>>>', updatedConferenceValues);
 
     const setStatementString = setStatements.map((item, index) => {
         if (item.dataCondition !== 'null') {
@@ -166,14 +169,29 @@ module.exports.updateConferencePublication = async( upadtedConferenceData, confe
     
     console.log('setStatementString ==>>>', setStatementString);
     
-    const sql = {
+    const conferenceSql = {
         text: `UPDATE conference_publications SET ${setStatementString} WHERE id = $1`,
-        values: updateConferenceData,
+        values: updatedConferenceValues,
     };
-
-    console.log('sql ==>>', sql);
-    return researchDbW.query(sql);
-
+    console.log('conferenceSql ==>>', conferenceSql);
+    console.log('externalNamesString ===>>>>', externalNamesString)
+    const externalEmpSql = externalNamesString ? {
+        text: `INSERT INTO external_emp(external_emp_name) VALUES ($1) RETURNING id`,
+        values: [externalNamesString]
+    } : null;
+    const conferenceTable = await researchDbW.query(conferenceSql);
+    const externalEmpTable = externalEmpSql ? await researchDbW.query(externalEmpSql) : null;
+    const promises = [conferenceTable, externalEmpTable];
+    return Promise.all(promises).then(([conferenceTable, externalEmpTable]) => {
+        console.log('conferenceTable ===>>>', conferenceTable);
+        console.log('externalEmpTable ===>>>>', externalEmpTable)
+        return {status : 'Done' , message : "Record Updated Successfully" , externalEmpId : externalEmpSql !== null ? externalEmpTable.rows[0].id : null, conferenceTable : conferenceTable}
+    })
+    .catch((error) => {
+        console.log('error ===>>>', conferenceTable);
+        console.log('err.message ===>>>', err.message)
+        return{status : "Failed", message : error.message, errorCode : error.code}
+    })
 }
 
 module.exports.viewConferencePublication = async(conferenceId) => {

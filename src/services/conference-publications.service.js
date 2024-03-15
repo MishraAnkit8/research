@@ -1,5 +1,5 @@
 const conferencePublicationModels = require('../models/conference-publications.modles');
-
+const errorMsgMidWare = require('../middleware/error.middleware');
 
 module.exports.fetchConferencePublication = async() => {
     const conferencePublicationData = await conferencePublicationModels.fetchConferencePublication();
@@ -29,6 +29,7 @@ module.exports.fetchConferencePublication = async() => {
     console.log('conferenceDataList ===>>>', conferenceDataList)
     const rowCount = conferencePublicationData.conferenceDataList.rowCount;
     console.log('rowCount ===>>>', rowCount)
+    console.log('conferenceDataList ===>>>', conferenceDataList)
     return {
       conferenceDataList : conferenceDataList,
         internalEmpList : internalEmpList,
@@ -84,17 +85,13 @@ module.exports.insertConferenceData = async(body , files) => {
 module.exports.deleteConferencePublicationData = async(body) => {
     const conferenceId = body;
     const deleteConferencePublication = await conferencePublicationModels.DeleteConference(conferenceId);
-    if(deleteConferencePublication && deleteConferencePublication.rowCount === 1){
-        return {
-            status : 'done',
-            massage : 'data deleted successfully'
-        }
-    }
-    else{
-        return {
-            status : 'failed ',
-            massage : 'failed to delete the data'
-        }
+    return deleteConferencePublication.status === "Done" ? {
+      status : deleteConferencePublication.status,
+      massage : deleteConferencePublication.message
+    }: {
+      status : deleteConferencePublication.status,
+      message : deleteConferencePublication.message,
+      errorCode : deleteConferencePublication.errorCode
     }
 }
 
@@ -123,41 +120,35 @@ module.exports.updatedConferencePublication = async (body, files) => {
     console.log("External Names updated:", externalNamesString);
     console.log('storedNameString ===>>>', existingNameString);
     console.log('authorNameString ====>>>', authorNameString);
-    const confernceDocString = files.conferenceDocument?.map(file => file.filename).join(',');
-    const conferenceProofString = files.conferenceProof?.map(file => file.filename).join(',');
+    const confernceDocString = files.conferenceDocument ? files.conferenceDocument.map(file => file.filename).join(',') : null;
+    const conferenceProofString = files.conferenceProof ? files.conferenceProof.map(file => file.filename).join(',') : null;
     console.log('authorNameString ===>>>', authorNameString)
-    console.log('conferenceDocumentData string in service ===>>>', conferenceDocument)
-    console.log('conferenceProofData string in service  ==>>>', conferenceProofFile)
     console.log('confernceDocString in service ==>>', confernceDocString);
     console.log('conferenceProofString in service ==>>', conferenceProofString);
-    const updateConferencePublicationData =
-      await conferencePublicationModels.updateConferencePublication(
-        upadtedConferenceData,
-        conferenceId,
-        confernceDocString,
+    const updateConferencePublicationData = await conferencePublicationModels.updateConferencePublication(upadtedConferenceData, conferenceId, confernceDocString,
         conferenceProofString,
         internalNamesString,
         externalNamesString,
         existingNameString
       );
+    console.log('updateConferencePublicationData  in service ===>>>>', updateConferencePublicationData);
 
-    // const ConferenceFileToBeUpdate = {confernceDocString , conferenceProofString}
-    // const updateConferencePublicationData = await conferencePublicationModels.updateConferencePublication(upadtedConferenceData, conferenceId, ConferenceFileToBeUpdate);
-    // if(updateConferencePublicationData && updateConferencePublicationData.rowCount === 1){
-    //     console.log('updateConferencePublicationData in service ==>>', updateConferencePublicationData);
-    //     return {
-    //         status : 'done',
-    //         massage : 'data updated successfully',
-    //         confernceDocString : confernceDocString,
-    //         conferenceProofString : conferenceProofString
-    //     }
-    // }
-    // else{
-    //     return {
-    //         status : 'failed',
-    //         massage : 'failed to update',
-    //     }
-    // }
+    return updateConferencePublicationData.status === "Done" ? {
+      status : 'Done',
+      message : updateConferencePublicationData.message,
+      confernceDocString : confernceDocString,
+      conferenceProofString : conferenceProofString,
+      internalNamesString : internalNamesString,
+      externalNamesString : externalNamesString,
+      existingNameString : existingNameString,
+      authorNameString : authorNameString,
+      upadtedConferenceData : upadtedConferenceData
+
+    }:{
+      status : updateConferencePublicationData.status,
+      message : updateConferencePublicationData.message,
+      errorCode : updateConferencePublicationData.errorCode
+    };
      
 }
 

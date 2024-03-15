@@ -71,7 +71,7 @@
                 <% const externalEmp = externalEmpList[index]; %>
                 <tr data-conference-id="<%- conference.id %>"
                     data-publisher-category="<%- conference.publisher_category %>"
-                    data-is-presenter="<%- conference.is_presenter %>" data-author-type="<%- conference.author_type %>"
+                    data-is-presenter="<%- conference.is_presenter %>" data-author-type="<%- conference.author_type.authorName %>"
                     data-publication-details="<%- conference.publication_details %>"
                     data-vol-and-issue-no="<%- conference.vol_and_issue_no %>" data-doi-weblink="<%- conference.doi_weblink %>"
                     data-upload-files="<%- conference.upload_files %>"
@@ -452,7 +452,7 @@
                                 <i class="fas fa-download text-danger"></i> Download ConferenceDocument
                             </button>
                         </div>
-                            <label class="view-content" id="view-conference-document"></label>
+                            <label class="view-content d-none" id="view-conference-document"></label>
                         </div>
                     </div>
                     <!-- Any award for presentation -->
@@ -469,7 +469,7 @@
                                 <i class="fas fa-download text-danger"></i> Download ConferenceProof
                             </button>
                         </div>
-                            <label class="view-content" id="view-conference-proof"></label>
+                            <label class="view-content d-none" id="view-conference-proof"></label>
                         </div>
                     </div>
                 </div>
@@ -494,8 +494,7 @@
     const conferencePublicationList = document.getElementById('conference-publication-list');
     const employeeDropdown = document.getElementById("emp-name");
     const addMoreDetailsButton = document.getElementById("add-more-details");
-    let conferenceId, conferenceRowToBeUpdated, storedFacultyValue;
-
+    let conferenceId, conferenceRowToBeUpdated, storedFacultyValue, InternalAuthorValue,  externalAuthorValue;
     const conferenceAddModal = document.getElementById('confrence-modal-form');
     const submitBtn = document.getElementById('submit-btn');
     const updateBtn = document.getElementById('update-btn');
@@ -513,6 +512,9 @@
             const conferenceProofFiles = document.querySelector('#conference-proof-edit');
             conferenceDocFiles.classList.add('d-none');
             conferenceProofFiles.classList.add('d-none');
+            InternalAuthorValue = '';
+            externalAuthorValue = '';
+            storedFacultyValue = '';
             const titleOfPaper = document.getElementById('title-of-paper');      
             const nameAndPlace = document.getElementById('name-and-place');
             const procedingDetail = document.getElementById('proceedings-detail');
@@ -522,6 +524,8 @@
             const doiWebLink = document.getElementById('doi-weblink');
             const conferenceDocument = document.querySelector('input[name="conferenceDocument"]');
             const conferenceProof = document.querySelector('input[name="conferenceProof"]');
+            employeeList.classList.add('d-none');
+            authorDetails.classList.add('d-none');
             titleOfPaper.value = '';   
             nameAndPlace.value = ''; 
             procedingDetail.value = ''; 
@@ -624,7 +628,7 @@
                     </td>
                 `;
                 conferencePublicationList.append(newConferenceFormData)
-                // $('#conference-publication-modal').modal('hide');
+                $('#conference-publication-modal').modal('hide');
                 Swal.fire({
 							position: "top-center",
 							icon: "success",
@@ -667,8 +671,13 @@
                 await insertConferencePublicationForm('<%- BASE_URL %>research/conference-publication/insert');
             }
             else {
-                alert('Validation Failed');
-                indexValue -+ 1;
+                Swal.fire({
+					position: "top-center",
+					icon: "error",
+					title: "Validation Failed",
+					color : "red",
+					showConfirmButton: false,
+						});
             }
     });
 
@@ -678,29 +687,60 @@
         conferenceId = event.target.getAttribute('data-conference-id');
         console.log('id for deletion ==>', conferenceId);
         conferenceRowToBeDelete = event.target.closest('tr');
-        let confirmDelete = confirm("Do you want to delete the Conference Publication?");
-            if(!confirmDelete) {
-                return;
+        let confirmDelete = "Do you want to delete the Book  Publication?";
+        if (confirmDelete) {
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete it!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Execute fetch request here after confirmation
+                    fetch('<%- BASE_URL %>research/conference-publication/delete', {
+                        method: 'POST',
+                        headers: {
+                            'content-type': 'application/json'
+                        },
+                        body: JSON.stringify({conferenceId})
+                        })
+                        .then((result) => result.json())
+                        .then((data) => {
+                            if (data.status === 'Done') {
+                                console.log('data ==>>', data);
+                                conferenceRowToBeDelete.remove();
+                                Swal.fire({
+                                    title: "Deleted!",
+                                    text: "Record has been deleted.",
+                                    icon: "success"
+                                }).then(() => {
+                                    location.reload();
+                                });
+                            }
+                        })
+                        .catch((error) => {
+                            console.error('Error:', error);
+                            const message = error;
+                            Swal.fire({
+                                position: "top-center",
+                                icon: "error",
+                                title: `${message}`,
+                                color: "red",
+                                showConfirmButton: false,
+                            });
+                        });
+                     }
+                });
             }
-        fetch('<%- BASE_URL %>research/conference-publication/delete' , {
-            method : 'POST',
-            headers : {
-                'content-type' : 'application/json'
-            },
-            body : JSON.stringify({conferenceId})
-        })
-        .then((result) => {
-            return result.json()
-        })
-        .then((data) => {
-            if(data.status === 'done'){
-                conferenceRowToBeDelete.remove();
-                location.reload();
+            else {
+                return
             }
-        })
         }
       
-        // for view
+        // for view the form data
         if(event.target.classList.contains('view')){
             console.log('clickeddd');
             const conferenceRowToBeViewed = event.target.closest('tr');
@@ -745,7 +785,7 @@
                     viewDoiWebLink.innerText = data.viewConferenceData[0].doi_weblink;
                     viewPublisherCategory.innerText = data.viewConferenceData[0].publisher_category;
                     viewIsPresenter.innerText = data.viewConferenceData[0].is_presenter;
-                    viewAuthortype.innerText = data.viewConferenceData[0]. author_type;
+                    viewAuthortype.innerText = data.viewConferenceData[0].author_type.replace(/,/g, ' ');
                     viewAward.innerText = data.viewConferenceData[0].award_for_presentation;
 
                 }
@@ -759,12 +799,18 @@
         if(event.target.classList.contains('edit')){
             console.log('clickedddd');
             removeErrorMsg();
+            InternalAuthorValue = '';
+            externalAuthorValue = '';
+            storedFacultyValue = '';
             conferenceId = event.target.getAttribute('data-conference-id');
             conferenceRowToBeUpdated = event.target.closest('tr');
+            console.log('conferenceRowToBeUpdated ====>>>>>', conferenceRowToBeUpdated)
             console.log('ID ==>>', conferenceId);
             $('#conference-publication-modal').modal('show');
             updateBtn.classList.remove('d-none');
             submitBtn.classList.add('d-none');
+            employeeList.classList.add('d-none');
+            authorDetails.classList.add('d-none');
             setFileNameAttributeToBeDownload(conferenceRowToBeUpdated);
             const titleOfPaper = document.getElementById('title-of-paper');      
             const nameAndPlace = document.getElementById('name-and-place');
@@ -802,6 +848,7 @@
                 isPresenterNo.checked = true
             }
             const authorType = conferenceRowToBeUpdated.getAttribute('data-author-type');
+            storedFacultyValue = authorType;
             if(authorType === 'External'){
                 isAuthorExternal.checked = true
             }
@@ -904,7 +951,7 @@
             return result.json()
         })
         .then((data) => {
-            if(data.status === 'done'){
+            if(data.status === "Done"){
                 console.log('updated Data ==>>', data);
                 conferenceRowToBeUpdated.querySelector('.title-of-paper').innerText = data.upadtedConferenceData.titleOfPaper;
                 conferenceRowToBeUpdated.querySelector('.name-and-place').innerText = data.upadtedConferenceData.nameAndPlace;
@@ -912,7 +959,7 @@
                 conferenceRowToBeUpdated.querySelector('.issn-isbn-no').innerText = data.upadtedConferenceData.issnIsbnNo;
                 conferenceRowToBeUpdated.setAttribute('data-publisher-category' , data.upadtedConferenceData.publisherCategory);
                 conferenceRowToBeUpdated.setAttribute('data-is-presenter' , data.upadtedConferenceData.isPresenter);
-                conferenceRowToBeUpdated.setAttribute('data-author-type' , data.upadtedConferenceData.authorType);
+                conferenceRowToBeUpdated.setAttribute('data-author-type' , data.upadtedConferenceData.authorNameString);
                 conferenceRowToBeUpdated.setAttribute('data-publication-details' , data.upadtedConferenceData.publicationDetails);
                 conferenceRowToBeUpdated.setAttribute('data-vol-and-issue-no' , data.upadtedConferenceData.volAndIssueNo);
                 conferenceRowToBeUpdated.setAttribute('data-doi-weblink' , data.upadtedConferenceData.doiWebLink);
@@ -923,10 +970,41 @@
                 if(updatedConferenceProofsData){
                     conferenceRowToBeUpdated.setAttribute('data-upload-proof' , data.conferenceProofString);
                 }
-            }
-        });
-        alert('Data Updated Succesfully');
-        $('#conference-publication-modal').modal('hide');
+                Swal.fire({
+							position: "top-center",
+							icon: "success",
+							title: `${data.message}`,
+							showConfirmButton: false,
+							timer: 1500
+						});
+                        $('#conference-publication-modal').modal('hide');
+           }
+           else{
+                        const message = data.message;
+                        console.log('data ===>>>', data)
+                        console.log('message ==:::', message);
+                        Swal.fire({
+							position: "top-center",
+							icon: "error",
+							title: `${data.errorCode}`,
+							color : "red",
+							with : "20PX",
+							html: `<span style="color: red;">${data.message}</span>`,
+							showConfirmButton: false,
+						});
+           }
+            
+        }) .catch((error) => {
+            const message  = error 
+            Swal.fire({
+				position: "top-center",
+				icon: "error",
+				title: `${message}`,
+				color : "red",
+				showConfirmButton: false,
+			});
+        })
+        
     };
 
     updateBtn.addEventListener('click' , async() => {
@@ -941,7 +1019,13 @@
                 await updateConferencePublication('<%- BASE_URL %>research/conference-publication/update');
             }
             else {
-                alert('Validation Failed');
+                Swal.fire({
+					position: "top-center",
+					icon: "error",
+					title: "Validation Failed",
+					color : "red",
+					showConfirmButton: false,
+						});
             }
 
     })
@@ -1022,8 +1106,6 @@
         const authorDetails = document.getElementById('author-details');
 
         // let storedSelectedValue;
-        let InternalAuthorValue;
-        let externalAuthorValue;
         let additionalDetails = []; 
 
     const enternalText = document.getElementById('enternal-text');
@@ -1037,7 +1119,6 @@
     // ajax for search bar to search employee name 
     new TomSelect("#emp-name");
     const authorNamesArray = [];
-
     // function for select author name from drop down list
     function handleEmployeeDropdownChange() {
             const selectedValues = Array.from(employeeDropdown.options)

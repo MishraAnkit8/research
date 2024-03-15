@@ -69,7 +69,7 @@ router.post('/patent-submission/view', asyncErrorHandler(patentSubmission.viewPa
 router.get('/patent-submission/download/:fileName', downloadFileService.downloadFile);
 router.get('/patent-submission/viewing/:fileName', downloadFileService.viewFile);
 
-//research project grant
+//research project gran
 router.get('/research-project-grant', asyncErrorHandler(researchProjGrantController.renderResearchProjectConsultancy));
 router.post('/research-project-grant/insert', upload.array('researchSupportingDocument', 5), asyncErrorHandler(researchProjGrantController.insertResearchConsultancyData));
 router.post('/research-project-grant/update', upload.array('researchSupportingDocument', 5), asyncErrorHandler(researchProjGrantController.updatedConsultantData));
