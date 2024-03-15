@@ -923,8 +923,11 @@
             return result.json()
         })
         .then((data) => {
-            if(data.status === 'done'){
+            if(data.status === 'Done'){
                 console.log('data ==>>', data);
+                const rowCountInteger = parseInt(data.rowCount, 10);
+                const IndexEntry = rowCountInteger + indexValue
+                console.log('IndexEntry ===>>>', IndexEntry);
                 const newBrandingAdvertisingRow = document.createElement('tr');
                 newBrandingAdvertisingRow.setAttribute('data-faculty-recognition-documents' , data.facultyRecognitionDocuments[0].filename);
                 newBrandingAdvertisingRow.setAttribute('data-faculty-recognition-link' , data.advertisingData.facultyRecognitionLink);
@@ -948,7 +951,7 @@
                 newBrandingAdvertisingRow.setAttribute('data-newspaper-article-link' , data.advertisingData.newsPaperArticleLink);
                 console.log('data.advertisingData ==>', data.advertisingData);
                 newBrandingAdvertisingRow.innerHTML = `
-                                    <td class="cell" id="rowCount">${indexValue}</td>
+                                    <td class="cell" id="rowCount">${IndexEntry}</td>
                                     <td class="faculty-recognition">${data.advertisingData.facultyRecognition}</td>
                                     <td class="faculty-award">${ data.advertisingData.facultyAward}</td>
                                     <td class="staff-award">${ data.advertisingData.staffAward}</td>
@@ -1307,7 +1310,7 @@
             return result.json()
         })
         .then((data) => {
-            if(data.status === 'done'){
+            if(data.status === 'Done'){
             console.log('data ==>>>', data);
             advertisingRowToBeUpdated.querySelector('.faculty-recognition').innerText = data.updatedAdvertisingData.facultyRecognition;
             advertisingRowToBeUpdated.setAttribute('data-faculty-recognition-link' , data.updatedAdvertisingData.facultyRecognitionLink);
@@ -1381,7 +1384,7 @@
                 }
             }
             $('#branding-advertising-modal').modal('hide');
-            alert('Data Updated Successfully');
+            alert(`${data.message}`);
         })
     }
 

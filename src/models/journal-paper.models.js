@@ -44,7 +44,16 @@ module.exports.createJournalPaper = async ({ journalDetails }) => {
     };
 
     console.log('sql ==>>', sql);
-    return researchDbW.query(sql);
+    // return researchDbW.query(sql);
+    const insertJournalRecord = await researchDbW.query(sql);
+    const promises = [insertJournalRecord];
+    return Promise.all(promises).then(([insertJournalRecord]) => {
+        return  { status : "Done" , message : "Record Inserted Successfully" , journalPaperId : insertJournalRecord.rows.id, rowCount : insertJournalRecord.rowCount}
+    })
+    .catch((error) => {
+        return{status : "Failed" , message : error.message , errorCode : error.code}
+    })
+    
 };
 
 // for deleting journal paper  data 
@@ -53,8 +62,15 @@ module.exports.deleteJournalPaper =  async({journalPaperId}) => {
         text : `DELETE FROM journal_papers WHERE id = $1 `,
         values : [journalPaperId]
     };
-    console.log('sql ==>>'. sql)
-    return researchDbR.query(sql);
+    console.log('sql ===>>>', sql)
+    const deletedRecord = await researchDbW.query(sql);
+    const promises = [deletedRecord];
+    return Promise.all(promises).then(([deletedRecord]) => {
+        return  { status : "Done" , message : "Record Deleted Successfully", rowCount : deletedRecord.rowCount}
+    })
+    .catch((error) => {
+        return{status : "Failed" , message : error.message , errorCode : error.code}
+    })
 
 }
 // for updating 
@@ -89,7 +105,15 @@ module.exports.updateJournalPaperData = async ({ journalPaperId, updateJournalDe
     };
 
     console.log('sql ====>>>', sql);
-    return researchDbW.query(sql)
+    // return researchDbW.query(sql)
+    const updateJournalRecord = await researchDbW.query(sql);
+    const promises = [updateJournalRecord];
+    return Promise.all(promises).then(([updateJournalRecord]) => {
+        return  { status : "Done" , message : "Record Updated Successfully" ,  rowCount : updateJournalRecord.rowCount}
+    })
+    .catch((error) => {
+        return{status : "Failed" , message : error.message , errorCode : error.code}
+    })
 
 };
 

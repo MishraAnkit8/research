@@ -23,8 +23,16 @@ module.exports.insertMeetingStackholders = async(meetingStackholderData, meeting
         values : [ranking, rankingLink, accreditation, accreditationLink, achievements, achievementsLink, convocation, convocationLink, 
             inauguralProgram, inauguralProgramLink, events, eventsLink, meetingFilesData.rankingDocuments, meetingFilesData.accreditationFile, meetingFilesData.achievementsFile, meetingFilesData.convocationFile, meetingFilesData.inauguralProgramFile, meetingFilesData.eventFile]
     }
+
     console.log('sql ==>>', sql)
-    return researchDbW.query(sql)
+    const insertMeetingStackholdersRecord = await researchDbW.query(sql);
+    const promises = [insertMeetingStackholdersRecord];
+    return Promise.all(promises).then(([insertMeetingStackholdersRecord]) => {
+        return  { status : "Done" , message : "Record Inserted Successfully" ,  rowCount : insertMeetingStackholdersRecord.rowCount , meetingId : insertMeetingStackholdersRecord.rows[0].id}
+    })
+    .catch((error) => {
+        return{status : "Failed" , message : error.message , errorCode : error.code}
+    })
 }
 
 module.exports.updateMeetingData = async(meetingId, updateMeetingData, updatedMeetingFilesData) => {
@@ -123,8 +131,14 @@ module.exports.updateMeetingData = async(meetingId, updateMeetingData, updatedMe
         };
 
         console.log('sql ==>>', sql);
-        return researchDbW.query(sql);
-
+        const updateMeetingStackholdersRecord = await researchDbW.query(sql);
+        const promises = [updateMeetingStackholdersRecord];
+        return Promise.all(promises).then(([updateMeetingStackholdersRecord]) => {
+            return  { status : "Done" , message : "Record Updated Successfully" ,  rowCount : updateMeetingStackholdersRecord.rowCount}
+        })
+        .catch((error) => {
+            return{status : "Failed" , message : error.message , errorCode : error.code}
+        })
 }
 
 module.exports.viewMeeting = async(meetingId) => {
@@ -142,6 +156,13 @@ module.exports.deleteMeetingStackholders = async(meetingId) => {
         text : `DELETE FROM  meeting_stackholders WHERE id = $1`,
         values : [meetingId]
     }
-    console.log('sql ==>>', sql)
-    return researchDbW.query(sql)
+    console.log('sql ===>>>', sql)
+    const deletedRecord = await researchDbW.query(sql);
+    const promises = [deletedRecord];
+    return Promise.all(promises).then(([deletedRecord]) => {
+        return  { status : "Done" , message : "Record Deleted Successfully", rowCount : deletedRecord.rowCount}
+    })
+    .catch((error) => {
+        return{status : "Failed" , message : error.message , errorCode : error.code}
+    })
 }

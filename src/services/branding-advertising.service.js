@@ -90,83 +90,102 @@ module.exports.insertBrandingAdvertising = async(body , files) => {
 module.exports.updateBrandingAndAdvertising = async (advertisingId, updatedAdvertisingData, files) => {
     console.log('filesToUpdate in service ==>>', files);
     console.log('updatedAdvertisingData ==>>', updatedAdvertisingData);
-    let updatedBrandingFilesData = {};
-    if(Object.keys(files).length > 0){
-      const updatedFacultyRecognitionFilesArray = files.facultyRecognitionDocuments;
-      const updatedFacultyAwardFilesArray = files.facultyAwardDocuments;
-      const updatedStaffAwardFilesArray = files.staffAwardDocuments;
-      const updatedAlumniAwardFilesArray = files.alumniAwardDocuments;
-      const updatedStudentAwardFilesArray = files.studentAwardDocuments; 
-      const updatedInternationalLinkageFilesArray = files.internationalLinkageDocuments;
-      const updatedConferenceParticipationFilesArray = files.conferenceParticipationDocuments;
-      const updatedOrganisingConferenceFilesArray = files.organisingConferenceDocuments;
-      const updatedStudentEventParticipationFilesArray = files.studentEventParticipationDocuments;
-      const updatedNewspaperArticleFilesArray = files.newspaperArticleDocuments;
+    // let updatedBrandingFilesData = {};
+    // if(Object.keys(files).length > 0){
+      const updatedFacultyRecognitionFilesArray = files.facultyRecognitionDocuments ?.map(file => file.filename).join(',');
+      const updatedFacultyAwardFilesArray = files.facultyAwardDocuments ?.map(file => file.filename).join(',');
+      const updatedStaffAwardFilesArray = files.staffAwardDocuments ?.map(file => file.filename).join(',');
+      const updatedAlumniAwardFilesArray = files.alumniAwardDocuments ?.map(file => file.filename).join(',');
+      const updatedStudentAwardFilesArray = files.studentAwardDocuments ?.map(file => file.filename).join(','); 
+      const updatedInternationalLinkageFilesArray = files.internationalLinkageDocuments ?.map(file => file.filename).join(',');
+      const updatedConferenceParticipationFilesArray = files.conferenceParticipationDocuments ?.map(file => file.filename).join(',');
+      const updatedOrganisingConferenceFilesArray = files.organisingConferenceDocuments ?.map(file => file.filename).join(',');
+      const updatedStudentEventParticipationFilesArray = files.studentEventParticipationDocuments ?.map(file => file.filename).join(',');
+      const updatedNewspaperArticleFilesArray = files.newspaperArticleDocuments ?.map(file => file.filename).join(',');
 
-      // files array container
-      const updatedFilesArrayContainer = [
-            updatedFacultyRecognitionFilesArray,
-            updatedFacultyAwardFilesArray,
-            updatedStaffAwardFilesArray,
-            updatedAlumniAwardFilesArray,
-            updatedStudentAwardFilesArray,
-            updatedInternationalLinkageFilesArray,
-            updatedConferenceParticipationFilesArray,
-            updatedOrganisingConferenceFilesArray,
-            updatedStudentEventParticipationFilesArray,
-            updatedNewspaperArticleFilesArray
-      ];
-      console.log(' updatedfilesArrayContainer service ===>>', updatedFilesArrayContainer);
-      const keyNameArray = [
-          'facultyRecognitionDocuments',
-          'facultyAwardDocuments',
-          'staffAwardDocuments',
-          'alumniAwardDocuments',
-          'studentAwardDocuments',
-          'internationalLinkageDocuments',
-          'conferenceParticipationDocuments',
-          'organisingConferenceDocuments',
-          'studentEventParticipationDocuments',
-          'newspaperArticleDocuments'
-      ];
+      // // files array container
+      // const updatedFilesArrayContainer = [
+      //       updatedFacultyRecognitionFilesArray,
+      //       updatedFacultyAwardFilesArray,
+      //       updatedStaffAwardFilesArray,
+      //       updatedAlumniAwardFilesArray,
+      //       updatedStudentAwardFilesArray,
+      //       updatedInternationalLinkageFilesArray,
+      //       updatedConferenceParticipationFilesArray,
+      //       updatedOrganisingConferenceFilesArray,
+      //       updatedStudentEventParticipationFilesArray,
+      //       updatedNewspaperArticleFilesArray
+      // ];
+      // console.log('updatedFilesArrayContainer ===>>>', updatedFilesArrayContainer);
+      // console.log(' updatedfilesArrayContainer service ===>>', updatedFilesArrayContainer);
+    //   const keyNameArray = [
+    //       'facultyRecognitionDocuments',
+    //       'facultyAwardDocuments',
+    //       'staffAwardDocuments',
+    //       'alumniAwardDocuments',
+    //       'studentAwardDocuments',
+    //       'internationalLinkageDocuments',
+    //       'conferenceParticipationDocuments',
+    //       'organisingConferenceDocuments',
+    //       'studentEventParticipationDocuments',
+    //       'newspaperArticleDocuments'
+    //   ];
 
-      const advertisingFilesStringContainer = [];
-      // now push the string value into filesStringContainer array
-      for(let i = 0; i <= updatedFilesArrayContainer.length - 1; i++){
-            var filesString = '';
-            if (updatedFilesArrayContainer[i]) {
-              for (j = 0; j <= updatedFilesArrayContainer[i].length - 1; j++) {
-                if (updatedFilesArrayContainer[i][j].filename) {
-                  filesString +=
-                    updatedFilesArrayContainer[i][j].filename + ",";
-                }
-              }
-            }
-            advertisingFilesStringContainer.push(filesString);
-      }
-      console.log('advertisingFilesStringContainer ===>>>', advertisingFilesStringContainer);
-      // appending key and value into object container
-      for(k = 0; k <= advertisingFilesStringContainer.length - 1; k++){
-          const keyName = keyNameArray[k];
-          const valueString = advertisingFilesStringContainer[k];
-          if(valueString){
-            updatedBrandingFilesData[keyName] = valueString;
-          }
-      }
+    //   const advertisingFilesStringContainer = [];
+    //   // now push the string value into filesStringContainer array
+    //   for(let i = 0; i <= updatedFilesArrayContainer.length - 1; i++){
+    //         var filesString = '';
+    //         if (updatedFilesArrayContainer[i]) {
+    //           for (j = 0; j <= updatedFilesArrayContainer[i].length - 1; j++) {
+    //             if (updatedFilesArrayContainer[i][j].filename) {
+    //               filesString +=
+    //                 updatedFilesArrayContainer[i][j].filename + ",";
+    //             }
+    //           }
+    //         }
+    //         advertisingFilesStringContainer.push(filesString);
+    //   }
+    //   console.log('advertisingFilesStringContainer ===>>>', advertisingFilesStringContainer);
+    //   // appending key and value into object container
+    //   for(k = 0; k <= advertisingFilesStringContainer.length - 1; k++){
+    //       const keyName = keyNameArray[k];
+    //       const valueString = advertisingFilesStringContainer[k];
+    //       if(valueString){
+    //         updatedBrandingFilesData[keyName] = valueString;
+    //       }
+    //   }
       
-    }
-    console.log('updatedBrandingFilesData ===>>>', updatedBrandingFilesData)
+    // }
+    // console.log('updatedBrandingFilesData ===>>>', updatedBrandingFilesData)
+    
+			
 
-    const brandingAndAdvertising = await brandingAndAdvertisingModels.updateBrandingAdvertising(advertisingId, updatedAdvertisingData, updatedBrandingFilesData);
-    console.log('brandingAndAdvertising in service ===>>>', brandingAndAdvertising)
+  const updatedBrandingAndAdvertising = await brandingAndAdvertisingModels.updateBrandingAdvertising(advertisingId, updatedAdvertisingData, updatedFacultyRecognitionFilesArray,
+      updatedFacultyAwardFilesArray, updatedStaffAwardFilesArray, updatedAlumniAwardFilesArray, updatedStudentAwardFilesArray,
+      updatedInternationalLinkageFilesArray, updatedConferenceParticipationFilesArray, updatedOrganisingConferenceFilesArray,
+      updatedStudentEventParticipationFilesArray, updatedNewspaperArticleFilesArray);
 
-    if (brandingAndAdvertising && brandingAndAdvertising.rowCount === 1) {
-        return {
-            status: 'done',
-            message: 'updated successfully',
-            updatedBrandingFilesData
-        };
-    }
+  console.log('updatedBrandingAndAdvertising in service ===>>>', updatedBrandingAndAdvertising);
+  return updatedBrandingAndAdvertising.status === "Done" ? {
+          status : updatedBrandingAndAdvertising.status,
+          message : updatedBrandingAndAdvertising.message,
+          rowCount : updatedBrandingAndAdvertising.rowCount,
+          updatedAdvertisingData : updatedAdvertisingData,
+          updatedFacultyRecognitionFilesArray,
+          updatedFacultyAwardFilesArray,
+          updatedStaffAwardFilesArray,
+          updatedAlumniAwardFilesArray,
+          updatedStudentAwardFilesArray,
+          updatedInternationalLinkageFilesArray,
+          updatedConferenceParticipationFilesArray,
+          updatedOrganisingConferenceFilesArray,
+          updatedStudentEventParticipationFilesArray,
+          updatedNewspaperArticleFilesArray
+   } : {
+      status : updatedBrandingAndAdvertising.status,
+      message : updatedBrandingAndAdvertising.message,
+      errorCode :  updatedBrandingAndAdvertising.errorCode
+   }
 };
 
 

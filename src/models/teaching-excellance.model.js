@@ -23,8 +23,15 @@ module.exports.insertTeachingExecellanceData = async(teachingExecellance, teachi
             invitingFacultyLink, programOrientation, programOrientationLink, teachingFilesArrayData.pedagogyInnovationFileString, teachingFilesArrayData.fdpProgramFileString, teachingFilesArrayData.workShopFileString, teachingFilesArrayData.invitingFacultyFileString, teachingFilesArrayData.programOrientationFileString]
     }
     console.log('data inserted successfully ==>>', sql);
-    console.log('researchDbW.query(sql) in models ===>>', researchDbW.query(sql));
-    return researchDbW.query(sql)
+    // console.log('researchDbW.query(sql) in models ===>>', researchDbW.query(sql));
+    const InsertedTeachingExecellanceRecord = await researchDbW.query(sql);
+    const promises = [InsertedTeachingExecellanceRecord];
+    return Promise.all(promises).then(([InsertedTeachingExecellanceRecord]) => {
+        return  { status : "Done" , message : "Record Inserted Successfully" ,  rowCount : InsertedTeachingExecellanceRecord.rowCount, teachingId : InsertedTeachingExecellanceRecord.rows[0].id}
+    })
+    .catch((error) => {
+        return{status : "Failed" , message : error.message , errorCode : error.code}
+    })
 }
 
 
@@ -125,17 +132,30 @@ module.exports.updateTeachingExecellance = async(teachingId, updatedTeachingExec
         };
 
         console.log('sql ==>>', sql);
-        return researchDbW.query(sql);
-    
+        const updatedTeachingExecellanceRecord = await researchDbW.query(sql);
+        const promises = [updatedTeachingExecellanceRecord];
+        return Promise.all(promises).then(([updatedTeachingExecellanceRecord]) => {
+            return  { status : "Done" , message : "Record Updated Successfully" ,  rowCount : updatedTeachingExecellanceRecord.rowCount}
+        })
+        .catch((error) => {
+            return{status : "Failed" , message : error.message , errorCode : error.code}
+        })
 }
 
 module.exports.deleteTeachingExecellance = async(teachingId) =>{
     let sql = {
         text : `DELETE FROM  teaching_execellance WHERE id = $1`,
         values : [teachingId]
-    }
-
-    return researchDbW.query(sql)
+    };
+    console.log('sql ===>>>', sql)
+    const deletedRecord = await researchDbW.query(sql);
+    const promises = [deletedRecord];
+    return Promise.all(promises).then(([deletedRecord]) => {
+        return  { status : "Done" , message : "Record Deleted Successfully", rowCount : deletedRecord.rowCount}
+    })
+    .catch((error) => {
+        return{status : "Failed" , message : error.message , errorCode : error.code}
+    })
 }
 
 module.exports.teachingExecellanceView = async(teachingId) => {

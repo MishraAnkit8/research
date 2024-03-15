@@ -20,38 +20,53 @@ module.exports.insertBookChapter = async(bookChapter , files) => {
     // }
     const bookChapterInsertedData = await bookChapterModels.insertBookChapterData(bookChapter, bookChapterDataFiles);
     console.log('bookChapterInsertedData ===>>>>', bookChapterInsertedData);
-    const bookChapterId = bookChapterInsertedData.id;
-    console.log('bookChapterId ====>>>', bookChapterId);
-    return {
-        status: bookChapterInsertedData.status === 'Done' ? 'Done' : 'Failed',
-        message: bookChapterInsertedData.status === 'Done' ? `${bookChapterInsertedData.message}` : `${bookChapterInsertedData.message}`,
-        bookChapterDataFiles,
-        bookChapterId
+    console.log('bookChapterId ====>>>', bookChapterInsertedData.id);
+    return  bookChapterInsertedData.status === 'Done' ? {
+        status: bookChapterInsertedData.status,
+        message: bookChapterInsertedData.message,
+        bookChapterDataFiles : bookChapterDataFiles,
+        bookChapterId : bookChapterInsertedData.id,
+        bookChapterData : bookChapter,
+        rowCount : bookChapterInsertedData.rowCount
+    } : {
+        status : bookChapterInsertedData.status,
+        message : bookChapterInsertedData.message,
+        errorCode : bookChapterInsertedData.errorCode
     };
 }
 
 module.exports.updatedBookChapter = async (bookChapterId, updatedBookChapterPublication, files) => {
     const updateBookChapterDataFiles = files?.map(file => file.filename).join(',');
-    console.log('updateBookChapterDataFiles ====>>>>', updateBookChapterDataFiles);
-    
+        
     const updatedBookChapterData = await bookChapterModels.updatedBookChapter(bookChapterId, updatedBookChapterPublication, updateBookChapterDataFiles
     );
     console.log('updatedBookChapterData in service ====>>>', updatedBookChapterData);
-    return {
-        status: updatedBookChapterData.status === 'Done' ? 'Done' : 'Failed',
-        message: updatedBookChapterData.status === 'Done' ? `${updatedBookChapterData.message}` : `${updatedBookChapterData.message}`,
-        updateBookChapterDataFiles
+    return  updatedBookChapterData.status === 'Done' ? {
+        status:  updatedBookChapterData.status,
+        message: updatedBookChapterData.message,
+        updateBookChapterDataFiles : updateBookChapterDataFiles,
+        updatedBookChapterPublication : updatedBookChapterPublication
+    } : {
+            status : updatedBookChapterData.status,
+            message : updatedBookChapterData.message,
+            errorCode : updatedBookChapterData.errorCode
     };
   };
   
 
 module.exports.deleteBookChapterPublication = async({bookChapterId}) => {
+    console.log('bookChapterId ====>>>>', bookChapterId);
     const bookChapterPublication = await bookChapterModels.deleteBookChapter(bookChapterId);
-    if(bookChapterPublication.rowCount === 1){
-        return {
-            status : 'Done',
-            massage : 'Deleted successfully'
-        }
+    
+    console.log('bookChapterPublication ===>>>', bookChapterPublication);
+    return bookChapterPublication.status === "Done" ? {
+        status : bookChapterPublication.status,
+        message : bookChapterPublication.message,
+        rowCount : bookChapterPublication.rowCount
+    } : {
+        status : bookChapterPublication.status,
+        message : bookChapterPublication.message,
+        errorCode : bookChapterPublication.errorCode 
     }
 }
 

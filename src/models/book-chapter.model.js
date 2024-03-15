@@ -24,30 +24,42 @@ module.exports.insertBookChapterData = async(bookChapter, bookChapterDataFiles) 
         values : [authorName, bookTitle, edition, editorName, bookEditor, chapterTitle, volumeNumber, publisherCategory, pageNumber, publisherName, publicationYear,
             bookUrl, doiBookIdParsed, isbnNo, numberOfNmimsAuthors, nmimsAuthors, nmimsCampusAuthors, nmimsSchoolAuthors, bookChapterDataFiles]
     }
-    console.log('sql ==>>', sql);
-    //handling the condng by tre and catch
-    try {
-        const result = await researchDbW.query(sql);
-        console.log('Inserted row with id:', result.rows[0].id);
-        const message = 'Record Inserted With Id:'
-        return { status: 'Done', id: result.rows[0].id, message};
-    } catch (error) {
-        // console.log('error.code ====>>>', error.code)
-        // console.log('error.constraint ====>>>>>', error.constraint);
-        // console.log('error.message ====>>>', error.message);
-        // console.error('Error on update:', error.code, error.message);
-        // console.log('error.message ====>>>>>', error.message);
-        const message = error.code === '23505' ? "DOI ID Of Book Chapter Should Be Unique" : error.message;
-        return { status: 'Failed', message };  
-        // if (error.code === '23505' && error.constraint === 'journal_papers_web_link_doi_number_key') {
-        //     const message = 
-        //     console.error('Insertion failed. web_link_doi_number already exists.');
-        //     return { status: 'Failed', error: 'web_link_doi_number already exists' };
-        // } else {
-        //     console.error('Error occurred::::::::::', error.message);
-        //     return { status: 'Failed', error: error.message };
-        // }
-    }
+    //handling by tre and catch
+    return researchDbW.query(sql)
+    .then(result => {
+        return {
+            status: 'Done',
+            message: "Record Inserted Successfully",
+            rowCount: result.rowCount,
+            id : result.rows[0].id
+        };
+    })
+    .catch(error => {
+        console.log('error.code ====>>>', error.code);
+        console.log('error.constraint ====>>>>>', error.constraint);
+        console.log('error.message ====>>>', error.message);
+        const message = error.code === '23505' ? 'Doi Id Of Book should Uniq' : error.message;
+        console.log('message =====>>>>>>', message);
+        return {
+            status: 'Failed',
+            message: message,
+            errorCode: error.code
+        };
+    });
+    // try {
+    //     const result = await researchDbW.query(sql);
+    //     console.log('sql ==>>', sql);
+    //     console.log('Inserted row with id:', result.rows[0].id);
+    //     return { status: 'Done', id: result.rows[0].id, message : "Record Inserted With Id", rowCount : result.rowCount};
+    // } catch (error) {
+    //     // console.log('error.code ====>>>', error.code)
+    //     // console.log('error.constraint ====>>>>>', error.constraint);
+    //     // console.log('error.message ====>>>', error.message);
+    //     // console.error('Error on update:', error.code, error.message);
+    //     // console.log('error.message ====>>>>>', error.message);
+    //     const message = error.code === '23505' ? "DOI ID Of Book Chapter Should Be Unique" : error.message;
+    //     return { status: 'Failed', message, errorCode : error.code};  
+    // }
 }
 
 module.exports.updatedBookChapter = async (bookChapterId, updatedBookChapterPublication, updateBookChapterDataFiles) => {
@@ -69,22 +81,38 @@ module.exports.updatedBookChapter = async (bookChapterId, updatedBookChapterPubl
             numberOfNmimsAuthors, nmimsAuthors, nmimsCampusAuthors, nmimsSchoolAuthors, supportingDocuments
         ]
     };
-
-    try {
-        const result = await researchDbW.query(sql);
-        const status = result.rowCount > 0 ? 'Done' : 'Failed';
-        console.log('status ====>>>>>', status);
-        const message = ' Record Updated successful'
-        console.log('sql ====>>>', sql);
-        console.log('Updated successful:', result.rowCount, 'Row(s) Updated.');
-        return { status , message};
-    } catch (error) {
-        console.error('Error on update:', error.code, error.message);
-        console.log('error.message ====>>>>>', error.message);
-        const message = error.code === '23505' ? "DOI ID Of Book Chapter Should Be Unique" : error.message;
-        return { status: 'Failed', message };        
+    return researchDbW.query(sql)
+    .then(result => {
+        console.log('sql ===>>>', sql);
+        return {
+            status: 'Done',
+            message: "Record Updated Successfully",
+            rowCount: result.rowCount
+        };
+    })
+    .catch(error => {
+        console.log('error.code ====>>>', error.code);
+        console.log('error.constraint ====>>>>>', error.constraint);
+        console.log('error.message ====>>>', error.message);
+        const message = error.code === '23505' ? 'Doi Id Of Book should Uniq' : error.message;
+        console.log('message =====>>>>>>', message);
+        return {
+            status: 'Failed',
+            message: message,
+            errorCode: error.code
+        };
+    });
+    // try {
+    //     const result = await researchDbW.query(sql);
+    //     console.log('sql ===>>>>', sql);
+    //     return { status : "Done" , message : " Record Updated successfully", rowCount : result.rowCount};
+    // } catch (error) {
+    //     console.error('Error on update:', error.code, error.message);
+    //     console.log('error.message ====>>>>>', error.message);
+    //     const message = error.code === '23505' ? "DOI ID Of Book Chapter Should Be Unique" : error.message;
+    //     return { status: 'Failed', message , errorCode : error.code };        
         
-    }
+    // }
 };
 
 
@@ -93,7 +121,15 @@ module.exports.deleteBookChapter = async(bookChapterId) => {
         text : `DELETE FROM book_chapter_publications WHERE id = $1`,
         values : [bookChapterId]
     }
-    return researchDbW.query(sql);
+    //handle promis for deleting record 
+    return researchDbW.query(sql)
+    .then(() => {
+      return { status: 'Done', message: 'Record Deleted successfully.'};
+    })
+    .catch((error) => {
+      console.error('Error Deleting ReCord:', error);
+      return { status: 'Failed', message: error.message, errorCode : error.code };
+    });
 }
 
 module.exports.viewBookChapterData = async(bookChapterId) => {

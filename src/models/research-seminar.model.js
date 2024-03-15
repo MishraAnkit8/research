@@ -15,7 +15,7 @@ module.exports.fetchResearchSeminar = () => {
 };
 
 // for inserting journal paper  data
-module.exports.createResearchSeminar = ({seminarDetails}) => {
+module.exports.createResearchSeminar = async ({seminarDetails}) => {
     const {year, school, campus, NmimsFaculty, publisherCategory, titleOfPaper, journalName, publisher, pages, issnNo, dateOfPublishing, impactFactor, scsCiteScore, scsIndexed, wosIndexed, gsIndexed, abcdIndexed, ugcIndexed, webLink, uid  } = seminarDetails ;
 
     let sql = {
@@ -24,7 +24,15 @@ module.exports.createResearchSeminar = ({seminarDetails}) => {
 
         values : [year, school, campus, NmimsFaculty, publisherCategory, titleOfPaper, journalName, publisher, pages, issnNo, dateOfPublishing, impactFactor, scsCiteScore, scsIndexed, wosIndexed, gsIndexed, abcdIndexed, ugcIndexed, webLink, uid ]
     };
-    return researchDbW.query(sql);
+    console.log('sql ===>>>', sql)
+    const insertResearchSeminarRecord = await researchDbW.query(sql);
+    const promises = [insertResearchSeminarRecord];
+    return Promise.all(promises).then(([insertResearchSeminarRecord]) => {
+        return  { status : "Done" , message : "Record Inserted Successfully" ,  rowCount : insertResearchSeminarRecord.rowCount , seminarId : insertResearchSeminarRecord.rows[0].id}
+    })
+    .catch((error) => {
+        return{status : "Failed" , message : error.message , errorCode : error.code}
+    })
 }
 // for deleting journal paper  data 
 module.exports.deleteRsearchSeminar =  async({seminarId}) => {
@@ -32,7 +40,15 @@ module.exports.deleteRsearchSeminar =  async({seminarId}) => {
         text : `DELETE FROM research_seminars WHERE id = $1 `,
         values : [seminarId]
     };
-    return researchDbW.query(sql);
+    console.log('sql ===>>>', sql)
+    const deletedRecord = await researchDbW.query(sql);
+    const promises = [deletedRecord];
+    return Promise.all(promises).then(([deletedRecord]) => {
+        return  { status : "Done" , message : "Record Deleted Successfully", rowCount : deletedRecord.rowCount}
+    })
+    .catch((error) => {
+        return{status : "Failed" , message : error.message , errorCode : error.code}
+    })
 
 }
 // for updating 
@@ -44,7 +60,15 @@ module.exports.updateRsearchSeminar = async ({seminarId , updateResearchSeminar}
           pages = $10, issn_no = $11, date_of_publishing = $12, impact_factor = $13, scs_cite_score = $14, scs_indexed = $15, wos_indexed = $16, gs_indexed = $17, abdc_indexed = $18, ugc_indexed = $19, web_link = $20, uid = $21  WHERE id = $1`,
         values : [seminarId, year, school, campus, NmimsFaculty, publisherCategory, titleOfPaper, journalName, publisher, pages, issnNo, dateOfPublishing, impactFactor, scsCiteScore, scsIndexed, wosIndexed, gsIndexed, abcdIndexed, ugcIndexed, webLink, uid ]
     };
-    return researchDbW.query(sql);
+    console.log('sql ===>>>>', sql);
+    const updateResearchSeminarRecord = await researchDbW.query(sql);
+    const promises = [updateResearchSeminarRecord];
+    return Promise.all(promises).then(([updateResearchSeminarRecord]) => {
+        return  { status : "Done" , message : "Record Updated Successfully" ,  rowCount : updateResearchSeminarRecord.rowCount}
+    })
+    .catch((error) => {
+        return{status : "Failed" , message : error.message , errorCode : error.code}
+    })
  
 };
 

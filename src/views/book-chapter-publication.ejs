@@ -627,10 +627,10 @@
             Swal.fire({
 							position: "top-center",
 							icon: "error",
-							title: "Updation Failed",
+							title: `${data.status}`,
 							color : "red",
 							with : "20PX",
-							html: `<span style="color: red;">${message}</span>`,
+							html: `<span style="color: red;">${data.message}</span>`,
 							showConfirmButton: false,
 						});
 						
@@ -640,11 +640,8 @@
             Swal.fire({
 							position: "top-center",
 							icon: "error",
-							title: "Updation Failed",
+							title: `${error}`,
 							color : "red",
-							with : "20PX",
-							html: `<span style="color: red;">${data.massage}</span>`,
-							showConfirmButton: false,
 						});
         })
     }
@@ -762,18 +759,36 @@
                                     if (data.status === 'Done') {
                                         console.log('data ==>>', data);
                                         // Assuming bookPublicatRowToBeDeleted is correctly defined earlier in your code
-                                        bookPublicatRowToBeDeleted.remove();
+                                        bookChapterPublicatRowToBeDeleted.remove();
                                         Swal.fire({
                                             title: "Deleted!",
-                                            text: "Record has been deleted.",
+                                            text: `${data.message}`,
                                             icon: "success"
                                         }).then(() => {
                                             location.reload();
                                         });
                                     }
+                                else{
+                                    Swal.fire({
+                                        position: "top-center",
+                                        icon: "error",
+                                        title: `${data.errorCode}`,
+                                        color : "red",
+                                        with : "20PX",
+                                        html: `<span style="color: red;">${data.message}</span>`,
+                                        showConfirmButton: false,
+                                    });
+                                }
                                 })
                                 .catch((error) => {
                                     console.error('Error:', error);
+                                    Swal.fire({
+                                        position: "top-center",
+                                        icon: "error",
+                                        title: `${error}`,
+                                        color : "red"
+                                    });
+
                                 });
                         }
                     });
@@ -944,25 +959,25 @@
                 Swal.fire({
 							position: "top-center",
 							icon: "success",
-							title: `${message}`,
+							title: `${data.message}`,
 							showConfirmButton: false,
 							timer: 1500
 						});
                 // $('#book-chapter-modal').modal('hide');
                 
                 }
-                else if(data.status ==='Failed'){
-                    console.log('data ===>>>', data)
+                else {
                     Swal.fire({
 							position: "top-center",
 							icon: "error",
-							title: "Updation Failed",
+							title: `${data.errorCode}`,
 							color : "red",
 							with : "20PX",
 							html: `<span style="color: red;">${data.message}</span>`,
 							showConfirmButton: false,
 						});
-                };
+                }
+                
             })
             .catch((error) => {
                 console.log('Eroor ::', error);
@@ -972,7 +987,7 @@
 							title: "Updation Failed",
 							color : "red",
 							with : "20PX",
-							html: `<span style="color: red;">${data.message}</span>`,
+							html: `<span style="color: red;">${error}</span>`,
 							showConfirmButton: false,
 						});
             })

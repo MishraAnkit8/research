@@ -27,26 +27,30 @@ module.exports.insertEditedBook = async(editedBook, editedBookFilesData) => {
             bookUrl, doiIdParsed, isbnNo, numberOfNmimsAuthors, nmimsAuthors, nmimsCampusAuthors, nmimsSchoolAuthors, editedBookFilesData]
     }
 
-    try {
-        const result = await researchDbW.query(sql);
-        console.log('sql ====>>>>>>', sql);
-        const message = "Record Inserted Successfully"
-        const rowCount = result.rowCount;
-        console.log('rowCount ====>>>>', rowCount);
+    return researchDbW.query(sql)
+    .then(result => {
         console.log('Inserted row with id:', result.rows[0].id);
-        return { status: 'Done', message: message,  id: result.rows[0].id, rowCount : rowCount};
-    } catch (error) {
-        console.log('error.code ====>>>', error.code)
+        return {
+            status: 'Done',
+            message: "Record Inserted Successfully",
+            id: result.rows[0].id,
+            rowCount: result.rowCount
+        };
+    })
+    .catch(error => {
+        console.log('error.code ====>>>', error.code);
         console.log('error.constraint ====>>>>>', error.constraint);
         console.log('error.message ====>>>', error.message);
         const errorCode = error.code;
         console.log('errorCode +>>>>>>>', errorCode);
         const message = error.code === '23505' ? 'Doi Id Of Book should Uniq' : error.message;
         console.log('message =====>>>>>>', message);
-        return{
-            status : 'Failed', message : message, errorCode : errorCode
-        }
-    }
+        return {
+            status: 'Failed',
+            message: message,
+            errorCode: errorCode
+        };
+    });
 }
 
 module.exports.updatedEditedBookPublication = async(editedBookId, updatedEditedBookPublication, updatedEditedBookFiles) => {
@@ -69,24 +73,28 @@ module.exports.updatedEditedBookPublication = async(editedBookId, updatedEditedB
         values : values
     }
 
-    try{
-        const result = await researchDbW.query(sql);
-        console.log('sql =====>>>>', sql);
-        const message = "Record Updated successfully";
-        rowCount = result.rowCount ;
-        console.log('result.rowCount  ===>>>', result.rowCount);
-        return{status : "Done" , message : message, rowCount : rowCount}
-    }
-    catch(error){
-        console.log('errror ===>>>>', error.message)
+    return researchDbW.query(sql)
+    .then(result => {
+        return {
+            status: 'Done',
+            message: "Record Updated Successfully",
+            rowCount: result.rowCount
+        };
+    })
+    .catch(error => {
+        console.log('error.code ====>>>', error.code);
+        console.log('error.constraint ====>>>>>', error.constraint);
+        console.log('error.message ====>>>', error.message);
         const errorCode = error.code;
+        console.log('errorCode +>>>>>>>', errorCode);
         const message = error.code === '23505' ? 'Doi Id Of Book should Uniq' : error.message;
-        return{
-            status : "Failed",
-            message : message,
-            errorCode : errorCode
-        }
-    }
+        console.log('message =====>>>>>>', message);
+        return {
+            status: 'Failed',
+            message: message,
+            errorCode: errorCode
+        };
+    });
     
 // }
 //         let sql = {

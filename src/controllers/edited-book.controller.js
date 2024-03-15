@@ -36,52 +36,20 @@ module.exports.updateEditedBookPublication = async(req, res, next) => {
     const editedBookId  = req.body.editedBookId;
     console.log('id ==', editedBookId)
     const updatedEditedBookPublication = req.body;
-    const updatedEditedBookData = await editedBookPublication.updateEditedBook(editedBookId, updatedEditedBookPublication, req.files);
-    console.log('updatedEditedBookData in controller ===>>>>', updatedEditedBookData);
-    const errorCode = updatedEditedBookData.errorCode;
-    console.log('errorCode ====>>>>', errorCode)
-    const statusCode = updatedEditedBookData.status === "Done" ? 200 : (updatedEditedBookData.errorCode === updatedEditedBookData.errorCode ? 502 : 500);
-    const errTitleMsg = statusCode === 502 ? "DataBase Error" : "Internal Server Error";
-    console.log('errTitleMsg =====>>>>>', errTitleMsg)
-    console.log('statusCode ====>>>>>', statusCode);
-    updatedEditedBookData === updatedEditedBookData ? res.status(statusCode).send({
-            status : updatedEditedBookData.status,
-            message : updatedEditedBookData.message,
-            errorCode : errorCode,
-            errTitleMsg : errTitleMsg,
-            updatedEditedBook : updatedEditedBookPublication,
-            editedBookId : editedBookId,
-            supportingDocuments : updatedEditedBookData.updatedEditedBookFiles
-        }) : res.status(statusCode).send({
-        message : 'Internal Server Error',
-        statusCode : statusCode
-    });
 
-    // if(req.files){
-    //     // const updatedFile = req.file.filename;
-    //     console.log('files in controller ===>>>', req.files)
-        // const updatedEditedBookData = await editedBookPublication.updateEditedBook(editedBookId, updatedEditedBookPublication, req.files);
-    //     const updatedEditedBookFiles = updatedEditedBookData.updatedEditedBookFiles;
-    //     console.log('updated files data in controller ===>>>', updatedEditedBookFiles)
-    //     if(updatedEditedBookData.status === 'done'){
-    //         res.status(200).send({
-    //             status : 'done',
-    //             updatedEditedBook : updatedEditedBookPublication,
-    //             editedBookId : editedBookId,
-    //             updatedEditedBookFiles 
-    //         })
-    //     }
-    // }
-    // else{
-    //     const updatedEditedBookData = await editedBookPublication.updateEditedBook(editedBookId, updatedEditedBookPublication);
-    //     if(updatedEditedBookData.status === 'done'){
-    //         res.status(200).send({
-    //             status : 'done',
-    //             updatedEditedBook : updatedEditedBookPublication,
-    //             editedBookId : editedBookId 
-    //         })
-    //     }
-    // }
+    const updatedEditedBookData = await editedBookPublication.updateEditedBook(editedBookId, updatedEditedBookPublication, req.files);
+
+    console.log('updatedEditedBookData in controller ===>>>>', updatedEditedBookData);
+    const statusCode = updatedEditedBookData.status === "Done" ? 200 : (updatedEditedBookData.errorCode ? 502 : 500);
+    res.status(statusCode).send({
+        status : updatedEditedBookData.status,
+        message : updatedEditedBookData.message,
+        rowCount : updatedEditedBookData.rowCount,
+        supportingDocuments : updatedEditedBookData.updatedEditedBookFiles,
+        updatedEditedBook : updatedEditedBookData.updatedEditedBookPublication,
+        errorCode : updatedEditedBookData.errorCode ? updatedEditedBookData.errorCode : null,
+        statusCode : statusCode
+    })
 
 }
 

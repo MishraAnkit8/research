@@ -83,14 +83,14 @@ module.exports.DeleteConference = async({conferenceId}) => {
         text : `DELETE FROM conference_publications WHERE id =$1`,
         values : [conferenceId]
     }
-    const conferenceTable = await researchDbW.query(sql);
-    const promises = [conferenceTable]
-    return Promise.all(promises).then(([conferenceTable]) => {
-        return {status : "Done" , message : "Record Delete Successfully"}
+    console.log('sql ===>>>', sql)
+    const deletedRecord = await researchDbW.query(sql);
+    const promises = [deletedRecord];
+    return Promise.all(promises).then(([deletedRecord]) => {
+        return  { status : "Done" , message : "Record Deleted Successfully", rowCount : deletedRecord.rowCount}
     })
     .catch((error) => {
-        console.log('errorrr ::::', error);
-        return {status : "Failed", message : error.message , errorCode : error.code}
+        return{status : "Failed" , message : error.message , errorCode : error.code}
     })
 }
 

@@ -35,15 +35,28 @@ module.exports.insertEditedBookPublication = async(editedBook , files) => {
 module.exports.updateEditedBook = async(editedBookId , updatedEditedBookPublication, files) => {
     console.log('data in service ==>>', updatedEditedBookPublication);
     const updatedEditedBookFiles = files ?.map(file => file.filename).join(',');
+
     const updatedEditedBookData = await editedBookPublicationModel.updatedEditedBookPublication(editedBookId , updatedEditedBookPublication, updatedEditedBookFiles);
+
     console.log('updatedEditedBookData in service ====>>>>>>', updatedEditedBookData);
-    return{
-        status : updatedEditedBookData.status === "Done" ? "Done" : "Failed",
+    return updatedEditedBookData.status === "Done" ? {
+        status : updatedEditedBookData.status,
         message : updatedEditedBookData.message,
-        errorCode : updatedEditedBookData.errorCode,
         rowCount : updatedEditedBookData.rowCount,
-        updatedEditedBookFiles : updatedEditedBookFiles
+        updatedEditedBookFiles : updatedEditedBookFiles,
+        updatedEditedBookPublication : updatedEditedBookPublication
+    } : {
+        status : updatedEditedBookData.status,
+        message : updatedEditedBookData.message,
+        errorCode : updatedEditedBookData.errorCode
     }
+    // return{
+    //     status : updatedEditedBookData.status === "Done" ? "Done" : "Failed",
+    //     message : updatedEditedBookData.message,
+    //     errorCode : updatedEditedBookData.errorCode,
+    //     rowCount : updatedEditedBookData.rowCount,
+    //     updatedEditedBookFiles : updatedEditedBookFiles
+    // }
 
 
     // if(files){

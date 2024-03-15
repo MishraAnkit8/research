@@ -33,12 +33,22 @@ module.exports.insertBrandingAndAdvertisingData = async(advertisingData, brandin
                 brandingFilesContainer.studentEventParticipationDocuments, brandingFilesContainer.newspaperArticleDocuments]
         }
         console.log('sql ==>>', sql);
-        return researchDbW.query(sql);
-
+        // updatedBookPublicationTable
+        // return researchDbW.query(sql);
+        const insertBrandingRecord = await researchDbW.query(sql);
+        const promises = [insertBrandingRecord];
+        return Promise.all(promises).then(([insertBrandingRecord]) => {
+            return  { status : "Done" , message : "Record Inserted Successfully", advertisingId : insertBrandingRecord.rows[0].id}
+        })
+        .catch((error) => {
+            return{status : "Failed" , message : error.message , errorCode : error.code}
+        })
 }
 
-module.exports.updateBrandingAdvertising = async (advertisingId, updatedAdvertisingData, updatedBrandingFilesData) => {
-    console.log('updatedBrandingFilesData in models ==>>', updatedBrandingFilesData);
+module.exports.updateBrandingAdvertising = async (advertisingId, updatedAdvertisingData, updatedFacultyRecognitionFilesArray,
+    updatedFacultyAwardFilesArray, updatedStaffAwardFilesArray, updatedAlumniAwardFilesArray, updatedStudentAwardFilesArray,
+    updatedInternationalLinkageFilesArray, updatedConferenceParticipationFilesArray, updatedOrganisingConferenceFilesArray,
+    updatedStudentEventParticipationFilesArray, updatedNewspaperArticleFilesArray) => {
     const {
         facultyRecognition, facultyRecognitionLink, facultyAward, facultyAwardLink,
         staffAward, staffAwardLink, alumniAward, alumniAwardLink,
@@ -47,75 +57,57 @@ module.exports.updateBrandingAdvertising = async (advertisingId, updatedAdvertis
         organisingConferenceLink, studentEventParticipation, studentEventParticipationLink,
         newsPaperArticle, newsPaperArticleLink
     } = updatedAdvertisingData;
-
-    console.log('updatedBrandingFilesData.facultyRecognitionDocuments  ==>>>', updatedBrandingFilesData.facultyRecognitionDocuments);
-
-    const facultyRecognitionDocuments = updatedBrandingFilesData.facultyRecognitionDocuments ? updatedBrandingFilesData.facultyRecognitionDocuments : null;
-    const facultyAwardDocuments = updatedBrandingFilesData.facultyAwardDocuments ? updatedBrandingFilesData.facultyAwardDocuments : null;
-    const staffAwardDocuments = updatedBrandingFilesData.staffAwardDocuments ? updatedBrandingFilesData.staffAwardDocuments : null;
-    const alumniAwardDocuments = updatedBrandingFilesData.alumniAwardDocuments ? updatedBrandingFilesData.alumniAwardDocuments : null;
-    const studentAwardDocuments = updatedBrandingFilesData.studentAwardDocuments ? updatedBrandingFilesData.studentAwardDocuments : null;
-    const internationalLinkageDocuments = updatedBrandingFilesData.internationalLinkageDocuments ? updatedBrandingFilesData.internationalLinkageDocuments : null;
-    const conferenceParticipationDocuments = updatedBrandingFilesData.conferenceParticipationDocuments ? updatedBrandingFilesData.conferenceParticipationDocuments : null;
-    const organisingConferenceDocuments = updatedBrandingFilesData.organisingConferenceDocuments ? updatedBrandingFilesData.organisingConferenceDocuments : null;
-    const studentEventParticipationDocuments = updatedBrandingFilesData.studentEventParticipationDocuments ? updatedBrandingFilesData.studentEventParticipationDocuments : null;
-    const newspaperArticleDocuments = updatedBrandingFilesData.newspaperArticleDocuments ? updatedBrandingFilesData.newspaperArticleDocuments : null;
-    console.log('newspaperArticleDocuments ==>>', newspaperArticleDocuments)
+   
     const filesArray = [
-        facultyRecognitionDocuments,
-        facultyAwardDocuments,
-        staffAwardDocuments,
-        alumniAwardDocuments,
-        studentAwardDocuments,
-        internationalLinkageDocuments,
-        conferenceParticipationDocuments,
-        organisingConferenceDocuments,
-        studentEventParticipationDocuments,
-        newspaperArticleDocuments
+      updatedFacultyRecognitionFilesArray,
+      updatedFacultyAwardFilesArray, updatedStaffAwardFilesArray, updatedAlumniAwardFilesArray, updatedStudentAwardFilesArray,
+      updatedInternationalLinkageFilesArray, updatedConferenceParticipationFilesArray, updatedOrganisingConferenceFilesArray,
+      updatedStudentEventParticipationFilesArray, updatedNewspaperArticleFilesArray
     ];
 
-    console.log('newspaperArticleDocuments ==>>', filesArray)
+    console.log('filesArray ==>>', filesArray)
 
     const fieldsToUpdate = [
         { field: 'faculty_recognition', value: facultyRecognition },
-        { field: 'faculty_recognition_documents', value: facultyRecognitionDocuments },
+        { field: 'faculty_recognition_documents', value: updatedFacultyRecognitionFilesArray },
         { field: 'faculty_recognition_link', value: facultyRecognitionLink },
         { field: 'faculty_award', value: facultyAward },
         { field: 'faculty_award_link', value: facultyAwardLink },
-        { field: 'faculty_award_documents', value: facultyAwardDocuments },
+        { field: 'faculty_award_documents', value: updatedFacultyAwardFilesArray },
         { field: 'staff_award', value: staffAward },
-        { field: 'staff_award_documents', value: staffAwardDocuments },
+        { field: 'staff_award_documents', value: updatedStaffAwardFilesArray },
         { field: 'staff_award_link', value: staffAwardLink },
         { field: 'alumni_award', value: alumniAward },
-        { field: 'alumni_award_documents', value: alumniAwardDocuments },
+        { field: 'alumni_award_documents', value: updatedAlumniAwardFilesArray },
         { field: 'alumni_award_link', value: alumniAwardLink },
         { field: 'student_award', value: studentAward },
         { field: 'student_award_link', value: studentAwardLink },
-        { field: 'student_award_documents', value: studentAwardDocuments },
+        { field: 'student_award_documents', value: updatedStudentAwardFilesArray },
         { field: 'international_linkage', value: internationalLinkage },
         { field: 'international_linkage_link', value: internationalLinkageLink },
-        { field: 'international_linkage_documents', value: internationalLinkageDocuments },
+        { field: 'international_linkage_documents', value: updatedInternationalLinkageFilesArray },
         { field: 'conference_participation', value: conferenceParticipation },
-        { field: 'conference_participation_documents', value: conferenceParticipationDocuments },
+        { field: 'conference_participation_documents', value: updatedConferenceParticipationFilesArray },
         { field: 'conference_participation_link', value: conferenceParticipationLink },
         { field: 'organising_conference', value: organisingConference },
-        { field: 'organising_conference_documents', value: organisingConferenceDocuments },
+        { field: 'organising_conference_documents', value: updatedOrganisingConferenceFilesArray },
         { field: 'organising_conference_link', value: organisingConferenceLink },
         { field: 'student_event_participation', value: studentEventParticipation },
-        { field: 'student_event_participation_documents', value: studentEventParticipationDocuments },
+        { field: 'student_event_participation_documents', value: updatedStudentAwardFilesArray },
         { field: 'student_event_participation_link', value: studentEventParticipationLink },
         { field: 'newspaper_article', value: newsPaperArticle },
-        { field: 'newspaper_article_documents', value: newspaperArticleDocuments },
+        { field: 'newspaper_article_documents', value: updatedNewspaperArticleFilesArray },
         { field: 'newspaper_article_link', value: newsPaperArticleLink },
     ];
 
     console.log('fieldsToUpdate ===>>', fieldsToUpdate);
 
     const setStatements = fieldsToUpdate
-        .filter(fieldInfo => fieldInfo.value !== null) // Filter where value is null
+        .filter(fieldInfo => fieldInfo.value !== null && fieldInfo.value !== undefined) // Filter where value is null
         .map((fieldInfo, index) => {
             console.log('dataCondition ===>>>:::::', fieldInfo.value);
             console.log('index ==>>', index);
+            console.log('fieldInfo.field ===>>>', fieldInfo.field)
             console.log('condition == ==>>>::::', true); //  filter ensures value is not null
             return { statement: `${fieldInfo.field} = $${index + 2}`, dataCondition: `${fieldInfo.value}` };
         });
@@ -123,55 +115,74 @@ module.exports.updateBrandingAdvertising = async (advertisingId, updatedAdvertis
     console.log('setStatements ==>>>', setStatements);
     
     //checking if any field emty then it should then make them null     
-    const updateDocument = fieldsToUpdate.map(fieldInfo => {
-        const condition = fieldInfo.value;
-        if(condition){
-            console.log('condition ==>>::::', condition)
-            console.log(`Condition for ${fieldInfo.field}: ${condition}`);
-        }
-        else{
-            return null
-        }
+    // const advertisingDataToBeUpdate = fieldsToUpdate.map(fieldInfo => {
+    //     const condition = fieldInfo.value;
+    //     if(condition){
+    //         console.log('condition ==>>::::', condition)
+    //         console.log(`Condition for ${fieldInfo.field}: ${condition}`);
+    //     }
+    //     else{
+    //         return null
+    //     }
         
-        const value =  fieldInfo.value ;
-        if(value){
-            console.log(`Value for ${fieldInfo.field}: ${value}`);
-            return value;
-        }
+    //     const value =  fieldInfo.value ;
+    //     if(value){
+    //         console.log(`Value for ${fieldInfo.field}: ${value}`);
+    //         return value;
+    //     }
+    // }).filter(value => value !== null);
+    const advertisingDataToBeUpdate = fieldsToUpdate.map(fieldInfo => {
+        const value =  fieldInfo.value;
+        console.log('condition value ===>>>', value);
+         return  value && value !== undefined ? value  : null
+    // })
     }).filter(value => value !== null);
 
-    console.log('updateDocument ====::::>>>', updateDocument)
-    
+    console.log('advertisingDataToBeUpdate ====::::>>>', advertisingDataToBeUpdate);
 
-    const updatedAdvertisingValues = [
+    //destructuring array
+    const advertisingValuesToBeUpdate = [
         advertisingId,
-        ...updateDocument,
+        ...advertisingDataToBeUpdate,
     ];
 
-    console.log('updatedAdvertisingValues ==>>>', updatedAdvertisingValues);
+    console.log('advertisingValuesToBeUpdate ==>>>', advertisingValuesToBeUpdate);
+    const setStatementString = setStatements.map((item , index) => {
+        console.log('item.dataCondition ===>>>', item.dataCondition);
+       return item.dataCondition !== 'null' ?  `${item.statement}` :  ''
+    }).filter(Boolean).join(', ')
 
-    // const setStatementString = setStatements.map(item => item.statement).join(',');
-    // console.log('setStatementString ==>>>', setStatementString)
-    const setStatementString = setStatements.map((item, index) => {
-        if (item.dataCondition !== 'null') {
-          return `${item.statement}`;
-        } else {
-          return '';
-        }
-      }).filter(Boolean).join(', ');
-      
-      console.log('setStatementString ==>>>', setStatementString);
+    console.log('setStatementString ==>>>', setStatementString);
 
+    // const placeholders = Array.from({ length: advertisingDataToBeUpdate.length }, (_, i) => `$${i + 2}`).join(',');
+    // console.log('placeholders ===>>>>', placeholders)
 
-    const placeholders = Array.from({ length: updateDocument.length }, (_, i) => `$${i + 2}`).join(',');
-    
     const sql = {
         text: `UPDATE branding_and_advertising SET ${setStatementString} WHERE id = $1`,
-        values: updatedAdvertisingValues,
+        values: advertisingValuesToBeUpdate,
     };
-
-    console.log('sql ==>>', sql);
-    return researchDbW.query(sql);
+    //handle promise and throw error in case of Update 
+    return researchDbW.query(sql)
+    .then(result => {
+        console.log('sql ===>>>', sql);
+        return {
+            status: 'Done',
+            message: "Record Updated Successfully",
+            rowCount: result.rowCount
+        };
+    })
+    .catch(error => {
+        console.log('error.code ====>>>', error.code);
+        console.log('error.constraint ====>>>>>', error.constraint);
+        console.log('error.message ====>>>', error.message);
+        const message = error.code === '23505' ? 'Doi Id Of Book should Uniq' : error.message;
+        console.log('message =====>>>>>>', message);
+        return {
+            status: 'Failed',
+            message: message,
+            errorCode: error.code
+        };
+    });
 };
 
 
@@ -191,6 +202,17 @@ module.exports.brandingAndadvertisingDelete = async(advertisingId) => {
         text : `DELETE FROM branding_and_advertising WHERE id = $1`,
         values : [advertisingId]
     }
-    console.log('sql ==>>', sql)
-    return researchDbW.query(sql);
+    console.log('sql ==>>', sql);
+    return new Promise((resolve, reject) => {
+        researchDbW.query(sql)
+          .then(result => {
+            resolve({ status : "Done", message : "Record Insertd Successfully", rowCount : result.rowCount, id : result.rows[0] });
+          })
+          .catch(error => {
+            console.error('Error on update:', error.code, error.message);
+            console.log('error.message ====>>>>>', error.message);
+            const message = error.code === '23505' ? "DOI ID Of Book Chapter Should Be Unique" : error.message;
+            reject({ status: 'Failed', message : message, errorCode : error.code});
+          });
+      });
 }

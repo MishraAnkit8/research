@@ -25,21 +25,29 @@ module.exports.insertBookPublicationData = async(bookPublicationData, bookPublic
         values : [ authorLastName, bookTitle, edition, publicationPlace, publisherCategory, volumeNumber, publisherName, publicationYear,
             bookUrl, doiBookIdParsed, isbnNo, numberOfNmimsAuthors, nmimsAuthors, nmimsCampusAuthors, nmimsSchoolAuthors, bookPublicationfileData]
     }
-    console.log('sql ==>>', sql);
-    //handling the condng by tre and catch
-    try {
-        const result = await researchDbW.query(sql);
-        console.log(' Record Inserted  with Id:', result.rows[0].id);
-        const message = ' Record Inserted  with Id:'
-        return { status: 'Done', id: result.rows[0].id, message};
-    } catch (error) {
-        console.log('error.code ====>>>', error.code)
+    
+    //handle promise and throw error in case of insert 
+	return researchDbW.query(sql)
+    .then(result => {
+        return {
+            status: 'Done',
+            message: "Record Inserted Successfully",
+            rowCount: result.rowCount,
+            id : result.rows[0].id
+        };
+    })
+    .catch(error => {
+        console.log('error.code ====>>>', error.code);
         console.log('error.constraint ====>>>>>', error.constraint);
         console.log('error.message ====>>>', error.message);
-        const message = error.code === '23505' ? "DOI ID Of Book Publication Should Be Unique" : error.message;
-        const errorCode = error.code;
-        return{status : 'Failed', message : message , errorCode : errorCode}
-    }
+        const message = error.code === '23505' ? 'Doi Id Of Book should Uniq' : error.message;
+        console.log('message =====>>>>>>', message);
+        return {
+            status: 'Failed',
+            message: message,
+            errorCode: error.code
+        };
+    });
 }
 
 module.exports.updatedBookPublication = async(bookPublicationId, updatedBookPublicationData, upadteDataFileString) => {
@@ -67,17 +75,39 @@ module.exports.updatedBookPublication = async(bookPublicationId, updatedBookPubl
         values: values
     };
     
-    try {
-        const result = await researchDbW.query(sql); 
-        console.log('sql inside try ====>>>>',sql)
-        console.log('Record Updated successfully');
-        return{status: 'Done', message : 'Record Updated successfully', rowCount : result.rowCount}
+    //handle promise and throw error in case of Update 
+    return researchDbW.query(sql)
+    .then(result => {
+        console.log('sql ===>>>', sql);
+        return {
+            status: 'Done',
+            message: "Record Updated Successfully",
+            rowCount: result.rowCount
+        };
+    })
+    .catch(error => {
+        console.log('error.code ====>>>', error.code);
+        console.log('error.constraint ====>>>>>', error.constraint);
+        console.log('error.message ====>>>', error.message);
+        const message = error.code === '23505' ? 'Doi Id Of Book should Uniq' : error.message;
+        console.log('message =====>>>>>>', message);
+        return {
+            status: 'Failed',
+            message: message,
+            errorCode: error.code
+        };
+    });
+    // try {
+    //     const result = await researchDbW.query(sql); 
+    //     console.log('sql inside try ====>>>>',sql)
+    //     console.log('Record Updated successfully');
+    //     return{status: 'Done', message : 'Record Updated successfully', rowCount : result.rowCount}
 
-    } catch (error) {
-        const message = error.code === '23505' ? "DOI ID Of Book Publication Should Be Unique" : error.message;
-        const errorCode = error.code;
-        return{status : 'Failed', message : message , errorCode : errorCode}
-    };
+    // } catch (error) {
+    //     const message = error.code === '23505' ? "DOI ID Of Book Publication Should Be Unique" : error.message;
+    //     const errorCode = error.code;
+    //     return{status : 'Failed', message : message , errorCode : errorCode}
+    // };
 
     // return researchDbW.query(sql)
 //  }
@@ -99,7 +129,14 @@ module.exports.deleteBookPublicationData = async(bookPublicationId) => {
         text : `DELETE FROM book_publications WHERE id = $1`,
         values : [bookPublicationId]
     }
-    return researchDbW.query(sql);
+    return researchDbW.query(sql)
+    .then((result) => {
+      return { status: 'Done', message: 'Book Publication Related Record deleted successfully.' , rowCount : result.rowCount};
+    })
+    .catch((error) => {
+      console.error('Error deleting book chapter:', error);
+      return { status: 'Failed', message: error.message, errorCode : error.code };
+    });
 }
 
 module.exports.viewBookPublicationData = async(bookPublicationId) => {
@@ -107,6 +144,6 @@ module.exports.viewBookPublicationData = async(bookPublicationId) => {
         text : `SELECT * FROM book_publications WHERE id = $1`,
         values : [bookPublicationId]
     }
-    return researchDbW.query(sql);
+    return researchDbW.query(sql)
 }
 

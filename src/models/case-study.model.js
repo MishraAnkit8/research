@@ -13,7 +13,7 @@ module.exports.fetchCaseStudy = async() =>{
     return researchDbR.query(sql);
 };
 
-module.exports.insertDataIntoCaseStudies = ({caseStudyData}) => {
+module.exports.insertDataIntoCaseStudies =async ({caseStudyData}) => {
     console.log('caseStudyData in models ==>>', caseStudyData);
     const {authorsFirstName, authorLastName, titleOfCaseStudy, edition, volumeNumber, publisherName, publicationYear, pageNumber, urlOfCaseStudy,
                numberOfNmimsAuthors, nmimsAuthors, nmimsCampusAuthors, nmimsSchoolAuthors, publisherCategory } = caseStudyData ;
@@ -24,15 +24,35 @@ module.exports.insertDataIntoCaseStudies = ({caseStudyData}) => {
                  numberOfNmimsAuthors, nmimsAuthors, nmimsCampusAuthors, nmimsSchoolAuthors, publisherCategory]
     }
     console.log('sql ==>>', sql)
-    return researchDbW.query(sql);
+    const insertCaseStudyRecord = await researchDbW.query(sql);
+    const promises = [insertCaseStudyRecord];
+    return Promise.all(promises).then(([insertCaseStudyRecord]) => {
+        return  { status : "Done" , message : "Record Inserted Successfully" , caseStudyId : insertCaseStudyRecord.rows.id, rowCount : insertCaseStudyRecord.rowCount}
+    })
+    .catch((error) => {
+        return{status : "Failed" , message : error.message , errorCode : error.code}
+    })
+    
 }
 
-module.exports.deleteCaseStudies = ({caseStudyId}) => {
+module.exports.deleteCaseStudies = async ({caseStudyId}) => {
     let sql = {
         text : `DELETE FROM case_studies WHERE id = $1` ,
         values : [caseStudyId]
     }
-    return researchDbW.query(sql);
+    console.log('sql ==>>', sql);
+    return new Promise((resolve, reject) => {
+        researchDbW.query(sql)
+          .then(result => {
+            resolve({ status : "Done", message : "Record Insertd Successfully", rowCount : result.rowCount, id : result.rows[0] });
+          })
+          .catch(error => {
+            console.error('Error on update:', error.code, error.message);
+            console.log('error.message ====>>>>>', error.message);
+            const message = error.code === '23505' ? "DOI ID Of Book Chapter Should Be Unique" : error.message;
+            reject({ status: 'Failed', message : message, errorCode : error.code});
+          });
+      });
 }
 
 module.exports.viewCaseStudyData = async (caseStudyId) => {
@@ -56,5 +76,13 @@ module.exports.updateCaseStudies = async ({caseStudyId, updatedCaseStudies}) => 
             numberOfNmimsAuthors, nmimsAuthors, nmimsCampusAuthors, nmimsSchoolAuthors, publisherCategory]
 
     }
-    return researchDbW.query(sql);
+    // return researchDbW.query(sql);
+    const updatedCaseStudyRecord = await researchDbW.query(sql);
+    const promises = [updatedCaseStudyRecord];
+    return Promise.all(promises).then(([updatedCaseStudyRecord]) => {
+        return  { status : "Done" , message : "Record Updated Successfully"}
+    })
+    .catch((error) => {
+        return{status : "Failed" , message : error.message , errorCode : error.code}
+    })
 }

@@ -773,9 +773,26 @@
                                             location.reload();
                                         });
                                     }
+                                    else{
+                                        Swal.fire({
+                                        position: "top-center",
+                                        icon: "error",
+                                        title: `${data.errorCode}`,
+                                        color: "red",
+                                        with: "20PX",
+                                        html: `<span style="color: red;">${data.message}</span>`,
+                                        showConfirmButton: false,
+                                    });
+                                    }
                                 })
                                 .catch((error) => {
                                     console.error('Error:', error);
+                                    Swal.fire({
+                                        position: "top-center",
+                                        icon: "error",
+                                        title: `${error}`,
+                                        color: "red"
+                                    });
                                 });
                         }
                     });
@@ -957,16 +974,11 @@
                     })
                     .catch((error) => {
                         console.log('Eroor ::', error);
-                        const errTitle = error
-                        const message = "Internal Server Error";
                         Swal.fire({
 							position: "top-center",
 							icon: "error",
-							title: `${errTitle}`,
-							color : "red",
-							with : "20PX",
-							html: `<span style="color: red;">${message}</span>`,
-							showConfirmButton: false,
+							title: `${error}`,
+							color : "red"
 						});
                     })
             };

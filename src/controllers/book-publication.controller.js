@@ -16,17 +16,21 @@ module.exports.insertBookPublication = async(req, res, next) => {
     const bookPublicationData  = req.body;
     console.log('data in controller ==>>', req.body);
     console.log('files in controller ==>>>', req.files);
-    const insertBookPublicarionData = await bookPublicationService.insertBookPublication(req.body, req.files);
-    console.log('insertBookPublicarionData ====>>>>', insertBookPublicarionData);
-    const status = insertBookPublicarionData.status === "Done" ? 200 : (insertBookPublicarionData.errorCode === "23505" ? 502 : 500);
-    res.status(status).send({
-        status : insertBookPublicarionData.status === "Done" ? "Done" : "Failed",
-        message : insertBookPublicarionData.status === "Done" ? insertBookPublicarionData.message : insertBookPublicarionData.message,
-        bookPublicationData : insertBookPublicarionData.status === "Done" ? bookPublicationData : bookPublicationData,
-        bookPublicationId  : insertBookPublicarionData.status === "Done" ? insertBookPublicarionData.bookPublicationId : insertBookPublicarionData.bookPublicationId,
-        filename : insertBookPublicarionData.status === "Done" ? insertBookPublicarionData.bookPublicationfileData : insertBookPublicarionData.bookPublicationfileData
 
-    });
+    const insertBookPublicarionData = await bookPublicationService.insertBookPublication(req.body, req.files);
+
+    console.log('insertBookPublicarionData ====>>>>', insertBookPublicarionData);
+    const statusCode = insertBookPublicarionData.status === "Done" ? 200 : (insertBookPublicarionData.errorCode === "23505" ? 400 : 500);
+    res.status(statusCode).send({
+        status : insertBookPublicarionData.status,
+        message : insertBookPublicarionData.message,
+        rowCount : insertBookPublicarionData.rowCount,
+        bookPublicationId : insertBookPublicarionData.bookPublicationId,
+        bookPublicationData : insertBookPublicarionData.bookPublicationData,
+        filename : insertBookPublicarionData.bookPublicationfileData,
+        errorCode : insertBookPublicarionData.errorCode ? insertBookPublicarionData.errorCode : null,
+
+    })
 }
 
 module.exports.updateBookPublication = async(req, res, next) => {
@@ -34,31 +38,36 @@ module.exports.updateBookPublication = async(req, res, next) => {
     const updatedBookPublicationData = req.body;
     const bookPublicationId  = req.body.bookPublicationId ;
     console.log('id ==', bookPublicationId );
+
     const updatedBookPublication = await bookPublicationService.updateBookPublication( bookPublicationId, updatedBookPublicationData, req.files);
+
     console.log('updatedBookPublication =====>>>>>', updatedBookPublication);
-    
     const statuscode = updatedBookPublication.status === "Done" ? 200 : (updatedBookPublication.errorCode === '23505' ? 502 : 500);
     console.log('statuscode ====>>>>', statuscode);
     res.status(statuscode).send({
         statuscode : statuscode,
-        status : updatedBookPublication.status === "Done" ? "Done" : "Failed",
-        message : updatedBookPublication.status === "Done" ? updatedBookPublication.message : updatedBookPublication.message,
-        updatedDocuments : updatedBookPublication.status === "Done" ? updatedBookPublication.upadteDataFileString : updatedBookPublication.upadteDataFileString,
-        updatedBookPublication : updatedBookPublication.status === "Done" ? updatedBookPublicationData : updatedBookPublicationData,
-        bookPublicationId : bookPublicationId
+        status : updatedBookPublication.status,
+        message : updatedBookPublication.message,
+        updatedDocuments : updatedBookPublication.upadteDataFileString,
+        updatedBookPublication : updatedBookPublication.updatedBookPublicationData,
+        errorCode : updatedBookPublication.errorCode ? updatedBookPublication.errorCode : null
     })
 
 }
 
 module.exports.deleteBookPublication = async(req, res, next) => {
     const bookPublicationId = req.body.bookPublicationId;
+
     const deleteBookPublicationData = await bookPublicationService.deleteBookPublicationData({bookPublicationId});
-    if(deleteBookPublicationData.status === 'done'){
-        res.status(200).send({
-            status : 'Done',
-            massage : 'deleted successfully'
-        })
-    }
+
+    console.log('deleteBookPublicationData in controller ==>>>', deleteBookPublicationData);
+    const statuscode = deleteBookPublicationData.status === "Done" ? 200 : (deleteBookPublicationData.errorCode ? 400 : 500);
+    res.status(statuscode).send({
+        status : deleteBookPublicationData.status,
+        statuscode : statuscode,
+        message : deleteBookPublicationData.message,
+        errorCode : deleteBookPublicationData.errorCode ? deleteBookPublicationData.errorCode : null
+    })
 }
 
 module.exports.viewBookPublication = async(req, res, next) => {

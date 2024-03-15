@@ -201,7 +201,15 @@ module.exports.deleteResearchConsultantData = async(consultantId) => {
         text : `DELETE FROM research_project_grant WHERE id = $1`,
         values : [consultantId]
     }
-    return researchDbW.query(sql)
+    console.log('sql ===>>>', sql)
+    const deletedRecord = await researchDbW.query(sql);
+    const promises = [deletedRecord];
+    return Promise.all(promises).then(([deletedRecord]) => {
+        return  { status : "Done" , message : "Record Deleted Successfully", rowCount : deletedRecord.rowCount}
+    })
+    .catch((error) => {
+        return{status : "Failed" , message : error.message , errorCode : error.code}
+    })
 }
 
 module.exports.viewResearchConsultancy = async(consultantId) => {

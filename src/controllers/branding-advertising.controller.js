@@ -51,42 +51,56 @@ module.exports.updateBrandingAdvertising = async(req, res, next) => {
     const advertisingId = req.body.advertisingId;
     console.log('files in controller ===>>', req.files)
     console.log('updated advertising data ==>>', updatedAdvertisingData);
-    // const {facultyRecognitionDocuments, facultyAwardDocuments, staffAwardDocuments, alumniAwardDocuments, studentAwardDocuments, internationalLinkageDocuments, conferenceParticipationDocuments, organisingConferenceDocuments,
-    //         studentEventParticipationDocuments, newspaperArticleDocuments} = req.files;
-            
-    // const filesToUpdate = {
-    //             facultyRecognitionDocuments, facultyAwardDocuments, staffAwardDocuments, alumniAwardDocuments, studentAwardDocuments,
-    //             internationalLinkageDocuments, conferenceParticipationDocuments, organisingConferenceDocuments, studentEventParticipationDocuments, newspaperArticleDocuments
-    //         };
+
     const updatedAdvertising = await brandingAndAdvertisingServices.updateBrandingAndAdvertising(advertisingId, updatedAdvertisingData, req.files);
+
     console.log('updatedAdvertising in controller for update ===>>>:::', updatedAdvertising);
-    const facultyRecognitionDocuments = updatedAdvertising.updatedBrandingFilesData.facultyRecognitionDocuments;
-    const facultyAwardDocuments = updatedAdvertising.updatedBrandingFilesData.facultyAwardDocuments;
-    const staffAwardDocuments = updatedAdvertising.updatedBrandingFilesData.staffAwardDocuments;
-    const alumniAwardDocuments = updatedAdvertising.updatedBrandingFilesData.alumniAwardDocuments;
-    const studentAwardDocuments = updatedAdvertising.updatedBrandingFilesData.studentAwardDocuments;
-    const internationalLinkageDocuments = updatedAdvertising.updatedBrandingFilesData.internationalLinkageDocuments;
-    const conferenceParticipationDocuments = updatedAdvertising.updatedBrandingFilesData.conferenceParticipationDocuments;
-    const organisingConferenceDocuments = updatedAdvertising.updatedBrandingFilesData.organisingConferenceDocuments;
-    const studentEventParticipationDocuments = updatedAdvertising.updatedBrandingFilesData.studentEventParticipationDocuments;
-    const newspaperArticleDocuments = updatedAdvertising.updatedBrandingFilesData.newspaperArticleDocuments;
-    if(updatedAdvertising.status === 'done'){
-        res.status(200).send({
-            status : 'done',
-            massage : 'data updated suceesfully',
-            updatedAdvertisingData : updatedAdvertisingData,
-            facultyRecognitionDocuments,
-            facultyAwardDocuments,
-            staffAwardDocuments,
-            alumniAwardDocuments,
-            studentAwardDocuments,
-            internationalLinkageDocuments,
-            conferenceParticipationDocuments,
-            organisingConferenceDocuments,
-            studentEventParticipationDocuments,
-            newspaperArticleDocuments
-        })
-    }
+    const statusCode = updatedAdvertising.status === "Done" ? 200 : (updatedAdvertising.errorCode ? 400 : 500);
+    res.status(statusCode).send({
+        status : updatedAdvertising.status,
+        message : updatedAdvertising.message,
+        rowCount : updatedAdvertising.rowCount,
+        updatedAdvertisingData : updatedAdvertising.updatedAdvertisingData,
+        facultyRecognitionDocuments : updatedAdvertising.updatedFacultyRecognitionFilesArray,
+        facultyAwardDocuments : updatedAdvertising.updatedFacultyAwardFilesArray,
+        staffAwardDocuments : updatedAdvertising.updatedStaffAwardFilesArray,
+        alumniAwardDocuments : updatedAdvertising.updatedAlumniAwardFilesArray,
+        studentAwardDocuments : updatedAdvertising.updatedStudentAwardFilesArray,
+        internationalLinkageDocuments : updatedAdvertising.updatedInternationalLinkageFilesArray,
+        conferenceParticipationDocuments : updatedAdvertising.updatedConferenceParticipationFilesArray,
+        organisingConferenceDocuments : updatedAdvertising.updatedOrganisingConferenceFilesArray,
+        studentEventParticipationDocuments : updatedAdvertising.updatedStudentEventParticipationFilesArray,
+        newspaperArticleDocuments : updatedAdvertising.updatedNewspaperArticleFilesArray,
+        errorCode :  updatedAdvertising.errorCode
+    });
+
+    // const facultyRecognitionDocuments = updatedAdvertising.updatedBrandingFilesData.facultyRecognitionDocuments;
+    // const facultyAwardDocuments = updatedAdvertising.updatedBrandingFilesData.facultyAwardDocuments;
+    // const staffAwardDocuments = updatedAdvertising.updatedBrandingFilesData.staffAwardDocuments;
+    // const alumniAwardDocuments = updatedAdvertising.updatedBrandingFilesData.alumniAwardDocuments;
+    // const studentAwardDocuments = updatedAdvertising.updatedBrandingFilesData.studentAwardDocuments;
+    // const internationalLinkageDocuments = updatedAdvertising.updatedBrandingFilesData.internationalLinkageDocuments;
+    // const conferenceParticipationDocuments = updatedAdvertising.updatedBrandingFilesData.conferenceParticipationDocuments;
+    // const organisingConferenceDocuments = updatedAdvertising.updatedBrandingFilesData.organisingConferenceDocuments;
+    // const studentEventParticipationDocuments = updatedAdvertising.updatedBrandingFilesData.studentEventParticipationDocuments;
+    // const newspaperArticleDocuments = updatedAdvertising.updatedBrandingFilesData.newspaperArticleDocuments;
+    // // if(updatedAdvertising.status === 'done'){
+    // //     res.status(200).send({
+    // //         status : 'done',
+    // //         massage : 'data updated suceesfully',
+    // //         updatedAdvertisingData : updatedAdvertisingData,
+    // //         facultyRecognitionDocuments,
+    // //         facultyAwardDocuments,
+    // //         staffAwardDocuments,
+    // //         alumniAwardDocuments,
+    // //         studentAwardDocuments,
+    // //         internationalLinkageDocuments,
+    // //         conferenceParticipationDocuments,
+    // //         organisingConferenceDocuments,
+    // //         studentEventParticipationDocuments,
+    // //         newspaperArticleDocuments
+    // //     })
+    // // }
     
 }
 
