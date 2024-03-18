@@ -32,17 +32,28 @@ module.exports.insertBrandingAndAdvertisingData = async(advertisingData, brandin
                 brandingFilesContainer.facultyAwardDocuments, brandingFilesContainer.staffAwardDocuments, brandingFilesContainer.alumniAwardDocuments, brandingFilesContainer.studentAwardDocuments, brandingFilesContainer.internationalLinkageDocuments, brandingFilesContainer.conferenceParticipationDocuments, brandingFilesContainer.organisingConferenceDocuments,
                 brandingFilesContainer.studentEventParticipationDocuments, brandingFilesContainer.newspaperArticleDocuments]
         }
-        console.log('sql ==>>', sql);
-        // updatedBookPublicationTable
-        // return researchDbW.query(sql);
-        const insertBrandingRecord = await researchDbW.query(sql);
-        const promises = [insertBrandingRecord];
-        return Promise.all(promises).then(([insertBrandingRecord]) => {
-            return  { status : "Done" , message : "Record Inserted Successfully", advertisingId : insertBrandingRecord.rows[0].id}
+
+        //handle promise and throw error in case of Insert
+        return researchDbW.query(sql)
+        .then(result => {
+            console.log('sql ===>>>', sql);
+            return {
+                status: 'Done',
+                message: "Record Inserted Successfully",
+                rowCount: result.rowCount,
+                advertisingId : result.rows[0].id
+            };
         })
-        .catch((error) => {
-            return{status : "Failed" , message : error.message , errorCode : error.code}
-        })
+        .catch(error => {
+            console.log('error.code ====>>>', error.code);
+            console.log('error.constraint ====>>>>>', error.constraint);
+            console.log('error.message ====>>>', error.message);
+            return {
+                status: 'Failed',
+                message: error.message,
+                errorCode: error.code
+            };
+        });
 }
 
 module.exports.updateBrandingAdvertising = async (advertisingId, updatedAdvertisingData, updatedFacultyRecognitionFilesArray,
@@ -161,6 +172,7 @@ module.exports.updateBrandingAdvertising = async (advertisingId, updatedAdvertis
         text: `UPDATE branding_and_advertising SET ${setStatementString} WHERE id = $1`,
         values: advertisingValuesToBeUpdate,
     };
+    
     //handle promise and throw error in case of Update 
     return researchDbW.query(sql)
     .then(result => {

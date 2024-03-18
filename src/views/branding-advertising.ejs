@@ -120,9 +120,9 @@
             </div>
             <div class="d-flex justify-content-between">
                 <div>
-                    <label>Total entries : <%- rowCount %>
+                    <label id="total-entry" class="d-none">
                     </label>
-                    <label class="d-none" id="row-count"> <%- rowCount %></label>
+                    <label id="total-row-count"> Total entries : <span id="row-count"> <%- rowCount %> </span> </label>
                 </div>
                 <div>
                     <button id="prevBtn" class="btn btn-primary">Previous</button>
@@ -707,12 +707,15 @@
     //   for index icrement
     const rowCount = document.getElementById('row-count');
     let rowIndex = rowCount.innerText;
+    console.log('rowIndex ===>>>', rowIndex)
     let indexValue = parseInt(rowIndex, 10);
+    console.log('indexValue ===>>>', indexValue)
     const brandingAdvertisingAddModal = document.getElementById('branding-advertising-add-modal');
     const brandingAdvertisingList = document.getElementById('branding-advertising-list')
     const submitBtn= document.getElementById('submit-btn');
     const updateBtn = document.getElementById('update-btn');
     let advertisingId , advertisingRowToBeUpdated;
+    let IndexEntry 
     
     brandingAdvertisingAddModal.addEventListener('click' , (event) => {
         if(event.target.tagName === 'BUTTON' && event.target.classList.contains('add-modal') || event.target.classList.contains('plus')){
@@ -838,6 +841,8 @@
         const organisingConferenceDocuments = document.getElementById('organising-conference-documents');
         const studentEventParticipationDocuments = document.getElementById('studentEvent-participation-documents');
         const newspaperArticleDocuments = document.getElementById('newspaper-article-documents');
+        let totalEntry = document.getElementById('total-entry');
+        let totalRowCountData = document.getElementById('total-row-count');
 
         // files array
         const facultyRecognitionDataFiles = facultyRecognitionDocuments.files;
@@ -925,29 +930,43 @@
         .then((data) => {
             if(data.status === 'Done'){
                 console.log('data ==>>', data);
-                const rowCountInteger = parseInt(data.rowCount, 10);
-                const IndexEntry = rowCountInteger + indexValue
+                console.log('IndexEntry ====>>>', IndexEntry);
+                console.log('');
+                let rowCountInteger = parseInt(data.rowCount, 10);
+                console.log('rowCountInteger ===>>>>>', rowCountInteger);
+                IndexEntry = (rowCountInteger + indexValue < IndexEntry) ? IndexEntry : rowCountInteger + indexValue;
+                console.log('IndexEntry ===>>>>', IndexEntry);
+                // let IndexEntry = rowCountInteger + indexValue;
+                // if(IndexEntry === rowCountInteger){
+                //     console.log('yes both are same')
+                // }
                 console.log('IndexEntry ===>>>', IndexEntry);
+                totalRowCountData.classList.add('d-none');
+                totalEntry.classList.remove('d-none');
+                totalEntry.innerText = ` Total Entries : ${IndexEntry}`;
+                console.log('totalEntry ===>>>', totalEntry)
+                // totalEntry.classList.remove('d-none');
                 const newBrandingAdvertisingRow = document.createElement('tr');
-                newBrandingAdvertisingRow.setAttribute('data-faculty-recognition-documents' , data.facultyRecognitionDocuments[0].filename);
+                newBrandingAdvertisingRow.setAttribute('data-advertising-id', advertisingId);
+                newBrandingAdvertisingRow.setAttribute('data-faculty-recognition-documents' , data.facultyRecognitionDocuments);
                 newBrandingAdvertisingRow.setAttribute('data-faculty-recognition-link' , data.advertisingData.facultyRecognitionLink);
-                newBrandingAdvertisingRow.setAttribute('data-faculty-award-documents' , data.facultyAwardDocuments[0].filename);
+                newBrandingAdvertisingRow.setAttribute('data-faculty-award-documents' , data.facultyAwardDocuments);
                 newBrandingAdvertisingRow.setAttribute('data-faculty-award-link' , data.advertisingData.facultyAwardLink);
-                newBrandingAdvertisingRow.setAttribute('data-alumni-award-documents' , data.alumniAwardDocuments[0].filename);
+                newBrandingAdvertisingRow.setAttribute('data-alumni-award-documents' , data.alumniAwardDocuments);
                 newBrandingAdvertisingRow.setAttribute('data-alumni-award-link' , data.advertisingData.alumniAwardLink);
-                newBrandingAdvertisingRow.setAttribute('data-staff-award-documents' , data.staffAwardDocuments[0].filename);
+                newBrandingAdvertisingRow.setAttribute('data-staff-award-documents' ,  data.staffAwardDocuments,);
                 newBrandingAdvertisingRow.setAttribute('data-staff-award-link' , data.advertisingData.staffAwardLink); 
-                newBrandingAdvertisingRow.setAttribute('data-student-award-documents' , data.studentAwardDocuments[0].filename);
+                newBrandingAdvertisingRow.setAttribute('data-student-award-documents' , data.studentAwardDocuments);
                 newBrandingAdvertisingRow.setAttribute('data-student-award-link' , data.advertisingData.studentAwardLink); 
-                newBrandingAdvertisingRow.setAttribute('data-international-linkage-documents' , data.internationalLinkageDocuments[0].filename);
+                newBrandingAdvertisingRow.setAttribute('data-international-linkage-documents' , data.internationalLinkageDocuments);
                 newBrandingAdvertisingRow.setAttribute('data-international-linkage-link' , data.advertisingData.internationalLinkageLink); 
-                newBrandingAdvertisingRow.setAttribute('data-conference-participation-documents' , data.conferenceParticipationDocuments[0].filename);
+                newBrandingAdvertisingRow.setAttribute('data-conference-participation-documents' ,  data.conferenceParticipationDocuments);
                 newBrandingAdvertisingRow.setAttribute('data-conference-participation-link' , data.advertisingData.conferenceParticipationLink); 
-                newBrandingAdvertisingRow.setAttribute('data-organising-conference-documents' , data.organisingConferenceDocuments[0].filename);
+                newBrandingAdvertisingRow.setAttribute('data-organising-conference-documents' , data.organisingConferenceDocuments);
                 newBrandingAdvertisingRow.setAttribute('data-organising-conference-link' , data.advertisingData.organisingConferenceLink);
-                newBrandingAdvertisingRow.setAttribute('data-student-event-participation-documents' , data.studentEventParticipationDocuments[0].filename);
+                newBrandingAdvertisingRow.setAttribute('data-student-event-participation-documents' , data.studentEventParticipationDocuments);
                 newBrandingAdvertisingRow.setAttribute('data-student-event-participation-link' , data.advertisingData.studentEventParticipationLink); 
-                newBrandingAdvertisingRow.setAttribute('data-newspaper-article-documents' , data.newspaperArticleDocuments[0].filename);
+                newBrandingAdvertisingRow.setAttribute('data-newspaper-article-documents' , data.newspaperArticleDocuments);
                 newBrandingAdvertisingRow.setAttribute('data-newspaper-article-link' , data.advertisingData.newsPaperArticleLink);
                 console.log('data.advertisingData ==>', data.advertisingData);
                 newBrandingAdvertisingRow.innerHTML = `
@@ -970,21 +989,58 @@
                                         <label class="delete" data-advertising-id=${data.advertisingId}><i class="fa-solid fa-trash delete text-danger"
                                             data-advertising-id=${data.advertisingId}></i></label>
                                     </td> `;
-                                    brandingAdvertisingList.appendChild(newBrandingAdvertisingRow);
-                                    $('#branding-advertising-modal').modal('hide');
-                                    alert('Data Inserted  Successfull');
+                brandingAdvertisingList.appendChild(newBrandingAdvertisingRow);
+                Swal.fire({
+                    position: "top-center",
+                    icon: "success",
+                    title: `${data.message}`,
+                    showConfirmButton: false
+                    // timer: 1500
+                });
+                $('#branding-advertising-modal').modal('hide');
+                }
+                else {
+                console.log('data ====>>>>>', data);
+                Swal.fire({
+                    position: "top-center",
+                    icon: "error",
+                    title: `${data.errorCode}`,
+                    color: "red",
+                    with: "20PX",
+                    html: `<span style="color: red;">${data.message}</span>`,
+                    showConfirmButton: false,
+                });
             }
         })
+        .catch((error) => {
+                console.error('Error:', error);
+                const message = error;
+                Swal.fire({
+                    position: "top-center",
+                    icon: "error",
+                    title: "Data Insertion Failed",
+                    color: "red",
+                    with: "20PX",
+                    html: `<span style="color: red;">${message}</span>`,
+                    showConfirmButton: false,
+                });
+            });
     }
     
     submitBtn.addEventListener('click' , async() => {
         const isValid = validateRequiredFormFields(submitBtn);
             if (isValid) {
                 await insertBrandingAndAdvertising('<%- BASE_URL %>branding-advertising/insert');
-                indexValue += 1
+                IndexEntry += 1
             }
             else {
-                console.log('validation failed');
+                Swal.fire({
+				position: "top-center",
+				icon: "error",
+				title: "Validation Failed",
+				color : "red",
+				showConfirmButton: false,
+		});
             }
     }) 
 
@@ -996,31 +1052,57 @@
                 const advertisingRowToBeDeleted = event.target.closest('tr');
                 advertisingId = event.target.getAttribute('data-advertising-id');
                 console.log('advertisingId ==>>', advertisingId);
-                let confirmDelete = confirm("Do you want to delete the Branding Advertising?");
-                if (!confirmDelete) {
-                    return;
-                }
-
-                fetch('<%- BASE_URL %>branding-advertising/delete', {
-                    method: 'POST',
-                    headers: {
-                        'content-type': 'application/json'
-                    },
-                    body: JSON.stringify({ advertisingId })
-                })
-                    .then((result) => {
-                        return result.json()
-                    })
-                    .then((data) => {
-                        if (data.status === 'done') {
-                            console.log('data ==>>', data)
-                            advertisingRowToBeDeleted.remove();
-                            location.reload();
+                let confirmDelete = "Do you want to delete the Book  Publication?";
+                if (confirmDelete) {
+                    Swal.fire({
+                        title: "Are you sure?",
+                        text: "You won't be able to revert this!",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "Yes, delete it!"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Execute fetch request here after confirmation
+                            fetch('<%- BASE_URL %>branding-advertising/delete', {
+                                method: 'POST',
+                                headers: {
+                                    'content-type': 'application/json'
+                                },
+                                body: JSON.stringify({ advertisingId })
+                            })
+                                .then((result) => result.json())
+                                .then((data) => {
+                                    if (data.status === 'Done') {
+                                        console.log('data ==>>', data);
+                                        advertisingRowToBeDeleted.remove();
+                                        Swal.fire({
+                                            title: "Deleted!",
+                                            text: "Record has been deleted.",
+                                            icon: "success"
+                                        }).then(() => {
+                                            location.reload();
+                                        });
+                                    }
+                                })
+                                .catch((error) => {
+                                    console.error('Error:', error);
+                                    const message = error;
+                                    Swal.fire({
+                                        position: "top-center",
+                                        icon: "error",
+                                        title: `${message}`,
+                                        color: "red",
+                                        showConfirmButton: false,
+                                    });
+                                });
                         }
-                    })
-                    // .catch(error) => {
-
-                    // }
+                    });
+                }
+                else {
+                    return
+                }
 
             }
             // view advertising
@@ -1028,6 +1110,7 @@
                 console.log('clcikedd');
                 const advertisingRowToBeViewed = event.target.closest('tr');
                 advertisingId = event.target.getAttribute('data-advertising-id');
+                console.log('advertisingId ===>>>', advertisingId);
                 console.log('advertisingRowToBeViewed ==>>', advertisingRowToBeViewed)
                 const viewFacultyRecognitionDocuments = document.getElementById('view-faculty-recognition-file');
                 const viewFacultyAwardDocuments = document.getElementById('view-faculty-award-file');

@@ -14,36 +14,57 @@ module.exports.insertBrandingAndAdvertising = async(req, res, next) => {
     const advertisingData = req.body;
     console.log('data comming from frontend ==>>', advertisingData);
     console.log('files in controller  ==>>', res.files);
+
     const brandingAndAdvertising = await brandingAndAdvertisingServices.insertBrandingAdvertising(req.body, req.files);
-    console.log('brandingAndAdvertising ==>>', brandingAndAdvertising);
-    const advertisingId = brandingAndAdvertising.advertisingId;
-    const facultyRecognitionDocuments = brandingAndAdvertising.brandingFilesContainer.facultyRecognitionDocuments;
-    const facultyAwardDocuments = brandingAndAdvertising.brandingFilesContainer.facultyAwardDocuments;
-    const staffAwardDocuments = brandingAndAdvertising.brandingFilesContainer.staffAwardDocuments;
-    const alumniAwardDocuments = brandingAndAdvertising.brandingFilesContainer.alumniAwardDocuments;
-    const studentAwardDocuments = brandingAndAdvertising.brandingFilesContainer.studentAwardDocuments;
-    const internationalLinkageDocuments = brandingAndAdvertising.brandingFilesContainer.internationalLinkageDocuments;
-    const conferenceParticipationDocuments = brandingAndAdvertising.brandingFilesContainer.conferenceParticipationDocuments;
-    const organisingConferenceDocuments = brandingAndAdvertising.brandingFilesContainer.organisingConferenceDocuments;
-    const studentEventParticipationDocuments = brandingAndAdvertising.brandingFilesContainer.studentEventParticipationDocuments;
-    const newspaperArticleDocuments = brandingAndAdvertising.brandingFilesContainer.newspaperArticleDocuments;
-    if(brandingAndAdvertising){
-        res.status(200).send({
-            status : "done" ,
-            advertisingData : advertisingData,
-            advertisingId,
-            facultyRecognitionDocuments,
-            facultyAwardDocuments,
-            staffAwardDocuments,
-            alumniAwardDocuments,
-            studentAwardDocuments,
-            internationalLinkageDocuments,
-            conferenceParticipationDocuments,
-            organisingConferenceDocuments,
-            studentEventParticipationDocuments,
-            newspaperArticleDocuments
-        })
-    }
+
+    console.log('brandingAndAdvertising in controller ==>>', brandingAndAdvertising);
+    const statusCode = brandingAndAdvertising.status === "Done" ? 200 : (brandingAndAdvertising.errorCode ? 400  : 500);
+    res.status(statusCode).send({
+        status : brandingAndAdvertising.status,
+        message : brandingAndAdvertising.message,
+        advertisingData : brandingAndAdvertising.advertisingData,
+        facultyRecognitionDocuments : brandingAndAdvertising.facultyRecognitionDocuments,
+        facultyAwardDocuments : brandingAndAdvertising.facultyAwardDocuments,
+        staffAwardDocuments : brandingAndAdvertising.staffAwardDocuments,
+        alumniAwardDocuments : brandingAndAdvertising.alumniAwardDocuments,
+        studentAwardDocuments : brandingAndAdvertising.studentAwardDocuments,
+        internationalLinkageDocuments : brandingAndAdvertising.internationalLinkageDocuments,
+        conferenceParticipationDocuments : brandingAndAdvertising.conferenceParticipationDocuments,
+        organisingConferenceDocuments : brandingAndAdvertising.organisingConferenceDocuments,
+        studentEventParticipationDocuments : brandingAndAdvertising.studentEventParticipationDocuments,
+        newspaperArticleDocuments : brandingAndAdvertising.newspaperArticleDocuments,
+        rowCount : brandingAndAdvertising.rowCount,
+        advertisingId : brandingAndAdvertising.advertisingId,
+        errorCode : brandingAndAdvertising.errorCode ? brandingAndAdvertising.errorCode : null
+    })
+    // const advertisingId = brandingAndAdvertising.advertisingId;
+    // const facultyRecognitionDocuments = brandingAndAdvertising.facultyRecognitionDocuments;
+    // const facultyAwardDocuments = brandingAndAdvertising.brandingFilesContainer.facultyAwardDocuments;
+    // const staffAwardDocuments = brandingAndAdvertising.brandingFilesContainer.staffAwardDocuments;
+    // const alumniAwardDocuments = brandingAndAdvertising.brandingFilesContainer.alumniAwardDocuments;
+    // const studentAwardDocuments = brandingAndAdvertising.brandingFilesContainer.studentAwardDocuments;
+    // const internationalLinkageDocuments = brandingAndAdvertising.brandingFilesContainer.internationalLinkageDocuments;
+    // const conferenceParticipationDocuments = brandingAndAdvertising.brandingFilesContainer.conferenceParticipationDocuments;
+    // const organisingConferenceDocuments = brandingAndAdvertising.brandingFilesContainer.organisingConferenceDocuments;
+    // const studentEventParticipationDocuments = brandingAndAdvertising.brandingFilesContainer.studentEventParticipationDocuments;
+    // const newspaperArticleDocuments = brandingAndAdvertising.brandingFilesContainer.newspaperArticleDocuments;
+    // if(brandingAndAdvertising){
+    //     res.status(200).send({
+    //         status : "done" ,
+    //         advertisingData : advertisingData,
+    //         advertisingId,
+    //         facultyRecognitionDocuments,
+    //         facultyAwardDocuments,
+    //         staffAwardDocuments,
+    //         alumniAwardDocuments,
+    //         studentAwardDocuments,
+    //         internationalLinkageDocuments,
+    //         conferenceParticipationDocuments,
+    //         organisingConferenceDocuments,
+    //         studentEventParticipationDocuments,
+    //         newspaperArticleDocuments
+    //     })
+    // }
 }
 
 module.exports.updateBrandingAdvertising = async(req, res, next) => {
@@ -121,9 +142,9 @@ module.exports.deleteBrandingAdvertising = async(req, res, next) => {
     console.log('id ==>>', req.body);
     const {advertisingId} = req.body;
     const brandingAndadvertisingDelete = await brandingAndAdvertisingServices.deleteAdvertising(advertisingId);
-    if(brandingAndadvertisingDelete.status === 'done'){
+    if(brandingAndadvertisingDelete.status === 'Done'){
         res.status(200).send({
-            status : 'done',
+            status : 'Done',
             massage : 'deleted successfully'
         })
     }

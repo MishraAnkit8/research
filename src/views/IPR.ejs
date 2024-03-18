@@ -1,18 +1,10 @@
 <%- include('./partials/head') %>
 <!-- inline css -->
-<style>
-        .search-input{
-            width: 200px;
-            border: 1px solid red;
-        }
-</style>
 <!-- Navbar section -->
 <%- include('./partials/header') %>
-
 <!-- This is left sidebar  -->
 <%- include('./partials/left-sidebar') %>
 
-<!-- This is right side section -->
 <main class="main" id="main-content">
     <div class="base-section coustom-section">
         <!--DASHBOARD CONTENT START-->
@@ -22,18 +14,18 @@
                 <li class="breadcrumb-link">
                     <a href="<%- BASE_URL %>research"> RESEARCH </a>
                 </li>
-                <li class="breadcrumb-link">PATENT SUBMISSION</li>
+                <li class="breadcrumb-link">IPR</li>
             </ul>
         </div>
-        <div>
+        <div >
             <div class="table-card-header text-uppercase d-flex align-items-center justify-content-between">
                 <div>
-                    <h5 class="pl-2">PATENT SUBMISSION LIST</h5>
+                    <h5 class="pl-2">IPR LIST</h5>
                 </div>
                 <div >
-                    <button id="add-patent-submission" type="button" class="btn btn-primary btn-circle btn-xl add-modal"
-                        data-toggle="modal" data-target="#patent-submission-modal">
-                        <i class="fas fa-plus plus"></i>
+                    <button id="ipr-add-modal" type="button" class="btn btn-primary add-modal" data-toggle="modal"
+                        data-target="#ipr-modal-form">
+                        <i class="fas fa-plus plus"></i></button>
                     </button>
                 </div>
             </div>
@@ -65,70 +57,70 @@
                         </div>
                     </div>
                 </div>
-                <table class="table custom-table table-responsive research-pagination" id="patent-submisson-list">
+                <table class="table custom-table table-responsive research-pagination" id="ipr-data-list">
                     <thead>
                         <th class="col-lg-1">#</th>
-                        <th class="col-lg-1">Type of Invention</th>
-                        <th class="col-lg-1">Title of Invention</th>
-                        <th class="col-lg-1">Patent Stage</th>
-                        <th class="col-lg-1">Application Number</th>
-                        <th class="col-lg-1">Author Name</th>
-                        <th class="col-lg-1">Sustainable Development Goals (SDG)</th>
-                        <th class="col-lg-1">upload documents</th>
+                        <th class="col-lg-1">Type Of Invention(IPR)</th>
+                        <th class="col-lg-1">Title OfPatent/Invention</th>
+                        <th class="col-lg-1">Patent Status</th>
+                        <th class="col-lg-1">Patent Application Number</th>
+                        <th class="col-lg-1">Patent Applicant Name</th>
+                        <th class="col-lg-1">NMIMS School</th>
+                        <th class="col-lg-1">NMIMS Campus</th>
                         <th class="col-lg-1">Action</th>
                     </thead>
-                    <% if (patentSubmissionList) { %>
-                    <% patentSubmissionList.forEach(function(patent,index) {%>
-                        <% const externalEmp = externalEmpList[index]; %>
-                        <tr data-patent-id="<%- patent.id %>" data-patent-date="<%- patent.date %>"  
-                            data-external-id="<%- externalEmp ? externalEmp.id : '' %>" data-external-emp="<%- externalEmp ? externalEmp.external_emp_name : '' %>"
-                            data-author-table="<%- patent.author_type.table %>" >
-                            <td ><%- index+1 %></td>
-                            <td class="type-of-invention col-lg-1"><%- patent.type_of_invention %></td>
-                            <td class="title-of-invention col-lg-1"><%- patent.title_of_invention %></td>
-                            <td class="patent-stage col-lg-1"><%- patent.patent_stage %></td>
-                            <td class="application-no col-lg-1"><%- patent.application_no %></td>
-                            <td class="author-name col-lg-1"><%- patent.author_type.authorName %></td>
-                            
-                            <td class="sdg-goals col-lg-1"><%- patent.sdg_goals %></td>
-                            <td class="patent-file col-lg-1"><%- patent.patent_file %></td>
-                            <td class="col-lg-1">
-                                <label class="view" data-patent-id="<%- patent.id %>"><i class="fa-solid fa-eye view text-danger"
-                                    data-patent-id="<%- patent.id %>"></i></label>
-                                <label class="edit" data-patent-id="<%- patent.id %>"><i class="fa fa-edit edit text-danger"
-                                    data-patent-id="<%- patent.id %>"></i></label>
-                                <label class="delete" data-patent-id="<%- patent.id %>"><i class="fa-solid fa-trash delete text-danger"
-                                    data-patent-id="<%- patent.id %>"></i></label>
-                            </td>
-                        </tr>
-                        <% }); %>
-                        <% } else { %>
-                            <tr>
-                                <td>Sorry No Data Is Present  </td>
+                    <% if (IPRDataList) { %>
+                        <% IPRDataList.forEach(function(iprData,index) {%>
+                            <% const externalEmp = externalEmpList[index]; %>
+                            <tr data-ipr-id="<%- iprData.id %>"
+                                data-external-id="<%- externalEmp ? externalEmp.id : '' %>" data-external-emp="<%- externalEmp ? externalEmp.external_emp_name : '' %>"
+                                data-author-table="<%- iprData.applicants_name.table %>" 
+                                data-filed-date="<%- iprData.patent_filed_date %>" data-grant-date="<%- iprData.patent_granted_date %>"
+                                data-published-date="<%- iprData.patent_published_date %>" data-grant-number="<%- iprData.patent_granted_no %>"
+                                data-published-number="<%- iprData.patent_published_num %>" data-institute-affiliation="<%- iprData.institute_affiliation %>"
+                                data-supporting-documents="<%- iprData.v %>">
+                                <td ><%- index+1 %></td>
+                                <td class="type-of-invention col-lg-1"><%- iprData.type_of_invention %></td>
+                                <td class="title-of-invention col-lg-1"><%- iprData.title_of_invention %></td>
+                                <td class="patent-stage col-lg-1"><%- iprData.patent_stage %></td>
+                                <td class="application-no col-lg-1"><%- iprData.patent_application_no %></td>
+                                <td class="author-name col-lg-1"><%- iprData.institute_affiliation %></td>
+                                <td class="nmims-school"><%- iprData.nmims_school %></td>
+                                <td class="nmims-campus"><%- iprData.nmims_campus %></td>
+                                <td class="col-lg-1">
+                                    <label class="view" data-ipr-id="<%- iprData.id %>"><i class="fa-solid fa-eye view text-danger"
+                                        data-ipr-id="<%- iprData.id %>"></i></label>
+                                    <label class="edit" data-ipr-id="<%- iprData.id %>"><i class="fa fa-edit edit text-danger"
+                                        data-ipr-id="<%- iprData.id %>"></i></label>
+                                    <label class="delete" data-ipr-id="<%- iprData.id %>"><i class="fa-solid fa-trash delete text-danger"
+                                        data-ipr-id="<%- iprData.id %>"></i></label>
+                                </td>
                             </tr>
-                          <% } %>
+                            <% }); %>
+                            <% } else { %>
+                                <tr>
+                                    <td>Sorry No Data Is Present  </td>
+                                </tr>
+                              <% } %>
                 </table>
-            </div>
-        </div>
-        <div class="d-flex justify-content-between">
-            <div>
-                <label >Total entries : <%- rowCount %>
-                </label>
-                <label class="d-none" id="row-count"> <%- rowCount %></label>
-            </div>
-            <div>
-                <button id="prevBtn" class="btn btn-primary">Previous</button>
-                <button id="nextBtn" class="btn btn-primary">Next</button>
-                <p id="pagination" class="pagination-search"></p>
-            </div>
-        </div>
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <label >Total entries : <%- rowCount %>
+                        </label>
+                        <label class="d-none" id="row-count"> <%- rowCount %></label>
+                    </div>
+                    <div>
+                        <button id="prevBtn" class="btn btn-primary">Previous</button>
+                        <button id="nextBtn" class="btn btn-primary">Next</button>
+                        <p id="pagination" class="pagination-search"></p>
+                    </div>
+                </div>
         <!--Import Modal -->
         <div class="modal fade" id="open-program-modal" tabindex="-1" aria-labelledby="open-program-modal"
             aria-hidden="true">
         </div>
         <!-- EDIT PROGRAM AND UPDATE -->
-        <div class="modal fade" id="edit-program-modal" tabindex="-1" aria-labelledby="editModalLabel"
-            aria-hidden="true">
+        <div class="modal fade" id="edit-program-modal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -145,14 +137,11 @@
                         <div class="mb-3">
                             <label for="exampleInputPassword1" class="form-label">Program Type</label>
                             <select class="form-control" name="program_type_lid" id="program_type_lid">
-
                                 <option value="1">Full Time</option>
-
                                 <option value="2">Part Time</option>
-
                             </select>
                         </div>
-
+    
                         <div class="mb-3">
                             <label for="abbr" class="form-label">Program Abbr</label>
                             <input type="text" class="form-control" id="abbr" name="abbr">
@@ -168,8 +157,8 @@
     </div>
 </main>
 <!--Patent submission   Modal  form -->
-<div class="modal fade " id="patent-submission-modal" tabindex="-1" role="dialog" aria-labelledby="patent-submission-modal"
-    aria-hidden="true">
+<div class="modal fade " id="ipr-modal-form" tabindex="-1" role="dialog" aria-labelledby="ipr-modal-form"
+aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable modal-lg modal-fullscreen p-5" role="document">
         <div class="modal-content modal-content-data validate-input">
             <div class="modal-header">
@@ -180,8 +169,7 @@
             </div>
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-lg-4 col-md-6 col-sm-12 mb-4 ">
-                        <div class="form-group col">
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4 ">
                             <label for="type-of-invention" class="form-label fw-bold ">Type of Invention(IPR)</label>
                             <select class="form-control gap-10" id="type-of-invention" data-validate="isEmpty,isExist" data-err-msg="This field is required and select value " required>
                                 <option value="" selected>Select option</option>
@@ -191,16 +179,15 @@
                                 <option  value="Trade mark">Trade mark</option>
                                 <option  value="Trade Secret">Trade Secret</option>
                             </select>
-                        </div>
                     </div>
                     <!-- Title of Invention -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="title" class="form-label fw-bold">Title of Invention</label>
+                        <label for="title-of-invention" class="form-label fw-bold">Title of Invention</label>
                         <input type="text" name="titleInvention" id="title-of-invention" data data-err-msg="This field is required and min length > 1." class="form-control fname" data-validate="isEmpty,isAlphabeticWords" required>
                     </div>
                     <!-- Patent Stage -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="patent-stage" class="form-label fw-bold">Patent Stage</label>
+                        <label for="patent-stage" class="form-label fw-bold">Patent Status</label>
                         <select class="form-control gap-10" id="patent-stage" data-validate="isEmpty,isExist" data-err-msg="This field is required and select a value" required >
                             <option  value="" selected>Select option</option>
                             <option value="Filed">Filed</option>
@@ -209,19 +196,6 @@
                         </select>
                     </div>
 
-                    <!-- Sustainable Development Goals (SDG) [dropdown list to be added] ? -->
-                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="sdg-goals" class="form-label fw-bold ">Sustainable Development Goals (SDG)?</label>
-                        <select class="form-control gap-10" id="sdg-goals" data-validate="isEmpty,isExist"
-                            data-err-msg="This field is required and select value " required>
-                            <option value="" selected>Select option</option>
-                            <option value="No Poverty" >SDG 1: No Poverty</option>
-                            <option value="Zero Hunger">SDG 2: Zero Hunger</option>
-                            <option value="Good Health and Well-being">SDG 3: Good Health and Well-being</option>
-                            <option value="Quality Education">SDG 4: Quality Education</option>
-                        </select>
-                    </div>
-            
                     <!-- Application Number -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="application-no" class="form-label fw-bold">Application
@@ -229,15 +203,78 @@
                         <input type="number" name="applicationNo" id="application-no" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required'."  class="form-control number"
                             required>
                     </div>
-            
-                    <!-- Date of Filing/Grant/Published -->
+
+                       <!-- applicant name -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="date" class="form-label fw-bold">
-                            Date of Filing/Grant/Published?DDDD
+                        <label for="patent-published-date" class="form-label fw-bold">
+                            Applicant Name
                         </label>
-                        <input type="date" name="GrantDate" id="date" data-validate="isEmpty,isExist" data-err-msg="Date is required." class="form-control" required>
+                        <input type="text" name="nmims-school" id="applicant-name" data-validate="isEmpty,isExist, isLength:2:255" data-err-msg="This field is required and min length > 1." class="form-control" required>
                     </div>
             
+                    <!-- Date of Filed -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="patent-filed-date" class="form-label fw-bold">
+                            Patent Filed Date
+                        </label>
+                        <input type="date" name="patent-filed-date" id="patent-filed-date" data-validate="isEmpty,isExist" data-err-msg="Date is required." class="form-control" required>
+                    </div>
+
+                      <!-- Date of Grant -->
+                      <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="patent-grant-date" class="form-label fw-bold">
+                            Patent Grant Date
+                        </label>
+                        <input type="date" name="patent-grant-date" id="patent-grant-date" data-validate="isEmpty,isExist" data-err-msg="Date is required." class="form-control" required>
+                    </div>
+
+                      <!-- Date of Published -->
+                      <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="patent-published-date" class="form-label fw-bold">
+                            Patent Published Date
+                        </label>
+                        <input type="date" name="GrantDate" id="patent-published-date" data-validate="isEmpty,isExist" data-err-msg="Date is required." class="form-control" required>
+                    </div>
+            
+                     <!-- Patent Publication Number -->
+                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="patent-published-number" class="form-label fw-bold">
+                            Patent Publication Number
+                        </label>
+                        <input type="number" name="patent-published-number" id="patent-published-number" data-validate="isEmpty,isNumber" data-err-msg="Numeric Value is required." class="form-control" required>
+                    </div>
+
+                      <!-- Patent Granted Number -->
+                      <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="patent-granted-number" class="form-label fw-bold">
+                            Patent Granted Number
+                        </label>
+                        <input type="number" name="granted-number" id="patent-granted-number" data-validate="isEmpty,isNumber" data-err-msg="Numeric Value is required." class="form-control" required>
+                    </div>
+
+                      <!-- Institite Affiliation -->
+                      <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="institute-affiliation" class="form-label fw-bold">
+                            Institute Affiliation
+                        </label>
+                        <input type="text" name="institute-affiliation" id="institute-affiliation" data-validate="isEmpty,isExist" data-err-msg="This field is required and min length > 1." class="form-control" required>
+                    </div>
+
+                     <!-- nmims School-->
+                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="nmims-school" class="form-label fw-bold">
+                            NMIMS School
+                        </label>
+                        <input type="text" name="nmims-school" id="nmims-school" data-validate="isEmpty,isExist" data-err-msg="This field is required and min length > 1." class="form-control" required>
+                    </div>
+
+                     <!-- nmims campus -->
+                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="nmims-campus" class="form-label fw-bold">
+                            NMIMS Campus
+                        </label>
+                        <input type="text" name="nmims-campus" id="nmims-campus" data-validate="isEmpty,isExist" data-err-msg="This field is required and min length > 1." class="form-control" required>
+                    </div>
                     <!-- Inventor -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="investor-details" class="form-label fw-bold mb-3">Details of Other Inventors
@@ -280,7 +317,7 @@
                                 Upload Supporting Documents
                             </label>
                             <div class="d-flex">
-                                <input type="file" name="patentFile" id="patent-file"
+                                <input type="file" name="IPRFile" id="ipr-file"
                                     class="col-md-12 form-control" data-validate="isEmpty,isExist,isFile" data-err-msg="File is required." required multiple>
                                     <button class="download-btn download-file" id="patent-file-edit"><i class="fas fa-download text-danger"></i></button>
                             </div>
@@ -382,25 +419,25 @@
     </div>
 </div>
 <div id="employees-list-data" data-employees='<%- JSON.stringify(internalEmpList) %>' style="display: none;"></div>
-<!-- inline script -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tom-select/2.3.1/js/tom-select.complete.min.js" integrity="sha512-zdXqksVc9s0d2eoJGdQ2cEhS4mb62qJueasTG4HjCT9J8f9x5gXCQGSdeilD+C7RqvUi1b4DdD5XaGjJZSlP9Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
 <script>
     //   for index icrement
     const rowCount = document.getElementById('row-count');
     let rowIndex = rowCount.innerText;
     let indexValue = parseInt(rowIndex, 10);
-    const addNewPatentSubmission = document.getElementById('add-patent-submission');
+    const addIPRModal = document.getElementById('ipr-add-modal');
     const submitBtn = document.getElementById('submit-btn');
     const updateBtn = document.getElementById('update-btn');
     // const fileView = document.getElementById('file-view');
     const downloadLink = document.getElementById('downloadLink');
-    const patenetSubMissionList = document.getElementById('patent-submisson-list');
+    const iprDataList = document.getElementById('ipr-data-list');
     const employeeDropdown = document.getElementById("emp-name");
     const addMoreDetailsButton = document.getElementById("add-more-details");
-    let patentId, rowToBeUpdated;
+    let iprId, rowToBeUpdated;
     let storedFacultyValue, InternalAuthorValue, externalAuthorValue;
 
-    addNewPatentSubmission.addEventListener('click' , function(event){
+    addIPRModal.addEventListener('click' , function(event){
         if(event.target.tagName === 'BUTTON' && event.target.classList.contains('add-modal') || event.target.classList.contains('plus')){
             submitBtn.classList.remove('d-none');
             updateBtn.classList.add('d-none');
@@ -412,71 +449,101 @@
             storedFacultyValue = '';
             employeeList.classList.add('d-none');
             authorDetails.classList.add('d-none');
-            const patentDataFiles = document.querySelector('#patent-file-edit');
-            patentDataFiles.classList.add('d-none');
+            const IPRDataFiles = document.querySelector('#patent-file-edit');
+            IPRDataFiles.classList.add('d-none');
     
-            const typeOfInvention = document.getElementById('type-of-invention');
-            const titleOfInvention = document.getElementById('title-of-invention');
-            const patentStage = document.getElementById('patent-stage');
-            const sdgGoals = document.getElementById('sdg-goals');
-            const applicationNum = document.getElementById('application-no');
-            const subMissionDate = document.getElementById('date');
-            const patentSubmissionDocument = document.querySelector('input[type="file"]');
+            // const typeOfInvention = document.getElementById('type-of-invention');
+            // const titleOfInvention = document.getElementById('title-of-invention');
+            // const patentStage = document.getElementById('patent-stage');
+            // const applicationNum = document.getElementById('application-no');
+            // const subMissionDate = document.getElementById('date');
+            const supportingDocuments = document.querySelector('input[type="file"]');
             const isInternalFaculty = document.getElementById('is-internal');
             const isExternalFaculty = document.getElementById('is-external');
-
-
-            // for making input field empty
-            typeOfInvention.value = '';
-            titleOfInvention.value = '';
-            patentStage.value = '';
-            applicationNum.value = '';
-            sdgGoals.value = '';
-            patentSubmissionDocument.value = '';
-            date.value = '';
+            document.getElementById('type-of-invention').value = '';
+            document.getElementById('title-of-invention').value = '';
+            document.getElementById('application-no').value = '';
+            document.getElementById('patent-filed-date').value = '';
+            document.getElementById('patent-grant-date').value = '';
+            document.getElementById('patent-published-date').value = '';
+            document.getElementById('patent-granted-number').value = '';
+            document.getElementById('institute-affiliation').value = '';
+            document.getElementById('nmims-school').value = '';
+            document.getElementById('nmims-campus').value = '';
+            document.getElementById('patent-published-number').value = '';
+            document.getElementById('applicant-name').value = '';
+            
+            // // for making input field empty
+            // typeOfInvention.value = '';
+            // titleOfInvention.value = '';
+            // patentStage.value = '';
+            // applicationNum.value = '';
+            // sdgGoals.value = '';
+            // patentSubmissionDocument.value = '';
+            // date.value = '';
             isInternalFaculty.checked = false;
             isExternalFaculty.checked = false;
 
         }
     })
     
-    const insertPatentforms = async (url) => {
-        const patentData = new FormData();
-        const patentFiles = document.getElementById('patent-file');
+    const insertIPRforms = async (url) => {
+        const IPRData = new FormData();
+        const iprFiles = document.getElementById('ipr-file');
         // patentFile
-        const patentFilesData = patentFiles.files;
-        console.log('patentFilesData ===>>>', patentFilesData)
-        for (let i = 0; i < patentFilesData.length; i++) {
-            console.log('file name  ==>>', patentFilesData[i].name);
-            patentData.append('patentFilesData', patentFilesData[i]);
+        const iprFilesData = iprFiles.files;
+        console.log('iprFilesData ===>>>', iprFilesData)
+        for (let i = 0; i < iprFilesData.length; i++) {
+            console.log('file name  ==>>', iprFilesData[i].name);
+            IPRData.append('supportingDocuments', iprFilesData[i].name);
         }
+        // iprFilesData.map(file => IPRData.append('supportingDocuments', file))
     
         const selectedTypeOfInvention = document.getElementById('type-of-invention').value;
-        patentData.append('typeOfInvention', selectedTypeOfInvention);
+        IPRData.append('typeOfInvention', selectedTypeOfInvention);
         
         const titleOfInvention = document.getElementById('title-of-invention').value;
-        patentData.append('titleOfInvention', titleOfInvention);
+        IPRData.append('titleOfInvention', titleOfInvention);
 
-        // patentData.append('achiveSdg', selectAchiveSdg);
-        const sdgGoals = document.getElementById('sdg-goals').value
-        console.log('sdgGoals ====>>>>>', sdgGoals)
-        patentData.append('sdgGoals' , sdgGoals)
-        const selectPatentStage = document.getElementById('patent-stage').value;
-        patentData.append('patentStage', selectPatentStage);
+        const selectPatentStatus = document.getElementById('patent-stage').value;
+        IPRData.append('patentStage', selectPatentStatus);
 
         const applicationNum= document.getElementById('application-no').value;
-        patentData.append('applicationNum', applicationNum);
+        IPRData.append('applicationNum', applicationNum);
 
-        const subMissionDate = document.getElementById('date').value;
-        console.log('subMissionDate ===>>>', subMissionDate);
-        patentData.append('subMissionDate', subMissionDate);
+        const patentFiledDate = document.getElementById('patent-filed-date').value;
+        IPRData.append('patentFiledDate', patentFiledDate);
+
+        const patentGrantDate= document.getElementById('patent-grant-date').value;
+        IPRData.append('patentGrantDate', patentGrantDate);
+
+        const patentPublishedDate = document.getElementById('patent-published-date').value;
+        IPRData.append('patentPublishedDate', patentPublishedDate);
+
+        const patentPublishedNumber= document.getElementById('patent-published-number').value;
+        IPRData.append('patentPublishedNumber', patentPublishedNumber);
+
+        const patentGrantedNo = document.getElementById('patent-granted-number').value;
+        IPRData.append('patentGrantedNo', patentGrantedNo);
+
+
+        const instituteAffiliation = document.getElementById('institute-affiliation').value;
+        IPRData.append('instituteAffiliation', instituteAffiliation);
+
+        const nmimsSchool = document.getElementById('nmims-school').value;
+        IPRData.append('nmimsSchool', nmimsSchool);
+
+        const nmimsCampus = document.getElementById('nmims-campus').value;
+        IPRData.append('nmimsCampus', nmimsCampus);
         
-        const authorType = document.querySelector('input[name="author-type"]:checked');
-        await insertFacultyNameString(authorType, patentData);
-        
+        const applicantName = document.querySelector('input[name="author-type"]:checked');
+        console.log('applicantName ===>>>>', applicantName)
+        await insertFacultyNameString(applicantName, IPRData);
+
+
         fetch(url, {
             method: 'POST',
-            body: patentData
+            body: IPRData
         })
         .then((result) => {
            return  result.json()
@@ -484,34 +551,37 @@
         .then((data) => {
             if (data.status === 'Done') {
                 console.log('data >>>', data);
-                patentId = data.patentId;
+                iprId = data.iprId;
                 const rowCountInteger = parseInt(data.rowCount, 10);
                 const IndexEntry = rowCountInteger + indexValue
                 console.log('IndexEntry ===>>>', IndexEntry);
-                const newPatentRow = document.createElement('tr');
-                newPatentRow.setAttribute('data-patent-date' , data.patentData.subMissionDate);
-                newPatentRow.setAttribute('data-external-emp' , data.externalNamesString);
-                newPatentRow.setAttribute('data-external-id' , data.externalEmpId)
-                newPatentRow.innerHTML = `
+                const newIprRow = document.createElement('tr');
+                newIprRow.setAttribute('data-filed-date' , data.IPRData.patentFiledDate);
+                newIprRow.setAttribute('data-published-date' , data.IPRData.patentPublishedDate);
+                newIprRow.setAttribute('data-grant-number' , data.IPRData.patentGrantedNo)
+                newIprRow.setAttribute('data-published-number' , data.IPRData.patentPublishedNumber);
+                newIprRow.setAttribute('data-institute-affiliation' , data.IPRData.instituteAffiliation);
+                newIprRow.setAttribute('data-supporting-documents' , data.IPRData.iprFilesString)
+                newIprRow.innerHTML = `
                     <td>${IndexEntry}</td>
-                    <td class="type-of-invention">${data.patentData.typeOfInvention}</td>
-                            <td class="title-of-invention">${data.patentData.titleOfInvention}</td>
-                            <td class="patent-stage">${data.patentData.patentStage}</td>
-                            <td class="application-no">${data.patentData.applicationNum}</td>
-                            <td class="author-name">${data.authorNameString}</td>
-                            <td class="achive-sdg">${data.patentData.sdgGoals}</td>
-                            <td class="patent-file">${data.patentFilesData}</td>
-                            <td class="cell ">
-                                <label class="view" data-patent-id="${patentId}"><i class="fa-solid fa-eye view text-danger"
-                                    data-patent-id="${patentId}"></i></label>
-                                <label class="edit" data-patent-id="${patentId}"><i class="fa fa-edit edit text-danger"
-                                    data-patent-id="${patentId}"></i></label>
-                                <label class="delete" data-patent-id="${patentId}"><i class="fa-solid fa-trash delete text-danger"
-                                    data-patent-id="${patentId}"></i></label>
-                           </td> `;
+                    <td class="type-of-invention col-lg-1">${data.IPRData.typeOfInvention}</td>
+                    <td class="title-of-invention col-lg-1">${data.IPRData.titleOfInvention}<</td>
+                    <td class="patent-stage col-lg-1">${data.IPRData.patentStage}</td>
+                    <td class="application-no col-lg-1">${data.IPRData.applicationNum}</td>
+                    <td class="author-name col-lg-1">${data.authorNameString}</td>
+                    <td class="nmims-school">${data.IPRData.nmimsSchool}</td>
+                    <td class="nmims-campus">${data.IPRData.nmimsCampus}</td>
+                    <td class="cell ">
+                        <label class="view" data-ipr-id="${data.iprId}"><i class="fa-solid fa-eye view text-danger"
+                            data-ipr-id="${data.iprId}"></i></label>
+                        <label class="edit" data-ipr-id="${data.iprId}"><i class="fa fa-edit edit text-danger"
+                        data-ipr-id="${data.iprId}"></i></label>
+                            <label class="delete" data-ipr-id="${data.iprId}"><i class="fa-solid fa-trash delete text-danger"
+                                data-ipr-id="${iprId}"></i></label>
+                    </td> `;
 
-                patenetSubMissionList.appendChild(newPatentRow);
-                $('#patent-submission-modal').modal('hide');
+                iprDataList.appendChild(newIprRow);
+                $('#ipr-modal-form').modal('hide');
                 Swal.fire({
 							position: "top-center",
 							icon: "success",
@@ -552,7 +622,7 @@
     submitBtn.addEventListener('click', async () => {
        const isValid = validateRequiredFormFields(submitBtn);
        if(isValid) {
-            await insertPatentforms('<%- BASE_URL %>research/patent-submission/insert');
+            await insertIPRforms('<%- BASE_URL %>research/IPR/insert');
        }
        else{
         Swal.fire({
@@ -565,7 +635,7 @@
        }
     });
 
-    patenetSubMissionList.addEventListener('click', function (event) {
+    iprDataList.addEventListener('click', function (event) {
 
             if (event.target.classList.contains('edit')) {
                 submitBtn.classList.add('d-none');
@@ -582,8 +652,8 @@
                 console.log('rowToBeUpdated in siode edit ====>>>', rowToBeUpdated)
                 // function call for download button
                 setFileNameAttributeToBeDownload(rowToBeUpdated);
-                patentId = event.target.getAttribute('data-patent-id');
-                console.log('Id For Updation', patentId);
+                iprId = event.target.getAttribute('data-ipr-id');
+                console.log('Id For Updation', iprId);
                 const typeOfInvention = document.getElementById('type-of-invention');
                 const titleOfInvention = document.getElementById('title-of-invention');
                 const patentStage = document.getElementById('patent-stage');
@@ -594,7 +664,7 @@
                 const authorName = rowToBeUpdated.getAttribute('data-author-type');
                 const authorTable = rowToBeUpdated.getAttribute('data-author-table');
                 console.log('authorTable ====>>>', authorTable)
-                console.log('authorType ====>>>', authorName)
+                console.log('applicantName ====>>>', authorName)
                 if (authorTable === 'internalEmpList') {
                     internalAuthor.checked = true;
                 }
@@ -642,7 +712,7 @@
             //   for delete patent submission form
             if (event.target.classList.contains('delete')) {
                 const patentSubMissionDataToBeDelete = event.target.closest('tr');
-                patentId = event.target.getAttribute('data-patent-id');
+                iprId = event.target.getAttribute('data-ipr-id');
                 let confirmDelete = "Do you want to delete the Book  Publication?";
                 if (confirmDelete) {
                     Swal.fire({
@@ -661,7 +731,7 @@
                                 headers: {
                                     'content-type': 'application/json'
                                 },
-                                body: JSON.stringify({ patentId })
+                                body: JSON.stringify({ iprId })
                             })
                                 .then((result) => result.json())
                                 .then((data) => {
@@ -703,7 +773,7 @@
                 console.log('row to be viewed', patentSubmissionDataToBeViewed);
                 let patentFile = patentSubmissionDataToBeViewed.querySelector('.patent-file');
                 console.log('patentFile ==>>', patentFile)
-                patentId = event.target.getAttribute('data-patent-id')
+                iprId = event.target.getAttribute('data-ipr-id')
                 $('#patent-submission-modal-view').modal('show');
                 const viewTypeOfInvetion = document.getElementById('view-type-of-invetion');
                 const viewTitleOfinvetion = document.getElementById('view-title-of-invetion');
@@ -719,7 +789,7 @@
                     headers: {
                         'content-type': 'application/json'
                     },
-                    body: JSON.stringify({patentId}
+                    body: JSON.stringify({iprId}
                          )
                 })
                     .then((result) => {
@@ -729,14 +799,14 @@
                         if (data.status === 'done') {
                             console.log('data', data)
                             setFileNameInButtons(data) 
-                            viewTitleOfinvetion.innerText = data.patentData[0].title_of_invention;
-                            viewTypeOfInvetion.innerText = data.patentData[0].type_of_invention;
-                            viewApplicationNum.innerText = data.patentData[0].application_no;
-                            viewAchiveSdg.innerText = data.patentData[0].sdg_goals;
-                            viewDate.innerText = data.patentData[0].date.split('T')[0];
-                            viewPatentStage.innerText = data.patentData[0].patent_stage;
-                            viewIsPresenter.innerText = data.patentData[0].author_type.replace(/,/g, ' ');
-                            // viewUploadedDoc.innerText = data.patentData[0].patent_file;
+                            viewTitleOfinvetion.innerText = data.IPRData[0].title_of_invention;
+                            viewTypeOfInvetion.innerText = data.IPRData[0].type_of_invention;
+                            viewApplicationNum.innerText = data.IPRData[0].application_no;
+                            viewAchiveSdg.innerText = data.IPRData[0].sdg_goals;
+                            viewDate.innerText = data.IPRData[0].date.split('T')[0];
+                            viewPatentStage.innerText = data.IPRData[0].patent_stage;
+                            viewIsPresenter.innerText = data.IPRData[0].author_type.replace(/,/g, ' ');
+                            // viewUploadedDoc.innerText = data.IPRData[0].patent_file;
 
                         }
                     })
@@ -752,41 +822,41 @@
         const updatedSdgGoals =  document.getElementById('sdg-goals').value
         const updatedApplicationNum = document.getElementById('application-no').value;
         const updatedSubMissionDate = document.getElementById('date').value;
-        const updatedAuthorType = document.querySelector('input[name="author-type"]:checked')
+        const updatedapplicantName = document.querySelector('input[name="author-type"]:checked')
         
-        const updatedPatentData = new FormData();
+        const updatedIPRData = new FormData();
         // Append the updated values to FormData
-        updatedPatentData.append('patentId' , patentId) ;
-        updatedPatentData.append('typeOfInvention', updatedTypeOfInvention);
-        updatedPatentData.append('titleOfInvention', updatedTitleOfInvention);
-        updatedPatentData.append('patentStage', updatedPatentStage);
-        updatedPatentData.append('sdgGoals', updatedSdgGoals);
-        updatedPatentData.append('applicationNum', updatedApplicationNum);
-        updatedPatentData.append('subMissionDate', updatedSubMissionDate);
+        updatedIPRData.append('iprId' , iprId) ;
+        updatedIPRData.append('typeOfInvention', updatedTypeOfInvention);
+        updatedIPRData.append('titleOfInvention', updatedTitleOfInvention);
+        updatedIPRData.append('patentStage', updatedPatentStage);
+        updatedIPRData.append('sdgGoals', updatedSdgGoals);
+        updatedIPRData.append('applicationNum', updatedApplicationNum);
+        updatedIPRData.append('subMissionDate', updatedSubMissionDate);
         //function call for set the value of radio button 
-        await updateFacultyNameString(updatedAuthorType, updatedPatentData, storedFacultyValue)
+        await updateFacultyNameString(updatedapplicantName, updatedIPRData, storedFacultyValue)
 
         const updatedPatentFiles = document.getElementById('patent-file');
         // patentFile
         console.log('updatedPatentFiles ==>>', updatedPatentFiles);
-        const updatedPatentFilesData = updatedPatentFiles.files;
-        console.log('updatedPatentFilesData ======>>>>', updatedPatentFilesData);
-        if (updatedPatentFilesData) {
-            console.log('files data ===>>>', updatedPatentFilesData)
-            for (let i = 0; i < updatedPatentFilesData.length; i++) {
-                console.log('file name  ==>>', updatedPatentFilesData[i].name);
-                updatedPatentData.append('patentFilesData', updatedPatentFilesData[i]);
+        const updatediprFilesData = updatedPatentFiles.files;
+        console.log('updatediprFilesData ======>>>>', updatediprFilesData);
+        if (updatediprFilesData) {
+            console.log('files data ===>>>', updatediprFilesData)
+            for (let i = 0; i < updatediprFilesData.length; i++) {
+                console.log('file name  ==>>', updatediprFilesData[i].name);
+                updatedIPRData.append('iprFilesData', updatediprFilesData[i]);
             }
         }
         else{
-            updatedPatentFilesData = null
-            updatedPatentData.append('patentFilesData', updatedPatentFilesData)
+            updatediprFilesData = null
+            updatedIPRData.append('iprFilesData', updatediprFilesData)
         }
 
         // fetch api
         fetch(url , {
             method : 'POST',
-            body : updatedPatentData
+            body : updatedIPRData
         })
         .then((result) => {
             return result.json();
@@ -795,15 +865,15 @@
         .then((data) => {
             if(data.status === 'Done'){
                 console.log('Updated Data ==> ', data)
-                console.log('updated data title ===>', data.updatedPatentData.typeOfInvention);
-                rowToBeUpdated.querySelector('.title-of-invention').innerText = data.updatedPatentData.titleOfInvention;
-                rowToBeUpdated.querySelector('.type-of-invention').innerText = data.updatedPatentData.typeOfInvention;
-                rowToBeUpdated.querySelector('.sdg-goals').innerText = data.updatedPatentData.sdgGoals;
-                rowToBeUpdated.querySelector('.application-no').innerText = data.updatedPatentData.applicationNum;
-                rowToBeUpdated.querySelector('.patent-stage').innerText = data.updatedPatentData.patentStage;
-                rowToBeUpdated.setAttribute('data-patent-date' , data.updatedPatentData.subMissionDate);
+                console.log('updated data title ===>', data.updatedIPRData.typeOfInvention);
+                rowToBeUpdated.querySelector('.title-of-invention').innerText = data.updatedIPRData.titleOfInvention;
+                rowToBeUpdated.querySelector('.type-of-invention').innerText = data.updatedIPRData.typeOfInvention;
+                rowToBeUpdated.querySelector('.sdg-goals').innerText = data.updatedIPRData.sdgGoals;
+                rowToBeUpdated.querySelector('.application-no').innerText = data.updatedIPRData.applicationNum;
+                rowToBeUpdated.querySelector('.patent-stage').innerText = data.updatedIPRData.patentStage;
+                rowToBeUpdated.setAttribute('data-patent-date' , data.updatedIPRData.subMissionDate);
                 rowToBeUpdated.querySelector('.author-name').innerText = data.authorNameString;
-                if(updatedPatentFilesData){
+                if(updatediprFilesData){
                     rowToBeUpdated.querySelector('.patent-file').innerText = data.patentDocument;
                 }
                 Swal.fire({
@@ -870,7 +940,7 @@
     function setFileNameInButtons(data) {
         console.log('data ==>>>', data);
         patetDataFileView = document.getElementById('patent-data-file-view');
-        patetDataFileView.setAttribute('data-filename', data.patentData[0].patent_file);
+        patetDataFileView.setAttribute('data-filename', data.IPRData[0].patent_file);
     } 
 
     //eventlistner for download files
@@ -919,12 +989,12 @@
     // set string file value into button
     function setFileNameAttributeToBeDownload(data) {
             console.log('data row in side function ===>>', data);
-            const patentDataFiles = document.getElementById('patent-file-edit');
-            patentDataFiles.classList.remove('d-none');
-            const patentDataString = data.getAttribute('data-supporting-documents');
+            const IPRDataFiles = document.getElementById('patent-file-edit');
+            IPRDataFiles.classList.remove('d-none');
+            const IPRDataString = data.getAttribute('data-supporting-documents');
 
             // setAttribute into button
-            patentDataFiles.setAttribute('data-filename', patentDataString);
+            IPRDataFiles.setAttribute('data-filename', IPRDataString);
 
         };
     
@@ -976,21 +1046,21 @@
     employeeDropdown.addEventListener("change", handleEmployeeDropdownChange);
 
     // function for add drop down list or  add new faculty data
-    async function insertFacultyNameString(authorType, patentData) {
-        console.log('authorType in side my function ====>>>', authorType);
+    async function insertFacultyNameString(applicantName, IPRData) {
+        console.log('applicantName in side my function ====>>>', applicantName);
         // console.log('InternalAuthorValue ====>>>>>', InternalAuthorValue);
         // console.log('externalAuthorValue ===>>>', externalAuthorValue)
-        const facultytype = authorType.value;
+        const facultytype = applicantName.value;
         console.log('facultytype ===>>>', facultytype);
         console.log('authorNamesArray ===>>>>', authorNamesArray)
         const authorNameSting = JSON.stringify(authorNamesArray);
-        patentData.append('authorName', authorNameSting);
+        IPRData.append('authorName', authorNameSting);
         }
 
     // fuction for updated faculty type
-    async function updateFacultyNameString(updatedAuthorType, updatedPatentData, storedFacultyValue) {
+    async function updateFacultyNameString(updatedApplicantName, updatedIPRData, storedFacultyValue) {
             console.log('storedFacultyValue in side update function ===>>>', storedFacultyValue)
-            console.log('updatedAuthorType ====>>>', updatedAuthorType);
+            console.log('updatedapplicantName ====>>>', updatedApplicantName);
             console.log('externalAuthorValue ===>>>', externalAuthorValue);
             console.log('InternalAuthorValue ====>>>>>', InternalAuthorValue);
             console.log('storedFacultyValue ====>>> ', storedFacultyValue);
@@ -998,14 +1068,14 @@
             if(!externalAuthorValue && ! InternalAuthorValue){
                 updatedAuthorNameArrays.push({'existingNameValue' : storedFacultyValue})
                 const updatedAuthorNameString = JSON.stringify(updatedAuthorNameArrays);
-                updatedPatentData.append('authorName', updatedAuthorNameString)
+                updatedIPRData.append('authorName', updatedAuthorNameString)
             }
             else{
                 updatedAuthorNameArrays.push({'externalEmpList' : externalAuthorValue})
                 updatedAuthorNameArrays.push({'internalEmpList' : InternalAuthorValue})
                 const updatedAuthorNameString = JSON.stringify(updatedAuthorNameArrays);
                 console.log('updatedAuthorNameString ===>>>>', updatedAuthorNameString);
-                updatedPatentData.append('authorName', updatedAuthorNameString)
+                updatedIPRData.append('authorName', updatedAuthorNameString)
             }
         }
     
@@ -1030,4 +1100,4 @@
 <%- include('./partials/pagination') %>
 <%- include('./partials/footer') %>
 <%- include('./partials/footer-end') %>
-          
+           

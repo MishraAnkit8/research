@@ -18,7 +18,8 @@ const conferenceController = require('../controllers/conference-publication.cont
 const patentSubmission = require('../controllers/patent-submission.controller');
 const researchProjGrantController = require('../controllers/research-project-grant.controller');
 const bookPublicationRoutes = require('./book-publication-main.routes');
-const researchSeminarController = require('../controllers/research-seminar.controller')
+const researchSeminarController = require('../controllers/research-seminar.controller');
+const IPRController = require('../controllers/IPR.controller');
 
 // services
 const patentSubmissionServices = require('../services/patent-submission.service');
@@ -88,4 +89,9 @@ router.post('/research-seminar/insert', validateResearchSeminar, asyncErrorHandl
 router.post('/research-seminar/update', asyncErrorHandler(researchSeminarController.updateResearchSeminar));
 router.post('/research-seminar/delete', asyncErrorHandler(researchSeminarController.delResearchSeminar));
 router.post('/research-seminar/view', asyncErrorHandler(researchSeminarController.viewResearchSeminar));
+
+//IPR 
+router.get('/IPR', asyncErrorHandler(IPRController.renderIPR));
+router.post('/IPR/insert', upload.array('supportingDocuments', 5),asyncErrorHandler(IPRController.IPRInsertedData))
+
 module.exports = router;
