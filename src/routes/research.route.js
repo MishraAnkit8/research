@@ -102,6 +102,15 @@ router.get('/IPR/viewing/:fileName', downloadFileService.viewFile);
 
 //reserach award 
 router.get('/research-award', asyncErrorHandler(researchAwardController.renderResearchAward));
-router.post('research-award/insert' , upload.array('researchAwardDocuments', 5) , asyncErrorHandler(researchAwardController.insertResearchAwardFormData));
+router.post('/research-award/insert' , upload.array('researchAwardDocuments', 5) , asyncErrorHandler(researchAwardController.insertResearchAwardFormData));
+router.post('/research-award/update' , upload.array('researchAwardDocuments', 5) , asyncErrorHandler(researchAwardController.updateResearchAwardData));
+router.post('/research-award/delete' , asyncErrorHandler(researchAwardController.deleteResearchAwardRow));
+router.post('/research-award/view' , asyncErrorHandler(researchAwardController.viewResearchAwardData));
+router.get('/research-award/download/:fileName', downloadFileService.downloadFile);
+router.get('/research-award/viewing/:fileName', downloadFileService.viewFile);
+
+
+
+
 
 module.exports = router;
