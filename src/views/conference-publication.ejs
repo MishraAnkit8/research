@@ -61,6 +61,8 @@
         <table class="table custom-table research-pagination" id="conference-publication-list">
             <thead>
                 <th class="col-lg-1">#</th>
+                <th class="col-lg-1 campus">Campus</th>
+                <th class="col-lg-1 school">School</th>
                 <th class="col-lg-1">Title of the Paper</th>
                 <th class="col-lg-1">Name and Place of Conference</th>
                 <th class="col-lg-1">Proceedings Details</th>
@@ -70,18 +72,21 @@
             <% conferenceData.forEach(function(conference,index) { %>
                 <% const externalEmp = externalEmpList[index]; %>
                 <tr data-conference-id="<%- conference.id %>"
-                    data-publisher-category="<%- conference.publisher_category %>"
+
                     data-is-presenter="<%- conference.is_presenter %>" data-author-type="<%- conference.author_type.authorName %>"
-                    data-publication-details="<%- conference.publication_details %>"
-                    data-vol-and-issue-no="<%- conference.vol_and_issue_no %>" data-doi-weblink="<%- conference.doi_weblink %>"
-                    data-upload-files="<%- conference.upload_files %>"
-                    data-award-for-presentation="<%- conference.award_for_presentation %>"
-                    data-upload-proof="<%- conference.upload_proof %>" 
+                    data-presenting-author="<%- conference.presenting_authors %>" data-organizing-body="<%- conference.organizing_body %>"
+                    data-vol-and-issue-no="<%- conference.vol_and_issue_no %>" data-doi-weblink="<%- conference.doi_id %>"
+                    data-upload-files="<%- conference.upload_files %>" data-sponsored="<%- conference.sponsored %>"
+                    data-award-for-presentation="<%- conference.award_for_presentation %>" data-spent-amount="<%- conference.spent_amount %>"
                     data-external-id="<%- externalEmp ? externalEmp.id : '' %>" data-external-emp="<%- externalEmp ? externalEmp.external_emp_name : '' %>"
-                    data-author-table="<%- conference.author_type.table %>" >
+                    data-author-table="<%- conference.author_type.table %>" data-conference-place="<%- conference.conference_place%>"
+                    data-conference-type="<%- conference.conference_type %>" data-publication-date="<%- conference.publication_date %>" 
+                    data-upload-proof="<%- conference.upload_proof %>">
                     <td><%- index+1 %> </td>
+                    <td class="col-lg-1 campus"><%- conference.nmims_campus %></td>
+                    <td class="col-lg-1 school"><%- conference.nmims_school %></td>
                     <td class="title-of-paper col-lg-1"><%- conference.title_of_paper %></td>
-                    <td class="name-and-place col-lg-1"><%- conference.name_and_place %> </td>
+                    <td class="col-lg-1 conference-name"><%- conference.conference_name %> </td>
                     <td class="proceedings-detail col-lg-1"><%- conference.proceedings_detail %></td>
                     <td class="issn-isbn-no col-lg-1"><%- conference.issn_isbn_no %></td>
                     <td class="col-lg-1">
@@ -167,39 +172,68 @@
             </div>
             <div class="modal-body">
                 <div class="row">
+                     <!-- Campus -->
+                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="application-no" class="form-label fw-bold"> NMIMS Campus </label>
+                        <input type="text"  id="nmims-campus" data-validate="isEmpty,isExist" data data-err-msg="This field is required and min length > 1." class="form-control number"
+                            required>
+                    </div>
+                    <!-- school -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="application-no" class="form-label fw-bold"> NMIMS School </label>
+                        <input type="text"  id="nmims-school" data-validate="isEmpty,isExist" data data-err-msg="This field is required and min length > 1." class="form-control number"
+                            required>
+                    </div>
                     <!--  Title of the Paper -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="title-of-paper" class="form-label  fw-bold">Title Of The Paper</label>
                         <input type="text" name="title-project" id="title-of-paper" class="form-control"
                             data-validate="isEmpty,isNotNumber,isExist,isLength:2:255"  data-err-msg="This field is required and min length > 1." required />
                     </div>
-                    <!-- Name and Place of Conference -->
+                    <!-- Name of Conferencend  -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <div class="form-group col">
-                            <label for="name-and-place" class="form-label  fw-bold"> Name and Place of Conference </label>
-                            <input type="text" name="name-and-place" id="name-and-place"
+                            <label for="conference-name" class="form-label  fw-bold"> Name of Conference </label>
+                            <input type="text" name="conference-name" id="conference-name"
                                 data-validate="isEmpty,isNotNumber,isExist,isLength:2:255"  data-err-msg="This field is required and min length > 1." class="form-control"
                                required />
+                    </div>
+
+                     <!-- Place of Conferencend  -->
+                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="conference-name" class="form-label  fw-bold"> Place of Conference </label>
+                            <input type="text" name="conference-name" id="conference-place"
+                                data-validate="isEmpty,isNotNumber,isExist,isLength:2:255"  data-err-msg="This field is required and min length > 1." class="form-control"
+                               required />
+                    </div>
+
+                    <!--  Proceedings published Yes/No -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="proceedings-detail" class="form-label fw-bold"> Proceedings published Yes/No </label>
+                        <div class="form-check-inline">
+                            <label for="is-published-yes" class="form-check-label">
+                                <input type="radio" class="form-check-input" id="is-published-yes" name="Proceedings-details"
+                                    value="Yes"> Yes
+                            </label>
+                        </div>
+                        <div class="form-check-inline">
+                            <label for="is-published-no" class="form-check-label">
+                                <input type="radio" class="form-check-input" id="is-published-no" name="Proceedings-details"
+                                    value="No" checked> No
+                            </label>
                         </div>
                     </div>
-                    <!-- Proceedings Detail -->
+                    <!-- Type Of Conference  -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="proceedings-detail" class="form-label fw-bold"> Proceedings Detail </label>
-                        <input type="text" name="proceedings-detail"   id="proceedings-detail"
-                            data-validate="isEmpty,isNotNumber,isExist,isLength:2:255"  data-err-msg="This field is required and min length > 1."class="form-control" required>
-                    </div>
-                    <!-- Publisher Category  -->
-                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="publisher-category" class="form-label fw-bold mb-3">Publisher Category</label><br>
+                        <label for="publisher-category" class="form-label fw-bold mb-3">Type Of Conference</label><br>
                         <div class="form-check-inline">
                             <label for="international" class="form-check-label">
-                                <input type="radio" class="form-check-input" id="inter-national" name="publisher-category"
+                                <input type="radio" class="form-check-input" id="inter-national" name="conference-type"
                                     value="International"> International
                             </label>
                         </div>
                         <div class="form-check-inline">
                             <label for="national" class="form-check-label">
-                                <input type="radio" class="form-check-input" id="national" name="publisher-category"
+                                <input type="radio" class="form-check-input" id="national" name="conference-type"
                                     value="National" checked> National
                             </label>
                         </div>
@@ -219,27 +253,10 @@
                             </label>
                         </div>
                     </div>
-                    <!-- Author Details -->
-                    <!-- <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="author-type" class="form-label fw-bold mb-3">Which Type Of Authors ?</label><br>
-                        <div class="form-check-inline">
-                            <label for="internal" class="form-check-label">
-                                <input type="radio" class="form-check-input" id="internal" name="author-type"
-                                    value="Internal" checked>
-                                Internal
-                            </label>
-                        </div>
-                        <div class="form-check-inline">
-                            <label for="external" class="form-check-label">
-                                <input type="radio" class="form-check-input" id="external" name="author-type"
-                                    value="External">
-                                External
-                            </label>
-                        </div>
-                    </div> -->
+
                     <!-- Inventor -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="investor-details" class="form-label fw-bold mb-3">Details of Other Inventors
+                        <label for="investor-details" class="form-label fw-bold mb-3">Author Details
                             ?</label><br>
                         <div class="form-check-inline">
                             <label for="is-internal" class="form-check-label enter-faculty-type">
@@ -272,12 +289,21 @@
                           <button id="add-more-details" class="btn col-md-12 btn-md btn-primary submit-btn update-btn" type="button">Add More Details</button>
                         </div>
                       </div>
-                    <!-- Publication Details -->
+                    <!-- Presenting Author-->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="publication-details" class="form-label fw-bold">
-                            Publication Details
+                        <label for="presenting-author" class="form-label fw-bold">
+                            Presenting Author
                         </label>
-                        <input type="text" name="publicaton-detail" id="publication-details"
+                        <input type="text" name="publicaton-detail" id="presenting-author"
+                            data-validate="isEmpty,isNotNumber,isExist,isLength:2:255"  data-err-msg="This field is required and min length > 1." class="form-control" required>
+                    </div>
+
+                    <!-- Organizing Body -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="organizing-body" class="form-label fw-bold">
+                            Organizing Body
+                        </label>
+                        <input type="text" name="publicaton-detail" id="organizing-body"
                             data-validate="isEmpty,isNotNumber,isExist,isLength:2:255"  data-err-msg="This field is required and min length > 1." class="form-control" required>
                     </div>
                     <!-- Any award for presentation -->
@@ -317,28 +343,59 @@
                     </div>
                     <!-- DOI/Weblink of paper -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <div class="form-group">
                             <label for="doi-weblink" class="form-label  fw-bold">
                                 DOI/Weblink of paper
                             </label>
-                            <input type="text" name="web-link" id="doi-weblink" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255"  data-err-msg="Link is required."
+                            <input type="number" name="web-link" id="doi-weblink-id" data-validate="isEmpty,isNumber"  data-err-msg="Numeric value is required."
                                 class="form-control" required/>
+                    </div>
+
+                    <!-- Sponsored By NMIMS/Other -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12  mb-4">
+                        <label for="award-for-presentation" class="form-label fw-bold mb-3"> Sponsored By NMIMS/Other </label><br>
+                        <div class="form-check-inline">
+                            <label for="is-nmims" class="form-check-label">
+                                <input type="radio" class="form-check-input" id="is-nmims" name="sponsored"
+                                    value="NMIMS">
+                                    NMIMS
+                            </label>
+                        </div>
+                        <div class="form-check-inline">
+                            <label for="award-no" class="form-check-label">
+                                <input type="radio" class="form-check-input" id="is-other" name="sponsored"
+                                    value="other" checked>
+                                Other
+                            </label>
                         </div>
                     </div>
+
+                    <!-- Amount spent In Rs. -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="conference-place" class="form-label  fw-bold"> Amount spent In Rs. </label>
+                            <input type="number" name="conference-place" id="spent-amount"
+                                data-validate="isEmpty,isNumber"  data-err-msg="Numeric value is required." class="form-control"
+                               required />
+                    </div>
+
+                    <!-- Publication Date. -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="conference-place" class="form-label  fw-bold"> Publication Date </label>
+                        <input type="Date" name="conference-place" id="publication-date"
+                            data-validate="isEmpty,isExist"  data-err-msg="Date is required." class="form-control"
+                           required />
+                </div>
+
                     <!-- Upload Files -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <div class="form-group">
                             <label for="upload" class="form-label fw-bold ">Upload Files</label>
                             <div class="d-flex">
                                 <input type="file" id="conference-documnets" data-validate="isEmpty,isExist,isFile" data-err-msg="File is required"
                                     name="conferenceDocument" class="col-md-12 form-control " required multiple>
                                 <button id="conference-file-edit" class="download-btn download-file"><i class="fas fa-download text-danger"></i></button>
                             </div>
-                        </div>
                     </div>
                     <!-- upload proof -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <div class="form-group">
                             <label for="upload"  class="form-label fw-bold ">Upload
                                 Proof</label>
                             <div class="d-flex">
@@ -346,7 +403,6 @@
                                     name="conferenceProof" class="col-md-12 form-control " required multiple>
                                 <button class="download-btn download-file" id="conference-proof-edit"><i class="fas fa-download text-danger"></i></button>
                             </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -421,7 +477,7 @@
                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
                             <div class="task-sub-title sub-title-text">Publication Details:</div>
-                            <label class="view-content" id="view-publication-details"></label>
+                            <label class="view-content" id="view-presenting-author"></label>
                         </div>
                     </div>
                     <!--Vol and issue no [e.g 9 (12)]-->
@@ -516,23 +572,30 @@
             externalAuthorValue = '';
             storedFacultyValue = '';
             const titleOfPaper = document.getElementById('title-of-paper');      
-            const nameAndPlace = document.getElementById('name-and-place');
-            const procedingDetail = document.getElementById('proceedings-detail');
-            const publicationDetails = document.getElementById('publication-details');
+            // const nameAndPlace = document.getElementById('name-and-place');
+            // const procedingDetail = document.getElementById('proceedings-detail');
+            const publicationDetails = document.getElementById('presenting-author');
             const volAndIssueNo = document.getElementById('vol-and-issue-no');
             const issnIsbnNo = document.getElementById('issn-isbn-no');
-            const doiWebLink = document.getElementById('doi-weblink');
             const conferenceDocument = document.querySelector('input[name="conferenceDocument"]');
             const conferenceProof = document.querySelector('input[name="conferenceProof"]');
+            document.getElementById('nmims-campus').value = ''; 
+            document.getElementById('nmims-school').value = ''; 
+            document.getElementById('conference-name').value = ''; 
+            document.getElementById('conference-place').value = ''; 
+		    document.getElementById('publication-date').value = ''; 
+            document.getElementById('presenting-author').value = ''; 
+            document.getElementById('organizing-body').value = ''; 
+            document.getElementById('spent-amount').value = ''; 
+            document.getElementById('doi-weblink-id').value = '';
             employeeList.classList.add('d-none');
             authorDetails.classList.add('d-none');
             titleOfPaper.value = '';   
-            nameAndPlace.value = ''; 
-            procedingDetail.value = ''; 
+            // nameAndPlace.value = ''; 
+            // procedingDetail.value = ''; 
             publicationDetails.value = ''; 
             volAndIssueNo.value = ''; 
             issnIsbnNo.value = '';
-            doiWebLink.value = ''; 
             conferenceDocument.value = '';
             conferenceProof.value = '';
         }
@@ -541,19 +604,29 @@
     const insertConferencePublicationForm = async (url) => {
         const conferenceData = new FormData();
         const titleOfPaper = document.getElementById('title-of-paper').value;       
-        const nameAndPlace = document.getElementById('name-and-place').value;
-        const procedingDetail = document.getElementById('proceedings-detail').value;
-        const publicationDetails = document.getElementById('publication-details').value;
+        // const nameAndPlace = document.getElementById('name-and-place').value;
+        // const procedingDetail = document.getElementById('proceedings-detail').value;
+        // const publicationDetails = document.getElementById('presenting-author').value;
         const volAndIssueNo = document.getElementById('vol-and-issue-no').value;
         const issnIsbnNo = document.getElementById('issn-isbn-no').value;
-        const doiWebLink = document.getElementById('doi-weblink').value;
-        const selcetPublisherCategory = document.querySelector('input[name="publisher-category"]:checked').value;
-        const selectIsPresenter = document.querySelector('input[name="is-presenter"]:checked').value;
+        const doiWebLinkId = document.getElementById('doi-weblink-id').value;
+        const isPresenter = document.querySelector('input[name="is-presenter"]:checked').value;
         const selectAuthortype = document.querySelector('input[name="author-type"]:checked').value;
         const authorType = document.querySelector('input[name="author-type"]:checked');
+        const nmimsCampus = document.getElementById('nmims-campus').value; 
+        const nmimsSchool = document.getElementById('nmims-school').value; 
+        const conferenceName = document.getElementById('conference-name').value; 
+        const conferencePlace = document.getElementById('conference-place').value; 
+        const publicationDate = document.getElementById('publication-date').value; 
+        const presentingAuthor = document.getElementById('presenting-author').value; 
+        const organizingBody = document.getElementById('organizing-body').value; 
+        const spentAmount = document.getElementById('spent-amount').value; 
+        const sponsored = document.querySelector('input[name="sponsored"]:checked').value;
+        const procedingDetail = document.querySelector('input[name="Proceedings-details"]:checked').value;
+        const conferenceType = document.querySelector('input[name="conference-type"]:checked').value;
+        const presentationAward = document.querySelector('input[name="award-for-presentation"]:checked').value;
         // function call 
         await insertFacultyNameString(authorType, conferenceData);
-        const selectAward = document.querySelector('input[name="award-for-presentation"]:checked').value;
         const conferenceDocument = document.getElementById('conference-documnets');
         const conferenceProof  = document.getElementById('conference-proofs');
         const conferenceDocumentsData = conferenceDocument.files;
@@ -579,15 +652,23 @@
 
        // for setup of key value paire to send form data
         conferenceData.append('titleOfPaper' , titleOfPaper);
-        conferenceData.append('nameAndPlace' , nameAndPlace);
+        conferenceData.append('conferenceName' , conferenceName);
         conferenceData.append('procedingDetail' , procedingDetail);
-        conferenceData.append('publicationDetails' , publicationDetails);
+        conferenceData.append('conferencePlace' , conferencePlace);
         conferenceData.append('volAndIssueNo' , volAndIssueNo);
         conferenceData.append('issnIsbnNo' , issnIsbnNo);
-        conferenceData.append('doiWebLink' , doiWebLink);
-        conferenceData.append('publisherCategory' , selcetPublisherCategory);
-        conferenceData.append('isPresenter' , selectIsPresenter);
-        conferenceData.append('awardForPresentation' , selectAward );
+        conferenceData.append('doiWebLinkId' , doiWebLinkId);
+        conferenceData.append('conferenceType' , conferenceType);
+        conferenceData.append('isPresenter' , isPresenter);
+        conferenceData.append('publicationDate' , publicationDate );
+        conferenceData.append('spentAmount' , spentAmount );
+        conferenceData.append('presentationAward' , presentationAward );
+        conferenceData.append('sponsored' , sponsored);
+        conferenceData.append('organizingBody' , organizingBody );
+        conferenceData.append('presentingAuthor' , presentingAuthor );
+        conferenceData.append('nmimsCampus' , nmimsCampus );
+        conferenceData.append('nmimsSchool' , nmimsSchool );
+
 
         fetch(url , {
             method : 'POST',
@@ -603,17 +684,24 @@
                 const IndexEntry = rowCountInteger + indexValue
                 console.log('IndexEntry ===>>>', IndexEntry);
                 const newConferenceFormData = document.createElement('tr');
-                newConferenceFormData.setAttribute('data-publisher-category' , data.conferenceData.publisherCategory);
+
                 newConferenceFormData.setAttribute('data-is-presenter' , data.conferenceData.isPresenter);
                 newConferenceFormData.setAttribute('data-author-type' , data.conferenceData.authorType);
-                newConferenceFormData.setAttribute('data-publication-details' , data.conferenceData.publicationDetails);
+                newConferenceFormData.setAttribute('data-presenting-author' , data.conferenceData.presentingAuthor);
                 newConferenceFormData.setAttribute('data-vol-and-issue-no' , data.conferenceData.volAndIssueNo);
-                newConferenceFormData.setAttribute('data-doi-weblink' , data.conferenceData.doiWebLink);
+                newConferenceFormData.setAttribute('data-doi-weblink' , data.conferenceData.doiWebLinkId);
                 newConferenceFormData.setAttribute('data-upload-files' , data.conferenceDocument);
                 newConferenceFormData.setAttribute('data-award-for-presentation' , data.conferenceData.isPresenter);
                 newConferenceFormData.setAttribute('data-upload-proof' , data.conferenceProofFile);
+                newConferenceFormData.setAttribute('data-organizing-body', data.conferenceData.organizingBody);
+                newConferenceFormData.setAttribute('data-spent-amount', data.conferenceData.spentAmount);
+                newConferenceFormData.setAttribute('data-conference-place', data.conferenceData.conferencePlace);
+                newConferenceFormData.setAttribute('data-conference-type', data.conferenceData.conferenceType);
+                newConferenceFormData.setAttribute('data-publication-date', data.conferenceData.publicationDate);
                 newConferenceFormData.innerHTML = `
                     <td>${IndexEntry}</td>
+                    <td class="campus">${data.conferenceData.nmimsCampus}</td>
+                    <td class="school">${data.conferenceData.nmimsSchool}</td>
                     <td class="title-of-paper">${data.conferenceData.titleOfPaper}</td>
                     <td class="name-and-place">${data.conferenceData.nameAndPlace}</td>
                     <td class="proceedings-detail">${data.conferenceData.procedingDetail}</td>
@@ -751,7 +839,7 @@
             const viewTitleOfPaper = document.getElementById('view-title-of-paper');     
             const viewNameAndPlace = document.getElementById('view-name-and-place');
             const viewProcedingDetail = document.getElementById('view-proceedings-detail');
-            const viewPublicationDetails = document.getElementById('view-publication-details');
+            const viewPublicationDetails = document.getElementById('view-presenting-author');
             const viewVolAndIssueNo = document.getElementById('view-vol-and-issue-no');
             const viewIssnIsbnNo = document.getElementById('view-issn-isbn-no');
             const viewDoiWebLink = document.getElementById('view-doi-weblink');
@@ -815,7 +903,7 @@
             const titleOfPaper = document.getElementById('title-of-paper');      
             const nameAndPlace = document.getElementById('name-and-place');
             const procedingDetail = document.getElementById('proceedings-detail');
-            const publicationDetails = document.getElementById('publication-details');
+            const publicationDetails = document.getElementById('presenting-author');
             const volAndIssueNo = document.getElementById('vol-and-issue-no');
             const issnIsbnNo = document.getElementById('issn-isbn-no');
             const doiWebLink = document.getElementById('doi-weblink');
@@ -855,7 +943,7 @@
             else{
                 isAuthorEnternal.checked = true
             }
-            publicationDetails.value = conferenceRowToBeUpdated.getAttribute('data-publication-details');
+            publicationDetails.value = conferenceRowToBeUpdated.getAttribute('data-presenting-author');
             volAndIssueNo.value = conferenceRowToBeUpdated.getAttribute('data-vol-and-issue-no');
             issnIsbnNo.value = conferenceRowToBeUpdated.querySelector('.issn-isbn-no').innerText;
             doiWebLink.value = conferenceRowToBeUpdated.getAttribute('data-doi-weblink');
@@ -893,7 +981,7 @@
         console.log('storedFacultyValue ===>>>>', storedFacultyValue)
         //function call 
         await updateFacultyNameString(updatedAuthorType, updatedConferenceData, storedFacultyValue);
-        const updatedPublicationDetails = document.getElementById('publication-details').value;
+        const updatedPublicationDetails = document.getElementById('presenting-author').value;
         const updatedVolAndIssueNo = document.getElementById('vol-and-issue-no').value;
         const updatedIssnIsbnNo = document.getElementById('issn-isbn-no').value;
         const updatedDoiWebLink = document.getElementById('doi-weblink').value;
@@ -960,7 +1048,7 @@
                 conferenceRowToBeUpdated.setAttribute('data-publisher-category' , data.upadtedConferenceData.publisherCategory);
                 conferenceRowToBeUpdated.setAttribute('data-is-presenter' , data.upadtedConferenceData.isPresenter);
                 conferenceRowToBeUpdated.setAttribute('data-author-type' , data.upadtedConferenceData.authorNameString);
-                conferenceRowToBeUpdated.setAttribute('data-publication-details' , data.upadtedConferenceData.publicationDetails);
+                conferenceRowToBeUpdated.setAttribute('data-presenting-author' , data.upadtedConferenceData.publicationDetails);
                 conferenceRowToBeUpdated.setAttribute('data-vol-and-issue-no' , data.upadtedConferenceData.volAndIssueNo);
                 conferenceRowToBeUpdated.setAttribute('data-doi-weblink' , data.upadtedConferenceData.doiWebLink);
                 if(updatedConferenceFilesData){

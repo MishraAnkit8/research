@@ -7,7 +7,7 @@ const researchDbW = dbPoolManager.get('researchDbW', research_write_db);
 
 module.exports.fetchConferencePublication = async() => {
     let conferenceSql = {
-        text : `SELECT * FROM  conference_publications ORDER BY id `
+        text : `SELECT * FROM  conference_presentation ORDER BY id `
     }
 
     let internalEmpSql = {
@@ -36,7 +36,7 @@ module.exports.fetchConferencePublication = async() => {
 
 module.exports.viewConferenceData = async(conferenceId) => {
     let sql = {
-        text : `SELECT * FROM conference_publications WHERE id = $1`,
+        text : `SELECT * FROM conference_presentation WHERE id = $1`,
         values : [conferenceId]
     }
     return researchDbW.query(sql);
@@ -44,18 +44,20 @@ module.exports.viewConferenceData = async(conferenceId) => {
 
 module.exports.insertConferencePublication = async(conferencePublications, conferenceDocument, conferenceProofFile, internalNamesString, externalNamesString) => {
     const authorNameString = internalNamesString + externalNamesString;
-    const {titleOfPaper,  nameAndPlace, procedingDetail, publisherCategory, isPresenter, publicationDetails, 
-        volAndIssueNo, issnIsbnNo, doiWebLink, awardForPresentation} = conferencePublications;
+    const {nmimsCampus, nmimsSchool, titleOfPaper, conferenceName , conferencePlace, procedingDetail, conferenceType, isPresenter, organizingBody, 
+        presentationAward, volAndIssueNo, issnIsbnNo, doiWebLinkId, sponsored, spentAmount, publicationDate} = conferencePublications;
         console.log('conferencePublications data in models' , conferencePublications);
 
     let conferenceSql = {
-                text : `INSERT INTO conference_publications(title_of_paper,  name_and_place, proceedings_detail, publisher_category, is_presenter, author_type, publication_details, 
-                       vol_and_issue_no, issn_isbn_no, doi_weblink, award_for_presentation,upload_files, upload_proof)
-                       VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING id `,
-                values : [titleOfPaper,  nameAndPlace, procedingDetail, publisherCategory, isPresenter, authorNameString, publicationDetails, 
-                    volAndIssueNo, issnIsbnNo, doiWebLink, awardForPresentation, conferenceDocument, conferenceProofFile]
+                text : `INSERT INTO conference_presentation( nmims_campus, nmims_school, title_of_paper, conference_name, conference_place, proceedings_detail, conference_type,
+                        is_presenter,  organizing_body, award_for_presentation, vol_and_issue_no, issn_isbn_no, doi_id,
+                        sponsored, spent_amount, publication_date, author_type, upload_proof, upload_files)
+                       VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20) RETURNING id `,
+                values : [nmimsCampus, nmimsSchool, titleOfPaper, conferenceName , conferencePlace, procedingDetail, conferenceType, isPresenter, organizingBody, 
+                    presentationAward, volAndIssueNo, issnIsbnNo, doiWebLinkId, sponsored, spentAmount, publicationDate, authorNameString,  conferenceDocument, conferenceProofFile]
 
            };
+    // let conferenceProofQuery = conferenceProofFile ? 
     let externalEmpSql = externalNamesString ?  {
         text: `INSERT INTO external_emp(external_emp_name) VALUES ($1) RETURNING id`,
         values: [externalNamesString]
@@ -80,7 +82,7 @@ module.exports.insertConferencePublication = async(conferencePublications, confe
 module.exports.DeleteConference = async({conferenceId}) => {
     console.log('conference Id in models ==>>', conferenceId)
     let sql = {
-        text : `DELETE FROM conference_publications WHERE id =$1`,
+        text : `DELETE FROM conference_presentation WHERE id =$1`,
         values : [conferenceId]
     }
     console.log('sql ===>>>', sql)
@@ -170,7 +172,7 @@ module.exports.updateConferencePublication = async( upadtedConferenceData, confe
     console.log('setStatementString ==>>>', setStatementString);
     
     const conferenceSql = {
-        text: `UPDATE conference_publications SET ${setStatementString} WHERE id = $1`,
+        text: `UPDATE conference_presentation SET ${setStatementString} WHERE id = $1`,
         values: updatedConferenceValues,
     };
     console.log('conferenceSql ==>>', conferenceSql);
@@ -197,7 +199,7 @@ module.exports.updateConferencePublication = async( upadtedConferenceData, confe
 module.exports.viewConferencePublication = async(conferenceId) => {
     console.log('conference Id in models ', conferenceId);
     let sql = {
-        text : `SELECT * FROM  conference_publications WHERE id = $1`,
+        text : `SELECT * FROM  conference_presentation WHERE id = $1`,
         values : [conferenceId]
     }
     return researchDbR.query(sql);

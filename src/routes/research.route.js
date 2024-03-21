@@ -21,6 +21,7 @@ const bookPublicationRoutes = require('./book-publication-main.routes');
 const researchSeminarController = require('../controllers/research-seminar.controller');
 const IPRController = require('../controllers/IPR.controller');
 const researchAwardController = require('../controllers/research-award-controller');
+const eContentDevelopMentCon = require('../controllers/e-content-development.controller');
 
 // services
 const patentSubmissionServices = require('../services/patent-submission.service');
@@ -109,6 +110,9 @@ router.post('/research-award/view' , asyncErrorHandler(researchAwardController.v
 router.get('/research-award/download/:fileName', downloadFileService.downloadFile);
 router.get('/research-award/viewing/:fileName', downloadFileService.viewFile);
 
+// E content Development
+
+router.get('/e-content', asyncErrorHandler(eContentDevelopMentCon.renderEContentDevelopmentPage))
 
 
 

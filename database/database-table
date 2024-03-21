@@ -125,25 +125,31 @@ CREATE TABLE case_studies (
 )
 
 -- FOR CONFERENCE PUBLICATION 
-CREATE TABLE conference_publications (
+CREATE TABLE conference_presentation (
     id SERIAL PRIMARY KEY,
+	nmims_campus VARCHAR(255),
+	nmims_school VARCHAR(255),
     title_of_paper VARCHAR(255),
-    name_and_place VARCHAR(255),
+    conference_name VARCHAR(255),
+	conference_place VARCHAR(255),
     proceedings_detail VARCHAR(255),
-    publisher_category VARCHAR(20) CHECK(publisher_category IN ('International', 'National')),
+    conference_type VARCHAR(20) CHECK(conference_type IN ('International', 'National')),
     is_presenter VARCHAR(3) CHECK(is_presenter IN ('Yes', 'No')),
     author_type VARCHAR(255),
-    publication_details VARCHAR(255),
-    vol_and_issue_no VARCHAR(50),
-    issn_isbn_no VARCHAR(50),
-    doi_weblink VARCHAR(255),
+    presenting_authors VARCHAR(255),
+	organizing_body VARCHAR(255),
+	award_for_presentation VARCHAR(255) CHECK(award_for_presentation IN ('Yes', 'No')),
+    vol_and_issue_no INTEGER,
+    issn_isbn_no INTEGER,
+    doi_id INTEGER NULL UNIQUE,
     upload_files VARCHAR(255),
-    award_for_presentation VARCHAR(3) CHECK(award_for_presentation IN ('Yes', 'No')),
-    upload_proof VARCHAR(255),
+	sponsored VARCHAR(20) CHECK(sponsored IN ('NMIMS', 'Others')),
+	spent_amount INTEGER,
+	publication_date DATE,
+	upload_proof VARCHAR(255),
 	created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
-
 -- IPR
 CREATE TABLE IPR (
     id SERIAL PRIMARY KEY,
