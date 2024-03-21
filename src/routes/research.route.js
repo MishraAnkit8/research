@@ -20,6 +20,7 @@ const researchProjGrantController = require('../controllers/research-project-gra
 const bookPublicationRoutes = require('./book-publication-main.routes');
 const researchSeminarController = require('../controllers/research-seminar.controller');
 const IPRController = require('../controllers/IPR.controller');
+const researchAwardController = require('../controllers/research-award-controller');
 
 // services
 const patentSubmissionServices = require('../services/patent-submission.service');
@@ -92,6 +93,15 @@ router.post('/research-seminar/view', asyncErrorHandler(researchSeminarControlle
 
 //IPR 
 router.get('/IPR', asyncErrorHandler(IPRController.renderIPR));
-router.post('/IPR/insert', upload.array('supportingDocuments', 5),asyncErrorHandler(IPRController.IPRInsertedData))
+router.post('/IPR/insert', upload.array('supportingDocuments', 5),asyncErrorHandler(IPRController.IPRInsertedData));
+router.post('/IPR/delete', asyncErrorHandler(IPRController.deleteIPRData));
+router.post('/IPR/update', upload.array('supportingDocuments', 5),asyncErrorHandler(IPRController.updateIPRRowData));
+router.post('/IPR/view', asyncErrorHandler(IPRController.viewIprRecordData));
+router.get('/IPR/download/:fileName', downloadFileService.downloadFile);
+router.get('/IPR/viewing/:fileName', downloadFileService.viewFile);
+
+//reserach award 
+router.get('/research-award', asyncErrorHandler(researchAwardController.renderResearchAward));
+router.post('research-award/insert' , upload.array('researchAwardDocuments', 5) , asyncErrorHandler(researchAwardController.insertResearchAwardFormData));
 
 module.exports = router;

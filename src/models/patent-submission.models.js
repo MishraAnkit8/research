@@ -85,7 +85,7 @@ module.exports.updatePatentsubmissionData = async(updatedPatentData, patentId, p
         values : values
     }
 
-     let externalEmpSql = externalNamesString ? {
+    let externalEmpSql = externalNamesString ? {
         text: `INSERT INTO external_emp(external_emp_name) VALUES ($1) RETURNING id`,
         values: [externalNamesString],
      } : null

@@ -1,0 +1,380 @@
+<%- include('./partials/head') %>
+<!-- inline css -->
+<!-- Navbar section -->
+<%- include('./partials/header') %>
+<!-- This is left sidebar  -->
+<%- include('./partials/left-sidebar') %>
+
+<main class="main" id="main-content">
+    <div class="base-section coustom-section">
+        <!--DASHBOARD CONTENT START-->
+        <div class="errorHtml"></div>
+        <div class="breadcrumbs-container">
+            <ul class="breadcrumb">
+                <li class="breadcrumb-link">
+                    <a href="<%- BASE_URL %>research"> RESEARCH </a>
+                </li>
+                <li class="breadcrumb-link">RESEARCH AWARD</li>
+            </ul>
+        </div>
+        <div>
+            <div class="table-card-header text-uppercase d-flex align-items-center justify-content-between">
+                <div>
+                    <h5 class="pl-2">RESEARCH AWARD LIST</h5>
+                </div>
+                <div >
+                    <button id="add-research-award-form" type="button" class="btn btn-primary btn-circle btn-xl add-modal"
+                        data-toggle="modal" data-target="#research-award-modal">
+                        <i class="fas fa-plus plus"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body table-responsive">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <label>Show Entries</label>
+                        <select class="form-select" id="changeEntry">
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                            <option value="150">150</option>
+                            <option value="200">200</option>
+                            <option value="250">250</option>
+                            <option value="300">300</option>
+                            <option value="350">350</option>
+                            <option value="400">400</option>
+                            <option value="500">500</option>
+                            <option value="800">800</option>
+                            <option value="1000">1000</option>
+                        </select>
+                    </div>
+                    <div>
+                        <div class="table-searchbar-container">
+                            <button type="button" id="searchBtn"><i class="fas fa-search"></i></button>
+                            <input type="search" id="searchKeyword" placeholder="Enter keywords" class="table-searchbar">
+                        </div>
+                    </div>
+                </div>
+                <table class="table custom-table table-responsive research-pagination" id="ipr-data-list">
+                    <th class="col-lg-1">#</th>
+                    <th class="col-lg-1">Campus</th>
+                    <th class="col-lg-1">School</th>
+                    <th class="col-lg-1">Name Of Faculty</th>
+                    <th class="col-lg-1">Name Of Award</th>
+                    <th class="col-lg-1">Details Of Awards</th>
+                    <th class="col-lg-1">Name Of Organisation The conferring Award</th>
+                    <th class="col-lg-1">Actions</th>
+
+                    <% researchAwardData .forEach(function(researchAward, index)  { %>
+                        <tr data-award-id="<%- researchAward.id %>" data-date="<%- researchAward.date %>"
+                            data-award-category="<%- researchAward.award_category %>" data-support-documents="<%- researchAward.supporting_documents %>"
+                            data-place="<%- researchAward.place %>">
+                            <td class="col-lg-1 "><%- index +1 %></td>
+                            <td class="col-lg-1 campus"><%- researchAward.nmims_campus %></td>
+                            <td class="col-lg-1 school"><%- researchAward.nmims_school %></td>
+                            <td class="col-lg-1 faculty-name"><%- researchAward.faculty_name %></td>
+                            <td class="col-lg-1 award-name"><%- researchAward.award_name %></td>
+                            <td class="col-lg-1 award-detals"><%- researchAward.award_details %></td>
+                            <td class="col-lg-1 organisation-name"><%- researchAward.organisation_name_coferring_award %></td>
+                            <td class="col-lg-1">
+                                <label class="view" data-award-id="<%- researchAward.id %>"><i class="fa-solid fa-eye view text-danger"
+                                    data-award-id="<%- researchAward.id %>"></i></label>
+                                <label class="edit" data-award-id="<%- researchAward.id %>"><i class="fa fa-edit edit text-danger"
+                                    data-award-id="<%- researchAward.id %>"></i></label>
+                                <label class="delete" data-award-id="<%- researchAward.id %>"><i class="fa-solid fa-trash delete text-danger"
+                                    data-award-id="<%- researchAward.id %>"></i></label>
+                            </td>
+                        </tr>
+                        <% }); %>
+                 </table>
+            </div>
+        </div>
+        <div class="d-flex justify-content-between">
+            <div>
+                <label >Total entries : <%- rowCount %>
+                </label>
+                <label class="d-none" id="row-count"> <%- rowCount %></label>
+            </div>
+            <div>
+                <button id="prevBtn" class="btn btn-primary">Previous</button>
+                <button id="nextBtn" class="btn btn-primary">Next</button>
+                <p id="pagination" class="pagination-search"></p>
+            </div>
+        </div>
+        <!--Import Modal -->
+        <div class="modal fade" id="open-program-modal" tabindex="-1" aria-labelledby="open-program-modal"
+            aria-hidden="true">
+        </div>
+        <!-- EDIT PROGRAM AND UPDATE -->
+        <div class="modal fade" id="edit-program-modal" tabindex="-1" aria-labelledby="editModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editModalLabel">Update Program</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div id="errorHtml"></div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="exampleInputEmail1" class="form-label">Program Name</label>
+                            <input type="text" class="form-control" id="program_name" name="program_name">
+                            <input type="hidden" class="form-control" id="hidden_id" name="hidden_id">
+                        </div>
+                        <div class="mb-3">
+                            <label for="exampleInputPassword1" class="form-label">Program Type</label>
+                            <select class="form-control" name="program_type_lid" id="program_type_lid">
+
+                                <option value="1">Full Time</option>
+
+                                <option value="2">Part Time</option>
+
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="abbr" class="form-label">Program Abbr</label>
+                            <input type="text" class="form-control" id="abbr" name="abbr">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary updateProgram">Update</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div class="modal fade " id="research-award-modal" tabindex="-1" role="dialog" aria-labelledby="research-award-modal"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg modal-fullscreen p-5" role="document">
+        <div class="modal-content modal-content-data validate-input">
+            <div class="modal-header">
+                <h5 class="modal-title" id="patent-study">RESEARCH AWARD FORM </h5>
+                <div type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"><i class="fas fa-times "></i></span>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <!-- Campus -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="application-no" class="form-label fw-bold">Campus </label>
+                        <input type="number"  id="application-no" data-validate="isEmpty,isExist" data data-err-msg="This field is required and min length > 1." class="form-control number"
+                            required>
+                    </div>
+                    <!-- school -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="application-no" class="form-label fw-bold">School </label>
+                        <input type="text"  id="school" data-validate="isEmpty,isExist" data data-err-msg="This field is required and min length > 1." class="form-control number"
+                            required>
+                    </div>
+                    <!-- Name Of Faculty -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="application-no" class="form-label fw-bold">Name Of Faculty </label>
+                        <input type="text"  id="faculty-name" data-validate="isEmpty,isExist" data data-err-msg="This field is required and min length > 1." class="form-control number"
+                            required>
+                    </div>
+                    <!-- Name Of Award  -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="application-no" class="form-label fw-bold">Name Of Award </label>
+                        <input type="text"  id="award-name" data-validate="isEmpty,isExist" data data-err-msg="This field is required and min length > 1." class="form-control number"
+                            required>
+                    </div>
+                    <!-- Details Of Award -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="application-no" class="form-label fw-bold">Details Of Award </label>
+                        <input type="text"  id="award-details" data-validate="isEmpty,isExist" data data-err-msg="This field is required and min length > 1." class="form-control number"
+                            required>
+                    </div>
+                    <!-- Name Of The Organisation Coferring Award -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="application-no" class="form-label fw-bold">Name Of The Organisation Coferring Award </label>
+                        <input type="text"  id="organisation-name" data-validate="isEmpty,isExist" data data-err-msg="This field is required and min length > 1." class="form-control number"
+                            required>
+                    </div>
+                    <!-- Date -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="application-no" class="form-label fw-bold">Date </label>
+                        <input type="date"  id="award-date" data-validate="isEmpty,isExist" data data-err-msg="Date is required." class="form-control number"
+                            required>
+                    </div>
+                    <!-- place -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="application-no" class="form-label fw-bold">Place </label>
+                        <input type="text"  id="place" data-validate="isEmpty,isExist" data data-err-msg="This field is required and min length > 1." class="form-control number"
+                            required>
+                    </div>
+
+                      <!-- Award  Category  -->
+                   <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                    <label for="award-category" id="award-category" class="form-label fw-bold mb-3">Award  Category</label><br>
+                    <div class="form-check-inline">
+                        <label for="inter-national" class="form-check-label">
+                            <input type="radio" class="form-check-input" id="inter-national" name="award-category" value="International"> International
+                        </label>
+                    </div>
+                    <div class="form-check-inline">
+                        <label for="national" class="form-check-label">
+                            <input type="radio" class="form-check-input" id="national" name="award-category" value="National" checked> National
+                        </label>
+                    </div>
+                    </div>
+                     <!-- Upload Supporting Documents-->
+                     <div class="form-group col-lg-6 col-md-8 col-sm-12 mb-4">
+                        <div class="col-lg-6 col-md-8 col-sm-12">
+                            <label for="supporting-documents" class="form-label fw-bold ">
+                                Upload Supporting Documents
+                            </label>
+                            <div class="d-flex">
+                                <input type="file" name="supporting-documents" id="supporting-documents"
+                                    class="col-md-12 form-control" data-validate="isEmpty,isExist,isFile" data-err-msg="File is required." required multiple>
+                                    <button class="download-btn download-file" id="research-award-file"><i class="fas fa-download text-danger"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add your modal footer buttons if needed -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-md btn-primary submit-btn d-none" id="submit-btn">Submit</button>
+                <button class="btn btn-md btn-primary update-btn d-none" id="update-btn">Update</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const rowCount = document.getElementById('row-count');
+    let rowIndex = rowCount.innerText;
+    let indexValue = parseInt(rowIndex, 10);
+    const addNewRseachAward = document.getElementById('add-research-award-form');
+    const submitBtn = document.getElementById('submit-btn');
+    const updateBtn = document.getElementById('update-btn');
+    // const fileView = document.getElementById('file-view');
+    const downloadLink = document.getElementById('downloadLink');
+
+    addNewRseachAward.addEventListener('click' , (event) => {
+        if(event.target.tagName === 'BUTTON' && event.target.classList.contains('add-modal') || event.target.classList.contains('plus')){
+            submitBtn.classList.remove('d-none');
+            updateBtn.classList.add('d-none');
+            document.getElementById('supporting-documents')
+
+            document.getElementById('Campus').value = '';
+            document.getElementById('school').value = '';
+            document.getElementById("faculty-name").value = '';
+            document.getElementById("award-name").value = '';
+            document.getElementById("award-details").value = '';
+            document.getElementById("organisation-name").value = '';
+            document.getElementById("award-date").value = '';
+            document.getElementById("place").value = '';
+            const researchAwardFiles = document.querySelector('#research-award-file');
+            researchAwardFiles.classList.add('d-none');
+        }
+        
+    });
+
+    const  insertResearchAwardForm = async(url) => {
+
+        const researchAwardFiles = document.getElementById('supporting-documents');
+        // patentFile
+        const researchAwardDocuments = researchAwardFiles.files;
+        const researchAwardFormData = new FormData();
+        console.log('researchAwardDocuments ===>>>', researchAwardDocuments)
+        for (let i = 0; i < researchAwardDocuments.length; i++) {
+            console.log('file name  ==>>', researchAwardDocuments[i].name);
+            researchAwardFormData.append('researchAwardDocuments', researchAwardDocuments[i]);
+        }
+
+        const campus = document.getElementById('Campus').value;
+        const school = document.getElementById('school').value;
+        const facultyName = document.getElementById("faculty-name").value;
+        const awardName = document.getElementById("award-name").value;
+        const awardDetails = document.getElementById("award-details");
+        const organisationName = document.getElementById("organisation-name").value;
+        const awardDate = document.getElementById("award-date").value;
+        const awardPlace = document.getElementById("place").value;
+        const awardCategory =document.querySelector('input[name="award-category"]:checked').value;
+
+        researchAwardFormData.append('campus' , campus);
+        researchAwardFormData.append('school' , school);
+        researchAwardFormData.append('facultyName' , facultyName);
+        researchAwardFormData.append('awardName' , awardName);
+        researchAwardFormData.append('awardDetails' , awardDetails);
+        researchAwardFormData.append('camorganisationNamepus' , organisationName);
+        researchAwardFormData.append('awardDate' , awardDate);
+        researchAwardFormData.append('awardPlace' , awardPlace);
+        researchAwardFormData.append('awardCategory' , awardCategory);
+
+        fetch(url, {
+            method : "POST",
+            body : researchAwardFormData
+        })
+        .then((Response) => {
+            if(Response.ok){
+                return Response.json()
+            }
+        })
+        .then((data) => {
+            if(data.status === "Done"){
+                console.log('data ===>>>>', data)
+                Swal.fire({
+							position: "top-center",
+							icon: "success",
+							title: `${data.message}`,
+							showConfirmButton: false
+							// timer: 1500
+						});
+                    }
+                    else{
+                        console.log('data ====>>>>>', data);
+                        Swal.fire({
+							position: "top-center",
+							icon: "error",
+							title: `${data.errorCode}`,
+							color : "red",
+							with : "20PX",
+							html: `<span style="color: red;">${data.message}</span>`,
+							showConfirmButton: false,
+                
+            })
+        }
+        })
+        .catch((error) => {
+            Swal.fire({
+                                position: "top-center",
+                                icon: "error",
+                                title: "Data Insertion Failed",
+                                color : "red",
+                                with : "20PX",
+                                html: `<span style="color: red;">${error}</span>`,
+                                showConfirmButton: false,
+                            });
+
+                })
+    }
+
+    submitBtn.addEventListener('click', async () => {
+        const isValid = validateRequiredFormFields(submitBtn);
+            if (isValid) {
+                await insertResearchConsultancyForm('<%- BASE_URL %>research/research-award/insert');
+                indexValue += 1;
+                }
+            else {
+                alert('validation Failed');
+            }
+    });
+    
+
+</script>
+<!-- footer section -->
+<%- include('./partials/pagination') %>
+<%- include('./partials/footer') %>
+<%- include('./partials/footer-end') %>
+           

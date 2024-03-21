@@ -150,14 +150,14 @@ CREATE TABLE IPR (
     type_of_invention VARCHAR(255),
     title_of_invention VARCHAR(255),
     patent_stage VARCHAR(255),
-    patent_appication_name VARCHAR(255),
     patent_application_no INTEGER,
-    patent_file_date DATE,
-    author_type VARCHAR(255), 
+    patent_filed_date DATE,
+	investor_details VARCHAR(255),
+    applicants_name VARCHAR(255), 
     supporting_documents VARCHAR(255),
 	patent_published_date DATE,
 	patent_granted_date DATE,
-	patent_publication_no INTEGER,
+	patent_published_num INTEGER,
 	patent_granted_no INTEGER,
 	institute_affiliation VARCHAR(255),
 	nmims_campus VARCHAR(255),
@@ -167,7 +167,23 @@ CREATE TABLE IPR (
 	
 );
 
+-- research_award
+CREATE TABLE research_award(
+	id SERIAL PRIMARY KEY,
+	nmims_campus VARCHAR(255),
+	nmims_school VARCHAR(255),
+    faculty_name VARCHAR(255),
+    award_name VARCHAR(255),
+    award_details VARCHAR(255),
+    organisation_name_coferring_award VARCHAR(255),
+    date DATE,
+	award_category VARCHAR(20) CHECK(award_category IN ('International', 'National')),
+    supporting_documents VARCHAR(255),
+	created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
 
+-- book_publications
 CREATE TABLE book_publications (
      id SERIAL PRIMARY KEY,
      author_last_name VARCHAR(255), 
@@ -190,6 +206,7 @@ CREATE TABLE book_publications (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- dited_book_publications
 CREATE TABLE edited_book_publications (
      id SERIAL PRIMARY KEY,
      author_name VARCHAR(255) ,
@@ -213,6 +230,7 @@ CREATE TABLE edited_book_publications (
     --  type change VARCHAR(50) to VARCHAR(255)
 )
 
+-- book_chapter_publications
 CREATE TABLE book_chapter_publications (
      id SERIAL PRIMARY KEY,
      author_name VARCHAR(255) ,
@@ -238,6 +256,7 @@ CREATE TABLE book_chapter_publications (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- teaching_execellance
 CREATE TABLE teaching_execellance (
     id SERIAL PRIMARY KEY,
     
@@ -267,8 +286,7 @@ CREATE TABLE teaching_execellance (
     program_orientation_link VARCHAR(255)
 );
 
-
-
+-- research_seminars
  CREATE TABLE research_seminars (
     id SERIAL PRIMARY KEY,
     year INTEGER,
@@ -293,6 +311,7 @@ CREATE TABLE teaching_execellance (
     uid VARCHAR(255)
 );
 
+-- meeting_stackholders
 CREATE TABLE meeting_stackholders (
     id SERIAL PRIMARY KEY,
     
@@ -327,6 +346,7 @@ CREATE TABLE meeting_stackholders (
     events_link VARCHAR(255)
 );
 
+-- branding_and_advertising
 CREATE TABLE branding_and_advertising (
     id SERIAL PRIMARY KEY,
     
@@ -393,6 +413,7 @@ CREATE TABLE branding_and_advertising (
 -- ALTER TABLE branding_editor_table
 -- RENAME COLUMN branding_editor_data TO editor_data;
 
+-- vc_editor_table
 CREATE TABLE vc_editor_table (
     id SERIAL PRIMARY KEY,
     date DATE,
@@ -402,7 +423,7 @@ CREATE TABLE vc_editor_table (
     created_by VARCHAR(255)
 );
 
-
+-- research_editor_table
 CREATE TABLE research_editor_table (
     id SERIAL PRIMARY KEY,
     date DATE,
@@ -412,6 +433,7 @@ CREATE TABLE research_editor_table (
     created_by VARCHAR(255)
 );
 
+-- meeting_editor_table
 CREATE TABLE meeting_editor_table (
     id SERIAL PRIMARY KEY,
     date DATE,
@@ -421,6 +443,7 @@ CREATE TABLE meeting_editor_table (
     created_by VARCHAR(255)
 );
 
+-- branding_editor_table
 CREATE TABLE branding_editor_table (
     id SERIAL PRIMARY KEY,
     date DATE,
