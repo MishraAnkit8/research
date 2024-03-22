@@ -14,146 +14,156 @@
                 <li class="breadcrumb-link">
                     <a href="<%- BASE_URL %>research"> RESEARCH </a>
                 </li>
-                <li class="breadcrumb-link"> CONFERENCE PUBLICATION </li>
+                <li class="breadcrumb-link"> Conference Presentations </li>
             </ul>
         </div>
         <div>
             <div class="table-card-header text-uppercase d-flex align-items-center justify-content-between">
                 <div>
-                    <h5 class="pl-2">CONFERENCE PUBLICATION LIST</h5>
+                    <h5 class="pl-2">Conference Presentations LIST</h5>
                 </div>
-                <div >
+                <div>
                     <button id="confrence-modal-form" type="button" class="btn btn-primary add-modal" data-toggle="modal"
                         data-target="#conference-publication-modal">
                         <i class="fas fa-plus plus"></i></button>
                     </button>
                 </div>
             </div>
-        <div class="card-body table-responsive">
-            <div class="d-flex justify-content-between">
-                <div>
-                    <label>Show Entries</label>
-                    <select class="form-select" id="changeEntry">
-                        <option value="5">5</option>
-                        <option value="10">10</option>
-                        <option value="25">25</option>
-                        <option value="50">50</option>
-                        <option value="100">100</option>
-                        <option value="150">150</option>
-                        <option value="200">200</option>
-                        <option value="250">250</option>
-                        <option value="300">300</option>
-                        <option value="350">350</option>
-                        <option value="400">400</option>
-                        <option value="500">500</option>
-                        <option value="800">800</option>
-                        <option value="1000">1000</option>
-                    </select>
-                </div>
-                <div>
-                    <div class="table-searchbar-container">
-                        <button type="button" id="searchBtn"><i class="fas fa-search"></i></button>
-                        <input type="search" id="searchKeyword" placeholder="Enter keywords" class="table-searchbar">
-                    </div>
-                </div>
-        </div>
-        
-        <table class="table custom-table research-pagination" id="conference-publication-list">
-            <thead>
-                <th class="col-lg-1">#</th>
-                <th class="col-lg-1 campus">Campus</th>
-                <th class="col-lg-1 school">School</th>
-                <th class="col-lg-1">Title of the Paper</th>
-                <th class="col-lg-1">Name and Place of Conference</th>
-                <th class="col-lg-1">Proceedings Details</th>
-                <th class="col-lg-1">ISSN/ISNB No</th>
-                <th class="col-lg-1">Action</th>
-            </thead>
-            <% conferenceData.forEach(function(conference,index) { %>
-                <% const externalEmp = externalEmpList[index]; %>
-                <tr data-conference-id="<%- conference.id %>"
-
-                    data-is-presenter="<%- conference.is_presenter %>" data-author-type="<%- conference.author_type.authorName %>"
-                    data-presenting-author="<%- conference.presenting_authors %>" data-organizing-body="<%- conference.organizing_body %>"
-                    data-vol-and-issue-no="<%- conference.vol_and_issue_no %>" data-doi-weblink="<%- conference.doi_id %>"
-                    data-upload-files="<%- conference.upload_files %>" data-sponsored="<%- conference.sponsored %>"
-                    data-award-for-presentation="<%- conference.award_for_presentation %>" data-spent-amount="<%- conference.spent_amount %>"
-                    data-external-id="<%- externalEmp ? externalEmp.id : '' %>" data-external-emp="<%- externalEmp ? externalEmp.external_emp_name : '' %>"
-                    data-author-table="<%- conference.author_type.table %>" data-conference-place="<%- conference.conference_place%>"
-                    data-conference-type="<%- conference.conference_type %>" data-publication-date="<%- conference.publication_date %>" 
-                    data-upload-proof="<%- conference.upload_proof %>">
-                    <td><%- index+1 %> </td>
-                    <td class="col-lg-1 campus"><%- conference.nmims_campus %></td>
-                    <td class="col-lg-1 school"><%- conference.nmims_school %></td>
-                    <td class="title-of-paper col-lg-1"><%- conference.title_of_paper %></td>
-                    <td class="col-lg-1 conference-name"><%- conference.conference_name %> </td>
-                    <td class="proceedings-detail col-lg-1"><%- conference.proceedings_detail %></td>
-                    <td class="issn-isbn-no col-lg-1"><%- conference.issn_isbn_no %></td>
-                    <td class="col-lg-1">
-                        <label class="view" data-conference-id="<%- conference.id %>">
-                            <i class="fa-solid fa-eye view text-danger" data-conference-id="<%- conference.id %>"></i>
-                        </label>
-                        <label class="edit" data-conference-id="<%- conference.id %>">
-                            <i class="fa fa-edit edit text-danger" data-conference-id="<%- conference.id %>"></i>
-                        </label>
-                        <label class="delete" data-conference-id="<%- conference.id %>">
-                            <i class="fa-solid fa-trash delete text-danger" data-conference-id="<%- conference.id %>"></i>
-                        </label>
-                    </td>
-                </tr>
-                <% }); %>
-        </table>
-        <div class="d-flex justify-content-between">
-            <div>
-                Total Entries : <label id="row-count"> <%- rowCount %> </label>
-            </div>
-            <div>
-                <div>
-                    <button id="prevBtn" class="btn btn-primary">Previous</button>
-                    <button id="nextBtn" class="btn btn-primary">Next</button>
-                    <p id="pagination" class="pagination-search"></p>
-                </div>
-            </div>
-        </div>
-        </div>
-    <!--Import Modal -->
-    <div class="modal fade" id="open-program-modal" tabindex="-1" aria-labelledby="open-program-modal"
-        aria-hidden="true">
-    </div>
-    <!-- EDIT PROGRAM AND UPDATE -->
-    <div class="modal fade" id="edit-program-modal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editModalLabel">Update Program</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div id="errorHtml"></div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="exampleInputEmail1" class="form-label">Program Name</label>
-                        <input type="text" class="form-control" id="program_name" name="program_name">
-                        <input type="hidden" class="form-control" id="hidden_id" name="hidden_id">
-                    </div>
-                    <div class="mb-3">
-                        <label for="exampleInputPassword1" class="form-label">Program Type</label>
-                        <select class="form-control" name="program_type_lid" id="program_type_lid">
-
-                            <option value="1">Full Time</option>
-
-                            <option value="2">Part Time</option>
-
+            <div class="card-body table-responsive">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <label>Show Entries</label>
+                        <select class="form-select" id="changeEntry">
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                            <option value="150">150</option>
+                            <option value="200">200</option>
+                            <option value="250">250</option>
+                            <option value="300">300</option>
+                            <option value="350">350</option>
+                            <option value="400">400</option>
+                            <option value="500">500</option>
+                            <option value="800">800</option>
+                            <option value="1000">1000</option>
                         </select>
                     </div>
-
-                    <div class="mb-3">
-                        <label for="abbr" class="form-label">Program Abbr</label>
-                        <input type="text" class="form-control" id="abbr" name="abbr">
+                    <div>
+                        <div class="table-searchbar-container">
+                            <button type="button" id="searchBtn"><i class="fas fa-search"></i></button>
+                            <input type="search" id="searchKeyword" placeholder="Enter keywords" class="table-searchbar">
+                        </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary updateProgram">Update</button>
+                <table class="table custom-table table-responsive research-pagination" id="conference-publication-list">
+                    <thead>
+                        <th class="col-lg-1">#</th>
+                        <th class="col-lg-1 campus">Campus</th>
+                        <th class="col-lg-1 school">School</th>
+                        <th class="col-lg-1">Title of the Paper</th>
+                        <th class="col-lg-1">Name of Conference</th>
+                        <th class="col-lg-1">Proceedings Details</th>
+                        <th class="col-lg-1">ISSN/ISNB No</th>
+                        <th class="col-lg-1">Action</th>
+                    </thead>
+                    <% conferenceData.forEach(function(conference,index) { %>
+                        <% const externalEmp=externalEmpList[index]; %>
+                            <tr data-conference-id="<%- conference.id %>" data-is-presenter="<%- conference.is_presenter %>"
+                                data-author-type="<%- conference.author_type.authorName %>"
+                                data-presenting-author="<%- conference.presenting_authors %>"
+                                data-organizing-body="<%- conference.organizing_body %>"
+                                data-vol-and-issue-no="<%- conference.vol_and_issue_no %>"
+                                data-doi-weblink="<%- conference.doi_id %>"
+                                data-upload-files="<%- conference.upload_files %>"
+                                data-sponsored="<%- conference.sponsored %>"
+                                data-award-for-presentation="<%- conference.award_for_presentation %>"
+                                data-spent-amount="<%- conference.spent_amount %>"
+                                data-external-id="<%- externalEmp ? externalEmp.id : '' %>"
+                                data-external-emp="<%- externalEmp ? externalEmp.external_emp_name : '' %>"
+                                data-author-table="<%- conference.author_type.table %>"
+                                data-conference-place="<%- conference.conference_place%>"
+                                data-conference-type="<%- conference.conference_type %>"
+                                data-publication-date="<%- conference.publication_date %>"
+                                data-upload-proof="<%- conference.upload_proof %>">
+                                <td><%- index+1 %> </td>
+                                <td class="col-lg-1 campus"><%- conference.nmims_campus %></td>
+                                <td class="col-lg-1 school"><%- conference.nmims_school %></td>
+                                <td class="title-of-paper col-lg-1"><%- conference.title_of_paper %></td>
+                                <td class="col-lg-1 conference-name"><%- conference.conference_name %> </td>
+                                <td class="proceedings-detail col-lg-1"><%- conference.proceedings_detail %></td>
+                                <td class="issn-isbn-no col-lg-1"><%- conference.issn_isbn_no %></td>
+                                <td class="col-lg-1">
+                                    <label class="view" data-conference-id="<%- conference.id %>">
+                                        <i class="fa-solid fa-eye view text-danger"
+                                            data-conference-id="<%- conference.id %>"></i>
+                                    </label>
+                                    <label class="edit" data-conference-id="<%- conference.id %>">
+                                        <i class="fa fa-edit edit text-danger"
+                                            data-conference-id="<%- conference.id %>"></i>
+                                    </label>
+                                    <label class="delete" data-conference-id="<%- conference.id %>">
+                                        <i class="fa-solid fa-trash delete text-danger"
+                                            data-conference-id="<%- conference.id %>"></i>
+                                    </label>
+                                </td>
+                            </tr>
+                            <% }); %>
+                </table>
+                <div class="d-flex justify-content-between">
+                    <div>
+                        Total Entries : <label id="row-count"> <%- rowCount %> </label>
+                    </div>
+                    <div>
+                        <div>
+                            <button id="prevBtn" class="btn btn-primary">Previous</button>
+                            <button id="nextBtn" class="btn btn-primary">Next</button>
+                            <p id="pagination" class="pagination-search"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--Import Modal -->
+        <div class="modal fade" id="open-program-modal" tabindex="-1" aria-labelledby="open-program-modal"
+            aria-hidden="true">
+        </div>
+        <!-- EDIT PROGRAM AND UPDATE -->
+        <div class="modal fade" id="edit-program-modal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editModalLabel">Update Program</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div id="errorHtml"></div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="exampleInputEmail1" class="form-label">Program Name</label>
+                            <input type="text" class="form-control" id="program_name" name="program_name">
+                            <input type="hidden" class="form-control" id="hidden_id" name="hidden_id">
+                        </div>
+                        <div class="mb-3">
+                            <label for="exampleInputPassword1" class="form-label">Program Type</label>
+                            <select class="form-control" name="program_type_lid" id="program_type_lid">
+    
+                                <option value="1">Full Time</option>
+    
+                                <option value="2">Part Time</option>
+    
+                            </select>
+                        </div>
+    
+                        <div class="mb-3">
+                            <label for="abbr" class="form-label">Program Abbr</label>
+                            <input type="text" class="form-control" id="abbr" name="abbr">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary updateProgram">Update</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -165,7 +175,7 @@
     <div class="modal-dialog modal-dialog-scrollable modal-lg modal-fullscreen p-5" role="document">
         <div class="modal-content modal-content-data validate-input">
             <div class="modal-header">
-                <p id="conference-publication">Conference Publication </p>
+                <p id="conference-publication">Conference Presentations </p>
                 <div class="close" data-dismiss="modal" aria-label="Close">
                     <span type="button"><i class="fas fa-times "></i></span>
                 </div>
@@ -227,13 +237,13 @@
                         <label for="publisher-category" class="form-label fw-bold mb-3">Type Of Conference</label><br>
                         <div class="form-check-inline">
                             <label for="international" class="form-check-label">
-                                <input type="radio" class="form-check-input" id="inter-national" name="conference-type"
+                                <input type="radio" class="form-check-input" id="is-international" name="conference-type"
                                     value="International"> International
                             </label>
                         </div>
                         <div class="form-check-inline">
                             <label for="national" class="form-check-label">
-                                <input type="radio" class="form-check-input" id="national" name="conference-type"
+                                <input type="radio" class="form-check-input" id="is-national" name="conference-type"
                                     value="National" checked> National
                             </label>
                         </div>
@@ -243,13 +253,13 @@
                         <label for="is-presenter" class="form-label fw-bold mb-3"> Are You The Presenter ? </label><br>
                         <div class="form-check-inline">
                             <label for="Yes" class="form-check-label">
-                                <input type="radio" class="form-check-input" id="yes" name="is-presenter" value="Yes">
+                                <input type="radio" class="form-check-input" id="is-presenter-yes" name="is-presenter" value="Yes">
                                 Yes
                             </label>
                         </div>
                         <div class="form-check-inline">
                             <label for="no" class="form-check-label">
-                                <input type="radio" class="form-check-input" id="no" name="is-presenter" value="No" checked> No
+                                <input type="radio" class="form-check-input" id="is-presenter-no" name="is-presenter" value="No" checked> No
                             </label>
                         </div>
                     </div>
@@ -294,7 +304,7 @@
                         <label for="presenting-author" class="form-label fw-bold">
                             Presenting Author
                         </label>
-                        <input type="text" name="publicaton-detail" id="presenting-author"
+                        <input type="text" name="presenting-author" id="presenting-author"
                             data-validate="isEmpty,isNotNumber,isExist,isLength:2:255"  data-err-msg="This field is required and min length > 1." class="form-control" required>
                     </div>
 
@@ -344,10 +354,10 @@
                     <!-- DOI/Weblink of paper -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                             <label for="doi-weblink" class="form-label  fw-bold">
-                                DOI/Weblink of paper
+                                DOI/Weblink of paper ID
                             </label>
-                            <input type="number" name="web-link" id="doi-weblink-id" data-validate="isEmpty,isNumber"  data-err-msg="Numeric value is required."
-                                class="form-control" required/>
+                            <input type="number" name="web-link" id="doi-weblink-id"
+                                class="form-control" />
                     </div>
 
                     <!-- Sponsored By NMIMS/Other -->
@@ -363,7 +373,7 @@
                         <div class="form-check-inline">
                             <label for="award-no" class="form-check-label">
                                 <input type="radio" class="form-check-input" id="is-other" name="sponsored"
-                                    value="other" checked>
+                                    value="Others" checked>
                                 Other
                             </label>
                         </div>
@@ -399,8 +409,8 @@
                             <label for="upload"  class="form-label fw-bold ">Upload
                                 Proof</label>
                             <div class="d-flex">
-                                <input type="file" id="conference-proofs" data-validate="isEmpty,isExist,isFile" data-err-msg="File is required."
-                                    name="conferenceProof" class="col-md-12 form-control " required multiple>
+                                <input type="file" id="conference-proofs"
+                                    name="conferenceProof" class="col-md-12 form-control " multiple>
                                 <button class="download-btn download-file" id="conference-proof-edit"><i class="fas fa-download text-danger"></i></button>
                             </div>
                     </div>
@@ -421,13 +431,27 @@
     <div class="modal-dialog modal-dialog-scrollable modal-lg modal-fullscreen p-5" role="document">
         <div class="modal-content modal-content-data">
             <div class="modal-header">
-                <h5 class="modal-title" id="conference-publication">Conference Publication </h5>
+                <h5 class="modal-title" id="conference-publication">Conference Presentations </h5>
                 <div class="close" data-dismiss="modal" aria-label="Close">
                     <span type="button"><i class="fas fa-times "></i></span>
                 </div>
             </div>
             <div class="modal-body">
                 <div class="row">
+                     <!-- NMIMS School -->
+                     <div class=" col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text"> NMIMS School:</div>
+                            <label class="view-content" id="view-school"></label>
+                        </div>
+                    </div>
+                     <!-- NMIMS Campus -->
+                     <div class=" col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text"> NMIMS Campus:</div>
+                            <label class="view-content" id="view-campus"></label>
+                        </div>
+                    </div>
                     <!-- Title of the Paper -->
                     <div class=" col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
@@ -436,25 +460,33 @@
                         </div>
                     </div>
         
-                    <!-- Name and Place of Conference -->
+                    <!-- Name  of Conference -->
                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
-                            <div class="task-sub-title sub-title-text">Name And Place of Conference:</div>
-                            <label class="view-content" id="view-name-and-place"></label>
+                            <div class="task-sub-title sub-title-text">Name  of Conference:</div>
+                            <label class="view-content" id="view-conference-name"></label>
                         </div>
                     </div>
-                    <!-- Proceedings Detail -->
+
+                    <!-- Place of Conference -->
                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
-                            <div class="task-sub-title sub-title-text">Proceedings Details:</div>
+                            <div class="task-sub-title sub-title-text"> Place of Conference:</div>
+                            <label class="view-content" id="view-conference-place"></label>
+                        </div>
+                    </div>
+                    <!-- Proceedings published Yes/No -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text">Proceedings published Yes/No:</div>
                             <label class="view-content" id="view-proceedings-detail"></label>
                         </div>
                     </div>
-                    <!-- Publisher Category -->
+                    <!-- Type Of Conference -->
                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
-                            <div class="task-sub-title sub-title-text">Publisher Category:</div>
-                            <label class="view-content" id="view-publisher-category"></label>
+                            <div class="task-sub-title sub-title-text">Type Of Conference :</div>
+                            <label class="view-content" id="view-conference-type"></label>
                         </div>
                     </div>
                     <!-- Are you the Presenter ? -->
@@ -465,19 +497,35 @@
                         </div>
                     </div>
         
-                    <!-- Which type of authors ? -->
+                    <!-- Author Details  ? -->
                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
-                            <div class="task-sub-title sub-title-text">Which Type of Authors ?:</div>
+                            <div class="task-sub-title sub-title-text">Author Details ?:</div>
                             <label class="view-content" id="view-author-type"></label>
                         </div>
                     </div>
-        
-                    <!-- Publication Details -->
+                    
+                    <!-- Presenting Author  ? -->
                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
-                            <div class="task-sub-title sub-title-text">Publication Details:</div>
+                            <div class="task-sub-title sub-title-text">Presenting Author:</div>
                             <label class="view-content" id="view-presenting-author"></label>
+                        </div>
+                    </div>
+
+                    <!-- Organizing Body -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text">Organizing Body ?:</div>
+                            <label class="view-content" id="view-organization-body"></label>
+                        </div>
+                    </div>
+
+                    <!-- Sponsored By NMIMS/Other -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text">Sponsored By NMIMS/Other:</div>
+                            <label class="view-content" id="view-sponsored"></label>
                         </div>
                     </div>
                     <!--Vol and issue no [e.g 9 (12)]-->
@@ -497,8 +545,24 @@
                     <!-- DOI/Weblink of paper -->
                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
-                            <div class="task-sub-title sub-title-text">DOI/Weblink Of Paper:</div>
-                            <label class="view-content" id="view-doi-weblink"></label>
+                            <div class="task-sub-title sub-title-text">DOI/Weblink of paper ID:</div>
+                            <label class="view-content" id="view-doi-weblink-id"></label>
+                        </div>
+                    </div>
+
+                    <!-- Amount spent In Rs. -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text">Amount spent In Rs.:</div>
+                            <label class="view-content" id="view-spent-amount"></label>
+                        </div>
+                    </div>
+
+                    <!-- Publication Date. -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text">Publication Date:</div>
+                            <label class="view-content" id="view-publication-date"></label>
                         </div>
                     </div>
                     <!-- Upload Files -->
@@ -604,14 +668,10 @@
     const insertConferencePublicationForm = async (url) => {
         const conferenceData = new FormData();
         const titleOfPaper = document.getElementById('title-of-paper').value;       
-        // const nameAndPlace = document.getElementById('name-and-place').value;
-        // const procedingDetail = document.getElementById('proceedings-detail').value;
-        // const publicationDetails = document.getElementById('presenting-author').value;
         const volAndIssueNo = document.getElementById('vol-and-issue-no').value;
         const issnIsbnNo = document.getElementById('issn-isbn-no').value;
         const doiWebLinkId = document.getElementById('doi-weblink-id').value;
         const isPresenter = document.querySelector('input[name="is-presenter"]:checked').value;
-        const selectAuthortype = document.querySelector('input[name="author-type"]:checked').value;
         const authorType = document.querySelector('input[name="author-type"]:checked');
         const nmimsCampus = document.getElementById('nmims-campus').value; 
         const nmimsSchool = document.getElementById('nmims-school').value; 
@@ -684,7 +744,6 @@
                 const IndexEntry = rowCountInteger + indexValue
                 console.log('IndexEntry ===>>>', IndexEntry);
                 const newConferenceFormData = document.createElement('tr');
-
                 newConferenceFormData.setAttribute('data-is-presenter' , data.conferenceData.isPresenter);
                 newConferenceFormData.setAttribute('data-author-type' , data.conferenceData.authorType);
                 newConferenceFormData.setAttribute('data-presenting-author' , data.conferenceData.presentingAuthor);
@@ -703,7 +762,7 @@
                     <td class="campus">${data.conferenceData.nmimsCampus}</td>
                     <td class="school">${data.conferenceData.nmimsSchool}</td>
                     <td class="title-of-paper">${data.conferenceData.titleOfPaper}</td>
-                    <td class="name-and-place">${data.conferenceData.nameAndPlace}</td>
+                    <td class="conference-name">${data.conferenceData.conferenceName}</td>
                     <td class="proceedings-detail">${data.conferenceData.procedingDetail}</td>
                     <td class="issn-isbn-no">${data.conferenceData.issnIsbnNo}</td>
                     <td>
@@ -837,16 +896,24 @@
             const viewConferenceDocument = document.getElementById('view-conference-document');
             const viewConferenceProof = document.getElementById('view-conference-proof');
             const viewTitleOfPaper = document.getElementById('view-title-of-paper');     
-            const viewNameAndPlace = document.getElementById('view-name-and-place');
+            const viewConferenceName = document.getElementById('view-conference-name');
+            const viewConferencePlace = document.getElementById('view-conference-place');
             const viewProcedingDetail = document.getElementById('view-proceedings-detail');
-            const viewPublicationDetails = document.getElementById('view-presenting-author');
+            const viewSponsored = document.getElementById('view-sponsored');
             const viewVolAndIssueNo = document.getElementById('view-vol-and-issue-no');
             const viewIssnIsbnNo = document.getElementById('view-issn-isbn-no');
-            const viewDoiWebLink = document.getElementById('view-doi-weblink');
-            const viewPublisherCategory = document.getElementById('view-publisher-category');
+            const viewDoiWebLinkId = document.getElementById('view-doi-weblink-id');
+            const viewConferenceType = document.getElementById('view-conference-type');
             const viewIsPresenter = document.getElementById('view-is-presenter');
             const viewAuthortype = document.getElementById('view-author-type');
             const viewAward = document.getElementById('view-award-for-presentation');
+            const viewPresentingAuthor = document.getElementById('view-presenting-author')
+            const viewOrganizationBoy = document.getElementById('view-organization-body');
+            const viewSpentAmount = document.getElementById('view-spent-amount');
+            const viewPublicationDate = document.getElementById('view-publication-date');
+            const viewNmimsCampus = document.getElementById('view-campus');
+            const viewNmimsSchool = document.getElementById('view-school')
+            
 
             fetch('<%- BASE_URL %>research/conference-publication/view' , {
                 method : 'POST',
@@ -859,22 +926,43 @@
                 return result.json()
             })
             .then((data) => {
-                if(data.status === 'done'){
+                if(data.status === 'Done'){
                     console.log('data ==>>', data);
                     setFileNameInButtons(data);
-                    viewTitleOfPaper.innerText = data.viewConferenceData[0].title_of_paper;
-                    viewConferenceDocument.innerText = data.viewConferenceData[0].upload_files;
-                    viewConferenceProof.innerText = data.viewConferenceData[0].upload_proof;    
-                    viewNameAndPlace.innerText = data.viewConferenceData[0].name_and_place;
+                    // viewTitleOfPaper.innerText = data.viewConferenceData[0].title_of_paper;
+                    // viewConferenceDocument.innerText = data.viewConferenceData[0].upload_files;
+                    // viewConferenceProof.innerText = data.viewConferenceData[0].upload_proof;    
+                    // viewConferenceName.innerText = data.viewConferenceData[0].name_and_place;
+                    // viewProcedingDetail.innerText = data.viewConferenceData[0].proceedings_detail;
+                    // viewSponsored.innerText = data.viewConferenceData[0].publication_details;
+                    // viewVolAndIssueNo.innerText = data.viewConferenceData[0].vol_and_issue_no;
+                    // viewIssnIsbnNo.innerText = data.viewConferenceData[0].issn_isbn_no;
+                    // viewDoiWebLinkId.innerText = data.viewConferenceData[0].doi_weblink;
+                    // viewConferencetype.innerText = data.viewConferenceData[0].publisher_category;
+                    // viewIsPresenter.innerText = data.viewConferenceData[0].is_presenter;
+                    // viewAuthortype.innerText = data.viewConferenceData[0].author_type.replace(/,/g, ' ');
+                    // viewAward.innerText = data.viewConferenceData[0].award_for_presentation;
+
+                    // viewConferenceDocumentd = data.viewConferenceData[0].upload_files; 
+                    // viewConferenceProofd = data.viewConferenceData[0].upload_proof;
+                    viewNmimsCampus.innerText = data.viewConferenceData[0].nmims_campus;
+                    viewNmimsSchool.innerText = data.viewConferenceData[0].nmims_school; 
+                    viewTitleOfPaper.innerText = data.viewConferenceData[0].title_of_paper;      
+                    viewConferenceName.innerText = data.viewConferenceData[0].conference_name;
+                    viewConferencePlace.innerText = data.viewConferenceData[0].conference_place;
                     viewProcedingDetail.innerText = data.viewConferenceData[0].proceedings_detail;
-                    viewPublicationDetails.innerText = data.viewConferenceData[0].publication_details;
+                    viewSponsored.innerText = data.viewConferenceData[0].sponsored;
                     viewVolAndIssueNo.innerText = data.viewConferenceData[0].vol_and_issue_no;
                     viewIssnIsbnNo.innerText = data.viewConferenceData[0].issn_isbn_no;
-                    viewDoiWebLink.innerText = data.viewConferenceData[0].doi_weblink;
-                    viewPublisherCategory.innerText = data.viewConferenceData[0].publisher_category;
+                    viewDoiWebLinkId.innerText = data.viewConferenceData[0].doi_id;
+                    viewConferenceType.innerText = data.viewConferenceData[0].conference_type;
                     viewIsPresenter.innerText = data.viewConferenceData[0].is_presenter;
                     viewAuthortype.innerText = data.viewConferenceData[0].author_type.replace(/,/g, ' ');
                     viewAward.innerText = data.viewConferenceData[0].award_for_presentation;
+                    viewPresentingAuthor.innerText = data.viewConferenceData[0].presenting_authors;
+                    viewOrganizationBoy.innerText = data.viewConferenceData[0].organizing_body;
+                    viewSpentAmount.innerText = data.viewConferenceData[0].spent_amount;
+                    viewPublicationDate.innerText = data.viewConferenceData[0].publication_date;
 
                 }
             })
@@ -900,136 +988,138 @@
             employeeList.classList.add('d-none');
             authorDetails.classList.add('d-none');
             setFileNameAttributeToBeDownload(conferenceRowToBeUpdated);
-            const titleOfPaper = document.getElementById('title-of-paper');      
-            const nameAndPlace = document.getElementById('name-and-place');
-            const procedingDetail = document.getElementById('proceedings-detail');
-            const publicationDetails = document.getElementById('presenting-author');
+            const titleOfPaper = document.getElementById('title-of-paper');       
             const volAndIssueNo = document.getElementById('vol-and-issue-no');
             const issnIsbnNo = document.getElementById('issn-isbn-no');
-            const doiWebLink = document.getElementById('doi-weblink');
-            const isPublisherCategoryNational = document.getElementById('national');
-            const isPublisherCategoryInterNational = document.getElementById('inter-national');
-            const isPresenterYes = document.getElementById('yes');
-            const isPresenterNo = document.getElementById('no');
-            const isAuthorEnternal = document.getElementById('is-internal');
-            const isAuthorExternal = document.getElementById('is-external');
+            const doiWebLinkId = document.getElementById('doi-weblink-id');
+            const nmimsCampus = document.getElementById('nmims-campus'); 
+            const nmimsSchool = document.getElementById('nmims-school'); 
+            const conferenceName = document.getElementById('conference-name'); 
+            const conferencePlace = document.getElementById('conference-place'); 
+            const publicationDate = document.getElementById('publication-date'); 
+            const presentingAuthor = document.getElementById('presenting-author'); 
+            const organizingBody = document.getElementById('organizing-body'); 
+            const spentAmount = document.getElementById('spent-amount'); 
+            const isNmimsSponsored = document.getElementById('is-nmims');
+            const isOtherSponsored = document.getElementById('is-other');
+            const isInternationalConference = document.getElementById('is-international');
+            const isNationalConference = document.getElementById('is-national');
             const isAwardYes = document.getElementById('is-award-yes');
             const isAwardno = document.getElementById('is-award-no');
-            const conferenceDocument = document.getElementById('conference-file'); 
-        
+            const isPresenterYes = document.getElementById('is-presenter-yes');
+            const isPresenterNo = document.getElementById('is-presenter-no');
+            const proceedingCategoryYes = document.getElementById('is-published-yes');
+            const proceedingCategoryNo = document.getElementById('is-published-no');
+            const externalAuthor = document.getElementById('external-text');
+            const internalAuthor = document.getElementById('enternal-text');
+
             // assigning value which already stored
             titleOfPaper.value = conferenceRowToBeUpdated.querySelector('.title-of-paper').innerText;
-            nameAndPlace.value = conferenceRowToBeUpdated.querySelector('.name-and-place').innerText;
-            procedingDetail.value = conferenceRowToBeUpdated.querySelector('.proceedings-detail').innerText
-            const publisherCategoryValue = conferenceRowToBeUpdated.getAttribute('data-publisher-category');
-            if(publisherCategoryValue === 'National'){
-                isPublisherCategoryNational.checked = true
-            }
-            else{
-               isPublisherCategoryInterNational.checked = true
-            }
-            const isPresentervalue = conferenceRowToBeUpdated.getAttribute('data-is-presenter');
-            if(isPresentervalue === 'Yes'){
-                isPresenterYes.checked = true
-            }
-            else{
-                isPresenterNo.checked = true
-            }
-            const authorType = conferenceRowToBeUpdated.getAttribute('data-author-type');
-            storedFacultyValue = authorType;
-            if(authorType === 'External'){
-                isAuthorExternal.checked = true
-            }
-            else{
-                isAuthorEnternal.checked = true
-            }
-            publicationDetails.value = conferenceRowToBeUpdated.getAttribute('data-presenting-author');
-            volAndIssueNo.value = conferenceRowToBeUpdated.getAttribute('data-vol-and-issue-no');
+            conferenceName.value = conferenceRowToBeUpdated.querySelector('.conference-name').innerText;
+            nmimsCampus.value = conferenceRowToBeUpdated.querySelector('.campus').innerText;
+            nmimsSchool.value = conferenceRowToBeUpdated.querySelector('.school').innerText;
             issnIsbnNo.value = conferenceRowToBeUpdated.querySelector('.issn-isbn-no').innerText;
-            doiWebLink.value = conferenceRowToBeUpdated.getAttribute('data-doi-weblink');
-            const isPresentaionAward = conferenceRowToBeUpdated.getAttribute('data-award-for-presentation');
-            console.log('isPresentaionAward' , isPresentaionAward);
-            if(isPresentaionAward === 'Yes'){
-                isAwardYes.checked = true
+            conferencePlace.value = conferenceRowToBeUpdated.getAttribute('data-conference-place');
+            presentingAuthor.value = conferenceRowToBeUpdated.getAttribute('data-presenting-author');
+            organizingBody.value = conferenceRowToBeUpdated.getAttribute('data-organizing-body');
+            volAndIssueNo.value = conferenceRowToBeUpdated.getAttribute('data-vol-and-issue-no');
+            doiWebLinkId.value = conferenceRowToBeUpdated.getAttribute('data-doi-weblink');
+            console.log('doiWebLinkId ===>>>', doiWebLinkId.value)
+            spentAmount.value = conferenceRowToBeUpdated.getAttribute('data-spent-amount');
+            publicationDate.value = formatDateToYYYYMMDD(conferenceRowToBeUpdated.getAttribute('data-publication-date'));
+            const procedingDetails = conferenceRowToBeUpdated.querySelector('.proceedings-detail').innerText;
+            console.log('procedingDetails ===>>>', procedingDetails)
+            procedingDetails === 'Yes' ? proceedingCategoryYes.checked = true : proceedingCategoryNo.checked = true;
+            const conferenceType = conferenceRowToBeUpdated.getAttribute('data-conference-type');
+            conferenceType === 'National' ? isNationalConference.checked = true : isInternationalConference.checked = true;
+            const isPresenter = conferenceRowToBeUpdated.getAttribute('data-is-presenter');
+            isPresenter === 'Yes' ? isPresenterYes.checked = true : isPresenterNo.checked = true;
+            const presentationAward = conferenceRowToBeUpdated.getAttribute('data-award-for-presentation');
+            presentationAward === 'Yes' ? isAwardYes.checked = true : isAwardno.checked = true;
+            const sponsored = conferenceRowToBeUpdated.getAttribute('data-sponsored');
+            sponsored === 'NMIMS' ? isNmimsSponsored.checked = true : isOtherSponsored.checked = true;
+            const authorType = conferenceRowToBeUpdated.getAttribute('data-author-type');
+            authorType === 'External' ? externalAuthor.checked = true : internalAuthor.checked = true;
+            console.log('authorType ===>>>', authorType);
+
+            storedFacultyValue = authorType;
+
+            let conferenceDocumentData = conferenceRowToBeUpdated.getAttribute('data-upload-files');
+            const conferenceFileName = document.getElementById('conference-file-name');
+            if(conferenceFileName && conferenceDocumentData){
+                conferenceFileName.textContent = conferenceDocumentData
+                console.log('conferenceFileName', conferenceFileName.textContent)
             }
-            else{
-                isAwardno.checked = true
-            }
-           let conferenceDocumentData = conferenceRowToBeUpdated.getAttribute('data-upload-files');
-           const conferenceFileName = document.getElementById('conference-file-name');
-           if(conferenceFileName && conferenceDocumentData){
-            conferenceFileName.textContent = conferenceDocumentData
-            console.log('conferenceFileName', conferenceFileName.textContent)
-           }
-           let conferenceProof = conferenceRowToBeUpdated.getAttribute('data-upload-proof');
-           const conferenceProofName = document.getElementById('conference-proof-name');
-           if (conferenceProofName && conferenceProof) {
-                conferenceProofName.textContent = conferenceProof
-            }
+            let conferenceProof = conferenceRowToBeUpdated.getAttribute('data-upload-proof');
+            const conferenceProofName = document.getElementById('conference-proof-name');
+            if (conferenceProofName && conferenceProof) {
+                    conferenceProofName.textContent = conferenceProof
+                }
         }
     });
 
     const updateConferencePublication = async(url) => {
         console.log('clickedddd')
         const updatedConferenceData = new FormData();
-        const updatedTitleOfPaper = document.getElementById('title-of-paper').value;
-        const updatedNameAndPlace = document.getElementById('name-and-place').value;
-        const updatedProceedingDetails = document.getElementById('proceedings-detail').value;
-        const updatedPublisherCategory = document.querySelector('input[name="publisher-category"]:checked').value;
-        const updatedIsPresenter = document.querySelector('input[name="is-presenter"]:checked').value;
-        const updatedAuthorType = document.querySelector('input[name="author-type"]:checked').value;
+        // const updatedTitleOfPaper = document.getElementById('title-of-paper').value;
+        // const updatedNameAndPlace = document.getElementById('name-and-place').value;
+        // const updatedProceedingDetails = document.getElementById('proceedings-detail').value;
+        // const updatedPublisherCategory = document.querySelector('input[name="publisher-category"]:checked').value;
+        // const updatedIsPresenter = document.querySelector('input[name="is-presenter"]:checked').value;
+        const updatedAuthorType = document.querySelector('input[name="author-type"]:checked');
+        const titleOfPaper = document.getElementById('title-of-paper').value;       
+        const volAndIssueNo = document.getElementById('vol-and-issue-no').value;
+        const issnIsbnNo = document.getElementById('issn-isbn-no').value;
+        const doiWebLinkId = document.getElementById('doi-weblink-id').value;
+        const isPresenter = document.querySelector('input[name="is-presenter"]:checked').value;
+        const authorType = document.querySelector('input[name="author-type"]:checked');
+        const nmimsCampus = document.getElementById('nmims-campus').value; 
+        const nmimsSchool = document.getElementById('nmims-school').value; 
+        const conferenceName = document.getElementById('conference-name').value; 
+        const conferencePlace = document.getElementById('conference-place').value; 
+        const publicationDate = document.getElementById('publication-date').value; 
+        const presentingAuthor = document.getElementById('presenting-author').value; 
+        const organizingBody = document.getElementById('organizing-body').value; 
+        const spentAmount = document.getElementById('spent-amount').value; 
+        const sponsored = document.querySelector('input[name="sponsored"]:checked').value;
+        const procedingDetail = document.querySelector('input[name="Proceedings-details"]:checked').value;
+        const conferenceType = document.querySelector('input[name="conference-type"]:checked').value;
+        const presentationAward = document.querySelector('input[name="award-for-presentation"]:checked').value;
         console.log('storedFacultyValue ===>>>>', storedFacultyValue)
         //function call 
         await updateFacultyNameString(updatedAuthorType, updatedConferenceData, storedFacultyValue);
-        const updatedPublicationDetails = document.getElementById('presenting-author').value;
-        const updatedVolAndIssueNo = document.getElementById('vol-and-issue-no').value;
-        const updatedIssnIsbnNo = document.getElementById('issn-isbn-no').value;
-        const updatedDoiWebLink = document.getElementById('doi-weblink').value;
-        const updatedAward = document.querySelector('input[name="award-for-presentation"]:checked').value;
+        // const updatedPublicationDetails = document.getElementById('presenting-author').value;
+        // const updatedVolAndIssueNo = document.getElementById('vol-and-issue-no').value;
+        // const updatedIssnIsbnNo = document.getElementById('issn-isbn-no').value;
+        // const updatedDoiWebLink = document.getElementById('doi-weblink').value;
+        // const updatedAward = document.querySelector('input[name="award-for-presentation"]:checked').value;
         const updatedConferenceFiles = document.getElementById('conference-documnets');
         const updatedConferenceProof = document.getElementById('conference-proofs');
+        const updatedConferenceFilesData = updatedConferenceFiles.files;
+        const updatedConferenceProofsData = updatedConferenceProof.files;
 
-        let updatedConferenceFilesData = updatedConferenceFiles.files;
-        let updatedConferenceProofsData = updatedConferenceProof.files;
+        //appending key and value in object updatedConferenceData
+        updatedConferenceFilesData ? Array.from(updatedConferenceFilesData).forEach(file => updatedConferenceData.append('conferenceDocument', file)) : updatedConferenceData.append('conferenceDocument', null);
+        updatedConferenceProofsData ? Array.from(updatedConferenceProofsData).forEach(file => updatedConferenceData.append('conferenceProof', file)) : updatedConferenceData.append('conferenceProof', null);
 
-        // appending currunt updated value 
         updatedConferenceData.append('conferenceId', conferenceId)
-        // for conferenceDocument
-        if (updatedConferenceFilesData && updatedConferenceFilesData.length > 0) {
-            for(let i = 0 ; i <= updatedConferenceFilesData.length - 1; i++){
-                if(updatedConferenceFilesData[i].name){
-                    updatedConferenceData.append('conferenceDocument', updatedConferenceFilesData[i]);
-                }
-            }
-        }
-        else{
-            updatedConferenceFilesData = null;
-            updatedConferenceData.append('conferenceDocument', updatedConferenceFilesData);
-        }
-        // for conferenceProof files
-
-        if (updatedConferenceProofsData && updatedConferenceProofsData.length > 0) {
-            for(let i = 0; i <= updatedConferenceProofsData.length - 1; i++){
-                if(updatedConferenceProofsData[i].name){
-                    console.log('updatedConferenceProofsData[i].name ==>>>', updatedConferenceProofsData[i].name);
-                    updatedConferenceData.append('conferenceProof', updatedConferenceProofsData[i])
-                }
-            }
-        }
-        else{
-            updatedConferenceProofsData = null;
-            updatedConferenceData.append('conferenceProof', updatedConferenceProofsData)
-        }
-        updatedConferenceData.append('titleOfPaper' , updatedTitleOfPaper);
-        updatedConferenceData.append('nameAndPlace' ,updatedNameAndPlace);
-        updatedConferenceData.append('procedingDetail' , updatedProceedingDetails);
-        updatedConferenceData.append('publicationDetails' , updatedPublicationDetails);
-        updatedConferenceData.append('volAndIssueNo' , updatedVolAndIssueNo);
-        updatedConferenceData.append('issnIsbnNo' , updatedIssnIsbnNo);
-        updatedConferenceData.append('doiWebLink' , updatedDoiWebLink);
-        updatedConferenceData.append('publisherCategory' , updatedPublisherCategory);
-        updatedConferenceData.append('isPresenter' , updatedIsPresenter);
-        updatedConferenceData.append('awardForPresentation' , updatedAward);
+        updatedConferenceData.append('titleOfPaper' , titleOfPaper);
+        updatedConferenceData.append('conferenceName' , conferenceName);
+        updatedConferenceData.append('procedingDetail' , procedingDetail);
+        updatedConferenceData.append('conferencePlace' , conferencePlace);
+        updatedConferenceData.append('volAndIssueNo' , volAndIssueNo);
+        updatedConferenceData.append('issnIsbnNo' , issnIsbnNo);
+        updatedConferenceData.append('doiWebLinkId' , doiWebLinkId);
+        updatedConferenceData.append('conferenceType' , conferenceType);
+        updatedConferenceData.append('isPresenter' , isPresenter);
+        updatedConferenceData.append('publicationDate' , publicationDate );
+        updatedConferenceData.append('spentAmount' , spentAmount );
+        updatedConferenceData.append('presentationAward' , presentationAward );
+        updatedConferenceData.append('sponsored' , sponsored);
+        updatedConferenceData.append('organizingBody' , organizingBody );
+        updatedConferenceData.append('presentingAuthor' , presentingAuthor );
+        updatedConferenceData.append('nmimsCampus' , nmimsCampus );
+        updatedConferenceData.append('nmimsSchool' , nmimsSchool );
 
         fetch(url , {
             method : 'POST',
@@ -1041,23 +1131,28 @@
         .then((data) => {
             if(data.status === "Done"){
                 console.log('updated Data ==>>', data);
+                conferenceRowToBeUpdated.querySelector('.school').innerText = data.upadtedConferenceData.school;
+                conferenceRowToBeUpdated.querySelector('.campus').innerText = data.upadtedConferenceData.campus;
                 conferenceRowToBeUpdated.querySelector('.title-of-paper').innerText = data.upadtedConferenceData.titleOfPaper;
-                conferenceRowToBeUpdated.querySelector('.name-and-place').innerText = data.upadtedConferenceData.nameAndPlace;
+                conferenceRowToBeUpdated.querySelector('.conference-name').innerText = data.upadtedConferenceData.conferenceName;
                 conferenceRowToBeUpdated.querySelector('.proceedings-detail').innerText = data.upadtedConferenceData.procedingDetail;
                 conferenceRowToBeUpdated.querySelector('.issn-isbn-no').innerText = data.upadtedConferenceData.issnIsbnNo;
-                conferenceRowToBeUpdated.setAttribute('data-publisher-category' , data.upadtedConferenceData.publisherCategory);
                 conferenceRowToBeUpdated.setAttribute('data-is-presenter' , data.upadtedConferenceData.isPresenter);
-                conferenceRowToBeUpdated.setAttribute('data-author-type' , data.upadtedConferenceData.authorNameString);
-                conferenceRowToBeUpdated.setAttribute('data-presenting-author' , data.upadtedConferenceData.publicationDetails);
+                conferenceRowToBeUpdated.setAttribute('data-author-type' , data.upadtedConferenceData.authorType);
+                conferenceRowToBeUpdated.setAttribute('data-presenting-author' , data.upadtedConferenceData.presentingAuthor);
                 conferenceRowToBeUpdated.setAttribute('data-vol-and-issue-no' , data.upadtedConferenceData.volAndIssueNo);
-                conferenceRowToBeUpdated.setAttribute('data-doi-weblink' , data.upadtedConferenceData.doiWebLink);
-                if(updatedConferenceFilesData){
-                    conferenceRowToBeUpdated.setAttribute('data-upload-files' , data.confernceDocString);
-                }
+                conferenceRowToBeUpdated.setAttribute('data-doi-weblink' , data.upadtedConferenceData.doiWebLinkId);
+                conferenceRowToBeUpdated.setAttribute('data-upload-files' , data.conferenceDocument);
                 conferenceRowToBeUpdated.setAttribute('data-award-for-presentation' , data.upadtedConferenceData.isPresenter);
-                if(updatedConferenceProofsData){
-                    conferenceRowToBeUpdated.setAttribute('data-upload-proof' , data.conferenceProofString);
-                }
+                conferenceRowToBeUpdated.setAttribute('data-upload-proof' , data.conferenceProofFile);
+                conferenceRowToBeUpdated.setAttribute('data-organizing-body', data.upadtedConferenceData.organizingBody);
+                conferenceRowToBeUpdated.setAttribute('data-spent-amount', data.upadtedConferenceData.spentAmount);
+                conferenceRowToBeUpdated.setAttribute('data-conference-place', data.upadtedConferenceData.conferencePlace);
+                conferenceRowToBeUpdated.setAttribute('data-conference-type', data.upadtedConferenceData.conferenceType);
+                conferenceRowToBeUpdated.setAttribute('data-publication-date', data.upadtedConferenceData.publicationDate);
+                updatedConferenceFiles.files ? conferenceRowToBeUpdated.setAttribute('data-upload-files' , data.confernceDocString) : null;
+                updatedConferenceProof.files ? conferenceRowToBeUpdated.setAttribute('data-upload-proof' , data.conferenceProofString) : null;
+                
                 Swal.fire({
 							position: "top-center",
 							icon: "success",

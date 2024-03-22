@@ -42,42 +42,62 @@ module.exports.viewConferenceData = async(conferenceId) => {
     return researchDbW.query(sql);
 };
 
-module.exports.insertConferencePublication = async(conferencePublications, conferenceDocument, conferenceProofFile, internalNamesString, externalNamesString) => {
+module.exports.insertConferencePublication = async (conferencePublications, conferenceDocument, conferenceProofFile, internalNamesString, externalNamesString) => {
     const authorNameString = internalNamesString + externalNamesString;
-    const {nmimsCampus, nmimsSchool, titleOfPaper, conferenceName , conferencePlace, procedingDetail, conferenceType, isPresenter, organizingBody, 
-        presentationAward, volAndIssueNo, issnIsbnNo, doiWebLinkId, sponsored, spentAmount, publicationDate} = conferencePublications;
-        console.log('conferencePublications data in models' , conferencePublications);
+    const { nmimsCampus, nmimsSchool, titleOfPaper, conferenceName, conferencePlace, procedingDetail, conferenceType, isPresenter, organizingBody,
+        presentationAward, volAndIssueNo, issnIsbnNo, doiWebLinkId, sponsored, spentAmount, publicationDate, presentingAuthor } = conferencePublications;
+    console.log('conferencePublications data in models', conferencePublications);
+    const doiBookIdParsed = doiWebLinkId === "" ? null : parseInt(doiWebLinkId, 10);
+    const conferenceProofFilesString = conferenceProofFile === "" ? null : conferenceProofFile;
 
     let conferenceSql = {
-                text : `INSERT INTO conference_presentation( nmims_campus, nmims_school, title_of_paper, conference_name, conference_place, proceedings_detail, conference_type,
-                        is_presenter,  organizing_body, award_for_presentation, vol_and_issue_no, issn_isbn_no, doi_id,
-                        sponsored, spent_amount, publication_date, author_type, upload_proof, upload_files)
+        text: `INSERT INTO conference_presentation(nmims_campus, nmims_school, title_of_paper, conference_name, conference_place, proceedings_detail, conference_type,
+                        is_presenter, organizing_body, award_for_presentation, vol_and_issue_no, issn_isbn_no, doi_id,
+                        sponsored, spent_amount, publication_date, presenting_authors, author_type, upload_proof, upload_files)
                        VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20) RETURNING id `,
-                values : [nmimsCampus, nmimsSchool, titleOfPaper, conferenceName , conferencePlace, procedingDetail, conferenceType, isPresenter, organizingBody, 
-                    presentationAward, volAndIssueNo, issnIsbnNo, doiWebLinkId, sponsored, spentAmount, publicationDate, authorNameString,  conferenceDocument, conferenceProofFile]
+        values: [nmimsCampus, nmimsSchool, titleOfPaper, conferenceName, conferencePlace, procedingDetail, conferenceType, isPresenter, organizingBody,
+            presentationAward, volAndIssueNo, issnIsbnNo, doiBookIdParsed, sponsored, spentAmount, publicationDate, presentingAuthor, authorNameString, conferenceDocument, conferenceProofFilesString]
 
-           };
+    };
     // let conferenceProofQuery = conferenceProofFile ? 
-    let externalEmpSql = externalNamesString ?  {
+    let externalEmpSql = externalNamesString ? {
         text: `INSERT INTO external_emp(external_emp_name) VALUES ($1) RETURNING id`,
         values: [externalNamesString]
     } : null;
     console.log('externalEmpSql ===>>>>', externalEmpSql);
     console.log('conferenceSql ==>', conferenceSql);
-    const conferenceTable = await researchDbW.query(conferenceSql);
-    const externalEmpTable = await researchDbW.query(externalEmpSql);
-
-    const promises = [conferenceTable, externalEmpTable];
-    return Promise.all(promises).then(([conferenceTable, externalEmpTable]) => {
-        return{status : 'Done' , message : " Record Inserted Successfully" , conferenceId : conferenceTable.rows[0].id, externalEmpId : externalEmpSql !== null ? externalEmpTable.rows[0].id : null,
-        rowCount : conferenceTable.rowCount
+    const conferenceTablePromise = researchDbW.query(conferenceSql)
+        .then(conferenceTable => {
+            return conferenceTable;
+        })
+        .catch(error => {
+            console.log('Error code:', error.code);
+            throw {
+                status : 'Failed',
+                message : error.constraint === 'conference_presentation_doi_id_key'? 'The DOI/Weblink of paper ID provided already exists. Please provide a unique DOI/Weblink of paper ID' : error.message,
+                errorCode : error.code
             }
-    })
-    .catch((error) => {
-        console.log('error ===>>>', error);
-        return{status : 'Failed' , message : error.message , errorCode : error.ocde}
-    })
+        });
+
+    const externalEmpTablePromise = externalNamesString ? researchDbW.query(externalEmpSql) : Promise.resolve(null);
+
+    return Promise.all([conferenceTablePromise, externalEmpTablePromise])
+        .then(([conferenceTable, externalEmpTable]) => {
+            return {
+                status: 'Done',
+                message: " Record Inserted Successfully",
+                conferenceId: conferenceTable.rows[0].id,
+                externalEmpId: externalEmpSql !== null ? externalEmpTable.rows[0].id : null,
+                rowCount: conferenceTable.rowCount
+            };
+        })
+        .catch(error => {
+            console.log('error ===>>>', error);
+            return error
+        });
 };
+
+
 
 module.exports.DeleteConference = async({conferenceId}) => {
     console.log('conference Id in models ==>>', conferenceId)
@@ -101,25 +121,32 @@ module.exports.updateConferencePublication = async( upadtedConferenceData, confe
     console.log('Id for Updation in models ==>>>', conferenceId);
     const authorNameString = internalNamesString + externalNamesString + existingNameString;
 
-    const {titleOfPaper,  nameAndPlace, procedingDetail, publisherCategory, isPresenter, authorType, publicationDetails, 
-        volAndIssueNo, issnIsbnNo, doiWebLink, awardForPresentation} = upadtedConferenceData;
+    const {nmimsCampus, nmimsSchool, titleOfPaper, conferenceName, conferencePlace, procedingDetail, conferenceType, isPresenter, organizingBody,
+        presentationAward, volAndIssueNo, issnIsbnNo, doiWebLinkId, sponsored, spentAmount, publicationDate, presentingAuthor} = upadtedConferenceData;
     const conferenceFilesarray = {confernceDocString , conferenceProofString}
-    console.log('conferenceFiles  =>>', conferenceFilesarray)
- 
+    console.log('conferenceFiles  =>>', conferenceFilesarray);
+
     const conferenceFieldToBeUpdate = [
+        { field: 'nmims_campus', value: nmimsCampus },
+        { field: 'nmims_school', value: nmimsSchool },
         { field: 'title_of_paper', value: titleOfPaper },
-        { field: 'name_and_place', value: nameAndPlace },
-        { field: 'proceedings_detail', value: procedingDetail },
-        {field: 'doi_weblink' ,value : doiWebLink},
-        { field: 'publisher_category', value: publisherCategory },
+        { field: 'conference_name', value: conferenceName },
+        { field: 'conference_place', value: conferencePlace },
+        {field: 'proceedings_detail' ,value : procedingDetail},
+        { field: 'conference_type', value: conferenceType },
         { field: 'is_presenter', value: isPresenter },
-        { field: 'author_type', value: authorNameString },
-        { field: 'publication_details', value: publicationDetails },
+        { field: 'organizing_body', value: organizingBody },
+        { field: 'award_for_presentation', value: presentationAward },
         { field: 'vol_and_issue_no', value: volAndIssueNo },
         { field: 'issn_isbn_no', value: issnIsbnNo },
-        { field: 'upload_files', value: confernceDocString },
-        { field: 'award_for_presentation', value: awardForPresentation },
+        { field: 'doi_id', value: doiWebLinkId },
+        { field: 'sponsored', value: sponsored },
+        { field: 'spent_amount', value: spentAmount },
+        { field: 'publication_date', value: publicationDate },
+        { field: 'presenting_authors', value: presentingAuthor },
+        { field: 'author_type', value: authorNameString },
         { field: 'upload_proof', value: conferenceProofString },
+        { field: 'upload_files', value: confernceDocString },
     ]
 
     console.log('conferenceFieldToBeUpdate ==>>', conferenceFieldToBeUpdate);
@@ -181,26 +208,73 @@ module.exports.updateConferencePublication = async( upadtedConferenceData, confe
         text: `INSERT INTO external_emp(external_emp_name) VALUES ($1) RETURNING id`,
         values: [externalNamesString]
     } : null;
-    const conferenceTable = await researchDbW.query(conferenceSql);
-    const externalEmpTable = externalEmpSql ? await researchDbW.query(externalEmpSql) : null;
-    const promises = [conferenceTable, externalEmpTable];
-    return Promise.all(promises).then(([conferenceTable, externalEmpTable]) => {
-        console.log('conferenceTable ===>>>', conferenceTable);
-        console.log('externalEmpTable ===>>>>', externalEmpTable)
-        return {status : 'Done' , message : "Record Updated Successfully" , externalEmpId : externalEmpSql !== null ? externalEmpTable.rows[0].id : null, conferenceTable : conferenceTable}
-    })
-    .catch((error) => {
-        console.log('error ===>>>', conferenceTable);
-        console.log('err.message ===>>>', err.message)
-        return{status : "Failed", message : error.message, errorCode : error.code}
-    })
+
+    // const conferenceTable = await researchDbW.query(conferenceSql);
+    // const externalEmpTable = externalEmpSql ? await researchDbW.query(externalEmpSql) : null;
+    // const promises = [conferenceTable, externalEmpTable];
+    // return Promise.all(promises).then(([conferenceTable, externalEmpTable]) => {
+    //     console.log('conferenceTable ===>>>', conferenceTable);
+    //     console.log('externalEmpTable ===>>>>', externalEmpTable)
+    //     return {status : 'Done' , message : "Record Updated Successfully" , externalEmpId : externalEmpSql !== null ? externalEmpTable.rows[0].id : null, conferenceTable : conferenceTable}
+    // })
+    // .catch((error) => {
+    //     console.log('error ===>>>', conferenceTable);
+    //     console.log('err.message ===>>>', err.message)
+    //     return{status : "Failed", message : error.message, errorCode : error.code}
+    // })
+    const conferenceTablePromise = researchDbW.query(conferenceSql)
+        .then(conferenceTable => {
+            return conferenceTable;
+        })
+        .catch(error => {
+            console.log('Error code:', error.code);
+            throw {
+                status : 'Failed',
+                message : error.constraint === 'conference_presentation_doi_id_key'? 'The DOI/Weblink of paper ID provided already exists. Please provide a unique DOI/Weblink of paper ID' : error.message,
+                errorCode : error.code
+            }
+        });
+
+    const externalEmpTablePromise = externalNamesString ? researchDbW.query(externalEmpSql) : Promise.resolve(null);
+
+    return Promise.all([conferenceTablePromise, externalEmpTablePromise])
+        .then(([conferenceTable, externalEmpTable]) => {
+            return {
+                status: 'Done',
+                message: " Record Updated Successfully",
+                externalEmpId: externalEmpSql !== null ? externalEmpTable.rows[0].id : null,
+                rowCount: conferenceTable.rowCount
+            };
+        })
+        .catch(error => {
+            console.log('error ===>>>', error);
+            return error
+        });
 }
 
 module.exports.viewConferencePublication = async(conferenceId) => {
     console.log('conference Id in models ', conferenceId);
     let sql = {
-        text : `SELECT * FROM  conference_presentation WHERE id = $1`,
+        text : `SELECT nmims_campus, nmims_school, title_of_paper, conference_name, conference_place, proceedings_detail, conference_type,
+        is_presenter, organizing_body, award_for_presentation, vol_and_issue_no, issn_isbn_no, doi_id,
+        sponsored, spent_amount, publication_date, presenting_authors, author_type, upload_proof, upload_files FROM  conference_presentation WHERE id = $1`,
         values : [conferenceId]
     }
-    return researchDbR.query(sql);
+    // return researchDbR.query(sql);
+    console.log('sql ===>>>', sql)
+    const conferencePresentation = await researchDbW.query(sql);
+    const response = conferencePresentation.rowCount > 0 
+        ? {
+            status: "Done",
+            message: "Record Fetched Successfully",
+            rowCount: conferencePresentation.rowCount,
+            conferencePresentation : conferencePresentation.rows
+        }
+        : {
+            status: "Failed",
+            message: error?.message ?? "An error occurred during record fetching.",
+            errorCode: error?.code
+        };
+    
+    return response;
 }

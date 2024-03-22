@@ -154,7 +154,17 @@ module.exports.updatedConferencePublication = async (body, files) => {
 
 module.exports.viewConferencePublication = async(conferenceId) => {
     const viewConferenceData  = await conferencePublicationModels.viewConferencePublication(conferenceId);
-    if(viewConferenceData && viewConferenceData.rowCount === 1){
-        return viewConferenceData
+    console.log('viewConferenceData ====>>>>', viewConferenceData);
+    return viewConferenceData.status === "Done" ? {
+      status : viewConferenceData.status,
+      message : viewConferenceData.message,
+      viewConferenceData : viewConferenceData.conferencePresentation
+    } : {
+      status : viewConferenceData.status,
+      message : viewConferenceData.message,
+      errorCode : viewConferenceData.errorCode
     }
+    // if(viewConferenceData && viewConferenceData.rowCount === 1){
+    //     return viewConferenceData
+    // }
 }

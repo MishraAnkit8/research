@@ -74,11 +74,15 @@ module.exports.updateConferencePublication = async(req, res, next) => {
 module.exports.viewConferencePublication = async(req, res, next) => {
     console.log('data Id in Controller', req.body);
     const {conferenceId} = req.body
+    
     const viewConferencePublicationData = await conferencePublicationServices.viewConferencePublication(conferenceId);
-    if(viewConferencePublicationData){
-        res.status(200).send({
-            status : 'done',
-            viewConferenceData : viewConferencePublicationData.rows
-        })
-    }
+    
+    console.log('viewConferencePublicationData in controller ===>>>>', viewConferencePublicationData);
+    const statusCode = viewConferencePublicationData.status === "Done" ? 200 : (viewConferencePublicationData.errorCode ? 400 : 500);
+    res.status(statusCode).send({
+        status : viewConferencePublicationData.status,
+        message : viewConferencePublicationData.message,
+        viewConferenceData : viewConferencePublicationData.viewConferenceData,
+        errorCode : viewConferencePublicationData.errorCode ? viewConferencePublicationData.errorCode : null
+    })
 }
