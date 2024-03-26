@@ -112,7 +112,12 @@ router.get('/research-award/viewing/:fileName', downloadFileService.viewFile);
 
 // E content Development
 
-router.get('/e-content', asyncErrorHandler(eContentDevelopMentCon.renderEContentDevelopmentPage))
+router.get('/e-content', asyncErrorHandler(eContentDevelopMentCon.renderEContentDevelopmentPage));
+router.post('/e-content/insert', asyncErrorHandler(eContentDevelopMentCon.insertEContentData));
+router.post('/e-content/update', asyncErrorHandler(eContentDevelopMentCon.updateEcontentData));
+router.post('/e-content/delete', asyncErrorHandler(eContentDevelopMentCon.deleteEcontentRowData));
+router.post('/e-content/view', asyncErrorHandler(eContentDevelopMentCon.viewEContentData));
+
 
 
 

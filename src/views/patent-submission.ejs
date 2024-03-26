@@ -83,13 +83,12 @@
                         <tr data-patent-id="<%- patent.id %>" data-patent-date="<%- patent.date %>"  
                             data-external-id="<%- externalEmp ? externalEmp.id : '' %>" data-external-emp="<%- externalEmp ? externalEmp.external_emp_name : '' %>"
                             data-author-table="<%- patent.author_type.table %>" >
-                            <td ><%- index+1 %></td>
+                            <td class="col-lg-1"><%- index+1 %></td>
                             <td class="type-of-invention col-lg-1"><%- patent.type_of_invention %></td>
                             <td class="title-of-invention col-lg-1"><%- patent.title_of_invention %></td>
                             <td class="patent-stage col-lg-1"><%- patent.patent_stage %></td>
                             <td class="application-no col-lg-1"><%- patent.application_no %></td>
                             <td class="author-name col-lg-1"><%- patent.author_type.authorName %></td>
-                            
                             <td class="sdg-goals col-lg-1"><%- patent.sdg_goals %></td>
                             <td class="patent-file col-lg-1"><%- patent.patent_file %></td>
                             <td class="col-lg-1">
@@ -112,8 +111,7 @@
         </div>
         <div class="d-flex justify-content-between">
             <div>
-                <label >Total entries : <%- rowCount %>
-                </label>
+                <label id="total-row-count">Total entries : <%- rowCount %> </label>
                 <label class="d-none" id="row-count"> <%- rowCount %></label>
             </div>
             <div>
@@ -386,7 +384,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tom-select/2.3.1/js/tom-select.complete.min.js" integrity="sha512-zdXqksVc9s0d2eoJGdQ2cEhS4mb62qJueasTG4HjCT9J8f9x5gXCQGSdeilD+C7RqvUi1b4DdD5XaGjJZSlP9Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
     //   for index icrement
-    const rowCount = document.getElementById('row-count');
+    let rowCount = document.getElementById('row-count');
+    const totalRowCount = document.getElementById('total-row-count');
     let rowIndex = rowCount.innerText;
     let indexValue = parseInt(rowIndex, 10);
     const addNewPatentSubmission = document.getElementById('add-patent-submission');
@@ -486,7 +485,8 @@
                 console.log('data >>>', data);
                 patentId = data.patentId;
                 const rowCountInteger = parseInt(data.rowCount, 10);
-                const IndexEntry = rowCountInteger + indexValue
+                const IndexEntry = rowCountInteger + indexValue;
+                indexValue = IndexEntry;
                 console.log('IndexEntry ===>>>', IndexEntry);
                 const newPatentRow = document.createElement('tr');
                 newPatentRow.setAttribute('data-patent-date' , data.patentData.subMissionDate);
@@ -519,6 +519,9 @@
 							showConfirmButton: false
 							// timer: 1500
 						});
+                rowCount.classList.remove('d-none');
+                totalRowCount.classList.add('d-none');
+                rowCount.innerText = `Total entries : ${IndexEntry}`
                     }
                     else{
                         console.log('data ====>>>>>', data);
@@ -1025,7 +1028,7 @@
 
 </script>
 <!-- footer section -->
-<%- include('./partials/pagination') %>
+<script src="<%- BASE_URL %>js/pagination.js"></script>
 <%- include('./partials/footer') %>
 <%- include('./partials/footer-end') %>
           

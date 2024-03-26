@@ -129,18 +129,27 @@ module.exports.deletePatentSubmission = async(body) => {
     const {patentId} = body;
     console.log('patent Id in Service for deletion ', patentId);
     const deletePatentData = await patentFormsModels.deletePatentSubmissionData(patentId);
-    if(deletePatentData.rowCount === 1){
-        return {
-            status : 'done',
-            massage : 'data Deleted Successfully'
-        }
+    console.log('deletePatentData ===>>>>', deletePatentData);
+    return deletePatentData.status === "Done" ? {
+        status : deletePatentData.status,
+        message : deletePatentData.message
+    } : {
+        status : deletePatentData.status,
+        message : deletePatentData.message,
+        errorCode : deletePatentData.errorCode
     }
-    else{
-        return {
-            status : 'failed',
-            massage : 'failed to delete'
-        }
-    }
+    // if(deletePatentData.rowCount === 1){
+    //     return {
+    //         status : 'done',
+    //         massage : 'data Deleted Successfully'
+    //     }
+    // }
+    // else{
+    //     return {
+    //         status : 'failed',
+    //         massage : 'failed to delete'
+    //     }
+    // }
 }
 
 module.exports.viewPatentsubmission = async(patentId) => {

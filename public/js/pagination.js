@@ -66,9 +66,7 @@ function initializePagination() {
   
     function handleSearchClick() {
       console.log("search button clickeddd");
-      let searchKeyword = document
-        .getElementById("searchKeyword")
-        .value.toLowerCase();
+      let searchKeyword = document.getElementById("searchKeyword").value.toLowerCase();
       if (searchKeyword !== "") {
         console.log("searchKeyword ==>>", searchKeyword);
         filterRows(searchKeyword);
@@ -126,8 +124,8 @@ function initializePagination() {
 
 
 
-  const searchEmpName = document.getElementById('search-employee-name');
-  // console.log('searchEmpName ===>>>>', searchEmpName);
+  // const searchEmpName = document.getElementById('search-employee-name');
+  // // console.log('searchEmpName ===>>>>', searchEmpName);
 
   //  this is function call that enables pagination  logic
   

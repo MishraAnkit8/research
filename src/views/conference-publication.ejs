@@ -636,8 +636,6 @@
             externalAuthorValue = '';
             storedFacultyValue = '';
             const titleOfPaper = document.getElementById('title-of-paper');      
-            // const nameAndPlace = document.getElementById('name-and-place');
-            // const procedingDetail = document.getElementById('proceedings-detail');
             const publicationDetails = document.getElementById('presenting-author');
             const volAndIssueNo = document.getElementById('vol-and-issue-no');
             const issnIsbnNo = document.getElementById('issn-isbn-no');
@@ -655,8 +653,6 @@
             employeeList.classList.add('d-none');
             authorDetails.classList.add('d-none');
             titleOfPaper.value = '';   
-            // nameAndPlace.value = ''; 
-            // procedingDetail.value = ''; 
             publicationDetails.value = ''; 
             volAndIssueNo.value = ''; 
             issnIsbnNo.value = '';
@@ -691,27 +687,30 @@
         const conferenceProof  = document.getElementById('conference-proofs');
         const conferenceDocumentsData = conferenceDocument.files;
         const conferenceProofsData = conferenceProof.files;
+        conferenceDocumentsData ? Array.from(conferenceDocumentsData).forEach(file => conferenceData.append('conferenceDocument', file)) : conferenceData.append('conferenceDocument', null);
+        conferenceProofsData ? Array.from(conferenceProofsData).forEach(file => conferenceData.append('conferenceProof', file)) : conferenceData.append('conferenceProof', null);
         // for conference documents
-        if(conferenceDocumentsData.length > 0){
-            for(let i = 0; i <= conferenceDocumentsData.length - 1; i++){
-                console.log('conferenceDocumentsData file name ==>>', conferenceDocumentsData[i].name);
-                if(conferenceDocumentsData[i].name){
-                    conferenceData.append('conferenceDocument' , conferenceDocumentsData[i]);
-                }
-            }
-        }
-        // for conference proof
-        if(conferenceProofsData.length > 0){
-            for(let i = 0; i <= conferenceProofsData.length - 1; i++){
-                console.log('conferenceProofsData file name ==>', conferenceProofsData[i].name);
-                if(conferenceProofsData[i].name){
-                    conferenceData.append('conferenceProof' , conferenceProofsData[i]);
-                }
-            }
-        }
+        // if(conferenceDocumentsData.length > 0){
+        //     for(let i = 0; i <= conferenceDocumentsData.length - 1; i++){
+        //         console.log('conferenceDocumentsData file name ==>>', conferenceDocumentsData[i].name);
+        //         if(conferenceDocumentsData[i].name){
+        //             conferenceData.append('conferenceDocument' , conferenceDocumentsData[i]);
+        //         }
+        //     }
+        // }
+        // // for conference proof
+        // if(conferenceProofsData.length > 0){
+        //     for(let i = 0; i <= conferenceProofsData.length - 1; i++){
+        //         console.log('conferenceProofsData file name ==>', conferenceProofsData[i].name);
+        //         if(conferenceProofsData[i].name){
+        //             conferenceData.append('conferenceProof' , conferenceProofsData[i]);
+        //         }
+        //     }
+        // }
 
        // for setup of key value paire to send form data
-        conferenceData.append('titleOfPaper' , titleOfPaper);
+       
+       conferenceData.append('titleOfPaper' , titleOfPaper);
         conferenceData.append('conferenceName' , conferenceName);
         conferenceData.append('procedingDetail' , procedingDetail);
         conferenceData.append('conferencePlace' , conferencePlace);
@@ -728,8 +727,7 @@
         conferenceData.append('presentingAuthor' , presentingAuthor );
         conferenceData.append('nmimsCampus' , nmimsCampus );
         conferenceData.append('nmimsSchool' , nmimsSchool );
-
-
+        
         fetch(url , {
             method : 'POST',
             body : conferenceData
@@ -929,20 +927,6 @@
                 if(data.status === 'Done'){
                     console.log('data ==>>', data);
                     setFileNameInButtons(data);
-                    // viewTitleOfPaper.innerText = data.viewConferenceData[0].title_of_paper;
-                    // viewConferenceDocument.innerText = data.viewConferenceData[0].upload_files;
-                    // viewConferenceProof.innerText = data.viewConferenceData[0].upload_proof;    
-                    // viewConferenceName.innerText = data.viewConferenceData[0].name_and_place;
-                    // viewProcedingDetail.innerText = data.viewConferenceData[0].proceedings_detail;
-                    // viewSponsored.innerText = data.viewConferenceData[0].publication_details;
-                    // viewVolAndIssueNo.innerText = data.viewConferenceData[0].vol_and_issue_no;
-                    // viewIssnIsbnNo.innerText = data.viewConferenceData[0].issn_isbn_no;
-                    // viewDoiWebLinkId.innerText = data.viewConferenceData[0].doi_weblink;
-                    // viewConferencetype.innerText = data.viewConferenceData[0].publisher_category;
-                    // viewIsPresenter.innerText = data.viewConferenceData[0].is_presenter;
-                    // viewAuthortype.innerText = data.viewConferenceData[0].author_type.replace(/,/g, ' ');
-                    // viewAward.innerText = data.viewConferenceData[0].award_for_presentation;
-
                     // viewConferenceDocumentd = data.viewConferenceData[0].upload_files; 
                     // viewConferenceProofd = data.viewConferenceData[0].upload_proof;
                     viewNmimsCampus.innerText = data.viewConferenceData[0].nmims_campus;
@@ -962,7 +946,7 @@
                     viewPresentingAuthor.innerText = data.viewConferenceData[0].presenting_authors;
                     viewOrganizationBoy.innerText = data.viewConferenceData[0].organizing_body;
                     viewSpentAmount.innerText = data.viewConferenceData[0].spent_amount;
-                    viewPublicationDate.innerText = data.viewConferenceData[0].publication_date;
+                    viewPublicationDate.innerText = formatDateToYYYYMMDD(data.viewConferenceData[0].publication_date);
 
                 }
             })
@@ -1061,11 +1045,6 @@
     const updateConferencePublication = async(url) => {
         console.log('clickedddd')
         const updatedConferenceData = new FormData();
-        // const updatedTitleOfPaper = document.getElementById('title-of-paper').value;
-        // const updatedNameAndPlace = document.getElementById('name-and-place').value;
-        // const updatedProceedingDetails = document.getElementById('proceedings-detail').value;
-        // const updatedPublisherCategory = document.querySelector('input[name="publisher-category"]:checked').value;
-        // const updatedIsPresenter = document.querySelector('input[name="is-presenter"]:checked').value;
         const updatedAuthorType = document.querySelector('input[name="author-type"]:checked');
         const titleOfPaper = document.getElementById('title-of-paper').value;       
         const volAndIssueNo = document.getElementById('vol-and-issue-no').value;
@@ -1088,11 +1067,6 @@
         console.log('storedFacultyValue ===>>>>', storedFacultyValue)
         //function call 
         await updateFacultyNameString(updatedAuthorType, updatedConferenceData, storedFacultyValue);
-        // const updatedPublicationDetails = document.getElementById('presenting-author').value;
-        // const updatedVolAndIssueNo = document.getElementById('vol-and-issue-no').value;
-        // const updatedIssnIsbnNo = document.getElementById('issn-isbn-no').value;
-        // const updatedDoiWebLink = document.getElementById('doi-weblink').value;
-        // const updatedAward = document.querySelector('input[name="award-for-presentation"]:checked').value;
         const updatedConferenceFiles = document.getElementById('conference-documnets');
         const updatedConferenceProof = document.getElementById('conference-proofs');
         const updatedConferenceFilesData = updatedConferenceFiles.files;
@@ -1281,8 +1255,8 @@
     };
 
 
-    	        // EVENT LIST THAT WILL USE USE TO OPEN DROP DOWN LIST  
-                const externaltype = document.querySelector('.external-faculty');
+    	// EVENT LIST THAT WILL USE USE TO OPEN DROP DOWN LIST  
+        const externaltype = document.querySelector('.external-faculty');
         const enternalFacultyType = document.getElementById('is-internal');
         const externalFacultyType = document.getElementById('is-external');
         const employeeList = document.getElementById('employee-list');
@@ -1291,91 +1265,91 @@
         // let storedSelectedValue;
         let additionalDetails = []; 
 
-    const enternalText = document.getElementById('enternal-text');
-    
-    // employeesListData data came from backend
-    const employeesListData = document.getElementById('employees-list-data').dataset.employees;
-    const employeesDataObj = JSON.parse(employeesListData);
-    let employeeListArray = [];
+        const enternalText = document.getElementById('enternal-text');
+        
+        // employeesListData data came from backend
+        const employeesListData = document.getElementById('employees-list-data').dataset.employees;
+        const employeesDataObj = JSON.parse(employeesListData);
+        let employeeListArray = [];
 
    
-    // ajax for search bar to search employee name 
-    new TomSelect("#emp-name");
-    const authorNamesArray = [];
-    // function for select author name from drop down list
-    function handleEmployeeDropdownChange() {
-            const selectedValues = Array.from(employeeDropdown.options)
-                .filter(option => option.selected)
-                .map(option => option.value);
-            InternalAuthorValue = selectedValues.length === 0 ? "" : selectedValues;
-            authorNamesArray.push({'internalEmpList' : InternalAuthorValue})
-            console.log("Selected employee values:", InternalAuthorValue);
-            
-        }
-    
-    //function for handle add more details for storing current value of clicked
-    function handleAddMoreDetailsClick() {
-            const nameStringArray = [];
-            const authorName = document.getElementById("author-name").value;
-            console.log('authorName ====>>>>', authorName)
-            nameStringArray.push(authorName);
-            externalAuthorValue = ',' + nameStringArray.join(",");
-            console.log('nameStringArray ====>>>', nameStringArray.join(","))
-            authorNamesArray.push({'externalEmpList' : externalAuthorValue});
-            console.log("Stored external author names:", externalAuthorValue);
-        }
-     //event listner for handleAddMoreDetailsClick and handleEmployeeDropdownChange
-    addMoreDetailsButton.addEventListener("click", handleAddMoreDetailsClick);
-    employeeDropdown.addEventListener("change", handleEmployeeDropdownChange);
-
-    // function for add drop down list or  add new faculty data
-    async function insertFacultyNameString(authorType, conferenceData) {
-        console.log('authorType in side my function ====>>>', authorType);
-        // console.log('InternalAuthorValue ====>>>>>', InternalAuthorValue);
-        // console.log('externalAuthorValue ===>>>', externalAuthorValue)
-        const facultytype = authorType.value;
-        console.log('facultytype ===>>>', facultytype);
-        console.log('authorNamesArray ===>>>>', authorNamesArray)
-        const authorNameSting = JSON.stringify(authorNamesArray);
-        conferenceData.append('authorName', authorNameSting);
-        }
-
-    // fuction for updated faculty type
-    async function updateFacultyNameString(updatedAuthorType, updatedConferenceData, storedFacultyValue) {
-            console.log('storedFacultyValue in side update function ===>>>', storedFacultyValue)
-            console.log('updatedAuthorType ====>>>', updatedAuthorType);
-            console.log('externalAuthorValue ===>>>', externalAuthorValue);
-            console.log('InternalAuthorValue ====>>>>>', InternalAuthorValue);
-            console.log('storedFacultyValue ====>>> ', storedFacultyValue);
-            const updatedAuthorNameArrays = [];
-            if(!externalAuthorValue && ! InternalAuthorValue){
-                updatedAuthorNameArrays.push({'existingNameValue' : storedFacultyValue})
-                const updatedAuthorNameString = JSON.stringify(updatedAuthorNameArrays);
-                updatedConferenceData.append('authorName', updatedAuthorNameString)
+        // ajax for search bar to search employee name 
+        new TomSelect("#emp-name");
+        const authorNamesArray = [];
+        // function for select author name from drop down list
+        function handleEmployeeDropdownChange() {
+                const selectedValues = Array.from(employeeDropdown.options)
+                    .filter(option => option.selected)
+                    .map(option => option.value);
+                InternalAuthorValue = selectedValues.length === 0 ? "" : selectedValues;
+                authorNamesArray.push({'internalEmpList' : InternalAuthorValue})
+                console.log("Selected employee values:", InternalAuthorValue);
+                
             }
-            else{
-                updatedAuthorNameArrays.push({'externalEmpList' : externalAuthorValue})
-                updatedAuthorNameArrays.push({'internalEmpList' : InternalAuthorValue})
-                const updatedAuthorNameString = JSON.stringify(updatedAuthorNameArrays);
-                console.log('updatedAuthorNameString ===>>>>', updatedAuthorNameString);
-                updatedConferenceData.append('authorName', updatedAuthorNameString)
-            }
-        }
     
-    function enternalFacultyDropDownList() {
-        employeeList.classList.remove('d-none');
-        authorDetails.classList.add('d-none');
-    }
+        //function for handle add more details for storing current value of clicked
+        function handleAddMoreDetailsClick() {
+                const nameStringArray = [];
+                const authorName = document.getElementById("author-name").value;
+                console.log('authorName ====>>>>', authorName)
+                nameStringArray.push(authorName);
+                externalAuthorValue = ',' + nameStringArray.join(",");
+                console.log('nameStringArray ====>>>', nameStringArray.join(","))
+                authorNamesArray.push({'externalEmpList' : externalAuthorValue});
+                console.log("Stored external author names:", externalAuthorValue);
+            }
+        //event listner for handleAddMoreDetailsClick and handleEmployeeDropdownChange
+        addMoreDetailsButton.addEventListener("click", handleAddMoreDetailsClick);
+        employeeDropdown.addEventListener("change", handleEmployeeDropdownChange);
 
-    function externalFacultyDetails(){
-        employeeList.classList.add('d-none');
-        authorDetails.classList.remove('d-none');
-    }
+        // function for add drop down list or  add new faculty data
+        async function insertFacultyNameString(authorType, conferenceData) {
+            console.log('authorType in side my function ====>>>', authorType);
+            // console.log('InternalAuthorValue ====>>>>>', InternalAuthorValue);
+            // console.log('externalAuthorValue ===>>>', externalAuthorValue)
+            const facultytype = authorType.value;
+            console.log('facultytype ===>>>', facultytype);
+            console.log('authorNamesArray ===>>>>', authorNamesArray)
+            const authorNameSting = JSON.stringify(authorNamesArray);
+            conferenceData.append('authorName', authorNameSting);
+            }
 
-    // making d-none external faculty
-    enternalFacultyType.addEventListener('click' ,enternalFacultyDropDownList)
-    //making d-none internal faculty
-    externalFacultyType.addEventListener('click' , externalFacultyDetails)
+        // fuction for updated faculty type
+        async function updateFacultyNameString(updatedAuthorType, updatedConferenceData, storedFacultyValue) {
+                console.log('storedFacultyValue in side update function ===>>>', storedFacultyValue)
+                console.log('updatedAuthorType ====>>>', updatedAuthorType);
+                console.log('externalAuthorValue ===>>>', externalAuthorValue);
+                console.log('InternalAuthorValue ====>>>>>', InternalAuthorValue);
+                console.log('storedFacultyValue ====>>> ', storedFacultyValue);
+                const updatedAuthorNameArrays = [];
+                if(!externalAuthorValue && ! InternalAuthorValue){
+                    updatedAuthorNameArrays.push({'existingNameValue' : storedFacultyValue})
+                    const updatedAuthorNameString = JSON.stringify(updatedAuthorNameArrays);
+                    updatedConferenceData.append('authorName', updatedAuthorNameString)
+                }
+                else{
+                    updatedAuthorNameArrays.push({'externalEmpList' : externalAuthorValue})
+                    updatedAuthorNameArrays.push({'internalEmpList' : InternalAuthorValue})
+                    const updatedAuthorNameString = JSON.stringify(updatedAuthorNameArrays);
+                    console.log('updatedAuthorNameString ===>>>>', updatedAuthorNameString);
+                    updatedConferenceData.append('authorName', updatedAuthorNameString)
+                }
+            }
+    
+        function enternalFacultyDropDownList() {
+            employeeList.classList.remove('d-none');
+            authorDetails.classList.add('d-none');
+        }
+
+        function externalFacultyDetails(){
+            employeeList.classList.add('d-none');
+            authorDetails.classList.remove('d-none');
+        }
+
+        // making d-none external faculty
+        enternalFacultyType.addEventListener('click' ,enternalFacultyDropDownList)
+        //making d-none internal faculty
+        externalFacultyType.addEventListener('click' , externalFacultyDetails)
 
 </script>
 <%- include('./partials/pagination') %>

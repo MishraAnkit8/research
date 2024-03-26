@@ -1,11 +1,666 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1>E content development</h1>
-</body>
-</html>
+<%- include('./partials/head') %>
+<!-- inline csss -->
+<!-- Navbar section -->
+<%- include('./partials/header') %>
+<!-- This is left sidebar  -->
+<%- include('./partials/left-sidebar') %>
+
+<main class="main" id="main-content">
+    <div class="base-section coustom-section">
+        <!--DASHBOARD CONTENT START-->
+        <div class="errorHtml"></div>
+        <div class="breadcrumbs-container">
+            <ul class="breadcrumb">
+                <li class="breadcrumb-link">
+                    <a href="<%- BASE_URL %>research"> RESEARCH </a>
+                </li>
+                <li class="breadcrumb-link"> E-Content Devolpment </li>
+            </ul>
+        </div>
+        <div>
+            <div class="table-card-header text-uppercase d-flex align-items-center justify-content-between">
+                <div>
+                    <h5 class="pl-2">E-Content Devolpment List </h5>
+                </div>
+                <div>
+                    <button id="e-content-development-form" type="button" class="btn btn-primary add-modal" data-toggle="modal"
+                        data-target="#e-content-modal">
+                        <i class="fas fa-plus plus"></i></button>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body table-responsive">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <label>Show Entries</label>
+                        <select class="form-select" id="changeEntry">
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                            <option value="150">150</option>
+                            <option value="200">200</option>
+                            <option value="250">250</option>
+                            <option value="300">300</option>
+                            <option value="350">350</option>
+                            <option value="400">400</option>
+                            <option value="500">500</option>
+                            <option value="800">800</option>
+                            <option value="1000">1000</option>
+                        </select>
+                    </div>
+                    <div>
+                        <div class="table-searchbar-container">
+                            <button type="button" id="searchBtn"><i class="fas fa-search"></i></button>
+                            <input type="search" id="searchKeyword" placeholder="Enter keywords" class="table-searchbar">
+                        </div>
+                    </div>
+                </div>
+                <table class="table custom-table table-responsive research-pagination" id="e-content-development-list">
+                    <thead>
+                        <th class="col-lg-1">#</th>
+                        <th class="col-lg-1 faculty-name">Name of the Faculty </th>
+                        <th class="col-lg-1 module-name">Name of the module developed</th>
+                        <th class="col-lg-1 plateform-name">Platform on which module is developed</th>
+                        <th class="col-lg-1 document-link">Document Link</th>
+                        <th class="col-lg-1 e-content-list">E-Content List</th>
+                        <th class="col-lg-1 video-media-center-link">Video/Media Center Recording List</th>
+                        <th class="col-lg-1">Action</th>
+                    </thead>
+                    <% eContentData.forEach(function(eContent,index) { %> 
+                        <tr data-e-content-id="<%- eContent.id %>" data-launching-date="<%- eContent.launch_date %>" >
+                            <td class="col-lg-1"><%- index+1 %></td>
+                            <td class="col-lg-1 faculty-name"><%- eContent.faculty_name %> </td>
+                            <td class="col-lg-1 module-name"><%- eContent.module_name %> </td>
+                            <td class="col-lg-1 plateform-name"><%- eContent.platform %> </td>
+                            <td class="col-lg-1 document-link"><%- eContent.document_links %> </td>
+                            <td class="col-lg-1 e-content-list"><%- eContent.content_development_facilities %> </td>
+                            <td class="col-lg-1 video-media-center-link"><%- eContent.media_centre_video_link %> </td>
+                            <td class="col-lg-1">
+                                <label class="view" data-e-content-id="<%- eContent.id %>">
+                                    <i class="fa-solid fa-eye view text-danger"
+                                        data-e-content-id="<%- eContent.id %>"></i>
+                                </label>
+                                <label class="edit" data-e-content-id="<%- eContent.id %>">
+                                    <i class="fa fa-edit edit text-danger"
+                                        data-e-content-id="<%- eContent.id %>"></i>
+                                </label>
+                                <label class="delete" data-e-content-id="<%- eContent.id %>">
+                                    <i class="fa-solid fa-trash delete text-danger"
+                                        data-e-content-id="<%- eContent.id %>"></i>
+                                </label>
+                            </td>
+                        </tr>
+                        <% }) %>
+                </table>
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <label id="total-row-count">Total entries : <%- rowCount %> </label>
+                        <label class="d-none" id="row-count"> <%- rowCount %></label>
+                    </div>
+                    <div>
+                        <div>
+                            <button id="prevBtn" class="btn btn-primary">Previous</button>
+                            <button id="nextBtn" class="btn btn-primary">Next</button>
+                            <p id="pagination" class="pagination-search"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--Import Modal -->
+        <div class="modal fade" id="open-program-modal" tabindex="-1" aria-labelledby="open-program-modal"
+            aria-hidden="true">
+        </div>
+        <!-- EDIT PROGRAM AND UPDATE -->
+        <div class="modal fade" id="edit-program-modal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editModalLabel">Update Program</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div id="errorHtml"></div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="exampleInputEmail1" class="form-label">Program Name</label>
+                            <input type="text" class="form-control" id="program_name" name="program_name">
+                            <input type="hidden" class="form-control" id="hidden_id" name="hidden_id">
+                        </div>
+                        <div class="mb-3">
+                            <label for="exampleInputPassword1" class="form-label">Program Type</label>
+                            <select class="form-control" name="program_type_lid" id="program_type_lid">
+    
+                                <option value="1">Full Time</option>
+    
+                                <option value="2">Part Time</option>
+    
+                            </select>
+                        </div>
+    
+                        <div class="mb-3">
+                            <label for="abbr" class="form-label">Program Abbr</label>
+                            <input type="text" class="form-control" id="abbr" name="abbr">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary updateProgram">Update</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Modal form for e-content publication -->
+<div class="modal fade " id="e-content-modal" tabindex="-1" role="dialog" aria-labelledby="e-content-modal"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg modal-fullscreen p-5" role="document">
+        <div class="modal-content modal-content-data validate-input">
+            <div class="modal-header">
+                <p id="e-content">E-Content Development Modal </p>
+                <div class="close" data-dismiss="modal" aria-label="Close">
+                    <span type="button"><i class="fas fa-times "></i></span>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                     <!-- Name of the Faculty -->
+                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="faculty-name" class="form-label fw-bold"> Name of the Faculty </label>
+                        <input type="text"  id="faculty-name" data-validate="isEmpty,isExist" data data-err-msg="This field is required and min length > 1." class="form-control number"
+                            required>
+                    </div>
+                    <!-- Name of the module developed -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="module-name" class="form-label fw-bold"> Name of the module developed </label>
+                        <input type="text"  id="module-name" data-validate="isEmpty,isExist" data data-err-msg="This field is required and min length > 1." class="form-control number"
+                            required>
+                    </div>
+                    <!--  	Platform on which module is developed -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="plateform-name" class="form-label  fw-bold"> Platform on which module is developed</label>
+                        <input type="text" name="plateform-name" id="plateform-name" class="form-control"
+                            data-validate="isEmpty,isNotNumber,isExist,isLength:2:255"  data-err-msg="This field is required and min length > 1." required />
+                    </div>
+                    <!-- Date of launching e content -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="launching-date" class="form-label  fw-bold"> Date of launching e content </label>
+                            <input type="date" name="launching-date" id="launching-date"
+                                data-validate="isEmpty,isExist"  data-err-msg="Date is required ." class="form-control"
+                               required />
+                    </div>
+
+                     <!-- Link to the relevant document and facility available in the institution  -->
+                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                            <label for="document-link" class="form-label  fw-bold"> Link to the relevant document and facility available in the institution </label>
+                            <input type="text" name="document-link" id="document-link"
+                                data-validate="isEmpty,isNotNumber,isExist,isLength:2:255"  data-err-msg="This field is required and min length > 1." class="form-control"
+                               required />
+                    </div>
+
+                    <!-- List of the e-content development facility available-->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="e-content-list" class="form-label fw-bold">
+                            List of the e-content development facility available
+                        </label>
+                        <input type="text" name="e-content-list" id="e-content-list"
+                            data-validate="isEmpty,isNotNumber,isExist,isLength:2:255"  data-err-msg="This field is required and min length > 1." class="form-control" required>
+                    </div>
+
+                    <!-- Provide link to videos of the media centre and recording facility -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="video-media-center-link" class="form-label fw-bold">
+                            Provide link to videos of the media centre and recording facility
+                        </label>
+                        <input type="text" name="video-media-center-link" id="video-media-center-link"
+                            data-validate="isEmpty,isNotNumber,isExist,isLength:2:255"  data-err-msg="This field is required and min length > 1." class="form-control" required>
+                    </div>
+                </div>
+            </div>
+            <!-- footer button -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary " id="submit-btn">Submit</button>
+                <button type="button" class="btn btn-primary d-none" id="update-btn">update</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- modal form for view  econtent development data -->
+<div class="modal fade " id="view-econtent-development-modal" tabindex="-1" role="dialog" aria-labelledby="view-econtent-development-data"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg modal-fullscreen p-5" role="document">
+        <div class="modal-content modal-content-data">
+            <div class="modal-header">
+                <h5 class="modal-title" id="conference-publication">E-Content Developments </h5>
+                <div class="close" data-dismiss="modal" aria-label="Close">
+                    <span type="button"><i class="fas fa-times "></i></span>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                     <!-- Name of the Faculty -->
+                     <div class=" col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text"> Name of the Faculty:</div>
+                            <label class="view-content" id="view-faculty-name"></label>
+                        </div>
+                    </div>
+                     <!-- Name of the module developed-->
+                     <div class=" col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text">Name of the module developed:</div>
+                            <label class="view-content" id="view-module-name"></label>
+                        </div>
+                    </div>
+                    <!-- Platform on which module is developed  -->
+                    <div class=" col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text"> Platform on which module is developed :</div>
+                            <label class="view-content" id="view-platform-name"></label>
+                        </div>
+                    </div>
+        
+                    <!-- Date of launching e content -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text">Date of launching e content:</div>
+                            <label class="view-content" id="view-launching-date"></label>
+                        </div>
+                    </div>
+
+                    <!-- Link to the relevant document and facility available in the institution -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text"> Link to the relevant document and facility available in the institution:</div>
+                            <label class="view-content" id="view-document-link"></label>
+                        </div>
+                    </div>
+                    <!-- List of the e-content development facility available  -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text">List of the e-content development facility available :</div>
+                            <label class="view-content" id="view-e-content-facility-list"></label>
+                        </div>
+                    </div>
+                    <!-- Provide link to videos of the media centre and recording facility -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text">Provide link to videos of the media centre and recording facility :</div>
+                            <label class="view-content" id="view-media-center-link"></label>
+                        </div>
+                    </div>
+                </div>  
+            </div>
+            <!-- footer button -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const rowCount = document.getElementById('row-count');
+    let rowIndex = rowCount.innerText;
+    let indexValue = parseInt(rowIndex, 10);
+    console.log('indexValue ==>', indexValue);
+    const totalRowCount = document.getElementById('total-row-count');
+    const eContentDataList  = document.getElementById('e-content-development-list');
+    let eContentId, eContentRowToBeUpdate;
+    const econtentAddNewForm = document.getElementById('e-content-development-form');
+    const submitBtn = document.getElementById('submit-btn');
+    const updateBtn = document.getElementById('update-btn');
+    
+    econtentAddNewForm.addEventListener('click', (event) => {
+        if(event.target.tagName === 'BUTTON' && event.target.classList.contains('add-modal') || event.target.classList.contains('plus')){
+            updateBtn.classList.add('d-none');
+            submitBtn.classList.remove('d-none');
+            document.getElementById('faculty-name').value = '';
+            document.getElementById('module-name').value = '';
+            document.getElementById('plateform-name').value = '';
+            document.getElementById('launching-date').value = '';
+            document.getElementById('document-link').value = '';
+            document.getElementById('e-content-list').value = '';
+            document.getElementById('video-media-center-link').value = '';
+        }
+    })
+
+    const inserEDevelopMentcontent = async(url) => {
+
+        // const EcontentFormData = new FormData();
+        const EcontentFormData = {};
+
+        EcontentFormData.facultyName = document.getElementById('faculty-name').value;
+        EcontentFormData.moduleName = document.getElementById('module-name').value;
+        EcontentFormData.platformName = document.getElementById('plateform-name').value;
+        EcontentFormData.launchingDate = document.getElementById('launching-date').value;
+        EcontentFormData.documentLink = document.getElementById('document-link').value;
+        EcontentFormData.eContentList = document.getElementById('e-content-list').value;
+        EcontentFormData.MediaCenterLink = document.getElementById('video-media-center-link').value;
+
+    //    EcontentFormData.append('facultyName', facultyName);
+    //    EcontentFormData.append('moduleName', moduleName);
+    //    EcontentFormData.append('platformName', platformName);
+    //    EcontentFormData.append('launchingDate', launchingDate);
+    //    EcontentFormData.append('documentLink', documentLink);
+    //    EcontentFormData.append('eContentList', eContentList);
+    //    EcontentFormData.append('MediaCenterLink', MediaCenterLink);
+
+       const payload = {
+        EcontentFormData : EcontentFormData
+       }
+
+       console.log('payload ===>>>', payload)
+
+       fetch(url , {
+        method : 'POST',
+        headers: {
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+       })
+       .then((Response) => {
+        return Response.ok ? Response.json() : 'NetWork Is Not Ok'
+       })
+       .then((data) => {
+        if(data.status === 'Done'){
+            console.log('data ===>>>>', data);
+            const rowCountInteger = parseInt(data.rowCount, 10);
+            const IndexEntry = rowCountInteger + indexValue;
+            indexValue = IndexEntry;
+            console.log('IndexEntry ===>>>', IndexEntry);
+            const newEContentRow = document.createElement('tr');
+            newEContentRow.setAttribute('data-e-content-id', data.eContentId)
+            newEContentRow.setAttribute('data-launching-date', data.EcontentData.launchingDate)
+            newEContentRow.innerHTML = `
+                <td class="col-lg-1">${IndexEntry}</td>
+                <td class="col-lg-1 faculty-name">${data.EcontentData.facultyName} </td>
+                <td class="col-lg-1 module-name">${data.EcontentData.moduleName} </td>
+                <td class="col-lg-1 plateform-name">${data.EcontentData.platformName} </td>
+                <td class="col-lg-1 document-link">${data.EcontentData.documentLink} </td>
+                <td class="col-lg-1 e-content-list">${data.EcontentData.eContentList} </td>
+                <td class="col-lg-1 video-media-center-link">${data.EcontentData.MediaCenterLink}</td>
+                <td class="col-lg-1">
+                    <label class="view" data-e-content-id="${data.eContentId}">
+                        <i class="fa-solid fa-eye view text-danger" data-e-content-id="${data.eContentId}"></i>
+                    </label>
+                    <label class="edit" data-e-content-id="${data.eContentId}
+                    <i class="fa fa-edit edit text-danger" data-e-content-id="${data.eContentId}"></i>
+                    </label>
+                    <label class="delete" data-e-content-id="${data.eContentId}"> <i class="fa-solid fa-trash delete text-danger"
+                    ata-e-content-id="${data.eContentId}"></i>
+                    </label>
+                </td>
+            `
+            eContentDataList.appendChild(newEContentRow);
+                Swal.fire({
+							position: "top-center",
+							icon: "success",
+							title: `${data.message}`,
+							showConfirmButton: false
+							// timer: 1500
+						});
+                rowCount.classList.remove('d-none');
+                totalRowCount.classList.add('d-none');
+                rowCount.innerText = `Total entries : ${IndexEntry}`
+                $('#e-content-modal').modal('hide');
+                }
+                else {
+                    console.log('data ====>>>>>', data);
+                    Swal.fire({
+                        position: "top-center",
+                        icon: "error",
+                        title: `${data.errorCode}`,
+                        color: "red",
+                        with: "20PX",
+                        html: `<span style="color: red;">${data.message}</span>`,
+                        showConfirmButton: false,
+                    });
+        }
+        })
+        .catch((error) => {
+                    // This will catch network errors and errors thrown from the .then block above
+                    console.error('Error:', error);
+                    const message = error;
+                    Swal.fire({
+							position: "top-center",
+							icon: "error",
+							title: "Data Insertion Failed",
+							color : "red",
+							with : "20PX",
+							html: `<span style="color: red;">${message}</span>`,
+							showConfirmButton: false,
+						});
+                });
+    };
+
+    submitBtn.addEventListener('click', async () => {
+       const isValid = validateRequiredFormFields(submitBtn);
+       if(isValid) {
+            await inserEDevelopMentcontent('<%- BASE_URL %>research/e-content/insert');
+       }
+       else{
+        Swal.fire({
+				position: "top-center",
+				icon: "error",
+				title: "Validation Failed",
+				color : "red",
+				showConfirmButton: false,
+		});
+       }
+    });
+
+    eContentDataList.addEventListener('click', (event) => {
+        if(event.target.classList.contains('edit')){
+            submitBtn.classList.add('d-none');
+            updateBtn.classList.remove('d-none');
+            eContentRowToBeUpdate = event.target.closest('tr');
+            console.log('eContentRowToBeUpdate ===>>>>', eContentRowToBeUpdate);
+            eContentId = eContentRowToBeUpdate.getAttribute('data-e-content-id');
+            console.log('eContentId ====>>>>', eContentId);
+            document.getElementById('faculty-name').value = eContentRowToBeUpdate.querySelector('.faculty-name').innerText;
+            document.getElementById('module-name').value = eContentRowToBeUpdate.querySelector('.module-name').innerText;
+            document.getElementById('plateform-name').value = eContentRowToBeUpdate.querySelector('.plateform-name').innerText;
+            const launchingDate = eContentRowToBeUpdate.getAttribute('data-launching-date');
+            console.log('launchingDate ===>>>>', launchingDate);
+            document.getElementById('launching-date').value = formatDateToYYYYMMDD(launchingDate);
+            document.getElementById('document-link').value = eContentRowToBeUpdate.querySelector('.document-link').innerText;
+            document.getElementById('e-content-list').value = eContentRowToBeUpdate.querySelector('.e-content-list').innerText;
+            document.getElementById('video-media-center-link').value = eContentRowToBeUpdate.querySelector('.video-media-center-link').innerText;
+            $('#e-content-modal').modal('show');
+        }
+
+        if (event.target.classList.contains('delete')) {
+            const rowToBeDeleted = event.target.closest('tr');
+            console.log('rowToBeDeleted ===>>>>>', rowToBeDeleted);
+            eContentId = rowToBeDeleted.getAttribute('data-e-content-id');
+
+            let confirmDelete = "Do you want to delete the Book  E-content Devoloment record?";
+            if (confirmDelete) {
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "You won't be able to revert this!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes, delete it!"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Execute fetch request here after confirmation
+                        fetch('<%- BASE_URL %>research/e-content/delete', {
+                            method: 'POST',
+                            headers: {
+                                'content-type': 'application/json'
+                            },
+                            body: JSON.stringify({ eContentId })
+                        })
+                            .then((result) => result.json())
+                            .then((data) => {
+                                if (data.status === 'Done') {
+                                    console.log('data ==>>', data);
+                                    rowToBeDeleted.remove();
+                                    Swal.fire({
+                                        title: "Deleted!",
+                                        text: "Record has been deleted.",
+                                        icon: "success"
+                                    }).then(() => {
+                                        location.reload();
+                                    });
+                                }
+                            })
+                            .catch((error) => {
+                                console.error('Error:', error);
+                                const message = error;
+                                Swal.fire({
+                                    position: "top-center",
+                                    icon: "error",
+                                    title: `${message}`,
+                                    color: "red",
+                                    showConfirmButton: false,
+                                });
+                            });
+                    }
+                });
+            }
+            else {
+                return
+            }
+        }
+
+        if(event.target.classList.contains('view')){
+            const rowToBeViewed = event.target.closest('tr');
+            console.log('rowToBeViewed ===>>>>>', rowToBeViewed);
+            eContentId = rowToBeViewed.getAttribute('data-e-content-id');
+            $('#view-econtent-development-modal').modal('show');
+
+            fetch('<%- BASE_URL %>research/e-content/view', {
+                method : 'POST',
+                headers : {
+                    'content-type' : 'application/json'
+                },
+                body : JSON.stringify({eContentId})
+            })
+            .then((Response) => {
+                return Response.ok ? Response.json() : 'Network Response was not okk'
+            })
+            .then((data) => {
+                if(data.status === "Done"){
+                    console.log('data ====>>>>>', data);
+                    document.getElementById('view-faculty-name').innerText = data.viewEcontentData
+                    document.getElementById('view-module-name').innerText = data.viewEcontentData
+                    document.getElementById('view-platform-name').innerText = data.viewEcontentData
+                    document.getElementById('view-launching-date').innerText = data.viewEcontentData
+                    document.getElementById('view-document-link').innerText = data.viewEcontentData
+                    document.getElementById('view-e-content-list').innerText = data.viewEcontentData
+                    document.getElementById('view-e-content-facility-list').innerText = data.viewEcontentData
+                    document.getElementById('view-media-center-link').innerText = data.viewEcontentData
+                    
+
+                }
+            })
+        }
+    })
+
+    const updateEContentFormData = async(url) => {
+        const updatedEContentData = {};
+        updatedEContentData.eContentId = eContentId;
+        updatedEContentData.facultyName = document.getElementById('faculty-name').value;
+        updatedEContentData.moduleName = document.getElementById('module-name').value;
+        updatedEContentData.platformName = document.getElementById('plateform-name').value;
+        updatedEContentData.launchingDate = document.getElementById('launching-date').value;
+        updatedEContentData.documentLink = document.getElementById('document-link').value;
+        updatedEContentData.eContentList = document.getElementById('e-content-list').value;
+        updatedEContentData.MediaCenterLink = document.getElementById('video-media-center-link').value;
+        const payload = {
+            updatedEContentData : updatedEContentData
+        }
+
+        fetch(url , {
+            method : 'POST',
+            headers: {
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+
+        })
+        .then((Response) => {
+            return Response.ok ? Response.json() : "Network Was Not Okk"
+        })
+        .then((data) => {
+            if(data.status === "Done"){
+                console.log('data ==>>>>', data);
+                eContentRowToBeUpdate.setAttribute('data-launching-date', data.updatedEContentData.launchingDate);
+                eContentRowToBeUpdate.querySelector('.faculty-name').innerText = data.updatedEContentData.facultyName;
+                eContentRowToBeUpdate.querySelector('.module-name').innerText = data.updatedEContentData.moduleName;
+                eContentRowToBeUpdate.querySelector('.plateform-name').innerText = data.updatedEContentData.platformName;
+                eContentRowToBeUpdate.querySelector('.document-link').innerText = data.updatedEContentData.documentLink;
+                eContentRowToBeUpdate.querySelector('.e-content-list').innerText = data.updatedEContentData.eContentList;
+                eContentRowToBeUpdate.querySelector('.video-media-center-link').innerText = data.updatedEContentData.MediaCenterLink;
+                Swal.fire({
+							position: "top-center",
+							icon: "success",
+							title: `${data.message}`,
+							showConfirmButton: false,
+							timer: 1500
+						});
+                        $('#e-content-modal').modal('hide');;
+            }
+            else{
+                        const message = data.message;
+                        console.log('data ===>>>', data)
+                        console.log('message ==:::', message);
+                        Swal.fire({
+							position: "top-center",
+							icon: "error",
+							title: `${data.errorCode}`,
+							color : "red",
+							with : "20PX",
+							html: `<span style="color: red;">${data.message}</span>`,
+							showConfirmButton: false,
+						});
+           }
+        })
+        .catch((error) => {
+            const message  = error 
+            Swal.fire({
+						position: "top-center",
+						icon: "error",
+						title: `${message}`,
+						color : "red",
+						showConfirmButton: false,
+						});
+        })
+    }
+
+    updateBtn.addEventListener('click' , async() => {
+        formGroup = updateBtn.closest('.validate-input')
+        console.log("formGroup::::::::", formGroup)
+        formGroup.querySelectorAll('input[type="file"]')?.forEach(elm => {
+            console.log("elm:::::::::", elm);
+            elm.removeAttribute('data-validate')
+        })
+        const isValid = validateRequiredFormFields(updateBtn);
+       if(isValid) {
+            await updateEContentFormData('<%- BASE_URL %>research/e-content/update');
+       }
+       else{
+        Swal.fire({
+							position: "top-center",
+							icon: "error",
+							title: "Validation Failed",
+							color : "red",
+							showConfirmButton: false,
+						});
+       }
+    })
+
+</script>
+<%- include('./partials/pagination') %>
+<%- include('./partials/footer') %>
+<%- include('./partials/footer-end') %>

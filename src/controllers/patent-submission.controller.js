@@ -62,18 +62,26 @@ module.exports.updatePatentSubMissiom = async(req, res, next) => {
 module.exports.deletePatentData = async(req, res, next) => {
     const patentId = req.body;
     const deletePatentsubMission = await patentSubmissionservice.deletePatentSubmission(patentId);
-    if(deletePatentsubMission.status === 'done'){
-        res.status(200).send({
-            status : deletePatentsubMission.status,
-            massage : deletePatentsubMission.massage
-        })
-    }
-    else{
-        res.status(500).send({
-            status : deletePatentsubMission.status,
-            massage : deletePatentsubMission.massage
-        })
-    }
+
+    console.log('deletePatentsubMission in controller ===>>>', deletePatentsubMission)
+    const statusCode = deletePatentsubMission.status === "Done" ? 200 : (deletePatentsubMission.errorCode ? 400 : 500);
+    res.status(statusCode).send({
+        status : deletePatentsubMission.status,
+        message : deletePatentsubMission.message,
+        errorCode : deletePatentsubMission.errorCode ? deletePatentsubMission.errorCode : null
+    })
+    // if(deletePatentsubMission.status === 'done'){
+    //     res.status(200).send({
+    //         status : deletePatentsubMission.status,
+    //         massage : deletePatentsubMission.massage
+    //     })
+    // }
+    // else{
+    //     res.status(500).send({
+    //         status : deletePatentsubMission.status,
+    //         massage : deletePatentsubMission.massage
+    //     })
+    // }
 }
 
 module.exports.viewPatentSubmissionData = async(req, res, next) => {
