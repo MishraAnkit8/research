@@ -23,6 +23,8 @@ const IPRController = require('../controllers/IPR.controller');
 const researchAwardController = require('../controllers/research-award-controller');
 const eContentDevelopMentCon = require('../controllers/e-content-development.controller');
 
+const nmimsConsultancyForm = require('../controllers/nmims-consultancy-form.controller');
+
 // services
 const patentSubmissionServices = require('../services/patent-submission.service');
 const researchProjGrantServices = require('../services/research-project-grant.service');
@@ -118,7 +120,8 @@ router.post('/e-content/update', asyncErrorHandler(eContentDevelopMentCon.update
 router.post('/e-content/delete', asyncErrorHandler(eContentDevelopMentCon.deleteEcontentRowData));
 router.post('/e-content/view', asyncErrorHandler(eContentDevelopMentCon.viewEContentData));
 
-
+// nmims consultancy form
+router.get('/consultancy-form', asyncErrorHandler(nmimsConsultancyForm.renderNmimsConsultancyForm))
 
 
 

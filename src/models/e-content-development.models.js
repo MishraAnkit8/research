@@ -97,7 +97,7 @@ module.exports.viewEContentDevelopmentData = async(eContentId) => {
     let sql = {
         text : `SELECT faculty_name, module_name, platform, launch_date, document_links, content_development_facilities, media_centre_video_link FROM 
             e_content_development WHERE id = $1`,
-        valus : [eContentId]
+        values : [eContentId]
     }
     console.log('sql ===>>>>>', sql);
     const viewRecord = await researchDbR.query(sql);

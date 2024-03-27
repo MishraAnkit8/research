@@ -7,7 +7,7 @@ const researchDbW = dbPoolManager.get('researchDbW', research_write_db);
 
 module.exports.fetchIPRData = async() => {
     let iPRSql = {
-        text: `SELECT * FROM IPR ORDER BY id`
+        text: `SELECT * FROM consultancy_approval_form ORDER BY id`
     };
     let internalEmpSql = {
         text: `SELECT * FROM employee_table ORDER BY id`

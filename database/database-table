@@ -483,3 +483,85 @@ CREATE TABLE e_content_development (
   	content_development_facilities TEXT,
     media_centre_video_link TEXT
 );
+
+
+CREATE TABLE consultancy_approval_form(
+	id SERIAL PRIMARY KEY,
+	year INTEGER,
+	title text,
+	faculty_table_id INT,
+	commencement_date DATE,
+	completion_date DATE,
+	per_session_fees INTEGER,
+	days INTEGER,
+	sessions INTEGER,
+	total_fees INTEGER,
+	gross_fees INTEGER,
+	faculty_shares VARCHAR(255),
+	nmims_shares VARCHAR(255),
+	research_staff_expenses INTEGER,
+	travel INTEGER,
+	computer_charges INTEGER,
+	nmims_facility_charges INTEGER,
+	miscellaneous_including_contingency INTEGER,
+	advanced_payment INTEGER,
+	final_payment INTEGER,
+	total_payment INTEGER,
+	FOREIGN KEY (faculty_table_id) REFERENCES faculty_table(id),
+	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+)
+
+CREATE TABLE faculty_table(
+	id SERIAL PRIMARY KEY,
+	faculty_name VARCHAR(255),
+	designation VARCHAR(255),
+	address VARCHAR(255),
+	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+);
+
+drop table consultancy_approval_form;
+
+
+-- Insert into faculty_table
+INSERT INTO faculty_table (faculty_name, designation, address)
+VALUES ('John Doe', 'Professor', '123 Main St');
+
+-- Insert into consultancy_approval_form
+INSERT INTO consultancy_approval_form (year, title, faculty_table_id, commencement_date, completion_date,per_session_fees ,
+	days, sessions, total_fees, gross_fees, faculty_shares, nmims_shares, research_staff_expenses, travel, computer_charges, nmims_facility_charges, miscellaneous_including_contingency, advanced_payment, final_payment, total_payment)
+VALUES (2024, 'Project Title', 2, '2024-01-01', '2024-12-31',10, 20, 1500, 15000, 15000, '70%', '30%', 1000, 500, 200, 300, 150, 5000, 10000, 15000);
+
+
+
+SELECT 
+    f.id AS faculty_id,
+    f.faculty_name,
+    f.designation,
+    f.address,
+    c.id AS consultancy_id,
+    c.year,
+    c.title,
+    c.commencement_date,
+    c.completion_date,
+    c.research_staff_expenses,
+    c.travel,
+    c.computer_charges,
+    c.nmims_facility_charges,
+    c.miscellaneous_including_contingency,
+    c.advanced_payment,
+    c.final_payment,
+    c.total_payment,
+	c.gross_fees,
+	c.per_session_fees ,
+	c.days ,
+	c.sessions ,
+	c.total_fees ,
+	c.faculty_shares,
+	c.nmims_shares
+FROM 
+    faculty_table f
+JOIN 
+    consultancy_approval_form c ON f.id = c.faculty_table_id;
