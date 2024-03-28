@@ -12,3 +12,10 @@ module.exports.renderNmimsConsultancyForm = async(req, res, next) => {
         errorCode : renderConsultancyData.errorCode ? renderConsultancyData.errorCode : null
     })
 }
+
+
+module.exports.viewConsultancyFormApprovalData = async(req, res, next) => {
+    console.log('nmimsConsultancyFormId in controller ===>>>>', req.body);
+
+
+}

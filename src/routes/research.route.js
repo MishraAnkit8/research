@@ -121,7 +121,9 @@ router.post('/e-content/delete', asyncErrorHandler(eContentDevelopMentCon.delete
 router.post('/e-content/view', asyncErrorHandler(eContentDevelopMentCon.viewEContentData));
 
 // nmims consultancy form
-router.get('/consultancy-form', asyncErrorHandler(nmimsConsultancyForm.renderNmimsConsultancyForm))
+router.get('/NMIMS-consultancy-form', asyncErrorHandler(nmimsConsultancyForm.renderNmimsConsultancyForm));
+router.get('/NMIMS-consultancy-form/view', asyncErrorHandler(nmimsConsultancyForm.viewConsultancyFormApprovalData));
+
 
 
 

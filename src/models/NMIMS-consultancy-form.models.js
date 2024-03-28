@@ -9,7 +9,7 @@ module.exports.renderNmimsConsultancyApprovalForm = async() => {
         let sql = `SELECT f.id AS faculty_id, f.faculty_name, f.designation, f.address, c.id AS consultancy_id,
                         c.year, c.title, c.commencement_date, c.completion_date, c.research_staff_expenses,
                         c.travel, c.computer_charges, c.nmims_facility_charges, c.miscellaneous_including_contingency,
-                        c.advanced_payment, c.final_payment, c.total_payment, c.per_session_fees, c.days, c.sessions, c.total_fees,
+                        c.advanced_payment, c.final_payment, c.total_payment, c.per_session_fees, c.session_count_per_days, c.total_fees,
                         c.faculty_shares, c.nmims_shares, c.gross_fees 
                     FROM 
                         faculty_table f
@@ -36,12 +36,29 @@ module.exports.renderNmimsConsultancyApprovalForm = async() => {
               errorCode: error.code,
             };
           });
-    //     try {
-    //         const result = await researchDbR.query(sql);
-    //         return result.rows;
-    //     } catch (error) {
-    //         throw new Error(`Error fetching IPR data: ${error.message}`);
-    //     }
-    // };
     
+}
+
+
+
+module.exports.viewConsultancyApprovalForm = async(nmimsConsultancyFormId) => {
+
+  let sql = {
+    text: `SELECT f.id AS faculty_id, f.faculty_name, f.designation, f.address, c.id AS consultancy_id,
+                c.year, c.title, c.commencement_date, c.completion_date, c.research_staff_expenses,
+                c.travel, c.computer_charges, c.nmims_facility_charges, c.miscellaneous_including_contingency,
+                c.advanced_payment, c.final_payment, c.total_payment, c.per_session_fees, c.session_count_per_days, c.total_fees,
+                c.faculty_shares, c.nmims_shares, c.gross_fees 
+            FROM 
+                faculty_table f
+            JOIN 
+                consultancy_approval_form c ON f.id = c.faculty_table_id
+            WHERE
+                c.id = $1
+            ORDER BY 
+                c.id`,
+    values: [nmimsConsultancyFormId] 
+};
+
+
 }
