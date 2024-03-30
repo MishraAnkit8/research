@@ -122,7 +122,11 @@ router.post('/e-content/view', asyncErrorHandler(eContentDevelopMentCon.viewECon
 
 // nmims consultancy form
 router.get('/NMIMS-consultancy-form', asyncErrorHandler(nmimsConsultancyForm.renderNmimsConsultancyForm));
-router.get('/NMIMS-consultancy-form/view', asyncErrorHandler(nmimsConsultancyForm.viewConsultancyFormApprovalData));
+router.post('/NMIMS-consultancy-form/insert', asyncErrorHandler(nmimsConsultancyForm.insertconsultancyFormData));
+router.post('/NMIMS-consultancy-form/view', asyncErrorHandler(nmimsConsultancyForm.viewConsultancyFormApprovalData));
+router.post('/NMIMS-consultancy-form/update', asyncErrorHandler(nmimsConsultancyForm.updateConsultancyApprovalFormData));
+router.post('/NMIMS-consultancy-form/delete', asyncErrorHandler(nmimsConsultancyForm.deleteConsultancyFormData));
+
 
 
 
