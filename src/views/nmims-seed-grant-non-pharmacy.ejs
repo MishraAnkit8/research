@@ -1,0 +1,1009 @@
+<%- include('./partials/head') %>
+<!-- inline css -->
+
+<!-- Navbar section -->
+<%- include('./partials/header') %>
+<!-- This is left sidebar  -->
+<%- include('./partials/left-sidebar') %>
+<main class="main" id="main-content">
+    <div class="base-section coustom-section">
+        <!--DASHBOARD CONTENT START-->
+        <div class="errorHtml"></div>
+        <div class="breadcrumbs-container">
+            <ul class="breadcrumb">
+                <li class="breadcrumb-link">
+                    <a href="<%- BASE_URL %>research"> RESEARCH </a>
+                </li>
+                <li class="breadcrumb-link">SVKM's NMIMS Deemed to be University Mumbai</li>
+            </ul>
+        </div>
+        <div>
+            <div class="table-card-header text-uppercase d-flex align-items-center justify-content-between">
+                <div>
+                    <h5 class="pl-2">NMIMS Seed Grant Non Pharmacy LIST</h5>
+                </div>
+                <div>
+                    <button id="Consultancy-add-new-form" type="button" class="btn btn-primary add-modal"
+                        data-toggle="modal" data-target="#consultancy-modal-form">
+                        <i class="fas fa-plus plus"></i></button>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body table-responsive">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <label>Show Entries</label>
+                        <select class="form-select" id="changeEntry">
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                            <option value="150">150</option>
+                            <option value="200">200</option>
+                            <option value="250">250</option>
+                            <option value="300">300</option>
+                            <option value="350">350</option>
+                            <option value="400">400</option>
+                            <option value="500">500</option>
+                            <option value="800">800</option>
+                            <option value="1000">1000</option>
+                        </select>
+                    </div>
+                    <div>
+                        <div class="table-searchbar-container">
+                            <button type="button" id="searchBtn"><i class="fas fa-search"></i></button>
+                            <input type="search" id="searchKeyword" placeholder="Enter keywords"
+                                class="table-searchbar">
+                        </div>
+                    </div>
+                </div>
+                <table class="table custom-table table-responsive research-pagination" id="approved-consultancy-form-data-list">
+                    <thead>
+                        <th class="col-lg-1">#</th>
+                        <th class="col-lg-1">Faculty Name </th>
+                        <th class="col-lg-1">Title</th>
+                        <th class="col-lg-1">Year</th>
+                        <th class="col-lg-1">Total Fees</th>
+                        <th class="col-lg-1">Action</th>
+                    </thead>
+                    <% seedGrantFormData.forEach(function(grantSeedData , index) { %>
+                        <tr data-consultancy-id="<%- grantSeedData.consultancy_id %>"
+                            data-faculty-id="<%- grantSeedData.faculty_id %>"
+                            data-commencement-date="<%- grantSeedData.commencement_date %>" data-completion-date="<%- grantSeedData.completion_date %>"
+                            data-research-staff-expenses="<%- grantSeedData.research_staff_expenses %>"
+                            data-travel-expenses="<%- grantSeedData.travel %>" data-computer-charges="<%- grantSeedData.computer_charges %>"
+                            data-nmims-facility-charges="<%- grantSeedData.nmims_facility_charges %>"
+                            data-miscellaneous-including-contingency="<%- grantSeedData.miscellaneous_including_contingency %>"
+                            data-advanced-payment="<%- grantSeedData.advanced_payment %>" data-final-payment="<%- grantSeedData.final_payment %>" 
+                            data-per-session-fees="<%- grantSeedData.per_session_fees %>"
+                            data-faculty-shares="<%- grantSeedData.faculty_shares %>" data-nmims-shares="<%- grantSeedData.nmims_shares %>"
+                            data-gross-fees="<%- grantSeedData.gross_fees %>"
+                            data-session-count-per-days="<%- grantSeedData.session_count_per_days %>">
+                            <td class="col-lg-1"><%- index + 1 %></td>
+                            <td class="col-lg-1 faculty-name"><%- grantSeedData.faculty_name %> </td>
+                            <td class="col-lg-1 project-title"><%- grantSeedData.title %></td>
+                            <td class="col-lg-1 year"><%- grantSeedData.year %></td>
+                            <td class="col-lg-1 total-fees"><%- grantSeedData.total_fees %></td>
+                            <td class="col-lg-1">
+                                <label class="view" data-consultancy-id="<%- grantSeedData.consultancy_id %>"
+                                    data-faculty-id="<%- grantSeedData.faculty_id %>"><i
+                                        class="fa-solid fa-eye view text-danger"
+                                        data-consultancy-id="<%- grantSeedData.consultancy_id %>"
+                                        data-faculty-id="<%- grantSeedData.faculty_id %>"></i></label>
+                                <label class="edit" data-consultancy-id="<%- grantSeedData.consultancy_id %>"><i
+                                        class="fa fa-edit edit text-danger"
+                                        data-consultancy-id="<%- grantSeedData.consultancy_id %>"></i></label>
+                                <label class="delete" data-consultancy-id="<%- grantSeedData.consultancy_id %>"><i
+                                        class="fa-solid fa-trash delete text-danger"
+                                        data-consultancy-id="<%- grantSeedData.consultancy_id %>"></i></label>
+                            </td>
+                        </tr>
+                        <%}) %>
+
+                </table>
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <label id="total-row-count">Total entries : <%- rowCount %> </label>
+                        <label class="d-none" id="row-count"> <%- rowCount %></label>
+                    </div>
+                    <div>
+                        <button id="prevBtn" class="btn btn-primary">Previous</button>
+                        <button id="nextBtn" class="btn btn-primary">Next</button>
+                        <p id="pagination" class="pagination-search"></p>
+                    </div>
+                </div>
+                <!--Import Modal -->
+                <div class="modal fade" id="open-program-modal" tabindex="-1" aria-labelledby="open-program-modal"
+                    aria-hidden="true">
+                </div>
+                <!-- EDIT PROGRAM AND UPDATE -->
+                <div class="modal fade" id="edit-program-modal" tabindex="-1" aria-labelledby="editModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="editModalLabel">Update Program</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div id="errorHtml"></div>
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label for="exampleInputEmail1" class=" sub-title">Program Name</label>
+                                    <input type="text" class="form-control" id="program_name" name="program_name">
+                                    <input type="hidden" class="form-control" id="hidden_id" name="hidden_id">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="exampleInputPassword1" class=" sub-title">Program Type</label>
+                                    <select class="form-control" name="program_type_lid" id="program_type_lid">
+                                        <option value="1">Full Time</option>
+                                        <option value="2">Part Time</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="abbr" class=" sub-title">Program Abbr</label>
+                                    <input type="text" class="form-control" id="abbr" name="abbr">
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary updateProgram">Update</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+</main>
+<div class="modal fade " id="consultancy-modal-form" tabindex="-1" role="dialog" aria-labelledby="consultancy-modal-form"
+aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg modal-fullscreen p-5" role="document">
+        <div class="modal-content modal-content-data validate-input">
+            <div class="modal-header">
+                <h5 class="modal-title" id="grantSeedData-study">NMIMS Seed Grant Non Pharmacy Form  </h5>
+                <div type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"><i class="fas fa-times "></i></span>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <!-- year -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="year" class=" sub-title fw-bold">Year </label>
+                        <input type="number" name="year" id="year" data-validate="isEmpty,isNumber,isValidYear" data-err-msg="Year is required." class="form-control"  required/>
+                    </div>
+                    <!-- title -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="campus" class=" sub-title fw-bold"> Title(Brif) </label>
+                        <input type="text" name="SchoolName" id="title" data-validate="isEmpty,isNotNumber,isExist,isNotSpecialChar" data-err-msg="This field is required and min length > 1." class="form-control"
+                             required/>
+                    </div>
+                    <!-- Faculty ID -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="faculty-id" class="form-label fw-bold ">Name of Faculty , Id And Designation</label>
+                        <select id="faculty-id" class="form-control gap-10"  required>
+                        </select>
+                    </div>
+                    <!--Date of Commencement-->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="commencement-date" class=" sub-title fw-bold"> Date of Commencement </label>
+                        <input type="Date" name="policy-cadre" id="commencement-date" data-validate="isEmpty,isExist" data-err-msg="Date is requird." class="form-control"
+                             required />
+                    </div>
+                    <!-- Date of Completion -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="completion-date" class=" sub-title fw-bold">Date of Completion</label>
+                        <input type="date" name="completion-date" id="completion-date" data-validate="isEmpty,isExist" data-err-msg="Date is requird." class="form-control" required>
+                    </div>
+                    <!-- Days -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="days" class=" sub-title fw-bold">Days/Sessions</label>
+                        <input type="number" name="days" id="no-of-session" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required." class="form-control"
+                            required>
+                    </div>
+
+                    <!-- Sessions -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="sessions" class=" sub-title fw-bold">Fee per Day/Session	(Rs.)</label>
+                        <input type="number" name="sessions" id="sessions-fees" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required." class="form-control"
+                            required>
+                    </div>
+
+                    <!-- Total Fess -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="total-fees" class=" sub-title fw-bold">Total Fees</label>
+                        <input type="number" name="total-fees" id="total-fees" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required." class="form-control"
+                            required>
+                    </div>
+                    <!-- Gross Fees -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="gross-fees" class=" sub-title fw-bold">(a) Gross Fees</label>
+                        <input type="number" name="gross-fees" id="gross-fees" data-validate="isEmpty,isNumber"  data-err-msg="Numeric value is required." class="form-control"
+                        required>
+                    </div>
+
+                    <!-- Faculty Share -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="total-fees" class=" sub-title fw-bold">Faculty Share 70%(a)</label>
+                        <input type="text" name="total-fees" id="faculty-share" data-validate="isEmpty,isExist" data-err-msg="Value is required." class="form-control"
+                            value="70%">
+                    </div>
+                    <!-- NMIMS Share -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="NMIMSAuthors" class=" sub-title fw-bold">NMIMS Share 30%(a)</label>
+                        <input type="text" name="volumes" id="nmims-share" data-validate="isEmpty,isExist" data-err-msg="Value is required." class="form-control"
+                             value="30%">
+                    </div>
+                    <!-- Details of Distribution of Faculty Share (if more than one faculty) -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="journalName" class=" sub-title fw-bold">Details of Distribution of Faculty Share (if more than one faculty)</label>
+                        <table class="table">
+                            <tbody id="dynamic-rows">
+                                <!-- Dynamic rows will be added here -->
+                            </tbody>
+                        </table>
+                        <!-- <button id="add-row-button">Add More Details</button> -->
+                    </div>
+                     
+                    <!-- Research Staff Expenses -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="research-staff-expenses" class=" sub-title fw-bold">(b) Research Staff Expenses </label>
+                        <input type="number" name="research-staff-expenses" id="research-staff-expenses" data-validate="isEmpty,isNumber"  data-err-msg="Numeric value is required." class="form-control"
+                        required>
+                    </div>
+                    <!-- travel-->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="travel" class=" sub-title fw-bold">(C) Travel</label>
+                        <input type="number" name="travel" id="travel" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required" class="form-control"
+                             required>
+                    </div>
+                    <!-- (d) Computer Charges/Printing/publication/Editing/Communication/Consumables -->
+                    <div class="form-group">
+                        <label for="computer-charges" class=" sub-title fw-bold"> (d) Computer Charges/Printing/publication/Editing/Communication/Consumables </label>
+                        <input type="number" name="computer-charges" id="computer-charges" data-validate="isEmpty,isNumber" data-err-msg="This field is required and min length > 1." class="form-control" required/>
+                    </div>
+                    <!-- (e) Charges for NMIMS Facilities (Class-room, Conference room), if applicable: -->
+                    <div class="form-group">
+                        <label for="facility-charges" class=" sub-title fw-bold">(e) Charges for NMIMS Facilities (Class-room, Conference room), if applicable:</label>
+                        <input type="number" name="facility-charges" id="facility-charges"  data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required." class="form-control" required/>
+                    </div>
+                    <!-- (f) Miscellaneous including Contingency-->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="miscellaneous-contingency" class=" sub-title fw-bold">(f) Miscellaneous including Contingency</label>
+                        <input type="number" name="miscellaneous-contingency" id="miscellaneous-contingency" class="form-control" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required."  required>
+                    </div>
+                     <!-- Final Payment -->
+                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="final-payment" class=" sub-title fw-bold">Final Payment </label>
+                        <input type="number" name="final-payment" id="final-payment"  class="form-control" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required" required>
+                    </div>
+                      <!-- Advance Payment. -->
+                      <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="advance-payment" class=" sub-title fw-bold">Advance Payment.</label>
+                        <input type="number" name="advance-payment" id="advance-payment" class="form-control" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required." required>
+                    </div>
+
+                </div>
+            </div>
+            
+            <!-- Add your modal footer buttons if needed -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-md btn-primary submit-btn d-none" id="submit-btn">Submit</button>
+                <button class="btn btn-md btn-primary update-btn d-none" id="update-btn">Update</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- modal form for view -->
+<div class="modal fade " id="approoved-form-data" tabindex="-1" role="dialog" aria-labelledby="approoved-form-data"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg modal-fullscreen p-5" role="document">
+        <div class="modal-content modal-content-data">
+            <div class="modal-header">
+                <h4 class="modal-title" id="sed-grant-title">Seed Grant [Non-Pharmacy] Approval Form</h4>
+                <div class="close" data-dismiss="modal" aria-label="Close">
+                    <span type="button" aria-hidden="true"><i class="fas fa-times "></i></span>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="">
+                    <label class="text-start fw-bold">Seed Grant [Non-Pharmacy]Approval Form</label>
+                </div>
+                <div class=" d-flex justify-content-between">
+                        <div class=" sub-title d-flex justify-content-start">
+                            This form is for internal use only. It should be filled out and sent to the Dean/Director for
+                            approval
+                        </div>
+                        <div class="col col-lg-2">
+                            <label for="" class=" sub-title justify-content-end"> Year:</label>
+                            <label class="view-content" id="view-year"></label>
+                        </div>
+                </div>
+                <hr style="color: black;">
+                <table class="table table-bordered">
+                    <tbody>
+                        <tr>
+                            <td class="sub-title-text sub-title text-start col-lg-6">Title (Brief)</td>
+                            <td class="view-content col-lg-6" id="view-title"></td>
+                        </tr>
+                        <tr>
+                            <td class=" sub-title text-start col-lg-6  sub-title-text">Name of Faculty</td>
+                            <td class="view-content col-lg-6" id="view-faculty-name"></td>
+                        </tr>
+                        <tr>
+                            <td class=" sub-title text-start col-lg-6 sub-title-text">Designation and address of Contact Person for Client</td>
+                            <td class="view-content col-lg-6">
+                                <label for="view-facult-designation" class="view-content col-lg-6" id="view-facult-designation"></label>
+                                <label for="view-facult-address" class="view-content col-lg-6" id="view-facult-address"></label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-lg-6 text-start">
+                                <label for="" class=" sub-title text-start sub-title-text">Date of Commencement : </label>
+                                <label class="view-content ps-4" id="view-commencement-date"></label>
+                            </td>
+                            <td class=" col-lg-6 text-start">
+                                <label for="" class="sub-title sub-title-text">Date of Completion : </label>
+                                <label class="view-content ps-4" id="view-completion-date"></label>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class=" sub-title text-start fw-bold">BUDGET</div>
+                <hr>
+                <table class="table table-bordered">
+                    <thead>
+                        <th class=" sub-title col-lg-3"></th>
+                        <th class=" sub-title col-lg-3">Days/Sessions</th>
+                        <th class=" sub-title col-lg-3">Fee per Day/Session (Rs).</th>
+                        <th class=" sub-title col-lg-3">Total Fee (Rs.)</th>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class=" sub-title col-lg-3"></td>
+                            <td class=" sub-title col-lg-4">
+                                <label for="" class="view-content" id="view-days"></label>
+                                <label for="" class="view-content" id="view-sessions"></label>
+                            </td>
+                            <td class="view-content" id="view-per-session-fees"></td>
+                            <td class="view-content" id="view-total-amount"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table class="table table-bordered">
+                    <tr>
+                        <td class=" sub-title col-lg-4 text-start">(a) Gross Fees</td>
+                        <td for="" class="view-content col-lg-4" id="view-gross-fees"></td>
+                    </tr>
+                    <tr>
+                        <td class=" sub-title col-lg-4 text-start">Faculty Shares (70% a)</td>
+                        <td class="view-content col-lg-4" id="view-faculty-shares"></td>
+                
+                    </tr>
+                    <tr>
+                        <td class=" sub-title col-lg-4 text-start">NMIMS Share(30% a)</td>
+                        <td class="view-content col-lg-4" id="view-nmims-shares"></td>
+                    </tr>
+                        <tr>
+                        <th class=" sub-title col-lg-8 text-start">Details of Distribution of Faculty Share (if more than one faculty)</th>
+                        <th class=" sub-title col-lg-4">Fees(Rs.)</th>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    </tr>
+                    <tr>
+                        <td class=" sub-title col-lg-4 text-start">(b) Research Staff Expenses</td>
+                        <td class="view-content col-lg-4" id="view-research-staff-expenses"></td>
+                    </tr>
+                    <tr>
+                        <td class=" sub-title col-lg-4 text-start">(c) Travel </td>
+                        <td class="view-content col-lg-4" id="view-travel-expenses"></td>
+                    </tr>
+                    <tr>
+                        <td class=" sub-title col-lg-8 text-start">(d) Computer Charges/Printing/publication/Editing/Communication/Consumables </td>
+                        <td class="view-content col-lg-4" id="view-computer-expenses"></td>
+                    </tr>
+                    <tr>
+                        <td class=" sub-title col-lg-8 text-start">(e) Charges for NMIMS Facilities (Class-room, Conference room), if applicable	 </td>
+                        <td class="view-content col-lg-4" id="view-nmims-facility-charges"></td>
+                    </tr>
+                    <tr>
+                        <td class=" sub-title col-lg-8 text-start">(f) Miscellaneous including Contingency</td>
+                        <td class="view-content col-lg-4" id="view-miscellaneous-charges"></td>
+                    </tr>
+                    <tr>
+                        <td class=" sub-title col-lg-8 text-start fw-bold">Total (a to f)</td>
+                        <td class="view-content col-lg-4 fw-bold" id="view-total-charges-a-to-f"></td>
+                    </tr>
+                    <tr>
+                        <td class=" sub-title col-lg-8 text-start">GST as per Government Rules (if consulting is routed through NMIMS)</td>
+                        <td class="view-content col-lg-4" id="view-gst-charges"></td>
+                    </tr>
+
+                    <tr>
+                        <td class=" sub-title col-lg-8 text-start fw-bold">Grand Total</td>
+                        <td class="view-content col-lg-4 fw-bold" id="view-grand-total-amount"></td>
+                    </tr>
+                    <tr>
+                        <td class=" sub-title col-lg-4 text-start">Payment Schedule as discussed and agreed with the clinet</td>
+                        <td class="view-content col-lg-8" id="view-grand-total">
+                            <table class="table">
+                                <thead>
+                                  <tr>
+                                    <td class=" sub-title col-lg-8 text-start">Advance Payment</td>
+                                    <td class="col-lg-8" id="view-advanced-payment"></td>
+                                  </tr>
+                                </thead>
+                                <thead>
+                                    <tr>
+                                        <td class=" sub-title col-lg-8 text-start">Final Payment</td>
+                                        <td class="col-lg-8" id="view-final-payment"></td>
+                                    </tr>
+                                  </thead>
+                                  <thead>
+                                    <tr>
+                                        <td class=" sub-title col-lg-8 text-start">Total Payment</td>
+                                        <td class="col-lg-8" id="view-total-payment"></td>
+                                    </tr>
+                                  </thead>
+                              </table>
+                        </td>
+                    </tr>
+                    
+                </table>
+                <div class="row">
+                <div class="col-lg-8">
+                    <div class="box">
+                        <div class=" sub-title">Faculty Coordinator :</div>
+                        <label class="view-content" id="view-coordinator-faculty">Ankit</label>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="box">
+                        <div class=" sub-title">Vice Chancellor :</div>
+                        <label class="view-content" id="view-vice-chancellor">Ankit Kumar Mishra</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="d-flex">
+                        <div class=" sub-title">Date : </div>
+                        <label class="view-content pl-4" id="view-coordinator-faculty-date" ></label>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="d-flex">
+                        <div class=" sub-title">Date :</div>
+                        <label class="view-content pl-4" id="view-vice-chancellor-date"></label>
+                    </div>
+                </div>
+            </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="faculty-list-data" data-faculty-list='<%- JSON.stringify(facultyData) %>' style="display: none;"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tom-select/2.3.1/js/tom-select.complete.min.js" integrity="sha512-zdXqksVc9s0d2eoJGdQ2cEhS4mb62qJueasTG4HjCT9J8f9x5gXCQGSdeilD+C7RqvUi1b4DdD5XaGjJZSlP9Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+    let rowCount = document.getElementById('row-count');
+    const totalRowCount = document.getElementById('total-row-count');
+    let rowIndex = rowCount.innerText;
+    let indexValue = parseInt(rowIndex, 10);
+    // document.getElementById('add-row-button').addEventListener('click', function () {
+    //     addRow();
+    // });
+
+    // function addRow() {
+    //     const dynamicRows = document.getElementById('dynamic-rows');
+
+    //     const newRow = document.createElement('tr');
+    //     newRow.innerHTML = `
+    //     <td><input type="text" class="input-field" ></td>
+    //     <td><input type="number" class="input-field"></td>
+    // `;
+    //     dynamicRows.appendChild(newRow);
+    // }
+
+    const approvedFormList = document.getElementById('approved-consultancy-form-data-list');
+    const submitBtn = document.getElementById('submit-btn');
+    const updateBtn = document.getElementById('update-btn');
+    let facultyId, approvalFormRecordToBeUpdated, grantedSeedId ;
+
+    const addnonFormacyFormData = document.getElementById('Consultancy-add-new-form');
+    addnonFormacyFormData.addEventListener('click' , (event) => {
+        if(event.target.tagName === 'BUTTON' && event.target.classList.contains('add-modal') || event.target.classList.contains('plus')){
+            submitBtn.classList.remove('d-none');
+            updateBtn.classList.add('d-none');
+            facultyIdContainerArray = [];
+            facultyId = null;
+            document.getElementById('year').value = '';
+            document.getElementById('title').value = '';
+            document.getElementById('faculty-id').value = '';
+            document.getElementById('commencement-date').value = '';
+            document.getElementById('completion-date').value = '';
+            document.getElementById('no-of-session').value = '';
+            document.getElementById('sessions-fees').value = '';
+            document.getElementById('total-fees').value = '';
+            document.getElementById('faculty-share').value = '';
+            document.getElementById('nmims-share').value = '';
+            document.getElementById('research-staff-expenses').value = '';
+            document.getElementById('travel').value = '';
+            document.getElementById('computer-charges').value = '';
+            document.getElementById('facility-charges').value = '';
+            document.getElementById('miscellaneous-contingency').value = '';
+            document.getElementById('advance-payment').value = '';
+            document.getElementById('final-payment').value = '';
+            document.getElementById('gross-fees').value = '';
+        }
+    });
+
+    const insertConsultancyFormApprovalData = async(url) => {
+        const seedGrantFormData = {} ;
+        seedGrantFormData.year =  document.getElementById('year').value;
+        seedGrantFormData.title =  document.getElementById('title').value;
+        // seedGrantFormData.faculty =  document.getElementById('faculty-id').value;
+        seedGrantFormData.commencementDate =  document.getElementById('commencement-date').value;
+        seedGrantFormData.completionDate =  document.getElementById('completion-date').value;
+        seedGrantFormData.sessionNumbers =  document.getElementById('no-of-session').value;
+        seedGrantFormData.sessionsFees =  document.getElementById('sessions-fees').value;
+        seedGrantFormData.totalFees =  document.getElementById('total-fees').value;
+        seedGrantFormData.facultyShare =  document.getElementById('faculty-share').value;
+        seedGrantFormData.nmimsShare =  document.getElementById('nmims-share').value;
+        seedGrantFormData.researchStaffExpenses =  document.getElementById('research-staff-expenses').value;
+        seedGrantFormData.travlExpanses =  document.getElementById('travel').value;
+        seedGrantFormData.computerCharges =  document.getElementById('computer-charges').value;
+        seedGrantFormData.faculityCharges =  document.getElementById('facility-charges').value;
+        seedGrantFormData.miscellaneousContingencyCharges =  document.getElementById('miscellaneous-contingency').value;
+        seedGrantFormData.advancedPayment =  document.getElementById('advance-payment').value;
+        seedGrantFormData.finalPayment =  document.getElementById('final-payment').value;
+        seedGrantFormData.grossFees =  document.getElementById('gross-fees').value;
+        seedGrantFormData.facultyId = document.getElementById('faculty-id').value;
+
+        const payload = {
+            seedGrantFormData : seedGrantFormData
+        }
+        console.log('payload ===>>>>', payload)
+        fetch(url, {
+            method : 'POST',
+            headers: {
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        })
+        .then((Response) => {
+            return Response.ok ? Response.json() : 'NetWork Is Not Ok'
+        })
+        .then((data) => {
+            if(data.status === "Done"){
+                console.log('data ====>>>>>', data);
+                patentId = data.patentId;
+                const rowCountInteger = parseInt(data.rowCount, 10);
+                const IndexEntry = rowCountInteger + indexValue;
+                indexValue = IndexEntry;
+                const newApprovalFormRow = document.createElement('tr');
+                newApprovalFormRow.setAttribute('data-consultancy-id', data.grantedSeedId);
+                newApprovalFormRow.setAttribute('data-faculty-id', data.nonFormacyFormData.facultyId);
+                newApprovalFormRow.setAttribute('data-commencement-date', data.nonFormacyFormData.commencementDate);
+                newApprovalFormRow.setAttribute('data-completion-date', data.nonFormacyFormData.completionDate);
+                newApprovalFormRow.setAttribute('data-research-staff-expenses', data.nonFormacyFormData.researchStaffExpenses);
+                newApprovalFormRow.setAttribute('data-travel-expenses', data.nonFormacyFormData.travlExpanses);
+                newApprovalFormRow.setAttribute('data-computer-charges', data.nonFormacyFormData.computerCharges);
+                newApprovalFormRow.setAttribute('data-nmims-facility-charges', data.nonFormacyFormData.faculityCharges);
+                newApprovalFormRow.setAttribute('data-miscellaneous-including-contingency', data.nonFormacyFormData.miscellaneousContingencyCharges);
+                newApprovalFormRow.setAttribute('data-advanced-payment', data.nonFormacyFormData.advancedPayment);
+                newApprovalFormRow.setAttribute('data-final-payment', data.nonFormacyFormData.finalPayment);
+                newApprovalFormRow.setAttribute('data-per-session-fees', data.nonFormacyFormData.sessionsFees);
+                newApprovalFormRow.setAttribute('data-total-fees', data.nonFormacyFormData.totalFees);
+                newApprovalFormRow.setAttribute('data-faculty-shares', data.nonFormacyFormData.facultyShare);
+                newApprovalFormRow.setAttribute('data-nmims-shares', data.nonFormacyFormData.nmimsShare);
+                newApprovalFormRow.setAttribute('data-gross-fees', data.nonFormacyFormData.grossFees);
+
+                newApprovalFormRow.innerHTML = `
+                            <td class="col-lg-1">${IndexEntry}</td>
+                            <td class="col-lg-1 faculty-name">${data.nonFormacyFormData.facultyId} </td>
+                            <td class="col-lg-1 project-title">${data.nonFormacyFormData.title}</td>
+                            <td class="col-lg-1 year">${data.nonFormacyFormData.year}</td>
+                            <td class="col-lg-1 total-fees">${data.nonFormacyFormData.totalFees}</td>
+                            <td class="col-lg-1">
+                                <label class="view" data-consultancy-id="${data.grantedSeedId}"
+                                    data-faculty-id="${data.nonFormacyFormData.facultyId}"><i
+                                    class="fa-solid fa-eye view text-danger"
+                                data-consultancy-id="${data.grantedSeedId}"
+                                    data-faculty-id="${data.nonFormacyFormData.facultyId}"></i></label>
+                                <label class="edit" data-consultancy-id="${data.grantedSeedId}"><i
+                                        class="fa fa-edit edit text-danger"
+                                        data-consultancy-id="${data.grantedSeedId}"></i></label>
+                                <label class="delete" data-consultancy-id="${data.grantedSeedId}"><i
+                                        class="fa-solid fa-trash delete text-danger"
+                                        data-consultancy-id="${data.grantedSeedId}"></i></label>
+                            </td>
+
+                    `;
+                approvedFormList.appendChild(newApprovalFormRow);
+                $('#consultancy-modal-form').modal('hide');
+                Swal.fire({
+							position: "top-center",
+							icon: "success",
+							title: `${data.message}`,
+							showConfirmButton: false
+							// timer: 1500
+						});
+                rowCount.classList.remove('d-none');
+                totalRowCount.classList.add('d-none');
+                rowCount.innerText = `Total entries : ${IndexEntry}`
+                    }
+                    else{
+                        console.log('data ====>>>>>', data);
+                        Swal.fire({
+							position: "top-center",
+							icon: "error",
+							title: `${data.errorCode}`,
+							color : "red",
+							with : "20PX",
+							html: `<span style="color: red;">${data.message}</span>`,
+							showConfirmButton: false,
+						});
+                    }
+        })
+        .catch((error) => {
+            console.log('error ===>>>', error)
+            Swal.fire({
+                position: "top-center",
+                icon: "error",
+                title: "Data Insertion Failed",
+                color: "red",
+                with: "20PX",
+                html: `<span style="color: red;">${error}</span>`,
+                showConfirmButton: false,
+            });
+        })
+    }
+
+    submitBtn.addEventListener('click', async () => {
+       const isValid = validateRequiredFormFields(submitBtn);
+       if(isValid) {
+            await insertConsultancyFormApprovalData('<%- BASE_URL %>research/nmims-seed-grant-non-pharmacy/insert');
+       }
+       else{
+        Swal.fire({
+				position: "top-center",
+				icon: "error",
+				title: "Validation Failed",
+				color : "red",
+				showConfirmButton: false,
+		});
+       }
+    });
+
+    approvedFormList.addEventListener('click' , (event) => {
+        if(event.target.classList.contains('view')){
+            console.log('clickedddd in view ');
+            $('#approoved-form-data').modal('show');
+            const consultancyFormRow = event.target.closest('tr');
+            console.log('consultancyFormRow ====>>>>>', consultancyFormRow);
+            const grantedSeedId = consultancyFormRow.getAttribute('data-consultancy-id');
+            console.log('grantedSeedId ===>>>>', grantedSeedId);
+
+            fetch('<%- BASE_URL %>research/nmims-seed-grant-non-pharmacy/view' , {
+                method: 'POST',
+                    headers: {
+                        'content-type': 'application/json'
+                    },
+                    body: JSON.stringify({grantedSeedId}
+                         )
+            })
+            .then((Response) => {
+                return Response.ok ? Response.json() : "Network response was not okk"
+            })
+            .then((data) => {
+                if(data.status === "Done"){
+                    console.log('data ===>>>>>', data)
+                    document.getElementById('view-year').innerText = data.nonFormacyData.year;
+                    document.getElementById('view-title').innerText = data.nonFormacyData.title;
+                    document.getElementById('view-faculty-name').innerText = data.nonFormacyData.faculty_name;
+                    document.getElementById('view-facult-designation').innerText = data.nonFormacyData.designation;
+                    document.getElementById('view-facult-address').innerText = data.nonFormacyData.address;
+                    document.getElementById('view-commencement-date').innerText = data.commencementDateFormate;
+                    document.getElementById('view-completion-date').innerText = data.completionDateFormate;
+                    document.getElementById('view-days').innerText = data.nonFormacyData.session_count_per_days;
+                    // document.getElementById('view-sessions').innerText = data.nonFormacyData.per_session_fees;
+                    document.getElementById('view-per-session-fees').innerText = data.nonFormacyData.per_session_fees;
+                    document.getElementById('view-total-amount').innerText = data.totalFees;
+                    document.getElementById('view-gross-fees').innerText = data.nonFormacyData.gross_fees
+                    document.getElementById('view-faculty-shares').innerText = data.facultyShareAmount;
+                    document.getElementById('view-nmims-shares').innerText = data.nmimsShareAmount;
+                    document.getElementById('view-research-staff-expenses').innerText = data.nonFormacyData.research_staff_expenses;
+                    document.getElementById('view-travel-expenses').innerText = data.nonFormacyData.travel;
+                    document.getElementById('view-computer-expenses').innerText = data.nonFormacyData.computer_charges;
+                    document.getElementById('view-nmims-facility-charges').innerText = data.nonFormacyData.nmims_facility_charges;
+                    document.getElementById('view-miscellaneous-charges').innerText = data.nonFormacyData.miscellaneous_including_contingency;
+                    document.getElementById('view-total-charges-a-to-f').innerText = data.aToFTotalAmount;
+                    document.getElementById('view-gross-fees').innerText = data.nonFormacyData.gross_fees;
+                    document.getElementById('view-gst-charges').innerText = data.gstCharges;
+                    document.getElementById('view-advanced-payment').innerText = data.nonFormacyData.advanced_payment;
+                    document.getElementById('view-final-payment').innerText = data.nonFormacyData.final_payment;
+                    document.getElementById('view-total-payment').innerText = data.totalAmount;
+                    document.getElementById('view-grand-total-amount').innerText = data.grandTotalAmount;
+                    // document.getElementById('view-coordinator-faculty').innerText = data
+                    // document.getElementById('view-vice-chancellor').innerText = data
+                    document.getElementById('view-vice-chancellor-date').innerText = data.completionDateFormate;
+                    document.getElementById('view-coordinator-faculty-date').innerText = data.commencementDateFormate;
+
+                }
+            })
+            
+        }
+        //for delete the record
+        if(event.target.classList.contains('delete')){
+            formDataToBeDeleted = event.target.closest('tr');
+            console.log('formDataToBeDeleted ====>>>>>', formDataToBeDeleted);
+
+            grantedSeedId = formDataToBeDeleted.getAttribute('data-consultancy-id');
+            console.log('grantedSeedId ===>>>>>', grantedSeedId);
+            
+            let confirmDelete = "Do you want to delete the consultancy form  record?";
+            if (confirmDelete) {
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "You won't be able to revert this!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes, delete it!"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Execute fetch request here after confirmation
+                        fetch('<%- BASE_URL %>research/nmims-seed-grant-non-pharmacy/delete', {
+                            method: 'POST',
+                            headers: {
+                                'content-type': 'application/json'
+                            },
+                            body: JSON.stringify({ grantedSeedId })
+                        })
+                            .then((result) => result.json())
+                            .then((data) => {
+                                if (data.status === 'Done') {
+                                    console.log('data ==>>', data);
+                                    formDataToBeDeleted.remove();
+                                    Swal.fire({
+                                        title: "Deleted!",
+                                        text: "Record has been deleted.",
+                                        icon: "success"
+                                    }).then(() => {
+                                        location.reload();
+                                    });
+                                }
+                            })
+                            .catch((error) => {
+                                console.error('Error:', error);
+                                const message = error;
+                                Swal.fire({
+                                    position: "top-center",
+                                    icon: "error",
+                                    title: `${message}`,
+                                    color: "red",
+                                    showConfirmButton: false,
+                                });
+                            });
+                    }
+                });
+            }
+            else {
+                return
+            }
+        }
+        // for update the data 
+        if(event.target.classList.contains('edit')){
+            console.log('yes edit clickeddd ===');
+            submitBtn.classList.add('d-none');
+            updateBtn.classList.remove('d-none');
+            approvalFormRecordToBeUpdated = event.target.closest('tr');
+            console.log('approvalFormRecordToBeUpdated ===>>>>', approvalFormRecordToBeUpdated);
+            grantedSeedId = approvalFormRecordToBeUpdated.getAttribute('data-consultancy-id');
+            console.log('grantedSeedId ====>>>>', grantedSeedId);
+            facultyId = approvalFormRecordToBeUpdated.getAttribute('data-faculty-id')
+            console.log('facultyId ====>>>>>', facultyId);
+            document.getElementById('year').value = approvalFormRecordToBeUpdated.querySelector('.year').innerText;
+            document.getElementById('title').value = approvalFormRecordToBeUpdated.querySelector('.project-title').innerText;
+            const commencementDate = approvalFormRecordToBeUpdated.getAttribute('data-commencement-date');
+            document.getElementById('commencement-date').value = formatDateToYYYYMMDD(commencementDate);
+            const completionDate = approvalFormRecordToBeUpdated.getAttribute('data-completion-date');
+            document.getElementById('completion-date').value = formatDateToYYYYMMDD(completionDate);
+            document.getElementById('no-of-session').value = approvalFormRecordToBeUpdated.getAttribute('data-session-count-per-days');
+            document.getElementById('sessions-fees').value = approvalFormRecordToBeUpdated.getAttribute('data-per-session-fees');
+            document.getElementById('total-fees').value = approvalFormRecordToBeUpdated.querySelector('.total-fees').innerText;
+            document.getElementById('faculty-share').value = approvalFormRecordToBeUpdated.getAttribute('data-faculty-shares');
+            document.getElementById('nmims-share').value = approvalFormRecordToBeUpdated.getAttribute('data-nmims-shares');
+            document.getElementById('research-staff-expenses').value = approvalFormRecordToBeUpdated.getAttribute('data-research-staff-expenses');
+            document.getElementById('travel').value = approvalFormRecordToBeUpdated.getAttribute('data-travel-expenses');
+            document.getElementById('computer-charges').value = approvalFormRecordToBeUpdated.getAttribute('data-computer-charges');
+            document.getElementById('facility-charges').value = approvalFormRecordToBeUpdated.getAttribute('data-nmims-facility-charges');
+            document.getElementById('miscellaneous-contingency').value = approvalFormRecordToBeUpdated.getAttribute('data-miscellaneous-including-contingency');
+            document.getElementById('advance-payment').value = approvalFormRecordToBeUpdated.getAttribute('data-advanced-payment');
+            document.getElementById('final-payment').value = approvalFormRecordToBeUpdated.getAttribute('data-final-payment');
+            document.getElementById('gross-fees').value = approvalFormRecordToBeUpdated.getAttribute('data-gross-fees');
+            // formatDateToYYYYMMDD(subMissionDate);
+            $('#consultancy-modal-form').modal('show');
+        }
+    })
+
+    const facultyDropDownList = document.getElementById("faculty-id");
+    // Parse the JSON data
+    const facultyListData = JSON.parse(document.getElementById('faculty-list-data').dataset.facultyList);
+
+    // Construct an array of objects with id and faculty_name
+    const facultyOptions = facultyListData.map(faculty => ({
+            value: faculty.id,
+            text: `${faculty.id} ,  ${faculty.faculty_name}, ${faculty.address}, ${faculty.designation}`
+        }));
+
+
+    // Initialize TomSelect dropdown with options containing id and faculty_name
+    new TomSelect("#faculty-id", {
+            options: facultyOptions
+    });
+
+    let facultyIdContainerArray;
+
+    // function for select faculty id from drop down list
+    function handleFacultyDropDownListChange() {
+            const selectedValues = Array.from(facultyDropDownList.options)
+                .filter(option => option.selected)
+                .map(option => option.value);
+            console.log('selectedValues ===>>>', selectedValues);
+            facultyId = selectedValues.length === 0 ? "" : selectedValues;
+            facultyIdContainerArray.push({'facultyId' : facultyId})
+            console.log("Selected facultyId values:", facultyId);
+            
+        }
+    
+    facultyDropDownList.addEventListener("change", handleFacultyDropDownListChange);
+
+    const updateApprovalFormRecordData = async(url) => {
+        const updatedSeedGrantData = {} ;
+        updatedSeedGrantData.grantedSeedId = grantedSeedId;
+        updatedSeedGrantData.year =  document.getElementById('year').value;
+        updatedSeedGrantData.title =  document.getElementById('title').value;
+        // updatedSeedGrantData.faculty =  document.getElementById('faculty-id').value;
+        updatedSeedGrantData.commencementDate =  document.getElementById('commencement-date').value;
+        updatedSeedGrantData.completionDate =  document.getElementById('completion-date').value;
+        updatedSeedGrantData.sessionNumbers =  document.getElementById('no-of-session').value;
+        updatedSeedGrantData.sessionsFees =  document.getElementById('sessions-fees').value;
+        updatedSeedGrantData.totalFees =  document.getElementById('total-fees').value;
+        updatedSeedGrantData.facultyShare =  document.getElementById('faculty-share').value;
+        updatedSeedGrantData.nmimsShare =  document.getElementById('nmims-share').value;
+        updatedSeedGrantData.researchStaffExpenses =  document.getElementById('research-staff-expenses').value;
+        updatedSeedGrantData.travlExpanses =  document.getElementById('travel').value;
+        updatedSeedGrantData.computerCharges =  document.getElementById('computer-charges').value;
+        updatedSeedGrantData.faculityCharges =  document.getElementById('facility-charges').value;
+        updatedSeedGrantData.miscellaneousContingencyCharges =  document.getElementById('miscellaneous-contingency').value;
+        updatedSeedGrantData.advancedPayment =  document.getElementById('advance-payment').value;
+        updatedSeedGrantData.finalPayment =  document.getElementById('final-payment').value;
+        updatedSeedGrantData.grossFees =  document.getElementById('gross-fees').value;
+        updatedSeedGrantData.facultyId = document.getElementById('faculty-id').value ? document.getElementById('faculty-id').value : facultyId;
+        console.log('facultu id in updation ===>>>>', facultyId);
+
+        const payload = {
+            updatedSeedGrantData : updatedSeedGrantData
+        }
+
+        console.log('payload ===>>>>', payload)
+
+        fetch(url , {
+            method : 'POST',
+            headers: {
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        })
+        .then((Response) => {
+            return Response.ok ? Response.json() : "Network response was not okk"
+        })
+        .then((data) => {
+            if(data.status === "Done"){
+                approvalFormRecordToBeUpdated.querySelector('.faculty-name').innerText = data.facultTableData[0].faculty_name;
+                approvalFormRecordToBeUpdated.querySelector('.project-title').innerText = data.updatedNonFormacyData.title;
+                approvalFormRecordToBeUpdated.querySelector('.year').innerText = data.updatedNonFormacyData.year;
+                approvalFormRecordToBeUpdated.querySelector('.total-fees').innerText = data.updatedNonFormacyData.totalFees;
+                approvalFormRecordToBeUpdated.setAttribute('data-consultancy-id', data.updatedNonFormacyData.grantedSeedId);
+                approvalFormRecordToBeUpdated.setAttribute('data-faculty-id', data.updatedNonFormacyData.facultyId);
+                approvalFormRecordToBeUpdated.setAttribute('data-commencement-date', data.updatedNonFormacyData.commencementDate);
+                approvalFormRecordToBeUpdated.setAttribute('data-completion-date', data.updatedNonFormacyData.completionDate);
+                approvalFormRecordToBeUpdated.setAttribute('data-research-staff-expenses', data.updatedNonFormacyData.researchStaffExpenses);
+                approvalFormRecordToBeUpdated.setAttribute('data-travel-expenses', data.updatedNonFormacyData.travlExpanses);
+                approvalFormRecordToBeUpdated.setAttribute('data-computer-charges', data.updatedNonFormacyData.computerCharges);
+                approvalFormRecordToBeUpdated.setAttribute('data-nmims-facility-charges', data.updatedNonFormacyData.faculityCharges);
+                approvalFormRecordToBeUpdated.setAttribute('data-miscellaneous-including-contingency', data.updatedNonFormacyData.miscellaneousContingencyCharges);
+                approvalFormRecordToBeUpdated.setAttribute('data-advanced-payment', data.updatedNonFormacyData.advancedPayment);
+                approvalFormRecordToBeUpdated.setAttribute('data-final-payment', data.updatedNonFormacyData.finalPayment);
+                approvalFormRecordToBeUpdated.setAttribute('data-per-session-fees', data.updatedNonFormacyData.sessionsFees);
+                approvalFormRecordToBeUpdated.setAttribute('data-total-fees', data.updatedNonFormacyData.totalFees);
+                approvalFormRecordToBeUpdated.setAttribute('data-faculty-shares', data.updatedNonFormacyData.facultyShare);
+                approvalFormRecordToBeUpdated.setAttribute('data-nmims-shares', data.updatedNonFormacyData.nmimsShare);
+                approvalFormRecordToBeUpdated.setAttribute('data-gross-fees', data.updatedNonFormacyData.grossFees);
+                console.log('data ===>>>>', data);
+                Swal.fire({
+                    position: "top-center",
+                    icon: "success",
+                    title: `${data.message}`,
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                $('#consultancy-modal-form').modal('hide');
+            }
+            else{       
+                const message = data.message;
+                console.log('data ===>>>', data)
+                console.log('message ==:::', message);
+                Swal.fire({
+                    position: "top-center",
+                    icon: "error",
+                    title: `${data.errorCode}`,
+                    color: "red",
+                    with: "20PX",
+                    html: `<span style="color: red;">${data.message}</span>`,
+                    showConfirmButton: false,
+                });
+           }
+        })
+        .catch((error) => {
+            const message = error
+            Swal.fire({
+                position: "top-center",
+                icon: "error",
+                title: `${message}`,
+                color: "red",
+                showConfirmButton: false,
+            });
+        })
+    }
+
+
+    updateBtn.addEventListener('click' , async() => {
+        formGroup = updateBtn.closest('.validate-input')
+        console.log("formGroup::::::::", formGroup)
+        formGroup.querySelectorAll('input[type="file"]')?.forEach(elm => {
+            console.log("elm:::::::::", elm);
+            elm.removeAttribute('data-validate')
+        })
+        const isValid = validateRequiredFormFields(updateBtn);
+       if(isValid) {
+            await updateApprovalFormRecordData('<%- BASE_URL %>research/nmims-seed-grant-non-pharmacy/update');
+       }
+       else{
+        Swal.fire({
+							position: "top-center",
+							icon: "error",
+							title: "Validation Failed",
+							color : "red",
+							showConfirmButton: false,
+						});
+       }
+    })
+
+</script>
+
+<%- include('./partials/pagination') %>
+<%- include('./partials/footer') %>
+<%- include('./partials/footer-end') %>
+  

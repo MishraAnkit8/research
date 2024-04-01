@@ -24,6 +24,7 @@ const researchAwardController = require('../controllers/research-award-controlle
 const eContentDevelopMentCon = require('../controllers/e-content-development.controller');
 
 const nmimsConsultancyForm = require('../controllers/nmims-consultancy-form.controller');
+const seedGrantNonFormacyCon = require('../controllers/nmims-seed-grant-non-pharmacy');
 
 // services
 const patentSubmissionServices = require('../services/patent-submission.service');
@@ -122,11 +123,17 @@ router.post('/e-content/view', asyncErrorHandler(eContentDevelopMentCon.viewECon
 
 // nmims consultancy form
 router.get('/nmims-consultancy-approval-form', asyncErrorHandler(nmimsConsultancyForm.renderNmimsConsultancyForm));
-router.post('/nmims-consultancy-approval-form/insert', asyncErrorHandler(nmimsConsultancyForm.insertconsultancyFormData));
+router.post('/nmims-consultancy-approval-form/insert', asyncErrorHandler(nmimsConsultancyForm));
 router.post('/nmims-consultancy-approval-form/view', asyncErrorHandler(nmimsConsultancyForm.viewConsultancyFormApprovalData));
 router.post('/nmims-consultancy-approval-form/update', asyncErrorHandler(nmimsConsultancyForm.updateConsultancyApprovalFormData));
 router.post('/nmims-consultancy-approval-form/delete', asyncErrorHandler(nmimsConsultancyForm.deleteConsultancyFormData));
 
+// seedGrantNonFormacyCon
+router.get('/nmims-seed-grant-non-pharmacy', asyncErrorHandler(seedGrantNonFormacyCon.renderNmimsSeedGrantNonFormacy));
+router.post('/nmims-seed-grant-non-pharmacy/insert', asyncErrorHandler(seedGrantNonFormacyCon.insertGrantedSeedNonFormacyForm));
+router.post('/nmims-seed-grant-non-pharmacy/view', asyncErrorHandler(seedGrantNonFormacyCon.viewNonformacyForm));
+router.post('/nmims-seed-grant-non-pharmacy/update', asyncErrorHandler(seedGrantNonFormacyCon.updatedNonFormacyform));
+router.post('/nmims-seed-grant-non-pharmacy/delete', asyncErrorHandler(seedGrantNonFormacyCon.deleteNonFormacyForm));
 
 
 
