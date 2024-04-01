@@ -1,0 +1,502 @@
+<%- include('./partials/head') %>
+<!-- inline css -->
+
+<!-- Navbar section -->
+<%- include('./partials/header') %>
+<!-- This is left sidebar  -->
+<%- include('./partials/left-sidebar') %>
+<main class="main" id="main-content">
+    <div class="base-section coustom-section">
+        <!--DASHBOARD CONTENT START-->
+        <div class="errorHtml"></div>
+        <div class="breadcrumbs-container">
+            <ul class="breadcrumb">
+                <li class="breadcrumb-link">
+                    <a href="<%- BASE_URL %>research"> RESEARCH </a>
+                </li>
+                <li class="breadcrumb-link">SVKM's NMIMS Deemed to be University Mumbai</li>
+            </ul>
+        </div>
+        <div>
+            <div class="table-card-header text-uppercase d-flex align-items-center justify-content-between">
+                <div>
+                    <h5 class="pl-2">Pharmacy Seed Grant Form List</h5>
+                </div>
+                <div>
+                    <button id="Consultancy-add-new-form" type="button" class="btn btn-primary add-modal"
+                        data-toggle="modal" data-target="#pharmacy-seed-grant-modal">
+                        <i class="fas fa-plus plus"></i></button>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body table-responsive">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <label>Show Entries</label>
+                        <select class="form-select" id="changeEntry">
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                            <option value="150">150</option>
+                            <option value="200">200</option>
+                            <option value="250">250</option>
+                            <option value="300">300</option>
+                            <option value="350">350</option>
+                            <option value="400">400</option>
+                            <option value="500">500</option>
+                            <option value="800">800</option>
+                            <option value="1000">1000</option>
+                        </select>
+                    </div>
+                    <div>
+                        <div class="table-searchbar-container">
+                            <button type="button" id="searchBtn"><i class="fas fa-search"></i></button>
+                            <input type="search" id="searchKeyword" placeholder="Enter keywords"
+                                class="table-searchbar">
+                        </div>
+                    </div>
+                </div>
+                <table class="table custom-table table-responsive research-pagination" id="pharmacy-seed-grant-form-list">
+                    <thead>
+                        <th class="col-lg-1">#</th>
+                        <th class="col-lg-1">Faculty Name </th>
+                        <th class="col-lg-1">Title</th>
+                        <th class="col-lg-1">Year</th>
+                        <th class="col-lg-1">Total Fees</th>
+                        <th class="col-lg-1">Action</th>
+                    </thead>
+
+                </table>
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <label id="total-row-count">Total entries : </label>
+                        <label class="d-none" id="row-count"></label>
+                    </div>
+                    <div>
+                        <button id="prevBtn" class="btn btn-primary">Previous</button>
+                        <button id="nextBtn" class="btn btn-primary">Next</button>
+                        <p id="pagination" class="pagination-search"></p>
+                    </div>
+                </div>
+                <!--Import Modal -->
+                <div class="modal fade" id="open-program-modal" tabindex="-1" aria-labelledby="open-program-modal"
+                    aria-hidden="true">
+                </div>
+                <!-- EDIT PROGRAM AND UPDATE -->
+                <div class="modal fade" id="edit-program-modal" tabindex="-1" aria-labelledby="editModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="editModalLabel">Update Program</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div id="errorHtml"></div>
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label for="exampleInputEmail1" class=" sub-title">Program Name</label>
+                                    <input type="text" class="form-control" id="program_name" name="program_name">
+                                    <input type="hidden" class="form-control" id="hidden_id" name="hidden_id">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="exampleInputPassword1" class=" sub-title">Program Type</label>
+                                    <select class="form-control" name="program_type_lid" id="program_type_lid">
+                                        <option value="1">Full Time</option>
+                                        <option value="2">Part Time</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="abbr" class=" sub-title">Program Abbr</label>
+                                    <input type="text" class="form-control" id="abbr" name="abbr">
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary updateProgram">Update</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+</main>
+
+<!-- journal paper modal form  -->
+<div class="modal fade " id="pharmacy-seed-grant-modal" tabindex="-1" role="dialog" aria-labelledby="pharmacy-seed-grant-modal"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg modal-fullscreen p-5" role="document">
+        <div class="modal-content modal-content-data validate-input">
+            <div class="modal-header">
+                <h4 class="modal-title" id="journal-paper-title">Application for University Seed Grant</h4>
+                <div class="close" data-dismiss="modal" aria-label="Close">
+                    <span type="button" aria-hidden="true"><i class="fas fa-times "></i></span>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <hr class="bg-dark">
+                    <div class="form-group col-lg-12 col-md-6 col-sm-12 mb-4">
+                        <label for="" class="form-label fw-bold modal-title">SECTION I Summary Sheet</label>
+                    </div>
+                    <hr>
+                    <!-- Title of the project -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="project-title" class="form-label fw-bold">Title of the project </label>
+                        <input type="text" name="project-title" id="project-title" data-validate="isEmpty,isExist, isLength:2:255" data-err-msg="This field is required and min length > 1" class="form-control"  required/>
+                    </div>
+                    <!-- 2.	Main objectives of project  -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="project-objectives" class="form-label fw-bold">	Main objectives of project  </label>
+                        <input type="text" name="project-objectives" id="project-objectives" data-validate="isEmpty,isExist, isLength:2:255" data-err-msg="This field is required and min length > 1." class="form-control"
+                             required/>
+                    </div>
+                    <!-- 3.	Details of Principal Investigator  -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="principal-investigator-id" class="form-label fw-bold">	Details of Principal Investigator ID  </label>
+                        <input type="text" name="principal-investigator-id" id="principal-investigator-id" data-validate="isEmpty,isNotNumber,isExist,isNotSpecialChar" data-err-msg="This field is required and min length > 1." class="form-control"
+                             required/>
+                    </div>
+                    <!--4.	Details of Co- Investigator (If any) -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="co-investigator" class="form-label fw-bold"> Details of Co- Investigator (If any) </label>
+                        <input type="text" name="co-investigator" id="co-investigator" data-validate="isEmpty,isExist" data-err-msg="This field is required and min length > 1." class="form-control"
+                             required />
+                    </div>
+                    <!-- 5.	Duration of the project months -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="project-duration" class="form-label fw-bold">Duration of the project months</label>
+                        <input type="number" name="project-duration" id="project-duration" data-validate="isEmpty,isExist, isNumber" data-err-msg="Numeric value is requird." class="form-control" required>
+                    </div>
+                    <!-- 6.	Total Cost of the project: Rs. -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="total-cost" class="form-label fw-bold">Total Cost of the project Rs</label>
+                        <input type="number" name="total-cost" id="total-cost" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required." class="form-control"
+                            required>
+                    </div>
+                    <!-- Consumables Amount -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="consumables-amount" class="form-label fw-bold">Consumables Amount</label>
+                        <input type="number" name="consumables-amount" id="consumables-amount" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required." class="form-control"
+                             required>
+                    </div>
+                    <!-- Evaluation and analysis  -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="NMIMSAuthors" class="form-label fw-bold">Evaluation and analysis Amount</label>
+                        <input type="number" name="volumes" id="evaluation-analysis-amount" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required." class="form-control"
+                             required>
+                    </div>
+                    <!-- Any other -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="other-amount" class="form-label fw-bold">Any other</label>
+                        <input type="number" name="other-amount" id="other-amount" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required." class="form-control"
+                             required>
+                    </div>
+                    <!--SECTION II PROJECT DETAILS -->
+                    <hr class="bg-dark">
+                    <div class="form-group col-lg-12 col-md-6 col-sm-12 mb-4">
+                        <label for="" class="form-label fw-bold modal-title">SECTION II PROJECT DETAILS </label>
+                    </div>
+                    <hr>
+                    <!-- 1.	2.	Background -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="background-field" class="form-label fw-bold">Background </label>
+                        <input type="text" name="project-title" id="project-title" data-validate="isEmpty,isExist" data-err-msg="This field is required and min length > 1." class="form-control" required/>
+                    </div>
+                      <!-- 3.	Review of status of research in the field (National & International): -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="review-status-research-field" class="form-label fw-bold">Review of status of research in the field (National & International)</label>
+                            <select id="research-status" class="form-control gap-10" required>
+                                <option value="" selected>Select Review Status</option>
+                                <optgroup label="National">
+                                    <option value="National - Ongoing">National - Ongoing</option>
+                                    <option value="National - Completed">National - Completed</option>
+                                    <option value="National - Not Applicable">National - Not Applicable</option>
+                                </optgroup>
+                                <optgroup label="International">
+                                    <option value="International - Ongoing">International - Ongoing</option>
+                                    <option value="International - Completed">International - Completed</option>
+                                    <option value="International - Not Applicable">International - Not Applicable</option>
+                                </optgroup>
+                            </select>    
+                    </div>
+                    <!-- 4.	Scientific importance of the project-->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="scientific-importance" class="form-label fw-bold">Scientific importance of the project</label>
+                        <select class="form-control gap-10" id="scientific-importance" data-validate="isEmpty,isExist" data-err-msg="This field is required and select value " required>
+                            <option value="" selected>Select option</option>
+                            <option  value="High" >High - Significant impact and contribution to scientific knowledge</option>
+                            <option  value="Medium">Medium - Moderate impact and contribution</option>
+                            <option  value="Low">Low - Limited impact and contribution</option>
+                        </select>
+                    </div>
+
+                     <!-- 5.	Hypothesis/Rationale -->
+                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="ugc-indexed" class="form-label fw-bold mb-3">Hypothesis/Rationale</label><br>
+                        <div class="form-check-inline">
+                            <label for="is-hypothesis" class="form-check-label">
+                                <input type="radio" class="form-check-input" id="is-hypothesis" name="is-hypothesis" value="Hypothesis"> Hypothesis
+                            </label>
+                        </div>
+                        <div class="form-check-inline">
+                            <label for="is-rationale" class="form-check-label">
+                                <input type="radio" class="form-check-input" id="is-rationale" name="is-rationale" value="Rationale" checked> Rationale
+                            </label>
+                        </div>
+                    </div>
+                    <!-- 6.	Objective/s:-->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="objective" class="form-label fw-bold">Objective/s.</label>
+                        <input type="text" name="pages" id="objective" class="form-control" data-validate="isEmpty,isExist" data-err-msg="This field is required and select value."  required>
+                    </div>
+                    <!-- 7.	Detailed Methodology -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="detailed-methodology" class="form-label fw-bold">Detailed Methodology</label>
+                        <select id="detailed-methodology" class="form-control gap-10" required>
+                            <option value="" selected>Select Methodology</option>
+                            <option value="Experimental Research">Experimental Research</option>
+                            <option value="Survey Research">Survey Research</option>
+                            <option value="Qualitative Research">Qualitative Research</option>
+                            <option value="Quantitative Research">Quantitative Research</option>
+                            <option value="Case Study">Case Study</option>
+                        </select>
+                    
+                    </div>
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="timelines" class="form-label fw-bold">Timelines (Activity Chart including Milestones)</label>
+                        <input type="text" id="timelines" data-validate="isEmpty,isExist,isLength:2:255" data-err-msg="This field is required and min length > 1."  class="form-control">
+                    </div>
+                    
+                    <!-- 9.	Budget -->
+                    <div class="form-group col-lg-12 col-md-6 col-sm-12 mb-4">BUDGET</div>
+
+                    <!-- Consumables -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="consumables-amount" class="form-label fw-bold">Consumables Amount.</label>
+                        <input type="number" name="consumables-amount" id="consumables-amount"  class="form-control" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required" required>
+                    </div>
+                    <!-- consumables-justification -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="consumables-justification" class="form-label fw-bold">Consumables Justification.</label>
+                        <input type="text" name="webLinks" id="consumables-justification"  class="form-control" data-validate="isEmpty,isExist, isLength:2:255" data-err-msg="This field is required and min length > 1." required>
+                    </div>
+
+                     <!-- Solvents -->
+                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="solvents-amount" class="form-label fw-bold">Solvents Amount.</label>
+                        <input type="number" name="solvents-amount" id="solvents-amount"  class="form-control" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required" required>
+                    </div>
+                    <!-- solvents-justification-->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="solvents-justification" class="form-label fw-bold">Solvents Justification.</label>
+                        <input type="text" name="solvents-justification" id="solvents-justification"  class="form-control" data-validate="isEmpty,isExist, isLength:2:255" data-err-msg="This field is required and min length > 1." required>
+                    </div>
+
+                     <!-- Chemicals/ API -->
+                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="consumables-amount" class="form-label fw-bold">Chemicals/ API Amount.</label>
+                        <input type="number" name="consumables-amount" id="chemicals-amount"  class="form-control" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required" required>
+                    </div>
+                    <!-- chemicals-justification -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="chemicals-justification" class="form-label fw-bold">Chemicals/ API Justification.</label>
+                        <input type="text" name="chemicals-justification" id="chemicals-justification"  class="form-control" data-validate="isEmpty,isExist, isLength:2:255" data-err-msg="This field is required and min length > 1." required>
+                    </div>
+
+                     <!-- Biomarkers and reference standards -->
+                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="biomarkers-reference-amount" class="form-label fw-bold">Biomarkers and reference standards Amount.</label>
+                        <input type="number" name="biomarkers-reference-amount" id="biomarkers-reference-amount"  class="form-control" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required" required>
+                    </div>
+                    <!-- biomarkers-reference-justification -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="biomarkers-reference-justification" class="form-label fw-bold">Biomarkers and reference standards Justification.</label>
+                        <input type="text" name="biomarkers-reference-justification" id="biomarkers-reference-justification"  class="form-control" data-validate="isEmpty,isExist, isLength:2:255" data-err-msg="This field is required and min length > 1." required>
+                    </div>
+
+                     <!-- HPLC-amount -->
+                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="HPLC-amount" class="form-label fw-bold">HPLC column Amount.</label>
+                        <input type="number" name="HPLC-amount" id="HPLC-amount"  class="form-control" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required" required>
+                    </div>
+                    <!-- HPLC-justification -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="HPLC-justification" class="form-label fw-bold">HPLC column Justification.</label>
+                        <input type="text" name="HPLC-justification" id="HPLC-justification"  class="form-control" data-validate="isEmpty,isExist, isLength:2:255" data-err-msg="This field is required and min length > 1." required>
+                    </div>
+
+                    <!-- Experimental animals  -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="experimental-animals-amount" class="form-label fw-bold">Experimental animals Amount.</label>
+                        <input type="number" name="experimental-animals-amount" id="experimental-animals-amount"  class="form-control" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required" required>
+                    </div>
+                     <!-- experimental-animals-justification -->
+                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="experimental-animals-justification" class="form-label fw-bold">HPLC column Justification.</label>
+                        <input type="text" name="experimental-animals-justification" id="experimental-animals-justification"  class="form-control" data-validate="isEmpty,isExist, isLength:2:255" data-err-msg="This field is required and min length > 1." required>
+                    </div>
+                     <!-- Cell lines  -->
+                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="cell-lines-amount" class="form-label fw-bold">Cell lines Amount.</label>
+                        <input type="number" name="cell-lines-amount" id="cell-lines-amount"  class="form-control" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required" required>
+                    </div>
+                     <!-- cell-lines-justification -->
+                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="cell-lines-justification" class="form-label fw-bold">Cell lines Justification.</label>
+                        <input type="text" name="cell-lines-justification" id="cell-lines-justification"  class="form-control" data-validate="isEmpty,isExist, isLength:2:255" data-err-msg="This field is required and min length > 1." required>
+                    </div>
+                     <!-- Kits for analysis   -->
+                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="kits-analysis-amount" class="form-label fw-bold">Kits for analysis Amount.</label>
+                        <input type="number" name="kits-analysis-amount" id="kits-analysis-amount"  class="form-control" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required" required>
+                    </div>
+                     <!-- kits-analysis-amount  -->
+                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="HPLC-justification" class="form-label fw-bold">Kits for analysis Justification.</label>
+                        <input type="text" name="HPLC-justification" id="HPLC-justification"  class="form-control" data-validate="isEmpty,isExist, isLength:2:255" data-err-msg="This field is required and min length > 1." required>
+                    </div>
+                     <!-- Evaluation and analysis (outsourcing) -->
+                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="kits-analysis-justification" class="form-label fw-bold">Evaluation and analysis (outsourcing) justification.</label>
+                        <input type="text" name="kits-analysis-justification" id="evaluation-analysis-amount"  class="form-control" data-validate="isEmpty,isExist, isLength:2:255" data-err-msg="This field is required and min length > 1." required>
+                    </div>
+                     <!-- evaluation-analysis-justification -->
+                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="evaluation-analysis-justification" class="form-label fw-bold">Evaluation and analysis (outsourcing) Justification.</label>
+                        <input type="text" name="evaluation-analysis-justification" id="evaluation-analysis-justification"  class="form-control" data-validate="isEmpty,isExist, isLength:2:255" data-err-msg="This field is required and min length > 1." required>
+                    </div>
+                     <!-- 10.	Proposed Outcome  -->
+                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="proposed-outcome" class="form-label fw-bold">Proposed Outcome.</label>
+                        <input type="number" name="proposed-outcome" id="proposed-outcome"  class="form-control" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required" required>
+                    </div>
+                     <!-- HPLC-justification -->
+                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="HPLC-justification" class="form-label fw-bold">HPLC column Justification.</label>
+                        <input type="text" name="HPLC-justification" id="HPLC-justification"  class="form-control" data-validate="isEmpty,isExist, isLength:2:255" data-err-msg="This field is required and min length > 1." required>
+                    </div>
+                    <!-- 11.	Previous work done in this field  -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="previous-project-explaination" class="form-label fw-bold">Previous work done in this field.</label>
+                        <input type="text" name="previous-project-explaination" id="previous-project-explaination"  class="form-control" data-validate="isEmpty,isExist, isLength:2:255" data-err-msg="This field is required and min length > 1." required>
+                    </div>
+                    <!--12.	References:-->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="references" class="form-label fw-bold">References</label>
+                        <input type="text"  id="references" data-validate="isEmpty,isLength:2:255"  data-err-msg="This field is required and min length > 1." class="form-control"
+                        required>
+                    </div>
+
+                                             <!--SECTION III PROJECT DETAILS -->
+                    <hr class="bg-dark">
+                    <div class="form-group col-lg-12 col-md-6 col-sm-12 mb-4">
+                        <label for="foreign-authors" class="form-label fw-bold modal-title">SECTION III<br>
+                            <label for="" class="form-label fw-bold sub-title-text"> BIO-DATA OF THE INVESTIGATOR (PI/Co-PI)   </label>
+                    </div>
+                    <hr>
+                    <!-- 8.	Professional Experience (Total):  ____ years_____months-->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="no-nmims-student-author" class="form-label fw-bold">Professional Experience (Total): years/months </label>
+                        <input type="text"  id="total-experience" class="form-control" data-validate="isEmpty,isLength:2:255"  data-err-msg="This field is required and min length > 1." required>
+                    </div>
+                    <!-- Date of Publishing -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="date-of-publishing" class="form-label fw-bold">Date of Publishing</label>
+                        <input type="date" name="dop" id="date-of-publishing" data-validate="isEmpty,isExist" data-err-msg="Date is required" class="form-control" required>
+                    </div>
+                    <!-- title-of-paper -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="title-of-paper" class="form-label fw-bold">Title Of Paper</label>
+                        <input type="text" name="dop" id="title-of-paper" data-validate="isEmpty,isNotNumber,isExist" data-err-msg="This is required field and min length > 1." class="form-control" required>                    
+                    </div>
+                     <!-- Research Journal Paper  -->
+                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="journal-category" id="journal-category" class="form-label fw-bold mb-3">International/National Journal</label><br>
+                        <div class="form-check-inline">
+                            <label for="inter-national" class="form-check-label">
+                                <input type="radio" class="form-check-input" id="inter-national" name="journal-category" value="International"> International
+                            </label>
+                        </div>
+                        <div class="form-check-inline">
+                            <label for="national" class="form-check-label">
+                                <input type="radio" class="form-check-input" id="national" name="journal-category" value="National" checked> National
+                            </label>
+                        </div>
+                    </div>
+                      <!-- SCS Indexed -->
+                      <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="scs-indexed" class="form-label fw-bold mb-3"> Scopus Indexed </label><br>
+                        <div class="form-check-inline">
+                            <label for="scopus-yes" class="form-check-label">
+                                <input type="radio" class="form-check-input" id="scopus-yes" name="scopus-category" value="Yes"> Yes
+                            </label>
+                        </div>
+                        <div class="form-check-inline">
+                            <label for="scopus-no" class="form-check-label">
+                                <input type="radio" class="form-check-input" id="scopus-no" name="scopus-category" value="No" checked> No
+                            </label>
+                        </div>
+                    </div>
+                    <!-- WoS Indexed -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="wos-indexed" class="form-label fw-bold mb-3">WoS Indexed</label><br>
+                        <div class="form-check-inline">
+                            <label for="wos-index-yes" class="form-check-label">
+                                <input type="radio" class="form-check-input" id="wos-index-yes" name="wos-index-category" value="Yes"> Yes
+                            </label>
+                        </div>
+                        <div class="form-check-inline">
+                            <label for="wos-index-no" class="form-check-label">
+                                <input type="radio" class="form-check-input" id="wos-index-no" name="wos-index-category" value="No" checked> No
+                            </label>
+                        </div>
+                    </div>
+                    <!-- GS Indexed -->
+                    <!-- <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="gs-index" class="form-label fw-bold">GS Indexed</label>
+                        <input type="number" name="gs-indexed" id="gs-indexed" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required" class="form-control" required>
+                    </div> -->
+                    <!-- ABDC Indexed -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="gs-index" class="form-label fw-bold mb-3">ABDC Indexed</label><br>
+                        <div class="form-check-inline">
+                            <label for="abdc-index-yes" class="form-check-label">
+                                <input type="radio" class="form-check-input" id="abdc-index-yes" name="abdc-index-category" value="Yes"> Yes
+                            </label>
+                        </div>
+                        <div class="form-check-inline">
+                            <label for="abdc-index-no" class="form-check-label">
+                                <input type="radio" class="form-check-input" id="abdc-index-no" name="abdc-index-category" value="No" checked> No
+                            </label>
+                        </div>
+                    </div>
+                    <!-- UGC Indexed -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="ugc-indexed" class="form-label fw-bold mb-3">UGC Indexed</label><br>
+                        <div class="form-check-inline">
+                            <label for="ugc-index-yes" class="form-check-label">
+                                <input type="radio" class="form-check-input" id="ugc-index-yes" name="ugc-index-category" value="Yes"> Yes
+                            </label>
+                        </div>
+                        <div class="form-check-inline">
+                            <label for="ugc-index-no" class="form-check-label">
+                                <input type="radio" class="form-check-input" id="ugc-index-no" name="ugc-index-category" value="No" checked> No
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal" id="close-btn">Close</button>
+                <button type="button" class="btn btn-primary d-none" id="submit-btn">Submit</button>
+                <button type="button" class="btn btn-primary d-none " id="update-btn">Update</button>
+            </div>
+        </div>
+    </div>
+</div>
+<%- include('./partials/pagination') %>
+<%- include('./partials/footer') %>
+<%- include('./partials/footer-end') %>

@@ -24,7 +24,8 @@ const researchAwardController = require('../controllers/research-award-controlle
 const eContentDevelopMentCon = require('../controllers/e-content-development.controller');
 
 const nmimsConsultancyForm = require('../controllers/nmims-consultancy-form.controller');
-const seedGrantNonFormacyCon = require('../controllers/nmims-seed-grant-non-pharmacy');
+const seedGrantNonPharmacy = require('../controllers/nmims-seed-grant-non-pharmacy');
+const pharmacySeedGrantForm = require('../controllers/pharmacy-seed-grant-form-controller');
 
 // services
 const patentSubmissionServices = require('../services/patent-submission.service');
@@ -128,14 +129,15 @@ router.post('/nmims-consultancy-approval-form/view', asyncErrorHandler(nmimsCons
 router.post('/nmims-consultancy-approval-form/update', asyncErrorHandler(nmimsConsultancyForm.updateConsultancyApprovalFormData));
 router.post('/nmims-consultancy-approval-form/delete', asyncErrorHandler(nmimsConsultancyForm.deleteConsultancyFormData));
 
-// seedGrantNonFormacyCon
-router.get('/nmims-seed-grant-non-pharmacy', asyncErrorHandler(seedGrantNonFormacyCon.renderNmimsSeedGrantNonFormacy));
-router.post('/nmims-seed-grant-non-pharmacy/insert', asyncErrorHandler(seedGrantNonFormacyCon.insertGrantedSeedNonFormacyForm));
-router.post('/nmims-seed-grant-non-pharmacy/view', asyncErrorHandler(seedGrantNonFormacyCon.viewNonformacyForm));
-router.post('/nmims-seed-grant-non-pharmacy/update', asyncErrorHandler(seedGrantNonFormacyCon.updatedNonFormacyform));
-router.post('/nmims-seed-grant-non-pharmacy/delete', asyncErrorHandler(seedGrantNonFormacyCon.deleteNonFormacyForm));
+// seedGrantNonPharmacy
+router.get('/nmims-seed-grant-non-pharmacy', asyncErrorHandler(seedGrantNonPharmacy.renderNmimsSeedGrantNonFormacy));
+router.post('/nmims-seed-grant-non-pharmacy/insert', asyncErrorHandler(seedGrantNonPharmacy.insertGrantedSeedNonFormacyForm));
+router.post('/nmims-seed-grant-non-pharmacy/view', asyncErrorHandler(seedGrantNonPharmacy.viewNonformacyForm));
+router.post('/nmims-seed-grant-non-pharmacy/update', asyncErrorHandler(seedGrantNonPharmacy.updatedNonFormacyform));
+router.post('/nmims-seed-grant-non-pharmacy/delete', asyncErrorHandler(seedGrantNonPharmacy.deleteNonFormacyForm));
 
-
+// pharmacySeedGrantForm
+router.get('/pharmacy-seed-grant-form', asyncErrorHandler(pharmacySeedGrantForm.renderPharmacySeedGrantform));
 
 
 module.exports = router;
