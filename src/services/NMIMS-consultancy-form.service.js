@@ -1,3 +1,5 @@
+const moment = require('moment');
+
 const consultancyFormModels = require('../models/NMIMS-consultancy-form.models');
 
 
@@ -92,6 +94,59 @@ module.exports.viewApprovedformRecord = async (body) => {
     console.log('finalPayment ===>>>', finalPayment)
     const totalAmount = advancedPayment + finalPayment;
     console.log('totalAmount===>>>', totalAmount);
-    const facultyshares = totalAmount * 70 / 100;
-    console.log('facultyshares ===>>>>', facultyshares)
+    const facultySharesPercentage = parseInt(approvalFormData.approvedFormData[0].faculty_shares);
+    const nmimsSharePercentage = parseInt(approvalFormData.approvedFormData[0].nmims_shares);
+
+    console.log('facultySharesPercentage ===>>>>', facultySharesPercentage);
+    const facultyShareAmount = totalAmount * facultySharesPercentage / 100;
+    const nmimsShareAmount = totalAmount * nmimsSharePercentage/100;
+    console.log('nmimsShareAmount ::::', nmimsShareAmount);
+    console.log('facultyShareAmount ===>>>', facultyShareAmount);
+
+    const totalFees = approvalFormData.approvedFormData[0].session_count_per_days * approvalFormData.approvedFormData[0].per_session_fees;
+    console.log('totalFees ===>>>>', totalFees);
+
+    const totalExpensesAmount = approvalFormData.approvedFormData[0].research_staff_expenses + approvalFormData.approvedFormData[0].travel + 
+                                approvalFormData.approvedFormData[0].computer_charges + approvalFormData.approvedFormData[0].nmims_facility_charges
+                                + approvalFormData.approvedFormData[0].miscellaneous_including_contingency;
+
+    console.log('totalExpensesAmount ====>>>>>', totalExpensesAmount);
+    const commencementDate = approvalFormData.approvedFormData[0].commencement_date;
+    const commencementDateFormate = moment(commencementDate).format('DD-MM-YYYY');
+    console.log('commencementDateFormate ===>>>>', commencementDateFormate);
+    const completionDate = approvalFormData.approvedFormData[0].completion_date;
+    const completionDateFormate = moment(completionDate).format('DD-MM-YYYY');
+    console.log('completionDateFormate ====>>>', completionDateFormate);
+
+    const aToFTotalAmount = approvalFormData.approvedFormData[0].gross_fees + approvalFormData.approvedFormData[0].research_staff_expenses + approvalFormData.approvedFormData[0].travel + 
+    approvalFormData.approvedFormData[0].computer_charges + approvalFormData.approvedFormData[0].nmims_facility_charges
+    + approvalFormData.approvedFormData[0].miscellaneous_including_contingency;
+    console.log('aToFTotalAmount ====>>>>>', aToFTotalAmount);
+
+    const gstCharges = totalAmount * 18 / 100;
+    console.log('gstCharges ====>>>>', gstCharges);
+
+    const grandTotalAmount = totalExpensesAmount + aToFTotalAmount + gstCharges + totalFees;
+    console.log('grandTotalAmount ===>>>', grandTotalAmount);
+
+    return approvalFormData.status === "Done" ? {
+        status : approvalFormData.status,
+        message : approvalFormData.message,
+        approvalFormData : approvalFormData.approvedFormData[0],
+        totalExpensesAmount : totalExpensesAmount,
+        commencementDateFormate : commencementDateFormate,
+        completionDateFormate : completionDateFormate,
+        totalFees : totalFees,
+        facultyShareAmount : facultyShareAmount,
+        nmimsShareAmount : nmimsShareAmount,
+        totalAmount : totalAmount,
+        aToFTotalAmount : aToFTotalAmount,
+        gstCharges : gstCharges,
+        grandTotalAmount : grandTotalAmount
+
+    } : {
+        status : approvalFormData.status,
+        message : approvalFormData.message,
+        errorCode : approvalFormData.errorCode
+    };
 }

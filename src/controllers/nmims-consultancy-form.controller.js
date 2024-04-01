@@ -22,6 +22,25 @@ module.exports.viewConsultancyFormApprovalData = async(req, res, next) => {
 
     console.log('consultancyApprovalFormData ===>>>>', consultancyApprovalFormData);
 
+    const statusCode = consultancyApprovalFormData.status === "Done" ? 200 :  (consultancyApprovalFormData.errorCode ? 400 : 500);
+
+    res.status(statusCode).send({
+        status : consultancyApprovalFormData.status,
+        message : consultancyApprovalFormData.message,
+        approvalFormData : consultancyApprovalFormData.approvalFormData,
+        totalExpensesAmount : consultancyApprovalFormData.totalExpensesAmount,
+        commencementDateFormate : consultancyApprovalFormData.commencementDateFormate,
+        completionDateFormate : consultancyApprovalFormData.completionDateFormate,
+        totalFees : consultancyApprovalFormData.totalFees,
+        facultyShareAmount : consultancyApprovalFormData.facultyShareAmount,
+        nmimsShareAmount : consultancyApprovalFormData.nmimsShareAmount,
+        totalAmount : consultancyApprovalFormData.totalAmount,
+        aToFTotalAmount : consultancyApprovalFormData.aToFTotalAmount,
+        gstCharges : consultancyApprovalFormData.gstCharges,
+        grandTotalAmount : consultancyApprovalFormData.grandTotalAmount,
+        errorCode : consultancyApprovalFormData.errorCode ? consultancyApprovalFormData.errorCode : null
+    })
+
 
 }
 
