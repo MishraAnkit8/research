@@ -4,7 +4,7 @@ module.exports.renderNmimsConsultancyForm = async(req, res, next) => {
 
     const renderConsultancyData = await consultancyFormService.fetchConsultancyFormData();
     console.log('renderConsultancyData in controller ===>>>>', renderConsultancyData)
-    res.render('NMIMS-consultancy-form', {
+    res.render('nmims-consultancy-approval-form', {
         status : renderConsultancyData.status,
         message : renderConsultancyData.message,
         consultancyFormData : renderConsultancyData.consultancyFormData,

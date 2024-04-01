@@ -121,11 +121,11 @@ router.post('/e-content/delete', asyncErrorHandler(eContentDevelopMentCon.delete
 router.post('/e-content/view', asyncErrorHandler(eContentDevelopMentCon.viewEContentData));
 
 // nmims consultancy form
-router.get('/NMIMS-consultancy-form', asyncErrorHandler(nmimsConsultancyForm.renderNmimsConsultancyForm));
-router.post('/NMIMS-consultancy-form/insert', asyncErrorHandler(nmimsConsultancyForm.insertconsultancyFormData));
-router.post('/NMIMS-consultancy-form/view', asyncErrorHandler(nmimsConsultancyForm.viewConsultancyFormApprovalData));
-router.post('/NMIMS-consultancy-form/update', asyncErrorHandler(nmimsConsultancyForm.updateConsultancyApprovalFormData));
-router.post('/NMIMS-consultancy-form/delete', asyncErrorHandler(nmimsConsultancyForm.deleteConsultancyFormData));
+router.get('/nmims-consultancy-approval-form', asyncErrorHandler(nmimsConsultancyForm.renderNmimsConsultancyForm));
+router.post('/nmims-consultancy-approval-form/insert', asyncErrorHandler(nmimsConsultancyForm.insertconsultancyFormData));
+router.post('/nmims-consultancy-approval-form/view', asyncErrorHandler(nmimsConsultancyForm.viewConsultancyFormApprovalData));
+router.post('/nmims-consultancy-approval-form/update', asyncErrorHandler(nmimsConsultancyForm.updateConsultancyApprovalFormData));
+router.post('/nmims-consultancy-approval-form/delete', asyncErrorHandler(nmimsConsultancyForm.deleteConsultancyFormData));
 
 
 
