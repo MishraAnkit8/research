@@ -2,43 +2,60 @@ const researchCunsultancyModel = require('../models/research-project-grant.model
 
 module.exports.fetchResearConsultacyData = async() => {
     const researchConsultancyData = await researchCunsultancyModel.fetchResearchConsultancy();
-    console.log('researchConsultancyData in services ===>>>>>',researchConsultancyData.researchConsultancyList.rows)
+    console.log('researchConsultancyData in services ===>>>>>',researchConsultancyData.researchData);
+    console.log('researchConsultancyData in services ===>>>>>',researchConsultancyData.facultTableData);
+
+
     // Logging for debugging
-    const reseachProjectGrantList = researchConsultancyData.researchConsultancyList.rows;
-    const externalEmpList = researchConsultancyData.externalEmpList.rows;
-    const internalEmpList = researchConsultancyData.internalEmpList.rows;
+    // const reseachProjectGrantList = researchConsultancyData.researchConsultancyList.rows;
+    // const externalEmpList = researchConsultancyData.externalEmpList.rows;
+    // const internalEmpList = researchConsultancyData.internalEmpList.rows;
 
-    // Extract author names from patentList
-    const authorNameArray = researchConsultancyData.researchConsultancyList.rows.map(research => research.faculty_type);
-    // console.log('authorNameArray ===>>>>', authorNameArray)
-    // Consolidate internal and external employee lists with additional info
-    const resultArray = [
-        ...researchConsultancyData.internalEmpList.rows.map(emp => ({ authorName: emp.employee_name, table: 'internalEmpList' })),
-        ...researchConsultancyData.externalEmpList.rows.map(emp => ({ authorName: emp.external_emp_name, table: 'externalEmpList' }))
-    ];
+    // // Extract author names from patentList
+    // const authorNameArray = researchConsultancyData.researchConsultancyList.rows.map(research => research.faculty_type);
+    // // console.log('authorNameArray ===>>>>', authorNameArray)
+    // // Consolidate internal and external employee lists with additional info
+    // const resultArray = [
+    //     ...researchConsultancyData.internalEmpList.rows.map(emp => ({ authorName: emp.employee_name, table: 'internalEmpList' })),
+    //     ...researchConsultancyData.externalEmpList.rows.map(emp => ({ authorName: emp.external_emp_name, table: 'externalEmpList' }))
+    // ];
 
-    console.log('resultArray ====>>>>>>', resultArray)
+    // console.log('resultArray ====>>>>>>', resultArray)
 
-     reseachProjectGrantList.map(project => {
-        console.log('project in service====>>>>', project.faculty_type);
-        const facultyTypeAuthors = project.faculty_type;
-        console.log('facultyTypeAuthors ===>>>>', facultyTypeAuthors);
-        const matchedAuthor = resultArray.find(item => item.authorName === facultyTypeAuthors);
-        project.faculty_type = matchedAuthor ? matchedAuthor : { authorName:facultyTypeAuthors, table : "internalEmpList"}
-        console.log('matchedAuthor ====>>>>', matchedAuthor)
+    //  reseachProjectGrantList.map(project => {
+    //     console.log('project in service====>>>>', project.faculty_type);
+    //     const facultyTypeAuthors = project.faculty_type;
+    //     console.log('facultyTypeAuthors ===>>>>', facultyTypeAuthors);
+    //     const matchedAuthor = resultArray.find(item => item.authorName === facultyTypeAuthors);
+    //     project.faculty_type = matchedAuthor ? matchedAuthor : { authorName:facultyTypeAuthors, table : "internalEmpList"}
+    //     console.log('matchedAuthor ====>>>>', matchedAuthor)
         
-    });
-    console.log('reseachProjectGrantList ===>>>', reseachProjectGrantList)
-    console.log('researchConsultancyData in  ankit services ===>>>>>',researchConsultancyData)
-    const rowCount = researchConsultancyData.researchConsultancyList.rowCount;
-    console.log('rowCount ===>>>', rowCount)
+    // });
+    // console.log('reseachProjectGrantList ===>>>', reseachProjectGrantList)
+    // console.log('researchConsultancyData in  ankit services ===>>>>>',researchConsultancyData)
+    // const rowCount = researchConsultancyData.researchConsultancyList.rowCount;
+    // console.log('rowCount ===>>>', rowCount)
 
-    return {
-        reseachProjectGrantList : reseachProjectGrantList,
-        internalEmpList : internalEmpList,
-        externalEmpList : externalEmpList,
-        rowCount : rowCount
+    // return {
+    //     reseachProjectGrantList : reseachProjectGrantList,
+    //     internalEmpList : internalEmpList,
+    //     externalEmpList : externalEmpList,
+    //     rowCount : rowCount
+    // }
+
+    return researchConsultancyData.status === "Done" ? {
+        status : researchConsultancyData.status,
+        researchData : researchConsultancyData.researchData,
+        InternalFaculty : researchConsultancyData.facultTableData,
+        message : researchConsultancyData.message,
+        rowCount : researchConsultancyData.rowCount,
+        errorCode : researchConsultancyData.errorCode
+    } : {
+        status : researchConsultancyData.status,
+        message : researchConsultancyData.message,
+        errorCode : researchConsultancyData.errorCode
     }
+
 }
 
 module.exports.insertResearchConsultancyData = async(body , files) => {

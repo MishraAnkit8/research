@@ -3,62 +3,67 @@ const researchConsultancyService = require('../services/research-project-grant.s
 module.exports.renderResearchProjectConsultancy = async(req, res, next) => {
 
     const researchcConsultancyData = await researchConsultancyService.fetchResearConsultacyData();
-    const researchProject = researchcConsultancyData.reseachProjectGrantList;
-    // console.log('researchProject ====>>>>', researchProject)
-    for(let i = 0; i <= researchProject.length -1; i++){
-        // console.log('first index value ===>>>>', researchProject[i].faculty_type.table)
-    }
-    console.log('researchcConsultancyData.externalEmpList ===>>> in controller ', researchcConsultancyData.externalEmpList)
-    // Render view with structured data
-    if (researchcConsultancyData) {
-        res.render('research-project-grant', {
-            reseachConsultancyDataList: researchcConsultancyData.reseachProjectGrantList,
-            internalEmpList : researchcConsultancyData.internalEmpList,
-            externalEmpList : researchcConsultancyData.externalEmpList,
-            rowCount : researchcConsultancyData.rowCount
+    console.log('researchcConsultancyData in controller ===>>>>>', researchcConsultancyData);
+    console.log(' researchcConsultancyData ::::::::::::====>>>>>>', researchcConsultancyData.InternalFaculty)
+
+    // const researchProject = researchcConsultancyData.reseachProjectGrantList;
+    // // console.log('researchProject ====>>>>', researchProject)
+    // for(let i = 0; i <= researchProject.length -1; i++){
+    //     // console.log('first index value ===>>>>', researchProject[i].faculty_type.table)
+    // }
+    // console.log('researchcConsultancyData.externalEmpList ===>>> in controller ', researchcConsultancyData.externalEmpList)
+    // // Render view with structured data
+    // if (researchcConsultancyData) {
+    res.render('research-project-grant', {
+            status : researchcConsultancyData.status,
+            researchProjectData : researchcConsultancyData.researchData,
+            message : researchcConsultancyData.message,
+            rowCount : researchcConsultancyData.rowCount,
+            InternalFaculty : researchcConsultancyData.InternalFaculty,
+            errorCode : researchcConsultancyData.errorCode ? researchcConsultancyData.errorCode : null
         });
-    }
+
 }
 
-module.exports.insertResearchConsultancyData = async(req, res, next) => {
+module.exports.insertresearchcConsultancyData = async(req, res, next) => {
     const researchConsultantData =  req.body;
     console.log('researchConsultantData ==>>', researchConsultantData);
     console.log('files in controllerr ==>>>', req.files);
-    const researchConsultancyData = await researchConsultancyService.insertResearchConsultancyData(req.body, req.files);
-    console.log('researchConsultancyData ====>>>>>', researchConsultancyData)
-    const statusCode = researchConsultancyData.status === "Done" ? 200 : (researchConsultancyData.errorCode ? 400 : 500);
-    researchConsultancyData.status === "Done" ? res.status(statusCode).send({
-        status : researchConsultancyData.status,
-        message : researchConsultancyData.message,
-        externalEmpId : researchConsultancyData.externalEmpId,
-        consultantId : researchConsultancyData.consultantId,
-        rowCount : researchConsultancyData.rowCount,
-        message : researchConsultancyData.message,
+    const researchcConsultancyData = await researchConsultancyService.insertResearchConsultancyData(req.body, req.files);
+    console.log('researchcConsultancyData ====>>>>>', researchcConsultancyData)
+    const statusCode = researchcConsultancyData.status === "Done" ? 200 : (researchcConsultancyData.errorCode ? 400 : 500);
+    researchcConsultancyData.status === "Done" ? res.status(statusCode).send({
+        status : researchcConsultancyData.status,
+        message : researchcConsultancyData.message,
+        externalEmpId : researchcConsultancyData.externalEmpId,
+        consultantId : researchcConsultancyData.consultantId,
+        rowCount : researchcConsultancyData.rowCount,
+        message : researchcConsultancyData.message,
         researchConsultantData : researchConsultantData,
-        authorNameString : researchConsultancyData.authorNameString,
-        externalNamesString : researchConsultancyData.externalNamesString,
-        internalNamesString : researchConsultancyData.internalNamesString,
-        consultancyDataFiles : researchConsultancyData.consultancyDataFiles,
+        authorNameString : researchcConsultancyData.authorNameString,
+        externalNamesString : researchcConsultancyData.externalNamesString,
+        internalNamesString : researchcConsultancyData.internalNamesString,
+        consultancyDataFiles : researchcConsultancyData.consultancyDataFiles,
 
     }) : res.status(statusCode).send({
-        status : researchConsultancyData.status,
-        errorCode : researchConsultancyData.errorCode,
-        message : researchConsultancyData.message
+        status : researchcConsultancyData.status,
+        errorCode : researchcConsultancyData.errorCode,
+        message : researchcConsultancyData.message
     })
-    // // console.log('consultantId in controller ===>>>>.',researchConsultancyData.consultantId);
-    // const authorName = researchConsultancyData.authorName;
-    // console.log('researchConsultancyData.rowCount  ===>>>>', researchConsultancyData.rowCount )
-    // const consultancyFileName = researchConsultancyData.consultancyDataFiles;
-    // if(researchConsultancyData && researchConsultancyData.consultantId && authorName && consultancyFileName){
+    // // console.log('consultantId in controller ===>>>>.',researchcConsultancyData.consultantId);
+    // const authorName = researchcConsultancyData.authorName;
+    // console.log('researchcConsultancyData.rowCount  ===>>>>', researchcConsultancyData.rowCount )
+    // const consultancyFileName = researchcConsultancyData.consultancyDataFiles;
+    // if(researchcConsultancyData && researchcConsultancyData.consultantId && authorName && consultancyFileName){
     //     res.status(200).send({
     //         status : 'Done',
     //         message : 'Data Inserted Successfully',
     //         consultancyFileName,
-    //         consultantId : researchConsultancyData.consultantId,
+    //         consultantId : researchcConsultancyData.consultantId,
     //         researchConsultantData : researchConsultantData,
     //         authorName,
-    //         tableName : researchConsultancyData.tableName,
-    //         rowCount : researchConsultancyData.rowCount 
+    //         tableName : researchcConsultancyData.tableName,
+    //         rowCount : researchcConsultancyData.rowCount 
     //     })
     // }
     // else{
@@ -122,18 +127,15 @@ module.exports.viewResearchProjectConsultancy = async(req, res, next) => {
     console.log('consultantId  in controller ==>>', consultantId);
     const viewResearchConsultantData = await researchConsultancyService.viewReseachProjectData(consultantId);
     console.log('viewResearchConsultantData in controller ===>>', viewResearchConsultantData)
-    const sanctionGrantDate = formatDate(viewResearchConsultantData.sanction_grant_date);
-    const recievedAmountDate = formatDate(viewResearchConsultantData.recieved_amount_date);
+    const submissionGrantDate = formatDate(viewResearchConsultantData.submission_date);
 
 
-    console.log('sanctionGrantDate and recievedAmountDate ::::;', sanctionGrantDate, recievedAmountDate)
     if(viewResearchConsultantData){
         res.status(200).send({
             status : 'Done',
             message : 'successfull',
             consultantData : viewResearchConsultantData,
-            sanctionGrantDate : sanctionGrantDate,
-            recievedAmountDate : recievedAmountDate
+            submissionGrantDate : submissionGrantDate
         })
     }
 }

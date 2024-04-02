@@ -588,3 +588,52 @@ CREATE TABLE nmims_seed_grant_non_formacy(
 	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+
+CREATE TABLE research_project_grant (
+    id SERIAL PRIMARY KEY,
+    grant_proposal_category VARCHAR(255),
+    type_of_research_grant VARCHAR(50),
+    title_of_project VARCHAR(255),
+    thrust_area_of_research VARCHAR(255),
+    name_of_funding_agency VARCHAR(100),
+    funding_amount NUMERIC,
+    status_of_research_project VARCHAR(50),
+    submission_date DATE,
+    supporting_documents VARCHAR(255),
+    faculty_table_id INTEGER,
+    external_faculty_table_id INTEGER,
+    FOREIGN KEY (faculty_table_id) REFERENCES faculty_table(id),
+    FOREIGN KEY (external_faculty_table_id) REFERENCES external_faculty_table(id),
+    created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+
+
+
+
+
+-- Insert data into faculty_table
+INSERT INTO faculty_table (faculty_name, designation, address)
+VALUES 
+    ('Raj Kumar', 'Professor', 'Banglore'),
+    ('Avinash', 'Associate Professor', 'Mumbai');
+
+-- Insert data into external_faculty_table
+INSERT INTO external_faculty_table (external_faculty_name, email, address)
+VALUES 
+    ('External Faculty 1', 'external1@example.com', '789 Oak St'),
+    ('External Faculty 2', 'external2@example.com', '101 Pine St');
+
+-- Insert data into research_project_grant
+INSERT INTO research_project_grant (grant_proposal_category, type_of_research_grant, title_of_project, thrust_area_of_research, name_of_funding_agency, funding_amount, status_of_research_project, submission_date, supporting_documents, faculty_table_id,
+								   external_faculty_table_id)
+VALUES 
+    ('Category A', 'Research Grant', 'Project 1', 'Area 1', 'Funding Agency A', 100000.00, 'Approved', '2024-04-15', 'Supporting Docs 1', 1, 2),
+    ('Category B', 'Development Grant', 'Project 2', 'Area 2', 'Funding Agency B', 150000.00, 'Pending', '2024-05-01', 'Supporting Docs 2', 2, 1);
+
+SELECT *
+FROM research_project_grant AS rpg
+LEFT JOIN faculty_table AS ft ON rpg.faculty_table_id = ft.id
+LEFT JOIN external_faculty_table AS eft ON rpg.external_faculty_table_id = eft.id;

@@ -6,44 +6,63 @@ const researchDbR = dbPoolManager.get('researchDbR', research_read_db);
 const researchDbW = dbPoolManager.get('researchDbW', research_write_db);
 
 module.exports.fetchResearchConsultancy = async() => {
-    let researchConSql = {
-        text : `SELECT * FROM research_project_grant ORDER BY id`,
-    }
-    let internalEmpSql = {
-        text: `SELECT * FROM employee_table ORDER BY id`
-    };
+    // let researchConSql = {
+    //     text : `SELECT * FROM research_project_grant ORDER BY id`,
+    // }
+    // let internalEmpSql = {
+    //     text: `SELECT * FROM employee_table ORDER BY id`
+    // };
     
-    let externalEmpSql = {
-        text: `SELECT * FROM external_emp ORDER BY id`
+    // let externalEmpSql = {
+    //     text: `SELECT * FROM external_emp ORDER BY id`
+    // }
+    // console.log('externalEmpSql ===<>>>>', externalEmpSql);
+    // console.log('researchConSql ===>>>', researchConSql);
+    // console.log('internalEmpSql ===>>>', internalEmpSql)
+    // const researchconPromise = researchDbR.query(researchConSql);
+    // const internalEmpPromise = researchDbR.query(internalEmpSql);
+    // const externalEmpPromise = researchDbR.query(externalEmpSql)
+
+    // const [researchConsultancyList, internalEmpList, externalEmpList] = await Promise.all([researchconPromise, internalEmpPromise, externalEmpPromise]);
+
+    // return {
+    //     researchConsultancyList: researchConsultancyList,
+    //     internalEmpList: internalEmpList,
+    //     externalEmpList : externalEmpList
+    // };
+    let reseachSql = {
+        text : `SELECT *
+        FROM research_project_grant AS rpg
+        LEFT JOIN faculty_table AS ft ON rpg.faculty_table_id = ft.id
+        LEFT JOIN external_faculty_table AS eft ON rpg.external_faculty_table_id = eft.id;
+        `
     }
-    console.log('externalEmpSql ===<>>>>', externalEmpSql);
-    console.log('researchConSql ===>>>', researchConSql);
-    console.log('internalEmpSql ===>>>', internalEmpSql)
-    const researchconPromise = researchDbR.query(researchConSql);
-    const internalEmpPromise = researchDbR.query(internalEmpSql);
-    const externalEmpPromise = researchDbR.query(externalEmpSql)
 
-    const [researchConsultancyList, internalEmpList, externalEmpList] = await Promise.all([researchconPromise, internalEmpPromise, externalEmpPromise]);
-
-    return {
-        researchConsultancyList: researchConsultancyList,
-        internalEmpList: internalEmpList,
-        externalEmpList : externalEmpList
-    };
+    let internalFacultySql = {
+        text : `SELECT * FROM faculty_table ORDER BY id`
+    }
+    const researchData = await researchDbW.query(reseachSql);
+    const facultTableData = await researchDbW.query(internalFacultySql)
+    const promises = [researchData, facultTableData];
+    return Promise.all(promises).then(([researchData]) => {
+      return  { status : "Done" , message : "Record Fetched Successfully" ,  rowCount : researchData.rowCount, researchData : researchData.rows, facultTableData : facultTableData.rows}
+  })
+  .catch((error) => {
+      return{status : "Failed" , message : error.message , errorCode : error.code}
+  }) 
 }
 
 module.exports.insertResearhcProjectConstancyData = async(researchCunsultancyData, consultancyDataFiles, internalNamesString, externalNamesString, authorNameString) => {
     console.log('researchCunsultancyData inside models ===>>>', researchCunsultancyData);
 
-    const {school, campus, facultyDept, grantProposalCategory, typeOfGrant, titleOfProject, thurstAreaOfResearch, fundingAgency, fundingAmount,
-        schemeName, statusOfResearchProject, submissionGrantDate, principalInvestigator, coInvestigator, totalGrntSanctioRupee, recievedAmount, recievedAmountDate, projectDuration} = researchCunsultancyData
+    const { grantProposalCategory, typeOfGrant, titleOfProject, thurstAreaOfResearch, fundingAgency, fundingAmount,
+         statusOfResearchProject, submissionGrantDate} = researchCunsultancyData
    
     let researchSql = {
-        text: `INSERT INTO research_project_grant (school, campus, faculty_dept, grant_proposal_category, type_of_research_grant, title_of_project, thrust_area_of_research, 
-        name_of_funding_agency, funding_amount, scheme_name, status_of_research_project, sanction_grant_date, 
-        principal_investigator, co_investigator, total_grant_sanction_rupees, recieved_amount, recieved_amount_date, project_duration, faculty_type, supporting_documents) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20) RETURNING id`,
-        values: [school, campus, facultyDept, grantProposalCategory, typeOfGrant, titleOfProject, thurstAreaOfResearch, fundingAgency, fundingAmount,
-            schemeName, statusOfResearchProject, submissionGrantDate, principalInvestigator, coInvestigator, totalGrntSanctioRupee, recievedAmount, recievedAmountDate, projectDuration, authorNameString, consultancyDataFiles]
+        text: `INSERT INTO research_project_grant ( grant_proposal_category, type_of_research_grant, title_of_project, thrust_area_of_research, 
+        name_of_funding_agency, funding_amount,  status_of_research_project, sanction_grant_date faculty_type, supporting_documents) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING id`,
+        values: [ grantProposalCategory, typeOfGrant, titleOfProject, thurstAreaOfResearch, fundingAgency, fundingAmount,
+            schemeName, statusOfResearchProject, submissionGrantDate,  authorNameString, consultancyDataFiles]
     };
     // const externalNamesArray = externalNamesString.split(',').map(name => name.trim());
     // const externalEmpIds = [];
@@ -120,20 +139,19 @@ module.exports.updateResearchConsultantData = async(consultantId, updatedResearc
       }
     : null;
     console.log('externalEmpSql ===>>>', externalEmpSql);
-    const {school, campus, facultyDept, grantProposalCategory, typeOfGrant, titleOfProject, thurstAreaOfResearch, fundingAgency, fundingAmount,
-        schemeName, statusOfResearchProject, submissionGrantDate, principalInvestigator, coInvestigator, totalGrntSanctioRupee, recievedAmount, recievedAmountDate, projectDuration} = updatedResearchGrant;
+    const {grantProposalCategory, typeOfGrant, titleOfProject, thurstAreaOfResearch, fundingAgency, fundingAmount,
+         statusOfResearchProject, submissionGrantDate} = updatedResearchGrant;
    
 
-    let baseQuery = `UPDATE research_project_grant SET school = $2, campus = $3, faculty_dept = $4, grant_proposal_category = $5, type_of_research_grant = $6, title_of_project = $7, thrust_area_of_research = $8, 
-    name_of_funding_agency = $9, funding_amount = $10, scheme_name = $11, status_of_research_project = $12, sanction_grant_date = $13, 
-    principal_investigator = $14, co_investigator = $15, total_grant_sanction_rupees = $16, recieved_amount = $17, recieved_amount_date = $18, project_duration = $19, faculty_type = $20`;
-    let documentsQuery =  supportingDocuments ? `, supporting_documents = $21` : '';
+    let baseQuery = `UPDATE research_project_grant SET  grant_proposal_category = $2, type_of_research_grant = $3, title_of_project = $4, thrust_area_of_research = $5, 
+    name_of_funding_agency = $96, funding_amount = $7, status_of_research_project = $8, sanction_grant_date = $9, faculty_type = $10`;
+    let documentsQuery =  supportingDocuments ? `, supporting_documents = $11` : '';
     console.log('documentsQuery ====>>>>', documentsQuery)
     let queryText = baseQuery + documentsQuery +  ` WHERE id = $1`;
     console.log('queryText ===>>>>', queryText)
 
-    let values = [consultantId, school, campus, facultyDept, grantProposalCategory, typeOfGrant, titleOfProject, thurstAreaOfResearch, fundingAgency, fundingAmount,
-        schemeName, statusOfResearchProject, submissionGrantDate, principalInvestigator, coInvestigator, totalGrntSanctioRupee, recievedAmount, recievedAmountDate, projectDuration, authorNameString, ...(supportingDocuments ? [supportingDocuments] : [])];
+    let values = [consultantId, grantProposalCategory, typeOfGrant, titleOfProject, thurstAreaOfResearch, fundingAgency, fundingAmount,
+         statusOfResearchProject, submissionGrantDate, authorNameString, ...(supportingDocuments ? [supportingDocuments] : [])];
     console.log('values ===>>>>', values)
 
     let sql  = {

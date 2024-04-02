@@ -63,5 +63,6 @@ module.exports.customErrorHandler = (err, req, res, next) => {
 
 module.exports.asyncErrorHandler = (fn) => (...args) => {
     const next = args[args.length - 1];
+    console.log('next ===>>>>', next)
     Promise.resolve(fn(...args)).catch(next);
 }
