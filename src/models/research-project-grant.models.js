@@ -31,15 +31,37 @@ module.exports.fetchResearchConsultancy = async() => {
     //     externalEmpList : externalEmpList
     // };
     let reseachSql = {
-        text : `SELECT *
-        FROM research_project_grant AS rpg
-        LEFT JOIN faculty_table AS ft ON rpg.faculty_table_id = ft.id
-        LEFT JOIN external_faculty_table AS eft ON rpg.external_faculty_table_id = eft.id;
+        text : `SELECT 
+        r.id AS project_id,
+        r.title_of_project,
+        r.grant_proposal_category,
+        r.type_of_research_grant,
+        r.thrust_area_of_research,
+        r.name_of_funding_agency,
+        r.funding_amount,
+        r.status_of_research_project,
+        r.submission_date,
+        r.supporting_documents,
+        f.id AS faculty_id,
+        f.employee_id,
+        f.faculty_name,
+        f.designation,
+        f.address,
+        ft.name AS faculty_type
+    FROM 
+        research_project_grant AS r
+    INNER JOIN 
+        research_project_grant_faculty AS rf ON r.id = rf.research_project_grant_id
+    LEFT JOIN 
+        faculties AS f ON rf.faculty_id = f.id
+    LEFT JOIN 
+        faculty_types AS ft ON f.faculty_type_id = ft.id
+    ORDER BY  r.id
         `
     }
 
     let internalFacultySql = {
-        text : `SELECT * FROM faculty_table ORDER BY id`
+        text : `select * from  faculties where faculty_type_id = 1;`
     }
     const researchData = await researchDbW.query(reseachSql);
     const facultTableData = await researchDbW.query(internalFacultySql)

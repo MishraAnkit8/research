@@ -3,7 +3,7 @@ const researchCunsultancyModel = require('../models/research-project-grant.model
 module.exports.fetchResearConsultacyData = async() => {
     const researchConsultancyData = await researchCunsultancyModel.fetchResearchConsultancy();
     console.log('researchConsultancyData in services ===>>>>>',researchConsultancyData.researchData);
-    console.log('researchConsultancyData in services ===>>>>>',researchConsultancyData.facultTableData);
+    console.log('facultTableData in services :::::===>>>>>',researchConsultancyData.facultTableData);
 
 
     // Logging for debugging
@@ -59,29 +59,53 @@ module.exports.fetchResearConsultacyData = async() => {
 }
 
 module.exports.insertResearchConsultancyData = async(body , files) => {
-    const researchCunsultancyData = body
-    const authorNameArray = JSON.parse(body.authorName);
+    const researchCunsultancyData = body;
+    // console.log('data in service =====>>>>', researchCunsultancyData.internalEmpId)
+    const facultyDataContainer = JSON.parse(body.facultyDataContainer);
+    console.log('facultyDataContainer ====>>>', facultyDataContainer);
     //for storing internalNames and externalNames faculty name
-    const internalNames = [];
-    const externalNames = [];
-    authorNameArray.forEach((item) => {
-        item.internalEmpList ? internalNames.push(item.internalEmpList) : null;
-        item.externalEmpList ? externalNames.push(item.externalEmpList) : null;
+    const internalFacultyId = [];
+    const exeternalFacultyRecord = [];
+    facultyDataContainer.forEach((item) => {
+        item.internalFaculty ?  internalFacultyId.push(...item.internalFaculty) : null;
+        item.externalEmpList ? exeternalFacultyRecord.push(...item.externalEmpList) : null;
     });
-    // convert array into string
-    const internalNamesString = internalNames.join(", ");
-    const externalNamesString = externalNames.join(", ");
-    const authorNameString = internalNamesString + externalNamesString;
-    console.log("Internal Names updated:", internalNamesString);
-    console.log("External Names updated:", externalNamesString);
+
+    const filteredData = exeternalFacultyRecord.filter(obj => {
+        return Object.keys(obj).length !== 0 && obj.constructor === Object && Object.values(obj).some(val => val !== '');
+      });
+  
+      console.log('filteredData ===>>>>>>', filteredData);
+      const facultyNamearray = [];
+      const facultyDsgArray = [];
+      const facultyAddrArray = [];
+      
+      filteredData.forEach(({ facultyName, facultyDsg, facultyAddr }) => {
+        facultyName && facultyName != 'undefined' ? facultyNamearray.push(facultyName) : null;
+        facultyDsg  && facultyDsg != 'undefined'? facultyDsgArray.push(facultyDsg) : null;
+        facultyAddr && facultyAddr != 'undefined' ? facultyAddrArray.push(facultyAddr) : null;
+      });
+      
+      let arraycontaner =  [];
+      if(facultyNamearray.length === facultyDsgArray.length && facultyDsgArray.length  === facultyAddrArray.length ){
+        for(let  i = 0; i <= facultyNamearray.length -1 ; i++){
+            const arrarData = []
+            arrarData.push(facultyNamearray[i], facultyDsgArray[i], facultyAddrArray[i]);
+            arraycontaner.push(arrarData)
+        }
+      }
+      console.log('facultyNamearray ===>>>>', facultyNamearray);
+      console.log('facultyDsgArray ===>>>>', facultyDsgArray);
+      console.log('facultyAddrArray ===>>>>', facultyAddrArray);
+      console.log('arraycontaner ===>>>>', arraycontaner)
+
+      
+
+    console.log('internalFacultyId ===>>>>', internalFacultyId);
+    console.log('exeternalFacultyRecord ===>>>', exeternalFacultyRecord);
     const consultancyDataFiles = files?.map(file => file.filename).join(',');
-    // for (let i = 0; i <= files.length - 1; i++){
-    //       if(files[i].filename){
-    //         consultancyDataFiles += files[i].filename + ',';
-    //       }
-    // }
     console.log('consultancyDataFiles ===>>>>', consultancyDataFiles)
-    const researchProjectConsultancy = await researchCunsultancyModel.insertResearhcProjectConstancyData(researchCunsultancyData , consultancyDataFiles, internalNamesString, externalNamesString, authorNameString);
+    const researchProjectConsultancy = await researchCunsultancyModel.insertResearhcProjectConstancyData(researchCunsultancyData , consultancyDataFiles, internalFacultyId, exeternalFacultyRecord);
     console.log('researchProjectConsultancy ===>>>' , researchProjectConsultancy);
     return researchProjectConsultancy.status === "Done" ? {
         status : "Done",

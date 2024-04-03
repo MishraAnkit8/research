@@ -637,3 +637,105 @@ SELECT *
 FROM research_project_grant AS rpg
 LEFT JOIN faculty_table AS ft ON rpg.faculty_table_id = ft.id
 LEFT JOIN external_faculty_table AS eft ON rpg.external_faculty_table_id = eft.id;
+
+
+
+CREATE TABLE research_project_grant (
+    id SERIAL PRIMARY KEY,
+    grant_proposal_category VARCHAR(255),
+    type_of_research_grant VARCHAR(50),
+    title_of_project VARCHAR(255),
+    thrust_area_of_research VARCHAR(255),
+    name_of_funding_agency VARCHAR(100),
+    funding_amount NUMERIC,
+    status_of_research_project VARCHAR(50),
+    submission_date DATE,
+    supporting_documents VARCHAR(255),
+    created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+
+CREATE TABLE research_project_grant_faculty (
+    id SERIAL PRIMARY KEY,
+    research_project_grant_id INTEGER REFERENCES research_project_grant(id),
+    faculty_id INTEGER REFERENCES faculties(id)
+);
+
+CREATE TABLE faculties (
+    id SERIAL PRIMARY KEY,
+    faculty_type_id INTEGER REFERENCES faculty_types(id),
+    employee_id INTEGER,
+	faculty_name VARCHAR(255),
+    designation VARCHAR(50),
+    address VARCHAR(50),
+    updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_by INTEGER, -- Assuming this is a reference to some user or admin table
+    active BOOLEAN DEFAULT TRUE
+);
+
+CREATE TABLE faculty_types (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(50)
+);
+
+INSERT INTO faculty_types (name) VALUES 
+('Internal'),
+('External');
+
+
+
+
+INSERT INTO research_project_grant (grant_proposal_category, type_of_research_grant, title_of_project, thrust_area_of_research, name_of_funding_agency, funding_amount, status_of_research_project, submission_date, supporting_documents) VALUES
+('Science', 'Basic Research', 'Project A', 'Biology', 'National Institutes of Health', 50000, 'In Progress', '2024-04-01', 'docs/project_a_supporting_docs.pdf'),
+('Engineering', 'Applied Research', 'Project B', 'Civil Engineering', 'National Science Foundation', 75000, 'Approved', '2024-05-15', 'docs/project_b_supporting_docs.pdf');
+
+
+INSERT INTO faculties (faculty_type_id, employee_id, faculty_name, designation, address, updated_by) VALUES
+
+(2, 1003, 'Dr. Ankit Mishra','Software engineer', '7008 Oak panna, City, Country', 1),
+(1, 1001, 'Dr. John Doe', 'Software Developer', '123 Main St, City, Country', 1),
+(1, 1002, 'Dr. Jane Smith','Software Analysis', '456 Elm St, City, Country', 1),
+(1, 1003, 'Dr. Michael Johnson', ' Profecssor', '789 Oak St, City, Country', 1);
+
+select * from  faculties where faculty_type_id = 1;
+select * from faculties;
+
+INSERT INTO research_project_grant_faculty (research_project_grant_id, faculty_id) VALUES
+(1, 1),
+(1, 2),
+(2, 2),
+(2, 3);
+
+SELECT 
+        r.id AS project_id,
+        r.title_of_project,
+        r.grant_proposal_category,
+        r.type_of_research_grant,
+        r.thrust_area_of_research,
+        r.name_of_funding_agency,
+        r.funding_amount,
+        r.status_of_research_project,
+        r.submission_date,
+        r.supporting_documents,
+        f.id AS faculty_id,
+        f.employee_id,
+        f.faculty_name,
+        f.designation,
+        f.address,
+        ft.name AS faculty_type
+    FROM 
+        research_project_grant AS r
+    INNER JOIN 
+        research_project_grant_faculty AS rf ON r.id = rf.research_project_grant_id
+    LEFT JOIN 
+        faculties AS f ON rf.faculty_id = f.id
+    LEFT JOIN 
+        faculty_types AS ft ON f.faculty_type_id = ft.id
+    ORDER BY  r.id
+ALTER TABLE faculties ADD COLUMN faculty_name VARCHAR(255);
+
+
+DELETE FROM research_project_grant_faculty WHERE id = 1;
+

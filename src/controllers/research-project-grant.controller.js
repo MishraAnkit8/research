@@ -25,7 +25,7 @@ module.exports.renderResearchProjectConsultancy = async(req, res, next) => {
 
 }
 
-module.exports.insertresearchcConsultancyData = async(req, res, next) => {
+module.exports.insertResearchConsultancyData = async(req, res, next) => {
     const researchConsultantData =  req.body;
     console.log('researchConsultantData ==>>', researchConsultantData);
     console.log('files in controllerr ==>>>', req.files);

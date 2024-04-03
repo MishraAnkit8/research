@@ -343,6 +343,8 @@
                             </div>  
                         </div>
                         <button id="add-more-details" class="btn col-lg-4 col-md-6 col-sm-12 btn-primary" type="button">Add More Details</button>
+                        <button id="insert-details" class="btn col-lg-4 col-md-6 col-sm-12 btn-primary insert-details" type="button">Submit External Details</button>
+
                     </div>
                     
 
@@ -561,6 +563,9 @@
     const updateBtn = document.getElementById('update-btn');
     let consultantId, consultantRowToBeUpdated, externalEmpId ;
     let storedFacultyValue, InternalAuthorValue, externalAuthorValue;
+    let facultyIdContainer = [];
+    let  externalFacultyData = [];
+
     const employeeDropdown = document.getElementById("emp-name");
     const addMoreDetailsButton = document.getElementById("add-more-details");
     const enternalFacultyType = document.getElementById('is-internal');
@@ -594,8 +599,8 @@
                 const statusPresentationHeld = document.getElementById('presentation-held');
                 const statusGranted = document.getElementById('granted');
                 const submissionGrantDate = document.getElementById('submission-grant-date');
-                const facultyTypeInternal = document.getElementById('internal');
-                const facultyTypeExternal = document.getElementById('external');
+                // const facultyTypeInternal = document.getElementById('internal');
+                // const facultyTypeExternal = document.getElementById('external');
                 const supportingDocument = document.getElementById('supporting-documents');
                 const isInternalFaculty = document.getElementById('is-internal');
                 const isExternalFaculty = document.getElementById('is-external');
@@ -656,8 +661,9 @@
             const statusOfResearchProject = document.querySelector('input[name="research-project-status"]:checked').value;
             const submissionGrantDate = document.getElementById('submission-grant-date').value;
             const authorType = document.querySelector('input[name="author-type"]:checked').value;
+            console.log('authorType ====>>>>>>', authorType);
             // const projectDuration = document.getElementById('duration-of-project').value
-            console.log('authorType ===>>>>', authorType)
+            // console.log('authorType ===>>>>', authorType)
 
             await insertFacultyNameString(authorType, researchConsultancyData);
             const supportingDocument = document.getElementById('supporting-documents');
@@ -692,7 +698,6 @@
             // researchConsultancyData.append('recievedAmountDate', recievedAmountDate);
             // researchConsultancyData.append('projectDuration' , projectDuration);
 
-            researchConsultancyData.append('facultyType', facultyType);
 
             fetch(url, {
                 method: 'POST',
@@ -1007,7 +1012,7 @@
             const viewFundingAmount = document.getElementById('view-funding-amount');
             const viewStatusOfResearchProject = document.getElementById('view-project-status');
             // const viewSubmissionGrantDate = document.getElementById('view-date');
-            const viewFacultyType = document.getElementById('view-faculty-type');
+            // const viewFacultyType = document.getElementById('view-faculty-type');
             // const viewSchool = document.getElementById('view-school-name');
             // const viewCampus = document.getElementById('view-campus-name');
             // const viewFacultyDept = document.getElementById('view-faculty-dept');
@@ -1295,7 +1300,7 @@
     // ajax for search bar to search employee name 
     const facultyOptions = employeesDataObj.map(faculty => ({
             value: faculty.id,
-            text: ` ${faculty.id}, ${faculty.faculty_name}`
+            text: ` ${faculty.employee_id}  ${faculty.faculty_name}`
         }));
 
 
@@ -1303,7 +1308,6 @@
     new TomSelect("#emp-name", {
             options: facultyOptions
     });
-    const externalAuthorNamesArray = [];
     // function for select author name from drop down list
     
     function handleEmployeeDropdownChange() {
@@ -1311,40 +1315,60 @@
                 .filter(option => option.selected)
                 .map(option => option.value);
             InternalAuthorValue = selectedValues.length === 0 ? "" : selectedValues;
-            externalAuthorNamesArray.push({'internalEmpList' : InternalAuthorValue})
-            console.log("Selected employee values:", InternalAuthorValue);
+            console.log('InternalAuthorValue ===>>>>>', InternalAuthorValue);
+            if (!facultyIdContainer.some(author => author === InternalAuthorValue)) {
+            facultyIdContainer.push({ 'internalFaculty' : InternalAuthorValue});
+            }
+            console.log("Selected employee values:", facultyIdContainer);
             
         }
     
 
     //function for handle add more details for storing current value of clicked
     function handleAddMoreDetailsClick() {
-            const nameStringArray = [];
-            // const externalAuthorName = document.getElementById("author-name").value;
+            // Define externalFacultyArray and externalFacultyData outside the function
+            const externalFacultyArray = [];
+            // Ensure externalFacultyData is defined and initialized
             const dynamicRows = document.getElementById('dynamic-rows');
             const newRow = document.createElement('div');
             newRow.classList.add('col-lg-12');
             newRow.innerHTML = `
-            <input type="text" class="input-field form-control" >
-            `;
+            <label class="form-check-label">Faculty Name</lable>
+            <input type="text" class="input-field external-faculty-name form-control"> <br>
+            <label class="form-check-label">Faculty Designation :</lable>
+            <input type="text" class="input-field external-faculty-designation form-control"> <br>
+            <label class="form-check-label external-faculty-address">Faculty Address</lable>
+            <input type="text" class="input-field form-control external-faculty-address"> <br>`;
             dynamicRows.appendChild(newRow);
-            // console.log('externalAuthorName ====>>>>', externalAuthorName)
-            // nameStringArray.push(externalAuthorName);
-            // externalAuthorValue = ',' + nameStringArray.join(",");
-            // console.log('nameStringArray ====>>>', nameStringArray.join(","))
-            // externalAuthorNamesArray.push({'externalEmpList' : externalAuthorValue});
-            // console.log("Stored external author names:", externalAuthorValue);
-            console.log('clickedddd');
-            const newInputField = newRow.querySelector('.input-field');
-            const inputFieldValue = newInputField.value;
-            console.log('inputFieldValue ===>>>>', inputFieldValue);
-            nameStringArray.push(inputFieldValue);
-            let externalAuthorValue = ',' + nameStringArray.join(",")
-            externalAuthorNamesArray.push({'externalEmpList' : externalAuthorValue});
-            console.log("Stored external author names:", externalAuthorValue)
+            // Move the code below to a separate function
+            const facultyName = dynamicRows.querySelectorAll('.external-faculty-name');
+            facultyName.forEach(inputField => {
+                const inputValueName = inputField.value;
+                console.log('inputValue ====>>>>', inputValueName)
+                externalFacultyArray.push({'facultyName' : inputValueName})
+            });
 
+            const facultyDesignation = dynamicRows.querySelectorAll('.external-faculty-designation');
+            facultyDesignation.forEach(inputField => {
+                const inputValueDsg = inputField.value;
+                console.log('inputValueDsg ====>>>>', inputValueDsg)
+                externalFacultyArray.push({'facultyDsg' : inputValueDsg})
+            });
+
+            const facultyAddress = dynamicRows.querySelectorAll('.external-faculty-address');
+            facultyAddress.forEach(inputField => {
+                const inputValueAddr = inputField.value;
+                console.log('inputValueAddr ====>>>>', inputValueAddr)
+                externalFacultyArray.push({'facultyAddr' : inputValueAddr})
+            });
+
+            // After collecting all input values, join them into a string
+            console.log('externalFacultyArray ===>>>>', externalFacultyArray);
+            externalFacultyData.push(externalFacultyArray);
+            console.log("externalFacultyData:", externalFacultyData);
+            
         }
-     //event listner for handleAddMoreDetailsClick and handleEmployeeDropdownChange
+
     addMoreDetailsButton.addEventListener("click", function() {
         handleAddMoreDetailsClick();
     });
@@ -1354,13 +1378,14 @@
     // function for add drop down list or  add new faculty data
     async function insertFacultyNameString(authorType, researchConsultancyData) {
         console.log('authorType in side my function ====>>>', authorType);
-        // console.log('InternalAuthorValue ====>>>>>', InternalAuthorValue);
-        // console.log('externalAuthorValue ===>>>', externalAuthorValue)
-        const facultytype = authorType.value;
-        console.log('facultytype ===>>>', facultytype);
-        console.log('externalAuthorNamesArray ===>>>>', externalAuthorNamesArray)
-        const externalAuthorNameSting = JSON.stringify(externalAuthorNamesArray);
-        researchConsultancyData.append('externalAuthorName', externalAuthorNameSting);
+        const exeternalFacultyDetails = externalFacultyData[externalFacultyData.length - 1];
+        console.log('facultyIdContainer ====>>>>>', facultyIdContainer);
+        const facultyDataContainerArray = [(facultyIdContainer[facultyIdContainer.length - 1])];
+        facultyDataContainerArray.push({'externalEmpList' : exeternalFacultyDetails});
+
+        const facultyDataContainer =  JSON.stringify(facultyDataContainerArray);
+        console.log('facultyDataContainer ===>>>>', facultyDataContainer)
+        researchConsultancyData.append('facultyDataContainer', facultyDataContainer);
         }
 
     // fuction for updated faculty type
