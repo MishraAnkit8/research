@@ -72,7 +72,7 @@
                     </thead>
                     <% researchProjectData.forEach(function(consultancy, index) { %>
                         <tr scope="row" data-consultancy-id="<%- consultancy.id %>" 
-                            data-sanction-date="<%- consultancy.submission_date.toISOString().split('T')[0] %>"
+                            data-submission-date="<%- consultancy.submission_date.toISOString().split('T')[0] %>"
                             data-supporting-documents="<%- consultancy.supporting_documents %>">
                             <td><%- index + 1 %></td>
                             <td class="grant-proposal col-lg-1"><%- consultancy.grant_proposal_category %></td>
@@ -99,8 +99,7 @@
         </div>
         <div class="d-flex justify-content-between">
             <div>
-               <label >Total entries : <%- rowCount %>
-                </label>
+                <label id="total-row-count">Total entries : <%- rowCount %> </label>
                 <label class="d-none" id="row-count"> <%- rowCount %></label>
             </div>
             <div>
@@ -555,9 +554,11 @@
 <!-- inline javascript -->
 <script>
     //   for index icrement
-    const rowCount = document.getElementById('row-count');
+    let rowCount = document.getElementById('row-count');
+    const totalRowCount = document.getElementById('total-row-count');
     let rowIndex = rowCount.innerText;
     let indexValue = parseInt(rowIndex, 10);
+
     const researchProjectConsultancyList = document.getElementById('consultancy-list');
     const submitBtn = document.getElementById('submit-btn');
     const updateBtn = document.getElementById('update-btn');
@@ -711,16 +712,17 @@
                         console.log('data ==>>', data);
                         const consultantId = data.consultantId
                         const rowCountInteger = parseInt(data.rowCount, 10);
-                        const IndexEntry = rowCountInteger + indexValue
+                        const IndexEntry = rowCountInteger + indexValue;
+                        indexValue = IndexEntry;
+                        console.log('indexValue ==>>>>', indexValue);
                         console.log('IndexEntry ===>>>', IndexEntry);
                         console.log('id ==', consultantId)
                         const newResearchConsultant = document.createElement('tr');
+                        newResearchConsultant.setAttribute('data-consultancy-id', data.consultantId)
                         // newResearchConsultant.setAttribute('data-grant-type', data.researchConsultantData.typeOfGrant);
                         // newResearchConsultant.setAttribute('data-grant-proposal', data.researchConsultantData.grantProposalCategory)
                         newResearchConsultant.setAttribute('data-submission-date', data.researchConsultantData.submissionGrantDate);
-                        newResearchConsultant.setAttribute('data-author-name', data.externalAuthorNameString);
                         // newResearchConsultant.setAttribute('data-data-external-id', data.externalEmpId);
-                        newResearchConsultant.setAttribute('data-extrnal-emp', data.externalNamesString);
                         newResearchConsultant.setAttribute('data-supporting-documents', data.consultancyFileName);
                         // newResearchConsultant.setAttribute('data-recieved-amount-date', data.researchConsultantData.recievedAmountDate);
                         // newResearchConsultant.setAttribute('data-recieved-amount', data.researchConsultantData.recievedAmount);
@@ -749,7 +751,10 @@
                         </td>`;
 
                         researchProjectConsultancyList.appendChild(newResearchConsultant);
-                        // $('#consultancy-modal').modal('hide');
+                        rowCount.classList.remove('d-none');
+                        totalRowCount.classList.add('d-none');
+                        rowCount.innerText = `Total entries : ${IndexEntry}`
+                        $('#consultancy-modal').modal('hide');
                         Swal.fire({
 							position: "top-center",
 							icon: "success",
@@ -1080,7 +1085,7 @@
         console.log('updatedThurstAreaOfResearch ===>>>', updatedThurstAreaOfResearch)
         const updatedFundingAgency = document.getElementById('funding-agency').value;
         const updatedFundingAmount = document.getElementById('funding-amount').value;
-        const updateProjectDuration = document.getElementById('duration-of-project').value;
+        // const updateProjectDuration = document.getElementById('duration-of-project').value;
         const updatedStatusOfResearchProject = document.querySelector('input[name="research-project-status"]:checked').value;
         const updatedSubmissionGrantDate = document.getElementById('submission-grant-date').value;
         const updatedAuthorType = document.querySelector('input[name="author-type"]:checked').value;
@@ -1395,19 +1400,28 @@
             console.log('externalAuthorValue ===>>>', externalAuthorValue);
             console.log('InternalAuthorValue ====>>>>>', InternalAuthorValue);
             console.log('storedFacultyValue ====>>> ', storedFacultyValue);
-            const updatedexternalAuthorNameArrays = [];
-            if(!externalAuthorValue && ! InternalAuthorValue){
-                updatedexternalAuthorNameArrays.push({'existingNameValue' : storedFacultyValue})
-                const updatedexternalAuthorNameString = JSON.stringify(updatedexternalAuthorNameArrays);
-                updatedConsultantData.append('externalAuthorName', updatedexternalAuthorNameString)
-            }
-            else{
-                updatedexternalAuthorNameArrays.push({'externalEmpList' : externalAuthorValue})
-                updatedexternalAuthorNameArrays.push({'internalEmpList' : InternalAuthorValue})
-                const updatedexternalAuthorNameString = JSON.stringify(updatedexternalAuthorNameArrays);
-                console.log('updatedexternalAuthorNameString ===>>>>', updatedexternalAuthorNameString);
-                updatedConsultantData.append('externalAuthorName', updatedexternalAuthorNameString)
-            }
+            const exeternalFacultyDetails = externalFacultyData[externalFacultyData.length - 1];
+            console.log('facultyIdContainer ====>>>>>', facultyIdContainer);
+            const facultyDataContainerArray = [(facultyIdContainer[facultyIdContainer.length - 1])];
+            facultyDataContainerArray.push({'externalEmpList' : exeternalFacultyDetails});
+
+            const updatedFacultyDataContainer =  JSON.stringify(facultyDataContainerArray);
+            console.log('updatedFacultyDataContainer ===>>>>', updatedFacultyDataContainer);
+            updatedFacultyDataContainer ? (updatedConsultantData.append('updatedFacultyDataContainer', updatedFacultyDataContainer)) : (updatedConsultantData.append('updatedFacultyDataContainer' , null));
+            
+            //     const updatedexternalAuthorNameArrays = [];
+            // if(!externalAuthorValue && ! InternalAuthorValue){
+            //     updatedexternalAuthorNameArrays.push({'existingNameValue' : storedFacultyValue})
+            //     const updatedexternalAuthorNameString = JSON.stringify(updatedexternalAuthorNameArrays);
+            //     updatedConsultantData.append('externalAuthorName', updatedexternalAuthorNameString)
+            // }
+            // else{
+            //     updatedexternalAuthorNameArrays.push({'externalEmpList' : externalAuthorValue})
+            //     updatedexternalAuthorNameArrays.push({'internalEmpList' : InternalAuthorValue})
+            //     const updatedexternalAuthorNameString = JSON.stringify(updatedexternalAuthorNameArrays);
+            //     console.log('updatedexternalAuthorNameString ===>>>>', updatedexternalAuthorNameString);
+            //     updatedConsultantData.append('externalAuthorName', updatedexternalAuthorNameString)
+            // }
         }
     
     function enternalFacultyDropDownList() {
