@@ -460,13 +460,8 @@
                             <label class="view-content" id="view-submission-date"></label>
                         </div>
                     </div>
-                    <!-- Faculty Type -->
-                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                        <div class="box">
-                            <div class="task-sub-title sub-title-text"> Faculty Details Id And Name: </div>
-                            <label class="view-content" id="view-faculty-type"></label>
-                        </div>
-                    </div>
+                    
+                    
                   
 
                     <!-- Faculty Department -->
@@ -533,9 +528,17 @@
                      <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
                             <div class="task-sub-title sub-title-text"><button class="btn btn-primary h-10 w-10 download-file" id="consultancy-file-view">
-                                <i class="fas fa-download text-danger"></i> Download researchConsultancyDocument
+                                <i class="fas fa-download text-danger"></i> Download Documents
                             </button></div>
                             <label class="view-content" id="view-supporting-document"></label>
+                        </div>
+                    </div>
+
+                    <!-- Faculty Type -->
+                    <div class="col-lg-12 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text fw-bold"> Faculty Details Id And Name: </div>
+                            <label class="view-content" id="faculty-details-container"></label>
                         </div>
                     </div>
                 </div>
@@ -980,7 +983,7 @@
                                         text: "Record has been deleted.",
                                         icon: "success"
                                     }).then(() => {
-                                        // location.reload();
+                                        location.reload();
                                     });
                                 }
                             })
@@ -1016,6 +1019,7 @@
             const viewFundingAgency = document.getElementById('view-funding-agency');
             const viewFundingAmount = document.getElementById('view-funding-amount');
             const viewStatusOfResearchProject = document.getElementById('view-project-status');
+            
             // const viewSubmissionGrantDate = document.getElementById('view-date');
             // const viewFacultyType = document.getElementById('view-faculty-type');
             // const viewSchool = document.getElementById('view-school-name');
@@ -1044,17 +1048,45 @@
                     if (data.status === 'Done') {
                         console.log('data ==>>', data)
                         setFileNameInButtons(data)
-                        viewGrantProposalCategory.innerText = data.consultantData.grant_proposal_category;
-                        document.getElementById('view-grant-type').innerText = data.consultantData.type_of_research_grant;
-                        viewTitleOfProject.innerText = data.consultantData.title_of_project;
-                        viewThurstAreaOfResearch.innerText = data.consultantData.thrust_area_of_research;
-                        viewFundingAgency.innerText = data.consultantData.name_of_funding_agency;
-                        viewFundingAmount.innerText = data.consultantData.funding_amount;
-                        viewStatusOfResearchProject.innerText = data.consultantData.status_of_research_project;
+                        viewGrantProposalCategory.innerText = data.researchData.grant_proposal_category;
+                        document.getElementById('view-grant-type').innerText = data.researchData.type_of_research_grant;
+                        viewTitleOfProject.innerText = data.researchData.title_of_project;
+                        viewThurstAreaOfResearch.innerText = data.researchData.thrust_area_of_research;
+                        viewFundingAgency.innerText = data.researchData.name_of_funding_agency;
+                        viewFundingAmount.innerText = data.researchData.funding_amount;
+                        viewStatusOfResearchProject.innerText = data.researchData.status_of_research_project;
                         // viewSubmissionGrantDate.innerText = data.consultantData.submission_grant_date.split('T')[0];
                         // viewFacultyType.innerText = data.consultantData.faculty_type.replace(/,/g, ' ');
-                        viewSupportingDocument.innerText = data.consultantData.supporting_documents;
+                        // viewSupportingDocument.innerText = data.researchData.supporting_documents;
                         document.getElementById('view-submission-date').innerText = data.submissionGrantDate;
+                        let facultyDetailsHTML = `
+                            <table class="table" border='1px'>
+                                <thead>
+                                    <th>#</th>
+                                    <th>Faculty Name</th>
+                                    <th>Designation</th>
+                                    <th>Address</th>
+                                    <th>Employee ID</th>
+                                </thead>
+                                <tbody>`;
+
+                        data.facultyInfoArray.forEach((faculty, index) => { facultyDetailsHTML += `
+                            <tr>
+                                <td class="view-content">${index + 1}</td>
+                                <td class="view-content">${faculty.facultyName}</td>
+                                <td class="view-content">${faculty.designation}</td>
+                                <td class="view-content">${faculty.address}</td>
+                                <td class="view-content">${faculty.employeeId}</td>
+                            </tr>`;
+                                });
+
+                        facultyDetailsHTML += `
+                            </tbody>
+                        </table>`;
+
+                        // Set the generated faculty details HTML
+                        document.getElementById('faculty-details-container').innerHTML = facultyDetailsHTML;
+
                         // const viewFacultyType = document.getElementById('view-faculty-type');
                         // viewSchool.innerText = data.consultantData.school;
                         // viewCampus.innerText = data.consultantData.campus;
@@ -1230,7 +1262,7 @@
         console.log('data ==>>', data);
         const researchConFile = document.getElementById('consultancy-file-view');
         console.log('researchConFile ==>>', researchConFile);
-        researchConFile.setAttribute('data-filename', data.consultantData.supporting_documents);
+        researchConFile.setAttribute('data-filename', data.researchData.supporting_documents);
         };
 
     //eventlistner for download files

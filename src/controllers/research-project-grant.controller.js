@@ -93,18 +93,23 @@ module.exports.viewResearchProjectConsultancy = async(req, res, next) => {
     const consultantId = req.body.consultantId;
     console.log('consultantId  in controller ==>>', consultantId);
     const viewResearchConsultantData = await researchConsultancyService.viewReseachProjectData(consultantId);
+
     console.log('viewResearchConsultantData in controller ===>>', viewResearchConsultantData)
-    const submissionGrantDate = formatDate(viewResearchConsultantData.submission_date);
+    const submissionGrantDate = formatDate(viewResearchConsultantData.researchData.submission_date);
+    console.log('submissionGrantDate ===>>>>>', submissionGrantDate);
 
+    const statusCode = viewResearchConsultantData.status === "Done" ? 200 : (viewResearchConsultantData.errorCode ? 400 : 500);
 
-    if(viewResearchConsultantData){
-        res.status(200).send({
-            status : 'Done',
-            message : 'successfull',
-            consultantData : viewResearchConsultantData,
-            submissionGrantDate : submissionGrantDate
-        })
-    }
+    res.status(statusCode).send({
+        status : viewResearchConsultantData.status,
+        message : viewResearchConsultantData.message,
+        researchData : viewResearchConsultantData.researchData,
+        rowCount : viewResearchConsultantData.rowCount,
+        facultyInfoArray : viewResearchConsultantData.facultyInfoArray,
+        submissionGrantDate : submissionGrantDate,
+        errorCode : viewResearchConsultantData.errorCode ? viewResearchConsultantData.errorCode : null
+    })
+
 }
 
 

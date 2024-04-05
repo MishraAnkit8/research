@@ -205,6 +205,28 @@ module.exports.deleteResearchConsultant = async({consultantId}) => {
 module.exports.viewReseachProjectData = async(consultantId) => {
     console.log('consultantId in servicve ===>>>', consultantId)
     const researchConsultancy = await researchCunsultancyModel.viewResearchConsultancy(consultantId);
-    console.log('researchConsultancy ==>>', researchConsultancy)
-    return researchConsultancy.rows[0]
+
+    console.log('researchConsultancy ==>>', researchConsultancy);
+
+    const facultyInfoArray = researchConsultancy && researchConsultancy.researchData ? 
+    researchConsultancy.researchData.map(row => ({
+      facultyName: row.faculty_name,
+      designation: row.designation,
+      address: row.address,
+      employeeId : row.employee_id
+    })) : null;
+
+    console.log('facultyInfoArray ===>>>>', facultyInfoArray);
+  
+    return researchConsultancy.status === 'Done' ? {
+      status : researchConsultancy.status,
+      message : researchConsultancy.message,
+      researchData : researchConsultancy.researchData[0],
+      rowCount : researchConsultancy.rowCount,
+      facultyInfoArray : facultyInfoArray
+    } : {
+      status : researchConsultancy.status,
+      message : researchConsultancy.message,
+      errorCode : researchConsultancy.errorCode
+    }
 }

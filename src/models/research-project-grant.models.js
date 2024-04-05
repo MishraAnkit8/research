@@ -313,7 +313,8 @@ module.exports.viewResearchConsultancy = async(consultantId) => {
             rg.*,
             f.faculty_name,
             f.designation,
-            f.address
+            f.address,
+            f.employee_id
         FROM
             research_project_grant rg
         LEFT JOIN
@@ -326,5 +327,23 @@ module.exports.viewResearchConsultancy = async(consultantId) => {
         values : [consultantId]
     }
     console.log('sql ==>>', sql);
-    return researchDbR.query(sql)
+    const researchProjectData = await researchDbR.query(sql)
+    return Promise.all([researchProjectData])
+      .then(([researchProjectData]) => {
+        return {
+          status: "Done",
+          message: "Record Fecthed Successfully",
+          researchData: researchProjectData.rows,
+          rowCount: researchProjectData.rowCount
+        };
+      })
+      .catch(error => {
+        console.error('Error:', error.message); 
+        return {
+          status: "Failed",
+          message: error.message,
+          errorCode: error.code
+        };
+      });
+
 }
