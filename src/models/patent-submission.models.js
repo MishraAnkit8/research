@@ -7,30 +7,128 @@ const researchDbW = dbPoolManager.get('researchDbW', research_write_db);
 
 module.exports.fetchPatentSubMissionForms = async() => {
     let patentSubmissionSql = {
-        text: `SELECT * FROM patent_submissions ORDER BY id`
+        text: `SELECT 
+                    psg.id AS patent_submission_grant_id,
+                    psg.innovation_title,
+                    psg.application_number,
+                    psg.grant_date,
+                    psg.supporting_documents,
+                    sg.name AS sdg_goal_name,
+                    sg.id AS sdg_goal_id,
+                    it.name AS invention_type_name,
+                    it.id AS invention_type_id,
+                    pss.name AS patent_stage_status_name,
+                    pss.id AS patent_stage_status_Id,
+                    f.faculty_name,
+                    f.designation,
+                    f.address,
+                    f.employee_id,
+                    psf.id AS patent_submission_faculty_id
+                FROM 
+                    patent_submission_grant psg
+                LEFT JOIN 
+                    patent_submission_sdg_goals pssg ON psg.id = pssg.patent_submission_grant_id
+                LEFT JOIN 
+                    sdg_goals sg ON pssg.sdg_goals_id = sg.id
+                LEFT JOIN 
+                    patent_submission_invention_type psit ON psg.id = psit.patent_submission_grant_id
+                LEFT JOIN 
+                    invention_type it ON psit.invention_type_id = it.id
+                LEFT JOIN 
+                    patent_submission_stage_status psss ON psg.id = psss.patent_submission_grant_id
+                LEFT JOIN 
+                    pantent_stage_status pss ON psss.pantent_stage_status_id = pss.id
+                LEFT JOIN 
+                    patent_submission_faculty psf ON psg.id = psf.patent_submission_grant_id
+                LEFT JOIN 
+                    faculties f ON psf.faculty_id = f.id 
+                    ORDER BY psg.id`
     };
+
     let internalEmpSql = {
-        text: `SELECT * FROM employee_table ORDER BY id`
+        text: `select *  FROM faculties WHERE faculty_type_id = 1`
     };
+
+    let sdgGoalSql = {
+        text: `select *  FROM sdg_goals ORDER BY id`
+    };
+
+    let innovationTypeSql = {
+        text: `select *  FROM invention_type ORDER BY id`
+    };
+
+    let patentStageSql = {
+        text: `select *  FROM pantent_stage_status ORDER BY id`
+    };
+
+    let patentGrantsubmission = {
+        text: `select *  FROM patent_submission_grant ORDER BY id`
+    }
     
-    let externalEmpSql = {
-        text: `SELECT * FROM external_emp ORDER BY id`
+    let patentInternalFacultyIds = {
+        text : `SELECT psf.id AS patent_submission_faculty_id, 
+        psf.patent_submission_grant_id, 
+        psf.faculty_id 
+        FROM patent_submission_faculty psf
+        JOIN faculties f ON psf.faculty_id = f.id
+        JOIN faculty_types ft ON f.faculty_type_id = ft.id
+        WHERE ft.name = 'Internal' 
+        ORDER BY psf.id`
     }
 
-    console.log('externalEmpSql ===<>>>>', externalEmpSql);
+    let patentGrantExternalsql = {
+        text : `SELECT psf.id AS patent_submission_faculty_id, 
+        psf.patent_submission_grant_id, 
+        psf.faculty_id 
+        FROM patent_submission_faculty psf
+        JOIN faculties f ON psf.faculty_id = f.id
+        JOIN faculty_types ft ON f.faculty_type_id = ft.id
+        WHERE ft.name = 'External' 
+        ORDER BY psf.id`
+    }
+
+    let patentGrantSql = {
+        text : `select id, patent_submission_grant_id, faculty_id from patent_submission_faculty order by id`
+    }
+
     console.log('patentSubmissionSql ===>>>', patentSubmissionSql);
-    console.log('internalEmpSql ===>>>', internalEmpSql)
-    const patentSubmissionsPromise = researchDbR.query(patentSubmissionSql);
-    const internalEmpPromise = researchDbR.query(internalEmpSql);
-    const externalEmpPromise = researchDbR.query(externalEmpSql)
+    console.log('internalEmpSql ===>>>', internalEmpSql);
+    console.log('patentGrantsubmission ===>>>>', patentGrantsubmission);
+    console.log('patentStageSql ===>>>>', patentStageSql);
+    console.log('innovationTypeSql ===>>>>', innovationTypeSql);
+    console.log('sdgGoalSql ===>>>>', sdgGoalSql);
+    console.log('patentInternalFacultyIds ===>>>>', patentInternalFacultyIds);
+    console.log('patentGrantExternalsql ===>>>>', patentGrantExternalsql);
+    console.log('patentGrantSql ====>>>>>>>', patentGrantSql);
+    
 
-    const [patentSubmissionsResult, internalEmpList, externalEmpList] = await Promise.all([patentSubmissionsPromise, internalEmpPromise, externalEmpPromise]);
+    const patentSubmissionsData = researchDbR.query(patentSubmissionSql);
+    const internalFacultyData = researchDbR.query(internalEmpSql);
+    const patentSdgGoalData = researchDbR.query(sdgGoalSql);
+    const patentStagData = researchDbR.query(patentStageSql);
+    const patentInventionTypeData = researchDbR.query(innovationTypeSql);
+    const patentData = researchDbR.query(patentGrantsubmission);
+    const internalPatentFacultyId = researchDbR.query(patentInternalFacultyIds);
+    const externalPatentFacultyId = researchDbR.query(patentGrantExternalsql);
+    const patentGrantFacultyIds = researchDbR.query(patentGrantSql)
 
-    return {
-        patentSubmissions: patentSubmissionsResult,
-        internalEmpList: internalEmpList,
-        externalEmpList : externalEmpList
-    };
+    const promises = [patentData, patentStagData, patentSubmissionsData, internalFacultyData, patentSdgGoalData, patentInventionTypeData, patentData, internalPatentFacultyId, externalPatentFacultyId, patentGrantFacultyIds];
+    return Promise.all(promises).then(([patentData, patentStagData, patentSubmissionsData, internalFacultyData, patentSdgGoalData, patentInventionTypeData, internalPatentFacultyId, externalPatentFacultyId, patentGrantFacultyIds]) => {
+      return  { status : "Done" , message : "Record Fetched Successfully" ,  rowCount : patentData.rowCount, patentData : patentData.rows, patentStagData : patentStagData.rows, patentSubmissionsData : patentSubmissionsData.rows, 
+      internalFacultyData : internalFacultyData.rows, patentSdgGoalData : patentSdgGoalData.rows, patentInventionTypeData : patentInventionTypeData.rows, patentData : patentData.rows, internalPatentFacultyId : internalPatentFacultyId.rows, externalPatentFacultyId : externalPatentFacultyId.rows,
+      patentGrantFacultyIds : patentGrantFacultyIds.rows};
+  })
+  .catch((error) => {
+      return{status : "Failed" , message : error.message , errorCode : error.code}
+  }) 
+
+    // const [patentSubmissionsResult, internalEmpList, externalEmpList] = await Promise.all([patentSubmissionsPromise, internalEmpPromise, externalEmpPromise]);
+
+    // return {
+    //     patentSubmissions: patentSubmissionsResult,
+    //     internalEmpList: internalEmpList,
+    //     externalEmpList : externalEmpList
+    // };
 }
 
 module.exports.insertPatentData = async(patentData, patentDataFilesString, internalNamesString, externalNamesString) => {

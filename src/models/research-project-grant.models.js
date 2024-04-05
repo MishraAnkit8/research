@@ -81,7 +81,8 @@ module.exports.fetchResearchConsultancy = async() => {
     const researchData = await researchDbR.query(researchProjectSql)
     const researchInternalIds = await researchDbR.query(researchGrantInternalsql);
     const researchGrantExternalIds = await researchDbR.query(researchGrantExternalsql);
-    const facultTableData = await researchDbR.query(internalFacultySql)
+    const facultTableData = await researchDbR.query(internalFacultySql);
+    
     const promises = [researchData, researchPojectGrantFacultyData, facultTableData, reseachGrantIdsContainer, researchInternalIds, researchGrantExternalIds];
     return Promise.all(promises).then(([researchData]) => {
       return  { status : "Done" , message : "Record Fetched Successfully" ,  rowCount : researchData.rowCount, researchData : researchData.rows, facultTableData : facultTableData.rows, researchPojectGrantFacultyData : researchPojectGrantFacultyData.rows

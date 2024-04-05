@@ -2,13 +2,28 @@ const patentSubmissionservice = require('../services/patent-submission.service')
 
 
 module.exports.renderPatentSubMissionAndGrant = async(req, res, next) =>{
+
     const patentSubmissionList = await patentSubmissionservice.fetchPatentForm();
-    console.log('patentSubmissionList ===>>>', patentSubmissionList)
+
+    // console.log('patentSubmissionList Data In controller  ===>>>', patentSubmissionList)
+
     res.render('patent-submission', {
-            patentSubmissionList : patentSubmissionList.patentSubmissionList,
-            internalEmpList : patentSubmissionList.internalEmpList,
-            externalEmpList : patentSubmissionList.externalEmpList,
-            rowCount : patentSubmissionList.rowCount
+        status : patentSubmissionList.status,
+        message : patentSubmissionList.rowCount,
+        patentData : patentSubmissionList.patentData,
+        patentSubmissionsData : patentSubmissionList.patentSubmissionsData,
+        rowCount : patentSubmissionList.rowCount,
+        patentStagData : patentSubmissionList.patentStagData,
+        patentSubmissionsDataList : patentSubmissionList.patentSubmissionsDataList,
+        internalFacultyData : patentSubmissionList.internalFacultyData,
+        patentSdgGoalData : patentSubmissionList.patentSdgGoalData,
+        patentInventionTypeData : patentSubmissionList.patentInventionTypeData,
+        patentData : patentSubmissionList.patentData,
+        internalPatentFacultyId : patentSubmissionList.internalPatentFacultyId,
+        externalPatentFacultyId : patentSubmissionList.externalPatentFacultyId,
+        patentGrantFacultyIdContainer : patentSubmissionList.patentGrantFacultyIdContainer,
+        patentGrantFacultyIds : patentSubmissionList.patentGrantFacultyIds,
+        errorCode : patentSubmissionList.errorCode
         })
 };
 

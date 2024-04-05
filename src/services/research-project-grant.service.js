@@ -194,12 +194,7 @@ module.exports.deleteResearchConsultant = async({consultantId}) => {
       errorCode : deleteRseachConsultancy.errorCode
     }
 
-//     if(deleteRseachConsultancy.rowCount === 1){
-//         return {
-//             status : 'Done',
-//             massage : 'Deleted Successfully'
-//         }
-//     }
+
 }
 
 module.exports.viewReseachProjectData = async(consultantId) => {
