@@ -178,19 +178,33 @@ module.exports.updateResearchConstant = async(consultantId, body, files) => {
 }
 
 module.exports.deleteResearchConsultant = async({consultantId}) => {
-    console.log('Id in serevice for delete ', consultantId)
+    console.log('Id in serevice for delete ', consultantId);
+
     const deleteRseachConsultancy = await researchCunsultancyModel.deleteResearchConsultantData(consultantId);
-    if(deleteRseachConsultancy.rowCount === 1){
-        return {
-            status : 'Done',
-            massage : 'Deleted Successfully'
-        }
+
+    console.log('deleteRseachConsultancy ====>>>>', deleteRseachConsultancy);
+    return deleteRseachConsultancy.status === "Done" ? {
+            status :  deleteRseachConsultancy.status,
+            message : deleteRseachConsultancy.message,
+            rowCount : deleteRseachConsultancy.rowCount,
+            grantFacultyRowCount : deleteRseachConsultancy.grantFacultyRowCount
+    } : {
+      status :  deleteRseachConsultancy.status,
+      message : deleteRseachConsultancy.message,
+      errorCode : deleteRseachConsultancy.errorCode
     }
+
+//     if(deleteRseachConsultancy.rowCount === 1){
+//         return {
+//             status : 'Done',
+//             massage : 'Deleted Successfully'
+//         }
+//     }
 }
 
 module.exports.viewReseachProjectData = async(consultantId) => {
     console.log('consultantId in servicve ===>>>', consultantId)
     const researchConsultancy = await researchCunsultancyModel.viewResearchConsultancy(consultantId);
-    console.log('researchConsultancy ==>>', researchConsultancy.rows[0])
+    console.log('researchConsultancy ==>>', researchConsultancy)
     return researchConsultancy.rows[0]
 }

@@ -76,18 +76,16 @@ module.exports.deleteResearchConsultant = async(req, res, next) => {
     console.log('body' , req.body);
     const consultantId = req.body;
     const deleteConstantData = await researchConsultancyService.deleteResearchConsultant(consultantId);
-    if(deleteConstantData.status === 'Done'){
-        res.status(200).send({
-            status : 'Done',
-            message : 'Deleted successfully'
-        })
-    }
-    else{
-        res.status(500).send({
-            status : 'Failed',
-            message : 'Internal Server Issue'
-        })
-    }
+
+    const statusCode = deleteConstantData.status === 'Done' ? 200 : (deleteConstantData.errorCode ? 400 : 500)
+    res.status(statusCode).send({
+            status :  deleteConstantData.status,
+            message : deleteConstantData.message,
+            rowCount : deleteConstantData.rowCount,
+            grantFacultyRowCount : deleteConstantData.grantFacultyRowCount,
+            errorCode : deleteConstantData.errorCode ? deleteConstantData.errorCode : null
+    })
+
 }
 
 module.exports.viewResearchProjectConsultancy = async(req, res, next) => {

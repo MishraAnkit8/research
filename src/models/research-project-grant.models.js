@@ -235,7 +235,7 @@ module.exports.updateResearchConsultantData = async(consultantId, updatedResearc
                 console.log('yes its working')
                 const researchProjectGrantFacultySql = {
                   text: `INSERT INTO research_project_grant_faculty (research_project_grant_id, faculty_id) VALUES ($1, $2) RETURNING id`,
-                  values: [research_project_grant_id, faculty_id],
+                  values: [consultantId, faculty_id],
                 };
                 return researchDbW.query(researchProjectGrantFacultySql);
               } else {
@@ -269,27 +269,60 @@ module.exports.updateResearchConsultantData = async(consultantId, updatedResearc
 
 }
 
-module.exports.deleteResearchConsultantData = async(consultantId) => {
+module.exports.deleteResearchConsultantData = async (consultantId) => {
     console.log('id in model ==>>', consultantId);
-    let sql = {
-        text : `DELETE FROM research_project_grant WHERE id = $1`,
-        values : [consultantId]
-    }
-    console.log('sql ===>>>', sql)
-    const deletedRecord = await researchDbW.query(sql);
-    const promises = [deletedRecord];
-    return Promise.all(promises).then(([deletedRecord]) => {
-        return  { status : "Done" , message : "Record Deleted Successfully", rowCount : deletedRecord.rowCount}
-    })
-    .catch((error) => {
-        return{status : "Failed" , message : error.message , errorCode : error.code}
-    })
-}
+  
+    const deleteFacultyAssignments = researchDbW.query({
+      text: 'DELETE FROM research_project_grant_faculty WHERE research_project_grant_id = $1',
+      values: [consultantId]
+    });
+  
+    const deleteResearchGrant = deleteFacultyAssignments
+      .then(() => researchDbW.query({
+        text: 'DELETE FROM research_project_grant WHERE id = $1',
+        values: [consultantId]
+      }))
+      .catch(error => {
+        throw error; 
+      });
+  
+    return Promise.all([deleteFacultyAssignments, deleteResearchGrant])
+      .then(([deleteResearchGrantFaculty, deleteResearchGrant]) => {
+        return {
+          status: "Done",
+          message: "Record Deleted Successfully",
+          rowCount: deleteResearchGrant.rowCount,
+          grantFacultyRowCount: deleteResearchGrantFaculty.rowCount
+        };
+      })
+      .catch(error => {
+        console.error('Error:', error.message); // Log the error for debugging
+        return {
+          status: "Failed",
+          message: error.message,
+          errorCode: error.code
+        };
+      });
+  };
+  
 
 module.exports.viewResearchConsultancy = async(consultantId) => {
     console.log('consultantId in models ==>>', consultantId);
     let sql = {
-        text : `SELECT * FROM research_project_grant WHERE id = $1`,
+        text : `SELECT
+            rg.*,
+            f.faculty_name,
+            f.designation,
+            f.address
+        FROM
+            research_project_grant rg
+        LEFT JOIN
+            research_project_grant_faculty rgf ON rg.id = rgf.research_project_grant_id
+        LEFT JOIN
+            faculties f ON rgf.faculty_id = f.id
+        WHERE
+            rg.id = $1;
+        `,
         values : [consultantId]
     }
     console.log('sql ==>>', sql);
