@@ -182,6 +182,7 @@ module.exports.updateResearchConsultantData = async(consultantId, updatedResearc
     let values = [consultantId, grantProposalCategory, typeOfGrant, titleOfProject, thurstAreaOfResearch, fundingAgency, fundingAmount,
          statusOfResearchProject, submissionGrantDate, ...(supportingDocuments ? [supportingDocuments] : [])];
     console.log('values ===>>>>', values)
+    
 
     let sql  = {
         text : queryText,
@@ -221,8 +222,8 @@ module.exports.updateResearchConsultantData = async(consultantId, updatedResearc
             const allFacultyIds = facultyTableData.concat(internalFacultyIdArray);
             console.log('allFacultyIds ===>>>>', allFacultyIds);
             const insertPromises = allFacultyIds.map(async (faculty_id) => {
-              // Check if the combination of research_project_grant_id and faculty_id already exists
-              const checkIfExistsQuery = {
+            // Check if the combination of research_project_grant_id and faculty_id already exists
+            const checkIfExistsQuery = {
                 text: `SELECT 1 FROM research_project_grant_faculty WHERE research_project_grant_id = $1 AND faculty_id = $2 LIMIT 1`,
                 values: [consultantId, faculty_id],
               };

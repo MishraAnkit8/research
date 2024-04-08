@@ -27,31 +27,50 @@ module.exports.renderPatentSubMissionAndGrant = async(req, res, next) =>{
         })
 };
 
+
+module.exports.insertExternalFacultyDetails = async(req, res, next) => {
+    console.log('data comming from frontend ===>>>>>', req.body)
+
+    const insertFacultyDetails = await patentSubmissionservice.insertExternalDetails(req.body);
+
+    console.log('insertFacultyDetails ====>>>>>>', insertFacultyDetails);
+    const statusCode = insertFacultyDetails.status === "Done" ? 200 : (insertFacultyDetails.errorCode ? 400 : 500)
+    res.status(statusCode).send({
+        status : insertFacultyDetails.status,
+        message : insertFacultyDetails.message,
+        externalFacultyId : insertFacultyDetails.externalFacultyId,
+        rowCount : insertFacultyDetails.rowCount,
+        errorCode : insertFacultyDetails.errorCode ? insertFacultyDetails.errorCode : null
+    })
+}
+
 module.exports.insertPatentsubmission = async(req, res, next) => {
         console.log('patentData in Controller', req.body);
+        console.log('patentFilesData ===>>>>::::', req.files);
 
-        const patentData = req.body;
-       
-        console.log('patentFilesData ===>>>>::::', req.files)
         const patentDataSubmission = await patentSubmissionservice.insertPatentFormData(req.body, req.files);
+
         console.log('patentDataSubmission ===>>>>', patentDataSubmission);
-        // .replace(/,/g, ' ')
-        console.log('authorNameString ==')
+
         const statusCode = patentDataSubmission.status === "Done" ? 200 : (patentDataSubmission.errorCode ? 400 : 500);
         res.status(statusCode).send({
             status : patentDataSubmission.status,
             message : patentDataSubmission.message,
-            patentData : patentDataSubmission.status === "Done" ? patentData : null,
-            patentFilesData : patentDataSubmission.status === "Done" ? patentDataSubmission.patentDataFilesString : null,
-            externalEmpId :  patentDataSubmission.status === "Done" ?patentDataSubmission.externalEmpId : null,
-            patentId : patentDataSubmission.status === "Done" ? patentDataSubmission.patentId : null,
-            authorNameString : patentDataSubmission.status === "Done" ? patentDataSubmission.authorNameString.replace(/,/g, ' ') : null ,
-            internalNamesString : patentDataSubmission.status === "Done" ? patentDataSubmission.internalNamesString : null,
-            externalNamesString : patentDataSubmission.status === "Done" ? patentDataSubmission.externalNamesString : null,
-            rowCount : patentDataSubmission.status === "Done" ? patentDataSubmission.rowCount : null,
-            errorCode : patentDataSubmission.errorCode ? patentDataSubmission.errorCode : null
+            status : patentDataSubmission.status,
+            message : patentDataSubmission.message,
+            patentId : patentDataSubmission.patentId,
+            patentDataFilesString : patentDataSubmission.patentDataFilesString,
+            patentGrantIds: patentDataSubmission.patentGrantIds,
+            DsgGoalsIds : patentDataSubmission.DsgGoalsIds,
+            InventionTypeIds : patentDataSubmission.InventionTypeIds,
+            patentStatusId : patentDataSubmission.patentStatusId,
+            patentData : patentDataSubmission.patentData,
+            rowCount : patentDataSubmission.rowCount,
+            errorCode : patentDataSubmission.errorCode ? insertFacultyDetails.errorCode : null
         })
 }
+
+
 // for update patent submission
 module.exports.updatePatentSubMissiom = async(req, res, next) => {
     console.log('data in controller' , req.body);
@@ -61,16 +80,16 @@ module.exports.updatePatentSubMissiom = async(req, res, next) => {
     console.log('updatedPatentSubmissionData in controller ====>>>>>', updatedPatentSubmissionData);
     const statusCode = updatedPatentSubmissionData.status === "Done" ? 200 : (updatedPatentSubmissionData.errorCode ? 400 : 500);
     res.status(statusCode).send({
-        status : updatedPatentSubmissionData.status,
-        message : updatedPatentSubmissionData.message,
-        patentDocument : updatedPatentSubmissionData.patentDataFiles ? updatedPatentSubmissionData.patentDataFiles : null,
-        updatedPatentData : updatedPatentSubmissionData.updatedPatentData ? updatedPatentSubmissionData.updatedPatentData : null,
-        authorNameString : updatedPatentSubmissionData.authorNameString ? updatedPatentSubmissionData.authorNameString : null,
-        externalNamesString : updatedPatentSubmissionData.externalNamesString ? updatedPatentSubmissionData.externalNamesString : null,
-        internalNamesString : updatedPatentSubmissionData.internalNamesString ? updatedPatentSubmissionData.internalNamesString : null,
-        existingNameString : updatedPatentSubmissionData.existingNameString ? updatedPatentSubmissionData.existingNameString : null,
-        externalEmpId : updatedPatentSubmissionData.externalEmpId ? updatedPatentSubmissionData.externalEmpId : null,
-        errorCode : updatedPatentSubmissionData.errorCode ? updatedPatentSubmissionData.errorCode : null
+        status : "Done",
+            message : updatedPatentSubmissionData.message,
+            patentDataFiles : updatedPatentSubmissionData.patentDataFiles,
+            patentId : updatedPatentSubmissionData.patentId,
+            patentStageId : updatedPatentSubmissionData.patentStageId,
+            patentGrantIds : updatedPatentSubmissionData.patentGrantIds,
+            InventionTypeIds : updatedPatentSubmissionData.InventionTypeIds,
+            sdgGoalsIds : updatedPatentSubmissionData.sdgGoalsIds,
+            updatedPatentData : updatedPatentSubmissionData.updatedPatentData,
+            errorCode : updatedPatentSubmissionData.errorCode ? updatedPatentSubmissionData.errorCode : null
     })
 }
 
@@ -85,18 +104,7 @@ module.exports.deletePatentData = async(req, res, next) => {
         message : deletePatentsubMission.message,
         errorCode : deletePatentsubMission.errorCode ? deletePatentsubMission.errorCode : null
     })
-    // if(deletePatentsubMission.status === 'done'){
-    //     res.status(200).send({
-    //         status : deletePatentsubMission.status,
-    //         massage : deletePatentsubMission.massage
-    //     })
-    // }
-    // else{
-    //     res.status(500).send({
-    //         status : deletePatentsubMission.status,
-    //         massage : deletePatentsubMission.massage
-    //     })
-    // }
+  
 }
 
 module.exports.viewPatentSubmissionData = async(req, res, next) => {

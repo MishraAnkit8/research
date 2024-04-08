@@ -68,20 +68,20 @@
                 <table class="table custom-table table-responsive research-pagination" id="patent-submisson-list">
                     <thead>
                         <th class="col-lg-1">#</th>
-                        <th class="col-lg-1">Type of Invention</th>
+                        <th class="col-lg-1">Submission Date</th>
                         <th class="col-lg-1">Title of Invention</th>
-                        <th class="col-lg-1">Patent Stage</th>
+                        <th class="col-lg-1">Supporting Documents</th>
                         <th class="col-lg-1">Application Number</th>
                         <th class="col-lg-1">Action</th>
                     </thead>
                     <% if (patentData) { %>
                     <% patentSubmissionsData.forEach(function(patent,index) {%>
-                        <tr data-patent-id="<%- patent.patent_submission_grant_id %>" data-patent-date="<%- patent.grant_date %>"
-                            data-support-document="<%- patent.supporting_documents %>" >
+                        <tr data-patent-id="<%- patent.patent_submission_grant_id %>" data-patent-stage-id="<%- patent.patent_stage_status_id %>"
+                            data-invention-type-id="<%- patent.invention_type_id %>">
                             <td class="col-lg-1"><%- index+1 %></td>
-                            <td class="type-of-invention col-lg-1"><%- patent.invention_type_name %></td>
+                            <td class="grant-date col-lg-1"><%- patent.grant_date %></td>
                             <td class="title-of-invention col-lg-1"><%- patent.innovation_title %></td>
-                            <td class="patent-stage col-lg-1"><%- patent.patent_stage_status_name %></td>
+                            <td class="support-documents col-lg-1"><%- patent.supporting_documents %></td>
                             <td class="application-no col-lg-1"><%- patent.application_number %></td>
                             <td class="col-lg-1">
                                 <label class="view" data-patent-id="<%- patent.patent_submission_grant_id %>"><i class="fa-solid fa-eye view text-danger"
@@ -172,8 +172,8 @@
                 <div class="row">
                     <div class=" form-group col-lg-4 col-md-6 col-sm-12 mb-4 ">
                             <label for="type-of-invention" class="form-label fw-bold ">Type of Invention(IPR)</label>
-                            <select class="form-control gap-10" id="type-of-invention" data-validate="isEmpty,isExist" data-err-msg="This field is required and select value " required>
-                                    <option value="" selected>Select option</option>
+                            <select class="form-control gap-10" id="type-of-invention" data-validate="isEmpty,isExist" data-err-msg="This field is required and select value " required multiple>
+                                    <option value="" >Select option</option>
                                     <% patentInventionTypeData.forEach(function(invention) { %>
                                         <option value="<%= invention.id %>">
                                            <%= invention.name %>
@@ -189,8 +189,8 @@
                     <!-- Patent Stage -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="patent-stage" class="form-label fw-bold">Patent Stage</label>
-                        <select class="form-control gap-10" id="patent-stage" data-validate="isEmpty,isExist" data-err-msg="This field is required and select a value" required >
-                            <option value="" selected>Select option</option>
+                        <select class="form-control gap-10" id="patent-stage"  required >
+                            <option value="" >Select option</option>
                             <% patentStagData.forEach(function(status) { %>
                                 <option value="<%= status.id %>">
                                    <%= status.name %>
@@ -202,8 +202,7 @@
                     <!-- Sustainable Development Goals (SDG) [dropdown list to be added] ? -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="sdg-goals" class="form-label fw-bold ">Sustainable Development Goals (SDG)?</label>
-                        <select  class="form-control gap-10" id="sdg-goals" data-validate="isEmpty,isExist"
-                            data-err-msg="This field is required and select value " required multiple>
+                        <select  class="form-control gap-10" id="sdg-goals-data"  required multiple>
                             <option value="" selected >Select option</option>
                             <% patentSdgGoalData.forEach(function(goals) { %>
                                 <option value="<%= goals.id %>">
@@ -279,26 +278,31 @@
                                 </div> 
                             </div>
                         </div>
-
-                    <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none" id="name-class">
-                        <label for="faculty-name" class="form-label fw-bold">Faculty Name</lable>
-                        <input type="text" class="form-control" id="faculty-name">
-                    </div>
-                    <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none" id="dsg-class">
-                        <label for="" class="form-label fw-bold">Faculty Designation :</lable>
-                            <input type="text" class="form-control" id="faculty-designation"> 
-                    </div>
-                    <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none" id="id-class">
-                        <label for="faculty-id" class="form-label fw-bold">Faculty Id (Optional)</lable>
-                            <input type="text" class="form-control" id="faculty-id">
-                    </div>
-                    <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none" id="address-class">
-                        <label for="faculty-address" class="form-label fw-bold">Faculty Addres</lable>
-                            <input type="text" class="form-control" id="faculty-address"> 
-                    </div>
-                    <div class="form-group col-lg-6 col-md-6 col-sm-12 mb-4 d-none" id="add-btn">
-                        <button id="add-more-details" data-bs-target="#" class="btn col-lg-4 col-md-6 col-sm-12 btn-primary" type="button">Add More Details</button> 
-                    </div>
+                    <table>
+                        <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none" id="name-class">
+                            <label for="faculty-name" class="form-label fw-bold">Faculty Name</lable>
+                            <input type="text" class="form-control" id="faculty-name">
+                        </div>
+                        <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none" id="dsg-class">
+                            <label for="" class="form-label fw-bold">Faculty Designation :</lable>
+                                <input type="text" class="form-control" id="faculty-designation"> 
+                        </div>
+                        <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none" id="id-class">
+                            <label for="faculty-emp-id" class="form-label fw-bold">Faculty Id (Optional)</lable>
+                                <input type="text" class="form-control" id="faculty-emp-id">
+                        </div>
+                        <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none" id="address-class">
+                            <label for="faculty-address" class="form-label fw-bold">Faculty Addres</lable>
+                                <input type="text" class="form-control" id="faculty-address"> 
+                        </div>
+    
+                        <div class="form-group col-lg-6 col-md-6 col-sm-12 mb-4 d-none" id="add-btn">
+                            <button id="insert-details" data-bs-target="#" class="btn col-lg-4 col-md-6 col-sm-12 btn-primary" type="button">Insert Faculty Details</button> 
+                            <button id="add-more-details" data-bs-target="#" class="btn col-lg-4 col-md-6 col-sm-12 btn-primary" type="button">Add More Details</button> 
+    
+                        </div>
+                    </table>
+                   
                 </div>
             </div>
             <!-- Add your modal footer buttons if needed -->
@@ -399,9 +403,9 @@
 <!-- modal form for externalEmployee -->
 
 <!-- inline script -->
-<div id="patent-status" data-patent-status='<%- JSON.stringify(patentStagData) %>' style="display: none;"></div>
+<div id="patent-status-list" data-status='<%- JSON.stringify(patentStagData) %>' style="display: none;"></div>
 <div id="sdg-goals-list" data-goals='<%- JSON.stringify(patentSdgGoalData) %>' style="display: none;"></div>
-<div id="invention-types" data-invention-types='<%- JSON.stringify(patentInventionTypeData) %>' style="display: none;"></div>
+<div id="invention-types" data-invention='<%- JSON.stringify(patentInventionTypeData) %>' style="display: none;"></div>
 <div id="employees-list-data" data-employees='<%- JSON.stringify(internalFacultyData) %>' style="display: none;"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tom-select/2.3.1/js/tom-select.complete.min.js" integrity="sha512-zdXqksVc9s0d2eoJGdQ2cEhS4mb62qJueasTG4HjCT9J8f9x5gXCQGSdeilD+C7RqvUi1b4DdD5XaGjJZSlP9Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
@@ -417,7 +421,11 @@
     const downloadLink = document.getElementById('downloadLink');
     const patenetSubMissionList = document.getElementById('patent-submisson-list');
     const employeeDropdown = document.getElementById("emp-name");
-    const sdgGoalsDropDown = document.getElementById('sdg-goals');
+    const sdgGoalsDropDown = document.getElementById('sdg-goals-data');
+    // const statusDropDown = document.getElementById('patent-stage');
+    const invnstiontypeDropDown = document.getElementById('type-of-invention');
+
+    const InsertDetails = document.getElementById('insert-details')
     const addMoreDetailsButton = document.getElementById("add-more-details");
     const enternalFacultyType = document.getElementById('is-internal');
     const externalFacultyType = document.getElementById('is-external');
@@ -427,7 +435,9 @@
     let storedFacultyValue, InternalAuthorValue, externalAuthorValue;
     let facultyIdContainer = [];
     let  externalFacultyData = [];
-    let sdgGoalsIdContainer = []
+    let sdgGoalsIdContainer = [];
+    let externalFacultyIdArray = [];
+    let typeOfInventionsIdContainer = [];
 
     addNewPatentSubmission.addEventListener('click' , function(event){
         if(event.target.tagName === 'BUTTON' && event.target.classList.contains('add-modal') || event.target.classList.contains('plus')){
@@ -439,6 +449,7 @@
             InternalAuthorValue = '';
             externalAuthorValue = '';
             storedFacultyValue = '';
+            externalFacultyIdArray = [];
             employeeList.classList.add('d-none');
             authorDetails.classList.add('d-none');
             const patentDataFiles = document.querySelector('#patent-file-edit');
@@ -460,7 +471,7 @@
             titleOfInvention.value = '';
             patentStage.value = '';
             applicationNum.value = '';
-            document.getElementById('sdg-goals').value = '';
+            document.getElementById('sdg-goals-data').value = '';
             patentSubmissionDocument.value = '';
             date.value = '';
             isInternalFaculty.checked = false;
@@ -480,9 +491,6 @@
             patentData.append('patentFilesData', patentFilesData[i]);
         }
     
-        const selectedTypeOfInvention = document.getElementById('type-of-invention').value;
-        console.log('selectedTypeOfInvention ===>>>>>', selectedTypeOfInvention)
-        patentData.append('typeOfInvention', selectedTypeOfInvention);
         
         const titleOfInvention = document.getElementById('title-of-invention').value;
         patentData.append('titleOfInvention', titleOfInvention);
@@ -490,9 +498,15 @@
 
         const sdgGoalsOjectArray = sdgGoalsIdContainer[sdgGoalsIdContainer.length - 1]
         const sdgGoalsContainer =  JSON.stringify(sdgGoalsOjectArray);
-
         patentData.append('sdgGoalsContainer' , sdgGoalsContainer);
+
+        const inventionTypeArrayObject = typeOfInventionsIdContainer[typeOfInventionsIdContainer.length - 1];
+        const inventionTypeContainer = JSON.stringify(inventionTypeArrayObject);
+        console.log('inventionTypeContainer ====>>>>', inventionTypeContainer);
+        patentData.append('typeOfInvention' , inventionTypeContainer);
+
         const selectPatentStage = document.getElementById('patent-stage').value;
+        console.log('selectPatentStage ====>>>', selectPatentStage)
         patentData.append('patentStage', selectPatentStage);
 
         const applicationNum= document.getElementById('application-no').value;
@@ -521,18 +535,15 @@
                 indexValue = IndexEntry;
                 console.log('IndexEntry ===>>>', IndexEntry);
                 const newPatentRow = document.createElement('tr');
-                newPatentRow.setAttribute('data-patent-date' , data.patentData.subMissionDate);
-                newPatentRow.setAttribute('data-external-emp' , data.externalNamesString);
-                newPatentRow.setAttribute('data-external-id' , data.externalEmpId)
+                newPatentRow.setAttribute('data-invention-type-id', data.InventionTypeIds);
+                newPatentRow.setAttribute('data-patent-stage-id' , data.patentData.patentStatusId);
                 newPatentRow.innerHTML = `
-                    <td>${IndexEntry}</td>
-                    <td class="type-of-invention">${data.patentData.typeOfInvention}</td>
+                            <td>${IndexEntry}</td>
                             <td class="title-of-invention">${data.patentData.titleOfInvention}</td>
-                            <td class="patent-stage">${data.patentData.patentStage}</td>
+                            <td class="submission-date">${data.patentData.subMissionDate}</td>
+                            <td class="supporting-documents">${data.patentDataFilesString}</td>
                             <td class="application-no">${data.patentData.applicationNum}</td>
-                            <td class="author-name">${data.authorNameString}</td>
-                            <td class="achive-sdg">${data.patentData.sdgGoals}</td>
-                            <td class="patent-file">${data.patentFilesData}</td>
+                            
                             <td class="cell ">
                                 <label class="view" data-patent-id="${patentId}"><i class="fa-solid fa-eye view text-danger"
                                     data-patent-id="${patentId}"></i></label>
@@ -624,52 +635,39 @@
                 const applicationNum = document.getElementById('application-no');
                 const internalAuthor = document.getElementById('is-internal');
                 const externalAuthor = document.getElementById('is-external');
-                const authorName = rowToBeUpdated.getAttribute('data-author-type');
-                const authorTable = rowToBeUpdated.getAttribute('data-author-table');
-                console.log('authorTable ====>>>', authorTable)
-                console.log('authorType ====>>>', authorName)
-                if (authorTable === 'internalEmpList') {
-                    internalAuthor.checked = true;
-                }
-                else {
-                    externalAuthor.checked = true;
-                }
-               
+
 
                 const subMissionDate = rowToBeUpdated.getAttribute('data-patent-date');
                 console.log('patentDate ==>>', subMissionDate)
                 const formattedDate = formatDateToYYYYMMDD(subMissionDate);
                 console.log('formattedDate ==>>', formattedDate)
                 document.getElementById('date').value = formattedDate.trim();
-                typeOfInvention.value = rowToBeUpdated.querySelector('.type-of-invention').innerText;
+                typeOfInvention.value = rowToBeUpdated.getAttribute('data-invention-type-id');
+                console.log('typeOfInvention ===>>>', typeOfInvention.value);
+              
+                const typeOfInventionValue = typeOfInvention.value;
+                console.log('typeOfInventionValue ===>>>>', typeOfInventionValue);
+             
                 titleOfInvention.value = rowToBeUpdated.querySelector('.title-of-invention').innerText;
-                patentStage.value = rowToBeUpdated.querySelector('.patent-stage').innerText;
-                sdgGoals.value = rowToBeUpdated.querySelector('.sdg-goals').innerText;
-                console.log('sdgGoals ====>>>', sdgGoals.value);
-                const patentfile = rowToBeUpdated.querySelector('.patent-file');
+                patentStage.value = rowToBeUpdated.getAttribute('data-patent-stage-id');
+                console.log('patentStage.value ===>>>>>', patentStage.value);
+                
+                const patentfile = rowToBeUpdated.querySelector('.support-documents');
+                // const sdgGoalsData = 
                 const supportingDocuments = patentfile.innerText.trim();
                 console.log('supportingDocuments ==>>', supportingDocuments);
                 
                 applicationNum.value = rowToBeUpdated.querySelector('.application-no').innerText;
                 date.value = formattedDate;
-                const facultyText = rowToBeUpdated.querySelector('.author-name');
-                console.log('facultyText value ==>>>', facultyText);
-                console.log('facultyText ===>>>>', facultyText.innerText)
-                storedFacultyValue = facultyText.innerText;
+                console.log('date.value ===>>>>>', date.value);
+                // const facultyText = rowToBeUpdated.querySelector('.author-name');
+                // console.log('facultyText value ==>>>', facultyText);
+                // console.log('facultyText ===>>>>', facultyText.innerText)
+                // storedFacultyValue = facultyText.innerText;
                 console.log('storedFacultyValue ====>>>>>', storedFacultyValue);
                
 
                 $('#patent-submission-modal').modal('show');
-                // // for file and image view and download
-                // const imageRoute = '<%- BASE_URL %>research/patent-submission/viewing/';
-                // const fileRoute = '<%- BASE_URL %>research/patent-submission/download/';
-                // if(imageRoute){
-                //     modalImage.classList.remove('d-none');
-                // }
-                // else{
-                //     modalImage.classList.add('d-none');
-                // }
-                // handleFilePreviewAndDownload(supportingDocuments, imageRoute, fileRoute);
             }
 
             //   for delete patent submission form
@@ -782,7 +780,7 @@
         const updatedTypeOfInvention = document.getElementById('type-of-invention').value;
         const updatedTitleOfInvention = document.getElementById('title-of-invention').value;
         const updatedPatentStage = document.getElementById('patent-stage').value;
-        const updatedSdgGoals =  document.getElementById('sdg-goals').value
+        // const updatedSdgGoals =  document.getElementById('sdg-goals').value
         const updatedApplicationNum = document.getElementById('application-no').value;
         const updatedSubMissionDate = document.getElementById('date').value;
         const updatedAuthorType = document.querySelector('input[name="author-type"]:checked')
@@ -793,9 +791,13 @@
         updatedPatentData.append('typeOfInvention', updatedTypeOfInvention);
         updatedPatentData.append('titleOfInvention', updatedTitleOfInvention);
         updatedPatentData.append('patentStage', updatedPatentStage);
-        updatedPatentData.append('sdgGoals', updatedSdgGoals);
+        // updatedPatentData.append('sdgGoals', updatedSdgGoals);
         updatedPatentData.append('applicationNum', updatedApplicationNum);
         updatedPatentData.append('subMissionDate', updatedSubMissionDate);
+        
+        const sdgGoalsOjectArray = sdgGoalsIdContainer[sdgGoalsIdContainer.length - 1]
+        const sdgGoalsContainer =  JSON.stringify(sdgGoalsOjectArray);
+        updatedPatentData.append('sdgGoalsContainer' , sdgGoalsContainer);
         //function call for set the value of radio button 
         await updateFacultyNameString(updatedAuthorType, updatedPatentData, storedFacultyValue)
 
@@ -830,12 +832,11 @@
                 console.log('Updated Data ==> ', data)
                 console.log('updated data title ===>', data.updatedPatentData.typeOfInvention);
                 rowToBeUpdated.querySelector('.title-of-invention').innerText = data.updatedPatentData.titleOfInvention;
-                rowToBeUpdated.querySelector('.type-of-invention').innerText = data.updatedPatentData.typeOfInvention;
-                rowToBeUpdated.querySelector('.sdg-goals').innerText = data.updatedPatentData.sdgGoals;
+                rowToBeUpdated.setAttribute('data-invention-type-id', data.InventionTypeIds);
+                rowToBeUpdated.setAttribute('data-patent-stage', data.patentStage);
                 rowToBeUpdated.querySelector('.application-no').innerText = data.updatedPatentData.applicationNum;
-                rowToBeUpdated.querySelector('.patent-stage').innerText = data.updatedPatentData.patentStage;
-                rowToBeUpdated.setAttribute('data-patent-date' , data.updatedPatentData.subMissionDate);
-                rowToBeUpdated.querySelector('.author-name').innerText = data.authorNameString;
+                rowToBeUpdated.querySelector('.grant-date' ).innerText =  data.updatedPatentData.subMissionDate;
+                rowToBeUpdated.querySelector('.support-documents' ).innerText =  data.patentDataFiles;
                 if(updatedPatentFilesData){
                     rowToBeUpdated.querySelector('.patent-file').innerText = data.patentDocument;
                 }
@@ -971,15 +972,31 @@
     // employeesListData data came from backend
     const employeesListData = document.getElementById('employees-list-data').dataset.employees;
     const sdgGoalsList = document.getElementById('sdg-goals-list').dataset.goals;
+    const patentStatusList = document.getElementById('patent-status-list').dataset.status;
+    const patentInventionType = document.getElementById('invention-types').dataset.invention
     
     
     const employeesDataObj = JSON.parse(employeesListData);
     const sdgGoalsDataList = JSON.parse(sdgGoalsList);
+    const patentStatusData = JSON.parse(patentStatusList);
+    const inventionTypeData = JSON.parse(patentInventionType);
 
     // ajax for search bar to search employee name 
     const sdgOptions = sdgGoalsDataList.map(sdg => ({
             value: sdg.id,
-            text: ` ${sdg.id}  ${sdg.name}`
+            text: ` ${sdg.name}`
+        }));
+    
+    // ajax for search bar to search status
+    const statusOptions = patentStatusData.map(status => ({
+            value: status.id,
+            text: `${status.name}`
+        }));
+
+     // ajax for search bar to search status
+     const inventionTypeValue = inventionTypeData.map(invention => ({
+            value: invention.id,
+            text: `  ${invention.name}`
         }));
    
     // ajax for search bar to search employee name 
@@ -995,11 +1012,19 @@
     });
 
      // Initialize TomSelect dropdown with options containing id and faculty_name
-     new TomSelect("#sdg-goals", {
+     new TomSelect("#sdg-goals-data", {
             options: sdgOptions
     });
+
+    new TomSelect("#patent-stage", {
+            options: statusOptions
+    });
+
+    new TomSelect("#type-of-invention", {
+            options: inventionTypeValue
+    });
+
     // function for select author name from drop down list
-    
     function handleEmployeeDropdownChange() {
             const selectedValues = Array.from(employeeDropdown.options)
                 .filter(option => option.selected)
@@ -1013,6 +1038,7 @@
             
         }
 
+    // function for Sustainable Development Goals drop down list
     function handleSdgGoalsDropDownChange() {
             const selectedValues = Array.from(sdgGoalsDropDown.options)
                 .filter(option => option.selected)
@@ -1027,102 +1053,124 @@
         }
     
 
-    //function for handle add more details for storing current value of clicked
-    function handleAddMoreDetailsClick() {
+    // function for invention type drop down list selectedTypeOfInvention
+    function handleInventionsTypeDropDownChange() {
+        const selectedValues = Array.from(invnstiontypeDropDown.options)
+                .filter(option => option.selected)
+                .map(option => option.value);
+                const inventionsTypeValues = selectedValues.length === 0 ? "" : selectedValues;
+            console.log('inventionsTypeValues ===>>>>>', inventionsTypeValues);
+            if (!typeOfInventionsIdContainer.some(inventions => inventions === inventionsTypeValues)) {
+                typeOfInventionsIdContainer.push({ 'typeOfInventions' : inventionsTypeValues});
+            }
+            console.log("Selected sdgGoalsIdContainer ids :", typeOfInventionsIdContainer);
+    }
+    
+
+
+    //function for insert external data faculty with fetch api
+    const  insertExternalDetails = (url) => {
             // Define externalFacultyArray and externalFacultyData outside the function
-            console.log('clciked add more details buttons')
-           
-            // $('#external-faculty-details').modal('show');
-            // document.getElementById('faculty-name').classList.remove('d-none');
-            // document.getElementById('faculty-designation').classList.remove('d-none');
-            // document.getElementById('faculty-address').classList.remove('d-none');
-            // document.getElementById('add-more-details').classList.remove('d-none');
-            // const externalFacultyArray = [];
-            // // Ensure externalFacultyData is defined and initialized
-            // const dynamicRows = document.getElementById('dynamic-rows');
-            // const newRow = document.createElement('div');
-            // newRow.classList.add('col-lg-12');
-            // newRow.innerHTML = `
-            // <label class="form-check-label">Faculty Name</lable>
-            // <input type="text" class="input-field external-faculty-name form-control"> <br>
-            // <label class="form-check-label">Faculty Designation :</lable>
-            // <input type="text" class="input-field external-faculty-designation form-control"> <br>
-            // <label class="form-check-label external-faculty-address">Faculty Address</lable>
-            // <input type="text" class="input-field form-control external-faculty-address"> <br>`;
-            // dynamicRows.appendChild(newRow);
-            // // Move the code below to a separate function
-            // const facultyName = dynamicRows.querySelectorAll('.external-faculty-name');
-            // facultyName.forEach(inputField => {
-            //     const inputValueName = inputField.value;
-            //     console.log('inputValue ====>>>>', inputValueName)
-            //     externalFacultyArray.push({'facultyName' : inputValueName})
-            // });
+            const externalFacultyDetails = {};
+            externalFacultyDetails.facultyName = document.getElementById('faculty-name').value;
+            externalFacultyDetails.facultyDsg = document.getElementById('faculty-designation').value;
+            externalFacultyDetails.facultyAddr = document.getElementById('faculty-address').value;
+            externalFacultyDetails.facultyEmpId = document.getElementById('faculty-emp-id').value;
 
-            // const facultyDesignation = dynamicRows.querySelectorAll('.external-faculty-designation');
-            // facultyDesignation.forEach(inputField => {
-            //     const inputValueDsg = inputField.value;
-            //     console.log('inputValueDsg ====>>>>', inputValueDsg)
-            //     externalFacultyArray.push({'facultyDsg' : inputValueDsg})
-            // });
+            const payload = {
+                externalFacultyDetails : externalFacultyDetails
+            }
 
-            // const facultyAddress = dynamicRows.querySelectorAll('.external-faculty-address');
-            // facultyAddress.forEach(inputField => {
-            //     const inputValueAddr = inputField.value;
-            //     console.log('inputValueAddr ====>>>>', inputValueAddr)
-            //     externalFacultyArray.push({'facultyAddr' : inputValueAddr})
-            // });
+            console.log('payload ====>>>>>>', payload);
 
-            // // After collecting all input values, join them into a string
-            // console.log('externalFacultyArray ===>>>>', externalFacultyArray);
-            // externalFacultyData.push(externalFacultyArray);
-            // console.log("externalFacultyData:", externalFacultyData);
-            
+            fetch(url, {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        })
+            .then((result) => {
+                return result.json()
+            })
+            .then((data) => {
+                if (data.status === 'Done') {
+                    console.log('data ===>>>>>', data);
+                    externalFacultyIdArray.push(data.externalFacultyId);
+                    document.getElementById('name-class').classList.add('d-none');
+					document.getElementById('dsg-class').classList.add('d-none');
+					document.getElementById('id-class').classList.add('d-none');
+					document.getElementById('address-class').classList.add('d-none');
+                    document.getElementById('insert-details').classList.add('d-none');
+                    document.getElementById('add-more-details').classList.remove('d-none');
+                    
+                }
+            }).catch((error) => {
+                console.error("ERROR:", error);
+            })
+
+        // event listner for insert exetrnal faculty details details
+        document.getElementById('add-more-details').addEventListener('click', () => {
+
+                console.log('clicked add more button');
+                // making input field empty
+                document.getElementById('faculty-name').value = '';
+                document.getElementById('faculty-designation').value = '';
+                document.getElementById('faculty-address').value = '';
+                document.getElementById('faculty-emp-id').value = '';
+                document.getElementById('name-class').classList.remove('d-none');
+				document.getElementById('dsg-class').classList.remove('d-none');
+				document.getElementById('id-class').classList.remove('d-none');
+				document.getElementById('address-class').classList.remove('d-none');
+                document.getElementById('insert-details').classList.remove('d-none');
+                document.getElementById('add-more-details').classList.add('d-none');
+
+            })
+
         }
 
-    addMoreDetailsButton.addEventListener("click", function() {
-        handleAddMoreDetailsClick();
+    //  addEventListener   for insert external details
+    InsertDetails.addEventListener('click', async () => {
+        console.log('clickedd insert details buttons')
+        await insertExternalDetails('<%- BASE_URL %>research/patent-submission/faculty-insert');     
+           
     });
 
     employeeDropdown.addEventListener("change", handleEmployeeDropdownChange);
     sdgGoalsDropDown.addEventListener("change", handleSdgGoalsDropDownChange);
+    // statusDropDown.addEventListener("change", handlePatentStatusDropDownChange);
+    invnstiontypeDropDown.addEventListener("change", handleInventionsTypeDropDownChange);
+
     
     
 
     // function for add drop down list or  add new faculty data
     async function insertFacultyNameString(authorType, patentData) {
-
-        console.log('authorType in side my function ====>>>', authorType);
-        const exeternalFacultyDetails = externalFacultyData[externalFacultyData.length - 1];
+        console.log('externalFacultyIdArray in side my function ====>>>', externalFacultyIdArray);
+        const externalFacultyDetails = externalFacultyIdArray;
         console.log('facultyIdContainer ====>>>>>', facultyIdContainer);
         const facultyDataContainerArray = [(facultyIdContainer[facultyIdContainer.length - 1])];
-        facultyDataContainerArray.push({'externalEmpList' : exeternalFacultyDetails});
+        facultyDataContainerArray.push({'externalEmpList' : externalFacultyDetails});
 
         const facultyDataContainer =  JSON.stringify(facultyDataContainerArray);
         console.log('facultyDataContainer ===>>>>', facultyDataContainer)
         patentData.append('facultyDataContainer', facultyDataContainer);
+
         }
 
     // fuction for updated faculty type
     async function updateFacultyNameString(updatedAuthorType, updatedPatentData, storedFacultyValue) {
-            console.log('storedFacultyValue in side update function ===>>>', storedFacultyValue)
-            console.log('updatedAuthorType ====>>>', updatedAuthorType);
-            console.log('externalAuthorValue ===>>>', externalAuthorValue);
-            console.log('InternalAuthorValue ====>>>>>', InternalAuthorValue);
-            console.log('storedFacultyValue ====>>> ', storedFacultyValue);
-            const updatedAuthorNameArrays = [];
-            if(!externalAuthorValue && ! InternalAuthorValue){
-                updatedAuthorNameArrays.push({'existingNameValue' : storedFacultyValue})
-                const updatedAuthorNameString = JSON.stringify(updatedAuthorNameArrays);
-                updatedPatentData.append('authorName', updatedAuthorNameString)
-            }
-            else{
-                updatedAuthorNameArrays.push({'externalEmpList' : externalAuthorValue})
-                updatedAuthorNameArrays.push({'internalEmpList' : InternalAuthorValue})
-                const updatedAuthorNameString = JSON.stringify(updatedAuthorNameArrays);
-                console.log('updatedAuthorNameString ===>>>>', updatedAuthorNameString);
-                updatedPatentData.append('authorName', updatedAuthorNameString)
-            }
+            console.log('externalFacultyIdArray in side my function ====>>>', externalFacultyIdArray);
+            const externalFacultyDetails = externalFacultyIdArray;
+            console.log('facultyIdContainer ====>>>>>', facultyIdContainer);
+            const facultyDataContainerArray = [(facultyIdContainer[facultyIdContainer.length - 1])];
+            facultyDataContainerArray.push({'externalEmpList' : externalFacultyDetails});
+
+            const facultyDataContainer =  JSON.stringify(facultyDataContainerArray);
+            console.log('facultyDataContainer ===>>>>', facultyDataContainer)
+            updatedPatentData.append('facultyDataContainer', facultyDataContainer);
         }
+
     
     function enternalFacultyDropDownList() {
         employeeList.classList.remove('d-none');
@@ -1131,7 +1179,7 @@
 
     function externalFacultyDetails(){
         employeeList.classList.add('d-none');
-        authorDetails.classList.remove('d-none');
+        addMoreDetailsButton.classList.add('d-none');
         document.getElementById('name-class').classList.remove('d-none')
         document.getElementById('dsg-class').classList.remove('d-none')
         document.getElementById('id-class').classList.remove('d-none')

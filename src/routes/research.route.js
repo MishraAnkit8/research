@@ -70,6 +70,8 @@ router.get('/conference-publication/viewing/:fileName', downloadFileService.view
 //patent submission form
 router.get('/patent-submission', asyncErrorHandler(patentSubmission.renderPatentSubMissionAndGrant));
 router.post('/patent-submission/insert', upload.array('patentFilesData', 5), asyncErrorHandler(patentSubmission.insertPatentsubmission));
+router.post('/patent-submission/faculty-insert', asyncErrorHandler(patentSubmission.insertExternalFacultyDetails));
+
 router.post('/patent-submission/update', upload.array('patentFilesData', 5), asyncErrorHandler(patentSubmission.updatePatentSubMissiom));
 router.post('/patent-submission/delete', asyncErrorHandler(patentSubmission.deletePatentData));
 router.post('/patent-submission/view', asyncErrorHandler(patentSubmission.viewPatentSubmissionData));
@@ -138,6 +140,7 @@ router.post('/nmims-seed-grant-non-pharmacy/delete', asyncErrorHandler(seedGrant
 
 // pharmacySeedGrantForm
 router.get('/pharmacy-seed-grant-form', asyncErrorHandler(pharmacySeedGrantForm.renderPharmacySeedGrantform));
+
 
 
 module.exports = router;
