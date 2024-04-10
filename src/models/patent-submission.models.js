@@ -502,13 +502,13 @@ module.exports.viewPatentSubmission = async(patentId) => {
     };
     console.log('sdgGoalSql ===>>>>', sdgGoalSql)
 
-    let invationTypeSql = {
+    let inventionSql = {
         text: `select it.id, it.name  FROM patent_submission_invention_type pit
                 JOIN invention_type it ON pit.invention_type_id = it.id
                 WHERE pit.patent_submission_grant_id = $1 `,
         values : [patentId]
     };
-    console.log('innovationTypeSql ===>>>>', invationTypeSql);
+    console.log('innovationTypeSql ===>>>>', inventionSql);
 
     let patentGrantFacultySql = {
         text: `SELECT
@@ -534,7 +534,7 @@ module.exports.viewPatentSubmission = async(patentId) => {
     const patentSubmissionDataView = await researchDbR.query(patentSubmissionSql);
     const facultyData = await researchDbR.query(patentGrantFacultySql);
     const sdgGoalsData = await researchDbR.query(sdgGoalSql);
-    const inventionTypeData = await researchDbR.query(invationTypeSql);
+    const inventionTypeData = await researchDbR.query(inventionSql);
     let promises = [patentSubmissionDataView, facultyData, sdgGoalsData, inventionTypeData];
 
     return Promise.all(promises)

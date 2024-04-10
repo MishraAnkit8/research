@@ -1,14 +1,10 @@
 const patentFormsModels = require('../models/patent-submission.models');
 
-console.log('this is my model ', patentFormsModels);
-
 module.exports.fetchPatentForm = async () => {
 
-    // console.log("TYPE OF FUNCTION:::::::::::::::::::", typeof patentFormsModels.fetchPatentSubMissionForms);
     const patentSubmissionForm = await patentFormsModels.fetchPatentSubMissionForms();
 
     console.log('patentSubmissionForm in SErvice  ====>>>', patentSubmissionForm);
-
     console.log('patentSubmissionForm in services ===>>>>>', patentSubmissionForm.patentData);
     console.log('facultTableData in services :::::===>>>>>',patentSubmissionForm.internalFacultyData);
     console.log('research_project_grant_faculty Data In Service ::: ==>>>>', patentSubmissionForm.patentGrantFacultyIdContainer)
@@ -17,7 +13,8 @@ module.exports.fetchPatentForm = async () => {
     console.log('patentSdgGoalData ===>>>>>>', patentSubmissionForm.patentSdgGoalData);
     console.log('patentInnovationTypeData in services :::::===>>>>>', patentSubmissionForm.patentInnovationTypeData);
     console.log('patentStagData ===>>>>', patentSubmissionForm.patentStagData);
-    console.log('patentSubmissionsData ===>>>>>>', patentSubmissionForm.patentSubmissionsData)
+    console.log('patentSubmissionsData ===>>>>>>', patentSubmissionForm.patentSubmissionsData);
+    
     // const patentSubmissionsData = patentSubmissionForm.patentSubmissionsData
     const patentSubmissionMap = {};
     patentSubmissionForm.patentSubmissionsData.forEach(data => {
