@@ -34,7 +34,6 @@ module.exports.fetchPatentForm = async () => {
         patentSubmissionsData[i].grant_date ? patentSubmissionsData[i].grant_date  = formatDate(patentSubmissionsData[i].grant_date) : null
     }
     console.log('patentSubmissionsData in service ===>>>>>>>', patentSubmissionsData);
-    // console.log('patentGrantFacultyIdContainer =====>>>>>>>>>', patentSubmissionForm.patentGrantFacultyIds)
 
     const patentGrantFacultyIdContainer = patentSubmissionForm.patentGrantFacultyIds;
     const idContainerArray = {};
@@ -197,9 +196,9 @@ module.exports.updatPatentSubmission = async(body, patentId, files) => {
                 sdgGoalsIds : upadtedPatentSubmissionData.sdgGoalsIds,
                 updatedPatentData : updatedPatentData
     } : {
-        status : upadtedPatentSubmissionData.status,
-        message : upadtedPatentSubmissionData.message,
-        errorCode : upadtedPatentSubmissionData.errorCode
+                status : upadtedPatentSubmissionData.status,
+                message : upadtedPatentSubmissionData.message,
+                errorCode : upadtedPatentSubmissionData.errorCode
     }   
 }
 
