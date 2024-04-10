@@ -5,7 +5,11 @@ const moment = require('moment');
 const researchDbR = dbPoolManager.get('researchDbR', research_read_db);
 const researchDbW = dbPoolManager.get('researchDbW', research_write_db);
 
-module.exports.fetchPatentSubMissionForms = async() => {
+
+
+
+module.exports.fetchPatentSubMissionForms = async () => {
+
     let patentSubmissionSql = {
         text: `SELECT 
                     psg.id AS patent_submission_grant_id,
@@ -102,15 +106,15 @@ module.exports.fetchPatentSubMissionForms = async() => {
     console.log('patentGrantSql ====>>>>>>>', patentGrantSql);
     
 
-    const patentSubmissionsData = researchDbR.query(patentSubmissionSql);
-    const internalFacultyData = researchDbR.query(internalEmpSql);
-    const patentSdgGoalData = researchDbR.query(sdgGoalSql);
-    const patentStagData = researchDbR.query(patentStageSql);
-    const patentInventionTypeData = researchDbR.query(innovationTypeSql);
-    const patentData = researchDbR.query(patentGrantsubmission);
-    const internalPatentFacultyId = researchDbR.query(patentInternalFacultyIds);
-    const externalPatentFacultyId = researchDbR.query(patentGrantExternalsql);
-    const patentGrantFacultyIds = researchDbR.query(patentGrantSql)
+    const patentSubmissionsData = await researchDbR.query(patentSubmissionSql);
+    const internalFacultyData = await researchDbR.query(internalEmpSql);
+    const patentSdgGoalData = await researchDbR.query(sdgGoalSql);
+    const patentStagData = await researchDbR.query(patentStageSql);
+    const patentInventionTypeData = await researchDbR.query(innovationTypeSql);
+    const patentData = await researchDbR.query(patentGrantsubmission);
+    const internalPatentFacultyId = await researchDbR.query(patentInternalFacultyIds);
+    const externalPatentFacultyId = await researchDbR.query(patentGrantExternalsql);
+    const patentGrantFacultyIds = await researchDbR.query(patentGrantSql)
 
     const promises = [patentData, patentStagData, patentSubmissionsData, internalFacultyData, patentSdgGoalData, patentInventionTypeData, patentData, internalPatentFacultyId, externalPatentFacultyId, patentGrantFacultyIds];
     return Promise.all(promises).then(([patentData, patentStagData, patentSubmissionsData, internalFacultyData, patentSdgGoalData, patentInventionTypeData, internalPatentFacultyId, externalPatentFacultyId, patentGrantFacultyIds]) => {
@@ -122,13 +126,6 @@ module.exports.fetchPatentSubMissionForms = async() => {
       return{status : "Failed" , message : error.message , errorCode : error.code}
   }) 
 
-    // const [patentSubmissionsResult, internalEmpList, externalEmpList] = await Promise.all([patentSubmissionsPromise, internalEmpPromise, externalEmpPromise]);
-
-    // return {
-    //     patentSubmissions: patentSubmissionsResult,
-    //     internalEmpList: internalEmpList,
-    //     externalEmpList : externalEmpList
-    // };
 }
 
 module.exports.insertFacultyDetails = async(exetrnalFacultyDetails) => {
@@ -259,14 +256,14 @@ module.exports.insertPatentData = async (patentData, patentDataFilesString, sdgG
 };
 
 
-const updatePatentsubmissionData = async (updatedPatentData, patentId, patentDataFiles, sdgGoalsIdArray, inventionIdsArray, FacultydataArray, patentStatusIdArray) => {
+module.exports.updatePatentsubmissionData = async (updatedPatentData, patentId, patentDataFiles, sdgGoalsIdArray, inventionIdsArray, FacultydataArray, patentStatusIdArray) => {
     console.log('Data in models:', updatedPatentData);
 
     const { titleOfInvention, applicationNum, subMissionDate } = updatedPatentData;
     const supportingDocument = patentDataFiles || null;
 
     let baseQuery = `UPDATE patent_submission_grant SET innovation_title = $2, application_number = $3, grant_date = $4`;
-    let documentsQuery = supportingDocument ? `, patent_file = $5` : '';
+    let documentsQuery = supportingDocument ? `, supporting_documents = $5` : '';
     let queryText = `${baseQuery}${documentsQuery} WHERE id = $1`;
 
     let values = [patentId, titleOfInvention, applicationNum, subMissionDate, supportingDocument].filter(Boolean);
@@ -362,7 +359,7 @@ const updatePatentsubmissionData = async (updatedPatentData, patentId, patentDat
         status: 'Done',
         message: 'Record Updated Successfully',
         patentId: patentId,
-        // patentstage: patentStatusIds, // Assuming this is the correct array to return
+        patentstage: patentStatusIds, // Assuming this is the correct array to return
         patentGrantIds: insertFacultyIds,
         sdgGoalsIds: insertSdgGoalsIds,
         InventionTypeIds: insertInventionTypeIds,
@@ -371,34 +368,194 @@ const updatePatentsubmissionData = async (updatedPatentData, patentId, patentDat
     };
 };
 
-module.exports = {
-    updatePatentsubmissionData
-};
 
 
-module.exports.deletePatentSubmissionData = async(patentId) => {
-    console.log('patent Id  in Model >>', patentId)
-    let sql = {
-        text : `DELETE FROM patent_submissions WHERE id = $1`,
-        values : [patentId]
+module.exports.deletePatentSubmissionData = async (patentId) => {
+    console.log('Patent Id in Model:', patentId);
+  
+    // Delete records from child tables first patent_submission_invention_type
+
+    // Delete records from child tables  patent_submission_invention_type
+    const deletePatentInvention = {
+            text: 'DELETE FROM patent_submission_invention_type WHERE patent_submission_grant_id = $1',
+            values: [patentId]
     }
-     console.log('sql ===>>>', sql)
-    const deletedRecord = await researchDbW.query(sql);
-    const promises = [deletedRecord];
-    return Promise.all(promises).then(([deletedRecord]) => {
-        return  { status : "Done" , message : "Record Deleted Successfully", rowCount : deletedRecord.rowCount}
-    })
-    .catch((error) => {
-        return{status : "Failed" , message : error.message , errorCode : error.code}
-    })
-}
+    console.log('deletePatentInvention ==>>>>', deletePatentInvention);
+
+    // Delete records from child tables  patent_submission_sdg_goals
+    const deleteSdgSql =   {
+        text: 'DELETE FROM patent_submission_sdg_goals WHERE patent_submission_grant_id = $1',
+        values: [patentId]
+      }
+      console.log('deleteSdgSql ==>>>>', deleteSdgSql);
+
+    // Delete records from child tables  patent_submission_stage_status
+    const deletePatentStatusSql = {
+        text: 'DELETE FROM patent_submission_stage_status WHERE patent_submission_grant_id = $1',
+        values: [patentId]
+    }
+    console.log('deletePatentStatusSql ==>>>>', deletePatentStatusSql);
+
+    // Delete records from child tables  patent_submission_faculty
+    const patentGrantFacultySql = {
+        text: 'DELETE FROM patent_submission_faculty WHERE patent_submission_grant_id = $1',
+        values: [patentId]
+      }
+    console.log('patentGrantFacultySql ==>>>>', patentGrantFacultySql);
+
+
+    const patentSdgGoalData = await researchDbR.query(deleteSdgSql);
+    const patentStagData = await researchDbR.query(deletePatentStatusSql);
+    const patentInventionTypeData = await researchDbR.query(deletePatentInvention);
+    const patentGrantFaculty = await researchDbR.query(patentGrantFacultySql)
+    
+    let deletePromises = [patentSdgGoalData, patentStagData, patentInventionTypeData, patentGrantFaculty];
+  
+    // Execute delete queries for child tables first
+    return Promise.all(deletePromises)
+      .then((results) => {
+        // Once child records are deleted, delete the parent record
+        return researchDbW.query({
+          text: 'DELETE FROM patent_submission_grant WHERE id = $1',
+          values: [patentId]
+        });
+      })
+      .then((grantDeletionResult) => {
+        return {
+          status: 'Done',
+          message: 'Record(s) Deleted Successfully',
+          rowCount: grantDeletionResult.rowCount,
+          facultyRowCount : patentGrantFaculty.rowCount,
+          sdgGoalRowCount : patentSdgGoalData.rowCount,
+          inventionRowCount : patentInventionTypeData.rowCount,
+          statusRowCount : patentStagData.rowCount
+
+
+        };
+      })
+      .catch((error) => {
+        console.error('Error:', error.message);
+        return {
+          status: 'Failed',
+          message: error.message,
+          errorCode: error.code
+        };
+      });
+  };
+  
+  
+  
+
 
 module.exports.viewPatentSubmission = async(patentId) => {
-    console.log('id' , patentId)
-    let sql = {
-        text : `SELECT type_of_invention, title_of_invention,  patent_stage, sdg_goals, application_no, TO_CHAR(date, 'DD-MM-YYYY') as date, author_type, patent_file FROM patent_submissions WHERE id = $1`,
+    console.log('id' , patentId);
+
+    let patentSubmissionSql = {
+        text : `SELECT 
+            psg.id AS patent_submission_grant_id,
+            psg.innovation_title,
+            psg.application_number,
+            psg.grant_date,
+            psg.supporting_documents,
+            sg.name AS sdg_goal_name,
+            sg.id AS sdg_goal_id,
+            it.name AS invention_type_name,
+            it.id AS invention_type_id,
+            pss.name AS patent_stage_status_name,
+            pss.id AS patent_stage_status_Id,
+            f.faculty_name,
+            f.designation,
+            f.address,
+            f.employee_id,
+            psf.id AS patent_submission_faculty_id
+        FROM 
+            patent_submission_grant psg
+        LEFT JOIN 
+            patent_submission_sdg_goals pssg ON psg.id = pssg.patent_submission_grant_id
+        LEFT JOIN 
+            sdg_goals sg ON pssg.sdg_goals_id = sg.id
+        LEFT JOIN 
+            patent_submission_invention_type psit ON psg.id = psit.patent_submission_grant_id
+        LEFT JOIN 
+            invention_type it ON psit.invention_type_id = it.id
+        LEFT JOIN 
+            patent_submission_stage_status psss ON psg.id = psss.patent_submission_grant_id
+        LEFT JOIN 
+            pantent_stage_status pss ON psss.pantent_stage_status_id = pss.id
+        LEFT JOIN 
+            patent_submission_faculty psf ON psg.id = psf.patent_submission_grant_id
+        LEFT JOIN 
+            faculties f ON psf.faculty_id = f.id 
+        where  psg.id = $1`,
+
+     values : [patentId]
+    };
+    console.log('sql qury for view', patentSubmissionSql);
+
+    
+    let sdgGoalSql = {
+        text: `SELECT sg.id, sg.name
+            FROM patent_submission_sdg_goals psg
+            JOIN sdg_goals sg ON psg.sdg_goals_id = sg.id
+            WHERE psg.patent_submission_grant_id = $1`,
         values : [patentId]
-    }
-    console.log('sql qury for view', sql);
-    return researchDbR.query(sql);
+    };
+    console.log('sdgGoalSql ===>>>>', sdgGoalSql)
+
+    let invationTypeSql = {
+        text: `select it.id, it.name  FROM patent_submission_invention_type pit
+                JOIN invention_type it ON pit.invention_type_id = it.id
+                WHERE pit.patent_submission_grant_id = $1 `,
+        values : [patentId]
+    };
+    console.log('innovationTypeSql ===>>>>', invationTypeSql);
+
+    let patentGrantFacultySql = {
+        text: `SELECT
+            f.faculty_name,
+            f.designation,
+            f.address,
+            f.employee_id,
+            ft.name AS faculty_type
+        FROM
+            patent_submission_faculty psf
+        JOIN
+            faculties f ON psf.faculty_id = f.id
+        JOIN
+            faculty_types ft ON f.faculty_type_id = ft.id
+        WHERE
+            psf.patent_submission_grant_id = $1`,
+
+        values : [patentId]
+    };
+    console.log('patentGrantFacultySql ===>>>>', patentGrantFacultySql);
+
+
+    const patentSubmissionDataView = await researchDbR.query(patentSubmissionSql);
+    const facultyData = await researchDbR.query(patentGrantFacultySql);
+    const sdgGoalsData = await researchDbR.query(sdgGoalSql);
+    const inventionTypeData = await researchDbR.query(invationTypeSql);
+    let promises = [patentSubmissionDataView, facultyData, sdgGoalsData, inventionTypeData];
+
+    return Promise.all(promises)
+      .then(([patentSubmissionDataView, facultyData, sdgGoalsData, inventionTypeData]) => {
+        return {
+          status: "Done",
+          message: "Record Fecthed Successfully",
+          patentData: patentSubmissionDataView.rows,
+          rowCount: patentSubmissionDataView.rowCount,
+          facultyData : facultyData.rows,
+          sdgGoalsData : sdgGoalsData.rows,
+          inventionTypeData : inventionTypeData.rows,
+        };
+      })
+      .catch(error => {
+        console.error('Error:', error.message); 
+        return {
+          status: "Failed",
+          message: error.message,
+          errorCode: error.code
+        };
+      });
+
 }

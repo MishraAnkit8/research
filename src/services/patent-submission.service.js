@@ -1,8 +1,10 @@
 const patentFormsModels = require('../models/patent-submission.models');
 
+console.log('this is my model ', patentFormsModels);
 
-module.exports.fetchPatentForm = async() => {
+module.exports.fetchPatentForm = async () => {
 
+    // console.log("TYPE OF FUNCTION:::::::::::::::::::", typeof patentFormsModels.fetchPatentSubMissionForms);
     const patentSubmissionForm = await patentFormsModels.fetchPatentSubMissionForms();
 
     console.log('patentSubmissionForm in SErvice  ====>>>', patentSubmissionForm);
@@ -109,7 +111,7 @@ module.exports.insertPatentFormData = async(body , files) => {
     console.log('patentData in service', patentData);
 
     const sdgDataIds = JSON.parse(patentData.sdgGoalsContainer);
-    const sdgGoalsData = sdgDataIds.sdgGoals || []
+    const sdgGoalsData = sdgDataIds || []
     const sdgGoalsIdArray = sdgGoalsData.map(Number);
     console.log('sdgGoalsIdArray:', sdgGoalsIdArray);
     const inventionTypesData = JSON.parse(patentData.typeOfInvention);
@@ -162,8 +164,9 @@ module.exports.insertPatentFormData = async(body , files) => {
 module.exports.updatPatentSubmission = async(body, patentId, files) => {
     const updatedPatentData = body;
     console.log('body in service  ====>>>>', body);
-    const sdgDataIds = JSON.parse(updatedPatentData.sdgGoalsContainer);
-    const sdgGoalsData = sdgDataIds.sdgGoals || []
+    const sdgDataIds =  updatedPatentData.sdgGoalsContainer !== 'undefined' || null ? JSON.parse(updatedPatentData.sdgGoalsContainer) : null;
+    const sdgGoalsData = sdgDataIds !== 'undefined' || null ? sdgDataIds || [] : null;
+    console.log('sdgGoalsData ===>>>',sdgGoalsData);
     const sdgGoalsIdArray = sdgGoalsData.map(Number);
     console.log('sdgGoalsIdArray:', sdgGoalsIdArray);
     const inventionIdsArray = [parseInt(updatedPatentData.typeOfInvention)];
@@ -208,7 +211,9 @@ module.exports.deletePatentSubmission = async(body) => {
     const {patentId} = body;
     console.log('patent Id in Service for deletion ', patentId);
     const deletePatentData = await patentFormsModels.deletePatentSubmissionData(patentId);
+
     console.log('deletePatentData ===>>>>', deletePatentData);
+
     return deletePatentData.status === "Done" ? {
         status : deletePatentData.status,
         message : deletePatentData.message
@@ -217,26 +222,51 @@ module.exports.deletePatentSubmission = async(body) => {
         message : deletePatentData.message,
         errorCode : deletePatentData.errorCode
     }
-    // if(deletePatentData.rowCount === 1){
-    //     return {
-    //         status : 'done',
-    //         massage : 'data Deleted Successfully'
-    //     }
-    // }
-    // else{
-    //     return {
-    //         status : 'failed',
-    //         massage : 'failed to delete'
-    //     }
-    // }
+
 }
 
 module.exports.viewPatentsubmission = async(patentId) => {
-    console.log('id', patentId)
+    console.log('id', patentId);
+
     const patentDataViewed = await patentFormsModels.viewPatentSubmission(patentId);
-    if(patentDataViewed && patentDataViewed.rowCount === 1){
-        return patentDataViewed
+
+    console.log('patentDataViewed ===>>>>>>', patentDataViewed);
+    const patentSubmissionMap = {};
+    patentDataViewed.patentData.forEach(data => {
+        const id = data.patent_submission_grant_id;
+        if (!patentSubmissionMap[id]) {
+            patentSubmissionMap[id] = data;
+          
+        }
+    });
+
+    const patentSubmissionsData = Object.values(patentSubmissionMap);
+
+    console.log('patentSubmissionsData in service ===>>>>>>>', patentSubmissionsData);
+    console.log('patentSubmissionsData date  ===>>>>', patentSubmissionsData[0].grant_date)
+    const dateFormate = []
+    for (let i = 0; i <= patentSubmissionsData.length -1 ; i ++){
+        patentSubmissionsData[i].grant_date  = formatDate(patentSubmissionsData[i].grant_date)
     }
+    console.log('patentSubmissionsData in service ===>>>>>>>', patentSubmissionsData);
+
+    const facultyData =  patentDataViewed.facultyData;
+    const sdgGoalsData = patentDataViewed.sdgGoalsData;
+    const inventionTypeData = patentDataViewed.inventionTypeData;
+
+    return patentDataViewed.status === "Done" ? {
+        status : patentDataViewed.status,
+        message : patentDataViewed.message,
+        facultyData : facultyData,
+        sdgGoalsData : sdgGoalsData,
+        inventionTypeData : inventionTypeData,
+        patentSubmissionsData : patentSubmissionsData
+    } : {
+        status : patentDataViewed.status,
+        message : patentDataViewed.message,
+        errorCode : patentDataViewed.errorCode
+    }
+
 }
 
 

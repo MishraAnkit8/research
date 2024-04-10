@@ -74,7 +74,7 @@
                         <th class="col-lg-1">Application Number</th>
                         <th class="col-lg-1">Action</th>
                     </thead>
-                    <% if (patentData) { %>
+                    <% if (patentSubmissionsData) { %>
                     <% patentSubmissionsData.forEach(function(patent,index) {%>
                         <tr data-patent-id="<%- patent.patent_submission_grant_id %>" data-patent-stage-id="<%- patent.patent_stage_status_id %>"
                             data-invention-type-id="<%- patent.invention_type_id %>">
@@ -372,13 +372,6 @@
                             <label class="view-content" id="view-date"></label>
                         </div>
                     </div>
-                    <!-- Are you the Presenter -->
-                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                        <div class="box">
-                            <div class="sub-title-text sub-title"> Are you the Presenter :</div>
-                            <label class="view-content" id="view-author-name"></label>
-                        </div>
-                    </div>
                     <!-- Upload Data -->
                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
@@ -390,8 +383,23 @@
                             <label class="view-content" id="view-patent-file"></label>
                         </div>
                     </div>
-                </div>
-            </div>
+
+                    <!-- Sustainable Development Goals (SDG) -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text fw-bold"> Sustainable Development Goals (SDG): </div>
+                            <label class="view-content" id="sdg-goals-container"></label>
+                        </div>
+                    </div>
+
+                    <!-- Faculty Type -->
+                    <div class="col-lg-12 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text fw-bold"> Faculty Details Id And Name: </div>
+                            <label class="view-content" id="faculty-details-container"></label>
+                        </div>
+                    </div>
+
             <!-- Add your modal footer buttons if needed -->
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
@@ -431,7 +439,7 @@
     const externalFacultyType = document.getElementById('is-external');
     const employeeList = document.getElementById('employee-list');
     const authorDetails = document.getElementById('author-details');
-    let patentId, rowToBeUpdated;
+    let patentId, rowToBeUpdated, supportingDocument;
     let storedFacultyValue, InternalAuthorValue, externalAuthorValue;
     let facultyIdContainer = [];
     let  externalFacultyData = [];
@@ -452,8 +460,8 @@
             externalFacultyIdArray = [];
             employeeList.classList.add('d-none');
             authorDetails.classList.add('d-none');
-            const patentDataFiles = document.querySelector('#patent-file-edit');
-            patentDataFiles.classList.add('d-none');
+            const patentSubmissionsDataFiles = document.querySelector('#patent-file-edit');
+            patentSubmissionsDataFiles.classList.add('d-none');
     
             const typeOfInvention = document.getElementById('type-of-invention');
             const titleOfInvention = document.getElementById('title-of-invention');
@@ -481,47 +489,49 @@
     })
     
     const insertPatentforms = async (url) => {
-        const patentData = new FormData();
+        const patentSubmissionsData = new FormData();
         const patentFiles = document.getElementById('patent-file');
         // patentFile
         const patentFilesData = patentFiles.files;
         console.log('patentFilesData ===>>>', patentFilesData)
         for (let i = 0; i < patentFilesData.length; i++) {
             console.log('file name  ==>>', patentFilesData[i].name);
-            patentData.append('patentFilesData', patentFilesData[i]);
+            patentSubmissionsData.append('patentFilesData', patentFilesData[i]);
         }
     
         
         const titleOfInvention = document.getElementById('title-of-invention').value;
-        patentData.append('titleOfInvention', titleOfInvention);
+        patentSubmissionsData.append('titleOfInvention', titleOfInvention);
 
 
         const sdgGoalsOjectArray = sdgGoalsIdContainer[sdgGoalsIdContainer.length - 1]
-        const sdgGoalsContainer =  JSON.stringify(sdgGoalsOjectArray);
-        patentData.append('sdgGoalsContainer' , sdgGoalsContainer);
+
+        const sdgGoalsContainer = sdgGoalsOjectArray ?  JSON.stringify(sdgGoalsOjectArray) : null;
+        console.log('sdgGoalsContainer ===>>>>',sdgGoalsContainer);
+        patentSubmissionsData.append('sdgGoalsContainer' , sdgGoalsContainer);
 
         const inventionTypeArrayObject = typeOfInventionsIdContainer[typeOfInventionsIdContainer.length - 1];
         const inventionTypeContainer = JSON.stringify(inventionTypeArrayObject);
         console.log('inventionTypeContainer ====>>>>', inventionTypeContainer);
-        patentData.append('typeOfInvention' , inventionTypeContainer);
+        patentSubmissionsData.append('typeOfInvention' , inventionTypeContainer);
 
         const selectPatentStage = document.getElementById('patent-stage').value;
         console.log('selectPatentStage ====>>>', selectPatentStage)
-        patentData.append('patentStage', selectPatentStage);
+        patentSubmissionsData.append('patentStage', selectPatentStage);
 
         const applicationNum= document.getElementById('application-no').value;
-        patentData.append('applicationNum', applicationNum);
+        patentSubmissionsData.append('applicationNum', applicationNum);
 
         const subMissionDate = document.getElementById('date').value;
         console.log('subMissionDate ===>>>', subMissionDate);
-        patentData.append('subMissionDate', subMissionDate);
+        patentSubmissionsData.append('subMissionDate', subMissionDate);
         
         const authorType = document.querySelector('input[name="author-type"]:checked');
-        await insertFacultyNameString(authorType, patentData);
+        await insertFacultyNameString(authorType, patentSubmissionsData);
 
         fetch(url, {
             method: 'POST',
-            body: patentData
+            body: patentSubmissionsData
         })
         .then((result) => {
            return  result.json()
@@ -536,13 +546,13 @@
                 console.log('IndexEntry ===>>>', IndexEntry);
                 const newPatentRow = document.createElement('tr');
                 newPatentRow.setAttribute('data-invention-type-id', data.InventionTypeIds);
-                newPatentRow.setAttribute('data-patent-stage-id' , data.patentData.patentStatusId);
+                newPatentRow.setAttribute('data-patent-stage-id' , data.patentSubmissionsData.patentStatusId);
                 newPatentRow.innerHTML = `
                             <td>${IndexEntry}</td>
-                            <td class="title-of-invention">${data.patentData.titleOfInvention}</td>
-                            <td class="submission-date">${data.patentData.subMissionDate}</td>
-                            <td class="supporting-documents">${data.patentDataFilesString}</td>
-                            <td class="application-no">${data.patentData.applicationNum}</td>
+                            <td class="title-of-invention">${data.patentSubmissionsData.titleOfInvention}</td>
+                            <td class="submission-date">${data.patentSubmissionsData.subMissionDate}</td>
+                            <td class="supporting-documents">${data.patentSubmissionsDataFilesString}</td>
+                            <td class="application-no">${data.patentSubmissionsData.applicationNum}</td>
                             
                             <td class="cell ">
                                 <label class="view" data-patent-id="${patentId}"><i class="fa-solid fa-eye view text-danger"
@@ -653,17 +663,14 @@
                 console.log('patentStage.value ===>>>>>', patentStage.value);
                 
                 const patentfile = rowToBeUpdated.querySelector('.support-documents');
+                console.log('patentfile ===>>>>', patentfile)
                 // const sdgGoalsData = 
-                const supportingDocuments = patentfile.innerText.trim();
-                console.log('supportingDocuments ==>>', supportingDocuments);
+                supportingDocuments = patentfile.innerText.trim();
+                // console.log('supportingDocuments ==>>', supportingDocuments);
                 
                 applicationNum.value = rowToBeUpdated.querySelector('.application-no').innerText;
                 date.value = formattedDate;
                 console.log('date.value ===>>>>>', date.value);
-                // const facultyText = rowToBeUpdated.querySelector('.author-name');
-                // console.log('facultyText value ==>>>', facultyText);
-                // console.log('facultyText ===>>>>', facultyText.innerText)
-                // storedFacultyValue = facultyText.innerText;
                 console.log('storedFacultyValue ====>>>>>', storedFacultyValue);
                
 
@@ -757,17 +764,64 @@
                         return result.json();
                     })
                     .then((data) => {
-                        if (data.status === 'done') {
+                        if (data.status === 'Done') {
                             console.log('data', data)
                             setFileNameInButtons(data) 
-                            viewTitleOfinvetion.innerText = data.patentData[0].title_of_invention;
-                            viewTypeOfInvetion.innerText = data.patentData[0].type_of_invention;
-                            viewApplicationNum.innerText = data.patentData[0].application_no;
-                            viewAchiveSdg.innerText = data.patentData[0].sdg_goals;
-                            viewDate.innerText = data.patentData[0].date.split('T')[0];
-                            viewPatentStage.innerText = data.patentData[0].patent_stage;
-                            viewIsPresenter.innerText = data.patentData[0].author_type.replace(/,/g, ' ');
-                            // viewUploadedDoc.innerText = data.patentData[0].patent_file;
+                            
+                            viewTitleOfinvetion.innerText = data.patentSubmissionsData[0].innovation_title;
+                            viewTypeOfInvetion.innerText = data.patentSubmissionsData[0].invention_type_name;
+                            viewApplicationNum.innerText = data.patentSubmissionsData[0].application_number;
+                            viewDate.innerText = data.patentSubmissionsData[0].grant_date;
+                            viewPatentStage.innerText = data.patentSubmissionsData[0].patent_stage_status_name;
+
+                            let facultyDetailsHTML = `
+                            <table class="table" border='1px'>
+                                <thead>
+                                    <th>#</th>
+                                    <th>Faculty Name</th>
+                                    <th>Designation</th>
+                                    <th>Address</th>
+                                    <th>Employee ID</th>
+                                    <th>Faculty type</th>
+                                </thead>
+                                <tbody>`;
+
+                        data.facultyData.forEach((faculty, index) => { facultyDetailsHTML += `
+                            <tr>
+                                <td class="view-content">${index + 1}</td>
+                                <td class="view-content">${faculty.faculty_name}</td>
+                                <td class="view-content">${faculty.designation}</td>
+                                <td class="view-content">${faculty.address}</td>
+                                <td class="view-content">${faculty.employee_id}</td>
+                                <td class="view-content">${faculty.faculty_type}</td>
+                            </tr>`;
+                                });
+
+                        facultyDetailsHTML += `
+                            </tbody>
+                        </table>`
+                        document.getElementById('faculty-details-container').innerHTML = facultyDetailsHTML;
+
+                        let sdgGoalsDetailsHtml = `
+                            <table class="table" border='1px'>
+                                <thead>
+                                    <th>#</th>
+                                    <th>Sustainable Development Goals (SDG)</th>
+                                </thead>
+                                <tbody>`;
+
+                        data.sdgGoalsData.forEach((sdg, index) => { sdgGoalsDetailsHtml += `
+                            <tr>
+                                <td class="view-content">${index + 1}</td>
+                                <td class="view-content">${sdg.name}</td>
+                            </tr>`;
+                                });
+
+                                sdgGoalsDetailsHtml += `
+                            </tbody>
+                        </table>`
+
+                        document.getElementById('sdg-goals-container').innerHTML = sdgGoalsDetailsHtml;
 
                         }
                     })
@@ -783,7 +837,8 @@
         // const updatedSdgGoals =  document.getElementById('sdg-goals').value
         const updatedApplicationNum = document.getElementById('application-no').value;
         const updatedSubMissionDate = document.getElementById('date').value;
-        const updatedAuthorType = document.querySelector('input[name="author-type"]:checked')
+        const updatedAuthorType = document.querySelector('input[name="author-type"]:checked');
+        console.log('supportingDocuments ==>>', supportingDocuments);
         
         const updatedPatentData = new FormData();
         // Append the updated values to FormData
@@ -797,6 +852,7 @@
         
         const sdgGoalsOjectArray = sdgGoalsIdContainer[sdgGoalsIdContainer.length - 1]
         const sdgGoalsContainer =  JSON.stringify(sdgGoalsOjectArray);
+        console.log('sdgGoalsOjectArray ==>>>', sdgGoalsOjectArray)
         updatedPatentData.append('sdgGoalsContainer' , sdgGoalsContainer);
         //function call for set the value of radio button 
         await updateFacultyNameString(updatedAuthorType, updatedPatentData, storedFacultyValue)
@@ -835,11 +891,8 @@
                 rowToBeUpdated.setAttribute('data-invention-type-id', data.InventionTypeIds);
                 rowToBeUpdated.setAttribute('data-patent-stage', data.patentStage);
                 rowToBeUpdated.querySelector('.application-no').innerText = data.updatedPatentData.applicationNum;
-                rowToBeUpdated.querySelector('.grant-date' ).innerText =  data.updatedPatentData.subMissionDate;
-                rowToBeUpdated.querySelector('.support-documents' ).innerText =  data.patentDataFiles;
-                if(updatedPatentFilesData){
-                    rowToBeUpdated.querySelector('.patent-file').innerText = data.patentDocument;
-                }
+                rowToBeUpdated.querySelector('.grant-date').innerText =  data.updatedPatentData.subMissionDate;
+                rowToBeUpdated.querySelector('.support-documents' ).innerText =  data.patentSubmissionsDataFiles !== null ? data.patentDataFiles : supportingDocuments;
                 Swal.fire({
 							position: "top-center",
 							icon: "success",
@@ -904,7 +957,7 @@
     function setFileNameInButtons(data) {
         console.log('data ==>>>', data);
         patetDataFileView = document.getElementById('patent-data-file-view');
-        patetDataFileView.setAttribute('data-filename', data.patentData[0].patent_file);
+        patetDataFileView.setAttribute('data-filename', data.patentSubmissionsData[0].supporting_documents);
     } 
 
     //eventlistner for download files
@@ -953,12 +1006,12 @@
     // set string file value into button
     function setFileNameAttributeToBeDownload(data) {
             console.log('data row in side function ===>>', data);
-            const patentDataFiles = document.getElementById('patent-file-edit');
-            patentDataFiles.classList.remove('d-none');
-            const patentDataString = data.getAttribute('data-supporting-documents');
+            const patentSubmissionsDataFiles = document.getElementById('patent-file-edit');
+            patentSubmissionsDataFiles.classList.remove('d-none');
+            const patentSubmissionsDataString = data.getAttribute('data-supporting-documents');
 
             // setAttribute into button
-            patentDataFiles.setAttribute('data-filename', patentDataString);
+            patentSubmissionsDataFiles.setAttribute('data-filename', patentSubmissionsDataString);
 
         };
     
@@ -1046,7 +1099,7 @@
                 const sdgGoalsValues = selectedValues.length === 0 ? "" : selectedValues;
             console.log('sdgGoalsValues ===>>>>>', sdgGoalsValues);
             if (!sdgGoalsIdContainer.some(goals => goals === sdgGoalsValues)) {
-            sdgGoalsIdContainer.push({ 'sdgGoals' : sdgGoalsValues});
+            sdgGoalsIdContainer.push(sdgGoalsValues);
             }
             console.log("Selected sdgGoalsIdContainer ids :", sdgGoalsIdContainer);
             
@@ -1145,7 +1198,7 @@
     
 
     // function for add drop down list or  add new faculty data
-    async function insertFacultyNameString(authorType, patentData) {
+    async function insertFacultyNameString(authorType, patentSubmissionsData) {
         console.log('externalFacultyIdArray in side my function ====>>>', externalFacultyIdArray);
         const externalFacultyDetails = externalFacultyIdArray;
         console.log('facultyIdContainer ====>>>>>', facultyIdContainer);
@@ -1154,7 +1207,7 @@
 
         const facultyDataContainer =  JSON.stringify(facultyDataContainerArray);
         console.log('facultyDataContainer ===>>>>', facultyDataContainer)
-        patentData.append('facultyDataContainer', facultyDataContainer);
+        patentSubmissionsData.append('facultyDataContainer', facultyDataContainer);
 
         }
 

@@ -298,7 +298,7 @@ module.exports.deleteResearchConsultantData = async (consultantId) => {
         };
       })
       .catch(error => {
-        console.error('Error:', error.message); // Log the error for debugging
+        console.error('Error:', error.message);
         return {
           status: "Failed",
           message: error.message,

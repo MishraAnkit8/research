@@ -2,10 +2,9 @@ const patentSubmissionservice = require('../services/patent-submission.service')
 
 
 module.exports.renderPatentSubMissionAndGrant = async(req, res, next) =>{
-
+    console.log('data in controller ')
     const patentSubmissionList = await patentSubmissionservice.fetchPatentForm();
-
-    // console.log('patentSubmissionList Data In controller  ===>>>', patentSubmissionList)
+    console.log('patentSubmissionList ===>>>>', patentSubmissionList);
 
     res.render('patent-submission', {
         status : patentSubmissionList.status,
@@ -76,7 +75,9 @@ module.exports.updatePatentSubMissiom = async(req, res, next) => {
     console.log('data in controller' , req.body);
     console.log('ID in controller ==>', req.body.patentId);
     const  patentId = req.body.patentId;
+
     const updatedPatentSubmissionData = await patentSubmissionservice.updatPatentSubmission(req.body, patentId, req.files);
+
     console.log('updatedPatentSubmissionData in controller ====>>>>>', updatedPatentSubmissionData);
     const statusCode = updatedPatentSubmissionData.status === "Done" ? 200 : (updatedPatentSubmissionData.errorCode ? 400 : 500);
     res.status(statusCode).send({
@@ -95,9 +96,12 @@ module.exports.updatePatentSubMissiom = async(req, res, next) => {
 
 module.exports.deletePatentData = async(req, res, next) => {
     const patentId = req.body;
+    console.log('patentId ===>>>>>', patentId);
+
     const deletePatentsubMission = await patentSubmissionservice.deletePatentSubmission(patentId);
 
-    console.log('deletePatentsubMission in controller ===>>>', deletePatentsubMission)
+    console.log('deletePatentsubMission in controller ===>>>', deletePatentsubMission);
+
     const statusCode = deletePatentsubMission.status === "Done" ? 200 : (deletePatentsubMission.errorCode ? 400 : 500);
     res.status(statusCode).send({
         status : deletePatentsubMission.status,
@@ -108,15 +112,21 @@ module.exports.deletePatentData = async(req, res, next) => {
 }
 
 module.exports.viewPatentSubmissionData = async(req, res, next) => {
-    console.log('data comming from frontent ===>>>', req.body.patentId)
     const {patentId} = req.body;
-    console.log('patentId ===>>>>', patentId)
+    console.log('patentId in controller  ===>>>>', patentId);
+
     const viewPatentsubmissionData = await patentSubmissionservice.viewPatentsubmission(patentId);
-    console.log('data in controller ==>', viewPatentsubmissionData.rows );
-    if(viewPatentsubmissionData){
-        res.status(200).send({
-            status : 'done',
-            patentData : viewPatentsubmissionData.rows
-        })
-    }
+
+    console.log('viewPatentsubmissionData ====>>>>>>', viewPatentsubmissionData);
+
+    const statusCode = viewPatentsubmissionData.status === "Done" ? 200 : (viewPatentsubmissionData.errorCode ? 400 : 500);
+    res.status(statusCode).send({
+        status : viewPatentsubmissionData.status,
+        message : viewPatentsubmissionData.message,
+        facultyData : viewPatentsubmissionData.facultyData,
+        sdgGoalsData : viewPatentsubmissionData.sdgGoalsData,
+        inventionTypeData : viewPatentsubmissionData.inventionTypeData,
+        patentSubmissionsData : viewPatentsubmissionData.patentSubmissionsData,
+        errorCode : viewPatentsubmissionData.errorCode ? viewPatentsubmissionData.errorCode : null
+    })
 }
