@@ -244,8 +244,8 @@ module.exports.insertPatentData = async (patentData, patentDataFilesString, sdgG
             patentId : patentId,
             patentstage : patentstage,
             patentGrantIds: insertFacultyIds,
-            DsgGoalsIds : insertDsgGoalsIds,
-            InventionTypeIds : insertInventionTypeIds,
+            dsgGoalsIds : insertDsgGoalsIds,
+            inventionTypeIds : insertInventionTypeIds,
             patentStatusId : patentStatusId,
             rowCount : rowCount
         };

@@ -37,6 +37,7 @@ module.exports.insertExternalFacultyDetails = async(req, res, next) => {
     res.status(statusCode).send({
         status : insertFacultyDetails.status,
         message : insertFacultyDetails.message,
+        facultyData : insertFacultyDetails.facultyData,
         externalFacultyId : insertFacultyDetails.externalFacultyId,
         rowCount : insertFacultyDetails.rowCount,
         errorCode : insertFacultyDetails.errorCode ? insertFacultyDetails.errorCode : null
@@ -61,7 +62,7 @@ module.exports.insertPatentsubmission = async(req, res, next) => {
             patentDataFilesString : patentDataSubmission.patentDataFilesString,
             patentGrantIds: patentDataSubmission.patentGrantIds,
             DsgGoalsIds : patentDataSubmission.DsgGoalsIds,
-            InventionTypeIds : patentDataSubmission.InventionTypeIds,
+            inventionTypeIds : patentDataSubmission.inventionTypeIds,
             patentStatusId : patentDataSubmission.patentStatusId,
             patentData : patentDataSubmission.patentData,
             rowCount : patentDataSubmission.rowCount,
@@ -87,7 +88,7 @@ module.exports.updatePatentSubMissiom = async(req, res, next) => {
             patentId : updatedPatentSubmissionData.patentId,
             patentStageId : updatedPatentSubmissionData.patentStageId,
             patentGrantIds : updatedPatentSubmissionData.patentGrantIds,
-            InventionTypeIds : updatedPatentSubmissionData.InventionTypeIds,
+            inventionTypeIds : updatedPatentSubmissionData.inventionTypeIds,
             sdgGoalsIds : updatedPatentSubmissionData.sdgGoalsIds,
             updatedPatentData : updatedPatentSubmissionData.updatedPatentData,
             errorCode : updatedPatentSubmissionData.errorCode ? updatedPatentSubmissionData.errorCode : null

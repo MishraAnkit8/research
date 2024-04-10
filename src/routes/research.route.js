@@ -84,6 +84,8 @@ router.post('/research-project-grant/insert', upload.array('researchSupportingDo
 router.post('/research-project-grant/update', upload.array('researchSupportingDocument', 5), asyncErrorHandler(researchProjGrantController.updatedConsultantData));
 router.post('/research-project-grant/delete', asyncErrorHandler(researchProjGrantController.deleteResearchConsultant));
 router.post('/research-project-grant/view', asyncErrorHandler(researchProjGrantController.viewResearchProjectConsultancy));
+router.post('/research-project-grant/faculty-insert', asyncErrorHandler(researchProjGrantController.insertExternalFacultyDetails));
+
 router.get('/research-project-grant/download/:fileName', downloadFileService.downloadFile);
 router.get('/research-project-grant/viewing/:fileName', downloadFileService.viewFile);
 

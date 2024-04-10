@@ -172,7 +172,7 @@
                 <div class="row">
                     <div class=" form-group col-lg-4 col-md-6 col-sm-12 mb-4 ">
                             <label for="type-of-invention" class="form-label fw-bold ">Type of Invention(IPR)</label>
-                            <select class="form-control gap-10" id="type-of-invention" data-validate="isEmpty,isExist" data-err-msg="This field is required and select value " required multiple>
+                            <select class="" id="type-of-invention" data-validate="isEmpty,isExist" data-err-msg="This field is required and select value " required multiple>
                                     <option value="" >Select option</option>
                                     <% patentInventionTypeData.forEach(function(invention) { %>
                                         <option value="<%= invention.id %>">
@@ -189,7 +189,7 @@
                     <!-- Patent Stage -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="patent-stage" class="form-label fw-bold">Patent Stage</label>
-                        <select class="form-control gap-10" id="patent-stage"  required >
+                        <select class="" id="patent-stage"  required >
                             <option value="" >Select option</option>
                             <% patentStagData.forEach(function(status) { %>
                                 <option value="<%= status.id %>">
@@ -202,7 +202,7 @@
                     <!-- Sustainable Development Goals (SDG) [dropdown list to be added] ? -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="sdg-goals" class="form-label fw-bold ">Sustainable Development Goals (SDG)?</label>
-                        <select  class="form-control gap-10" id="sdg-goals-data"  required multiple>
+                        <select  class="" id="sdg-goals-data"  required multiple>
                             <option value="" selected >Select option</option>
                             <% patentSdgGoalData.forEach(function(goals) { %>
                                 <option value="<%= goals.id %>">
@@ -278,7 +278,7 @@
                                 </div> 
                             </div>
                         </div>
-                    <table>
+                    <table class="table custom-table table-responsive research-pagination" id="faculty-table-list">
                         <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none" id="name-class">
                             <label for="faculty-name" class="form-label fw-bold">Faculty Name</lable>
                             <input type="text" class="form-control" id="faculty-name">
@@ -432,6 +432,7 @@
     const sdgGoalsDropDown = document.getElementById('sdg-goals-data');
     // const statusDropDown = document.getElementById('patent-stage');
     const invnstiontypeDropDown = document.getElementById('type-of-invention');
+    const facultyTableList = document.getElementById('faculty-table-list')
 
     const InsertDetails = document.getElementById('insert-details')
     const addMoreDetailsButton = document.getElementById("add-more-details");
@@ -570,7 +571,6 @@
 							icon: "success",
 							title: `${data.message}`,
 							showConfirmButton: false
-							// timer: 1500
 						});
                 rowCount.classList.remove('d-none');
                 totalRowCount.classList.add('d-none');
@@ -1090,6 +1090,7 @@
             console.log("Selected employee values:", facultyIdContainer);
             
         }
+    
 
     // function for Sustainable Development Goals drop down list
     function handleSdgGoalsDropDownChange() {
@@ -1149,6 +1150,10 @@
             .then((data) => {
                 if (data.status === 'Done') {
                     console.log('data ===>>>>>', data);
+                    let rowCountInteger = parseInt(data.rowCount, 10);
+                    let indexCount = rowCountInteger;
+                    rowCountInteger = indexCount + rowCountInteger;
+                    console.log('rowCountInteger ===>>>>>>', rowCountInteger);
                     externalFacultyIdArray.push(data.externalFacultyId);
                     document.getElementById('name-class').classList.add('d-none');
 					document.getElementById('dsg-class').classList.add('d-none');
@@ -1156,7 +1161,20 @@
 					document.getElementById('address-class').classList.add('d-none');
                     document.getElementById('insert-details').classList.add('d-none');
                     document.getElementById('add-more-details').classList.remove('d-none');
-                    
+                    const newFacultyDataRow = document.createElement('tr');
+                    newFacultyDataRow.innerHTML = `
+                    <td class="name-class"> ${data.facultyData.facultyName} </td>
+                    <td class="dsg-class"> ${data.facultyData.facultyDsg} </td>
+                    <td class="id-class"> ${data.facultyData.facultyEmpId} </td>
+                    <td class="address-class"> ${data.facultyData.facultyAddr} </td>
+                    `
+                   facultyTableList.appendChild(newFacultyDataRow);
+                   Swal.fire({
+							position: "top-center",
+							icon: "success",
+							title: `${data.message}`,
+							showConfirmButton: false
+						}); 
                 }
             }).catch((error) => {
                 console.error("ERROR:", error);
@@ -1179,7 +1197,6 @@
                 document.getElementById('add-more-details').classList.add('d-none');
 
             })
-
         }
 
     //  addEventListener   for insert external details
@@ -1239,7 +1256,7 @@
         document.getElementById('address-class').classList.remove('d-none');
         document.getElementById('add-btn').classList.remove('d-none')
     }
-
+    
     // making d-none external faculty
     enternalFacultyType.addEventListener('click' ,enternalFacultyDropDownList)
     //making d-none internal faculty

@@ -309,7 +309,7 @@
                         </div>
                     </div>
                     <!-- if faculty choose internal Authors then show search bar -->
-                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                    <div class="form-group col-lg-12 col-md-6 col-sm-12 mb-4">
                         <label for="is-internal" class="form-label fw-bold mb-3">Faculty Details Id And Name</label><br>
                         <div class="form-check-inline">
                             <label for="internal" class="form-check-label enter-faculty-type">
@@ -335,16 +335,38 @@
                             
                         </div>
                     </div>
-                    <div id="author-details" class="form-group col-md-8 col-sm-12 mb-4 d-none">
-                        <div class="author-details-section col-lg-6 col-md-8 col-sm-12">
+                    <br>
+                    <div id="author-details" class="form-group col-md-12 col-sm-12 mb-4 d-none">
+                        <div class="author-details-section col-lg-12 col-md-8 col-sm-12">
                           <label for="author-name " class="form-label fw-bold col-lg-12"> External Authors Details:</label>
-                            <div id="dynamic-rows" class="col-lg-12 col-md-8 col-sm-12 mb-4">
-                            </div>  
+                            <div id="dynamic-rows" class="col-lg-12 col-md-8 col-sm-12 mb-4"> 
+                            </div> 
                         </div>
-                        <button id="add-more-details" class="btn col-lg-4 col-md-6 col-sm-12 btn-primary" type="button">Add More Details</button>
-                        <button id="insert-details" class="btn col-lg-4 col-md-6 col-sm-12 btn-primary insert-details" type="button">Submit External Details</button>
-
                     </div>
+                    <table  id="faculty-table-list">
+                        <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none" id="name-class">
+                            <label for="faculty-name" class="form-label fw-bold">Faculty Name</lable>
+                            <input type="text" class="form-control" id="faculty-name">
+                        </div>
+                        <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none" id="dsg-class">
+                            <label for="" class="form-label fw-bold">Faculty Designation :</lable>
+                                <input type="text" class="form-control" id="faculty-designation"> 
+                        </div>
+                        <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none" id="id-class">
+                            <label for="faculty-emp-id" class="form-label fw-bold">Faculty Id (Optional)</lable>
+                                <input type="text" class="form-control" id="faculty-emp-id">
+                        </div>
+                        <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none" id="address-class">
+                            <label for="faculty-address" class="form-label fw-bold">Faculty Addres</lable>
+                                <input type="text" class="form-control" id="faculty-address"> 
+                        </div>
+
+                        <div class="form-group col-lg-6 col-md-6 col-sm-12 mb-4 d-none" id="add-btn">
+                            <button id="insert-details" data-bs-target="#" class="btn col-lg-4 col-md-6 col-sm-12 btn-primary" type="button">Insert Faculty Details</button> 
+                            <button id="add-more-details" data-bs-target="#" class="btn col-lg-4 col-md-6 col-sm-12 btn-primary" type="button">Add More Details</button> 
+
+                        </div>
+                    </table>
                     
 
                     <!-- Total Grant Sanctioned in Rupees
@@ -565,10 +587,13 @@
     const researchProjectConsultancyList = document.getElementById('consultancy-list');
     const submitBtn = document.getElementById('submit-btn');
     const updateBtn = document.getElementById('update-btn');
-    let consultantId, consultantRowToBeUpdated, externalEmpId ;
+    const InsertDetails = document.getElementById('insert-details')
+    let consultantId, consultantRowToBeUpdated ;
     let storedFacultyValue, InternalAuthorValue, externalAuthorValue;
     let facultyIdContainer = [];
     let  externalFacultyData = [];
+    let externalFacultyIdArray = [];
+    const facultyTableList = document.getElementById('faculty-table-list');
 
     const employeeDropdown = document.getElementById("emp-name");
     const addMoreDetailsButton = document.getElementById("add-more-details");
@@ -586,7 +611,7 @@
                 const consultancyDataFiles = document.querySelector('#consultancy-file-edit');
                 consultancyDataFiles.classList.add('d-none');
                 employeeList.classList.add('d-none');
-                authorDetails.classList.add('d-none');
+                // authorDetails.classList.add('d-none');
                 InternalAuthorValue = '';
                 externalAuthorValue = '';
                 storedFacultyValue = '';
@@ -603,25 +628,10 @@
                 const statusPresentationHeld = document.getElementById('presentation-held');
                 const statusGranted = document.getElementById('granted');
                 const submissionGrantDate = document.getElementById('submission-grant-date');
-                // const facultyTypeInternal = document.getElementById('internal');
-                // const facultyTypeExternal = document.getElementById('external');
                 const supportingDocument = document.getElementById('supporting-documents');
                 const isInternalFaculty = document.getElementById('is-internal');
                 const isExternalFaculty = document.getElementById('is-external');
-                // const school = document.getElementById('school')
-                // const campus = document.getElementById('campus')
-                // const imstru  document.getElementById('industry').value = '';
-                // const facultyDept =  document.getElementById('faculty-department')
-                // const schemeName = document.getElementById('scheme-name')
-                // const princlipalInvestigator =  document.getElementById('principal-investigator')
-                // const coInvestigator =  document.getElementById('co-investigators')
-                // const sanctionruppee = document.getElementById('total-grant-sanction-rupees')
-                // const recievedAmout = document.getElementById('recieved-amount')
-                // const amountRecievedDate = document.getElementById('amount-recieved-date')
-                // document.getElementById('duration-of-project').value = '';
-                // externalAuthorValue = '';
-                // const externalAuthorName = document.getElementById("external-author-name");
-                // externalAuthorName.value = ''
+                document.getElementById('author-details').classList.add('d-none');
                 titleOfProject.value = '';
                 thurstAreaOfResearch.value = '';
                 fundingAgency.value = '';
@@ -631,15 +641,6 @@
                 supportingDocument.value = '';
                 isInternalFaculty.checked = false;
                 isExternalFaculty.checked = false;
-                // school.value = ''; 
-                // campus.value = ''; 
-                // facultyDept.value = '';  
-                // schemeName.value = ''; 
-                // princlipalInvestigator.value = '';  
-                // coInvestigator.value = ''; 
-                // sanctionruppee.value = ''; 
-                // recievedAmout.value = '';
-                // amountRecievedDate.value = ''; 
             }
         });
 
@@ -725,7 +726,6 @@
                         // newResearchConsultant.setAttribute('data-grant-type', data.researchConsultantData.typeOfGrant);
                         // newResearchConsultant.setAttribute('data-grant-proposal', data.researchConsultantData.grantProposalCategory)
                         newResearchConsultant.setAttribute('data-submission-date', data.researchConsultantData.submissionGrantDate);
-                        // newResearchConsultant.setAttribute('data-data-external-id', data.externalEmpId);
                         newResearchConsultant.setAttribute('data-supporting-documents', data.consultancyFileName);
                         // newResearchConsultant.setAttribute('data-recieved-amount-date', data.researchConsultantData.recievedAmountDate);
                         // newResearchConsultant.setAttribute('data-recieved-amount', data.researchConsultantData.recievedAmount);
@@ -824,16 +824,13 @@
                 removeErrorMsg();
                 submitBtn.classList.add('d-none');
                 updateBtn.classList.remove('d-none');
-                // fileView.classList.remove('d-none');
-                //  modalImage.classList.remove('d-none');
                 $('#consultancy-modal').modal('show');
                 consultantRowToBeUpdated = event.target.closest('tr');
                 console.log('consultantRowToBeUpdated ==>>', consultantRowToBeUpdated);
+
                 // function call for download button
                 setFileNameAttributeToBeDownload(consultantRowToBeUpdated);
                 consultantId = event.target.getAttribute('data-consultancy-id');
-                externalEmpId = consultantRowToBeUpdated.getAttribute('data-external-id');
-                console.log('externalEmpId ===>>>>', externalEmpId)
                 console.log('consultantId ==>>', consultantId);
                 const isGrantProposalCategoryGoverement = document.getElementById('goverment');
                 const isGrantProposalCategoryIndustry = document.getElementById('industry');
@@ -844,8 +841,6 @@
                 const thurstAreaOfResearch = consultantRowToBeUpdated.querySelector('.thurst-area');
                 const fundingAgency = consultantRowToBeUpdated.querySelector('.funding-agency');
                 const fundingAmount = consultantRowToBeUpdated.querySelector('.funding-amount');
-                // const school = consultantRowToBeUpdated.querySelector('.school');
-                // const campus = consultantRowToBeUpdated.querySelector('.campus');
                 const statusSubmitted = document.getElementById('submitted');
                 const statusPresentationHeld = document.getElementById('presentation-held');
                 const statusGranted = document.getElementById('granted');
@@ -1147,7 +1142,6 @@
             updatedConsultantFiles = null;
             updatedConsultantData.append('researchSupportingDocument' , updatedConsultantFiles);
         }
-        updatedConsultantData.append('externalEmpId', externalEmpId)
         updatedConsultantData.append('consultantId' , consultantId);
         updatedConsultantData.append('grantProposalCategory' ,updatedGrantProposalCategory);
         updatedConsultantData.append('typeOfGrant' , updatedTypeOfGrant);
@@ -1362,63 +1356,146 @@
     
 
     //function for handle add more details for storing current value of clicked
-    function handleAddMoreDetailsClick() {
-            // Define externalFacultyArray and externalFacultyData outside the function
-            const externalFacultyArray = [];
-            // Ensure externalFacultyData is defined and initialized
-            const dynamicRows = document.getElementById('dynamic-rows');
-            const newRow = document.createElement('div');
-            newRow.classList.add('col-lg-12');
-            newRow.innerHTML = `
-            <label class="form-check-label">Faculty Name</lable>
-            <input type="text" class="input-field external-faculty-name form-control"> <br>
-            <label class="form-check-label">Faculty Designation :</lable>
-            <input type="text" class="input-field external-faculty-designation form-control"> <br>
-            <label class="form-check-label external-faculty-address">Faculty Address</lable>
-            <input type="text" class="input-field form-control external-faculty-address"> <br>`;
-            dynamicRows.appendChild(newRow);
-            // Move the code below to a separate function
-            const facultyName = dynamicRows.querySelectorAll('.external-faculty-name');
-            facultyName.forEach(inputField => {
-                const inputValueName = inputField.value;
-                console.log('inputValue ====>>>>', inputValueName)
-                externalFacultyArray.push({'facultyName' : inputValueName})
-            });
+    // function handleAddMoreDetailsClick() {
+    //         // Define externalFacultyArray and externalFacultyData outside the function
+    //         const externalFacultyArray = [];
+    //         // Ensure externalFacultyData is defined and initialized
+    //         const dynamicRows = document.getElementById('dynamic-rows');
+    //         const newRow = document.createElement('div');
+    //         newRow.classList.add('col-lg-12');
+    //         newRow.innerHTML = `
+    //         <label class="form-check-label">Faculty Name</lable>
+    //         <input type="text" class="input-field external-faculty-name form-control"> <br>
+    //         <label class="form-check-label">Faculty Designation :</lable>
+    //         <input type="text" class="input-field external-faculty-designation form-control"> <br>
+    //         <label class="form-check-label external-faculty-address">Faculty Address</lable>
+    //         <input type="text" class="input-field form-control external-faculty-address"> <br>`;
+    //         dynamicRows.appendChild(newRow);
+    //         // Move the code below to a separate function
+    //         const facultyName = dynamicRows.querySelectorAll('.external-faculty-name');
+    //         facultyName.forEach(inputField => {
+    //             const inputValueName = inputField.value;
+    //             console.log('inputValue ====>>>>', inputValueName)
+    //             externalFacultyArray.push({'facultyName' : inputValueName})
+    //         });
 
-            const facultyDesignation = dynamicRows.querySelectorAll('.external-faculty-designation');
-            facultyDesignation.forEach(inputField => {
-                const inputValueDsg = inputField.value;
-                console.log('inputValueDsg ====>>>>', inputValueDsg)
-                externalFacultyArray.push({'facultyDsg' : inputValueDsg})
-            });
+    //         const facultyDesignation = dynamicRows.querySelectorAll('.external-faculty-designation');
+    //         facultyDesignation.forEach(inputField => {
+    //             const inputValueDsg = inputField.value;
+    //             console.log('inputValueDsg ====>>>>', inputValueDsg)
+    //             externalFacultyArray.push({'facultyDsg' : inputValueDsg})
+    //         });
 
-            const facultyAddress = dynamicRows.querySelectorAll('.external-faculty-address');
-            facultyAddress.forEach(inputField => {
-                const inputValueAddr = inputField.value;
-                console.log('inputValueAddr ====>>>>', inputValueAddr)
-                externalFacultyArray.push({'facultyAddr' : inputValueAddr})
-            });
+    //         const facultyAddress = dynamicRows.querySelectorAll('.external-faculty-address');
+    //         facultyAddress.forEach(inputField => {
+    //             const inputValueAddr = inputField.value;
+    //             console.log('inputValueAddr ====>>>>', inputValueAddr)
+    //             externalFacultyArray.push({'facultyAddr' : inputValueAddr})
+    //         });
 
-            // After collecting all input values, join them into a string
-            console.log('externalFacultyArray ===>>>>', externalFacultyArray);
-            externalFacultyData.push(externalFacultyArray);
-            console.log("externalFacultyData:", externalFacultyData);
+    //         // After collecting all input values, join them into a string
+    //         console.log('externalFacultyArray ===>>>>', externalFacultyArray);
+    //         externalFacultyData.push(externalFacultyArray);
+    //         console.log("externalFacultyData:", externalFacultyData);
             
+    //     }
+
+    // addMoreDetailsButton.addEventListener("click", function() {
+    //     handleAddMoreDetailsClick();
+    // });
+     //function for insert external data faculty with fetch api
+     const  insertExternalDetails = (url) => {
+            // Define externalFacultyArray and externalFacultyData outside the function
+            const externalFacultyDetails = {};
+            externalFacultyDetails.facultyName = document.getElementById('faculty-name').value;
+            externalFacultyDetails.facultyDsg = document.getElementById('faculty-designation').value;
+            externalFacultyDetails.facultyAddr = document.getElementById('faculty-address').value;
+            externalFacultyDetails.facultyEmpId = document.getElementById('faculty-emp-id').value;
+
+            const payload = {
+                externalFacultyDetails : externalFacultyDetails
+            }
+
+            console.log('payload ====>>>>>>', payload);
+
+            fetch(url, {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        })
+            .then((result) => {
+                return result.json()
+            })
+            .then((data) => {
+                if (data.status === 'Done') {
+                    console.log('data ===>>>>>', data);
+                    let rowCountInteger = parseInt(data.rowCount, 10);
+                    let indexCount = rowCountInteger;
+                    rowCountInteger = indexCount + rowCountInteger;
+                    console.log('rowCountInteger ===>>>>>>', rowCountInteger);
+                    externalFacultyIdArray.push(data.externalFacultyId);
+                    document.getElementById('name-class').classList.add('d-none');
+					document.getElementById('dsg-class').classList.add('d-none');
+					document.getElementById('id-class').classList.add('d-none');
+					document.getElementById('address-class').classList.add('d-none');
+                    document.getElementById('insert-details').classList.add('d-none');
+                    document.getElementById('add-more-details').classList.remove('d-none');
+                    const newFacultyDataRow = document.createElement('tr');
+                    newFacultyDataRow.innerHTML = `
+                    <td class="name-class"> ${data.facultyData.facultyName} </td>
+                    <td class="dsg-class"> ${data.facultyData.facultyDsg} </td>
+                    <td class="id-class"> ${data.facultyData.facultyEmpId} </td>
+                    <td class="address-class"> ${data.facultyData.facultyAddr} </td>
+                    `
+                   facultyTableList.appendChild(newFacultyDataRow);
+                   Swal.fire({
+							position: "top-center",
+							icon: "success",
+							title: `${data.message}`,
+							showConfirmButton: false
+						});   
+                }
+            }).catch((error) => {
+                console.error("ERROR:", error);
+            })
+
+        // event listner for insert exetrnal faculty details details
+        document.getElementById('add-more-details').addEventListener('click', () => {
+                console.log('clicked add more button');
+                // making input field empty
+                document.getElementById('faculty-name').value = '';
+                document.getElementById('faculty-designation').value = '';
+                document.getElementById('faculty-address').value = '';
+                document.getElementById('faculty-emp-id').value = '';
+                document.getElementById('name-class').classList.remove('d-none');
+				document.getElementById('dsg-class').classList.remove('d-none');
+				document.getElementById('id-class').classList.remove('d-none');
+				document.getElementById('address-class').classList.remove('d-none');
+                document.getElementById('insert-details').classList.remove('d-none');
+                document.getElementById('add-more-details').classList.add('d-none');
+
+            })
+
         }
 
-    addMoreDetailsButton.addEventListener("click", function() {
-        handleAddMoreDetailsClick();
+    //  addEventListener   for insert external details
+    InsertDetails.addEventListener('click', async () => {
+        console.log('clickedd insert details buttons')
+        await insertExternalDetails('<%- BASE_URL %>research/research-project-grant/faculty-insert');     
+           
     });
 
     employeeDropdown.addEventListener("change", handleEmployeeDropdownChange);
 
     // function for add drop down list or  add new faculty data
     async function insertFacultyNameString(authorType, researchConsultancyData) {
-        console.log('authorType in side my function ====>>>', authorType);
-        const exeternalFacultyDetails = externalFacultyData[externalFacultyData.length - 1];
+        console.log('externalFacultyIdArray in side my function ====>>>', externalFacultyIdArray);
+        const externalFacultyDetails = externalFacultyIdArray;
         console.log('facultyIdContainer ====>>>>>', facultyIdContainer);
         const facultyDataContainerArray = [(facultyIdContainer[facultyIdContainer.length - 1])];
-        facultyDataContainerArray.push({'externalEmpList' : exeternalFacultyDetails});
+        facultyDataContainerArray.push({'externalEmpList' : externalFacultyDetails});
 
         const facultyDataContainer =  JSON.stringify(facultyDataContainerArray);
         console.log('facultyDataContainer ===>>>>', facultyDataContainer)
@@ -1427,43 +1504,37 @@
 
     // fuction for updated faculty type
     async function updateFacultyNameString(updatedAuthorType, updatedConsultantData, storedFacultyValue) {
-            console.log('storedFacultyValue in side update function ===>>>', storedFacultyValue)
-            console.log('updatedAuthorType ====>>>', updatedAuthorType);
-            console.log('externalAuthorValue ===>>>', externalAuthorValue);
-            console.log('InternalAuthorValue ====>>>>>', InternalAuthorValue);
-            console.log('storedFacultyValue ====>>> ', storedFacultyValue);
-            const exeternalFacultyDetails = externalFacultyData[externalFacultyData.length - 1];
+            console.log('externalFacultyIdArray in side my function ====>>>', externalFacultyIdArray);
+            const externalFacultyDetails = externalFacultyIdArray;
             console.log('facultyIdContainer ====>>>>>', facultyIdContainer);
             const facultyDataContainerArray = [(facultyIdContainer[facultyIdContainer.length - 1])];
-            facultyDataContainerArray.push({'externalEmpList' : exeternalFacultyDetails});
+            facultyDataContainerArray.push({'externalEmpList' : externalFacultyDetails});
 
-            const updatedFacultyDataContainer =  JSON.stringify(facultyDataContainerArray);
-            console.log('updatedFacultyDataContainer ===>>>>', updatedFacultyDataContainer);
-            updatedFacultyDataContainer ? (updatedConsultantData.append('updatedFacultyDataContainer', updatedFacultyDataContainer)) : (updatedConsultantData.append('updatedFacultyDataContainer' , null));
-            
-            //     const updatedexternalAuthorNameArrays = [];
-            // if(!externalAuthorValue && ! InternalAuthorValue){
-            //     updatedexternalAuthorNameArrays.push({'existingNameValue' : storedFacultyValue})
-            //     const updatedexternalAuthorNameString = JSON.stringify(updatedexternalAuthorNameArrays);
-            //     updatedConsultantData.append('externalAuthorName', updatedexternalAuthorNameString)
-            // }
-            // else{
-            //     updatedexternalAuthorNameArrays.push({'externalEmpList' : externalAuthorValue})
-            //     updatedexternalAuthorNameArrays.push({'internalEmpList' : InternalAuthorValue})
-            //     const updatedexternalAuthorNameString = JSON.stringify(updatedexternalAuthorNameArrays);
-            //     console.log('updatedexternalAuthorNameString ===>>>>', updatedexternalAuthorNameString);
-            //     updatedConsultantData.append('externalAuthorName', updatedexternalAuthorNameString)
-            // }
+            const facultyDataContainer =  JSON.stringify(facultyDataContainerArray);
+            console.log('facultyDataContainer ===>>>>', facultyDataContainer)
+            updatedConsultantData.append('facultyDataContainer', facultyDataContainer);
         }
     
     function enternalFacultyDropDownList() {
         employeeList.classList.remove('d-none');
         authorDetails.classList.add('d-none');
+        addMoreDetailsButton.classList.add('d-none');
+        document.getElementById('name-class').classList.add('d-none');
+        document.getElementById('dsg-class').classList.add('d-none');
+        document.getElementById('id-class').classList.add('d-none');
+        document.getElementById('address-class').classList.add('d-none');
+        document.getElementById('add-btn').classList.add('d-none');
     }
+
 
     function externalFacultyDetails(){
         employeeList.classList.add('d-none');
-        authorDetails.classList.remove('d-none');
+        addMoreDetailsButton.classList.add('d-none');
+        document.getElementById('name-class').classList.remove('d-none');
+        document.getElementById('dsg-class').classList.remove('d-none');
+        document.getElementById('id-class').classList.remove('d-none');
+        document.getElementById('address-class').classList.remove('d-none');
+        document.getElementById('add-btn').classList.remove('d-none');
     }
 
     // making d-none external faculty

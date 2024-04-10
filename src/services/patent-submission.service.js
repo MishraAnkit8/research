@@ -87,6 +87,7 @@ module.exports.fetchPatentForm = async () => {
 module.exports.insertExternalDetails = async(body) => {
     console.log('body ===>>>>>>', body);
     const exetrnalFacultyDetails = body.externalFacultyDetails;
+    console.log('exetrnalFacultyDetails in service ==>>>>', exetrnalFacultyDetails)
 
     const insertExternalData = await patentFormsModels.insertFacultyDetails(exetrnalFacultyDetails);
 
@@ -97,7 +98,7 @@ module.exports.insertExternalDetails = async(body) => {
         message : insertExternalData.message,
         externalFacultyId : insertExternalData.externalFacultyId,
         rowCount : insertExternalData.rowCount,
-        errorCode : insertExternalData.errorCode
+        facultyData : exetrnalFacultyDetails
     } : {
         status : insertExternalData.status,
         message : insertExternalData.message,
@@ -109,7 +110,6 @@ module.exports.insertPatentFormData = async(body , files) => {
     console.log('patentData in service', body);
     const patentData = body;
     console.log('patentData in service', patentData);
-
     const sdgDataIds = JSON.parse(patentData.sdgGoalsContainer);
     const sdgGoalsData = sdgDataIds || []
     const sdgGoalsIdArray = sdgGoalsData.map(Number);
@@ -134,7 +134,6 @@ module.exports.insertPatentFormData = async(body , files) => {
     const FacultydataArray = [...externalEmpList, ...internalFacultyList];
     console.log('FacultydataArray ===>>>>>', FacultydataArray);
     const patentDataFilesString = files?.map(file => file.filename).join(',');
-    console.log('patentDataFilesString ===>>>', patentDataFilesString);
 
     const insertPatentData = await patentFormsModels.insertPatentData(patentData, patentDataFilesString, sdgGoalsIdArray, inventionIdsArray, FacultydataArray, patentStatusArray, patentStatusId);
 
@@ -146,8 +145,8 @@ module.exports.insertPatentFormData = async(body , files) => {
             patentId : insertPatentData.patentId,
             patentDataFilesString : patentDataFilesString,
             patentGrantIds: insertPatentData.patentGrantIds,
-            DsgGoalsIds : insertPatentData.DsgGoalsIds,
-            InventionTypeIds : insertPatentData.InventionTypeIds,
+            dsgGoalsIds : insertPatentData.dsgGoalsIds,
+            inventionTypeIds : insertPatentData.inventionTypeIds,
             patentStatusId : insertPatentData.patentStatusId,
             patentData : patentData,
             rowCount : insertPatentData.rowCount

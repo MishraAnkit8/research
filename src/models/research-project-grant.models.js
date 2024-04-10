@@ -93,7 +93,29 @@ module.exports.fetchResearchConsultancy = async() => {
   }) 
 }
 
-module.exports.insertResearhcProjectConstancyData = async (researchCunsultancyData, consultancyDataFiles, internalFacultyIdArray, externalFacultyData) => {
+module.exports.insertFacultyDetails = async(exetrnalFacultyDetails) => {
+
+    console.log('exetrnalFacultyDetails ====>>>>>', exetrnalFacultyDetails);
+    const {facultyEmpId, facultyName, facultyDsg, facultyAddr} = exetrnalFacultyDetails
+
+    let sql = {
+        text : `INSERT INTO faculties (faculty_type_id, employee_id, faculty_name, designation, address) VALUES ($1, $2, $3, $4, $5) RETURNING id`,
+        values : [2, facultyEmpId, facultyName, facultyDsg, facultyAddr]
+    }
+
+
+    console.log('sql ====>>>>>', sql);
+    const insertFacultyDetails = await researchDbW.query(sql);
+    const promises = [insertFacultyDetails];
+    return Promise.all(promises).then(([insertFacultyDetails]) => {
+        return  { status : "Done" , message : "Faculty Record  Inserted Successfully" ,  rowCount : insertFacultyDetails.rowCount , externalFacultyId : insertFacultyDetails.rows[0].id}
+    })
+    .catch((error) => {
+        return{status : "Failed" , message : error.message , errorCode : error.code}
+    })
+}
+
+module.exports.insertResearhcProjectConstancyData = async (researchCunsultancyData, consultancyDataFiles, FacultydataArray) => {
     console.log('researchCunsultancyData inside models ===>>>', researchCunsultancyData);
 
     const { grantProposalCategory, typeOfGrant, titleOfProject, thurstAreaOfResearch, fundingAgency, fundingAmount,
@@ -107,64 +129,45 @@ module.exports.insertResearhcProjectConstancyData = async (researchCunsultancyDa
 
     let promises = [];
 
-    // Iterate over each name and execute INSERT query
-    for (let i = 0; i < externalFacultyData.length; i++) {
-        const dataList = externalFacultyData[i];
-        for (let j = 0; j < dataList.length; j++) {
-            const facultiesSql = {
-                text: `INSERT INTO faculties (faculty_type_id, faculty_name, designation, address)  VALUES ($1, $2, $3, $4) RETURNING id`,
-                values: [2, dataList[j].facultyName, dataList[j].facultyDsg, dataList[j].facultyAddr]
-            };
-            console.log('facultiesSql ===>>>', facultiesSql); // Debugging purpose
-
-            const facultyTableData = facultiesSql != null ? researchDbW.query(facultiesSql) : null;
-            promises.push(facultyTableData);
-        }
-    }
-    console.log('researchSql ====>>>>', researchSql);
     const researchProjectTable = researchDbW.query(researchSql);
+
+    const insertFacultyPromises = FacultydataArray.map((faculty_id) => {
+        return researchProjectTable.then((result) => {
+            const consultantId = result.rows[0].id;
+            const researchGrantFacultySql = {
+                text: `INSERT INTO research_project_grant_faculty (research_project_grant_id, faculty_id) VALUES ($1, $2) RETURNING id`,
+                values: [consultantId, faculty_id]
+            };
+
+            console.log('researchGrantFacultySql ===>>>>>', researchGrantFacultySql);
+            return researchDbW.query(researchGrantFacultySql);
+        });
+    });
+    
     promises.push(researchProjectTable);
 
-    return Promise.all(promises)
-        .then((results) => {
-            const facultyTableData = results.slice(0, externalFacultyData.length).filter(result => result !== null);
-            const researchProjectTable = results[results.length - 1];
+    return Promise.all([
+        researchProjectTable, ...insertFacultyPromises
+    ]).then(([researchData, ...results]) => {
+        const consultantId = researchData.rows[0].id;
+        const rowCount = researchData.rowCount;
+        const insertFacultyIds = results.slice(0, FacultydataArray.length).map(result => result.rows[0].id);
 
-            const research_project_grant_id = researchProjectTable.rows[0].id;
-            let faculty_ids = facultyTableData.map(result => result.rows[0].id);
-
-            // Concatenate internal faculty IDs
-            faculty_ids = faculty_ids.concat(internalFacultyIdArray);
-
-            const insertPromises = faculty_ids.map(faculty_id => {
-                const researchProjectGrantFacultySql = {
-                    text: `INSERT INTO research_project_grant_faculty (research_project_grant_id, faculty_id) VALUES ($1, $2) RETURNING id`,
-                    values: [research_project_grant_id, faculty_id]
-                };
-                return researchDbW.query(researchProjectGrantFacultySql);
-            });
-
-            return Promise.all(insertPromises)
-                .then((insertResults) => {
-                    const insertedIds = insertResults.map(result => result.rows[0].id);
-                    return {
-                        status: "Done",
-                        message: 'Record Inserted Suuccessfully',
-                        externalEmpIds: faculty_ids,
-                        consultantId: research_project_grant_id,
-                        researchProjectGrantFacultyIds: insertedIds,
-                        rowCount: researchProjectTable.rowCount
-                    };
-                });
-        })
-        .catch((error) => {
-            console.log('error ====>>>>', error);
-            return { status: 'Failed', message: error.message, errorCode: error.code };
-        });
+        return {
+            status: "Done",
+            message: 'Record Inserted Successfully',
+            consultantId : consultantId,
+            researchGrantFacultyIds: insertFacultyIds,
+            rowCount : rowCount
+        };
+    }).catch((error) => {
+        console.log('error ====>>>>', error);
+        return { status: 'Failed', message: error.message, errorCode: error.code };
+    });
 }
 
 
-module.exports.updateResearchConsultantData = async(consultantId, updatedResearchGrant, updatedConsultantFilesData, internalFacultyIdArray, externalFacultyData) => {
+module.exports.updateResearchConsultantData = async(consultantId, updatedResearchGrant, updatedConsultantFilesData, FacultydataArray) => {
     console.log('data in models ===>>>>', updatedResearchGrant);
     const supportingDocuments = updatedConsultantFilesData ? updatedConsultantFilesData : null;
     console.log('supportingDocuments ====>>>>', supportingDocuments);
@@ -193,81 +196,39 @@ module.exports.updateResearchConsultantData = async(consultantId, updatedResearc
     let promises = [];
 
     // Iterate over each name and execute INSERT query
-    if(externalFacultyData){
-         for (let i = 0; i < externalFacultyData.length; i++) {
-        const dataList = externalFacultyData[i];
-        for (let j = 0; j < dataList.length; j++) {
-            const facultiesSql = {
-                text: `INSERT INTO faculties (faculty_type_id, faculty_name, designation, address)  VALUES ($1, $2, $3, $4) RETURNING id`,
-                values: [2, dataList[j].facultyName, dataList[j].facultyDsg, dataList[j].facultyAddr]
-            };
-            console.log('facultiesSql ===>>>', facultiesSql); // Debugging purpose
+    const insertFacultyPromises = FacultydataArray.map(async faculty_id => {
+        const existingRecord = await researchDbW.query({
+          text: `SELECT id FROM research_project_grant_faculty WHERE research_project_grant_id = $1 AND faculty_id = $2`,
+          values: [consultantId, faculty_id]
+        });
+      
+        return existingRecord.rows.length === 0 ? (
+          researchDbW.query({
+            text: `INSERT INTO research_project_grant_faculty (research_project_grant_id, faculty_id) VALUES ($1, $2) RETURNING id`,
+            values: [consultantId, faculty_id]
+          })
+        ) : (
+          Promise.resolve({ rows: [{ id: existingRecord.rows[0].id }] })
+        );
+      });
 
-            const facultyTableData = facultiesSql != null ? researchDbW.query(facultiesSql) : null;
-            promises.push(facultyTableData);
-        }
-    }
-    }
 
     const researchProjectTable = await researchDbW.query(sql);
-    console.log('researchProjectTable ===>>>>>', researchProjectTable)
-    promises.push(researchProjectTable);
-    return Promise.all(promises)
-        .then((results) => {
-            console.log('results ====>>>>>', results);
-            const facultyTableData = results.slice(0, externalFacultyData.length).filter(result => result !== null).map(result => result.rows[0].id);
-            console.log('facultyTableData ===>>>>>>', facultyTableData) 
-            // Concatenate internal faculty IDs
-            // const internalFacultyIds = internalFacultyIdArray ? internalFacultyIdArray.join(',') : '';
-            const allFacultyIds = facultyTableData.concat(internalFacultyIdArray);
-            console.log('allFacultyIds ===>>>>', allFacultyIds);
-            const insertPromises = allFacultyIds.map(async (faculty_id) => {
-            // Check if the combination of research_project_grant_id and faculty_id already exists
-            const checkIfExistsQuery = {
-                text: `SELECT 1 FROM research_project_grant_faculty WHERE research_project_grant_id = $1 AND faculty_id = $2 LIMIT 1`,
-                values: [consultantId, faculty_id],
-              };
+    const results = await Promise.all([
+        researchProjectTable,
+        ...insertFacultyPromises
+    ]);
 
-              console.log('checkIfExistsQuery ===>>>>>', checkIfExistsQuery);
-              const { rowCount } = await researchDbW.query(checkIfExistsQuery);
-              console.log('rowCount ====>>>>>>', rowCount);
+    const rowCount = researchProjectTable.rowCount;
+    const insertFacultyIds = results.slice(1, 1 + FacultydataArray.length).map(result => result.rows[0].id);
 
-              // If rowCount is 0, meaning the combination doesn't exist, insert the record
-              if (rowCount === 0) {
-                console.log('yes its working')
-                const researchProjectGrantFacultySql = {
-                  text: `INSERT INTO research_project_grant_faculty (research_project_grant_id, faculty_id) VALUES ($1, $2) RETURNING id`,
-                  values: [consultantId, faculty_id],
-                };
-                return researchDbW.query(researchProjectGrantFacultySql);
-              } else {
-                // If the combination already exists, return null
-                return null;
-              }
-            });
-            
-            const filteredInsertPromises = insertPromises.filter(promise => promise !== null);
-            
-
-            return Promise.all(filteredInsertPromises)
-                .then((insertResults) => {
-                    console.log('insertResults =====>>>>>', insertResults)
-                    const insertedIds =  insertResults.map(result =>  result !== null ? result.rows[0].id : null);
-                    return {
-                        status: "Done",
-                        message: 'Record Updated Suuccessfully',
-                        facultyTableId: allFacultyIds,
-                        externalEmpIds : facultyTableData ? facultyTableData : null,
-                        researchProjectGrantFacultyIds: insertedIds ? insertedIds : null,
-                        rowCount : researchProjectTable.rowCount
-                        
-                    } ;
-                });
-        })
-        .catch((error) => {
-            console.log('error ====>>>>', error);
-            return { status: 'Failed', message: error.message, errorCode: error.code };
-        });
+    return {
+        status: 'Done',
+        message: 'Record Updated Successfully',
+        consultantId: consultantId,
+        researchGrantsIds: insertFacultyIds,
+        rowCount: rowCount
+    };
 
 }
 

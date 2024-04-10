@@ -49,51 +49,43 @@ module.exports.fetchResearConsultacyData = async() => {
 
 }
 
+module.exports.insertExternalDetails = async(body) => {
+  console.log('body ===>>>>>>', body);
+  const exetrnalFacultyDetails = body.externalFacultyDetails;
+
+  const insertExternalData = await researchCunsultancyModel.insertFacultyDetails(exetrnalFacultyDetails);
+
+  console.log('insertExternalData ===>>>>>', insertExternalData)
+
+  return insertExternalData.status === "Done" ? {
+      status : insertExternalData.status,
+      message : insertExternalData.message,
+      externalFacultyId : insertExternalData.externalFacultyId,
+      rowCount : insertExternalData.rowCount,
+      errorCode : insertExternalData.errorCode
+  } : {
+      status : insertExternalData.status,
+      message : insertExternalData.message,
+      errorCode : insertExternalData.errorCode
+  }
+}
+
 module.exports.insertResearchConsultancyData = async(body , files) => {
     const researchCunsultancyData = body;
-    // console.log('data in service =====>>>>', researchCunsultancyData.internalEmpId)
-    const facultyDataContainer = JSON.parse(body.facultyDataContainer);
-    console.log('facultyDataContainer ====>>>', facultyDataContainer);
-    //for storing internalFacultyId in Array and exeternalFacultyRecord  in array
-    const internalFacultyIdArray = [];
-    const exeternalFacultyRecord = [];
-    facultyDataContainer ? facultyDataContainer.forEach((item) => {
-        item.internalFaculty ?  internalFacultyIdArray.push(...item.internalFaculty) : null;
-        item.externalEmpList ? exeternalFacultyRecord.push(...item.externalEmpList) : null;
-    }) : null;
 
-    const filteredData = exeternalFacultyRecord ?  exeternalFacultyRecord.filter(obj => {
-        return Object.keys(obj).length !== 0 && obj.constructor === Object && Object.values(obj).some(val => val !== '');
-      }) : null;
-  
-      console.log('filteredData ===>>>>>>', filteredData);
-      const facultyNamearray = [];
-      const facultyDsgArray = [];
-      const facultyAddrArray = [];
-      
-      filteredData ? filteredData.forEach(({ facultyName, facultyDsg, facultyAddr }) => {
-        facultyName && facultyName != 'undefined' ? facultyNamearray.push(facultyName) : null;
-        facultyDsg  && facultyDsg != 'undefined'? facultyDsgArray.push(facultyDsg) : null;
-        facultyAddr && facultyAddr != 'undefined' ? facultyAddrArray.push(facultyAddr) : null;
-      })  : null;
-      
-      const externalFacultyData = facultyNamearray.length === facultyDsgArray.length && facultyDsgArray.length === facultyAddrArray.length
-      ? facultyNamearray.map((_, i) => [
-          { "facultyName": facultyNamearray[i], "facultyDsg": facultyDsgArray[i], "facultyAddr": facultyAddrArray[i]  },
-        ])
-      : [];
-    
-      console.log('facultyNamearray ===>>>>', facultyNamearray);
-      console.log('facultyDsgArray ===>>>>', facultyDsgArray);
-      console.log('facultyAddrArray ===>>>>', facultyAddrArray);
-      console.log('externalFacultyData ===>>>>', externalFacultyData);
+    const facultyData = JSON.parse(researchCunsultancyData.facultyDataContainer);
+    // Extract internalFaculty and externalEmpList arrays
+    const internalFaculty = facultyData.find(item => item !== null && item.internalFaculty)?.internalFaculty || [];
+    const externalEmpList = facultyData.find(item => item  !== null && item.externalEmpList )?.externalEmpList || [];
+    const internalFacultyList =  internalFaculty.map(Number)
+    console.log('externalEmpList:', externalEmpList);
+    console.log('internalFacultyList:', internalFacultyList);
+    const FacultydataArray = [...externalEmpList, ...internalFacultyList];
+    console.log('FacultydataArray ===>>>>>', FacultydataArray);  
+    const consultancyDataFiles = files?.map(file => file.filename).join(',');
+    console.log('consultancyDataFiles ===>>>>', consultancyDataFiles)
 
-      console.log('internalFacultyIdArray ===>>>>', internalFacultyIdArray);
-      console.log('exeternalFacultyRecord ===>>>', exeternalFacultyRecord);
-      const consultancyDataFiles = files?.map(file => file.filename).join(',');
-      console.log('consultancyDataFiles ===>>>>', consultancyDataFiles)
-
-      const researchProjectConsultancy = await researchCunsultancyModel.insertResearhcProjectConstancyData(researchCunsultancyData , consultancyDataFiles, internalFacultyIdArray, externalFacultyData);
+    const researchProjectConsultancy = await researchCunsultancyModel.insertResearhcProjectConstancyData(researchCunsultancyData , consultancyDataFiles, FacultydataArray);
 
       console.log('researchProjectConsultancy ===>>>' , researchProjectConsultancy);
       return researchProjectConsultancy.status === "Done" ? {
@@ -116,49 +108,21 @@ module.exports.updateResearchConstant = async(consultantId, body, files) => {
   console.log('data in service ====>>>>>>>', body);
   const updatedResearchGrant = body;
   // console.log('data in service =====>>>>', updatedResearchGrant.internalEmpId)
-  const updatedFacultyDataContainer = JSON.parse(body.updatedFacultyDataContainer);
-  console.log('updatedFacultyDataContainer ====>>>', updatedFacultyDataContainer);
+  // Parse the facultyDataContainer property to extract internalFaculty and externalEmpList arrays
+    const facultyData = JSON.parse(updatedResearchGrant.facultyDataContainer);
+    // Extract internalFaculty and externalEmpList arrays
+    const internalFaculty = facultyData.find(item => item !== null && item.internalFaculty)?.internalFaculty || [];
+    const externalEmpList = facultyData.find(item => item  !== null && item.externalEmpList )?.externalEmpList || [];
+    const internalFacultyList =  internalFaculty.map(Number)
+    console.log('externalEmpList:', externalEmpList);
+    console.log('internalFacultyList:', internalFacultyList);
+    const FacultydataArray = [...externalEmpList, ...internalFacultyList];
+    console.log('FacultydataArray ===>>>>>', FacultydataArray);
 
-  //for storing internalFacultyId in Array and exeternalFacultyRecord  in array
-  const internalFacultyIdArray = [];
-  const exeternalFacultyRecord = [];
-  updatedFacultyDataContainer ? updatedFacultyDataContainer.forEach((item) => {
-    console.log('item.internalFaculty ===>>>>>>', item)
-      item != null  && item.internalFaculty ?  internalFacultyIdArray.push(...item.internalFaculty) : null;
-      item != null  && item.externalEmpList ? exeternalFacultyRecord.push(...item.externalEmpList) : null;
-  }) : null;
+    const updatedConsultantFilesData = files ?.map(file => file.filename).join(',');
 
-  const filteredData = exeternalFacultyRecord ? exeternalFacultyRecord.filter(obj => {
-      return Object.keys(obj).length !== 0 && obj.constructor === Object && Object.values(obj).some(val => val !== '');
-    }) : null;
-
-    console.log('filteredData ===>>>>>>', filteredData);
-    const facultyNamearray = [];
-    const facultyDsgArray = [];
-    const facultyAddrArray = [];
+    const updateResearchProjectConstant = await researchCunsultancyModel.updateResearchConsultantData(consultantId ,updatedResearchGrant, updatedConsultantFilesData, FacultydataArray);
     
-    filteredData ? filteredData.forEach(({ facultyName, facultyDsg, facultyAddr }) => {
-      facultyName && facultyName != 'undefined' ? facultyNamearray.push(facultyName) : null;
-      facultyDsg  && facultyDsg != 'undefined'? facultyDsgArray.push(facultyDsg) : null;
-      facultyAddr && facultyAddr != 'undefined' ? facultyAddrArray.push(facultyAddr) : null;
-    }) : null;
-    
-    const externalFacultyData = facultyNamearray.length === facultyDsgArray.length && facultyDsgArray.length === facultyAddrArray.length
-    ? facultyNamearray.map((_, i) => [
-        { "facultyName": facultyNamearray[i], "facultyDsg": facultyDsgArray[i], "facultyAddr": facultyAddrArray[i]  },
-      ])
-    : [];
-  
-    console.log('facultyNamearray ===>>>>', facultyNamearray);
-    console.log('facultyDsgArray ===>>>>', facultyDsgArray);
-    console.log('facultyAddrArray ===>>>>', facultyAddrArray);
-    console.log('externalFacultyData ===>>>>', externalFacultyData);
-
-    console.log('internalFacultyIdArray ===>>>>', internalFacultyIdArray);
-    console.log('exeternalFacultyRecord ===>>>', exeternalFacultyRecord);
-
-    const updatedConsultantFilesData = files ?.map(file => file.filename).join(',')
-    const updateResearchProjectConstant = await researchCunsultancyModel.updateResearchConsultantData(consultantId ,updatedResearchGrant, updatedConsultantFilesData, internalFacultyIdArray, externalFacultyData);
     console.log('updateResearchProjectConstant =====>>>>>', updateResearchProjectConstant);
     return updateResearchProjectConstant.status === "Done" ? 
     {
@@ -166,9 +130,7 @@ module.exports.updateResearchConstant = async(consultantId, body, files) => {
       message : updateResearchProjectConstant.message,
       updateResearchProjectConstant,
       updatedConsultantFilesData,
-      facultyTableId : updateResearchProjectConstant.facultyTableId,
-      externalEmpIds : updateResearchProjectConstant.facultyTableId,
-      researchProjectGrantFacultyIds : updateResearchProjectConstant.researchProjectGrantFacultyIds
+      researchProjectGrantFacultyIds : updateResearchProjectConstant.researchGrantsIds
     }:{
       status: updateResearchProjectConstant.status,
       message: updateResearchProjectConstant.message,
