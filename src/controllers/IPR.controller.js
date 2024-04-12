@@ -4,12 +4,12 @@ module.exports.renderIPR = async(req, res, next) => {
     const iprList = await iprServices.fetchPatentForm();
 
     console.log('iprList ===>>>', iprList);
-    console.log('iprList.IPRDataList ====>>>', iprList.IPRDataList[0].investor_details.authorName)
+    // console.log('iprList.IPRDataList ====>>>', iprList.IPRDataList[0].investor_details.authorName)
     res.render('IPR', {
-            IPRDataList : iprList.IPRDataList,
+            IPRDataList : iprList.iprData,
             internalEmpList : iprList.internalEmpList,
-            externalEmpList : iprList.externalEmpList,
-            rowCount : iprList.rowCount
+            rowCount : iprList.rowCount,
+
         })
 }
 

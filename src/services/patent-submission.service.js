@@ -28,12 +28,6 @@ module.exports.fetchPatentForm = async () => {
     const patentSubmissionsData = Object.values(patentSubmissionMap);
 
     console.log('patentSubmissionsData in service ===>>>>>>>', patentSubmissionsData);
-    // console.log('patentSubmissionsData date  ===>>>>', patentSubmissionsData[0].grant_date)
-    // const dateFormate = []
-    // for (let i = 0; i <= patentSubmissionsData.length -1 ; i ++){
-    //     patentSubmissionsData[i].grant_date ? patentSubmissionsData[i].grant_date  = formatDate(patentSubmissionsData[i].grant_date) : null
-    // }
-    // console.log('patentSubmissionsData in service ===>>>>>>>', patentSubmissionsData);
 
     const patentGrantFacultyIdContainer = patentSubmissionForm.patentGrantFacultyIds;
     const idContainerArray = {};

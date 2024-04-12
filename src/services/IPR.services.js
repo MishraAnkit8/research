@@ -3,37 +3,25 @@ const IPRModels = require('../models/IPR.models');
 
 module.exports.fetchPatentForm = async() => {
     const IPRFormData = await IPRModels.fetchIPRData();
-    const IPRDataList = IPRFormData.IPRList.rows;
-    const externalEmpList = IPRFormData.externalEmpList.rows;
-    const internalEmpList = IPRFormData.internalEmpList.rows;
-    console.log('IPRDataList ===>>>>', IPRDataList);
-    // Extract author DetailsArray from patentList investorDetailsArray
-    const investorDetailsArray = IPRFormData.IPRList.rows.map(ipr => ipr.investor_details);
-    const resultArray = [
-        ...IPRFormData.internalEmpList.rows.map(emp => ({ investorDetails: emp.employee_name, table: 'internalEmpList' })),
-        ...IPRFormData.externalEmpList.rows.map(emp => ({ investorDetails: emp.external_emp_name, table: 'externalEmpList' }))
-    ];
+    console.log('IPRFormData ===>>>>>', IPRFormData);
 
-    console.log('resultArray ====>>>>>>', resultArray)
+    const iprData = IPRFormData.iprData;
+    console.log('iprData ====>>>>>', iprData);
 
-    IPRDataList.map(IPR => {
-        console.log('project in service====>>>>', IPR.investor_details);
-        const investorDetails = IPR.investor_details;
-        console.log('facultyTypeAuthors ===>>>>', investorDetails);
-        const matchedAuthor = resultArray.find(item => item.investorDetails === investorDetails);
-        IPR.investor_details = matchedAuthor ? matchedAuthor : { investorDetails:investorDetails, table : "internalEmpList"}
-        console.log('matchedAuthor ====>>>>', matchedAuthor)
-        
-    });
-    console.log('IPRDataList ===>>>', IPRDataList)
-    const rowCount = IPRFormData.IPRList.rowCount;
-    console.log('rowCount ===>>>', rowCount)
-    return {
-        IPRDataList : IPRDataList,
-        internalEmpList : internalEmpList,
-        externalEmpList : externalEmpList,
-        rowCount : rowCount
-    }
+    return IPRFormData.status === "Done" ? {
+        status : IPRFormData.status,
+        message : IPRFormData.message,
+        rowCount : IPRFormData.rowCount,
+        iprData : IPRFormData.iprData,
+        internalEmpList : IPRFormData.internalEmpList,
+        inventiontype : IPRFormData.inventionTypData,
+        patentStatus : IPRFormData.patentStatus,
+        schoolList : IPRFormData.nmimsSchoolList,
+        campusList : IPRFormData.nmimsCampusList,
+        supportingDocumnets : IPRFormData.supportingdocumnets
+
+    } : {}
+
 }
 
 

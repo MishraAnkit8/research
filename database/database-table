@@ -807,3 +807,96 @@ CREATE TABLE patent_submission_faculty (
     faculty_id INTEGER REFERENCES faculties(id)
 );
 
+
+
+
+CREATE TABLE IPR(
+	id SERIAL PRIMARY KEY,
+	patent_title  VARCHAR(255),
+	patent_application_number INTEGER,
+	applicant_name  VARCHAR(255),
+	patent_filed_date Date,
+	patent_published_date Date,
+	patent_publication_number INTEGER,
+	patent_Grant_number INTEGER,
+	institutional_affiliation VARCHAR(255),
+    created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE supporting_documents(
+	id SERIAL PRIMARY KEY,
+	documents_name VARCHAR(255),
+	created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE invention_type(
+	id SERIAL PRIMARY KEY,
+	name  VARCHAR(255),
+    created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+
+CREATE TABLE pantent_stage_status(
+	id SERIAL PRIMARY KEY,
+	name  VARCHAR(255),
+    created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+select * from pantent_stage_status;
+
+
+-- ipr data table
+CREATE TABLE ipr_invention_type(
+	id SERIAL PRIMARY KEY,
+    ipr_id INTEGER REFERENCES IPR(id),
+    invention_type_id INTEGER REFERENCES invention_type(id)
+)
+
+CREATE TABLE ipr_status_type(
+	id SERIAL PRIMARY KEY,
+    ipr_id INTEGER REFERENCES IPR(id),
+    pantent_stage_status_id INTEGER REFERENCES pantent_stage_status(id)
+)
+
+CREATE TABLE ipr_supporting_documents(
+	id SERIAL PRIMARY KEY,
+    ipr_id INTEGER REFERENCES IPR(id),
+    supporting_documents_id INTEGER REFERENCES supporting_documents(id)
+);
+
+CREATE TABLE nmims_school(
+	id SERIAL PRIMARY KEY,
+	school_name  VARCHAR(255),
+    created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
+	
+)
+
+CREATE TABLE nmims_campus(
+	id SERIAL PRIMARY KEY,
+	campus_name  VARCHAR(255),
+    created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
+)
+
+CREATE TABLE ipr_nmims_school(
+	id SERIAL PRIMARY KEY,
+    ipr_id INTEGER REFERENCES IPR(id),
+    school_id INTEGER REFERENCES nmims_school(id)
+);
+
+CREATE TABLE ipr_nmims_campus(
+	id SERIAL PRIMARY KEY,
+    ipr_id INTEGER REFERENCES IPR(id),
+    campus_id INTEGER REFERENCES nmims_campus(id)
+);
+
+CREATE TABLE ipr_faculty(
+	id SERIAL PRIMARY KEY,
+    ipr_id INTEGER REFERENCES IPR(id),
+    faculty_id INTEGER REFERENCES faculties(id)
+);

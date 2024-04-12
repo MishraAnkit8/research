@@ -7,30 +7,136 @@ const researchDbW = dbPoolManager.get('researchDbW', research_write_db);
 
 module.exports.fetchIPRData = async() => {
     let iPRSql = {
-        text: `SELECT * FROM consultancy_approval_form ORDER BY id`
+        text: `SELECT
+        ipr.id AS ipr_id,
+        ipr.patent_title,
+        ipr.patent_application_number,
+        ipr.applicant_name,
+        ipr.patent_filed_date,
+        ipr.patent_published_date,
+        ipr.patent_publication_number,
+        ipr.patent_grant_number,
+        ipr.institutional_affiliation,
+        string_agg(DISTINCT it.name, ', ') AS invention_types,
+        string_agg(DISTINCT ps.name, ', ') AS patent_stage_statuses,
+        string_agg(DISTINCT sd.documents_name, ', ') AS supporting_documents,
+        string_agg(DISTINCT ns.school_name, ', ') AS associated_schools,
+        string_agg(DISTINCT nc.campus_name, ', ') AS associated_campuses
+    FROM
+        IPR ipr
+    LEFT JOIN
+        ipr_invention_type iit ON ipr.id = iit.ipr_id
+    LEFT JOIN
+        invention_type it ON iit.invention_type_id = it.id
+    LEFT JOIN
+        ipr_status_type ist ON ipr.id = ist.ipr_id
+    LEFT JOIN
+        pantent_stage_status ps ON ist.pantent_stage_status_id = ps.id
+    LEFT JOIN
+        ipr_supporting_documents isd ON ipr.id = isd.ipr_id
+    LEFT JOIN
+        supporting_documents sd ON isd.supporting_documents_id = sd.id
+    LEFT JOIN
+        ipr_nmims_school ins ON ipr.id = ins.ipr_id
+    LEFT JOIN
+        nmims_school ns ON ins.school_id = ns.id
+    LEFT JOIN
+        ipr_nmims_campus inc ON ipr.id = inc.ipr_id
+    LEFT JOIN
+        nmims_campus nc ON inc.campus_id = nc.id
+    GROUP BY
+        ipr.id,
+        ipr.patent_title,
+        ipr.patent_application_number,
+        ipr.applicant_name,
+        ipr.patent_filed_date,
+        ipr.patent_published_date,
+        ipr.patent_publication_number,
+        ipr.patent_grant_number,
+        ipr.institutional_affiliation
+    ORDER BY
+        ipr.id`
     };
+
     let internalEmpSql = {
-        text: `SELECT * FROM employee_table ORDER BY id`
+        text: `select *  FROM faculties WHERE faculty_type_id = 1`
     };
     
-    let externalEmpSql = {
-        text: `SELECT * FROM external_emp ORDER BY id`
-    }
+     let inventionTypeSql = {
+        text: `select *  FROM invention_type ORDER BY id`
+    };
 
-    console.log('externalEmpSql ===<>>>>', externalEmpSql);
+    let patentStageSql = {
+        text: `select *  FROM pantent_stage_status ORDER BY id`
+    };
+
+    let supportingoDcumentsSql = {
+        text: `select *  FROM supporting_documents ORDER BY id`
+    };
+
+    let nmimsSchoolSql = {
+        text: `select *  FROM nmims_school ORDER BY id`
+    };
+
+    let nmimsCampusSql = {
+        text: `select *  FROM nmims_campus ORDER BY id`
+    };
+
+    let iprFacultySql = {
+        text: `select *  FROM ipr_faculty ORDER BY id`
+    };
+    
+    let iprInventionTypeSql = {
+        text: `select *  FROM ipr_invention_type ORDER BY id`
+    };
+
+    let iprPatentStageSql = {
+        text: `select *  FROM ipr_status_type ORDER BY id`
+    };
+
+    let iprDocumnetsSql = {
+        text: `select *  FROM ipr_supporting_documents ORDER BY id`
+    };
+
+    let iprNmimsSchoolSql = {
+        text: `select *  FROM ipr_nmims_school ORDER BY id`
+    };
+
+    let iprNmimsCampusSql = {
+        text: `select *  FROM ipr_nmims_campus ORDER BY id`
+    };
+
     console.log('iPRSql ===>>>', iPRSql);
     console.log('internalEmpSql ===>>>', internalEmpSql)
-    const iprPromise = researchDbR.query(iPRSql);
-    const internalEmpPromise = researchDbR.query(internalEmpSql);
-    const externalEmpPromise = researchDbR.query(externalEmpSql)
+    const iprPromise = await researchDbR.query(iPRSql);
+    const internalEmpPromise = await researchDbR.query(internalEmpSql);
+    const inventionTypePromises = await researchDbR.query(inventionTypeSql);
+    const statusPromises = await researchDbR.query(patentStageSql);
+    const nmimsSchool = await researchDbR.query(nmimsSchoolSql);
+    const nmimsCampus = await researchDbR.query(nmimsCampusSql);
+    const iprDocuments = await researchDbR.query(supportingoDcumentsSql);
+    const iprCampus = await researchDbR.query(iprNmimsCampusSql);
+    const iprSchool = await researchDbR.query(iprNmimsSchoolSql);
+    const iprdocuments = await researchDbR.query(iprDocumnetsSql);
+    const iprSatatus = await researchDbR.query(iprPatentStageSql);
+    const iprInvetiontype = await researchDbR.query(iprInventionTypeSql);
+    const iprFaculty = await researchDbR.query(iprFacultySql);
 
-    const [IPRList, internalEmpList, externalEmpList] = await Promise.all([iprPromise, internalEmpPromise, externalEmpPromise]);
+    
+    const promises = [iprPromise, internalEmpPromise, inventionTypePromises, statusPromises, nmimsSchool, nmimsCampus, iprDocuments, iprCampus,
+        iprSchool, iprdocuments, iprSatatus, iprInvetiontype, iprFaculty];
 
-    return {
-        IPRList: IPRList,
-        internalEmpList: internalEmpList,
-        externalEmpList : externalEmpList
-    };
+        return Promise.all(promises).then(([iprPromise, internalEmpPromise, inventionTypePromises, statusPromises, nmimsSchool, nmimsCampus, iprDocuments, iprCampus,
+            iprSchool, iprdocuments, iprSatatus, iprInvetiontype, iprFaculty]) => {
+                return{status : "Done" , message : "Record Fetched Successfully", rowCount : iprPromise.rowCount, iprData : iprPromise.rows,
+                internalEmpList : internalEmpPromise.rows, inventionTypData : inventionTypePromises.rows, patentStatus : statusPromises.rows,
+                nmimsSchoolList : nmimsSchool.rows, nmimsCampusList : nmimsCampus.rows, supportingdocumnets : iprDocuments.rows, 
+                iprCampus : iprCampus.rows, iprSchool : iprSchool.rows, iprdocuments : iprdocuments.rows, iprSatatus : iprSatatus.rows, iprInvetiontype : iprInvetiontype.rows, iprFaculty : iprFaculty.rows}
+            })
+            .catch((error) => {
+                return{status : "Failed" , message : error.message , errorCode : error.code}
+            }) 
+           
 }
 
 module.exports.InsetIPRDataModels = async (IprData, iprFilesString, internalNamesString, externalNamesString) => {
