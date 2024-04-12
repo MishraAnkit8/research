@@ -61,12 +61,12 @@ module.exports.insertPatentsubmission = async(req, res, next) => {
             patentId : patentDataSubmission.patentId,
             patentDataFilesString : patentDataSubmission.patentDataFilesString,
             patentGrantIds: patentDataSubmission.patentGrantIds,
-            DsgGoalsIds : patentDataSubmission.DsgGoalsIds,
+            sdgGoalsIds : patentDataSubmission.sdgGoalsIds,
             inventionTypeIds : patentDataSubmission.inventionTypeIds,
             patentStatusId : patentDataSubmission.patentStatusId,
             patentData : patentDataSubmission.patentData,
             rowCount : patentDataSubmission.rowCount,
-            errorCode : patentDataSubmission.errorCode ? insertFacultyDetails.errorCode : null
+            errorCode : patentDataSubmission.errorCode ? patentDataSubmission.errorCode : null
         })
 }
 

@@ -150,7 +150,7 @@ module.exports.insertFacultyDetails = async(exetrnalFacultyDetails) => {
     })
 }
 
-module.exports.insertPatentData = async (patentData, patentDataFilesString, sdgGoalsIdArray, inventionIdsArray, FacultydataArray, patentStatusArray, patentStatusId) => {
+module.exports.insertPatentData = async (patentData, patentDataFilesString, sdgGoalsIdArray, inventionIdsArray, FacultydataArray, patentStatusArray) => {
     console.log('patentData inside models ===>>>', patentData);
 
     const { titleOfInvention, applicationNum, subMissionDate } = patentData;
@@ -162,13 +162,6 @@ module.exports.insertPatentData = async (patentData, patentDataFilesString, sdgG
 
     console.log('patentDataSql ===>>>>>', patentDataSql);
     const patnetSubmissionDataPromise = researchDbW.query(patentDataSql);
-
-    const patentStageSql = {
-        text : `SELECT name  FROM pantent_stage_status WHERE id = $1`,
-        values : [patentStatusId]
-    }
-    console.log('patentStageSql ===>>>>>', patentStageSql);
-    const patentstage = researchDbR.query(patentStageSql);
 
     const insertFacultyPromises = FacultydataArray.map((faculty_id) => {
         return patnetSubmissionDataPromise.then((result) => {
@@ -209,7 +202,7 @@ module.exports.insertPatentData = async (patentData, patentDataFilesString, sdgG
         });
     });
 
-    const insertPatentStatusPromises = inventionIdsArray.map((element) => {
+    const insertPatentStatusPromises = patentStatusArray.map((element) => {
         return patnetSubmissionDataPromise.then((result) => {
             const patentId = result.rows[0].id;
             const patentStatusSql = {
@@ -224,7 +217,6 @@ module.exports.insertPatentData = async (patentData, patentDataFilesString, sdgG
     // Waiting for all promises to resolve
     return Promise.all([
         patnetSubmissionDataPromise,
-        patentstage,
         ...insertFacultyPromises,
         ...insertDsgGoalsPromises,
         ...insertInventionTypePromises,
@@ -232,9 +224,9 @@ module.exports.insertPatentData = async (patentData, patentDataFilesString, sdgG
     ]).then(([patnetSubmissionData, patentstage, ...results]) => {
         const patentId = patnetSubmissionData.rows[0].id;
         const rowCount = patnetSubmissionData.rowCount;
-        const patentstageData = patentstage.rows[0];
+        // const patentstageData = patentstage.rows[0];
         const insertFacultyIds = results.slice(0, FacultydataArray.length).map(result => result.rows[0].id);
-        const insertDsgGoalsIds = results.slice(FacultydataArray.length, FacultydataArray.length + sdgGoalsIdArray.length).map(result => result.rows[0].id);
+        const insertSdgGoalsIds = results.slice(FacultydataArray.length, FacultydataArray.length + sdgGoalsIdArray.length).map(result => result.rows[0].id);
         const insertInventionTypeIds = results.slice(FacultydataArray.length + sdgGoalsIdArray.length, FacultydataArray.length + sdgGoalsIdArray.length + inventionIdsArray.length).map(result => result.rows[0].id);
         const patentStatusId = results.slice(FacultydataArray.length + sdgGoalsIdArray.length + inventionIdsArray.length, FacultydataArray.length + sdgGoalsIdArray.length + inventionIdsArray.length + patentStatusArray.length).map(result => result.rows[0].id);
 
@@ -244,7 +236,7 @@ module.exports.insertPatentData = async (patentData, patentDataFilesString, sdgG
             patentId : patentId,
             patentstage : patentstage,
             patentGrantIds: insertFacultyIds,
-            dsgGoalsIds : insertDsgGoalsIds,
+            sdgGoalsIds : insertSdgGoalsIds,
             inventionTypeIds : insertInventionTypeIds,
             patentStatusId : patentStatusId,
             rowCount : rowCount

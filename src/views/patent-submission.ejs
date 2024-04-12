@@ -170,17 +170,17 @@
             </div>
             <div class="modal-body">
                 <div class="row">
-                    <div class=" form-group col-lg-4 col-md-6 col-sm-12 mb-4 ">
-                            <label for="type-of-invention" class="form-label fw-bold ">Type of Invention(IPR)</label>
-                            <select class="" id="type-of-invention" data-validate="isEmpty,isExist" data-err-msg="This field is required and select value " required multiple>
-                                    <option value="" >Select option</option>
-                                    <% patentInventionTypeData.forEach(function(invention) { %>
-                                        <option value="<%= invention.id %>">
-                                           <%= invention.name %>
-                                        </option>
-                                    <% }); %>
-                            </select>
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="type-of-invention" class="form-label fw-bold">Type of Invention(IPR)</label>
+                        <select id="type-of-invention" data-validate="isEmpty,isExist" data-err-msg="This field is required and select value" required>
+                            <option value="">Select option</option>
+                            <!-- Use server-side or client-side code to dynamically generate options -->
+                            <% patentInventionTypeData.forEach(function(invention) { %>
+                                <option value="<%= invention.id %>"><%= invention.name %></option>
+                            <% }); %>
+                        </select>
                     </div>
+                    
                     <!-- Title of Invention -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="title" class="form-label fw-bold">Title of Invention</label>
@@ -547,13 +547,13 @@
                 console.log('IndexEntry ===>>>', IndexEntry);
                 const newPatentRow = document.createElement('tr');
                 newPatentRow.setAttribute('data-invention-type-id', data.InventionTypeIds);
-                newPatentRow.setAttribute('data-patent-stage-id' , data.patentSubmissionsData.patentStatusId);
+                newPatentRow.setAttribute('data-patent-stage-id' , data.patentStatusId);
                 newPatentRow.innerHTML = `
                             <td>${IndexEntry}</td>
-                            <td class="title-of-invention">${data.patentSubmissionsData.titleOfInvention}</td>
-                            <td class="submission-date">${data.patentSubmissionsData.subMissionDate}</td>
-                            <td class="supporting-documents">${data.patentSubmissionsDataFilesString}</td>
-                            <td class="application-no">${data.patentSubmissionsData.applicationNum}</td>
+                            <td class="title-of-invention">${data.patentData.titleOfInvention}</td>
+                            <td class="submission-date">${data.patentData.subMissionDate}</td>
+                            <td class="supporting-documents">${data.patentDataFilesString}</td>
+                            <td class="application-no">${data.patentData.applicationNum}</td>
                             
                             <td class="cell ">
                                 <label class="view" data-patent-id="${patentId}"><i class="fa-solid fa-eye view text-danger"
@@ -638,25 +638,35 @@
                 setFileNameAttributeToBeDownload(rowToBeUpdated);
                 patentId = event.target.getAttribute('data-patent-id');
                 console.log('Id For Updation', patentId);
+                const typeOfInventionData = rowToBeUpdated.getAttribute('data-invention-type-id');
                 const typeOfInvention = document.getElementById('type-of-invention');
+                if (typeOfInvention) {
+                    const selectedOption = Array.from(typeOfInvention.options).find(option => option.value === String(typeOfInventionData));
+                    if (selectedOption) {
+                        console.log('selectedOption ==>>>>', selectedOption);
+                        selectedOption.selected = true;
+                        console.log('Selected value:', selectedOption.value);
+                    } else {
+                        console.log('Option not found for value:', typeOfInventionData);
+                    }
+                } else {
+                    console.log('Select element not found');
+                }
                 const titleOfInvention = document.getElementById('title-of-invention');
                 const patentStage = document.getElementById('patent-stage');
-                const sdgGoals = document.getElementById('sdg-goals');
+                const sdgGoals = document.getElementById('sdg-goals-data');
+                console.log('sdgGoals ===>>>>', sdgGoals);
+                // const sdgGoalsData = rowToBeUpdated.getAttribute()
                 const applicationNum = document.getElementById('application-no');
                 const internalAuthor = document.getElementById('is-internal');
                 const externalAuthor = document.getElementById('is-external');
 
 
-                const subMissionDate = rowToBeUpdated.getAttribute('data-patent-date');
-                console.log('patentDate ==>>', subMissionDate)
-                const formattedDate = formatDateToYYYYMMDD(subMissionDate);
-                console.log('formattedDate ==>>', formattedDate)
+                const inputDateString = rowToBeUpdated.querySelector('.grant-date').innerText;
+                console.log('inputDateString ==>>', inputDateString)
+                const formattedDate = formatDateToYYYYMMDD(inputDateString);
                 document.getElementById('date').value = formattedDate.trim();
-                typeOfInvention.value = rowToBeUpdated.getAttribute('data-invention-type-id');
-                console.log('typeOfInvention ===>>>', typeOfInvention.value);
-              
-                const typeOfInventionValue = typeOfInvention.value;
-                console.log('typeOfInventionValue ===>>>>', typeOfInventionValue);
+
              
                 titleOfInvention.value = rowToBeUpdated.querySelector('.title-of-invention').innerText;
                 patentStage.value = rowToBeUpdated.getAttribute('data-patent-stage-id');
@@ -1261,6 +1271,7 @@
     enternalFacultyType.addEventListener('click' ,enternalFacultyDropDownList)
     //making d-none internal faculty
     externalFacultyType.addEventListener('click' , externalFacultyDetails)
+
  
 
 </script>

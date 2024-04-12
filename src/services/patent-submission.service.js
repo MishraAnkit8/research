@@ -29,11 +29,11 @@ module.exports.fetchPatentForm = async () => {
 
     console.log('patentSubmissionsData in service ===>>>>>>>', patentSubmissionsData);
     // console.log('patentSubmissionsData date  ===>>>>', patentSubmissionsData[0].grant_date)
-    const dateFormate = []
-    for (let i = 0; i <= patentSubmissionsData.length -1 ; i ++){
-        patentSubmissionsData[i].grant_date ? patentSubmissionsData[i].grant_date  = formatDate(patentSubmissionsData[i].grant_date) : null
-    }
-    console.log('patentSubmissionsData in service ===>>>>>>>', patentSubmissionsData);
+    // const dateFormate = []
+    // for (let i = 0; i <= patentSubmissionsData.length -1 ; i ++){
+    //     patentSubmissionsData[i].grant_date ? patentSubmissionsData[i].grant_date  = formatDate(patentSubmissionsData[i].grant_date) : null
+    // }
+    // console.log('patentSubmissionsData in service ===>>>>>>>', patentSubmissionsData);
 
     const patentGrantFacultyIdContainer = patentSubmissionForm.patentGrantFacultyIds;
     const idContainerArray = {};
@@ -131,7 +131,7 @@ module.exports.insertPatentFormData = async(body , files) => {
     console.log('FacultydataArray ===>>>>>', FacultydataArray);
     const patentDataFilesString = files?.map(file => file.filename).join(',');
 
-    const insertPatentData = await patentFormsModels.insertPatentData(patentData, patentDataFilesString, sdgGoalsIdArray, inventionIdsArray, FacultydataArray, patentStatusArray, patentStatusId);
+    const insertPatentData = await patentFormsModels.insertPatentData(patentData, patentDataFilesString, sdgGoalsIdArray, inventionIdsArray, FacultydataArray, patentStatusArray);
 
     console.log('insertPatentData in service ====>>>', insertPatentData);
 
@@ -141,7 +141,7 @@ module.exports.insertPatentFormData = async(body , files) => {
             patentId : insertPatentData.patentId,
             patentDataFilesString : patentDataFilesString,
             patentGrantIds: insertPatentData.patentGrantIds,
-            dsgGoalsIds : insertPatentData.dsgGoalsIds,
+            sdgGoalsIds : insertPatentData.sdgGoalsIds,
             inventionTypeIds : insertPatentData.inventionTypeIds,
             patentStatusId : insertPatentData.patentStatusId,
             patentData : patentData,
