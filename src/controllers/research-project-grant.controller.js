@@ -19,21 +19,7 @@ module.exports.renderResearchProjectConsultancy = async(req, res, next) => {
 
 }
 
-module.exports.insertExternalFacultyDetails = async(req, res, next) => {
-    console.log('data comming from frontend ===>>>>>', req.body)
 
-    const insertFacultyDetails = await researchConsultancyService.insertExternalDetails(req.body);
-
-    console.log('insertFacultyDetails ====>>>>>>', insertFacultyDetails);
-    const statusCode = insertFacultyDetails.status === "Done" ? 200 : (insertFacultyDetails.errorCode ? 400 : 500)
-    res.status(statusCode).send({
-        status : insertFacultyDetails.status,
-        message : insertFacultyDetails.message,
-        externalFacultyId : insertFacultyDetails.externalFacultyId,
-        rowCount : insertFacultyDetails.rowCount,
-        errorCode : insertFacultyDetails.errorCode ? insertFacultyDetails.errorCode : null
-    })
-}
 
 module.exports.insertResearchConsultancyData = async(req, res, next) => {
     const researchConsultantData =  req.body;

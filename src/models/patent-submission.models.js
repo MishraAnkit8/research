@@ -128,27 +128,7 @@ module.exports.fetchPatentSubMissionForms = async () => {
 
 }
 
-module.exports.insertFacultyDetails = async(exetrnalFacultyDetails) => {
 
-    console.log('exetrnalFacultyDetails ====>>>>>', exetrnalFacultyDetails);
-    const {facultyEmpId, facultyName, facultyDsg, facultyAddr} = exetrnalFacultyDetails
-
-    let sql = {
-        text : `INSERT INTO faculties (faculty_type_id, employee_id, faculty_name, designation, address) VALUES ($1, $2, $3, $4, $5) RETURNING id`,
-        values : [2, facultyEmpId, facultyName, facultyDsg, facultyAddr]
-    }
-
-
-    console.log('sql ====>>>>>', sql);
-    const insertFacultyDetails = await researchDbW.query(sql);
-    const promises = [insertFacultyDetails];
-    return Promise.all(promises).then(([insertFacultyDetails]) => {
-        return  { status : "Done" , message : "Faculty Record  Inserted Successfully" ,  rowCount : insertFacultyDetails.rowCount , externalFacultyId : insertFacultyDetails.rows[0].id}
-    })
-    .catch((error) => {
-        return{status : "Failed" , message : error.message , errorCode : error.code}
-    })
-}
 
 module.exports.insertPatentData = async (patentData, patentDataFilesString, sdgGoalsIdArray, inventionIdsArray, FacultydataArray, patentStatusArray) => {
     console.log('patentData inside models ===>>>', patentData);
@@ -224,7 +204,6 @@ module.exports.insertPatentData = async (patentData, patentDataFilesString, sdgG
     ]).then(([patnetSubmissionData, patentstage, ...results]) => {
         const patentId = patnetSubmissionData.rows[0].id;
         const rowCount = patnetSubmissionData.rowCount;
-        // const patentstageData = patentstage.rows[0];
         const insertFacultyIds = results.slice(0, FacultydataArray.length).map(result => result.rows[0].id);
         const insertSdgGoalsIds = results.slice(FacultydataArray.length, FacultydataArray.length + sdgGoalsIdArray.length).map(result => result.rows[0].id);
         const insertInventionTypeIds = results.slice(FacultydataArray.length + sdgGoalsIdArray.length, FacultydataArray.length + sdgGoalsIdArray.length + inventionIdsArray.length).map(result => result.rows[0].id);

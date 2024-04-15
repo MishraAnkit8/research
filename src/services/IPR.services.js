@@ -14,7 +14,7 @@ module.exports.fetchPatentForm = async() => {
         rowCount : IPRFormData.rowCount,
         iprData : IPRFormData.iprData,
         internalEmpList : IPRFormData.internalEmpList,
-        inventiontype : IPRFormData.inventionTypData,
+        inventionTypData : IPRFormData.inventionTypData,
         patentStatus : IPRFormData.patentStatus,
         schoolList : IPRFormData.nmimsSchoolList,
         campusList : IPRFormData.nmimsCampusList,
@@ -26,39 +26,60 @@ module.exports.fetchPatentForm = async() => {
 
 
 module.exports.IprInsertDataService = async(body, files) => {
-    const iprFilesString = files ?.map(file => file.filename).join(',');
-    console.log('iprFilesString ====>>>>', iprFilesString);
+    const iprFilesNamesArray = files ?.map(file => file.filename);
+    console.log('iprFilesNamesArray ====>>>>', iprFilesNamesArray);
     const IprData = body;
-    // console.log('IprData in services ====>>>>>', IprData);
-    const investorDetailsArray = JSON.parse(body.investorDetails);
-    //for storing internalDetailsArray and externalDetailsArray faculty name
-    const internalDetailsArray = [];
-    const externalDetailsArray = [];
-    investorDetailsArray.forEach((item) => {
-        item.internalEmpList ? internalDetailsArray.push(item.internalEmpList) : null;
-        item.externalEmpList ? externalDetailsArray.push(item.externalEmpList) : null;
-    });
-    // convert array into string
-    const internalDetailsArrayString = internalDetailsArray.join(", ");
-    const externalDetailsArrayString = externalDetailsArray.join(", ");
-    const investorDetailsString = internalDetailsArrayString + externalDetailsArrayString;
-    console.log('investorDetailsString ====>>>', internalDetailsArrayString + externalDetailsArrayString)
-    console.log("Internal DetailsArray updated:", internalDetailsArrayString);
-    console.log("External DetailsArray updated:", externalDetailsArrayString);
 
-    const insertIprData = await IPRModels.InsetIPRDataModels(IprData, iprFilesString, internalDetailsArrayString, externalDetailsArrayString);
+    console.log('IprData in services ===>>>>', IprData);
+    const statusIds = [parseInt(IprData.patentStage)];
+    console.log('statusIds ===>>>>>', statusIds);
+    //parsing data coming from frontend 
+    const facultyData = JSON.parse(IprData.facultyDataContainer);
+    const inventionTypeData = JSON.parse(IprData.typeOfInvention);
+    const nmimsSchoolIds = JSON.parse(IprData.nmimsSchoolIds);
+    const nmimsCampusIds = JSON.parse(IprData.nmimsCampusIds);
+
+    // Extract internalFaculty and externalEmpList arrays
+    const internalFaculty = facultyData.find(item => item !== null && item.internalFaculty)?.internalFaculty || [];
+    const externalEmpList = facultyData.find(item => item  !== null && item.externalEmpList )?.externalEmpList || [];
+    const internalFacultyList =  internalFaculty.map(Number)
+    const FacultydataArray = [...externalEmpList, ...internalFacultyList];
+    const patentStatus = [parseInt(IprData.patentStage)];
+
+    const schoolIdsArray = (nmimsSchoolIds.nmimsSchool || []).map(id => parseInt(id));
+    const campusIdsArray = (nmimsCampusIds.nmimsCampus || []).map(id => parseInt(id));
+    const inventionTypeIdsArray = (inventionTypeData.typeOfInventions || []).map(id => parseInt(id));
+
+
+    console.log('schoolIdsArray ===>>>>>', schoolIdsArray);
+    console.log('campusIdsArray ===>>>>>', campusIdsArray);
+    console.log('inventionTypeIdsArray ===>>>>>', inventionTypeIdsArray);
+
+    const insertIprData = await IPRModels.InsetIPRDataModels(IprData, iprFilesNamesArray, FacultydataArray, schoolIdsArray, campusIdsArray, inventionTypeIdsArray, patentStatus);
 
     console.log('insertIprData ===>>>>', insertIprData);
+    console.log('schoolDataList ===>>>>', insertIprData.schoolNames);
+
+    
     return insertIprData.status === "Done" ? {
         status : insertIprData.status ,
         message : insertIprData.message,
         rowCount : insertIprData.rowCount,
-        investorDetailsString : investorDetailsString,
-        internalDetailsArrayString : internalDetailsArrayString,
-        externalDetailsArrayString : externalDetailsArrayString,
-        iprFilesString : iprFilesString,
+        iprId : insertIprData.iprId,
+        iprGrantsIds : insertIprData.insertIprFacultyIds,
+        iprSchoolIds : insertIprData.insertIprSchoolIds,
+        iprCampusIds : insertIprData.insertIprCampusIds,
+        insertIprInventiontypeIds : insertIprData.insertIprInventiontypeIds,
+        iprstatusIds : insertIprData.insertIprStatusIds,
+        documentIds : insertIprData.documentIds,
+        iprFilesNamesArray : iprFilesNamesArray,
+        iprDocumentsIds : insertIprData.iprDocumentsIds,
         IprData : IprData,
-        iprId : insertIprData.iprId
+        schoolNames : insertIprData.schoolNames,
+        campusNames : insertIprData.campusNames,
+        invetionTypeNames : insertIprData.invetionTypeNames,
+        statusTypeName : insertIprData.statusTypeName,
+        statusIds : IprData.patentStage
 
     } : {
         status : insertIprData.status,
@@ -84,40 +105,49 @@ module.exports.deleteIPRRow = async(iprId) => {
 
 module.exports.updatedIprData = async(iprId, body, files) => {
     console.log('iprId in service ===>>>', iprId);
-    const iprFilesString = files ?.map(file => file.filename).join(',');
-    console.log('iprFilesString ====>>>>', iprFilesString);
+    const iprFilesNamesArray = files ?.map(file => file.filename);
+    console.log('iprFilesNamesArray ====>>>>', iprFilesNamesArray);
     const updatedIPRData = body;
-    console.log('IprData in services ====>>>>>', updatedIPRData);
-    const investorDetails = JSON.parse(body.investorDetails);
-    console.log('investorDetails ===>>>', investorDetails);
-    const internalDetailsArray = [];
-    const externalDetailsArray = [];
-    const existingDetailsArray = [];
+    const statusIds = patentStage !== '' ? [parseInt(updatedIPRData.patentStage)] : null;
+    console.log('statusIds ===>>>>>', statusIds);
+    //parsing data coming from frontend 
+    const facultyData = JSON.parse(updatedIPRData.facultyDataContainer);
+    const inventionTypeData =  updatedIPRData.typeOfInvention !== 'undefined' ?  JSON.parse(updatedIPRData.typeOfInvention) : null;
+    const nmimsSchoolIds = updatedIPRData.nmimsSchoolIds !== 'undefined' ? JSON.parse(updatedIPRData.nmimsSchoolIds) : null;
+    const nmimsCampusIds = updatedIPRData.nmimsCampusIds !== 'undefined' ? JSON.parse(updatedIPRData.nmimsCampusIds) : null;
 
-    investorDetails.forEach((item) => {
-        item.internalEmpList ? internalDetailsArray.push(item.internalEmpList) : null;
-        item.externalEmpList ? externalDetailsArray.push(item.externalEmpList) : null;
-        item.existingInvestorDetails ? existingDetailsArray.push(item.existingInvestorDetails) : null;
-    });
-    // convert array into string
-    const internalDetailsString = internalDetailsArray.join(", ");
-    const externalDetailsString = externalDetailsArray.join(", ");
-    const existingDetailsString = existingDetailsArray.join(",");
-    // const investorDetailsString = internalDetailsString + externalDetailsString + existingDetailsString;
-    // console.log('investorDetailsString ===>>>>', investorDetailsString)
+    // Extract internalFaculty and externalEmpList arrays
+    const internalFaculty = facultyData.find(item => item !== null && item.internalFaculty)?.internalFaculty || [];
+    const externalEmpList = facultyData.find(item => item  !== null && item.externalEmpList )?.externalEmpList || [];
+    const internalFacultyList =  internalFaculty.map(Number)
+    const FacultydataArray = [...externalEmpList, ...internalFacultyList];
+    const patentStatus = [parseInt(updatedIPRData.patentStage)];
 
-    const iprDataToBeUpdated = await IPRModels.updateIPRRecordData(iprId, updatedIPRData, iprFilesString, internalDetailsString, externalDetailsString,  existingDetailsString);
+    const schoolIdsArray = (nmimsSchoolIds.nmimsSchool || []).map(id => parseInt(id));
+    const campusIdsArray = (nmimsCampusIds.nmimsCampus || []).map(id => parseInt(id));
+    const inventionTypeIdsArray = (inventionTypeData.typeOfInventions || []).map(id => parseInt(id));
+
+    console.log('schoolIdsArray ===>>>>>', schoolIdsArray);
+    console.log('campusIdsArray ===>>>>>', campusIdsArray);
+    console.log('inventionTypeIdsArray ===>>>>>', inventionTypeIdsArray);
+   
+    const iprDataToBeUpdated = await IPRModels.updateIPRRecordData(iprId, updatedIPRData,  iprFilesNamesArray, FacultydataArray, schoolIdsArray, campusIdsArray, inventionTypeIdsArray, patentStatus);
 
     console.log('iprDataToBeUpdated ====>>>>', iprDataToBeUpdated);
+
     return iprDataToBeUpdated.status === "Done" ? {
         status : iprDataToBeUpdated.status,
         message : iprDataToBeUpdated.message,
-        // investorDetailsString : investorDetailsString,
-        internalDetailsString : internalDetailsString,
-        externalDetailsString : externalDetailsString,
-        existingDetailsString : existingDetailsString,
-        updatedIPRData : updatedIPRData,
-        iprFilesString : iprFilesString ? iprFilesString : null
+        iprDocumentsIds : iprDataToBeUpdated.iprDocumentsIds,
+        insertIprCampusIds: iprDataToBeUpdated.insertIprCampusIds,
+        insertIprInventiontypeIds: iprDataToBeUpdated.insertIprInventiontypeIds,
+        insertIprStatusIds: iprDataToBeUpdated.insertIprStatusIds,
+        schoolNames: iprDataToBeUpdated.schoolNames,
+        campusNames: iprDataToBeUpdated.campusNames,
+        documentIds: iprDataToBeUpdated.documentIds,
+        invetionTypeNames: iprDataToBeUpdated.invetionTypeNames,
+        statusTypeName: iprDataToBeUpdated.statusTypeName,
+        updatedIPRData : updatedIPRData
 
     } : {
         status : iprDataToBeUpdated.status,

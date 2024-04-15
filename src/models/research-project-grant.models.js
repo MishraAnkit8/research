@@ -93,27 +93,6 @@ module.exports.fetchResearchConsultancy = async() => {
   }) 
 }
 
-module.exports.insertFacultyDetails = async(exetrnalFacultyDetails) => {
-
-    console.log('exetrnalFacultyDetails ====>>>>>', exetrnalFacultyDetails);
-    const {facultyEmpId, facultyName, facultyDsg, facultyAddr} = exetrnalFacultyDetails
-
-    let sql = {
-        text : `INSERT INTO faculties (faculty_type_id, employee_id, faculty_name, designation, address) VALUES ($1, $2, $3, $4, $5) RETURNING id`,
-        values : [2, facultyEmpId, facultyName, facultyDsg, facultyAddr]
-    }
-
-
-    console.log('sql ====>>>>>', sql);
-    const insertFacultyDetails = await researchDbW.query(sql);
-    const promises = [insertFacultyDetails];
-    return Promise.all(promises).then(([insertFacultyDetails]) => {
-        return  { status : "Done" , message : "Faculty Record  Inserted Successfully" ,  rowCount : insertFacultyDetails.rowCount , externalFacultyId : insertFacultyDetails.rows[0].id}
-    })
-    .catch((error) => {
-        return{status : "Failed" , message : error.message , errorCode : error.code}
-    })
-}
 
 module.exports.insertResearhcProjectConstancyData = async (researchCunsultancyData, consultancyDataFiles, FacultydataArray) => {
     console.log('researchCunsultancyData inside models ===>>>', researchCunsultancyData);

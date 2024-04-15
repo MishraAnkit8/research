@@ -3,12 +3,23 @@ module.exports.renderIPR = async(req, res, next) => {
 
     const iprList = await iprServices.fetchPatentForm();
 
-    console.log('iprList ===>>>', iprList);
-    // console.log('iprList.IPRDataList ====>>>', iprList.IPRDataList[0].investor_details.authorName)
+    // console.log('iprList ===>>>', iprList);
+    console.log('iprList.iprData ===>>>>>>', iprList.iprData);
+    console.log('iprList.internalEmpList ===>>>>>>', iprList.internalEmpList);
+    console.log('iprList.inventiontype ===>>>>>>', iprList.inventiontype);
+    console.log('iprList.patentStatus ===>>>>>>', iprList.patentStatus);
+    console.log('iprList.schoolList ===>>>>>>', iprList.schoolList);
+    console.log('iprList.schoolList ===>>>>>>', iprList.schoolList);
+
     res.render('IPR', {
             IPRDataList : iprList.iprData,
             internalEmpList : iprList.internalEmpList,
             rowCount : iprList.rowCount,
+            internalFacultyData : iprList.internalEmpList,
+            inventionTypData : iprList.inventionTypData,
+            patentStatus : iprList.patentStatus,
+            nmimsSchoolList : iprList.schoolList,
+            nmimsCampusList : iprList.campusList,
 
         })
 }
@@ -17,7 +28,9 @@ module.exports.renderIPR = async(req, res, next) => {
 module.exports.IPRInsertedData = async(req, res, next) => {
     console.log('data in controller ====>>>>', req.body);
     console.log('files in controller ===>>>>>', req.files);
+
     const IPRInsertedData = await iprServices.IprInsertDataService(req.body, req.files);
+
     console.log('IPRInsertedData ===>>> in controller', IPRInsertedData);
     
     const statusCode =IPRInsertedData.status === "Done" ? 200 : (IPRInsertedData.errorCode ? 400 : 500);
@@ -25,12 +38,20 @@ module.exports.IPRInsertedData = async(req, res, next) => {
         status : IPRInsertedData.status ,
         message : IPRInsertedData.message,
         rowCount : IPRInsertedData.rowCount,
-        investorDetailsString : IPRInsertedData.investorDetailsString,
-        internalNamesString : IPRInsertedData.internalNamesString,
-        externalNamesString : IPRInsertedData.externalNamesString,
-        iprFilesString : IPRInsertedData.iprFilesString,
-        IprData : IPRInsertedData.IprData,
         iprId : IPRInsertedData.iprId,
+        iprGrantsIds : IPRInsertedData.iprGrantsIds,
+        iprSchoolIds : IPRInsertedData.iprSchoolIds,
+        iprCampusIds : IPRInsertedData.iprCampusIds,
+        iprInvetionIds : IPRInsertedData.insertIprInventiontypeIds,
+        iprtatusIds : IPRInsertedData.iprstatusIds,
+        documentIds : IPRInsertedData.documentIds,
+        iprDocumentsIds : IPRInsertedData.iprDocumentsIds,
+        IprData : IPRInsertedData.IprData,
+        schoolNames : IPRInsertedData.schoolNames,
+        campusNames : IPRInsertedData.campusNames,
+        invetionTypeNames : IPRInsertedData.invetionTypeNames,
+        statusTypeName : IPRInsertedData.statusTypeName,
+        iprFilesNamesArray : IPRInsertedData.iprFilesNamesArray,
         errorCode : IPRInsertedData.errorCode ? IPRInsertedData.errorCode : null
     })
    
@@ -60,6 +81,7 @@ module.exports.updateIPRRowData = async(req, res, next) => {
     const iprRowDataToBeUpdated = await iprServices.updatedIprData(iprId, req.body, req.files);
 
     console.log('iprRowDataToBeUpdated updated data in controller ====>>>>', iprRowDataToBeUpdated);
+
     const statusCode = iprRowDataToBeUpdated.status === "Done" ? 200 : (iprRowDataToBeUpdated.errorCode ? 400 : 500);
     res.status(statusCode).send({
         status : iprRowDataToBeUpdated.status,
@@ -70,6 +92,7 @@ module.exports.updateIPRRowData = async(req, res, next) => {
         existingDetailsString : iprRowDataToBeUpdated.existingDetailsString,
         updatedIPRData : iprRowDataToBeUpdated.updatedIPRData,
         iprFilesString : iprRowDataToBeUpdated.iprFilesString,
+        updatedIPRData : iprRowDataToBeUpdated.updatedIPRData,
         errorCode : iprRowDataToBeUpdated.errorCode ? iprRowDataToBeUpdated.errorCode : null
     })
 }

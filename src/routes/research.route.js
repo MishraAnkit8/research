@@ -22,6 +22,7 @@ const researchSeminarController = require('../controllers/research-seminar.contr
 const IPRController = require('../controllers/IPR.controller');
 const researchAwardController = require('../controllers/research-award-controller');
 const eContentDevelopMentCon = require('../controllers/e-content-development.controller');
+const facultyController = require('../controllers/faculty-controller');
 
 const nmimsConsultancyForm = require('../controllers/nmims-consultancy-form.controller');
 const seedGrantNonPharmacy = require('../controllers/nmims-seed-grant-non-pharmacy');
@@ -70,8 +71,6 @@ router.get('/conference-publication/viewing/:fileName', downloadFileService.view
 //patent submission form
 router.get('/patent-submission', asyncErrorHandler(patentSubmission.renderPatentSubMissionAndGrant));
 router.post('/patent-submission/insert', upload.array('patentFilesData', 5), asyncErrorHandler(patentSubmission.insertPatentsubmission));
-router.post('/patent-submission/faculty-insert', asyncErrorHandler(patentSubmission.insertExternalFacultyDetails));
-
 router.post('/patent-submission/update', upload.array('patentFilesData', 5), asyncErrorHandler(patentSubmission.updatePatentSubMissiom));
 router.post('/patent-submission/delete', asyncErrorHandler(patentSubmission.deletePatentData));
 router.post('/patent-submission/view', asyncErrorHandler(patentSubmission.viewPatentSubmissionData));
@@ -84,7 +83,7 @@ router.post('/research-project-grant/insert', upload.array('researchSupportingDo
 router.post('/research-project-grant/update', upload.array('researchSupportingDocument', 5), asyncErrorHandler(researchProjGrantController.updatedConsultantData));
 router.post('/research-project-grant/delete', asyncErrorHandler(researchProjGrantController.deleteResearchConsultant));
 router.post('/research-project-grant/view', asyncErrorHandler(researchProjGrantController.viewResearchProjectConsultancy));
-router.post('/research-project-grant/faculty-insert', asyncErrorHandler(researchProjGrantController.insertExternalFacultyDetails));
+// router.post('/research-project-grant/faculty-insert', asyncErrorHandler(researchProjGrantController.insertExternalFacultyDetails));
 
 router.get('/research-project-grant/download/:fileName', downloadFileService.downloadFile);
 router.get('/research-project-grant/viewing/:fileName', downloadFileService.viewFile);
@@ -142,6 +141,11 @@ router.post('/nmims-seed-grant-non-pharmacy/delete', asyncErrorHandler(seedGrant
 
 // pharmacySeedGrantForm
 router.get('/pharmacy-seed-grant-form', asyncErrorHandler(pharmacySeedGrantForm.renderPharmacySeedGrantform));
+
+//insert external faculty details controller
+
+router.post('/external/faculty-insert', asyncErrorHandler(facultyController.insertExternalFacultyDetails));
+
 
 
 

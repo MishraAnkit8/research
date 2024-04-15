@@ -49,26 +49,6 @@ module.exports.fetchResearConsultacyData = async() => {
 
 }
 
-module.exports.insertExternalDetails = async(body) => {
-  console.log('body ===>>>>>>', body);
-  const exetrnalFacultyDetails = body.externalFacultyDetails;
-
-  const insertExternalData = await researchCunsultancyModel.insertFacultyDetails(exetrnalFacultyDetails);
-
-  console.log('insertExternalData ===>>>>>', insertExternalData)
-
-  return insertExternalData.status === "Done" ? {
-      status : insertExternalData.status,
-      message : insertExternalData.message,
-      externalFacultyId : insertExternalData.externalFacultyId,
-      rowCount : insertExternalData.rowCount,
-      errorCode : insertExternalData.errorCode
-  } : {
-      status : insertExternalData.status,
-      message : insertExternalData.message,
-      errorCode : insertExternalData.errorCode
-  }
-}
 
 module.exports.insertResearchConsultancyData = async(body , files) => {
     const researchCunsultancyData = body;

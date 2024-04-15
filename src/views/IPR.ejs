@@ -65,25 +65,27 @@
                         <th class="col-lg-1">Patent Status</th>
                         <th class="col-lg-1">Patent Application Number</th>
                         <th class="col-lg-1">Patent Applicant Name</th>
-                        <th class="col-lg-1">NMIMS School</th>
-                        <th class="col-lg-1">NMIMS Campus</th>
+                        <th class="col-lg-1 nmims-school">NMIMS School</th>
+                        <th class="col-lg-1 nmims-campus">NMIMS Campus</th>
                         <th class="col-lg-1">Action</th>
                     </thead>
                     <% if (IPRDataList) { %>
                         <% IPRDataList.forEach(function(iprData,index) {%>
-                            <tr data-ipr-id="<%- iprData.id %>"
-                                data-filed-date="<%- iprData.patent_filed_date %>" data-grant-date="<%- iprData.patent_granted_date %>"
-                                data-published-date="<%- iprData.patent_published_date %>" data-grant-number="<%- iprData.patent_granted_no %>"
-                                data-published-number="<%- iprData.patent_published_num %>" data-institute-affiliation="<%- iprData.institute_affiliation %>"
-                                data-supporting-documents="<%- iprData.supporting_documents %>">
+                            <tr data-ipr-id="<%- iprData.ipr_id %>"
+                                data-filed-date="<%- iprData.patent_filed_date %>" data-grant-date="<%- iprData.patent_grant_date %>"
+                                data-published-date="<%- iprData.patent_published_date %>" data-grant-number="<%- iprData.patent_grant_number %>"
+                                data-published-number="<%- iprData.patent_publication_number %>" data-institute-affiliation="<%- iprData.institutional_affiliation %>"
+                                data-supporting-documents="<%- iprData.supporting_documents %>"
+                                data-school-ids="<%- iprData.school_id %>" data-campus-ids="<%- iprData.campus_id %>"
+                                data-status-ids="<%- iprData.patent_stage_id %>" data-invention-ids="<%- iprData.invention_types_id %>" >
                                 <td ><%- index+1 %></td>
-                                <td class="type-of-invention col-lg-1"><%- iprData.type_of_invention %></td>
-                                <td class="title-of-invention col-lg-1"><%- iprData.title_of_invention %></td>
-                                <td class="patent-stage col-lg-1"><%- iprData.patent_stage %></td>
-                                <td class="application-no col-lg-1"><%- iprData.patent_application_no %></td>
-                                <td class="applicant-name col-lg-1"><%- iprData.applicants_name %></td>
-                                <td class="nmims-school"><%- iprData.nmims_school %></td>
-                                <td class="nmims-campus"><%- iprData.nmims_campus %></td>
+                                <td class="type-of-invention col-lg-1"><%- iprData.invention_types %></td>
+                                <td class="title-of-invention col-lg-1"><%- iprData.patent_title %></td>
+                                <td class="patent-stage col-lg-1"><%- iprData.patent_stage_statuses %></td>
+                                <td class="application-no col-lg-1"><%- iprData.patent_application_number %></td>
+                                <td class="applicant-name col-lg-1"><%- iprData.applicant_name %></td>
+                                <td class="nmims-school"><%- iprData.associated_schools %></td>
+                                <td class="nmims-campus"><%- iprData.associated_campuses %></td>
                                 <td class="col-lg-1">
                                     <label class="view" data-ipr-id="<%- iprData.id %>"><i class="fa-solid fa-eye view text-danger"
                                         data-ipr-id="<%- iprData.id %>"></i></label>
@@ -166,16 +168,15 @@ aria-hidden="true">
             </div>
             <div class="modal-body">
                 <div class="row">
-                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4 ">
-                            <label for="type-of-invention" class="form-label fw-bold ">Type of Invention(IPR)</label>
-                            <select class="form-control gap-10" id="type-of-invention" data-validate="isEmpty,isExist" data-err-msg="This field is required and select value " required>
-                                <option value="" selected>Select option</option>
-                                <option  value="Patent" selected>Patent</option>
-                                <option  value="Copy Right">Copy Right</option>
-                                <option  value="Design Registration">Design Registration</option>
-                                <option  value="Trade mark">Trade mark</option>
-                                <option  value="Trade Secret">Trade Secret</option>
-                            </select>
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="type-of-invention" class="form-label fw-bold">Type of Invention(IPR)</label>
+                        <select id="type-of-invention" class="select-option" data-validate="isEmpty,isExist" data-err-msg="This field is required and select value" required multiple>
+                            <option value="">Select option</option>
+                            <!-- Use server-side or client-side code to dynamically generate options -->
+                            <% inventionTypData.forEach(function(invention) { %>
+                                <option value="<%= invention.id %>"><%= invention.name %></option>
+                            <% }); %>
+                        </select>
                     </div>
                     <!-- Title of Invention -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
@@ -183,13 +184,16 @@ aria-hidden="true">
                         <input type="text" name="titleInvention" id="title-of-invention" data data-err-msg="This field is required and min length > 1." class="form-control fname" data-validate="isEmpty,isAlphabeticWords" required>
                     </div>
                     <!-- Patent Stage -->
+                    <!-- Patent Stage -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="patent-stage" class="form-label fw-bold">Patent Status</label>
-                        <select class="form-control gap-10" id="patent-stage" data-validate="isEmpty,isExist" data-err-msg="This field is required and select a value" required >
-                            <option  value="" selected>Select option</option>
-                            <option value="Filed">Filed</option>
-                            <option value="Published">Published</option>
-                            <option value="Granted">Granted</option>
+                        <label for="patent-stage" class="form-label fw-bold">Patent Stage</label>
+                        <select class="select-option" id="patent-stage" data-validate="isEmpty,isExist" data-err-msg="This field is required and select value"  required >
+                            <option value="" >Select option</option>
+                            <% patentStatus.forEach(function(status) { %>
+                                <option value="<%= status.id %>">
+                                   <%= status.name %>
+                                </option>
+                            <% }); %>
                         </select>
                     </div>
 
@@ -257,58 +261,34 @@ aria-hidden="true">
                         <input type="text" name="institute-affiliation" id="institute-affiliation" data-validate="isEmpty,isExist" data-err-msg="This field is required and min length > 1." class="form-control" required>
                     </div>
 
-                     <!-- nmims School-->
-                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="nmims-school" class="form-label fw-bold">
-                            NMIMS School
-                        </label>
-                        <input type="text" name="nmims-school" id="nmims-school" data-validate="isEmpty,isExist" data-err-msg="This field is required and min length > 1." class="form-control" required>
+                    <!-- nmims School-->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="nmims-school" class="form-label fw-bold">School</label>
+                        <select class="select-option" id="nmims-school-list" data-validate="isEmpty,isExist" data-err-msg="This field is required and select value"  required multiple>
+                            <option value="" >Select option</option>
+                            <% nmimsSchoolList.forEach(function(school) { %>
+                                <option value="<%= school.id %>">
+                                   <%= school.name %>
+                                </option>
+                            <% }); %>
+                        </select>
                     </div>
 
-                     <!-- nmims campus -->
+                    <!-- nmims campus -->
                      <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="nmims-campus" class="form-label fw-bold">
-                            NMIMS Campus
-                        </label>
-                        <input type="text" name="nmims-campus" id="nmims-campus" data-validate="isEmpty,isExist" data-err-msg="This field is required and min length > 1." class="form-control" required>
+                        <label for="nmims-campus" class="form-label fw-bold">Campus</label>
+                        <select class="select-option" id="nmims-campus-list" data-validate="isEmpty,isExist" data-err-msg="This field is required and select value" required multiple>
+                            <option value="" >Select option</option>
+                            <% nmimsCampusList.forEach(function(campus) { %>
+                                <option value="<%= campus.id %>">
+                                   <%= campus.name %>
+                                </option>
+                            <% }); %>
+                        </select>
                     </div>
-                    <!-- Inventor -->
-                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="investor-details" class="form-label fw-bold mb-3">Details of Other Inventors
-                            ?</label><br>
-                        <div class="form-check-inline">
-                            <label for="internal" class="form-check-label enter-faculty-type">
-                                <input type="radio" class="form-check-input enternal-type" name="investor-details" id="is-internal" value="Internal">
-                               <span id="enternal-text">Internal</span>
-                            </label>
-                            <div class="col-lg-1 p-6 w-100 d-none" id="employee-list">
-                                <select id="emp-name" style="width: 200px;" multiple> 
-                                    <option value="">select employee name</option>
-                                    <% internalEmpList.forEach(function(employee) { %>
-                                        <option value="<%= employee.employee_name %>">
-                                           <%= employee.employee_name %>
-                                        </option>
-                                    <% }); %>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-check-inline">
-                            <label for="is-external"   class="form-check-label external-faculty">
-                                <input type="radio" class="form-check-input" id="is-external" name="investor-details" value="External" >
-                                <span id="external-text">External</span>
-                            </label>
-                            
-                        </div>
-                    </div>
-                    <div id="author-details" class="form-group col-lg-6 col-md-8 col-sm-12 mb-4 d-none">
-                        <div class="author-details-section col-lg-6 col-md-8 col-sm-12">
-                          <label for="author-name " class="form-label fw-bold">Author Name:</label>
-                          <input type="text" id="author-name" class="col-md-12 form-control" placeholder="Enter author name">
-                          <button id="add-more-details" class="btn col-md-12 btn-md btn-primary submit-btn update-btn" type="button">Add More Details</button>
-                        </div>
-                      </div>
-                     <!-- Upload Supporting Documents-->
-                     <div class="form-group col-lg-6 col-md-8 col-sm-12 mb-4">
+
+                      <!-- Upload Supporting Documents-->
+                    <div class="form-group col-lg-6 col-md-8 col-sm-12 mb-4">
                         <div class="col-lg-6 col-md-8 col-sm-12">
                             <label for="supporting-documents" class="form-label fw-bold ">
                                 Upload Supporting Documents
@@ -320,6 +300,68 @@ aria-hidden="true">
                             </div>
                         </div>
                     </div>
+                    <!-- Details of Other Inventors -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="is-internal" class="form-label fw-bold mb-3">Details of Inventors Id And Name</label><br>
+                        <div class="form-check-inline">
+                            <label for="internal" class="form-check-label enter-faculty-type">
+                                <input type="radio" class="form-check-input enternal-type" name="author-type" id="is-internal" value="Internal">
+                               <span id="enternal-text">Internal</span>
+                            </label>
+                            <div class="col-lg-1 p-6 w-100 d-none" id="employee-list">
+                                <select id="emp-name" style="width: 200px;" multiple> 
+                                    <option value="">select employee name</option>
+                                    <% internalFacultyData.forEach(function(employee) { %>
+                                        <option value="<%= employee.employee_name %>">
+                                           <%= employee.employee_name %>
+                                        </option>
+                                    <% }); %>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-check-inline">
+                            <label for="is-external"   class="form-check-label external-faculty">
+                                <input type="radio" class="form-check-input" id="is-external" name="author-type" value="External" >
+                                <span id="external-text">External</span>
+                            </label>
+                            
+                        </div>
+                    </div>
+
+                <div id="author-details" class="form-group col-md-12 col-sm-12 mb-4 d-none">
+                        <div class="author-details-section col-lg-12 col-md-8 col-sm-12">
+                          <label for="author-name " class="form-label fw-bold col-lg-12"> External Authors Details:</label>
+                            <div id="dynamic-rows" class="col-lg-12 col-md-8 col-sm-12 mb-4"> 
+                            </div> 
+                        </div>
+                </div>
+                 
+                <div class="research-pagination d-flex" >
+                    <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none" id="name-class">
+                        <label for="faculty-name" class="form-label fw-bold">Faculty Name</lable>
+                        <input type="text" class="form-control" id="faculty-name">
+                    </div>
+                    <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none" id="dsg-class">
+                        <label for="" class="form-label fw-bold">Faculty Designation :</lable>
+                            <input type="text" class="form-control" id="faculty-designation"> 
+                    </div>
+                    <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none" id="id-class">
+                        <label for="faculty-emp-id" class="form-label fw-bold">Faculty Id (Optional)</lable>
+                            <input type="text" class="form-control" id="faculty-emp-id">
+                    </div>
+                    <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none" id="address-class">
+                        <label for="faculty-address" class="form-label fw-bold">Faculty Addres</lable>
+                            <input type="text" class="form-control" id="faculty-address"> 
+                    </div>
+                </div>
+                <div class="form-group col-lg-6 col-md-6 col-sm-12 mb-4 d-none" id="add-btn">
+                    <button id="insert-details" data-bs-target="#" class="btn col-lg-4 col-md-6 col-sm-12 btn-primary" type="button">Insert Faculty Details</button> 
+                    <button id="add-more-details" data-bs-target="#" class="btn col-lg-4 col-md-6 col-sm-12 btn-primary" type="button">Add More Details</button> 
+                </div>
+                <table id="faculty-table-list" class="table d-none">
+
+                </table>
+                
                 </div>
             </div>
             
@@ -471,6 +513,12 @@ aria-hidden="true">
         </div>
     </div>
 </div>
+<div id="invention-types" data-invention='<%- JSON.stringify(inventionTypData) %>' style="display: none;"></div>
+<div id="patent-status-list" data-status='<%- JSON.stringify(patentStatus) %>' style="display: none;"></div>
+<div id="school-data-list" data-school='<%- JSON.stringify(nmimsSchoolList) %>' style="display: none;"></div>
+<div id="campus-data-list" data-campus='<%- JSON.stringify(nmimsCampusList) %>' style="display: none;"></div>
+
+
 <div id="employees-list-data" data-employees='<%- JSON.stringify(internalEmpList) %>' style="display: none;"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tom-select/2.3.1/js/tom-select.complete.min.js" integrity="sha512-zdXqksVc9s0d2eoJGdQ2cEhS4mb62qJueasTG4HjCT9J8f9x5gXCQGSdeilD+C7RqvUi1b4DdD5XaGjJZSlP9Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
@@ -486,16 +534,24 @@ aria-hidden="true">
     const downloadLink = document.getElementById('downloadLink');
     const iprDataList = document.getElementById('ipr-data-list');
     const employeeDropdown = document.getElementById("emp-name");
+    const inventionTypeDropDown = document.getElementById('type-of-invention');
+    const schoolDropDown = document.getElementById('nmims-school-list');
+    const campusDropDown = document.getElementById('nmims-campus-list');
+    const facultyTableList = document.getElementById('faculty-table-list')
+
+    const InsertDetails = document.getElementById('insert-details');
     const addMoreDetailsButton = document.getElementById("add-more-details");
     let iprId, rowToBeUpdated;
     let storedFacultyValue, InternalAuthorValue, externalAuthorValue;
-
+    let externalFacultyIdArray = [];
+    let facultyIdContainer = [];
+    let typeOfInventionsIdContainer = [];
+    let nmimsSchoolIdsContainer = [];
+    let nmimsCampusIdsContainer = [];
     addIPRModal.addEventListener('click' , function(event){
         if(event.target.tagName === 'BUTTON' && event.target.classList.contains('add-modal') || event.target.classList.contains('plus')){
             submitBtn.classList.remove('d-none');
             updateBtn.classList.add('d-none');
-            // fileView.classList.add('d-none');
-            // modalImage.classList.add('d-none'); 
             //d-none download button
             InternalAuthorValue = '';
             externalAuthorValue = '';
@@ -504,16 +560,36 @@ aria-hidden="true">
             authorDetails.classList.add('d-none');
             const IPRDataFiles = document.querySelector('#ipr-data-file-edit');
             IPRDataFiles.classList.add('d-none');
-    
-            // const typeOfInvention = document.getElementById('type-of-invention');
-            // const titleOfInvention = document.getElementById('title-of-invention');
-            // const patentStage = document.getElementById('patent-stage');
-            // const applicationNum = document.getElementById('application-no');
-            // const subMissionDate = document.getElementById('date');
+            externalFacultyIdArray = [];
+            typeOfInventionsIdContainer = [];
+            nmimsSchoolIdsContainer = [];
+            nmimsCampusIdsContainer = [];
             const supportingDocuments = document.querySelector('input[type="file"]');
             const isInternalFaculty = document.getElementById('is-internal');
             const isExternalFaculty = document.getElementById('is-external');
             document.getElementById('type-of-invention').value = '';
+
+            Array.from(campusDropDown.options).forEach(option => {
+            option.selected = false;
+            });
+
+            Array.from(schoolDropDown.options).forEach(option => {
+                option.selected = false;
+            });
+           
+            Array.from(inventionTypeDropDown.options).forEach(option => {
+            option.selected = false;
+            });
+
+            // Hide all items with the 'item' class
+            const selectItems = document.querySelectorAll('.item');
+            selectItems.forEach(item => {
+                item.classList.add('d-none');
+            });
+
+            // document.getElementById('nmims-school-list-ts-control').value = '';
+            // document.getElementById('nmims-school-list').value = '';
+            // // campusDropDown.removeEventListener("change", handleCampusDropDownList);
             document.getElementById('title-of-invention').value = '';
             document.getElementById('application-no').value = '';
             document.getElementById('patent-filed-date').value = '';
@@ -521,8 +597,8 @@ aria-hidden="true">
             document.getElementById('patent-published-date').value = '';
             document.getElementById('patent-granted-number').value = '';
             document.getElementById('institute-affiliation').value = '';
-            document.getElementById('nmims-school').value = '';
-            document.getElementById('nmims-campus').value = '';
+            document.getElementById('nmims-school-list').value = '';
+            document.getElementById('nmims-campus-list').value = '';
             document.getElementById('patent-published-number').value = '';
             document.getElementById('applicant-name').value = '';
             
@@ -534,6 +610,7 @@ aria-hidden="true">
     
     const insertIPRforms = async (url) => {
         const IPRData = new FormData();
+
         const iprFiles = document.getElementById('ipr-file');
         // patentFile
         const iprFilesData = iprFiles.files;
@@ -542,52 +619,46 @@ aria-hidden="true">
             console.log('file name  ==>>', iprFilesData[i].name);
             IPRData.append('supportingDocuments', iprFilesData[i]);
         }
+
         // iprFilesData.map(file => IPRData.append('supportingDocuments', file))
-    
-        const selectedTypeOfInvention = document.getElementById('type-of-invention').value;
-        IPRData.append('typeOfInvention', selectedTypeOfInvention);
-        
+        const inventionTypeArrayObject = typeOfInventionsIdContainer[typeOfInventionsIdContainer.length - 1];
+        const inventionTypeContainer = JSON.stringify(inventionTypeArrayObject);
+        console.log('inventionTypeContainer ====>>>>', inventionTypeContainer)
+        const nmimsSchoolArrayObject = nmimsSchoolIdsContainer[nmimsSchoolIdsContainer.length - 1];
+        const nmimsCampusArrayObject = nmimsCampusIdsContainer[nmimsCampusIdsContainer.length - 1];
+        const nmimsSchoolIds = JSON.stringify(nmimsSchoolArrayObject);
+        const nmimsCampusIds = JSON.stringify(nmimsCampusArrayObject);
+        console.log('nmimsSchoolIds ===>>>>', nmimsSchoolIds);
         const titleOfInvention = document.getElementById('title-of-invention').value;
-        IPRData.append('titleOfInvention', titleOfInvention);
-
         const selectPatentStatus = document.getElementById('patent-stage').value;
-        IPRData.append('patentStage', selectPatentStatus);
-
         const applicationNum= document.getElementById('application-no').value;
-        IPRData.append('applicationNum', applicationNum);
-
         const patentFiledDate = document.getElementById('patent-filed-date').value;
-        IPRData.append('patentFiledDate', patentFiledDate);
-
         const patentGrantDate= document.getElementById('patent-grant-date').value;
-        IPRData.append('patentGrantDate', patentGrantDate);
-
         const patentPublishedDate = document.getElementById('patent-published-date').value;
-        IPRData.append('patentPublishedDate', patentPublishedDate);
-
         const patentPublishedNumber= document.getElementById('patent-published-number').value;
-        IPRData.append('patentPublishedNumber', patentPublishedNumber);
-
         const patentGrantedNo = document.getElementById('patent-granted-number').value;
-        IPRData.append('patentGrantedNo', patentGrantedNo);
-
-
         const instituteAffiliation = document.getElementById('institute-affiliation').value;
-        IPRData.append('instituteAffiliation', instituteAffiliation);
-
-        const nmimsSchool = document.getElementById('nmims-school').value;
-        IPRData.append('nmimsSchool', nmimsSchool);
-
-        const nmimsCampus = document.getElementById('nmims-campus').value;
-        IPRData.append('nmimsCampus', nmimsCampus);
-        
         const applicantName = document.getElementById('applicant-name').value;
-        console.log('applicantName ===>>>>', applicantName);
-        IPRData.append('applicantName', applicantName);
-        const investorDetails = document.querySelector('input[name="investor-details"]:checked')
+        
+        const investorDetails = document.querySelector('input[name="investor-details"]:checked');
+        //function call
         await insertFacultyNameString(investorDetails, IPRData);
 
+        IPRData.append('nmimsSchoolIds' , nmimsSchoolIds);
+        IPRData.append('nmimsCampusIds' , nmimsCampusIds);
+        IPRData.append('typeOfInvention' , inventionTypeContainer);
+        IPRData.append('titleOfInvention', titleOfInvention);
+        IPRData.append('patentStage', selectPatentStatus);
+        IPRData.append('applicationNum', applicationNum);
+        IPRData.append('patentFiledDate', patentFiledDate);
+        IPRData.append('patentGrantDate', patentGrantDate);
+        IPRData.append('patentPublishedDate', patentPublishedDate);
+        IPRData.append('patentPublishedNumber', patentPublishedNumber);
+        IPRData.append('patentGrantedNo', patentGrantedNo);
+        IPRData.append('instituteAffiliation', instituteAffiliation);
+        IPRData.append('applicantName', applicantName);
 
+        // fetch api call
         fetch(url, {
             method: 'POST',
             body: IPRData
@@ -608,17 +679,17 @@ aria-hidden="true">
                 newIprRow.setAttribute('data-grant-number' , data.IprData.patentGrantedNo)
                 newIprRow.setAttribute('data-published-number' , data.IprData.patentPublishedNumber);
                 newIprRow.setAttribute('data-institute-affiliation' , data.IprData.instituteAffiliation);
-                newIprRow.setAttribute('data-supporting-documents' , data.IprData.iprFilesString);
+                newIprRow.setAttribute('data-supporting-documents' , data.IprData.iprFilesNamesArray);
                 newIprRow.setAttribute('data-investor-details' , data.investorDetailsString);
                 newIprRow.innerHTML = `
                     <td>${IndexEntry}</td>
-                    <td class="type-of-invention col-lg-1">${data.IprData.typeOfInvention}</td>
+                    <td class="type-of-invention col-lg-1">${data.invetionTypeNames}</td>
                     <td class="title-of-invention col-lg-1">${data.IprData.titleOfInvention}</td>
-                    <td class="patent-stage col-lg-1">${data.IprData.patentStage}</td>
+                    <td class="patent-stage col-lg-1">${data.statusTypeName}</td>
                     <td class="application-no col-lg-1">${data.IprData.applicationNum}</td>
                     <td class="applicant-name col-lg-1">${data.IprData.applicantName}</td>
-                    <td class="nmims-school">${data.IprData.nmimsSchool}</td>
-                    <td class="nmims-campus">${data.IprData.nmimsCampus}</td>
+                    <td class="nmims-school col-lg-1">${data.schoolNames}</td>
+                    <td class="nmims-campus col-lg-1">${data.campusNames}</td>
                     <td class="cell ">
                         <label class="view" data-ipr-id="${data.iprId}"><i class="fa-solid fa-eye view text-danger"
                             data-ipr-id="${data.iprId}"></i></label>
@@ -652,7 +723,6 @@ aria-hidden="true">
                     }
         })
         .catch((error) => {
-                    // This will catch network errors and errors thrown from the .then block above
                     console.error('Error:', error);
                     const message = error;
                     Swal.fire({
@@ -701,7 +771,7 @@ aria-hidden="true">
                 console.log('rowToBeUpdated in siode edit ====>>>', rowToBeUpdated)
                 // function call for download button
                 setFileNameAttributeToBeDownload(rowToBeUpdated);
-                iprId = event.target.getAttribute('data-ipr-id');
+                iprId = rowToBeUpdated.getAttribute('data-ipr-id');
                 console.log('Id For Updation', iprId);
                 const typeOfInvention = document.getElementById('type-of-invention')
                 const titleOfInvention =  document.getElementById('title-of-invention');
@@ -730,14 +800,13 @@ aria-hidden="true">
                     externalAuthor.checked = true;
                 }
 
-                typeOfInvention.value = rowToBeUpdated.querySelector('.type-of-invention').innerText;
-                console.log('typeOfInvention ==>>>', typeOfInvention.value)
+                // let nmimsCampusIds = rowToBeUpdated.getAttribute('data-campus-ids');
+                // let nmimsSchoolIds = rowToBeUpdated.getAttribute('data-school-ids');
+                // let inventionTypesIds = rowToBeUpdated.getAttribute('data-invention-ids');
                 titleOfInvention.value = rowToBeUpdated.querySelector('.title-of-invention').innerText;
                 patentStage.value = rowToBeUpdated.querySelector('.patent-stage').innerText;
                 applicationNum.value = rowToBeUpdated.querySelector('.application-no').innerText;
                 applicantName.value = rowToBeUpdated.querySelector('.applicant-name').innerText;
-                nmimsSchool.value = rowToBeUpdated.querySelector('.nmims-school').innerText;
-                nmimsCampus.value = rowToBeUpdated.querySelector('.nmims-campus').innerText;
                 const fileDateData = rowToBeUpdated.getAttribute('data-filed-date');
                 const grantDateData = rowToBeUpdated.getAttribute('data-grant-date');
                 const publishedDateData =  rowToBeUpdated.getAttribute('data-published-date');
@@ -756,13 +825,12 @@ aria-hidden="true">
 
 
                 iprDocuments = rowToBeUpdated.getAttribute('data-supporting-documents');
-                // console.log('iprDocuments.value ===>>>', iprDocuments.value);
                 console.log('iprDocuments ==>>>', iprDocuments)
                 // const supportingDocuments = iprDocuments.files;
                 // console.log('supportingDocuments ==>>', supportingDocuments);
 
-                storedFacultyValue = rowToBeUpdated.getAttribute('data-investor-details');
-                console.log('storedFacultyValue ====>>>>>', storedFacultyValue);
+                // storedFacultyValue = rowToBeUpdated.getAttribute('data-investor-details');
+                // console.log('storedFacultyValue ====>>>>>', storedFacultyValue);
                
                 $('#ipr-modal-form').modal('show');
 
@@ -908,7 +976,7 @@ aria-hidden="true">
     // update function for update the record
     const updatedIprData = async(url) => {
         console.log('clickedd');
-        const updatedTypeOfInvention = document.getElementById('type-of-invention').value;
+        // const updatedTypeOfInvention = document.getElementById('type-of-invention').value;
         const updatedTitleOfInvention = document.getElementById('title-of-invention').value;
         const updatedPatentStage = document.getElementById('patent-stage').value;
         const updatedPatentFiledDate =  document.getElementById('patent-filed-date').value
@@ -920,14 +988,17 @@ aria-hidden="true">
         console.log('updatedPublishedNum ===>>>', updatedPublishedNum)
         const updatedPatentGrantNum = document.getElementById('patent-granted-number').value;
         const updatedIntituteAffiliation = document.getElementById('institute-affiliation').value;
-        const updatedNmimsSchool = document.getElementById('nmims-school').value;
-        const updatedNmimsCampus = document.getElementById('nmims-campus').value;
-        const updatedInvestor = document.querySelector('input[name="investor-details"]:checked');
+        const inventionTypeArrayObject = typeOfInventionsIdContainer[typeOfInventionsIdContainer.length - 1];
+        const inventionTypeContainer = JSON.stringify(inventionTypeArrayObject);
+        console.log('inventionTypeContainer ====>>>>', inventionTypeContainer)
+        const nmimsSchoolArrayObject = nmimsSchoolIdsContainer[nmimsSchoolIdsContainer.length - 1];
+        const nmimsCampusArrayObject = nmimsCampusIdsContainer[nmimsCampusIdsContainer.length - 1];
+        const nmimsSchoolIds = JSON.stringify(nmimsSchoolArrayObject);
+        const nmimsCampusIds = JSON.stringify(nmimsCampusArrayObject);
         
         
         const updatedIPRData = new FormData();
         // Append the updated values to FormData
-        updatedIPRData.append('iprId' , iprId) ;
         const updatedIPRFiles = document.getElementById('ipr-file');
         // patentFile
         console.log('updatedIPRFiles ==>>', updatedIPRFiles);
@@ -939,7 +1010,11 @@ aria-hidden="true">
                 updatedIPRData.append('supportingDocuments', file);
             }) :
             (updatedIprFilesData = null, updatedIPRData.append('supportingDocuments', updatedIprFilesData));
-        updatedIPRData.append('typeOfInvention', updatedTypeOfInvention);
+        console.log('iprId ===>>>>>>', iprId)
+        updatedIPRData.append('iprId' , iprId);
+        updatedIPRData.append('nmimsSchoolIds' , nmimsSchoolIds);
+        updatedIPRData.append('nmimsCampusIds' , nmimsCampusIds);
+        updatedIPRData.append('typeOfInvention' , inventionTypeContainer);
         updatedIPRData.append('titleOfInvention', updatedTitleOfInvention);
         updatedIPRData.append('patentStage', updatedPatentStage);
         updatedIPRData.append('applicationNum', updatedApplicationNum);
@@ -949,11 +1024,9 @@ aria-hidden="true">
         updatedIPRData.append('patentPublishedNumber', updatedPublishedNum);
         updatedIPRData.append('patentGrantedNo', updatedPatentGrantNum);
         updatedIPRData.append('instituteAffiliation', updatedIntituteAffiliation);
-        updatedIPRData.append('nmimsSchool', updatedNmimsSchool);
-        updatedIPRData.append('nmimsCampus', updatedNmimsCampus);
         updatedIPRData.append('applicantName', updatedApplicantName);
         //function call for set the value of radio button 
-        await updateFacultyNameString(updatedInvestor, updatedIPRData, storedFacultyValue);
+        await updateFacultyNameString( updatedIPRData, storedFacultyValue);
 
         // fetch api
         fetch(url , {
@@ -1027,6 +1100,10 @@ aria-hidden="true">
         formGroup = updateBtn.closest('.validate-input')
         console.log("formGroup::::::::", formGroup)
         formGroup.querySelectorAll('input[type="file"]')?.forEach(elm => {
+            console.log("elm:::::::::", elm);
+            elm.removeAttribute('data-validate')
+        })
+        formGroup.querySelectorAll('.select-option')?.forEach(elm => {
             console.log("elm:::::::::", elm);
             elm.removeAttribute('data-validate')
         })
@@ -1108,26 +1185,80 @@ aria-hidden="true">
 
         };
     
-        // EVENT LIST THAT WILL USE USE TO OPEN DROP DOWN LIST  
-        const externaltype = document.querySelector('.external-faculty');
-        const enternalFacultyType = document.getElementById('is-internal');
-        const externalFacultyType = document.getElementById('is-external');
-        const employeeList = document.getElementById('employee-list');
-        const authorDetails = document.getElementById('author-details');
+    // EVENT LIST THAT WILL USE USE TO OPEN DROP DOWN LIST  
+    const externaltype = document.querySelector('.external-faculty');
+    const enternalFacultyType = document.getElementById('is-internal');
+    const externalFacultyType = document.getElementById('is-external');
+    const employeeList = document.getElementById('employee-list');
+    const authorDetails = document.getElementById('author-details');
 
-        let additionalDetails = []; 
+    let additionalDetails = []; 
 
     const enternalText = document.getElementById('enternal-text');
-    
+    const patentStatusList = document.getElementById('patent-status-list').dataset.status;
+    const patentInventionType = document.getElementById('invention-types').dataset.invention;
+    const nmimsSchoolList = document.getElementById('school-data-list').dataset.school;
+    const nmimsCampusList = document.getElementById('campus-data-list').dataset.campus;
     // employeesListData data came from backend
     const employeesListData = document.getElementById('employees-list-data').dataset.employees;
     const employeesDataObj = JSON.parse(employeesListData);
+    const patentStatusData = JSON.parse(patentStatusList);
+    const inventionTypeData = JSON.parse(patentInventionType);
+    const schoolDataList = JSON.parse(nmimsSchoolList);
+    const campusDataList = JSON.parse(nmimsCampusList);
+
     let employeeListArray = [];
 
    
-    // ajax for search bar to search employee name 
-    new TomSelect("#emp-name");
-    const investorDetailsArray = [];
+    // ajax for search bar to search status
+    const statusOptions = patentStatusData.map(status => ({
+            value: status.id,
+            text: `${status.name}`
+        }));
+
+    // ajax for search bar to search status
+    const inventionTypeValue = inventionTypeData.map(invention => ({
+            value: invention.id,
+            text: `  ${invention.name}`
+        }));
+
+      // ajax for search bar to search status
+      const selectedSchool = schoolDataList.map(school => ({
+            value: school.id,
+            text: `${school.school_name}`
+        }));
+
+    // ajax for search bar to search status
+    const selectedCampus = campusDataList.map(campus => ({
+            value: campus.id,
+            text: `${campus.campus_name}`
+        }));
+
+     // ajax for search bar to search employee name 
+    const facultyOptions = employeesDataObj.map(faculty => ({
+            value: faculty.id,
+            text: ` ${faculty.employee_id}  ${faculty.faculty_name}`
+        }));
+        
+    new TomSelect("#patent-stage", {
+            options: statusOptions
+    });
+
+    new TomSelect("#type-of-invention", {
+            options: inventionTypeValue
+    });
+
+    new TomSelect("#nmims-campus-list", {
+            options: selectedCampus
+    });
+
+    new TomSelect("#nmims-school-list", {
+            options: selectedSchool
+    });
+
+    new TomSelect("#emp-name", {
+            options: facultyOptions
+    });
 
     // function for select author name from drop down list
     function handleEmployeeDropdownChange() {
@@ -1135,10 +1266,140 @@ aria-hidden="true">
                 .filter(option => option.selected)
                 .map(option => option.value);
             InternalAuthorValue = selectedValues.length === 0 ? "" : selectedValues;
-            investorDetailsArray.push({'internalEmpList' : InternalAuthorValue})
-            console.log("Selected employee values:", InternalAuthorValue);
+            console.log('InternalAuthorValue ===>>>>>', InternalAuthorValue);
+            if (!facultyIdContainer.some(author => author === InternalAuthorValue)) {
+            facultyIdContainer.push({ 'internalFaculty' : InternalAuthorValue});
+            }
+            console.log("Selected employee values:", facultyIdContainer);
             
         }
+    
+     // function for invention type drop down list selectedTypeOfInvention
+     function handleInventionsTypeDropDownChange() {
+        const selectedValues = Array.from(inventionTypeDropDown.options)
+                .filter(option => option.selected)
+                .map(option => option.value);
+                const inventionsTypeValues = selectedValues.length === 0 ? "" : selectedValues;
+            console.log('inventionsTypeValues ===>>>>>', inventionsTypeValues);
+            if (!typeOfInventionsIdContainer.some(inventions => inventions === inventionsTypeValues)) {
+                typeOfInventionsIdContainer.push({ 'typeOfInventions' : inventionsTypeValues});
+            }
+            console.log("Selected typeOfInventionsIdContainer ids :", typeOfInventionsIdContainer);
+    }
+
+      // function for invention type drop down list selectedTypeOfInvention
+      function handleCampusDropDownList() {
+        const selectedValues = Array.from(campusDropDown.options)
+                .filter(option => option.selected)
+                .map(option => option.value);
+                const campusIds = selectedValues.length === 0 ? "" : selectedValues;
+            console.log('campusIds ===>>>>>', campusIds);
+            if (!nmimsCampusIdsContainer.some(campus => campus === campusIds)) {
+                nmimsCampusIdsContainer.push({ 'nmimsCampus' : campusIds});
+            }
+            console.log(" nmimsCampusIdsContainer ids :", nmimsCampusIdsContainer);
+    }
+
+
+      // function for invention type drop down list selectedTypeOfInvention
+      function handleSchoolDropDownList() {
+        const selectedValues = Array.from(schoolDropDown.options)
+                .filter(option => option.selected)
+                .map(option => option.value);
+                const schoolIds = selectedValues.length === 0 ? "" : selectedValues;
+            console.log('schoolIds ===>>>>>', schoolIds);
+            if (!nmimsSchoolIdsContainer.some(school => school === schoolIds)) {
+                nmimsSchoolIdsContainer.push({ 'nmimsSchool' : schoolIds});
+            }
+            console.log("nmimsSchoolIdsContainer ids :", nmimsSchoolIdsContainer);
+    }
+
+      //function for insert external data faculty with fetch api
+      const  insertExternalDetails = (url) => {
+            // Define externalFacultyArray and externalFacultyData outside the function
+            const externalFacultyDetails = {};
+            externalFacultyDetails.facultyName = document.getElementById('faculty-name').value;
+            externalFacultyDetails.facultyDsg = document.getElementById('faculty-designation').value;
+            externalFacultyDetails.facultyAddr = document.getElementById('faculty-address').value;
+            externalFacultyDetails.facultyEmpId = document.getElementById('faculty-emp-id').value;
+
+            const payload = {
+                externalFacultyDetails : externalFacultyDetails
+            }
+
+            console.log('payload ====>>>>>>', payload);
+
+            fetch(url, {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        })
+            .then((result) => {
+                return result.json()
+            })
+            .then((data) => {
+                if (data.status === 'Done') {
+                    console.log('data ===>>>>>', data);
+                    let rowCountInteger = parseInt(data.rowCount, 10);
+                    let indexCount = rowCountInteger;
+                    rowCountInteger = indexCount + rowCountInteger;
+                    console.log('rowCountInteger ===>>>>>>', rowCountInteger);
+                    externalFacultyIdArray.push(data.externalFacultyId);
+                    document.getElementById('name-class').classList.add('d-none');
+					document.getElementById('dsg-class').classList.add('d-none');
+					document.getElementById('id-class').classList.add('d-none');
+					document.getElementById('address-class').classList.add('d-none');
+                    document.getElementById('insert-details').classList.add('d-none');
+                    document.getElementById('add-more-details').classList.remove('d-none');
+                    const newFacultyDataRow = document.createElement('tr');
+                    newFacultyDataRow.innerHTML = `
+                    <td class="name-class"> ${data.facultyData.facultyName} </td>
+                    <td class="dsg-class"> ${data.facultyData.facultyDsg} </td>
+                    <td class="id-class"> ${data.facultyData.facultyEmpId} </td>
+                    <td class="address-class"> ${data.facultyData.facultyAddr} </td>
+                    `
+                    facultyTableList.classList.remove('d-none')
+                   facultyTableList.appendChild(newFacultyDataRow);
+                   Swal.fire({
+							position: "top-center",
+							icon: "success",
+							title: `${data.message}`,
+							showConfirmButton: false
+						}); 
+                }
+            }).catch((error) => {
+                console.error("ERROR:", error);
+            })
+
+        // event listner for insert exetrnal faculty details details
+        document.getElementById('add-more-details').addEventListener('click', () => {
+
+                console.log('clicked add more button');
+                // making input field empty
+                document.getElementById('faculty-name').value = '';
+                document.getElementById('faculty-designation').value = '';
+                document.getElementById('faculty-address').value = '';
+                document.getElementById('faculty-emp-id').value = '';
+                document.getElementById('name-class').classList.remove('d-none');
+				document.getElementById('dsg-class').classList.remove('d-none');
+				document.getElementById('id-class').classList.remove('d-none');
+				document.getElementById('address-class').classList.remove('d-none');
+                document.getElementById('insert-details').classList.remove('d-none');
+                document.getElementById('add-more-details').classList.add('d-none');
+
+            })
+        }
+
+    //  addEventListener   for insert external details
+    InsertDetails.addEventListener('click', async () => {
+        console.log('clickedd insert details buttons')
+        await insertExternalDetails('<%- BASE_URL %>research/external/faculty-insert');     
+           
+    });
+    
+
     
     //function for handle add more details for storing current value of clicked
     function handleAddMoreDetailsClick() {
@@ -1157,41 +1418,40 @@ aria-hidden="true">
 
     // function for add drop down list or  add new faculty data
     async function insertFacultyNameString(investorDetails, IPRData) {
-        console.log('applicantName in side my function ====>>>', investorDetails);
-        // console.log('InternalAuthorValue ====>>>>>', InternalAuthorValue);
-        // console.log('externalAuthorValue ===>>>', externalAuthorValue)
-        const facultytype = investorDetails.value;
-        console.log('facultytype ===>>>', facultytype);
-        console.log('investorDetailsArray ===>>>>', investorDetailsArray)
-        const investorDetailsString = JSON.stringify(investorDetailsArray);
-        IPRData.append('investorDetails', investorDetailsString);
+        console.log('externalFacultyIdArray in side my function ====>>>', externalFacultyIdArray);
+        const externalFacultyDetails = externalFacultyIdArray;
+        console.log('facultyIdContainer ====>>>>>', facultyIdContainer);
+        const facultyDataContainerArray = [(facultyIdContainer[facultyIdContainer.length - 1])];
+        facultyDataContainerArray.push({'externalEmpList' : externalFacultyDetails});
+
+        const facultyDataContainer =  JSON.stringify(facultyDataContainerArray);
+        console.log('facultyDataContainer ===>>>>', facultyDataContainer)
+        IPRData.append('facultyDataContainer', facultyDataContainer);
         }
 
     // fuction for updated faculty type
-    async function updateFacultyNameString(updatedInvestor, updatedIPRData, storedFacultyValue) {
-            console.log('storedFacultyValue in side update function ===>>>', storedFacultyValue)
-            console.log('updatedapplicantName ====>>>', updatedInvestor);
-            console.log('externalAuthorValue ===>>>', externalAuthorValue);
-            console.log('InternalAuthorValue ====>>>>>', InternalAuthorValue);
-            console.log('storedFacultyValue ====>>> ', storedFacultyValue);
-            const updatedInvestorDetails = [];
-            if(!externalAuthorValue && ! InternalAuthorValue){
-                updatedInvestorDetails.push({'existingInvestorDetails' : storedFacultyValue})
-                const updatedInvestorDetailString = JSON.stringify(updatedInvestorDetails);
-                updatedIPRData.append('investorDetails', updatedInvestorDetailString)
-            }
-            else{
-                updatedInvestorDetails.push({'externalEmpList' : externalAuthorValue})
-                updatedInvestorDetails.push({'internalEmpList' : InternalAuthorValue})
-                const updatedInvestorDetailString = JSON.stringify(updatedInvestorDetails);
-                console.log('updatedInvestorDetailString ===>>>>', updatedInvestorDetailString);
-                updatedIPRData.append('investorDetails', updatedInvestorDetailString)
-            }
+    async function updateFacultyNameString( updatedIPRData, storedFacultyValue) {
+        console.log('externalFacultyIdArray in side my function ====>>>', externalFacultyIdArray);
+        const externalFacultyDetails = externalFacultyIdArray;
+        console.log('facultyIdContainer ====>>>>>', facultyIdContainer);
+        const facultyDataContainerArray = [(facultyIdContainer[facultyIdContainer.length - 1])];
+        facultyDataContainerArray.push({'externalEmpList' : externalFacultyDetails});
+
+        const facultyDataContainer =  JSON.stringify(facultyDataContainerArray);
+        console.log('facultyDataContainer ===>>>>', facultyDataContainer)
+        updatedIPRData.append('facultyDataContainer', facultyDataContainer);
+           
         }
     
     function enternalFacultyDropDownList() {
         employeeList.classList.remove('d-none');
         authorDetails.classList.add('d-none');
+        document.getElementById('name-class').classList.add('d-none');
+		document.getElementById('dsg-class').classList.add('d-none');
+		document.getElementById('id-class').classList.add('d-none');
+		document.getElementById('address-class').classList.add('d-none');
+        document.getElementById('insert-details').classList.add('d-none');
+        document.getElementById('add-more-details').classList.add('d-none');
     }
 
     function externalFacultyDetails(){
@@ -1199,10 +1459,22 @@ aria-hidden="true">
         authorDetails.classList.remove('d-none');
     }
 
-    // making d-none external faculty
+    function externalFacultyDetails(){
+        employeeList.classList.add('d-none');
+        addMoreDetailsButton.classList.add('d-none');
+        document.getElementById('name-class').classList.remove('d-none')
+        document.getElementById('dsg-class').classList.remove('d-none')
+        document.getElementById('id-class').classList.remove('d-none')
+        document.getElementById('address-class').classList.remove('d-none');
+        document.getElementById('add-btn').classList.remove('d-none')
+    }
+
+    // addEventListener 
     enternalFacultyType.addEventListener('click' ,enternalFacultyDropDownList)
-    //making d-none internal faculty
-    externalFacultyType.addEventListener('click' , externalFacultyDetails)
+    externalFacultyType.addEventListener('click' , externalFacultyDetails);
+    inventionTypeDropDown.addEventListener("change", handleInventionsTypeDropDownChange);
+    campusDropDown.addEventListener("change", handleCampusDropDownList);
+    schoolDropDown.addEventListener("change", handleSchoolDropDownList);
  
 
 </script>
