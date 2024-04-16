@@ -338,25 +338,89 @@ module.exports.InsetIPRDataModels = async (IprData, iprFilesNamesArray, Facultyd
 module.exports.deleteIPRData = async(iprId) => {
     console.log('iprId in models ===>>>>', iprId);
 
-    let sql = {
-        text : `DELETE FROM IPR WHERE id = $1`,
-        values : [iprId]
+    // Delete records from child tables  patent_submission_invention_type
+    const deleteIprInventiontypeSql = {
+        text: 'DELETE FROM ipr_invention_type WHERE ipr_id = $1',
+        values: [iprId]
     }
+    console.log('deleteIprInventiontypeSql ==>>>>', deleteIprInventiontypeSql);
 
-    console.log('sql ===>>>>', sql);
-    const deletedRecord = await researchDbW.query(sql);
-    const promises = [deletedRecord];
-    return Promise.all(promises).then(([deletedRecord]) => {
-        return  { status : "Done" , message : "Record Deleted Successfully", rowCount : deletedRecord.rowCount}
+    // Delete records from child tables  ipr faculty 
+    const deleteIprFacultySql =   {
+        text: 'DELETE FROM ipr_faculty WHERE ipr_id = $1',
+        values: [iprId]
+    }
+    console.log('deleteIprFacultySql ==>>>>', deleteIprFacultySql);
+
+    // Delete records from child tables  patent_submission_stage_status
+    const deleteIprStatusSql = {
+        text: 'DELETE FROM ipr_status_type WHERE ipr_id = $1',
+        values: [iprId]
+    }
+    console.log('deleteIprStatusSql ==>>>>', deleteIprStatusSql);
+
+    // Delete records from child tables  iprSchool
+    const deleteIprSchoolSql = {
+        text: 'DELETE FROM ipr_nmims_school WHERE ipr_id = $1',
+        values: [iprId]
+    }
+    console.log('deleteIprSchoolSql ==>>>>', deleteIprSchoolSql);
+
+    // Delete records from child tables  iprSchool
+    const deleteIprCampusSql = {
+        text: 'DELETE FROM ipr_nmims_campus WHERE ipr_id = $1',
+        values: [iprId]
+    }
+    console.log('deleteIprCampusSql ==>>>>', deleteIprCampusSql);
+
+    // Delete records from child tables  iprSchool
+    const deleteIprDocumnetsSql = {
+        text: 'DELETE FROM ipr_supporting_documents WHERE ipr_id = $1',
+        values: [iprId]
+    }
+    console.log('deleteIprDocumnetsSql ==>>>>', deleteIprDocumnetsSql);
+
+    const deleteIprInventionstype = await researchDbW.query(deleteIprInventiontypeSql);
+    const deleteIprFaculty = await researchDbW.query(deleteIprFacultySql);
+    const deleteIprSchool = await researchDbW.query(deleteIprSchoolSql);
+    const deleteIprCampus = await researchDbW.query(deleteIprCampusSql);
+    const deleteIprDocuments = await researchDbW.query(deleteIprDocumnetsSql);
+    const deleteIprStatus = await researchDbW.query(deleteIprStatusSql);
+
+    let deletePromises = [deleteIprInventionstype, deleteIprFaculty, deleteIprSchool, deleteIprCampus, deleteIprDocuments, deleteIprStatus];
+
+    return Promise.all(deletePromises)
+    .then((result) => {
+        console.log('result ===>>>', result);
+        //once if child record are deleted then delete record from parent table means IPR table
+        return researchDbW.query ({
+            text : `DELETE FROM IPR WHERE id = $1`,
+            values : [iprId]
+        })
     })
-    .catch((error) => {
-        return{status : "Failed" , message : error.message , errorCode : error.code}
-    })
+    .then((finalResponce) => {
+        return {
+            status : 'Done',
+            message : 'Record deleted successfully',
+            iprFacultyRowCount : deleteIprFaculty.rowCount,
+            iprStatusRowCount : deleteIprStatus.rowCount,
+            iprInventiontypeRowCount : deleteIprInventionstype.rowCount,
+            iprSchoolRowCount :  deleteIprSchool.rowCount,
+            irpCampusRowCount : deleteIprCampus.rowCount,
+            iprDocumnetsRowCount : deleteIprDocuments.rowCount,
+            iprRowCount : finalResponce.rowCount
+        }
+    }
+       )
+
 }
 
 module.exports.updateIPRRecordData = async(iprId, updatedIPRData,  iprFilesNamesArray, FacultydataArray, schoolIdsArray, campusIdsArray, inventionTypeIdsArray, patentStatus) => {
     console.log('data in models for updation ===>>>>', updatedIPRData);
     console.log('iprFilesNamesArray ===>>>>>>', iprFilesNamesArray);
+
+    console.log('schoolIdsArray ===>>>>', schoolIdsArray);
+
     const {titleOfInvention, applicationNum, applicantName, patentFiledDate, patentPublishedDate, patentGrantDate, 
         patentPublishedNumber, patentGrantedNo, instituteAffiliation} = updatedIPRData;
 
@@ -381,17 +445,23 @@ module.exports.updateIPRRecordData = async(iprId, updatedIPRData,  iprFilesNames
     }) : null;
 
     const documentIds = await Promise.all(insertDocumentPromises);
-    console.log('documentIds ====>>>>', documentIds);
+    console.log('documentIds in models ====>>>>', documentIds);
    
 
-    const insertIprDocuments = documentIds ? documentIds.map((element) => {
+    const insertIprDocuments = documentIds && Array.isArray(documentIds)
+    ? documentIds.map((element) => {
         const iprDocumentSql = {
             text: `INSERT INTO ipr_supporting_documents (ipr_id, supporting_documents_id) VALUES ($1, $2) RETURNING id`,
             values: [iprId, element]
         };
         console.log('iprDocumentSql ===>>>>>', iprDocumentSql);
         return researchDbW.query(iprDocumentSql);
-    }) : null;
+    })
+    : [];
+
+    console.log('insertIprDocuments ===>>>>>', insertIprDocuments);
+
+
 
     const insertIprStatusPromises = patentStatus ? patentStatus.map(async pantent_stage_status_id => {
         const existingRecord = await researchDbW.query({
@@ -407,10 +477,10 @@ module.exports.updateIPRRecordData = async(iprId, updatedIPRData,  iprFilesNames
         ) : (
           Promise.resolve({ rows: [{ id: existingRecord.rows[0].id }] })
         );
-      }) : null;
+      }) : [];
 
-
-    const insertInventionTypePromises = inventionTypeIdsArray.map(async invention_type_id => {
+    console.log('insertIprStatusPromises ===>>>>>', insertIprStatusPromises);
+    const insertInventionTypePromises = inventionTypeIdsArray ?  inventionTypeIdsArray.map(async invention_type_id => {
         const existingRecord = await researchDbW.query({
           text: `SELECT id FROM ipr_invention_type WHERE ipr_id = $1 AND invention_type_id = $2`,
           values: [iprId, invention_type_id]
@@ -424,7 +494,9 @@ module.exports.updateIPRRecordData = async(iprId, updatedIPRData,  iprFilesNames
         ) : (
           Promise.resolve({ rows: [{ id: existingRecord.rows[0].id }] })
         );
-      });
+      }) : [];
+
+      console.log('insertInventionTypePromises ==>>>>', insertInventionTypePromises);
 
 
     const insertIprFacultyPromises = FacultydataArray ? FacultydataArray.map( async faculty_id => {
@@ -441,7 +513,7 @@ module.exports.updateIPRRecordData = async(iprId, updatedIPRData,  iprFilesNames
         ) : (
           Promise.resolve({ rows: [{ id: existingRecord.rows[0].id }] })
         );
-      }) : null;
+      }) : [];
 
 
     const insertNmimsCampusPromises = campusIdsArray ? campusIdsArray.map( async campusId => {
@@ -458,7 +530,7 @@ module.exports.updateIPRRecordData = async(iprId, updatedIPRData,  iprFilesNames
         ) : (
           Promise.resolve({ rows: [{ id: existingRecord.rows[0].id }] })
         );
-      }) : null;
+      }) : [];
 
 
     const insertIprSchoolsPromises = schoolIdsArray ? schoolIdsArray.map( async schoolId => {
@@ -475,7 +547,7 @@ module.exports.updateIPRRecordData = async(iprId, updatedIPRData,  iprFilesNames
         ) : (
           Promise.resolve({ rows: [{ id: existingRecord.rows[0].id }] })
         );
-      }) : null;
+      }) : [];
 
     const selectSchoolDataPromises = schoolIdsArray ? schoolIdsArray.map(async (schoolId) => {
         const schoolSql = {
@@ -484,7 +556,7 @@ module.exports.updateIPRRecordData = async(iprId, updatedIPRData,  iprFilesNames
         };
         const schoolResult = await researchDbR.query(schoolSql);
         return schoolResult.rows;
-    }) : null;
+    }) : [];
 
     const selectCampusDataPromises = campusIdsArray ? campusIdsArray.map(async (campusId) => {
         const campusSql = {
@@ -493,7 +565,7 @@ module.exports.updateIPRRecordData = async(iprId, updatedIPRData,  iprFilesNames
         };
         const campusResult = await researchDbR.query(campusSql);
         return campusResult.rows;
-    }) : null;
+    }) : [];
 
     const selectInvetionTypePromises = inventionTypeIdsArray ? inventionTypeIdsArray.map(async (inventionTypId) => {
         const inventionSql = {
@@ -502,7 +574,7 @@ module.exports.updateIPRRecordData = async(iprId, updatedIPRData,  iprFilesNames
         };
         const invetionResult = await researchDbR.query(inventionSql);
         return invetionResult.rows;
-    }) : null;
+    }) : [];
 
     const selectPatentSatatusPromises = patentStatus ? patentStatus.map(async (statusId) => {
         const statusSql = {
@@ -511,7 +583,9 @@ module.exports.updateIPRRecordData = async(iprId, updatedIPRData,  iprFilesNames
         };
         const statusResult = await researchDbR.query(statusSql);
         return statusResult.rows;
-    }) : null;
+    }) : [];
+
+    console.log('selectPatentSatatusPromises ==>>>>>>', selectPatentSatatusPromises);
 
     // Waiting for all promises to resolve
     return Promise.all([
@@ -549,6 +623,7 @@ module.exports.updateIPRRecordData = async(iprId, updatedIPRData,  iprFilesNames
         const statusTypeName = statusList.map(status => status?.status_name).filter(Boolean).join(',');
         console.log('invetionTypeNames ===>>>>', invetionTypeNames);
         console.log('statusTypeName ===>>>>', statusTypeName);
+        console.log('schoolNames ===>>>>>>', schoolNames);
 
 
         return {
@@ -578,18 +653,184 @@ module.exports.updateIPRRecordData = async(iprId, updatedIPRData,  iprFilesNames
 }
 
 module.exports.iprRecordToBeViewed = async(iprId) => {
-    let sql = {
-        text : `SELECT type_of_invention, title_of_invention, patent_stage,
-        patent_application_no, patent_filed_date, patent_published_date, patent_granted_date,
-        patent_published_num, patent_granted_no, institute_affiliation, nmims_campus, nmims_school, applicants_name, investor_details, supporting_documents FROM IPR WHERE id = $1`,
+    let iprSql = {
+        text : `SELECT
+            ipr.id AS ipr_id,
+            ipr.patent_title,
+            ipr.patent_application_number,
+            ipr.applicant_name,
+            ipr.patent_filed_date,
+            ipr.patent_grant_date,
+            ipr.patent_published_date,
+            ipr.patent_publication_number,
+            ipr.patent_grant_number,
+            ipr.institutional_affiliation,
+            f.faculty_name,
+            f.designation,
+            f.address,
+            f.employee_id,
+            
+            string_agg(DISTINCT it.name, ', ') AS invention_types,
+            string_agg(DISTINCT it.id::text, ', ') AS invention_types_id,
+            string_agg(DISTINCT ps.name, ', ') AS patent_stage_statuses,
+            string_agg(DISTINCT ps.id::text, ', ') AS patent_stage_id,
+            string_agg(DISTINCT sd.documents_name, ', ') AS supporting_documents,
+            string_agg(DISTINCT ns.school_name, ', ') AS associated_schools,
+            string_agg(DISTINCT ns.id::text, ', ') AS school_id,
+            string_agg(DISTINCT nc.campus_name, ', ') AS associated_campuses,
+            string_agg(DISTINCT nc.id::text, ', ') AS campus_id
+        FROM
+            IPR ipr
+        LEFT JOIN
+            ipr_faculty ipf ON ipr.id = ipf.ipr_id
+        LEFT JOIN
+            faculties f ON ipf.faculty_id = f.id
+        
+        LEFT JOIN
+            ipr_invention_type iit ON ipr.id = iit.ipr_id
+        LEFT JOIN
+            invention_type it ON iit.invention_type_id = it.id
+        LEFT JOIN
+            ipr_status_type ist ON ipr.id = ist.ipr_id
+        LEFT JOIN
+            pantent_stage_status ps ON ist.pantent_stage_status_id = ps.id
+        LEFT JOIN
+            ipr_supporting_documents isd ON ipr.id = isd.ipr_id
+        LEFT JOIN
+            supporting_documents sd ON isd.supporting_documents_id = sd.id
+        LEFT JOIN
+            ipr_nmims_school ins ON ipr.id = ins.ipr_id
+        LEFT JOIN
+            nmims_school ns ON ins.school_id = ns.id
+        LEFT JOIN
+            ipr_nmims_campus inc ON ipr.id = inc.ipr_id
+        LEFT JOIN
+            nmims_campus nc ON inc.campus_id = nc.id
+        WHERE
+            ipr.id = $1
+        GROUP BY
+            ipr.id,
+            ipr.patent_title,
+            ipr.patent_application_number,
+            ipr.applicant_name,
+            ipr.patent_filed_date,
+            ipr.patent_grant_date,
+            ipr.patent_published_date,
+            ipr.patent_publication_number,
+            ipr.patent_grant_number,
+            ipr.institutional_affiliation,
+            f.faculty_name,
+            f.designation,
+            f.address,
+            f.employee_id`,
+
+    values : [iprId]
+    }
+
+    const iprFacultySql = {
+        text : `SELECT
+                f.faculty_name,
+                f.designation,
+                f.address,
+                f.employee_id,
+                ft.name AS faculty_type
+            FROM
+                ipr_faculty ipf
+            JOIN
+                faculties f ON ipf.faculty_id = f.id
+            JOIN
+                faculty_types ft ON f.faculty_type_id = ft.id
+            WHERE
+                ipf.ipr_id = $1`,
+
+    values  : [iprId]
+    }
+
+    const iprSchoolSql = {
+        text : `SELECT 
+                    ns.school_name,
+                    ns.id
+                FROM 
+                    ipr_nmims_school ins 
+                JOIN 
+                    nmims_school ns ON ins.school_id =  ns.id
+                WHERE 
+                    ins.ipr_id = $1`,
+        values  : [iprId]
+    }
+
+    const iprCampusSql = {
+        text : `SELECT 
+                    nc.campus_name,
+                    nc.id
+                FROM
+                    ipr_nmims_campus inc 
+                JOIN 
+                    nmims_campus nc ON inc.campus_id = nc.id
+                WHERE
+                    inc.ipr_id = $1`,
         values : [iprId]
     }
 
-    console.log('sql ===>>>>', sql);
-    const viewIPRRecord = await researchDbW.query(sql);
-    const promises = [viewIPRRecord];
+    const iprInvetionSql = {
+        text : `SELECT 
+                    it.name,
+                    it.id
+                FROM
+                ipr_invention_type iit 
+                JOIN 
+                invention_type it ON iit.invention_type_id = it.id
+                WHERE
+                    iit.ipr_id = $1`,
+        values : [iprId]
+    }
+
+    const iprStatusSql = {
+        text : `SELECT 
+                    ps.name,
+                    ps.id
+                FROM
+                    ipr_status_type ipt 
+                JOIN 
+                    pantent_stage_status ps ON ipt.pantent_stage_status_id = ps.id
+                WHERE
+                    ipt.ipr_id = $1`,
+        values : [iprId]
+    }
+
+    const iprDocuments = {
+        text : `SELECT 
+                    sd.documents_name,
+                    sd.id
+                FROM
+                    ipr_supporting_documents isd 
+                JOIN 
+                    supporting_documents sd ON isd.supporting_documents_id = sd.id
+                WHERE
+                    isd.ipr_id = $1`,
+        values : [iprId]
+    }
+
+    console.log('iprDocuments ===>>>>>>', iprDocuments);
+    console.log('iprStatusSql ===>>>>>', iprStatusSql);
+    console.log('iprInvetionSql ===>>>>', iprInvetionSql);
+    console.log('iprCampusSql ===>>>>', iprCampusSql);
+    console.log('iprSchoolSql ==>>>', iprSchoolSql);
+    console.log('iprFacultySql ===>>>>>', iprFacultySql);
+
+    console.log('iprSql ===>>>>', iprSql);
+    const viewIPRRecord = await researchDbW.query(iprSql);
+    const facultyData = await researchDbW.query(iprFacultySql);
+    const iprNmimsSchoolList = await researchDbW.query(iprSchoolSql);
+    const iprNmimsCampusList = await researchDbW.query(iprCampusSql);
+    const iprInventionList = await researchDbW.query(iprInvetionSql);
+    const iprStatusList = await researchDbW.query(iprStatusSql);
+    const iprDocumentsList = await researchDbW.query(iprDocuments);
+    const promises = [viewIPRRecord, facultyData, iprNmimsSchoolList, iprNmimsCampusList, iprInventionList, iprStatusList, iprDocumentsList];
     return Promise.all(promises).then(([viewIPRRecord]) => {
-        return  { status : "Done" , message : "Record Viewed Successfully", rowCount : viewIPRRecord.rowCount, IPRData : viewIPRRecord.rows[0]}
+        return  { status : "Done" , message : "Record Viewed Successfully", rowCount : viewIPRRecord.rowCount, IPRData : viewIPRRecord.rows[0],
+        facultyData : facultyData.rows, iprNmimsSchoolList : iprNmimsSchoolList.rows, iprNmimsCampusList : iprNmimsCampusList.rows,
+        iprInventionList : iprInventionList.rows, iprStatusList : iprStatusList.rows, iprDocumentsList : iprDocumentsList.rows}
     })
     .catch((error) => {
         return{status : "Failed" , message : error.message , errorCode : error.code}

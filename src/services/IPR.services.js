@@ -89,8 +89,11 @@ module.exports.IprInsertDataService = async(body, files) => {
 }
 
 module.exports.deleteIPRRow = async(iprId) => {
+    console.log('iprId in servicess ===>>>>', iprId);
 
     const IprRowDataToBeDeleted = await IPRModels.deleteIPRData(iprId);
+
+    console.log('IprRowDataToBeDeleted ===>>>>>', IprRowDataToBeDeleted);
 
     return IprRowDataToBeDeleted.status === "Done" ? {
         status : IprRowDataToBeDeleted.status,
@@ -108,28 +111,27 @@ module.exports.updatedIprData = async(iprId, body, files) => {
     const iprFilesNamesArray = files ?.map(file => file.filename);
     console.log('iprFilesNamesArray ====>>>>', iprFilesNamesArray);
     const updatedIPRData = body;
-    const statusIds = patentStage !== '' ? [parseInt(updatedIPRData.patentStage)] : null;
-    console.log('statusIds ===>>>>>', statusIds);
+    // const statusIds = updatedIPRData.patentStage !== '' ? [parseInt(updatedIPRData.patentStage)] : null;
+    // console.log('statusIds ===>>>>>', statusIds);
     //parsing data coming from frontend 
     const facultyData = JSON.parse(updatedIPRData.facultyDataContainer);
     const inventionTypeData =  updatedIPRData.typeOfInvention !== 'undefined' ?  JSON.parse(updatedIPRData.typeOfInvention) : null;
     const nmimsSchoolIds = updatedIPRData.nmimsSchoolIds !== 'undefined' ? JSON.parse(updatedIPRData.nmimsSchoolIds) : null;
     const nmimsCampusIds = updatedIPRData.nmimsCampusIds !== 'undefined' ? JSON.parse(updatedIPRData.nmimsCampusIds) : null;
-
     // Extract internalFaculty and externalEmpList arrays
     const internalFaculty = facultyData.find(item => item !== null && item.internalFaculty)?.internalFaculty || [];
     const externalEmpList = facultyData.find(item => item  !== null && item.externalEmpList )?.externalEmpList || [];
     const internalFacultyList =  internalFaculty.map(Number)
     const FacultydataArray = [...externalEmpList, ...internalFacultyList];
-    const patentStatus = [parseInt(updatedIPRData.patentStage)];
+    const patentStatus =  updatedIPRData.patentStage !== '' ? [parseInt(updatedIPRData.patentStage)] : [];
 
-    const schoolIdsArray = (nmimsSchoolIds.nmimsSchool || []).map(id => parseInt(id));
-    const campusIdsArray = (nmimsCampusIds.nmimsCampus || []).map(id => parseInt(id));
-    const inventionTypeIdsArray = (inventionTypeData.typeOfInventions || []).map(id => parseInt(id));
+    const schoolIdsArray = updatedIPRData.nmimsSchoolIds !== 'undefined' ? (nmimsSchoolIds.nmimsSchool || []).map(id => parseInt(id)) : [];
+    const campusIdsArray = updatedIPRData.nmimsCampusIds !== 'undefined' ? (nmimsCampusIds.nmimsCampus || []).map(id => parseInt(id)) : [];
+    const inventionTypeIdsArray = updatedIPRData.typeOfInvention !== 'undefined' ? (inventionTypeData.typeOfInventions || []).map(id => parseInt(id)) : [];
 
-    console.log('schoolIdsArray ===>>>>>', schoolIdsArray);
-    console.log('campusIdsArray ===>>>>>', campusIdsArray);
-    console.log('inventionTypeIdsArray ===>>>>>', inventionTypeIdsArray);
+    // console.log('schoolIdsArray ===>>>>>', schoolIdsArray);
+    // console.log('campusIdsArray ===>>>>>', campusIdsArray);
+    // console.log('inventionTypeIdsArray ===>>>>>', inventionTypeIdsArray);
    
     const iprDataToBeUpdated = await IPRModels.updateIPRRecordData(iprId, updatedIPRData,  iprFilesNamesArray, FacultydataArray, schoolIdsArray, campusIdsArray, inventionTypeIdsArray, patentStatus);
 
@@ -163,10 +165,17 @@ module.exports.viewIprRecordDataRecord = async(iprId) => {
     const viewIprRowData = await IPRModels.iprRecordToBeViewed(iprId);
 
     console.log('viewIprRowData ===>>>', viewIprRowData);
+
     return viewIprRowData.status === "Done" ? {
         status : viewIprRowData.status,
         message : viewIprRowData.message,
         IPRData : viewIprRowData.IPRData,
+        facultyData : viewIprRowData.facultyData,
+        iprNmimsSchoolList : viewIprRowData.iprNmimsSchoolList,
+        iprNmimsCampusList : viewIprRowData.iprNmimsCampusList,
+        iprInventionList : viewIprRowData.iprInventionList,
+        iprStatusList : viewIprRowData.iprStatusList,
+        iprDocumentsList : viewIprRowData.iprDocumentsList
 
     } : {
         status : viewIprRowData.status,

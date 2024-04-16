@@ -86,12 +86,15 @@ module.exports.updateIPRRowData = async(req, res, next) => {
     res.status(statusCode).send({
         status : iprRowDataToBeUpdated.status,
         message : iprRowDataToBeUpdated.message,
-        investorDetailsString : iprRowDataToBeUpdated.investorDetailsString,
-        internalDetailsString : iprRowDataToBeUpdated.internalDetailsString,
-        externalDetailsString : iprRowDataToBeUpdated.externalDetailsString,
-        existingDetailsString : iprRowDataToBeUpdated.existingDetailsString,
-        updatedIPRData : iprRowDataToBeUpdated.updatedIPRData,
-        iprFilesString : iprRowDataToBeUpdated.iprFilesString,
+        iprDocumentsIds : iprRowDataToBeUpdated.iprDocumentsIds,
+        insertIprCampusIds: iprRowDataToBeUpdated.insertIprCampusIds,
+        insertIprInventiontypeIds: iprRowDataToBeUpdated.insertIprInventiontypeIds,
+        insertIprStatusIds: iprRowDataToBeUpdated.insertIprStatusIds,
+        schoolNames: iprRowDataToBeUpdated.schoolNames,
+        campusNames: iprRowDataToBeUpdated.campusNames,
+        documentIds: iprRowDataToBeUpdated.documentIds,
+        invetionTypeNames: iprRowDataToBeUpdated.invetionTypeNames,
+        statusTypeName: iprRowDataToBeUpdated.statusTypeName,
         updatedIPRData : iprRowDataToBeUpdated.updatedIPRData,
         errorCode : iprRowDataToBeUpdated.errorCode ? iprRowDataToBeUpdated.errorCode : null
     })
@@ -110,6 +113,12 @@ module.exports.viewIprRecordData = async(req, res, next) => {
         status : iprRowToBeViewed.status,
         message : iprRowToBeViewed.message,
         IPRData : iprRowToBeViewed.IPRData,
+        facultyData : iprRowToBeViewed.facultyData,
+        iprNmimsSchoolList : iprRowToBeViewed.iprNmimsSchoolList,
+        iprNmimsCampusList : iprRowToBeViewed.iprNmimsCampusList,
+        iprInventionList : iprRowToBeViewed.iprInventionList,
+        iprStatusList : iprRowToBeViewed.iprStatusList,
+        iprDocumentsList : iprRowToBeViewed.iprDocumentsList,
         errorCode : iprRowToBeViewed.errorCode
     })
 }

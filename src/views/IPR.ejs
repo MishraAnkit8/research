@@ -454,14 +454,6 @@ aria-hidden="true">
                         </div>
                     </div>
 
-                     <!-- Details of Other Inventors -->
-                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                        <div class="box">
-                            <div class="sub-title-text sub-title">Institute Affiliation  :</div>
-                            <label class="view-content" id="view-investors-details"></label>
-                        </div>
-                    </div>
-
                     <!-- NMIMS School -->
                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
@@ -502,6 +494,13 @@ aria-hidden="true">
                                 </button>
                             </div>
                             <label class="view-content" id="view-patent-file"></label>
+                        </div>
+                    </div>
+                    <!-- Faculty Type -->
+                    <div class="col-lg-12 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="task-sub-title sub-title-text fw-bold"> Faculty Details Id And Name: </div>
+                            <label class="view-content" id="faculty-details-container"></label>
                         </div>
                     </div>
                 </div>
@@ -548,6 +547,8 @@ aria-hidden="true">
     let typeOfInventionsIdContainer = [];
     let nmimsSchoolIdsContainer = [];
     let nmimsCampusIdsContainer = [];
+    let storedCampusIds, storedSchoolIds, storedPatentStatusIds, storedInventionsIds
+
     addIPRModal.addEventListener('click' , function(event){
         if(event.target.tagName === 'BUTTON' && event.target.classList.contains('add-modal') || event.target.classList.contains('plus')){
             submitBtn.classList.remove('d-none');
@@ -620,7 +621,6 @@ aria-hidden="true">
             IPRData.append('supportingDocuments', iprFilesData[i]);
         }
 
-        // iprFilesData.map(file => IPRData.append('supportingDocuments', file))
         const inventionTypeArrayObject = typeOfInventionsIdContainer[typeOfInventionsIdContainer.length - 1];
         const inventionTypeContainer = JSON.stringify(inventionTypeArrayObject);
         console.log('inventionTypeContainer ====>>>>', inventionTypeContainer)
@@ -759,8 +759,6 @@ aria-hidden="true">
             if (event.target.classList.contains('edit')) {
                 submitBtn.classList.add('d-none');
                 updateBtn.classList.remove('d-none');
-                // fileView.classList.remove('d-none');
-                // modalImage.classList.remove('d-none');
                 employeeList.classList.add('d-none');
                 authorDetails.classList.add('d-none');
                 InternalAuthorValue = '';
@@ -768,7 +766,8 @@ aria-hidden="true">
                 storedFacultyValue = '';
                 removeErrorMsg();
                 rowToBeUpdated = event.target.closest('tr');
-                console.log('rowToBeUpdated in siode edit ====>>>', rowToBeUpdated)
+                console.log('rowToBeUpdated in siode edit ====>>>', rowToBeUpdated);
+
                 // function call for download button
                 setFileNameAttributeToBeDownload(rowToBeUpdated);
                 iprId = rowToBeUpdated.getAttribute('data-ipr-id');
@@ -786,8 +785,6 @@ aria-hidden="true">
                 const patentPublishedNumber= document.getElementById('patent-published-number');
                 const patentGrantedNo = document.getElementById('patent-granted-number');
                 const instituteAffiliation = document.getElementById('institute-affiliation');
-                const nmimsSchool = document.getElementById('nmims-school');
-                const nmimsCampus = document.getElementById('nmims-campus');
                 let iprDocuments = document.getElementById('ipr-file');
                 const investorDetailsString = rowToBeUpdated.getAttribute('data-investor-details');
                 const authorTable = rowToBeUpdated.getAttribute('data-author-table');
@@ -800,9 +797,18 @@ aria-hidden="true">
                     externalAuthor.checked = true;
                 }
 
-                // let nmimsCampusIds = rowToBeUpdated.getAttribute('data-campus-ids');
-                // let nmimsSchoolIds = rowToBeUpdated.getAttribute('data-school-ids');
-                // let inventionTypesIds = rowToBeUpdated.getAttribute('data-invention-ids');
+                const campusIdArray = rowToBeUpdated.getAttribute('data-campus-ids');
+                const schoolIdsArayy = rowToBeUpdated.getAttribute('data-school-ids');
+                storedPatentStatusIds = rowToBeUpdated.getAttribute('data-status-ids');
+                const inventionIdsArray = rowToBeUpdated.getAttribute('data-invention-ids');
+                storedCampusIds = campusIdArray.split(',').map(item => parseInt(item.trim(), 10));
+                storedSchoolIds = schoolIdsArayy.split(',').map(item => parseInt(item.trim(), 10));
+                // storedPatentStatusIds = patentStageArray.split(',').map(item => parseInt(item.trim(), 10));
+                storedInventionsIds = inventionIdsArray.split(',').map(item => parseInt(item.trim(), 10));
+
+                // console.log('nmimsCampusIds ====>>>>>>', nmimsCampusIds);
+                // nmimsSchoolIds = rowToBeUpdated.getAttribute('data-school-ids');
+                // inventionTypesIds = rowToBeUpdated.getAttribute('data-invention-ids');
                 titleOfInvention.value = rowToBeUpdated.querySelector('.title-of-invention').innerText;
                 patentStage.value = rowToBeUpdated.querySelector('.patent-stage').innerText;
                 applicationNum.value = rowToBeUpdated.querySelector('.application-no').innerText;
@@ -826,11 +832,6 @@ aria-hidden="true">
 
                 iprDocuments = rowToBeUpdated.getAttribute('data-supporting-documents');
                 console.log('iprDocuments ==>>>', iprDocuments)
-                // const supportingDocuments = iprDocuments.files;
-                // console.log('supportingDocuments ==>>', supportingDocuments);
-
-                // storedFacultyValue = rowToBeUpdated.getAttribute('data-investor-details');
-                // console.log('storedFacultyValue ====>>>>>', storedFacultyValue);
                
                 $('#ipr-modal-form').modal('show');
 
@@ -839,8 +840,9 @@ aria-hidden="true">
             //   for delete patent submission form
             if (event.target.classList.contains('delete')) {
                 const IPRDeleteRow = event.target.closest('tr');
-                iprId = event.target.getAttribute('data-ipr-id');
-                let confirmDelete = "Do you want to delete the Book  Publication?";
+                iprId = IPRDeleteRow.getAttribute('data-ipr-id');
+                console.log('iprId ===>>>>', iprId);
+                let confirmDelete = "Do you want to delete an IPR record?";
                 if (confirmDelete) {
                     Swal.fire({
                         title: "Are you sure?",
@@ -900,23 +902,9 @@ aria-hidden="true">
                 console.log('row to be viewed', iprRowToBeViewed);
                 let iprFile = iprRowToBeViewed.getAttribute('data-supporting-documents');
                 console.log('iprFile ==>>', iprFile)
-                iprId = event.target.getAttribute('data-ipr-id')
+                iprId = iprRowToBeViewed.getAttribute('data-ipr-id')
                 $('#ipr-data-modal-view').modal('show');
-                const viewTypeOfInvetion = document.getElementById('view-type-of-invetion');
-                const viewTitleOfinvetion = document.getElementById('view-title-of-invetion');
-                const viewPatentFilesDate = document.getElementById('view-filed-date');
-                const viewPatentGrantDate = document.getElementById('view-grant-date');
-                const viewPatentPublishedDate = document.getElementById('view-published-date');
-                const viewPublicationNumber = document.getElementById('view-publication-number');
-                const viewGrantedNumber = document.getElementById('view-granted-number');
-                const viewSupportingDocumnets = document.getElementById('supporting-document');
-                const viewInstituteAffiliation = document.getElementById('view-institute-affiliation');
-                const viewInvestorDetails = document.getElementById('view-investors-details');
-                const viewNmimsSchool = document.getElementById('view-nmims-school');
-                const viewNmimsCapus = document.getElementById('view-nmims-campus');
-                const viewApplicantName = document.getElementById('view-applicant-name');
-                const viewPatentStage = document.getElementById('view-patent-stage')
-                const viewApplicationNum = document.getElementById('view-application-number')
+          
 
                 fetch('<%- BASE_URL %>research/IPR/view', {
                     method: 'POST',
@@ -933,21 +921,48 @@ aria-hidden="true">
                         if (data.status === 'Done') {
                             console.log('data', data)
                             setFileNameInButtons(data) 
-                            viewTypeOfInvetion.innerText = data.IPRData.type_of_invention;
-                            viewTitleOfinvetion.innerText = data.IPRData.title_of_invention;
-                            viewPatentFilesDate.innerText = formatDateToYYYYMMDD(data.IPRData.patent_filed_date);
-                            viewPatentGrantDate.innerText = formatDateToYYYYMMDD(data.IPRData.patent_granted_date);
-                            viewPatentPublishedDate.innerText = formatDateToYYYYMMDD(data.IPRData.patent_published_date);
-                            viewPublicationNumber.innerText = data.IPRData.patent_published_num;
-                            viewGrantedNumber.innerText = data.IPRData.patent_granted_no;
-                            // viewSupportingDocumnets.innerText = data.IPRData.supporting_documents;
-                            viewInstituteAffiliation.innerText = data.IPRData.institute_affiliation;
-                            viewInvestorDetails.innerText = data.IPRData.investor_details.replace(/,/g, ' ');
-                            viewNmimsSchool.innerText = data.IPRData.nmims_school;
-                            viewNmimsCapus.innerText = data.IPRData.nmims_campus;
-                            viewApplicantName.innerText = data.IPRData.applicants_name;
-                            viewPatentStage.innerText = data.IPRData.patent_stage;
-                            viewApplicationNum.innerText = data.IPRData.patent_application_no;
+                            document.getElementById('view-type-of-invetion').innerText = data.IPRData.invention_types;
+                            document.getElementById('view-title-of-invetion').innerText = data.IPRData.patent_title;
+                            document.getElementById('view-filed-date').innerText = formatDateToYYYYMMDD(data.IPRData.patent_filed_date);
+                            document.getElementById('view-grant-date').innerText = formatDateToYYYYMMDD(data.IPRData.patent_grant_date);
+                            document.getElementById('view-published-date').innerText = formatDateToYYYYMMDD(data.IPRData.patent_published_date);
+                            document.getElementById('view-publication-number').innerText = data.IPRData.patent_publication_number;
+                            document.getElementById('view-granted-number').innerText = data.IPRData.patent_grant_number;
+                            // document.getElementById('supporting-document').innerText = data.IPRData.supporting_documents;
+                            document.getElementById('view-institute-affiliation').innerText = data.IPRData.institutional_affiliation;
+                            // document.getElementById('view-investors-details').innerText = data.IPRData;
+                            document.getElementById('view-nmims-school').innerText = data.IPRData.associated_schools;
+                            document.getElementById('view-nmims-campus').innerText = data.IPRData.associated_campuses;
+                            document.getElementById('view-applicant-name').innerText = data.IPRData.applicant_name;
+                            document.getElementById('view-patent-stage').innerText = data.IPRData.patent_stage_statuses;
+                            document.getElementById('view-application-number').innerText = data.IPRData.patent_application_number;
+                            let facultyDetailsHTML = `
+                            <table class="table" border='1px'>
+                                <thead>
+                                    <th>#</th>
+                                    <th>Faculty Name</th>
+                                    <th>Designation</th>
+                                    <th>Address</th>
+                                    <th>Employee ID</th>
+                                    <th>Faculty type</th>
+                                </thead>
+                                <tbody>`;
+
+                        data.facultyData.forEach((faculty, index) => { facultyDetailsHTML += `
+                            <tr>
+                                <td class="view-content">${index + 1}</td>
+                                <td class="view-content">${faculty.faculty_name}</td>
+                                <td class="view-content">${faculty.designation}</td>
+                                <td class="view-content">${faculty.address}</td>
+                                <td class="view-content">${faculty.employee_id}</td>
+                                <td class="view-content">${faculty.faculty_type}</td>
+                            </tr>`;
+                                });
+
+                        facultyDetailsHTML += `
+                            </tbody>
+                        </table>`
+                        document.getElementById('faculty-details-container').innerHTML = facultyDetailsHTML;
 
                         }
                         else{
@@ -978,21 +993,24 @@ aria-hidden="true">
         console.log('clickedd');
         // const updatedTypeOfInvention = document.getElementById('type-of-invention').value;
         const updatedTitleOfInvention = document.getElementById('title-of-invention').value;
-        const updatedPatentStage = document.getElementById('patent-stage').value;
+        const patentStatus = document.getElementById('patent-stage').value;
+        const updatedPatentStage = patentStatus !== '' ? patentStatus : storedPatentStatusIds;
         const updatedPatentFiledDate =  document.getElementById('patent-filed-date').value
         const updatedApplicationNum = document.getElementById('application-no').value;
         const updatedPatentGrantDate = document.getElementById('patent-grant-date').value;
         const updatedApplicantName = document.getElementById('applicant-name').value;
         const updatedPatentPublishedDate = document.getElementById('patent-published-date').value;
         const updatedPublishedNum = document.getElementById('patent-published-number').value;
-        console.log('updatedPublishedNum ===>>>', updatedPublishedNum)
+        // console.log('updatedPublishedNum ===>>>', updatedPublishedNum)
         const updatedPatentGrantNum = document.getElementById('patent-granted-number').value;
         const updatedIntituteAffiliation = document.getElementById('institute-affiliation').value;
-        const inventionTypeArrayObject = typeOfInventionsIdContainer[typeOfInventionsIdContainer.length - 1];
+        const inventionTypeArrayObject = typeOfInventionsIdContainer.length !== 0 ? typeOfInventionsIdContainer[typeOfInventionsIdContainer.length - 1] : {'typeOfInventions' : storedInventionsIds};
         const inventionTypeContainer = JSON.stringify(inventionTypeArrayObject);
-        console.log('inventionTypeContainer ====>>>>', inventionTypeContainer)
-        const nmimsSchoolArrayObject = nmimsSchoolIdsContainer[nmimsSchoolIdsContainer.length - 1];
-        const nmimsCampusArrayObject = nmimsCampusIdsContainer[nmimsCampusIdsContainer.length - 1];
+        // console.log('inventionTypeContainer ====>>>>', inventionTypeContainer);
+        // console.log('nmimsCampusIds campus id in updated fucntion ==>>>', storedCampusIds);
+        // console.log('nmimsCampusIdsContainer ===>>>>', nmimsCampusIdsContainer)
+        const nmimsSchoolArrayObject = nmimsSchoolIdsContainer.length !== 0 ? nmimsSchoolIdsContainer[nmimsSchoolIdsContainer.length - 1] : {'nmimsSchool' : storedSchoolIds};
+        const nmimsCampusArrayObject = nmimsCampusIdsContainer.length !== 0 ? nmimsCampusIdsContainer[nmimsCampusIdsContainer.length - 1] : {'nmimsCampus' : storedCampusIds};
         const nmimsSchoolIds = JSON.stringify(nmimsSchoolArrayObject);
         const nmimsCampusIds = JSON.stringify(nmimsCampusArrayObject);
         
@@ -1052,13 +1070,13 @@ aria-hidden="true">
                 //     rowToBeUpdated.setAttribute('data-supporting-documents').innerText = data.iprFilesString;
                 // }
                 updatedIprFilesData ? rowToBeUpdated.setAttribute('data-supporting-documents', data.iprFilesString) : null; 
-                rowToBeUpdated.querySelector('.type-of-invention').innerText = data.updatedIPRData.typeOfInvention;
+                rowToBeUpdated.querySelector('.type-of-invention').innerText = data.invetionTypeNames;
                 rowToBeUpdated.querySelector(".title-of-invention").innerText = data.updatedIPRData.titleOfInvention;
-                rowToBeUpdated.querySelector(".patent-stage").innerText = data.updatedIPRData.patentStage;
+                rowToBeUpdated.querySelector(".patent-stage").innerText = data.statusTypeName;
                 rowToBeUpdated.querySelector(".application-no").innerText = data.updatedIPRData.applicationNum
                 rowToBeUpdated.querySelector(".applicant-name").innerText = data.updatedIPRData.applicantName;
-                rowToBeUpdated.querySelector(".nmims-school").innerText = data.updatedIPRData.nmimsSchool;
-                rowToBeUpdated.querySelector(".nmims-campus").innerText = data.updatedIPRData.nmimsCampus;
+                rowToBeUpdated.querySelector(".nmims-school").innerText = data.schoolNames;
+                rowToBeUpdated.querySelector(".nmims-campus").innerText = data.campusNames;
                 Swal.fire({
 							position: "top-center",
 							icon: "success",
