@@ -1,9 +1,37 @@
 const journalPaperModel = require('../models/journal-paper.models');
-// service for fetch
+
 module.exports.renderJournalPaper = async () => {
-    let result = await journalPaperModel.fetchJournalPaper();
-    return result  
-};
+
+    const fetchJournalArticle  = await journalPaperModel.fetchJournalPaper();
+
+   console.log('journalArticleData ===>>>>', fetchJournalArticle.journalArticleData);
+ 
+
+   // makeing object based in article_id
+   const journalData = {};
+   fetchJournalArticle.journalArticleData.forEach(data => {
+       const id = data.article_id;
+       if (!journalData[id]) {
+           journalData[id] = data;
+         
+       }
+   });
+   const journalArticleData = Object.values(journalData);
+   console.log('journalArticleData in service ===>>>>>>>', journalArticleData);
+   
+   return fetchJournalArticle.status === "Done" ? {
+                status : fetchJournalArticle.status,
+                message : fetchJournalArticle.message,
+                journalArticleData : journalArticleData,
+                rowCount : fetchJournalArticle.rowCount
+   } : {
+                status : fetchJournalArticle.status,
+                message : fetchJournalArticle.message,
+                errorCode : fetchJournalArticle.errorCode
+   } 
+
+
+}
 
 // service for insert
 module.exports.insertJournalPapper = async (body) => {

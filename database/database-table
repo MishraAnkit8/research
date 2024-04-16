@@ -788,7 +788,9 @@ CREATE TABLE patent_submission_sdg_goals (
 CREATE TABLE patent_submission_invention_type (
     id SERIAL PRIMARY KEY,
     patent_submission_grant_id INTEGER REFERENCES patent_submission_grant(id),
-    invention_type_id INTEGER REFERENCES invention_type(id)
+    invention_type_id INTEGER REFERENCES invention_type(id),
+    created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
 
@@ -796,7 +798,9 @@ CREATE TABLE patent_submission_invention_type (
 CREATE TABLE patent_submission_stage_status (
     id SERIAL PRIMARY KEY,
     patent_submission_grant_id INTEGER REFERENCES patent_submission_grant(id),
-    pantent_stage_status_id INTEGER REFERENCES pantent_stage_status(id)
+    pantent_stage_status_id INTEGER REFERENCES pantent_stage_status(id),
+     created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
 
@@ -804,7 +808,9 @@ CREATE TABLE patent_submission_stage_status (
 CREATE TABLE patent_submission_faculty (
     id SERIAL PRIMARY KEY,
     patent_submission_grant_id INTEGER REFERENCES patent_submission_grant(id),
-    faculty_id INTEGER REFERENCES faculties(id)
+    faculty_id INTEGER REFERENCES faculties(id),
+    created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
 
@@ -853,19 +859,25 @@ select * from pantent_stage_status;
 CREATE TABLE ipr_invention_type(
 	id SERIAL PRIMARY KEY,
     ipr_id INTEGER REFERENCES IPR(id),
-    invention_type_id INTEGER REFERENCES invention_type(id)
+    invention_type_id INTEGER REFERENCES invention_type(id),
+    created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
 )
 
 CREATE TABLE ipr_status_type(
 	id SERIAL PRIMARY KEY,
     ipr_id INTEGER REFERENCES IPR(id),
-    pantent_stage_status_id INTEGER REFERENCES pantent_stage_status(id)
+    pantent_stage_status_id INTEGER REFERENCES pantent_stage_status(id),
+    created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
 )
 
 CREATE TABLE ipr_supporting_documents(
 	id SERIAL PRIMARY KEY,
     ipr_id INTEGER REFERENCES IPR(id),
-    supporting_documents_id INTEGER REFERENCES supporting_documents(id)
+    supporting_documents_id INTEGER REFERENCES supporting_documents(id),
+    created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE nmims_school(
@@ -886,17 +898,156 @@ CREATE TABLE nmims_campus(
 CREATE TABLE ipr_nmims_school(
 	id SERIAL PRIMARY KEY,
     ipr_id INTEGER REFERENCES IPR(id),
-    school_id INTEGER REFERENCES nmims_school(id)
+    school_id INTEGER REFERENCES nmims_school(id),
+    created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE ipr_nmims_campus(
 	id SERIAL PRIMARY KEY,
     ipr_id INTEGER REFERENCES IPR(id),
-    campus_id INTEGER REFERENCES nmims_campus(id)
+    campus_id INTEGER REFERENCES nmims_campus(id),
+    created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE ipr_faculty(
 	id SERIAL PRIMARY KEY,
     ipr_id INTEGER REFERENCES IPR(id),
+    faculty_id INTEGER REFERENCES faculties(id),
+    created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+
+
+-- =======================================================================================
+--  table for journal paper
+CREATE TABLE journal_paper_article (
+    id SERIAL PRIMARY KEY,
+    year INTEGER,
+    jorunal_article_type_id INTEGER REFERENCES jorunal_article_type(id),
+    all_authors VARCHAR(255),
+    total_authors INTEGER,
+    nmims_authors_count INTEGER,
+    count_other_faculty INTEGER,
+    title_of_paper VARCHAR(255),
+    journal_name VARCHAR(255),
+    publisher VARCHAR(255),
+    pages VARCHAR(255),
+    issn_no VARCHAR(255),
+    date_of_publishing DATE,
+    scs_cite_score INTEGER,
+    scs_indexed VARCHAR(50),
+    wos_indexed VARCHAR(50),
+    abdc_indexed VARCHAR(50),
+    ugc_indexed VARCHAR(50),
+    web_link_doi_number INTEGER,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+CREATE TABLE jorunal_article_type(
+	id SERIAL PRIMARY KEY,
+	article_type varchar(100)
+);
+
+CREATE TABLE nmims_school(
+	id SERIAL PRIMARY KEY,
+	school_name  VARCHAR(255),
+    created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
+	
+)
+
+CREATE TABLE nmims_campus(
+	id SERIAL PRIMARY KEY,
+	campus_name  VARCHAR(255),
+    created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+
+CREATE TABLE journal_article_school(
+	id SERIAL PRIMARY KEY,
+    journal_article_id INTEGER REFERENCES journal_paper_article(id),
+    school_id INTEGER REFERENCES nmims_school(id),
+	created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+
+CREATE TABLE journal_article_campus(
+	id SERIAL PRIMARY KEY,
+    journal_article_id INTEGER REFERENCES journal_paper_article(id),
+    campus_id INTEGER REFERENCES nmims_campus(id),
+	created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+
+CREATE TABLE nmims_faculties(
+	id SERIAL PRIMARY KEY,
+    journal_article_id INTEGER REFERENCES journal_paper_article(id),
     faculty_id INTEGER REFERENCES faculties(id)
 );
+
+CREATE TABLE supporting_documents(
+	id SERIAL PRIMARY KEY,
+	documents_name VARCHAR(255),
+	created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+
+CREATE TABLE journal_article_documents(
+	id SERIAL PRIMARY KEY,
+    journal_article_id INTEGER REFERENCES journal_paper_article(id),
+    supporting_documents_id INTEGER REFERENCES supporting_documents(id),
+	created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+
+CREATE TABLE policy_cadre(
+	id SERIAL PRIMARY KEY,
+	cadre_name VARCHAR(255),
+	created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+
+CREATE TABLE journal_article_policy_cadre(
+	id SERIAL PRIMARY KEY,
+	journal_article_id INTEGER REFERENCES journal_paper_article(id),
+    policy_cadre_id INTEGER REFERENCES policy_cadre(id),
+	created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+
+
+CREATE TABLE impact_factor(
+	id SERIAL PRIMARY KEY,
+	impact_factor VARCHAR(255),
+	created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+
+CREATE TABLE journal_article_impact_factor(
+	id SERIAL PRIMARY KEY,
+	journal_article_id INTEGER REFERENCES journal_paper_article(id),
+	impact_factor_id INTEGER REFERENCES impact_factor(id),
+	created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+
+
+
+-- Insert two records into jorunal_article_type
+INSERT INTO jorunal_article_type (article_type) VALUES 
+('National'),
+('International');

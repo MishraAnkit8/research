@@ -6,6 +6,7 @@ const researchDbR = dbPoolManager.get('researchDbR', research_read_db);
 const researchDbW = dbPoolManager.get('researchDbW', research_write_db);
 
 module.exports.fetchIPRData = async() => {
+    
     let iPRSql = {
         text: `
             SELECT

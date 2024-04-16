@@ -2,14 +2,18 @@ const journalPaperService = require('../services/journal-paper.service');
 
 
 module.exports.renderJournalPaper = async (req, res, next) => {
+
     const journalList = await journalPaperService.renderJournalPaper();
-    console.log('journalList ====>>>>', journalList.rows)
+
+    console.log('journalList in controller ====>>>>', journalList)
     
     res.render('journal-paper', {
-        journalData : journalList.rows,
-        rowCount : journalList.rowCount
+        journalData : journalList.journalArticleData,
+        rowCount : journalList.rowCount,
+        status : journalList.status,
+        message : journalList.message,
+        errorCode : journalList.errorCode ? journalList.errorCode : null
     });
-    console.log('journalList in Controller ==>>', journalList.rowCount)
 };
 
 

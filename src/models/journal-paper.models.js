@@ -6,13 +6,101 @@ const researchDbR = dbPoolManager.get('researchDbR', research_read_db);
 const researchDbW = dbPoolManager.get('researchDbW', research_write_db);
 
 // for fetching journal paper data 
-module.exports.fetchJournalPaper = () => {
+module.exports.fetchJournalPaper = async () => {
     let sql = {
-        text : `SELECT * FROM journal_papers ORDER BY id`
+        text : `SELECT
+        jpa.id AS article_id,
+        jpa.title_of_paper,
+        jpa.all_authors,
+        jpa.total_authors,
+        jpa.nmims_authors_count,
+        jpa.journal_name,
+        jpa.publisher,
+        jpa.pages,
+        jpa.issn_no,
+        jpa.year,
+        jpa.date_of_publishing,
+        jpa.scs_cite_score,
+        jpa.scs_indexed,
+        jpa.abdc_indexed,
+        jpa.wos_indexed,
+        jpa.ugc_indexed,
+        jpa.web_link_doi_number,
+        jat.article_type,
+        ns.school_name,
+        nc.campus_name,
+        jaf.impact_factor,
+        string_agg(DISTINCT sd.documents_name, ', ') AS supporting_documents,
+        pc.cadre_name,
+        f.faculty_name,
+        f.designation,
+        f.address,
+        f.employee_id,
+        nf.id AS nmims_faculties_id,
+        string_agg(DISTINCT ns.school_name, ', ') AS associated_schools,
+        string_agg(DISTINCT ns.id::text, ', ') AS school_id,
+        string_agg(DISTINCT nc.campus_name, ', ') AS associated_campuses
+    FROM
+        journal_paper_article jpa
+    JOIN
+        jorunal_article_type jat ON jpa.jorunal_article_type_id = jat.id
+    LEFT JOIN
+        journal_article_school jas ON jpa.id = jas.journal_article_id
+    LEFT JOIN
+        nmims_school ns ON jas.school_id = ns.id
+    LEFT JOIN
+        journal_article_campus jac ON jpa.id = jac.journal_article_id
+    LEFT JOIN
+        nmims_campus nc ON jac.campus_id = nc.id
+    LEFT JOIN
+        journal_article_impact_factor jaif ON jpa.id = jaif.journal_article_id
+    LEFT JOIN
+        impact_factor jaf ON jaif.impact_factor_id = jaf.id
+    LEFT JOIN
+        nmims_faculties nf ON jpa.id = nf.journal_article_id
+    LEFT JOIN
+        faculties f ON nf.faculty_id = f.id
+    LEFT JOIN
+        journal_article_documents jad ON jpa.id = jad.journal_article_id
+    LEFT JOIN
+        supporting_documents sd ON jad.supporting_documents_id = sd.id
+    LEFT JOIN
+        journal_article_policy_cadre japc ON jpa.id = japc.journal_article_id
+    LEFT JOIN
+        policy_cadre pc ON japc.policy_cadre_id = pc.id
+    GROUP BY
+        jpa.id,
+        jpa.title_of_paper,
+        jat.article_type,
+        ns.school_name,
+        nc.campus_name,
+        jaf.impact_factor,
+        pc.cadre_name,
+        f.faculty_name,
+        f.designation,
+        f.address,
+        f.employee_id,
+        nf.id`
     }
 
+
     console.log('sql ==>>', sql)
-    return researchDbR.query(sql);
+    const journalArticleData = await researchDbR.query(sql);
+
+    const promises = [journalArticleData]
+
+    return Promise.all(promises).then(([journalArticleData]) => {
+            return {
+                status : 'Done',
+                message : "Data Fetched Successfully",
+                journalArticleData : journalArticleData.rows,
+                rowCount : journalArticleData.rowCount
+            }
+    })
+    .catch((error) => {
+        return{status : "Failed" , message : error.message , errorCode : error.code}
+    }) 
+   
 };
 
 // for inserting journal paper  data
