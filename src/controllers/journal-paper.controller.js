@@ -5,31 +5,56 @@ module.exports.renderJournalPaper = async (req, res, next) => {
 
     const journalList = await journalPaperService.renderJournalPaper();
 
-    console.log('journalList in controller ====>>>>', journalList)
+    // console.log('journalList in controller ====>>>>', journalList);
+    // console.log('journalList.allAuthorList ===>>>>>>>', journalList.allAuthorList)
     
     res.render('journal-paper', {
-        journalData : journalList.journalArticleData,
-        rowCount : journalList.rowCount,
         status : journalList.status,
         message : journalList.message,
+        journalData : journalList.journalArticleData,
+        rowCount : journalList.rowCount,
+        nmimsSchoolList : journalList.nmimsSchool,
+        internalEmpList : journalList.internalEmpList,
+        nmimsCampusList : journalList.nmimsCampus,
+        policyCadre : journalList.policyCadre,
+        impactFactor : journalList.impactFactor,
+        allAuthorList : journalList.allAuthorList,
         errorCode : journalList.errorCode ? journalList.errorCode : null
     });
 };
 
 
-module.exports.createJournalPaper = async (req, res, next) => {
-    console.log('data in controller', req.body);
-    const journalPaperData = await journalPaperService.insertJournalPapper(req.body);
-    console.log(" journalPaperData ===>" , journalPaperData);
-    if(journalPaperData){
-        const journalPaperId = journalPaperData.rows[0].id;
-        res.status(200).send({
-            status : "Done",
-            message : "Record Inserted  Successfully",
-            journalPaperId : journalPaperId,
-            journalPaperData : journalPaperData
-        })
-    }
+module.exports.insertJournalPapperDetails = async (req, res, next) => {
+
+    console.log('data comming from ejs  in controller', req.journalDetails);
+    console.log('files in controller ===>>>>>', req.files);
+
+    const journalPaperData = await journalPaperService.insertJournalPapper(req.body, req.files);
+
+    console.log("journalPaperData ===>" , journalPaperData);
+
+    const statusCode = journalPaperData.status === "Done" ? 200 : (journalPaperData.errorCode ? 400 : 500);
+
+    res.status(statusCode).send({
+        status : journalPaperData.status,
+        message : journalPaperData.message,
+        rowCount : journalPaperData.rowCount,
+        journalPaperId : journalPaperData.journalPaperId,
+        documentIds: journalPaperData.documentIds,
+        articledocumentsIds: journalPaperData.articledocumentsIds,
+        articlImpactFactorIds: journalPaperData.articlImpactFactorIds,
+        articlePolicyCadreIds: journalPaperData.articlePolicyCadreIds,
+        articleSchoolIds: journalPaperData.articleSchoolIds,
+        articleCampusIds: journalPaperData.articleCampusIds,
+        journalAuthorsIds: journalPaperData.journalAuthorsIds,
+        allArticleAuthorIds: journalPaperData.allArticleAuthorIds,
+        schoolList: journalPaperData.schoolList,
+        campusList: journalPaperData.campusList,
+        impactFactorList : journalPaperData.impactFactorList,
+        policyCadreList : journalPaperData.policyCadreList,
+        journalDetails : journalPaperData.journalDetails,
+        errorCode : journalPaperData.errorCode ? journalPaperData.errorCode : null
+    })
 };
 
 

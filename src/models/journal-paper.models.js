@@ -19,6 +19,7 @@ module.exports.fetchJournalPaper = async () => {
         jpa.pages,
         jpa.issn_no,
         jpa.year,
+        jpa.article_type,
         jpa.date_of_publishing,
         jpa.scs_cite_score,
         jpa.scs_indexed,
@@ -26,7 +27,6 @@ module.exports.fetchJournalPaper = async () => {
         jpa.wos_indexed,
         jpa.ugc_indexed,
         jpa.web_link_doi_number,
-        jat.article_type,
         ns.school_name,
         nc.campus_name,
         jaf.impact_factor,
@@ -42,8 +42,6 @@ module.exports.fetchJournalPaper = async () => {
         string_agg(DISTINCT nc.campus_name, ', ') AS associated_campuses
     FROM
         journal_paper_article jpa
-    JOIN
-        jorunal_article_type jat ON jpa.jorunal_article_type_id = jat.id
     LEFT JOIN
         journal_article_school jas ON jpa.id = jas.journal_article_id
     LEFT JOIN
@@ -71,7 +69,6 @@ module.exports.fetchJournalPaper = async () => {
     GROUP BY
         jpa.id,
         jpa.title_of_paper,
-        jat.article_type,
         ns.school_name,
         nc.campus_name,
         jaf.impact_factor,
@@ -83,18 +80,63 @@ module.exports.fetchJournalPaper = async () => {
         nf.id`
     }
 
+    let internalEmpSql = {
+        text: `select *  FROM faculties WHERE faculty_type_id = 1`
+    };
+
+     
+    let journalPaperSql = {
+        text: `select *  FROM journal_paper_article ORDER BY id`
+    };
+
+    let supportingoDcumentsSql = {
+        text: `select *  FROM supporting_documents ORDER BY id`
+    };
+
+    let allAuthorsSql = {
+        text: `select *  FROM faculties ORDER BY id`
+    }
+
+    let nmimsSchoolSql = {
+        text: `select *  FROM nmims_school ORDER BY id`
+    };
+
+    let nmimsCampusSql = {
+        text: `select *  FROM nmims_campus ORDER BY id`
+    };
+
+    let policyCadreSql = {
+        text: `select *  FROM policy_cadre ORDER BY id`
+    };
+
+    let impactFactorSql = {
+        text: `select *  FROM impact_factor ORDER BY id`
+    };
 
     console.log('sql ==>>', sql)
     const journalArticleData = await researchDbR.query(sql);
+    const nmimsSchool = await researchDbR.query(nmimsSchoolSql);
+    const nmimsFaculty = await researchDbR.query(internalEmpSql);
+    const nmimsCampus = await researchDbR.query(nmimsCampusSql);
+    const policyCadre = await researchDbR.query(policyCadreSql);
+    const impactFactor = await researchDbR.query(impactFactorSql);
+    const journalPaper = await researchDbR.query(journalPaperSql);
+    const allAuthorList = await researchDbR.query(allAuthorsSql)
 
-    const promises = [journalArticleData]
+    const promises = [journalArticleData, nmimsSchool, nmimsFaculty, nmimsCampus, policyCadre, impactFactor, journalPaper, allAuthorList]
 
-    return Promise.all(promises).then(([journalArticleData]) => {
+    return Promise.all(promises).then(([journalArticleData, nmimsSchool, nmimsFaculty, nmimsCampus, policyCadre, impactFactor, journalPaper, allAuthorList]) => {
             return {
                 status : 'Done',
                 message : "Data Fetched Successfully",
                 journalArticleData : journalArticleData.rows,
-                rowCount : journalArticleData.rowCount
+                rowCount : journalPaper.rowCount,
+                nmimsSchool : nmimsSchool.rows,
+                internalEmpList : nmimsFaculty.rows,
+                nmimsCampus : nmimsCampus.rows,
+                policyCadre : policyCadre.rows,
+                impactFactor : impactFactor.rows,
+                allAuthorList : allAuthorList.rows
             }
     })
     .catch((error) => {
@@ -104,43 +146,233 @@ module.exports.fetchJournalPaper = async () => {
 };
 
 // for inserting journal paper  data
-module.exports.createJournalPaper = async ({ journalDetails }) => {
+module.exports.insertJournalArticle = async (journalDetails, articleFilesNameArray, schoolIdsArray, campusIdsArray,
+        impactFactorArray, policyCadreArray, allAuthorsArray, nmimsAuthorsArray) => {
     console.log('journalDetails in models ==>>', journalDetails);
-    const {
-        year, school, campus, policyCadre, journalCategory, allAuthors, totalAuthors, nmimsAuthors,
-        journalName, foreignAuthors, foreignAuthorsNumbers, nmimsAuthorsCount, countOtherFaculty,
-        titleOfPaper, publisher, pages, issnNo, dateOfPublishing, impactFactor, scsCiteScore,
-        scsIndexedCategory, wosIndexedCategory, abdcIndexedCategory, ugcIndexedCategory, webLinkNumber, nmimsStudentAuthors,
-        countStudentAuthors
-    } = journalDetails;
+    const { year, publisher, totalAuthors, journalName, countOtherFaculty, pages, issnNo, scsCiteScore, wosIndexedCategory,
+            abdcIndexedCategory, ugcIndexedCategory, webLinkNumber, uid, dateOfPublishing, titleOfPaper, journalCategory, nmimsAuthorsCount
+       } = journalDetails;
 
-    let sql = {
-        text: `INSERT INTO journal_papers (
-            year, school, campus, policy_cadre, journal_category, all_authors,
-            total_authors, nmims_authors, foreign_authors, numbers_foreign_authors, nmims_authors_count,
-            count_other_faculty, title_of_paper, journal_name, publisher, pages, issn_no,
-            date_of_publishing, impact_factor, scs_cite_score, scs_indexed, wos_indexed,
-            abdc_indexed, ugc_indexed, web_link_doi_number, names_nmims_student_author, no_nmims_student_author
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27) RETURNING id`,
-        values: [
-            year, school, campus, policyCadre, journalCategory, allAuthors, totalAuthors, nmimsAuthors,
-            foreignAuthors, foreignAuthorsNumbers, nmimsAuthorsCount, countOtherFaculty,
-            titleOfPaper, journalName, publisher, pages, issnNo, dateOfPublishing, impactFactor, scsCiteScore,
-            scsIndexedCategory, wosIndexedCategory, abdcIndexedCategory, ugcIndexedCategory, webLinkNumber, nmimsStudentAuthors,
-            countStudentAuthors
-        ]
+
+    let articleSql = {
+        text: `INSERT INTO journal_paper_article (year, publisher, total_authors, journal_name, count_other_faculty, pages, issn_no, scs_cite_score, wos_indexed,
+                abdc_indexed, ugc_indexed, web_link_doi_number, uid, date_of_publishing, title_of_paper, article_type, nmims_authors_count)
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17) RETURNING id`,
+
+        values: [year, publisher, totalAuthors, journalName, countOtherFaculty, pages, issnNo, scsCiteScore, wosIndexedCategory,
+                abdcIndexedCategory, ugcIndexedCategory, webLinkNumber, uid, dateOfPublishing, titleOfPaper, journalCategory, nmimsAuthorsCount]
     };
 
-    console.log('sql ==>>', sql);
-    // return researchDbW.query(sql);
-    const insertJournalRecord = await researchDbW.query(sql);
-    const promises = [insertJournalRecord];
-    return Promise.all(promises).then(([insertJournalRecord]) => {
-        return  { status : "Done" , message : "Record Inserted Successfully" , journalPaperId : insertJournalRecord.rows.id, rowCount : insertJournalRecord.rowCount}
+    // console.log('articleSql ==>>', articleSql);
+
+    const insertDocumentPromises = articleFilesNameArray ? articleFilesNameArray.map(async (fileName) => {
+        const documentInsertSql = {
+            text: `INSERT INTO supporting_documents (documents_name, created_at, updated_at) VALUES ($1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP) RETURNING id`,
+            values: [fileName]
+        };
+        const result = await researchDbW.query(documentInsertSql);
+        return result.rows[0].id; 
+    }) : null;
+
+    const documentIds = await Promise.all(insertDocumentPromises);
+    // console.log('documentIds ====>>>>', documentIds);
+
+    const insertJournalRecord = await researchDbW.query(articleSql);
+    const journalPaperId = insertJournalRecord.rows[0].id;
+    console.log('journalPaperId ===>>>>', journalPaperId);
+
+    const insertJournalArticleDocuments = documentIds.map((element) => {
+        const articleDocumentSql = {
+            text: `INSERT INTO journal_article_documents (journal_article_id, supporting_documents_id) VALUES ($1, $2) RETURNING id`,
+            values: [journalPaperId, element]
+        };
+        // console.log('articleDocumentSql ===>>>>>', articleDocumentSql);
+        return researchDbW.query(articleDocumentSql);
+    });
+
+    const insertArticleFactor = impactFactorArray.map((element) => {
+        const articleFactorSql = {
+            text: `INSERT INTO journal_article_impact_factor (journal_article_id, impact_factor_id) VALUES ($1, $2) RETURNING id`,
+            values: [journalPaperId, element]
+        }
+        // console.log('articleFactorSql ====>>>>>', articleFactorSql);
+        return researchDbW.query(articleFactorSql)
+    });
+
+    const insertJournalPolicy = policyCadreArray.map((element) => {
+        const journalPolicySql = {
+            text: `INSERT INTO journal_article_policy_cadre (journal_article_id, policy_cadre_id) VALUES ($1, $2) RETURNING id`,
+            values: [journalPaperId, element]
+        }
+
+        // console.log('journalPolicySql ===>>>>>>', journalPolicySql);
+        return researchDbW.query(journalPolicySql)
+    });
+
+    const insertJournalSchool = schoolIdsArray.map((element) => {
+        const journalSchoolSql = {
+            text: `INSERT INTO journal_article_school (journal_article_id, school_id) VALUES ($1, $2) RETURNING id`,
+            values: [journalPaperId, element]
+        }
+
+        // console.log('journalSchoolSql ===>>>>>>', journalSchoolSql);
+        return researchDbW.query(journalSchoolSql)
+    });
+
+    const insertJournalCampus = campusIdsArray.map((element) => {
+        const journalCampusSql = {
+            text: `INSERT INTO journal_article_campus (journal_article_id, campus_id) VALUES ($1, $2) RETURNING id`,
+            values: [journalPaperId, element]
+        }
+        // console.log('journalCampusSql ===>>>>>>', journalCampusSql);
+        return researchDbW.query(journalCampusSql)
+    });
+
+    const insertAllarticlAuthors = allAuthorsArray.map((element) => {
+        const allAuthorsSql = {
+            text: `INSERT INTO all_article_authors (journal_article_id, faculty_id) VALUES ($1, $2) RETURNING id`,
+            values: [journalPaperId, element]
+        }
+        // console.log('allAuthorsSql ===>>>>>>', allAuthorsSql);
+        return researchDbW.query(allAuthorsSql)
+    });
+
+    const insertNmimsAuthors = nmimsAuthorsArray.map((element) => {
+        const nmimsAuthorsSql = {
+            text: `INSERT INTO nmims_faculties (journal_article_id, faculty_id) VALUES ($1, $2) RETURNING id`,
+            values: [journalPaperId, element]
+        }
+        // console.log('nmimsAuthorsSql ===>>>>>>', nmimsAuthorsSql);
+        return researchDbW.query(nmimsAuthorsSql)
+    });
+
+    const selectSchoolDataPromises = schoolIdsArray.map(async (schoolId) => {
+        const schoolSql = {
+            text: `SELECT * FROM nmims_school WHERE id = $1`,
+            values: [schoolId]
+        };
+        const schoolResult = await researchDbR.query(schoolSql);
+        return schoolResult.rows[0]; 
+    });
+    
+    const selectCampusDataPromises = campusIdsArray.map(async (campusId) => {
+        const campusSql = {
+            text: `SELECT * FROM nmims_campus WHERE id = $1`,
+            values: [campusId]
+        };
+        const campusResult = await researchDbR.query(campusSql);
+        return campusResult.rows[0];
+    });
+
+    const selectImpactFactorData = impactFactorArray.map(async (impactFactorId) => {
+        const impactSql = {
+            text: `SELECT * FROM impact_factor WHERE id = $1`,
+            values: [impactFactorId]
+        };
+        const impactData = await researchDbR.query(impactSql);
+        return impactData.rows[0];
+    });
+    
+    const selectPolicyCadreData = policyCadreArray.map(async (policyId) => {
+        const policySql = {
+            text: `SELECT * FROM policy_cadre WHERE id = $1`,
+            values: [policyId]
+        };
+        const policyData = await researchDbR.query(policySql);
+        return policyData.rows[0]; 
+    });
+    
+    const articleFileLength = articleFilesNameArray.length;
+    const impactFactorLength = impactFactorArray.length;
+    const policyCadreLength = policyCadreArray.length;
+    const schoolIdsLength = schoolIdsArray.length;
+    const campusIdsLength = campusIdsArray.length;
+    const allAuthorsIdsLength = allAuthorsArray.length;
+    const nmimsAuthorsLength = nmimsAuthorsArray.length;
+    
+    return Promise.all([
+        ...insertJournalArticleDocuments,
+        ...insertArticleFactor,
+        ...insertJournalPolicy,
+        ...insertJournalSchool,
+        ...insertJournalCampus,
+        ...insertNmimsAuthors,
+        ...insertAllarticlAuthors,
+        ...selectSchoolDataPromises,
+        ...selectCampusDataPromises,
+        ...selectImpactFactorData,
+        ...selectPolicyCadreData
+    ])
+    .then((results) => {
+        // console.log("result ===>>>>>", results);
+    
+        const extractIds = (startIndex, length) => {
+            return results
+                .slice(startIndex, startIndex + length)
+                .map((result) => result?.rows[0]?.id);
+        };
+    
+        const articledocumentsIds = extractIds(0, articleFileLength);
+        const articlImpactFactorIds = extractIds(articleFileLength, impactFactorLength);
+        const articlePolicyCadreIds = extractIds(articleFileLength + impactFactorLength, policyCadreLength);
+        const articleSchoolIds = extractIds(articleFileLength + impactFactorLength + policyCadreLength, schoolIdsLength);
+        const articleCampusIds = extractIds(articleFileLength + impactFactorLength + policyCadreLength + schoolIdsLength, campusIdsLength);
+        const journalAuthorsIds = extractIds(articleFileLength + impactFactorLength + policyCadreLength + schoolIdsLength + campusIdsLength, nmimsAuthorsLength);
+        const allArticleAuthorIds = extractIds(articleFileLength + impactFactorLength + policyCadreLength + schoolIdsLength + campusIdsLength + nmimsAuthorsLength, allAuthorsIdsLength);
+    
+        const schoolList = results.slice(articleFileLength + impactFactorLength + policyCadreLength, articleFileLength + impactFactorLength + policyCadreLength + schoolIdsLength + campusIdsLength).map(result => result[0]);
+        const campusList = results.slice(articleFileLength + impactFactorLength + policyCadreLength + schoolIdsLength, articleFileLength + impactFactorLength + policyCadreLength + schoolIdsLength + campusIdsLength).map(result => result[0]);
+        const schoolNames = [];
+        const campusNames = [];
+        const impactFactorNames = [];
+        const policyCadreNames = []
+
+        results.forEach((result) => {
+            if (result.school_name) {
+                schoolNames.push(result.school_name);
+            }
+            if (result.cadre_name) {
+                policyCadreNames.push(result.cadre_name);
+            }
+            if (result.campus_name) {
+                campusNames.push(result.campus_name);
+            }
+            if (result.impact_factor) {
+                impactFactorNames.push(result.impact_factor);
+            }
+        });
+
+        // console.log("School Names:", schoolNames);
+        // console.log("Campus Names:", campusNames);
+        // console.log("Impact Factors:", impactFactorNames);
+        // console.log("policy Cadre:", impactFactorNames);
+
+        return {
+            status: "Done",
+            message: "Record Inserted Successfully",
+            journalPaperId: journalPaperId,
+            rowCount: insertJournalRecord.rowCount,
+            documentIds: documentIds,
+            articledocumentsIds: articledocumentsIds,
+            articlImpactFactorIds: articlImpactFactorIds,
+            articlePolicyCadreIds: articlePolicyCadreIds,
+            articleSchoolIds: articleSchoolIds,
+            articleCampusIds: articleCampusIds,
+            journalAuthorsIds: journalAuthorsIds,
+            allArticleAuthorIds: allArticleAuthorIds,
+            schoolList: schoolNames,
+            campusList: campusNames,
+            impactFactorList : impactFactorNames,
+            policyCadreList : policyCadreNames
+        };
     })
     .catch((error) => {
-        return{status : "Failed" , message : error.message , errorCode : error.code}
-    })
+        return {
+            status: "Failed",
+            message: error.message,
+            errorCode: error.code,
+        };
+    });                   
     
 };
 

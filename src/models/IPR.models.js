@@ -296,19 +296,17 @@ module.exports.InsetIPRDataModels = async (IprData, iprFilesNamesArray, Facultyd
         const invetionList = results.slice(iprFilesNamesArray.length + FacultydataArray.length + schoolIdsArray.length + campusIdsArray.length + inventionTypeIdsArray.length + patentStatus.length).map(result => result[0]);
         const statusList = results.slice(iprFilesNamesArray.length + FacultydataArray.length + schoolIdsArray.length + campusIdsArray.length + inventionTypeIdsArray.length + patentStatus.length).map(result => result[0]);
 
-
-
         console.log('schoolDataList ===>>>>>', schoolDataList);
         console.log('campusList ===>>>>>', campusList);
         console.log('invetionList ===>>>>>', invetionList);
         console.log('statusList ===>>>>>', statusList);
+
         const schoolNames = schoolDataList.map(school => school?.school_name).filter(Boolean).join(',');
         const campusNames = campusList.map(campus => campus?.campus_name).filter(Boolean).join(',');
         const invetionTypeNames = invetionList.map(invetion => invetion?.invention_type).filter(Boolean).join(',');
         const statusTypeName = statusList.map(status => status?.status_name).filter(Boolean).join(',');
         console.log('invetionTypeNames ===>>>>', invetionTypeNames);
         console.log('statusTypeName ===>>>>', statusTypeName);
-
 
         return {
             status: "Done",
