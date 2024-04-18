@@ -4,9 +4,7 @@ module.exports.renderJournalPaper = async () => {
 
     const fetchJournalArticle  = await journalPaperModel.fetchJournalPaper();
 
-   console.log('journalArticleData ===>>>>', fetchJournalArticle.journalArticleData);
- 
-
+   console.log('journalArticleData ===>>>>', fetchJournalArticle.rowCount);
    // makeing object based in article_id
    const journalData = {};
    fetchJournalArticle.journalArticleData.forEach(data => {
@@ -17,7 +15,7 @@ module.exports.renderJournalPaper = async () => {
        }
    });
    const journalArticleData = Object.values(journalData);
-//    console.log('journalArticleData in service ===>>>>>>>', journalArticleData);
+   console.log('journalArticleData in service ===>>>>>>>', journalArticleData);
    
    return fetchJournalArticle.status === "Done" ? {
                 status : fetchJournalArticle.status,
@@ -64,10 +62,24 @@ module.exports.insertJournalPapper = async (body, files) => {
     console.log('policyCadreArray ===>>>>', policyCadreArray);
     console.log('allAuthorsArray ===>>>>', allAuthorsArray);
 
+    const schoolsIdsStrings = schoolIdsArray.join(',')
+    const campusIdsString = campusIdsArray.join(',');
+    const policadreIdsstring = policyCadreArray.join(',');
+    const impacatFactorIdsString = impactFactorArray.join(',');
+    const nmisAuthorIdsstring = nmimsAuthorsArray.join(',');
+    const allAuthorsIdsString = allAuthorsArray.join(',');
+    
+
     const newJournalPaper = await journalPaperModel.insertJournalArticle(journalDetails, articleFilesNameArray, schoolIdsArray, campusIdsArray,
         impactFactorArray, policyCadreArray, allAuthorsArray, nmimsAuthorsArray);
 
-    console.log('newJournalPaper ==>>', newJournalPaper)
+    console.log('newJournalPaper ==>>', newJournalPaper);
+    const documentIds = newJournalPaper.documentIds;
+    const documentIdsString = documentIds.join(',');
+    const schoolList = newJournalPaper.schoolList.join(',');
+    const campusList = newJournalPaper.campusList.join(',');
+    const impactFactorList = newJournalPaper.impactFactorList.join(',');
+    const policyCadreList = newJournalPaper.policyCadreList.join(',');
     
     return newJournalPaper.status === "Done" ? {
         status : newJournalPaper.status,
@@ -82,10 +94,18 @@ module.exports.insertJournalPapper = async (body, files) => {
         articleCampusIds: newJournalPaper.articleCampusIds,
         journalAuthorsIds: newJournalPaper.journalAuthorsIds,
         allArticleAuthorIds: newJournalPaper.allArticleAuthorIds,
-        schoolList: newJournalPaper.schoolList,
-        campusList: newJournalPaper.campusList,
-        impactFactorList : newJournalPaper.impactFactorList,
-        policyCadreList : newJournalPaper.policyCadreList,
+        schoolList: schoolList,
+        campusList: campusList,
+        impactFactorList : impactFactorList,
+        policyCadreList : policyCadreList,
+        schoolsIdsStrings : schoolsIdsStrings,
+        campusIdsString : campusIdsString,
+        policadreIdsstring : policadreIdsstring,
+        impacatFactorIdsString : impacatFactorIdsString,
+        nmisAuthorIdsstring : nmisAuthorIdsstring, 
+        allAuthorsIdsString : allAuthorsIdsString, 
+        documentIdsString : documentIdsString,
+        articleFilesNameArray : articleFilesNameArray,
         journalDetails : journalDetails
     } : {
         status : newJournalPaper.status,
@@ -96,27 +116,104 @@ module.exports.insertJournalPapper = async (body, files) => {
 
 // service for delete
 module.exports.deleteJournalPaper = async (journalPaperId) => {
-    const result = await journalPaperModel.deleteJournalPaper({ journalPaperId });
-    if(result.rowCount === 1){
-        return {
-            status : 'done' ,
-            massage : 'row is deleted successfully'
-        };
-    }
-    else{
-        return {
-            status : 'failed' ,
-            massage : 'could not delete any thing'
-        }
+    console.log('journalPaperId in service ==>>>>>', journalPaperId);
+
+    const deleteJournalArticleData = await journalPaperModel.deleteJournalPaper({ journalPaperId });
+
+    console.log('deleteJournalArticleData in services ===>>>>', deleteJournalArticleData);
+
+    return deleteJournalArticleData.status === "Done" ? {
+        status : deleteJournalArticleData.status,
+        message : deleteJournalArticleData.message
+    } : {
+        status : deleteJournalArticleData.status,
+        message : deleteJournalArticleData.message,
+        errorCode : deleteJournalArticleData.errorCode
     }
 };
 
 // service for update
-module.exports.updateJournalPaper = async ({journalPaperId, updateJournalDetails}) => {
-    console.log('id for  updation in service', journalPaperId);
-    const updatedJournalData = await journalPaperModel.updateJournalPaperData({journalPaperId, updateJournalDetails});
+module.exports.updateJournalPaper = async (body, files) => {
+
+    const updateJournalDetails = body;
+    const journalPaperId = updateJournalDetails.journalPaperId; 
+
+    console.log(' updateJournalDetails data for updation in service ===>>>>', updateJournalDetails);
+    const updatedArticleFilesNameArray = files ?.map(file => file.filename);
+
+    console.log('updatedArticleFilesNameArray ===>>>>>>', updatedArticleFilesNameArray);
+
+    const updateNmimsFacultiesIds = JSON.parse(updateJournalDetails.nmimsFacultiesIds);
+    const updateNmimsSchoolIds = JSON.parse(updateJournalDetails.nmimsSchoolIds);
+    const updateNmimsCampusIds = JSON.parse(updateJournalDetails.nmimsCampusIds);
+    const updateImpactFactorIds = JSON.parse(updateJournalDetails.impactFactorIds);
+    const updatePolicyCadreIds = JSON.parse(updateJournalDetails.policyCadreIds);
+    const updateAllAuthorsIds = JSON.parse(updateJournalDetails.allAuthorsIds);
+
+    const updateSchoolIdsArray = (updateNmimsSchoolIds.nmimsSchool || []).map(id => parseInt(id));
+    const updateCampusIdsArray = (updateNmimsCampusIds.nmimsCampus || []).map(id => parseInt(id));
+    const updateNmimsAuthorsArray = (updateNmimsFacultiesIds.nmimsInternalFaculty || []).map(id => parseInt(id));
+    const updateImpactFactorArray = (updateImpactFactorIds.impactFactor || []).map(id => parseInt(id));
+    const updatePolicyCadreArray = (updatePolicyCadreIds.policyCadre || []).map(id => parseInt(id));
+    const updateAllAuthorsArray = (updateAllAuthorsIds.authorsList || []).map(id => parseInt(id));
+
+    console.log('updateSchoolIdsArray ===>>>>', updateSchoolIdsArray);
+    console.log('updateCampusIdsArray ===>>>>', updateCampusIdsArray);
+    console.log('updateNmimsAuthorsArray ===>>>>', updateNmimsAuthorsArray);
+    console.log('updateImpactFactorArray ===>>>>', updateImpactFactorArray);
+    console.log('updatePolicyCadreArray ===>>>>', updatePolicyCadreArray);
+    console.log('updateAllAuthorsArray ===>>>>', updateAllAuthorsArray);
+
+    const schoolsIdsStrings = updateSchoolIdsArray.join(',')
+    const campusIdsString = updateCampusIdsArray.join(',');
+    const policadreIdsstring = updatePolicyCadreArray.join(',');
+    const impacatFactorIdsString = updateImpactFactorArray.join(',');
+    const nmisAuthorIdsstring = updateNmimsAuthorsArray.join(',');
+    const allAuthorsIdsString = updateAllAuthorsArray.join(',');
+
+    const updatedJournalData = await journalPaperModel.updateJournalPaperData(journalPaperId, updateJournalDetails, updateSchoolIdsArray, updateCampusIdsArray, updateNmimsAuthorsArray,
+         updateImpactFactorArray, updatePolicyCadreArray, updateAllAuthorsArray, updatedArticleFilesNameArray);
+
     console.log('data is service ==>>>', updatedJournalData);
-    return updatedJournalData
+    const documentIds = updatedJournalData.documentIds;
+    const documentIdsString = documentIds ? documentIds.join(',') : null;
+    const schoolList = updatedJournalData.schoolList.join(',');
+    const campusList = updatedJournalData.campusList.join(',');
+    const impactFactorList = updatedJournalData.impactFactorList.join(',');
+    const policyCadreList = updatedJournalData.policyCadreList.join(',');
+
+    return updatedJournalData.status === "Done" ? {
+        status : updatedJournalData.status,
+        message : updatedJournalData.message,
+        rowCount : updatedJournalData.rowCount,
+        journalPaperId : updatedJournalData.journalPaperId,
+        documentIds: updatedJournalData.documentIds,
+        articledocumentsIds: updatedJournalData.articledocumentsIds,
+        articlImpactFactorIds: updatedJournalData.articlImpactFactorIds,
+        articlePolicyCadreIds: updatedJournalData.articlePolicyCadreIds,
+        articleSchoolIds: updatedJournalData.articleSchoolIds,
+        articleCampusIds: updatedJournalData.articleCampusIds,
+        journalAuthorsIds: updatedJournalData.journalAuthorsIds,
+        allArticleAuthorIds: updatedJournalData.allArticleAuthorIds,
+        schoolList: schoolList,
+        campusList: campusList,
+        impactFactorList : impactFactorList,
+        policyCadreList : policyCadreList,
+        schoolsIdsStrings : schoolsIdsStrings,
+        campusIdsString : campusIdsString,
+        policadreIdsstring : policadreIdsstring,
+        impacatFactorIdsString : impacatFactorIdsString,
+        nmisAuthorIdsstring : nmisAuthorIdsstring, 
+        allAuthorsIdsString : allAuthorsIdsString, 
+        documentIdsString : documentIdsString,
+        articleFilesNameArray : updatedArticleFilesNameArray,
+        updateJournalDetails : updateJournalDetails
+    } : {
+        status : updatedJournalData.status,
+        message : updatedJournalData.message,
+        errorCode : updatedJournalData.errorCode ? updatedJournalData.errorCode : null
+    }
+
 }
 
 // service for view

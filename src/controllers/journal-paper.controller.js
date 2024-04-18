@@ -5,7 +5,7 @@ module.exports.renderJournalPaper = async (req, res, next) => {
 
     const journalList = await journalPaperService.renderJournalPaper();
 
-    // console.log('journalList in controller ====>>>>', journalList);
+    console.log('journalList in controller ====>>>>', journalList.rowCount);
     // console.log('journalList.allAuthorList ===>>>>>>>', journalList.allAuthorList)
     
     res.render('journal-paper', {
@@ -31,7 +31,7 @@ module.exports.insertJournalPapperDetails = async (req, res, next) => {
 
     const journalPaperData = await journalPaperService.insertJournalPapper(req.body, req.files);
 
-    console.log("journalPaperData ===>" , journalPaperData);
+    console.log("journalPaperData ===>" , journalPaperData.rowCount);
 
     const statusCode = journalPaperData.status === "Done" ? 200 : (journalPaperData.errorCode ? 400 : 500);
 
@@ -53,6 +53,14 @@ module.exports.insertJournalPapperDetails = async (req, res, next) => {
         impactFactorList : journalPaperData.impactFactorList,
         policyCadreList : journalPaperData.policyCadreList,
         journalDetails : journalPaperData.journalDetails,
+        schoolsIdsStrings : journalPaperData.schoolsIdsStrings,
+        campusIdsString : journalPaperData.campusIdsString,
+        policadreIdsstring : journalPaperData.policadreIdsstring,
+        impacatFactorIdsString : journalPaperData.impacatFactorIdsString,
+        nmisAuthorIdsstring : journalPaperData.nmisAuthorIdsstring, 
+        allAuthorsIdsString : journalPaperData.allAuthorsIdsString, 
+        documentIdsString : journalPaperData.documentIdsString,
+        articleFilesNameArray : journalPaperData.articleFilesNameArray,
         errorCode : journalPaperData.errorCode ? journalPaperData.errorCode : null
     })
 };
@@ -60,36 +68,58 @@ module.exports.insertJournalPapperDetails = async (req, res, next) => {
 
 module.exports.delJournalPaper = async (req, res, next) => {
     const journalPaperId = req.body.journalPaperId;
-    console.log('controller journalPaperId', journalPaperId) 
-    const delJournalData = await journalPaperService.deleteJournalPaper(journalPaperId);
-    if( delJournalData.status ===  'done'){
-        res.status(200).send({
-            status : 'Done' ,
-            massage : delJournalData.massage
-        });
-    }
-    else{
-        res.status(500).send({
-            status : 'failed' ,
-            massage : delJournalData.massage
-        })
 
-    };
+    const delJournalData = await journalPaperService.deleteJournalPaper(journalPaperId);
+
+    const statusCode = delJournalData.status === "Done" ? 200 : (delJournalData.errorCode ? 400 : 500);
+
+    res.status(statusCode).send({
+        status : delJournalData.status,
+        message : delJournalData.message,
+        errorCode : delJournalData.errorCode ? delJournalData.errorCode : null
+    })
+
 };
  
 
 module.exports.updateJournalPaper = async (req, res, next) => {
-    const updateJournalDetails = req.body;
-    const journalPaperId = req.body.journalPaperId;
-    console.log('journalPaperId for updation in controller', journalPaperId)
-    console.log('updateJournalDetails ==>>' , updateJournalDetails);
-    const updatePaper = await journalPaperService.updateJournalPaper({journalPaperId, updateJournalDetails});
-    console.log('id for updation in controller', updatePaper);
-    res.status(200).send({
-        status : 'Done',
-        message : "Record Updated Successfully",
-        journalPaperId : journalPaperId,
-        updateJournalDetails : updateJournalDetails
+    console.log('data is comming from template ==>>>>>', req.body);
+    console.log('files in conteroller ===>>>>', req.files)
+    
+    const updatePaper = await journalPaperService.updateJournalPaper(req.body, req.files);
+
+    console.log('updatePaper updation in controller', updatePaper);
+    const statusCode = updatePaper.status === "Done" ? 200 : (updatePaper.errorCode ? 400 : 500);
+    console.log('statusCode ==>>>>', statusCode);
+
+    res.status(statusCode).send({
+        status : updatePaper.status,
+        message : updatePaper.message,
+        status : updatePaper.status,
+        message : updatePaper.message,
+        rowCount : updatePaper.rowCount,
+        documentIds: updatePaper.documentIds,
+        articledocumentsIds: updatePaper.articledocumentsIds,
+        articlImpactFactorIds: updatePaper.articlImpactFactorIds,
+        articlePolicyCadreIds: updatePaper.articlePolicyCadreIds,
+        articleSchoolIds: updatePaper.articleSchoolIds,
+        articleCampusIds: updatePaper.articleCampusIds,
+        journalAuthorsIds: updatePaper.journalAuthorsIds,
+        allArticleAuthorIds: updatePaper.allArticleAuthorIds,
+        schoolList: updatePaper.schoolList,
+        campusList: updatePaper.campusList,
+        impactFactorList : updatePaper.impactFactorList,
+        policyCadreList : updatePaper.policyCadreList,
+        schoolsIdsStrings : updatePaper.schoolsIdsStrings,
+        campusIdsString : updatePaper.campusIdsString,
+        policadreIdsstring :updatePaper.policadreIdsstring,
+        impacatFactorIdsString : updatePaper.impacatFactorIdsString,
+        nmisAuthorIdsstring : updatePaper.nmisAuthorIdsstring, 
+        allAuthorsIdsString : updatePaper.allAuthorsIdsString, 
+        documentIdsString : updatePaper.documentIdsString,
+        articleFilesNameArray : updatePaper.articleFilesNameArray,
+        updateJournalDetails : updatePaper.updateJournalDetails,
+        errorCode : updatePaper.errorCode ? updatePaper.errorCode : null
     })
 };
 

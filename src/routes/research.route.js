@@ -41,7 +41,7 @@ router.get('/', asyncErrorHandler(researchController.renderResearch));
 //journal paper 
 router.get('/journal-paper', asyncErrorHandler(journalController.renderJournalPaper));
 router.post('/journal-paper/insert', upload.array('articlesDocuments', 5), asyncErrorHandler(journalController.insertJournalPapperDetails));
-router.post('/journal-paper/update', asyncErrorHandler(journalController.updateJournalPaper));
+router.post('/journal-paper/update', upload.array('articlesDocuments', 5), asyncErrorHandler(journalController.updateJournalPaper));
 router.post('/journal-paper/delete', asyncErrorHandler(journalController.delJournalPaper));
 router.post('/journal-paper/view', asyncErrorHandler(journalController.viewJournalPaper));
 
