@@ -20,7 +20,7 @@ module.exports.fetchJournalPaper = async () => {
                     jpa.issn_no,
                     jpa.uid,
                     jpa.year,
-                    jpa.article_type,
+                    jpa.jorunal_article_type_id,
                     jpa.date_of_publishing,
                     jpa.scs_cite_score,
                     jpa.scs_indexed,
@@ -83,7 +83,7 @@ module.exports.fetchJournalPaper = async () => {
                     jpa.pages,
                     jpa.issn_no,
                     jpa.year,
-                    jpa.article_type,
+                    jpa.jorunal_article_type_id,
                     jpa.date_of_publishing,
                     jpa.scs_cite_score,
                     jpa.scs_indexed,
@@ -171,7 +171,7 @@ module.exports.insertJournalArticle = async (journalDetails, articleFilesNameArr
 
     let articleSql = {
         text: `INSERT INTO journal_paper_article (year, publisher, total_authors, journal_name, count_other_faculty, pages, issn_no, scs_cite_score, wos_indexed,
-                abdc_indexed, ugc_indexed, web_link_doi_number, uid, date_of_publishing, title_of_paper, article_type, nmims_authors_count, gs_index)
+                abdc_indexed, ugc_indexed, web_link_doi_number, uid, date_of_publishing, title_of_paper, jorunal_article_type_id, nmims_authors_count, gs_index)
                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18) RETURNING id`,
 
         values: [year, publisher, totalAuthors, journalName, countOtherFaculty, pages, issnNo, scsCiteScore, wosIndexedCategory,
@@ -488,7 +488,7 @@ module.exports.updateJournalPaperData = async (journalPaperId, updateJournalDeta
     let sql = {
         text: `UPDATE journal_paper_article SET
                 year = $2, publisher = $3, total_authors= $4, journal_name= $5, count_other_faculty= $6, pages= $7, issn_no= $8, scs_cite_score= $9, wos_indexed= $10,
-                abdc_indexed= $11, ugc_indexed= $12, web_link_doi_number= $13, uid= $14, date_of_publishing= $15, title_of_paper= $16, article_type= $17, nmims_authors_count= $18, gs_index= $19
+                abdc_indexed= $11, ugc_indexed= $12, web_link_doi_number= $13, uid= $14, date_of_publishing= $15, title_of_paper= $16, jorunal_article_type_id= $17, nmims_authors_count= $18, gs_index= $19
                 WHERE id = $1`,
         values: [journalPaperId, year, publisher, totalAuthors, journalName, countOtherFaculty, pages, issnNo, scsCiteScore, wosIndexedCategory,
                 abdcIndexedCategory, ugcIndexedCategory, webLinkNumber, uid, dateOfPublishing, titleOfPaper, journalCategory, nmimsAuthorsCount, gsIndex
@@ -735,17 +735,228 @@ module.exports.updateJournalPaperData = async (journalPaperId, updateJournalDeta
 };
 
 // for viewing 
-
 module.exports.viewJournalPaperData = async ({journalPaperId}) => {
     const sql = {
-        text : `SELECT  year, school, campus, policy_cadre, journal_category, all_authors,
-        total_authors, nmims_authors, foreign_authors, numbers_foreign_authors, nmims_authors_count,
-        count_other_faculty, title_of_paper, journal_name, publisher, pages, issn_no,
-        TO_CHAR(date_of_publishing, 'DD-MM-YYYY'), impact_factor, scs_cite_score, scs_indexed, wos_indexed,
-        abdc_indexed, ugc_indexed, web_link_doi_number, names_nmims_student_author, no_nmims_student_author FROM journal_papers WHERE id = $1 `,
+        text : `SELECT
+                    jpa.id AS article_id,
+                    jpa.title_of_paper,
+                    jpa.total_authors,
+                    jpa.count_other_faculty,
+                    jpa.nmims_authors_count,
+                    jpa.journal_name,
+                    jpa.publisher,
+                    jpa.pages,
+                    jpa.issn_no,
+                    jpa.uid,
+                    jpa.year,
+                    jpa.jorunal_article_type_id,
+                    jpa.date_of_publishing,
+                    jpa.scs_cite_score,
+                    jpa.scs_indexed,
+                    jpa.abdc_indexed,
+                    jpa.gs_index,
+                    jpa.wos_indexed,
+                    jpa.ugc_indexed,
+                    jpa.web_link_doi_number,
+                    string_agg(DISTINCT jaf.impact_factor, ', ') AS impact_factors,
+                    string_agg(DISTINCT jaf.id::text, ', ') AS impact_factors_ids,
+                    string_agg(DISTINCT sd.documents_name, ', ') AS supporting_documents,
+                    string_agg(DISTINCT sd.id::text, ', ') AS supporting_documents_ids,
+                    string_agg(DISTINCT pc.cadre_name, ', ') AS policy_cadre,
+                    string_agg(DISTINCT pc.id::text, ', ') AS policy_cadre_ids,
+                    string_agg(DISTINCT f.faculty_name, ', ') AS internal_faculty_names,
+                    string_agg(DISTINCT f.id::text, ', ') AS nmims_facilty_id,
+                    string_agg(DISTINCT a.faculty_name, ', ') AS all_article_authors_names,
+                    string_agg(DISTINCT a.id::text, ', ') AS articles_faculties_ids,
+                    string_agg(DISTINCT ns.school_name, ', ') AS associated_schools,
+                    string_agg(DISTINCT ns.id::text, ', ') AS school_id,
+                    string_agg(DISTINCT nc.campus_name, ', ') AS associated_campuses,
+                    string_agg(DISTINCT nc.id::text, ', ') AS campus_id
+                FROM
+                    journal_paper_article jpa
+                LEFT JOIN
+                    journal_article_school jas ON jpa.id = jas.journal_article_id
+                LEFT JOIN
+                    nmims_school ns ON jas.school_id = ns.id
+                LEFT JOIN
+                    journal_article_campus jac ON jpa.id = jac.journal_article_id
+                LEFT JOIN
+                    nmims_campus nc ON jac.campus_id = nc.id
+                LEFT JOIN
+                    journal_article_impact_factor jaif ON jpa.id = jaif.journal_article_id
+                LEFT JOIN
+                    impact_factor jaf ON jaif.impact_factor_id = jaf.id
+                LEFT JOIN
+                    nmims_faculties nf ON jpa.id = nf.journal_article_id
+                LEFT JOIN
+                    faculties f ON nf.faculty_id = f.id
+                LEFT JOIN
+                    all_article_authors aa ON jpa.id = aa.journal_article_id
+                LEFT JOIN
+                    faculties a ON aa.faculty_id = a.id
+                LEFT JOIN
+                    journal_article_documents jad ON jpa.id = jad.journal_article_id
+                LEFT JOIN
+                    supporting_documents sd ON jad.supporting_documents_id = sd.id
+                LEFT JOIN
+                    journal_article_policy_cadre japc ON jpa.id = japc.journal_article_id
+                LEFT JOIN
+                    policy_cadre pc ON japc.policy_cadre_id = pc.id
+                WHERE 
+                    jpa.id = $1 
+                GROUP BY
+                    jpa.id,
+                    jpa.title_of_paper,
+                    jpa.total_authors,
+                    jpa.nmims_authors_count,
+                    jpa.journal_name,
+                    jpa.publisher,
+                    jpa.pages,
+                    jpa.issn_no,
+                    jpa.year,
+                    jpa.jorunal_article_type_id,
+                    jpa.date_of_publishing,
+                    jpa.scs_cite_score,
+                    jpa.scs_indexed,
+                    jpa.abdc_indexed,
+                    jpa.wos_indexed,
+                    jpa.ugc_indexed,
+                    jpa.web_link_doi_number`,
+    values : [journalPaperId]
+    }
+
+    const nmimsAuthorsSql = {
+        text : `SELECT
+                    f.faculty_name,
+                    f.designation,
+                    f.address,
+                    f.employee_id
+                FROM
+                    nmims_faculties nf
+                JOIN
+                    faculties f ON nf.faculty_id = f.id
+                WHERE
+                    nf.journal_article_id = $1`,
+
+    values  : [journalPaperId]
+    }
+
+    const allauthorsSql = {
+        text : `SELECT
+                    f.faculty_name,
+                    f.designation,
+                    f.address,
+                    f.employee_id,
+                    ft.name AS faculty_type
+                FROM
+                all_article_authors aaa
+                JOIN
+                    faculties f ON aaa.faculty_id = f.id
+                JOIN
+                    faculty_types ft ON f.faculty_type_id = ft.id
+                WHERE
+                    aaa.journal_article_id = $1`,
+        values  : [journalPaperId]
+    }
+
+    const factorSql = {
+        text : `SELECT 
+                    imf.impact_factor,
+                    imf.id
+                FROM 
+                journal_article_impact_factor aimf 
+                JOIN 
+                impact_factor imf ON aimf.impact_factor_id =  imf.id
+                WHERE 
+                aimf.journal_article_id = $1`,
+        values  : [journalPaperId]
+    };
+
+    const policyCadreSql = {
+        text : `SELECT 
+                    pc.impact_factor,
+                    pc.id
+                FROM 
+                journal_article_policy_cadre japc  
+                JOIN 
+                impact_factor pc ON japc.policy_cadre_id =  pc.id
+                WHERE 
+                japc.journal_article_id = $1`,
+        values  : [journalPaperId]
+    };
+
+    const articleSchoolSql = {
+        text : `SELECT 
+                    ns.school_name,
+                    ns.id
+                FROM 
+                journal_article_school jas 
+                JOIN 
+                    nmims_school ns ON jas.school_id =  ns.id
+                WHERE 
+                    jas.journal_article_id = $1`,
+        values  : [journalPaperId]
+    };
+
+    const articleCampusSql = {
+        text : `SELECT 
+                    nc.campus_name,
+                    nc.id
+                FROM
+                journal_article_campus jac 
+                JOIN 
+                    nmims_campus nc ON jac.campus_id = nc.id
+                WHERE
+                    jac.journal_article_id = $1`,
+        values : [journalPaperId]
+    };
+
+    const articleDocumentsSql = {
+        text : `SELECT 
+                    sd.documents_name,
+                    sd.id
+                FROM
+                journal_article_documents jad 
+                JOIN 
+                    supporting_documents sd ON jad.supporting_documents_id = sd.id
+                WHERE
+                    jad.journal_article_id = $1`,
         values : [journalPaperId]
     }
-    console.log('sql ==>>', sql)
-    return researchDbR.query(sql);
+
+    const journalAricleData = await researchDbW.query(sql);
+    const nmimsAuthors = await researchDbR.query(nmimsAuthorsSql);
+    const allAuthorsData = await researchDbR.query(allauthorsSql);
+    const articleSchoolData = await researchDbR.query(articleSchoolSql);
+    const articleCampusData = await researchDbR.query(articleCampusSql);
+    const articleDocuments = await researchDbR.query(articleDocumentsSql);
+    const articleImpactFactor = await researchDbR.query(factorSql);
+    const articlePolicyCadre = await researchDbR.query(policyCadreSql);
+
+    const viewPromises = [journalAricleData, nmimsAuthors, allAuthorsData, articleSchoolData, articleCampusData, 
+        articleDocuments, articleImpactFactor, articlePolicyCadre];
+
+    return Promise.all(viewPromises).then(([journalAricleData, nmimsAuthors, allAuthorsData, articleSchoolData, articleCampusData, 
+        articleDocuments, articleImpactFactor, articlePolicyCadre]) => {
+            return {
+                status : 'Done',
+                message : "Record Fetched Successfully",
+                journalAricleData : journalAricleData.rows[0],
+                nmimsAuthors : nmimsAuthors.rows,
+                allAuthorsData : allAuthorsData.rows,
+                articleSchoolData : articleSchoolData.rows,
+                articleCampusData : articleCampusData.rows,
+                articleDocuments : articleDocuments.rows,
+                articleImpactFactor : articleImpactFactor.rows,
+                articlePolicyCadre : articlePolicyCadre.rows
+            }
+        })
+        .catch((error) => {
+            return {
+                status: "Failed",
+                message: error.message,
+                errorCode: error.code,
+            };
+        })
    
 }

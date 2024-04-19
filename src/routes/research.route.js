@@ -44,6 +44,7 @@ router.post('/journal-paper/insert', upload.array('articlesDocuments', 5), async
 router.post('/journal-paper/update', upload.array('articlesDocuments', 5), asyncErrorHandler(journalController.updateJournalPaper));
 router.post('/journal-paper/delete', asyncErrorHandler(journalController.delJournalPaper));
 router.post('/journal-paper/view', asyncErrorHandler(journalController.viewJournalPaper));
+router.get('/journal-paper/download/:fileName', downloadFileService.downloadFile);
 
 
 //case studies

@@ -126,16 +126,25 @@ module.exports.updateJournalPaper = async (req, res, next) => {
 module.exports.viewJournalPaper = async(req, res, next) => {
     const journalPaperId = req.body.journalPaperId;
     console.log('journalPaperId for View' , journalPaperId);
-    console.log('viewDataDetails ==>', req.body);
+
+
     const viewJournalDetails = await journalPaperService.viewJournalPaper({journalPaperId});
-    console.log(' view data=>>', viewJournalDetails)
-    if(viewJournalDetails){
-        res.status(200).send(viewJournalDetails)
-    }
-    else{
-        res.status(500).send({
-            status : 'failed',
-            massage : viewJournalDetails.masssage   
-        })
-    }   
+
+    console.log('viewJournalDetails in controller ====>>>>>>', viewJournalDetails);
+
+    const statusCode = viewJournalDetails.status === "Done" ? 200 : (viewJournalDetails.errorCode ? 400 : 500);
+
+    res.status(statusCode).send({
+        status : viewJournalDetails.status,
+        message : viewJournalDetails.message,
+        journalAricleData : viewJournalDetails.journalAricleData,
+        nmimsAuthors : viewJournalDetails.nmimsAuthors,
+        allAuthorsData : viewJournalDetails.allAuthorsData,
+        articleSchoolData : viewJournalDetails.articleSchoolData,
+        articleCampusData : viewJournalDetails.articleCampusData,
+        articleDocuments : viewJournalDetails.articleDocuments,
+        articleImpactFactor : viewJournalDetails.articleImpactFactor,
+        articlePolicyCadre : viewJournalDetails.articlePolicyCadre,
+        errorCode : viewJournalDetails.errorCode ? viewJournalDetails.errorCode : null
+    })
 }

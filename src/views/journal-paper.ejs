@@ -82,10 +82,10 @@
                             data-wos-indexed="<%- journalPaper.wos_indexed %>"
                             data-title-of-paper="<%- journalPaper.title_of_paper %>"
                             data-abdc-indexed="<%- journalPaper.abdc_indexed %>"
-                            data-ugc-indexed="<%- journalPaper.ugc_indexed %>"
+                            data-ugc-indexed="<%- journalPaper.ugc_indexed %>" 
                             data-web-link-number="<%- journalPaper.web_link_doi_number %>"
                             data-date-of-publishing="<%- journalPaper.date_of_publishing %>"
-                            data-journal-category="<%- journalPaper.journal_category %>"
+                            data-journal-category="<%- journalPaper.jorunal_article_type_id %>"
                             data-all-authors="<%- journalPaper.all_article_authors_names  %>"
                             data-nmims-faculty-ids="<%- journalPaper.nmims_facilty_id %>" data-article-faculties-ids="<%- journalPaper.articles_faculties_ids %>"
                             data-campus-ids="<%- journalPaper.campus_id %>" data-school-ids="<%- journalPaper.school_id %>"
@@ -292,12 +292,6 @@
                              required>
                     </div>
 
-                    <!-- Name Of Foreign Authors
-                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="foreign-authors" class="form-label fw-bold">Names Of Foreign Authors </label>
-                        <input type="text" name="foreign-authors" id="foreign-authors" data-validate="isEmpty,isLength:2:255"  data-err-msg="This field is required and min length > 1." class="form-control"
-                        required>
-                    </div> -->
                     <!-- uid -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="uid" class="form-label fw-bold">UID</label>
@@ -377,12 +371,12 @@
                         <label for="journal-category" id="journal-category" class="form-label fw-bold mb-3">International/National Journal</label><br>
                         <div class="form-check-inline">
                             <label for="inter-national" class="form-check-label">
-                                <input type="radio" class="form-check-input" id="inter-national" name="journal-category" value="International"> International
+                                <input type="radio" class="form-check-input" id="inter-national" name="journal-category" value="2"> International
                             </label>
                         </div>
                         <div class="form-check-inline">
                             <label for="national" class="form-check-label">
-                                <input type="radio" class="form-check-input" id="national" name="journal-category" value="National" checked> National
+                                <input type="radio" class="form-check-input" id="national" name="journal-category" value="1" checked> National
                             </label>
                         </div>
                     </div>
@@ -597,28 +591,28 @@
                         </div>
                     </div>
                     <!--NAMES OF FOREIGN AUTHORS-->
-                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                    <!-- <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
                             <div class="sub-title-text sub-title">Name Of Foreign Authors:</div>
                             <label class="view-content" id="view-foreign-authors"></label>
                         </div>
-                    </div>
+                    </div> -->
 
                        <!--Names of NMIMS Student  Author-->
-                       <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                       <!-- <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
                             <div class="sub-title-text sub-title">Names of NMIMS Student  Author:</div>
                             <label class="view-content" id="view-names-nmims-student-author"></label>
                         </div>
-                    </div>
+                    </div> -->
 
                        <!--NO. OF NMIMS Student  Authors-->
-                       <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                       <!-- <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
                             <div class="sub-title-text sub-title">NO. OF NMIMS Student  Authors:</div>
                             <label class="view-content" id="view-no-nmims-student-author"></label>
                         </div>
-                    </div>
+                    </div> -->
                     <!--abdc-indexed-->
                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
@@ -641,12 +635,12 @@
                         </div>
                     </div>
                     <!--NO. OF FOREIGN AUTHORS -->
-                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                    <!-- <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
                             <div class="sub-title-text sub-title">No Of Foreign Authors:</div>
                             <label class="view-content" id="view-foreign-authors-number"></label>
                         </div>
-                    </div>
+                    </div> -->
                     <!--date-of-publishing -->
                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
@@ -673,6 +667,16 @@
                         <div class="box">
                             <div class="sub-title-text sub-title">NMIMS Authors Count :</div>
                             <label class="view-content" id="view-nmims-authors-count"></label>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="sub-title-text sub-title">
+                                <button class="btn btn-primary h-10 w-10 download-file" id="supporting-document">
+                                    <i class="fas fa-download text-danger"></i> Artciles Documents
+                                </button>
+                            </div>
+                            <label class="view-content" id="view-patent-file"></label>
                         </div>
                     </div>
                 </div>
@@ -1087,10 +1091,10 @@
             journalArtileAllAothorsIds = {'authorsList' : allArticleAuthorsIdsArray};
             policyCadreStoredIds = {'policyCadre' : policyCadreIdsArray};
             impactFactorStoredIds = {'impactFactor' : impactFactorIdsArray};
+            console.log('journalCategory ===>>>>>>', journalCategory);
 
             // For journal category
-            journalCategoryNational.checked = journalCategory === 'National';
-            journalCategoryInternational.checked = journalCategory !== 'National';
+            journalCategory === '1' ? journalCategoryNational.checked = true : journalCategoryInternational.checked = true;
 
             // For SCS indexed category
             scsIndexedYes.checked = scsIndexedCategory === 'Yes';
@@ -1117,37 +1121,8 @@
             journalPaperId = event.target.getAttribute('data-journal-article-id');
             console.log('journalPaperId ==>>', journalPaperId)
             // updating value with actuall value
-            const viewYear = document.getElementById('view-year');
-            const viewSchool = document.getElementById('view-school');
-            const viewCampus = document.getElementById('view-campus');
-            const viewAllAuthors = document.getElementById('view-all-authors');
-            const viewPublisher = document.getElementById('view-publisher');
-            const viewNmimsAuthors = document.getElementById('view-nmims-authors');
-            const viewJournalName = document.getElementById('view-journal-name');
-            const viewTotalAuthors = document.getElementById('view-total-authors');
-            const viewPolicyCadre = document.getElementById('view-policy-cadre');
-            const viewCountFaculty = document.getElementById('view-count-of-other-faculty');
-            const viewIssNo = document.getElementById('view-issn-no');
-            const viewAbcdIndexedCategory = document.getElementById('view-abdc-indexed-category');
-            const viewWebLinkNumber = document.getElementById('view-web-link-doi-number');
-            const viewPages = document.getElementById('view-pages');
-            const viewScsCiteScore = document.getElementById('view-scs-cite-score');
-            console.log('viewScsCiteScore ===>>>', viewScsCiteScore)
-            const viewImpactFactor = document.getElementById('view-impact-factor');
-            const viewScsIndexedCategory = document.getElementById('view-scs-indexed-category');
-            const viewWosIndexedCategory = document.getElementById('view-wos-indexed-category');
-            const viewForeignAuthors = document.getElementById('view-foreign-authors');
-            const viewUgcIndexedCategory = document.getElementById('view-ugc-indexed-category');
-            const viewDateOfPublishing = document.getElementById('view-date-of-publishing');
-            const viewNumberOfForeignAuthors = document.getElementById('view-foreign-authors-number');
-            const viewTitle = document.getElementById('view-title-of-paper');
-            const viewJournalCategory = document.getElementById('view-journal-category');
-            const viewNameStudentAuthor = document.getElementById('view-names-nmims-student-author');
-            const viewCountStudentAuthor = document.getElementById('view-no-nmims-student-author');
+           
             
-            
-            const viewNmimsAuthorsCount = document.getElementById('view-nmims-authors-count');
-
             fetch('<%- BASE_URL %>research/journal-paper/view', {
                 method: 'POST',
                 headers: {
@@ -1162,39 +1137,60 @@
                     return result.json();
                 })
                 .then((data) => {
-                    console.log('data is viewing', data);
-                    viewYear.innerText = data[0].year;
-                    viewAllAuthors.innerText = data[0].all_authors;
-                    viewCampus.innerText = data[0].campus;
-                    viewTotalAuthors.innerText = data[0].total_authors;
-                    viewJournalName.innerText = data[0].journal_name;
-                    viewPolicyCadre.innerText = data[0].policy_cadre;
-                    viewNmimsAuthors.innerText = data[0].nmims_authors;
-                    viewSchool.innerText = data[0].school;
-                    viewPublisher.innerText = data[0].publisher;
-                    viewCountFaculty.innerText = data[0].count_other_faculty;
-                    viewIssNo.innerText = data[0].issn_no;
-                    viewAbcdIndexedCategory.innerText = data[0].abdc_indexed;
-                    console.log('data[0].web_link_doi_number ===>>>', data[0].web_link_doi_number)
-                    viewWebLinkNumber.innerText = data[0].web_link_doi_number;
-                    console.log('data[0].pages ===>>>', data[0].pages)
-                    viewPages.innerText = data[0].pages;
-                    viewScsCiteScore.innerText = data[0].scs_cite_score;
-                    viewImpactFactor.innerText = data[0].impact_factor;
-                    viewScsIndexedCategory.innerText = data[0].scs_indexed;
-                    viewForeignAuthors.innerText = data[0].foreign_authors;
-                    viewUgcIndexedCategory.innerText = data[0].ugc_indexed;
-                    viewDateOfPublishing.innerText = data[0].to_char;
-                    viewTitle.innerText = data[0].title_of_paper;
-                    viewJournalCategory.innerText = data[0].journal_category;
-                    viewWosIndexedCategory.innerText = data[0].wos_indexed;
-                    viewNumberOfForeignAuthors.innerText = data[0].numbers_foreign_authors;
-                    viewNmimsAuthorsCount.innerText = data[0].nmims_authors_count;
-                    viewNameStudentAuthor.innerText = data[0].names_nmims_student_author;
-                    viewCountStudentAuthor.innerText = data[0].no_nmims_student_author;
+                    console.log('data ==>>>>>>', data);
+
+                    if(data.status === "Done"){
+                        console.log('data fetched')
+                        setFileNameInButtons(data) 
+                        document.getElementById('view-year').innerHTML = data.journalAricleData.year;
+                        document.getElementById('view-school').innerHTML = data.journalAricleData.associated_schools;
+                        document.getElementById('view-campus').innerText = data.journalAricleData.associated_campuses;;
+                        document.getElementById('view-all-authors').innerHTML = data.journalAricleData.all_article_authors_names;
+                        document.getElementById('view-publisher').innerHTML = data.journalAricleData.publisher;
+                        document.getElementById('view-nmims-authors').innerHTML = data.journalAricleData.internal_faculty_names;
+                        document.getElementById('view-journal-name').innerHTML = data.journalAricleData.journal_name;
+                        document.getElementById('view-total-authors').innerHTML = data.journalAricleData.total_authors;
+                        document.getElementById('view-policy-cadre').innerHTML = data.journalAricleData.policy_cadre;
+                        document.getElementById('view-count-of-other-faculty').innerHTML = data.journalAricleData.count_other_faculty;
+                        document.getElementById('view-issn-no').innerHTML = data.journalAricleData.issn_no;
+                        document.getElementById('view-abdc-indexed-category').innerHTML = data.journalAricleData.abdc_indexed;
+                        document.getElementById('view-web-link-doi-number').innerHTML = data.journalAricleData.web_link_doi_number;
+                        document.getElementById('view-pages').innerHTML = data.journalAricleData.pages;
+                        document.getElementById('view-scs-cite-score').innerHTML = data.journalAricleData.scs_cite_score;
+                        document.getElementById('view-impact-factor').innerHTML = data.journalAricleData.impact_factors;
+                        document.getElementById('view-scs-indexed-category').innerHTML = data.journalAricleData.scs_indexed;
+                        document.getElementById('view-wos-indexed-category').innerHTML = data.journalAricleData.wos_indexed;
+                        document.getElementById('view-ugc-indexed-category').innerHTML = data.journalAricleData.ugc_indexed;
+                        document.getElementById('view-date-of-publishing').innerHTML = formatDateToYYYYMMDD(data.journalAricleData.date_of_publishing);
+                        document.getElementById('view-title-of-paper').innerHTML = data.journalAricleData.title_of_paper;
+                        document.getElementById('view-journal-category').innerHTML = data.journalAricleData.jorunal_article_type_id;
+                    }
+                    else{
+                        Swal.fire({
+                        position: "top-center",
+                        icon: "error",
+                        title: "Failed to fetch data",
+                        color : "red",
+                        with : "20PX",
+                        showConfirmButton: false,
+                    });
+                    }
+                   
 
                 }).catch((error) => {
-                    console.log('error:', error);
+                    console.log("ERROIR : ", error);
+                    const errTitle = "Internal Server Error";
+                    const message = error
+                    // alert('An error occurred while updating the element');
+                    Swal.fire({
+                            position: "top-center",
+                            icon: "error",
+                            title: `${message}`,
+                            color : "red",
+                            with : "20PX",
+                            html: `<span style="color: red;">${errTitle}</span>`,
+                            showConfirmButton: false,
+                    });
 
                 });
             $('#journal-paper-modal-view').modal('show');
@@ -1550,6 +1546,67 @@
     impactFactorDropDown.addEventListener("change" , handleImpactFactorDropDownList);
     allAuthorsDropDown.addEventListener("change", handleAuthorsList);
     internalFacultyDropDown.addEventListener("change", handleInternalFacultyDropDownList);
+
+    function setFileNameInButtons(data) {
+        console.log('data ==>>>', data);
+        articleDoucments = document.getElementById('supporting-document');
+        articleDoucments.setAttribute('data-filename', data.journalAricleData.supporting_documents);
+    } 
+
+    //eventlistner for download files
+    document.addEventListener('click', async function (event) {
+            const button = event.target.closest('button');
+            if (button && button.id && button.classList.contains('download-file')) {
+                console.log('button ===>>>', button)
+                try {
+                    const fileDataString = button.getAttribute('data-filename');
+                    if (!fileDataString) {
+                        throw new Error('Data filename attribute not found on button.');
+                    }
+
+                    const fileArray = fileDataString.split(',').map(fileName => fileName.trim()).filter(Boolean); 
+                    if (fileArray.length === 0) {
+                        throw new Error('No file names found in data filename attribute.');
+                    }
+
+                    const downloadPromises = fileArray.map(async (fileName) => {
+                        console.log('fileName ===>>>', fileName)
+                        const fileUrl = `<%- BASE_URL %>research/journal-paper/download/${fileName}`;
+                        downloadFile(fileName, fileUrl)
+                        try {
+                            const response = await fetch(fileUrl);
+                            if (!response.ok) {
+                                throw new Error(`Failed to download file: ${fileName}`);
+                            }
+                            console.log('File downloaded successfully:', fileName);
+                            return fileName;
+                        } catch (error) {
+                            console.error('Error downloading file:', error);
+                            throw error;
+                        }
+                    });
+
+                    const downloadedFiles = await Promise.all(downloadPromises);
+                    console.log('All files downloaded successfully:', downloadedFiles);
+                } catch (error) {
+                    console.error('Error downloading files:', error);
+                    alert(`There was a problem downloading files: ${error.message}`);
+                }
+            }
+        });
+
+
+    // set string file value into button
+    function setFileNameAttributeToBeDownload(data) {
+            console.log('data row in side function ===>>', data);
+            const articleDataFiles = document.getElementById('journal-data-file-edit');
+            articleDataFiles.classList.remove('d-none');
+            const articleDataString = data.getAttribute('data-supporting-documents');
+
+            // setAttribute into button
+            articleDataFiles.setAttribute('data-filename', articleDataString);
+
+        };
 
 
 </script>

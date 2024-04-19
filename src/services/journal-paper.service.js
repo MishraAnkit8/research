@@ -218,15 +218,26 @@ module.exports.updateJournalPaper = async (body, files) => {
 
 // service for view
 module.exports.viewJournalPaper = async ({journalPaperId}) => {
+    console.log('journalPaperId inservice ====>>>>>>>', journalPaperId);
+
     const viewJournalPaperData = await journalPaperModel.viewJournalPaperData({journalPaperId});
-    if(viewJournalPaperData.rowCount === 1){
-        console.log('data in service  for applying view ===>>',viewJournalPaperData.rows[0] )
-        return  viewJournalPaperData.rows;
-    } 
-    else{
-        return {
-            status : 'failed',
-            masssage : 'error to fetching'
-        }
+
+    console.log('viewJournalPaperData ===>>>>>', viewJournalPaperData);
+    return viewJournalPaperData.status === "Done" ? {
+        status : viewJournalPaperData.status,
+        message : viewJournalPaperData.message,
+        journalAricleData : viewJournalPaperData.journalAricleData,
+        nmimsAuthors : viewJournalPaperData.nmimsAuthors,
+        allAuthorsData : viewJournalPaperData.allAuthorsData,
+        articleSchoolData : viewJournalPaperData.articleSchoolData,
+        articleCampusData : viewJournalPaperData.articleCampusData,
+        articleDocuments : viewJournalPaperData.articleDocuments,
+        articleImpactFactor : viewJournalPaperData.articleImpactFactor,
+        articlePolicyCadre : viewJournalPaperData.articlePolicyCadre
+    } : {
+        status : viewJournalPaperData.status,
+        message : viewJournalPaperData.message,
+        errorCode : viewJournalPaperData.errorCode
     }
+
 }
