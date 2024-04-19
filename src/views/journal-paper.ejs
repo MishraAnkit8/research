@@ -757,8 +757,6 @@
             document.getElementById('issn-no').value = '';
             document.getElementById('scs-cite-score').value = '';
             document.getElementById('journal-article-documents').value = '';
-            // document.getElementById('scs-indexed').value = '';
-            // document.getElementById('wos-indexed').value = '';
             document.getElementById('gs-indexed').value = '';
             // document.getElementById('abdc-indexed').value = '';
             // document.getElementById('ugc-indexed').value = '';
@@ -772,6 +770,13 @@
             impactFactorContainer = [];
             facltyContainer = [];
             allAuthorContainer = [];
+            Array.from(campusDropDown.options).forEach(option => {
+            option.selected = false;
+            });
+
+            Array.from(schoolDropDown.options).forEach(option => {
+                option.selected = false;
+            });
             // 
             document.getElementById('nmims-authors-count').value = '';
             // document.getElementById('names-nmims-student-author').value = '';
@@ -1079,8 +1084,17 @@
             document.getElementById('uid').value = rowToBeUpdated.getAttribute('data-uid');
             document.getElementById('gs-indexed').value = rowToBeUpdated.getAttribute('data-gs-indexed');
             document.getElementById('nmims-authors-count').value = rowToBeUpdated.getAttribute('data-nmims-author-count');
+            // const campusValuesIds = rowToBeUpdated.getAttribute('data-campus-ids');
+            // console.log('campusValuesIds ===>>>>>>', campusValuesIds);
+            const campusValuesIds = rowToBeUpdated.getAttribute('data-campus-ids').split(',');
+            const selectElement = document.getElementById("nmims-campus-list");
+
+            for (const option of selectElement.options) {
+            option.selected = campusValuesIds.includes(option.value);
+            }
 
             const campusIdsArray = rowToBeUpdated.getAttribute('data-campus-ids').split(',').map(str => parseInt(str.trim(), 10));
+
             const schoolIdsArray = rowToBeUpdated.getAttribute('data-school-ids').split(',').map(str => parseInt(str.trim(), 10));
             const nmimsAuthorsIdsArray = rowToBeUpdated.getAttribute('data-nmims-faculty-ids').split(',').map(str => parseInt(str.trim(), 10));
             const allArticleAuthorsIdsArray = rowToBeUpdated.getAttribute('data-article-faculties-ids').split(',').map(str => parseInt(str.trim(), 10));
