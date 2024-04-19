@@ -1,94 +1,6 @@
 --  table for journal paper
-CREATE TABLE journal_papers (
-    id SERIAL PRIMARY KEY,
-    year INTEGER,
-    school VARCHAR(255),
-    campus VARCHAR(255),
-    policy_cadre VARCHAR(255),
-    journal_category VARCHAR(50),
-    all_authors VARCHAR(255),
-    total_authors INTEGER,
-    nmims_authors VARCHAR(255),
-    foreign_authors VARCHAR(255),
-    numbers_foreign_authors INTEGER,
-    nmims_authors_count INTEGER,
-    count_other_faculty INTEGER,
-    title_of_paper VARCHAR(255),
-    journal_name VARCHAR(255),
-    publisher VARCHAR(255),
-    pages VARCHAR(255),
-    issn_no VARCHAR(255),
-    date_of_publishing DATE,
-    impact_factor VARCHAR(255),
-    scs_cite_score INTEGER,
-    scs_indexed VARCHAR(50),
-    wos_indexed VARCHAR(50),
-    abdc_indexed VARCHAR(50),
-    ugc_indexed VARCHAR(50),
-    web_link_doi_number INTEGER,
-    names_nmims_student_author VARCHAR(255),
-    no_nmims_student_author INTEGER,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-CREATE TABLE journal_papers (
-    id SERIAL PRIMARY KEY,
-    year INTEGER,
-    school VARCHAR(255),
-    campus VARCHAR(255),
-    policy_cadre VARCHAR(255),
-    journal_category VARCHAR(50),
-    all_authors VARCHAR(255),
-    total_authors INTEGER,
-    nmims_authors VARCHAR(255),
-    foreign_authors VARCHAR(255),
-    numbers_foreign_authors INTEGER,
-    nmims_authors_count INTEGER,
-    count_other_faculty INTEGER,
-    title_of_paper VARCHAR(255),
-    journal_name VARCHAR(255),
-    publisher VARCHAR(255),
-    pages VARCHAR(255),
-    issn_no VARCHAR(255),
-    date_of_publishing DATE,
-    impact_factor VARCHAR(255),
-    scs_cite_score INTEGER,
-    scs_indexed VARCHAR(50),
-    wos_indexed VARCHAR(50),
-    abdc_indexed VARCHAR(50),
-    ugc_indexed VARCHAR(50),
-    web_link_doi_number INTEGER,
-    names_nmims_student_author VARCHAR(255),
-    no_nmims_student_author INTEGER,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
 
-CREATE TABLE research_project_grant (
-    id SERIAL PRIMARY KEY,
-    school VARCHAR(255),
-    campus VARCHAR(255),
-    faculty_dept VARCHAR(255),
-    grant_proposal_category VARCHAR(255),
-    type_of_research_grant VARCHAR(50),
-    title_of_project VARCHAR(255),
-    thrust_area_of_research VARCHAR(255),
-    name_of_funding_agency VARCHAR(100),
-    funding_amount NUMERIC,
-    scheme_name VARCHAR(255),
-    status_of_research_project VARCHAR(50),
-    sanction_grant_date DATE,
-    faculty_type VARCHAR(50),
-    supporting_documents VARCHAR(255),
-    principal_investigator VARCHAR(255),
-    co_investigator VARCHAR(255),
-    total_grant_sanction_rupees NUMERIC,
-    recieved_amount NUMERIC,
-	recieved_amount_date Date,
-	project_duration VARCHAR,
-    created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
-);
+
 
 	
 -- FOR FOR PATENT SUBMISSION updated on 4/03/2024
@@ -150,28 +62,7 @@ CREATE TABLE conference_presentation (
 	created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
--- IPR
-CREATE TABLE IPR (
-    id SERIAL PRIMARY KEY,
-    type_of_invention VARCHAR(255),
-    title_of_invention VARCHAR(255),
-    patent_stage VARCHAR(255),
-    patent_application_no INTEGER,
-    patent_filed_date DATE,
-	investor_details VARCHAR(255),
-    applicants_name VARCHAR(255), 
-    supporting_documents VARCHAR(255),
-	patent_published_date DATE,
-	patent_granted_date DATE,
-	patent_published_num INTEGER,
-	patent_granted_no INTEGER,
-	institute_affiliation VARCHAR(255),
-	nmims_campus VARCHAR(255),
-	nmims_school VARCHAR(255),
-	created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
-	
-);
+
 
 -- research_award
 CREATE TABLE research_award(
@@ -459,17 +350,6 @@ CREATE TABLE branding_editor_table (
     created_by VARCHAR(255)
 );
 
--- internal employee table
-create table employee_table(
-	id SERIAL PRIMARY KEY,
-	employee_name varchar(255)
-);
-
--- external employee table
-CREATE table external_emp(
-	id serial primary key,
-	external_emp_name varchar(255)
-	);
 
 
 
@@ -508,7 +388,30 @@ CREATE TABLE consultancy_approval_form(
 	FOREIGN KEY (faculty_table_id) REFERENCES faculty_table(id),
 	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-)
+);
+
+CREATE TABLE faculties (
+    id SERIAL PRIMARY KEY,
+    faculty_type_id INTEGER REFERENCES faculty_types(id),
+    employee_id INTEGER NULL,
+	faculty_name VARCHAR(255),
+    designation VARCHAR(50),
+    address VARCHAR(50),
+    updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_by INTEGER, -- Assuming this is a reference to some user or admin table
+    active BOOLEAN DEFAULT TRUE
+);
+
+CREATE TABLE faculty_types (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(50)
+);
+
+INSERT INTO faculty_types (name) VALUES 
+('Internal'),
+('External');
+
 
 CREATE TABLE faculty_table(
 	id SERIAL PRIMARY KEY,
@@ -519,9 +422,6 @@ CREATE TABLE faculty_table(
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 
 );
-
-drop table consultancy_approval_form;
-
 
 -- Insert into faculty_table
 INSERT INTO faculty_table (faculty_name, designation, address)
@@ -590,53 +490,65 @@ CREATE TABLE nmims_seed_grant_non_formacy(
 );
 
 
-CREATE TABLE research_project_grant (
-    id SERIAL PRIMARY KEY,
-    grant_proposal_category VARCHAR(255),
-    type_of_research_grant VARCHAR(50),
-    title_of_project VARCHAR(255),
-    thrust_area_of_research VARCHAR(255),
-    name_of_funding_agency VARCHAR(100),
-    funding_amount NUMERIC,
-    status_of_research_project VARCHAR(50),
-    submission_date DATE,
-    supporting_documents VARCHAR(255),
-    faculty_table_id INTEGER,
-    external_faculty_table_id INTEGER,
-    FOREIGN KEY (faculty_table_id) REFERENCES faculty_table(id),
-    FOREIGN KEY (external_faculty_table_id) REFERENCES external_faculty_table(id),
-    created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
-);
+-- CREATE TABLE research_project_grant (
+--     id SERIAL PRIMARY KEY,
+--     grant_proposal_category VARCHAR(255),
+--     type_of_research_grant VARCHAR(50),
+--     title_of_project VARCHAR(255),
+--     thrust_area_of_research VARCHAR(255),
+--     name_of_funding_agency VARCHAR(100),
+--     funding_amount NUMERIC,
+--     status_of_research_project VARCHAR(50),
+--     submission_date DATE,
+--     supporting_documents VARCHAR(255),
+--     faculty_table_id INTEGER,
+--     external_faculty_table_id INTEGER,
+--     FOREIGN KEY (faculty_table_id) REFERENCES faculty_table(id),
+--     FOREIGN KEY (external_faculty_table_id) REFERENCES external_faculty_table(id),
+--     created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+--     updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
+-- );
+
+-- INSERT INTO external_faculty_table (external_faculty_name, email, address)
+-- VALUES 
+--     ('External Faculty 1', 'external1@example.com', '789 Oak St'),
+--     ('External Faculty 2', 'external2@example.com', '101 Pine St');
+
+-- create table external_faculty_table(
+-- 	 id SERIAL PRIMARY KEY,
+--     external_faculty_name VARCHAR(255),
+--     email VARCHAR(50),
+--     address VARCHAR(255)
+-- )
 
 
 
 
 
 
--- Insert data into faculty_table
-INSERT INTO faculty_table (faculty_name, designation, address)
-VALUES 
-    ('Raj Kumar', 'Professor', 'Banglore'),
-    ('Avinash', 'Associate Professor', 'Mumbai');
+-- -- Insert data into faculty_table
+-- INSERT INTO faculty_table (faculty_name, designation, address)
+-- VALUES 
+--     ('Raj Kumar', 'Professor', 'Banglore'),
+--     ('Avinash', 'Associate Professor', 'Mumbai');
 
--- Insert data into external_faculty_table
-INSERT INTO external_faculty_table (external_faculty_name, email, address)
-VALUES 
-    ('External Faculty 1', 'external1@example.com', '789 Oak St'),
-    ('External Faculty 2', 'external2@example.com', '101 Pine St');
+-- -- Insert data into external_faculty_table
+-- INSERT INTO external_faculty_table (external_faculty_name, email, address)
+-- VALUES 
+--     ('External Faculty 1', 'external1@example.com', '789 Oak St'),
+--     ('External Faculty 2', 'external2@example.com', '101 Pine St');
 
--- Insert data into research_project_grant
-INSERT INTO research_project_grant (grant_proposal_category, type_of_research_grant, title_of_project, thrust_area_of_research, name_of_funding_agency, funding_amount, status_of_research_project, submission_date, supporting_documents, faculty_table_id,
-								   external_faculty_table_id)
-VALUES 
-    ('Category A', 'Research Grant', 'Project 1', 'Area 1', 'Funding Agency A', 100000.00, 'Approved', '2024-04-15', 'Supporting Docs 1', 1, 2),
-    ('Category B', 'Development Grant', 'Project 2', 'Area 2', 'Funding Agency B', 150000.00, 'Pending', '2024-05-01', 'Supporting Docs 2', 2, 1);
+-- -- Insert data into research_project_grant
+-- INSERT INTO research_project_grant (grant_proposal_category, type_of_research_grant, title_of_project, thrust_area_of_research, name_of_funding_agency, funding_amount, status_of_research_project, submission_date, supporting_documents, faculty_table_id,
+-- 								   external_faculty_table_id)
+-- VALUES 
+--     ('Category A', 'Research Grant', 'Project 1', 'Area 1', 'Funding Agency A', 100000.00, 'Approved', '2024-04-15', 'Supporting Docs 1', 1, 2),
+--     ('Category B', 'Development Grant', 'Project 2', 'Area 2', 'Funding Agency B', 150000.00, 'Pending', '2024-05-01', 'Supporting Docs 2', 2, 1);
 
-SELECT *
-FROM research_project_grant AS rpg
-LEFT JOIN faculty_table AS ft ON rpg.faculty_table_id = ft.id
-LEFT JOIN external_faculty_table AS eft ON rpg.external_faculty_table_id = eft.id;
+-- SELECT *
+-- FROM research_project_grant AS rpg
+-- LEFT JOIN faculty_table AS ft ON rpg.faculty_table_id = ft.id
+-- LEFT JOIN external_faculty_table AS eft ON rpg.external_faculty_table_id = eft.id;
 
 
 
@@ -662,27 +574,7 @@ CREATE TABLE research_project_grant_faculty (
     faculty_id INTEGER REFERENCES faculties(id)
 );
 
-CREATE TABLE faculties (
-    id SERIAL PRIMARY KEY,
-    faculty_type_id INTEGER REFERENCES faculty_types(id),
-    employee_id INTEGER NULL,
-	faculty_name VARCHAR(255),
-    designation VARCHAR(50),
-    address VARCHAR(50),
-    updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    updated_by INTEGER, -- Assuming this is a reference to some user or admin table
-    active BOOLEAN DEFAULT TRUE
-);
 
-CREATE TABLE faculty_types (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(50)
-);
-
-INSERT INTO faculty_types (name) VALUES 
-('Internal'),
-('External');
 
 
 
@@ -734,13 +626,6 @@ SELECT
     LEFT JOIN 
         faculty_types AS ft ON f.faculty_type_id = ft.id
     ORDER BY  r.id
-ALTER TABLE faculties ADD COLUMN faculty_name VARCHAR(255);
-
-
-DELETE FROM research_project_grant_faculty WHERE id = 1;
-
-
-
 
 
 
@@ -837,6 +722,7 @@ CREATE TABLE supporting_documents(
     updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
+
 CREATE TABLE invention_type(
 	id SERIAL PRIMARY KEY,
 	name  VARCHAR(255),
@@ -852,7 +738,6 @@ CREATE TABLE pantent_stage_status(
     updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
-select * from pantent_stage_status;
 
 
 -- ipr data table
@@ -922,36 +807,15 @@ CREATE TABLE ipr_faculty(
 
 
 -- =======================================================================================
---  table for journal paper
-CREATE TABLE journal_paper_article (
-    id SERIAL PRIMARY KEY,
-    year INTEGER,
-    jorunal_article_type_id INTEGER REFERENCES jorunal_article_type(id),
-    all_authors VARCHAR(255),
-    total_authors INTEGER,
-    nmims_authors_count INTEGER,
-    count_other_faculty INTEGER,
-    title_of_paper VARCHAR(255),
-    journal_name VARCHAR(255),
-    publisher VARCHAR(255),
-    pages VARCHAR(255),
-    issn_no VARCHAR(255),
-    date_of_publishing DATE,
-    scs_cite_score INTEGER,
-    scs_indexed VARCHAR(50),
-    wos_indexed VARCHAR(50),
-    abdc_indexed VARCHAR(50),
-    ugc_indexed VARCHAR(50),
-    web_link_doi_number INTEGER,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
 
 CREATE TABLE jorunal_article_type(
 	id SERIAL PRIMARY KEY,
 	article_type varchar(100)
 );
+--  table for journal paper
+
+
+
 
 CREATE TABLE nmims_school(
 	id SERIAL PRIMARY KEY,
@@ -1047,13 +911,14 @@ CREATE TABLE journal_article_impact_factor(
 
 
 
--- Insert two records into jorunal_article_type
-INSERT INTO jorunal_article_type (article_type) VALUES 
-('National'),
-('International');
+
 
 
 -- Jounal paper articles data base table  ====>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+--  table for journal paper
+drop table journal_paper_article;
+select * from journal_paper_article;
 CREATE TABLE journal_paper_article (
     id SERIAL PRIMARY KEY,
     year INTEGER,
@@ -1084,6 +949,7 @@ CREATE TABLE journal_paper_article (
 
 
 
+
 CREATE TABLE jorunal_article_type(
 	id SERIAL PRIMARY KEY,
 	article_type varchar(100)
@@ -1122,6 +988,7 @@ CREATE TABLE journal_article_campus(
     updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
+select * from nmims_faculties;
 CREATE TABLE nmims_faculties(
 	id SERIAL PRIMARY KEY,
     journal_article_id INTEGER REFERENCES journal_paper_article(id),
@@ -1133,6 +1000,7 @@ CREATE TABLE all_article_authors(
     journal_article_id INTEGER REFERENCES journal_paper_article(id),
     faculty_id INTEGER REFERENCES faculties(id)
 );
+
 
 CREATE TABLE supporting_documents(
 	id SERIAL PRIMARY KEY,
@@ -1150,6 +1018,7 @@ CREATE TABLE journal_article_documents(
     updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
+select * from policy_cadre;
 
 CREATE TABLE policy_cadre(
 	id SERIAL PRIMARY KEY,
@@ -1167,6 +1036,7 @@ CREATE TABLE journal_article_policy_cadre(
     updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
+select * from faculties;
 
 CREATE TABLE impact_factor(
 	id SERIAL PRIMARY KEY,
@@ -1174,7 +1044,15 @@ CREATE TABLE impact_factor(
 	created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
-
+SELECT 
+                    imf.impact_factor,
+                    imf.id
+                FROM 
+                journal_article_impact_factor aimf 
+                JOIN 
+                impact_factor imf ON aimf.impact_factor_id =  imf.id
+                WHERE 
+                aimf.journal_article_id = 1
 
 CREATE TABLE journal_article_impact_factor(
 	id SERIAL PRIMARY KEY,
@@ -1183,3 +1061,254 @@ CREATE TABLE journal_article_impact_factor(
 	created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
+
+
+
+
+-- Insert two records into jorunal_article_type
+INSERT INTO jorunal_article_type (article_type) VALUES 
+('National'),
+('International');
+
+-- Insert two records into journal_paper_article
+INSERT INTO journal_paper_article (year, jorunal_article_type_id, all_authors, total_authors, nmims_authors_count, count_other_faculty, title_of_paper, journal_name, publisher, pages, issn_no, date_of_publishing, scs_cite_score, scs_indexed, wos_indexed, abdc_indexed, ugc_indexed, web_link_doi_number)
+VALUES
+    (2022, 1, 'Author A, Author B', 2, 2, 0, 'Paper Title 1', 'Journal of Science', 'Science Publisher', '100-120', '1234-5678', '2022-04-16', 50, 'Yes', 'Yes', 'A', 'Yes', 123456),
+    (2023, 2, 'Author C, Author D', 2, 1, 1, 'Paper Title 2', 'Journal of Technology', 'Tech Publisher', '200-220', '9876-5432', '2023-05-20', 65, 'Yes', 'Yes', 'B', 'No', 654321);
+
+
+
+
+
+
+
+-- Insert two records into journal_article_school
+INSERT INTO journal_article_school (journal_article_id, school_id)
+VALUES
+    (1, 1),
+    (2, 2);
+
+-- Insert two records into journal_article_campus
+INSERT INTO journal_article_campus (journal_article_id, campus_id)
+VALUES
+    (1, 1),
+    (2, 2);
+
+-- Insert two records into nmims_faculties
+INSERT INTO nmims_faculties (journal_article_id, faculty_id)
+VALUES
+    (1, 1),
+    (2, 10);
+
+-- Insert two records into supporting_documents
+INSERT INTO supporting_documents (documents_name)
+VALUES
+    ('Document.pdf'),
+    ('Document.pdf');
+select * from supporting_documents;
+
+-- Insert two records into journal_article_documents
+INSERT INTO journal_article_documents (journal_article_id, supporting_documents_id)
+VALUES
+    (1, 1),
+    (2, 2);
+
+-- Insert two records into policy_cadre
+INSERT INTO policy_cadre (cadre_name)
+VALUES
+    ('Policy Analyst'),
+    ('Senior Policy Advisor'),
+
+-- Insert two records into journal_article_policy_cadre
+INSERT INTO journal_article_policy_cadre (journal_article_id, policy_cadre_id)
+VALUES
+    (1, 1),
+    (2, 2);
+
+-- Insert two records into impact_factor
+INSERT INTO impact_factor (impact_factor)
+VALUES
+    ('Educational Researcher'),
+	('Journal of Educational Psychology'),
+	('American Educational Research Journal'),
+	('Educational Leadership'),
+	('Journal of Teacher Education'),
+	('Review of Educational Research'),
+	('Teaching and Teacher Education'),
+	('Journal of Educational Technology & Society');
+
+-- Insert two records into journal_article_impact_factor
+INSERT INTO journal_article_impact_factor (journal_article_id, impact_factor_id)
+VALUES
+    (1, 1),
+    (1, 2),
+	(1, 4),
+    (2, 8),
+	(2, 5),
+    (2, 3);
+SELECT
+    jpa.id AS article_id,
+    jpa.title_of_paper,
+    jpa.all_authors,
+    jpa.total_authors,
+    jpa.nmims_authors_count,
+    jpa.journal_name,
+    jpa.publisher,
+    jpa.pages,
+    jpa.issn_no,
+    jpa.year,
+    jpa.article_type,
+    jpa.date_of_publishing,
+    jpa.scs_cite_score,
+    jpa.scs_indexed,
+    jpa.abdc_indexed,
+    jpa.wos_indexed,
+    jpa.ugc_indexed,
+    jpa.web_link_doi_number,
+    jaf.impact_factor,
+    string_agg(DISTINCT sd.documents_name, ', ') AS supporting_documents,
+    string_agg(DISTINCT pc.cadre_name, ', ') AS policy_cadre,
+    string_agg(CASE WHEN ft.name = 'Internal' THEN f.faculty_name ELSE NULL END, ', ') AS internal_faculty_names,
+    f.designation,
+    f.address,
+    f.employee_id,
+    nf.id AS nmims_faculties_id,
+    string_agg(DISTINCT ns.school_name, ', ') AS associated_schools,
+    string_agg(DISTINCT ns.id::text, ', ') AS school_id,
+    string_agg(DISTINCT nc.campus_name, ', ') AS associated_campuses,
+    string_agg(DISTINCT nc.id::text, ', ') AS campus_id
+FROM
+    journal_paper_article jpa
+LEFT JOIN
+    journal_article_school jas ON jpa.id = jas.journal_article_id
+LEFT JOIN
+    nmims_school ns ON jas.school_id = ns.id
+LEFT JOIN
+    journal_article_campus jac ON jpa.id = jac.journal_article_id
+LEFT JOIN
+    nmims_campus nc ON jac.campus_id = nc.id
+LEFT JOIN
+    journal_article_impact_factor jaif ON jpa.id = jaif.journal_article_id
+LEFT JOIN
+    impact_factor jaf ON jaif.impact_factor_id = jaf.id
+LEFT JOIN
+    nmims_faculties nf ON jpa.id = nf.journal_article_id
+LEFT JOIN
+    faculties f ON nf.faculty_id = f.id
+LEFT JOIN
+    journal_article_documents jad ON jpa.id = jad.journal_article_id
+LEFT JOIN
+    supporting_documents sd ON jad.supporting_documents_id = sd.id
+LEFT JOIN
+    journal_article_policy_cadre japc ON jpa.id = japc.journal_article_id
+LEFT JOIN
+    policy_cadre pc ON japc.policy_cadre_id = pc.id
+LEFT JOIN
+    faculty_types ft ON f.faculty_type_id = ft.id
+GROUP BY
+    jpa.id,
+    jpa.title_of_paper,
+    jpa.all_authors,
+    jpa.total_authors,
+    jpa.nmims_authors_count,
+    jpa.journal_name,
+    jpa.publisher,
+    jpa.pages,
+    jpa.issn_no,
+    jpa.year,
+    jpa.article_type,
+    jpa.date_of_publishing,
+    jpa.scs_cite_score,
+    jpa.scs_indexed,
+    jpa.abdc_indexed,
+    jpa.wos_indexed,
+    jpa.ugc_indexed,
+    jpa.web_link_doi_number,
+    jaf.impact_factor,
+    f.designation,
+    f.address,
+    f.employee_id,
+    nf.id
+ORDER BY
+    jpa.id;
+SELECT
+    jpa.id AS article_id,
+    jpa.title_of_paper,
+    jpa.all_authors,
+    jpa.total_authors,
+    jpa.nmims_authors_count,
+    jpa.journal_name,
+    jpa.publisher,
+    jpa.pages,
+    jpa.issn_no,
+    jpa.year,
+    jpa.article_type,
+    jpa.date_of_publishing,
+    jpa.scs_cite_score,
+    jpa.scs_indexed,
+    jpa.abdc_indexed,
+    jpa.wos_indexed,
+    jpa.ugc_indexed,
+    jpa.web_link_doi_number,
+    jaf.impact_factor,
+    string_agg(DISTINCT sd.documents_name, ', ') AS supporting_documents,
+    string_agg(DISTINCT pc.cadre_name, ', ') AS policy_cadre,
+    string_agg(DISTINCT f.faculty_name, ', ') AS internal_faculty_names,
+    string_agg(DISTINCT a.faculty_name, ', ') AS all_article_authors_names
+FROM
+    journal_paper_article jpa
+LEFT JOIN
+    journal_article_school jas ON jpa.id = jas.journal_article_id
+LEFT JOIN
+    nmims_school ns ON jas.school_id = ns.id
+LEFT JOIN
+    journal_article_campus jac ON jpa.id = jac.journal_article_id
+LEFT JOIN
+    nmims_campus nc ON jac.campus_id = nc.id
+LEFT JOIN
+    journal_article_impact_factor jaif ON jpa.id = jaif.journal_article_id
+LEFT JOIN
+    impact_factor jaf ON jaif.impact_factor_id = jaf.id
+LEFT JOIN
+    nmims_faculties nf ON jpa.id = nf.journal_article_id
+LEFT JOIN
+    faculties f ON nf.faculty_id = f.id
+LEFT JOIN
+    all_article_authors aa ON jpa.id = aa.journal_article_id
+LEFT JOIN
+    faculties a ON aa.faculty_id = a.id
+LEFT JOIN
+    journal_article_documents jad ON jpa.id = jad.journal_article_id
+LEFT JOIN
+    supporting_documents sd ON jad.supporting_documents_id = sd.id
+LEFT JOIN
+    journal_article_policy_cadre japc ON jpa.id = japc.journal_article_id
+LEFT JOIN
+    policy_cadre pc ON japc.policy_cadre_id = pc.id
+GROUP BY
+    jpa.id,
+    jpa.title_of_paper,
+    jpa.all_authors,
+    jpa.total_authors,
+    jpa.nmims_authors_count,
+    jpa.journal_name,
+    jpa.publisher,
+    jpa.pages,
+    jpa.issn_no,
+    jpa.year,
+    jpa.article_type,
+    jpa.date_of_publishing,
+    jpa.scs_cite_score,
+    jpa.scs_indexed,
+    jpa.abdc_indexed,
+    jpa.wos_indexed,
+    jpa.ugc_indexed,
+    jpa.web_link_doi_number,
+    jaf.impact_factor
+ORDER BY
+    jpa.id;
+	
+	
+
+
+
