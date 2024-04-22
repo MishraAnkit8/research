@@ -198,6 +198,23 @@ function  downloadFile(fileName, fileUrl) {
 
 
 
+// Add an event listener to the document for input events on numeric input fields
+document.addEventListener('input', function(event) {
+  const target = event.target;
+  if (target.tagName === 'INPUT' && (target.type === 'number')) {
+      let value = target.value.trim();
+
+      if (value !== '' && !isValidNumericInput(value)) {
+          target.value = '';
+      }
+  }
+});
+
+// Function to validate numeric input (positive or zero)
+function isValidNumericInput(value) {
+  let numericValue = parseFloat(value);
+  return !isNaN(numericValue) && numericValue >= 0;
+}
 
   
 

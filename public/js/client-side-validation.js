@@ -113,6 +113,7 @@ function validateRequiredFormFields(actionBtn) {
 
             if (validate === 'isNotSpecialChar') {
                 const isValid = isNotSpecialChar(elemVal);
+                console.log('isValid ===>>>>>', isValid);
                 if (!isValid) {
                     isValidElem = false;
                     validationState = false;
