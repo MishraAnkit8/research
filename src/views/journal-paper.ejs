@@ -2,7 +2,6 @@
 <!-- inline css -->
 <!-- Navbar section -->
 <%- include('./partials/header') %>
-
 <!-- This is left sidebar  -->
 <%- include('./partials/left-sidebar') %>
 
@@ -16,13 +15,13 @@
                 <li class="breadcrumb-link">
                     <a href="<%- BASE_URL %>research"> Research </a>
                 </li>
-                <li class="breadcrumb-link">Journal Article </li>
+                <li class="breadcrumb-link">Journal Article Published</li>
             </ul>
         </div>
         <div>
             <div class="table-card-header text-uppercase d-flex align-items-center justify-content-between">
                 <div>
-                    <h5 class="pl-2">Journal Article List</h5>
+                    <h5 class="pl-2">Journal Article Published  List</h5>
                 </div>
                 <div >
                     <button id="journal-paper-add-modal" type="button" class="btn btn-primary add-modal" data-toggle="modal"
@@ -184,7 +183,7 @@
     <div class="modal-dialog modal-dialog-scrollable modal-lg modal-fullscreen p-5" role="document">
         <div class="modal-content modal-content-data validate-input">
             <div class="modal-header">
-                <h4 class="modal-title" id="journal-paper-title">Journal Papers</h4>
+                <h4 class="modal-title" id="journal-paper-title">Journal Article Published</h4>
                 <div class="close" data-dismiss="modal" aria-label="Close">
                     <span type="button" aria-hidden="true"><i class="fas fa-times "></i></span>
                 </div>
@@ -194,13 +193,14 @@
                     <!-- year -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="year" class="form-label fw-bold">Year Of Publishing </label>
-                        <input type="number" name="year" id="year" data-validate="isEmpty,isNumber,isValidYear" data-err-msg="Year is required." class="form-control"  required/>
+                        <input type="text" name="year" id="year" data-validate="isEmpty,isNumber,isValidYear" data-err-msg="Year is required with formate yyyy." class="form-control"  required/>
                     </div>
                     <!-- nmims School-->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="nmims-school" class="form-label fw-bold">School</label>
-                        <select class="select-option" id="nmims-school-list" data-validate="isEmpty,isExist" data-err-msg="This field is required and select value"  required multiple>
-                            <option value="" >Select option</option>
+                        
+                        <select class="select-option drop-list" id="nmims-school-list" data-validate="isEmpty,isExist" data-err-msg="This field is required and select value"  required multiple>
+                            <option  class="select-option" value="" >Select School </option>
                             <% nmimsSchoolList.forEach(function(school) { %>
                                 <option value="<%= school.id %>">
                                    <%= school.name %>
@@ -213,7 +213,7 @@
                      <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="nmims-campus" class="form-label fw-bold">Campus</label>
                         <select class="select-option" id="nmims-campus-list" data-validate="isEmpty,isExist" data-err-msg="This field is required and select value" required multiple>
-                            <option value="" >Select option</option>
+                            <option value="" >Select Campus</option>
                             <% nmimsCampusList.forEach(function(campus) { %>
                                 <option value="<%= campus.id %>">
                                    <%= campus.name %>
@@ -232,7 +232,7 @@
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="policy-cadre-list" class="form-label fw-bold">Policy Cadre</label>
                         <select class="select-option" id="policy-cadre-list" data-validate="isEmpty,isExist" data-err-msg="This field is required and select value"  required multiple>
-                            <option value="" >Select option</option>
+                            <option value="" >Select Policy Cadre</option>
                             <% policyCadre.forEach(function(policy) { %>
                                 <option value="<%= policy.id %>">
                                    <%= policy.name %>
@@ -248,7 +248,7 @@
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="all-author-list" class="form-label fw-bold">Names Of All Authors</label>
                         <select class="select-option" id="all-author-list" data-validate="isEmpty,isExist" data-err-msg="This field is required and select value"  required multiple>
-                            <option value="" >Select option</option>
+                            <option value="" >Select Authors Names</option>
                             <% allAuthorList.forEach(function(author) { %>
                                 <option value="<%= author.id %>">
                                    <%= author.name %>
@@ -271,7 +271,7 @@
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="nmims-faculty-list" class="form-label fw-bold">Names Of NMIMS Authors</label>
                         <select class="select-option" id="internal-faculty-list" data-validate="isEmpty,isExist" data-err-msg="This field is required and select value"  required multiple>
-                            <option value="" >Select option</option>
+                            <option value="" >Select NMIMS Authors Names </option>
                             <% internalEmpList.forEach(function(faculty) { %>
                                 <option value="<%= faculty.id %>">
                                    <%= faculty.name %>
@@ -321,7 +321,7 @@
                     </div>
                     <!-- SCS Cite Score -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="scs-cite-score" class="form-label fw-bold">Scopus Cite Score</label>
+                        <label for="scs-cite-score" class="form-label fw-bold">SCS Cite Score</label>
                         <input type="number" name="scsCiteScores" id="scs-cite-score" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required." class="form-control" required>
                     </div>
                     <!-- Impact Factor -->
@@ -332,7 +332,7 @@
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="impact-factor-list" class="form-label fw-bold">Impact Factor</label>
                         <select class="select-option" id="impact-factor-list" data-validate="isEmpty,isExist" data-err-msg="This field is required and select value"  required multiple>
-                            <option value="" >Select option</option>
+                            <option value="" >Select Impact Factors</option>
                             <% impactFactor.forEach(function(factor) { %>
                                 <option value="<%= factor.id %>">
                                    <%= factor.name %>
@@ -382,7 +382,7 @@
                     </div>
                       <!-- SCS Indexed -->
                       <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="scs-indexed" class="form-label fw-bold mb-3"> Scopus Indexed </label><br>
+                        <label for="scs-indexed" class="form-label fw-bold mb-3"> SCS Indexed </label><br>
                         <div class="form-check-inline">
                             <label for="scopus-yes" class="form-check-label">
                                 <input type="radio" class="form-check-input" id="scopus-yes" name="scopus-category" value="Yes"> Yes
@@ -471,7 +471,7 @@
     <div class="modal-dialog modal-dialog-scrollable modal-lg modal-fullscreen p-5" role="document">
         <div class="modal-content modal-content-data">
             <div class="modal-header">
-                <h4 class="modal-title" id="journal-paper-title">Journal Papers</h4>
+                <h4 class="modal-title" id="journal-paper-title">Journal Article Published</h4>
                 <div class="close" data-dismiss="modal" aria-label="Close">
                     <span type="button" aria-hidden="true"><i class="fas fa-times "></i></span>
                 </div>
@@ -565,7 +565,7 @@
                     <!-- Scs-cite-score -->
                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
-                            <div class="sub-title-text sub-title">Scopus Cite Score:</div>
+                            <div class="sub-title-text sub-title">SCS Cite Score:</div>
                             <label class="view-content" id="view-scs-cite-score"></label>
                         </div>
                     </div>
@@ -579,7 +579,7 @@
                     <!--scs-indexed  category-->
                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
-                            <div class="sub-title-text sub-title">Scopus Indexed:</div>
+                            <div class="sub-title-text sub-title">SCS Indexed:</div>
                             <label class="view-content" id="view-scs-indexed-category"></label>
                         </div>
                     </div>
@@ -665,7 +665,7 @@
                     <!--nmims_authors_count -->
                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
-                            <div class="sub-title-text sub-title">NMIMS Authors Count :</div>
+                            <div class="sub-title-text sub-title">No. of NMIMS Authors                                :</div>
                             <label class="view-content" id="view-nmims-authors-count"></label>
                         </div>
                     </div>
@@ -1157,28 +1157,29 @@
                     if(data.status === "Done"){
                         console.log('data fetched')
                         setFileNameInButtons(data) 
-                        document.getElementById('view-year').innerHTML = data.journalAricleData.year;
-                        document.getElementById('view-school').innerHTML = data.journalAricleData.associated_schools;
+                        document.getElementById('view-year').innerText = data.journalAricleData.year;
+                        document.getElementById('view-school').innerText = data.journalAricleData.associated_schools;
                         document.getElementById('view-campus').innerText = data.journalAricleData.associated_campuses;;
-                        document.getElementById('view-all-authors').innerHTML = data.journalAricleData.all_article_authors_names;
-                        document.getElementById('view-publisher').innerHTML = data.journalAricleData.publisher;
-                        document.getElementById('view-nmims-authors').innerHTML = data.journalAricleData.internal_faculty_names;
-                        document.getElementById('view-journal-name').innerHTML = data.journalAricleData.journal_name;
-                        document.getElementById('view-total-authors').innerHTML = data.journalAricleData.total_authors;
-                        document.getElementById('view-policy-cadre').innerHTML = data.journalAricleData.policy_cadre;
-                        document.getElementById('view-count-of-other-faculty').innerHTML = data.journalAricleData.count_other_faculty;
-                        document.getElementById('view-issn-no').innerHTML = data.journalAricleData.issn_no;
-                        document.getElementById('view-abdc-indexed-category').innerHTML = data.journalAricleData.abdc_indexed;
-                        document.getElementById('view-web-link-doi-number').innerHTML = data.journalAricleData.web_link_doi_number;
-                        document.getElementById('view-pages').innerHTML = data.journalAricleData.pages;
-                        document.getElementById('view-scs-cite-score').innerHTML = data.journalAricleData.scs_cite_score;
-                        document.getElementById('view-impact-factor').innerHTML = data.journalAricleData.impact_factors;
-                        document.getElementById('view-scs-indexed-category').innerHTML = data.journalAricleData.scs_indexed;
-                        document.getElementById('view-wos-indexed-category').innerHTML = data.journalAricleData.wos_indexed;
-                        document.getElementById('view-ugc-indexed-category').innerHTML = data.journalAricleData.ugc_indexed;
-                        document.getElementById('view-date-of-publishing').innerHTML = formatDateToYYYYMMDD(data.journalAricleData.date_of_publishing);
-                        document.getElementById('view-title-of-paper').innerHTML = data.journalAricleData.title_of_paper;
-                        document.getElementById('view-journal-category').innerHTML = data.journalAricleData.jorunal_article_type_id;
+                        document.getElementById('view-all-authors').innerText = data.journalAricleData.all_article_authors_names;
+                        document.getElementById('view-publisher').innerText = data.journalAricleData.publisher;
+                        document.getElementById('view-nmims-authors').innerText = data.journalAricleData.internal_faculty_names;
+                        document.getElementById('view-journal-name').innerText = data.journalAricleData.journal_name;
+                        document.getElementById('view-total-authors').innerText = data.journalAricleData.total_authors;
+                        document.getElementById('view-policy-cadre').innerText = data.journalAricleData.policy_cadre;
+                        document.getElementById('view-count-of-other-faculty').innerText = data.journalAricleData.count_other_faculty;
+                        document.getElementById('view-issn-no').innerText = data.journalAricleData.issn_no;
+                        document.getElementById('view-abdc-indexed-category').innerText = data.journalAricleData.abdc_indexed;
+                        document.getElementById('view-web-link-doi-number').innerText = data.journalAricleData.web_link_doi_number;
+                        document.getElementById('view-pages').innerText = data.journalAricleData.pages;
+                        document.getElementById('view-scs-cite-score').innerText = data.journalAricleData.scs_cite_score;
+                        document.getElementById('view-impact-factor').innerText = data.journalAricleData.impact_factors;
+                        document.getElementById('view-scs-indexed-category').innerText = data.journalAricleData.scs_indexed;
+                        document.getElementById('view-wos-indexed-category').innerText = data.journalAricleData.wos_indexed;
+                        document.getElementById('view-ugc-indexed-category').innerText = data.journalAricleData.ugc_indexed;
+                        document.getElementById('view-date-of-publishing').innerText = formatDateToYYYYMMDD(data.journalAricleData.date_of_publishing);
+                        document.getElementById('view-title-of-paper').innerText = data.journalAricleData.title_of_paper;
+                        document.getElementById('view-journal-category').innerText = data.journalAricleData.jorunal_article_type_id;
+                        document.getElementById('view-nmims-authors-count').innerText = data.journalAricleData.nmims_authors_count;
                     }
                     else{
                         Swal.fire({
@@ -1505,9 +1506,14 @@
 
     // function for  drop down list policy cadre
     function handleSchoolDropDownList() {
+        console.log('clickeddddddd school list')
+       const abc =  document.getElementById('select-option-id').innerText;
+       console.log('abc ==>>>', abc);
+
         const selectedValues = Array.from(schoolDropDown.options)
                 .filter(option => option.selected)
                 .map(option => option.value);
+
                 const schoolIds = selectedValues.length === 0 ? "" : selectedValues;
             console.log('schoolIds ===>>>>>', schoolIds);
             if (!nmimsSchoolIdsContainer.some(school => school === schoolIds)) {
