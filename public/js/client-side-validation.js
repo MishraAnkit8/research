@@ -191,21 +191,50 @@ function toggleErrorState(formGroup, errorMsg, errorElem, isValidElem) {
 
 
 
+// function isNumber(input) {
+//     // (!input || input === '' || input < 1)
+//     if (!input || input === '') {
+//         return false;
+//     }
+
+//     for (let i = 0; i < input.length; i++) {
+//         const charCode = input.charCodeAt(i);
+//         console.log('charCode ===>>>', charCode)
+//         if (charCode < 48 || charCode > 57) {
+//             return false;
+//         }
+//     }
+//     return true;
+// }
+
 function isNumber(input) {
-    // (!input || input === '' || input < 1)
     if (!input || input === '') {
         return false;
     }
 
+    // check if input contains only digits (0-9)
     for (let i = 0; i < input.length; i++) {
         const charCode = input.charCodeAt(i);
-        console.log('charCode ===>>>', charCode)
+
+        // Ensure it's a digit (between char code 48 to 57)
         if (charCode < 48 || charCode > 57) {
             return false;
         }
     }
+
+    // check for negative sign or asterisk
+    if (input.includes('-') || input.includes('*')) {
+        return false;
+    }
+
+    // If the input starts with a plus sign, consider it invalid for a plain number
+    if (input.startsWith('+')) {
+        return false;
+    }
+
     return true;
 }
+
 
  function isNotNumber(input) {
     return !isNumber(input);
