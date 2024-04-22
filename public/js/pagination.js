@@ -4,7 +4,14 @@ function initializePagination() {
     let currentPage = 1;
     let table = document.querySelector(".research-pagination");
     let rows = table.querySelectorAll("tbody tr");
-    let totalEntries = rows.length;
+    let rowCount = document.getElementById('row-count');
+    console.log('rowCount ===>>>>>>', rowCount);
+    const totalRowCount = document.getElementById('total-row-count');
+    console.log('totalRowCount ===>>>>>', totalRowCount);
+    let rowIndex = rowCount.innerText;
+    console.log('rowIndex ===>>>>>', rowIndex);
+    let indexValue = parseInt(rowIndex, 10);
+    let totalEntries = indexValue;
     let totalPages = Math.ceil(totalEntries / entriesPerPage);
   
     showPage(currentPage);
@@ -119,15 +126,9 @@ function initializePagination() {
           rowText.indexOf(searchKeyword) !== -1 ? "table-row" : "none";
       });
     }
+
   }
   
-
-
-
-  // const searchEmpName = document.getElementById('search-employee-name');
-  // // console.log('searchEmpName ===>>>>', searchEmpName);
-
-  //  this is function call that enables pagination  logic
   
     initializePagination();
   

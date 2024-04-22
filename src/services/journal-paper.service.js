@@ -80,7 +80,9 @@ module.exports.insertJournalPapper = async (body, files) => {
     const campusList = newJournalPaper.campusList.join(',');
     const impactFactorList = newJournalPaper.impactFactorList.join(',');
     const policyCadreList = newJournalPaper.policyCadreList.join(',');
-    
+    console.log('impactFactorList ===>>>>', impactFactorList);
+
+
     return newJournalPaper.status === "Done" ? {
         status : newJournalPaper.status,
         message : newJournalPaper.message,

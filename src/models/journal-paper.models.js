@@ -570,7 +570,7 @@ module.exports.updateJournalPaperData = async (journalPaperId, updateJournalDeta
         });
 
         return existingRecord.rows.length === 0 ? ( researchDbW.query({
-            text: `INSERT INTO journal_article_campus (journal_article_id, faculty_id) VALUES ($1, $2) RETURNING id`,
+            text: `INSERT INTO journal_article_campus (journal_article_id, campus_id) VALUES ($1, $2) RETURNING id`,
             values: [journalPaperId, campusId]
         }) ) : (
             Promise.resolve({ rows: [{ id: existingRecord.rows[0].id }] })
