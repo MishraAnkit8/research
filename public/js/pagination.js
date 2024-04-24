@@ -66,60 +66,56 @@ function initializePagination() {
   function filterRows(searchKeyword) {
     let matchedRowCount = 0;
     let noRecordsMessage = document.getElementById('no-records-message');
+    let journalList = document.getElementById('journal-paper-list');
+  
+    // Select all rows within the journalList table body
+    let rows = journalList.querySelectorAll("tbody tr");
+    console.log('rows ===>>>>>>', rows)
   
     rows.forEach(function (row) {
-      let rowText = row.textContent.toLowerCase();
+      console.log('row ===>>>>>>', rows);
+      let hasMatch = false;
       let cellContents = row.querySelectorAll("td");
+    console.log('cellContents ===>>>>>>>', cellContents);
+      cellContents.forEach(function (cell) {
+        let cellText = cell.textContent.toLowerCase();
+        console.log('cellText ===>>>>>>', cellText);
   
-      if (searchKeyword === "") {
-        // If searchKeyword is empty, reset cell contents and show all rows
+        if (cellText.includes(searchKeyword)) {
+          let newText = cellText.replace(new RegExp(searchKeyword, "gi"), match => `<mark style="color: red;">${match}</mark>`);
+          cell.innerHTML = newText;
+          hasMatch = true;
+        } else {
+          cell.innerHTML = cellText; 
+        }
+      });
+  
+      if (hasMatch) {
         row.style.display = "table-row";
-        cellContents.forEach(function (cell) {
-          cell.innerHTML = cell.textContent;
-        });
         matchedRowCount++;
       } else {
-        let hasMatch = false;
-        cellContents.forEach(function (cell) {
-          let cellText = cell.textContent.toLowerCase();
-  
-          if (cellText.includes(searchKeyword)) {
-            // Highlight the matched text
-            let newText = cellText.replace(new RegExp(searchKeyword, "gi"), match => `<mark>${match}</mark>`);
-            cell.innerHTML = newText;
-            hasMatch = true;
-          } else {
-            cell.innerHTML = cellText;
-          }
-        });
-  
-        if (hasMatch) {
-          row.style.display = "table-row";
-          matchedRowCount++;
-        } else {
-          row.style.display = "none";
-        }
+        row.style.display = "none"; // Hide the row if no match found
       }
     });
-    console.log('matchedRowCount ===>>>>>>>', matchedRowCount);
-    const jornalList = document.getElementById('journal-paper-list');
-    console.log('jornalList ===>>>>>>', jornalList);
+  
+    // Show/hide no records message based on matched row count
     if (matchedRowCount === 0) {
-      // Display "No records found" message
       noRecordsMessage.style.display = "block";
-      jornalList.style.display = "none";
-      
+      journalList.style.display = "none";
     } else {
-      // Hide "No records found" message
       noRecordsMessage.style.display = "none";
-      jornalList.style.display = "block";
+      journalList.style.display = "block";
     }
   
+    // Update total row count and pagination based on matched rows
     totalRowCount.innerText = matchedRowCount;
     totalEntries = matchedRowCount;
     totalPages = Math.ceil(totalEntries / entriesPerPage);
-    showPage(1);
+    showPage(1); // Show the first page of results after filtering
   }
+  
+  
+  
   
 
   function updatePagination(currentPage) {
@@ -155,5 +151,7 @@ function initializePagination() {
     
   }
 }
+
+
 
 initializePagination();

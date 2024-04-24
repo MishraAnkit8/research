@@ -9,6 +9,8 @@ const { validateResearchSeminar } = require('../middleware/express-validator/res
 
 //middleware for download file
 const downloadFileService = require('../middleware/download-file.middleware');
+//logger file middle ware
+const { authMiddleware } = require('../middleware/authMiddleware');
 
 // controllers
 const researchController = require('../controllers/research.controller');
@@ -32,6 +34,8 @@ const pharmacySeedGrantForm = require('../controllers/pharmacy-seed-grant-form-c
 const patentSubmissionServices = require('../services/patent-submission.service');
 const researchProjGrantServices = require('../services/research-project-grant.service');
 const conferenceServices = require('../services/conference-publications.service');
+
+
 
 
 const router = express.Router();
@@ -146,6 +150,9 @@ router.get('/pharmacy-seed-grant-form', asyncErrorHandler(pharmacySeedGrantForm.
 //insert external faculty details controller
 
 router.post('/external/faculty-insert', asyncErrorHandler(facultyController.insertExternalFacultyDetails));
+
+// userController
+
 
 
 

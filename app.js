@@ -6,6 +6,7 @@ const fileUpload = require('express-fileupload');
 const { customErrorHandler } = require('./src/middleware/error.middleware');
 // const { requestLogger, addRequestId, attachChildLogger } = require('./src/middleware/logger');
 const router = require('./src/routes/index.route');
+const { redisDB } = require('./config/redis');
 
 dotenv.config(); // Load environment variables from a .env file if present
 
@@ -20,7 +21,6 @@ app.use((req, res, next) => {
   res.locals.BASE_URL = process.env.BASE_URL;
   next();
 })
-
 // Middleware to set payload type and limit
 app.use(express.json({ limit: process.env.PAYLOAD_SIZE_LIMIT }));
 app.use(express.urlencoded({
