@@ -43,28 +43,28 @@ const router = express.Router();
 router.get('/', asyncErrorHandler(researchController.renderResearch));
 
 //journal paper 
-router.get('/journal-paper', asyncErrorHandler(journalController.renderJournalPaper));
-router.post('/journal-paper/insert', upload.array('articlesDocuments', 5), asyncErrorHandler(journalController.insertJournalPapperDetails));
-router.post('/journal-paper/update', upload.array('articlesDocuments', 5), asyncErrorHandler(journalController.updateJournalPaper));
-router.post('/journal-paper/delete', asyncErrorHandler(journalController.delJournalPaper));
-router.post('/journal-paper/view', asyncErrorHandler(journalController.viewJournalPaper));
-router.get('/journal-paper/download/:fileName', downloadFileService.downloadFile);
+router.get('/journal-paper', asyncErrorHandler(authMiddleware), asyncErrorHandler(journalController.renderJournalPaper));
+router.post('/journal-paper/insert', upload.array('articlesDocuments', 5), asyncErrorHandler(authMiddleware), asyncErrorHandler(journalController.insertJournalPapperDetails));
+router.post('/journal-paper/update', upload.array('articlesDocuments', 5), asyncErrorHandler(authMiddleware), asyncErrorHandler(journalController.updateJournalPaper));
+router.post('/journal-paper/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(journalController.delJournalPaper));
+router.post('/journal-paper/view', asyncErrorHandler(authMiddleware), asyncErrorHandler(journalController.viewJournalPaper));
+router.get('/journal-paper/download/:fileName', asyncErrorHandler(authMiddleware), downloadFileService.downloadFile);
 
 
 //case studies
-router.get('/case-study', asyncErrorHandler(caseStudyController.renderCaseStudy));
-router.post('/case-study/insert', validateCaseStudy, asyncErrorHandler(caseStudyController.insertCaseStudies));
-router.post('/case-study/delete', asyncErrorHandler(caseStudyController.delCaseStudies));
-router.post('/case-study/view', asyncErrorHandler(caseStudyController.caseStudyView));
-router.post('/case-study/update', asyncErrorHandler(caseStudyController.updatedCaseStudies));
+router.get('/case-study', asyncErrorHandler(authMiddleware), asyncErrorHandler(caseStudyController.renderCaseStudy));
+router.post('/case-study/insert', validateCaseStudy, asyncErrorHandler(authMiddleware), asyncErrorHandler(caseStudyController.insertCaseStudies));
+router.post('/case-study/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(caseStudyController.delCaseStudies));
+router.post('/case-study/view', asyncErrorHandler(authMiddleware), asyncErrorHandler(caseStudyController.caseStudyView));
+router.post('/case-study/update', asyncErrorHandler(authMiddleware), asyncErrorHandler(caseStudyController.updatedCaseStudies));
 
 
 //conference-publication
-router.get('/conference-publication', asyncErrorHandler(conferenceController.renderConferencePage));
+router.get('/conference-publication', asyncErrorHandler(authMiddleware), asyncErrorHandler(conferenceController.renderConferencePage));
 router.post('/conference-publication/insert', upload.fields([
     { name: 'conferenceDocument', maxCount: 5 },
-    { name: 'conferenceProof', maxCount: 5 }]), asyncErrorHandler(conferenceController.insertConferencePublicationSData));
-router.post('/conference-publication/view', asyncErrorHandler(conferenceController.viewConferencePublication));
+    { name: 'conferenceProof', maxCount: 5 }]), asyncErrorHandler(authMiddleware), asyncErrorHandler(conferenceController.insertConferencePublicationSData));
+router.post('/conference-publication/view', asyncErrorHandler(authMiddleware), asyncErrorHandler(conferenceController.viewConferencePublication));
 router.post('/conference-publication/delete', asyncErrorHandler(conferenceController.deleteConferencePublication));
 router.post('/conference-publication/update', upload.fields([
     { name: 'conferenceDocument', maxCount: 5 },

@@ -13,7 +13,7 @@ const { authMiddleware } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
-router.use('/dashboard', dashboardRoute);
+router.use('/dashboard-page', dashboardRoute);
 router.use('/research', researchRoute);
 router.use('/teaching-excellance' , teachingExecellanceRoute);
 router.use('/meeting-stackholders' , meetingStackholdersRoute);

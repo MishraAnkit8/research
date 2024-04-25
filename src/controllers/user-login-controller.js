@@ -11,14 +11,13 @@ module.exports.renderLoginPage = async(req, res, next) => {
     console.log("sessionDataL::::::::", sessionid);
 
     if(sessionid){
-        res.redirect('/dashboard');
+        res.redirect('/dashboard-page');
     }else{
         res.render('user-login');
     }
     
     
 }
-
 
 
 module.exports.userLoginSession = async (req, res, body) => {
@@ -62,18 +61,18 @@ module.exports.userLoginSession = async (req, res, body) => {
             if(sessionId){
                 res.status(200).json({
                     "redirect" : 
-                    "/dashboard"
+                    "/dashboard-page"
                 });
             } else {
                 res.status(500).json({
                     message: "Internal Server Error!",
                     "redirect" : 
-                    "/dashboard"
+                    "/dashboard-page"
                 })
             }
 
         }else{
-            res.status(401).json({"redirect" : "/user-login", message: "Internal Server Error!"});
+            res.status(401).json({"redirect" : "/user", message: "Internal Server Error!"});
         }
 
       } catch (error) {
