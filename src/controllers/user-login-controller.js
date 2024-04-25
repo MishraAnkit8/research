@@ -60,8 +60,7 @@ module.exports.userLoginSession = async (req, res, body) => {
             res.cookie('session', sessionId)
             if(sessionId){
                 res.status(200).json({
-                    "redirect" : 
-                    "/dashboard-page"
+                    "redirect" : `${process.env.BASE_URL}dashboard-page`
                 });
             } else {
                 res.status(500).json({
