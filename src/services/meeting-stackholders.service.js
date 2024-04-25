@@ -1,13 +1,13 @@
 const meetingModels = require('../models/meeting-stackholders.model');
 
 
-module.exports.fetchMeetingData = async() => {
-    const meetingStackholderData = await meetingModels.fetchMeetingStackholdersData();
+module.exports.fetchMeetingData = async(userName) => {
+    const meetingStackholderData = await meetingModels.fetchMeetingStackholdersData(userName);
     console.log('meetingStackholderData' , meetingStackholderData.rows[0]);
     return meetingStackholderData;
 }
 
-module.exports.insertMeetingStackholder = async(body, files) => {
+module.exports.insertMeetingStackholder = async(body, files, userName) => {
     // const rankingDocuments = files.rankingDocuments[0].filename;
     // console.log('rankingDocuments ==>', rankingDocuments)
     // const accreditationFile = files.accreditationFile[0].filename;
@@ -69,7 +69,7 @@ module.exports.insertMeetingStackholder = async(body, files) => {
     console.log('meetingFilesData inservice ====>>>', meetingFilesData)
     const meetingStackholderData = body;
     console.log('meetingStackholderData  ==>>', meetingStackholderData)
-    const insertmMeetingStackholderData = await meetingModels.insertMeetingStackholders(meetingStackholderData, meetingFilesData);
+    const insertmMeetingStackholderData = await meetingModels.insertMeetingStackholders(meetingStackholderData, meetingFilesData, userName);
     console.log('insertmMeetingStackholderData ==>>', insertmMeetingStackholderData.rows[0].id);
     const meetingId = insertmMeetingStackholderData.rows[0].id
     if(insertmMeetingStackholderData){
@@ -82,7 +82,7 @@ module.exports.insertMeetingStackholder = async(body, files) => {
 
 }
 
-module.exports.updateMeetingStackholders = async(meetingId, updateMeetingData, files) => {
+module.exports.updateMeetingStackholders = async(meetingId, updateMeetingData, files, userName) => {
     console.log('data in service ==>>', updateMeetingData)
     // console.log('files data in in service ===>>>', files);
     let updatedMeetingFilesData = {};
@@ -138,7 +138,7 @@ module.exports.updateMeetingStackholders = async(meetingId, updateMeetingData, f
 
     }
     console.log('updatedMeetingFilesData in serices ==>>>', updatedMeetingFilesData)
-    const updatedMeeting = await meetingModels.updateMeetingData(meetingId, updateMeetingData, updatedMeetingFilesData);
+    const updatedMeeting = await meetingModels.updateMeetingData(meetingId, updateMeetingData, updatedMeetingFilesData, userName);
     if(updatedMeeting && updatedMeeting.rowCount === 1){
         return{
             status : 'done',
@@ -148,8 +148,10 @@ module.exports.updateMeetingStackholders = async(meetingId, updateMeetingData, f
     }
 }
 
-module.exports.viewMeetingStackholders = async(meetingId) => {
-    const viewMeetingData = await meetingModels.viewMeeting(meetingId);
+module.exports.viewMeetingStackholders = async(meetingId, userName) => {
+
+    const viewMeetingData = await meetingModels.viewMeeting(meetingId, userName);
+    
     return viewMeetingData.rows[0]
 }
 

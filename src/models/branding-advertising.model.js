@@ -5,16 +5,17 @@ const moment = require('moment');
 const researchDbR = dbPoolManager.get('researchDbR', research_read_db);
 const researchDbW = dbPoolManager.get('researchDbW', research_write_db);
 
-module.exports.fetchBrandingAndadvertising = async() => {
+module.exports.fetchBrandingAndadvertising = async(userName) => {
     let sql = {
-        text : `SELECT * FROM branding_and_advertising ORDER BY id`
+        text : `SELECT * FROM branding_and_advertising  WHERE created_by = $1  ORDER BY id`,
+        values : [userName]
     }
     console.log('sql ==>>', sql);
 
     return researchDbR.query(sql);
 }
 
-module.exports.insertBrandingAndAdvertisingData = async(advertisingData, brandingFilesContainer) => {
+module.exports.insertBrandingAndAdvertisingData = async(advertisingData, brandingFilesContainer, userName) => {
         const {facultyRecognition, facultyRecognitionLink, facultyAward, facultyAwardLink, staffAward, staffAwardLink, alumniAward, alumniAwardLink,
             studentAward, studentAwardLink, internationalLinkage, internationalLinkageLink, conferenceParticipation, conferenceParticipationLink, organisingConference,
             organisingConferenceLink, studentEventParticipation, studentEventParticipationLink, newsPaperArticle, newsPaperArticleLink } = advertisingData;
@@ -24,13 +25,13 @@ module.exports.insertBrandingAndAdvertisingData = async(advertisingData, brandin
                  student_award, student_award_link, international_linkage, international_linkage_link, conference_participation, conference_participation_link,
                  organising_conference, organising_conference_link, student_event_participation, student_event_participation_link, newspaper_article, newspaper_article_link, 
                  faculty_recognition_documents, faculty_award_documents, staff_award_documents, alumni_award_documents, student_award_documents, international_linkage_documents, 
-                 conference_participation_documents, organising_conference_documents, student_event_participation_documents, newspaper_article_documents) 
-                 VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27 , $28, $29, $30) RETURNING id`,
+                 conference_participation_documents, organising_conference_documents, student_event_participation_documents, newspaper_article_documents, created_by) 
+                 VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27 , $28, $29, $30, $31) RETURNING id`,
             values : [facultyRecognition, facultyRecognitionLink, facultyAward, facultyAwardLink, staffAward, staffAwardLink, alumniAward, alumniAwardLink,
                 studentAward, studentAwardLink, internationalLinkage, internationalLinkageLink, conferenceParticipation, conferenceParticipationLink, organisingConference,
                 organisingConferenceLink, studentEventParticipation, studentEventParticipationLink, newsPaperArticle, newsPaperArticleLink, brandingFilesContainer.facultyRecognitionDocuments,
                 brandingFilesContainer.facultyAwardDocuments, brandingFilesContainer.staffAwardDocuments, brandingFilesContainer.alumniAwardDocuments, brandingFilesContainer.studentAwardDocuments, brandingFilesContainer.internationalLinkageDocuments, brandingFilesContainer.conferenceParticipationDocuments, brandingFilesContainer.organisingConferenceDocuments,
-                brandingFilesContainer.studentEventParticipationDocuments, brandingFilesContainer.newspaperArticleDocuments]
+                brandingFilesContainer.studentEventParticipationDocuments, brandingFilesContainer.newspaperArticleDocuments, userName]
         }
 
         //handle promise and throw error in case of Insert
@@ -59,7 +60,7 @@ module.exports.insertBrandingAndAdvertisingData = async(advertisingData, brandin
 module.exports.updateBrandingAdvertising = async (advertisingId, updatedAdvertisingData, updatedFacultyRecognitionFilesArray,
     updatedFacultyAwardFilesArray, updatedStaffAwardFilesArray, updatedAlumniAwardFilesArray, updatedStudentAwardFilesArray,
     updatedInternationalLinkageFilesArray, updatedConferenceParticipationFilesArray, updatedOrganisingConferenceFilesArray,
-    updatedStudentEventParticipationFilesArray, updatedNewspaperArticleFilesArray) => {
+    updatedStudentEventParticipationFilesArray, updatedNewspaperArticleFilesArray, userName) => {
     const {
         facultyRecognition, facultyRecognitionLink, facultyAward, facultyAwardLink,
         staffAward, staffAwardLink, alumniAward, alumniAwardLink,
@@ -109,6 +110,7 @@ module.exports.updateBrandingAdvertising = async (advertisingId, updatedAdvertis
         { field: 'newspaper_article', value: newsPaperArticle },
         { field: 'newspaper_article_documents', value: updatedNewspaperArticleFilesArray },
         { field: 'newspaper_article_link', value: newsPaperArticleLink },
+        { field: 'updated_by', value: userName },
     ];
 
     console.log('fieldsToUpdate ===>>', fieldsToUpdate);
@@ -200,10 +202,10 @@ module.exports.updateBrandingAdvertising = async (advertisingId, updatedAdvertis
 
 
 
-module.exports.brandingAndadvertisingview = async(advertisingId) => {
+module.exports.brandingAndadvertisingview = async(advertisingId, userName) => {
     let sql = {
-        text : `SELECT * FROM branding_and_advertising WHERE id = $1`,
-        values : [advertisingId]
+        text : `SELECT * FROM branding_and_advertising WHERE id = $1 AND created_by = $2`,
+        values : [advertisingId, userName]
     }
     console.log('sql ==>>', sql);
     return researchDbR.query(sql);

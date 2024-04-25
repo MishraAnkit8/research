@@ -2,7 +2,7 @@ const brandingAndAdvertisingModels = require('../models/branding-advertising.mod
 
 
 
-module.exports.fetchBrandingandAdvertisingData = async() => {
+module.exports.fetchBrandingandAdvertisingData = async(userName) => {
     const brandingAndAdvertising = await brandingAndAdvertisingModels.fetchBrandingAndadvertising();
     console.log('brandingAndAdvertising ==>>', brandingAndAdvertising.rows)
     return brandingAndAdvertising;
@@ -74,7 +74,7 @@ module.exports.insertBrandingAdvertising = async(body , files) => {
 
     console.log('brandingFilesContainer ===>>>', brandingFilesContainer);
 
-    const brandingAndAdvertising = await brandingAndAdvertisingModels.insertBrandingAndAdvertisingData(advertisingData, brandingFilesContainer);
+    const brandingAndAdvertising = await brandingAndAdvertisingModels.insertBrandingAndAdvertisingData(advertisingData, brandingFilesContainer, userName);
     console.log('brandingAndAdvertising in services ====>>>>>', brandingAndAdvertising);
     return brandingAndAdvertising.status === "Done" ? {
       status : brandingAndAdvertising.status,
@@ -102,7 +102,7 @@ module.exports.insertBrandingAdvertising = async(body , files) => {
 
 }
 
-module.exports.updateBrandingAndAdvertising = async (advertisingId, updatedAdvertisingData, files) => {
+module.exports.updateBrandingAndAdvertising = async (advertisingId, updatedAdvertisingData, files, userName) => {
     console.log('filesToUpdate in service ==>>', files);
     console.log('updatedAdvertisingData ==>>', updatedAdvertisingData);
     const updatedFacultyRecognitionFilesArray = files.facultyRecognitionDocuments ?.map(file => file.filename).join(',');
@@ -174,7 +174,7 @@ module.exports.updateBrandingAndAdvertising = async (advertisingId, updatedAdver
     const updatedBrandingAndAdvertising = await brandingAndAdvertisingModels.updateBrandingAdvertising(advertisingId, updatedAdvertisingData, updatedFacultyRecognitionFilesArray,
       updatedFacultyAwardFilesArray, updatedStaffAwardFilesArray, updatedAlumniAwardFilesArray, updatedStudentAwardFilesArray,
       updatedInternationalLinkageFilesArray, updatedConferenceParticipationFilesArray, updatedOrganisingConferenceFilesArray,
-      updatedStudentEventParticipationFilesArray, updatedNewspaperArticleFilesArray);
+      updatedStudentEventParticipationFilesArray, updatedNewspaperArticleFilesArray, userName);
 
     console.log('updatedBrandingAndAdvertising in service ===>>>', updatedBrandingAndAdvertising);
     return updatedBrandingAndAdvertising.status === "Done"
@@ -202,8 +202,8 @@ module.exports.updateBrandingAndAdvertising = async (advertisingId, updatedAdver
 };
 
 
-module.exports.viewBrandingadvertising = async(advertisingId) => {
-    const viewAdvertisingData = await brandingAndAdvertisingModels.brandingAndadvertisingview(advertisingId);
+module.exports.viewBrandingadvertising = async(advertisingId, userName) => {
+    const viewAdvertisingData = await brandingAndAdvertisingModels.brandingAndadvertisingview(advertisingId, userName);
     console.log('data in service ==>>', viewAdvertisingData.rows)
     return viewAdvertisingData.rows
 }

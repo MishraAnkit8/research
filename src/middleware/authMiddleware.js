@@ -34,7 +34,9 @@ module.exports.authMiddleware = async (req, res, next) => {
         const {accesstoken, refreshtoken} = headers;
 
         sessionData = {...sessionData, accesstoken: accesstoken, refreshtoken: refreshtoken}
-        setRedisData(`${sessionid}:session`, sessionData)
+        setRedisData(`${sessionid}:session`, sessionData);
+        const  userName = sessionData.username;
+        req.body.username = userName;
         next()
     } catch (error) {
         return res.status(500).json({

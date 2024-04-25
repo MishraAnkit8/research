@@ -1,3 +1,5 @@
+let searchInput = document.getElementById("searchKeyword");
+const tableDataList = document.getElementById('journal-paper-list').getElementsByTagName('tr');
 function initializePagination() {
   let entriesPerPage = 5;
   let currentPage = 1;
@@ -82,7 +84,7 @@ function initializePagination() {
         console.log('cellText ===>>>>>>', cellText);
   
         if (cellText.includes(searchKeyword)) {
-          let newText = cellText.replace(new RegExp(searchKeyword, "gi"), match => `<mark style="color: red;">${match}</mark>`);
+          let newText = cellText.replace(new RegExp(searchKeyword, "gi"), match => `${match}`);
           console.log('newText ====>>>>>>', newText);
           cell.innerHTML = newText;
           hasMatch = true;
@@ -151,7 +153,24 @@ function initializePagination() {
     }
     
   }
+
+// let searchInput = document.getElementById("searchKeyword");
+// const tableDataList = document.getElementById('journal-paper-list').getElementsByTagName('tr');
+
 }
+searchInput.addEventListener('keyup', function() {
+  const searchTerm = searchInput.value.toLowerCase();
+
+  for (let i = 0; i < tableDataList.length; i++) {
+      const tableDataRow = tableDataList[i].textContent.toLowerCase();
+
+      if (tableDataRow.includes(searchTerm)) {
+          tableDataList[i].style.display = 'list-item';
+      } else {
+          tableDataList[i].style.display = 'none';
+      }
+  }
+});
 
 
 

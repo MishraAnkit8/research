@@ -1,24 +1,17 @@
 const bookChapterModels = require('../models/book-chapter.model');
 
 
-module.exports.fetchBookChapter= async() => {
-    const BookChapterData = await bookChapterModels.fetchEditedBookPublication();
+module.exports.fetchBookChapter= async(userName) => {
+    const BookChapterData = await bookChapterModels.fetchEditedBookPublication(userName);
     console.log(BookChapterData.rows[0]);
     return BookChapterData
 }
 
-module.exports.insertBookChapter = async(bookChapter , files) => {
+module.exports.insertBookChapter = async(bookChapter , files, userName) => {
     const bookChapterDataFiles = files?.map(file => file.filename).join(',');
     console.log('updateBookChapterDataFiles ====>>>>', bookChapterDataFiles);
-    // var bookChapterDataFiles = '';
-    // if(files){
-    //   for(let i = 0; i <= files.length - 1; i++){
-    //       if(files && files[i].filename){
-    //         bookChapterDataFiles += files[i].filename + ',';
-    //       }
-    //   }
-    // }
-    const bookChapterInsertedData = await bookChapterModels.insertBookChapterData(bookChapter, bookChapterDataFiles);
+
+    const bookChapterInsertedData = await bookChapterModels.insertBookChapterData(bookChapter, bookChapterDataFiles, userName);
     console.log('bookChapterInsertedData ===>>>>', bookChapterInsertedData);
     console.log('bookChapterId ====>>>', bookChapterInsertedData.id);
     return  bookChapterInsertedData.status === 'Done' ? {
@@ -35,11 +28,11 @@ module.exports.insertBookChapter = async(bookChapter , files) => {
     };
 }
 
-module.exports.updatedBookChapter = async (bookChapterId, updatedBookChapterPublication, files) => {
+module.exports.updatedBookChapter = async (bookChapterId, updatedBookChapterPublication, files, userName) => {
     const updateBookChapterDataFiles = files?.map(file => file.filename).join(',');
         
     const updatedBookChapterData = await bookChapterModels.updatedBookChapter(bookChapterId, updatedBookChapterPublication, updateBookChapterDataFiles
-    );
+    , userName);
     console.log('updatedBookChapterData in service ====>>>', updatedBookChapterData);
     return  updatedBookChapterData.status === 'Done' ? {
         status:  updatedBookChapterData.status,
@@ -70,9 +63,9 @@ module.exports.deleteBookChapterPublication = async({bookChapterId}) => {
     }
 }
 
-module.exports.viewBookChapterData = async(bookChapterId) => {
+module.exports.viewBookChapterData = async(bookChapterId, userName) => {
     console.log('id IN service ==>>', bookChapterId);
-    const viewBookChapterPublication = await bookChapterModels.viewBookChapterData(bookChapterId);
+    const viewBookChapterPublication = await bookChapterModels.viewBookChapterData(bookChapterId, userName);
     console.log('viewBookChapterPublication ==>>', viewBookChapterPublication.rows[0]);
     if(viewBookChapterPublication.rows[0] && viewBookChapterPublication.rowCount === 1){
         return viewBookChapterPublication.rows[0]

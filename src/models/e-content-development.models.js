@@ -6,23 +6,24 @@ const moment = require('moment');
 const researchDbR = dbPoolManager.get('researchDbR', research_read_db);
 const researchDbW = dbPoolManager.get('researchDbW', research_write_db);
 
-module.exports.fetchEContentDevelopmentData = async() => {
+module.exports.fetchEContentDevelopmentData = async(userName) => {
     let sql = {
-        text : `SELECT * FROM e_content_development ORDER BY id`
+        text : `SELECT * FROM e_content_development WHERE created_by = $1  ORDER BY id`,
+        values : [userName]
     }
     console.log('sql ==>>', sql);
     return researchDbR.query(sql);
 }
 
 
-module.exports.insertEContentRecord = async(EcontentFormData) => {
+module.exports.insertEContentRecord = async(EcontentFormData, userName) => {
     console.log('EcontentData in models ===>>>>', EcontentFormData)
 
     const {facultyName, moduleName, platformName, launchingDate, documentLink, eContentList, MediaCenterLink} = EcontentFormData;
 
     let sql = {
-        text : `INSERT INTO e_content_development(faculty_name, module_name, platform, launch_date, document_links, content_development_facilities, media_centre_video_link) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id`,
-        values : [facultyName, moduleName, platformName, launchingDate, documentLink, eContentList, MediaCenterLink]
+        text : `INSERT INTO e_content_development(faculty_name, module_name, platform, launch_date, document_links, content_development_facilities, media_centre_video_link, created_by) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id`,
+        values : [facultyName, moduleName, platformName, launchingDate, documentLink, eContentList, MediaCenterLink, userName]
     }
 
     console.log('sql ===>>>>', sql);
@@ -45,13 +46,13 @@ module.exports.insertEContentRecord = async(EcontentFormData) => {
 }
 
 
-module.exports.updateEcontentRow = async(updatedEContentData, eContentId) => {
+module.exports.updateEcontentRow = async(updatedEContentData, eContentId, userName) => {
 
     const {facultyName, moduleName, platformName, launchingDate, documentLink, eContentList, MediaCenterLink} = updatedEContentData;
 
     let sql = {
-        text : `UPDATE e_content_development SET faculty_name = $2, module_name = $3, platform = $4, launch_date = $5, document_links = $6, content_development_facilities = $7, media_centre_video_link = $8 WHERE id = $1`,
-        values : [eContentId, facultyName, moduleName, platformName, launchingDate, documentLink, eContentList, MediaCenterLink]
+        text : `UPDATE e_content_development SET faculty_name = $2, module_name = $3, platform = $4, launch_date = $5, document_links = $6, content_development_facilities = $7, media_centre_video_link = $8, updated_by = $9 WHERE id = $1`,
+        values : [eContentId, facultyName, moduleName, platformName, launchingDate, documentLink, eContentList, MediaCenterLink, userName]
     }
 
     console.log('sql ===>>>>', sql);
@@ -91,13 +92,13 @@ module.exports.deleteEContentRowData = async(eContentId) => {
     })
 }
 
-module.exports.viewEContentDevelopmentData = async(eContentId) => {
+module.exports.viewEContentDevelopmentData = async(eContentId, userName) => {
     console.log('eContentId ===>>>>', eContentId);
 
     let sql = {
         text : `SELECT faculty_name, module_name, platform, launch_date, document_links, content_development_facilities, media_centre_video_link FROM 
-            e_content_development WHERE id = $1`,
-        values : [eContentId]
+            e_content_development WHERE id = $1 AND created_by = $2`,
+        values : [eContentId, userName]
     }
     console.log('sql ===>>>>>', sql);
     const viewRecord = await researchDbR.query(sql);

@@ -1,8 +1,10 @@
 const patentFormsModels = require('../models/patent-submission.models');
 
 module.exports.fetchPatentForm = async () => {
+    const  userName = req.body.username;
+    console.log('userName in controller  ===>>>>>>', userName);
 
-    const patentSubmissionForm = await patentFormsModels.fetchPatentSubMissionForms();
+    const patentSubmissionForm = await patentFormsModels.fetchPatentSubMissionForms(userName);
 
     console.log('patentSubmissionForm in SErvice  ====>>>', patentSubmissionForm);
     console.log('patentSubmissionForm in services ===>>>>>', patentSubmissionForm.patentData);
@@ -77,6 +79,9 @@ module.exports.fetchPatentForm = async () => {
 
 
 module.exports.insertPatentFormData = async(body , files) => {
+    const  userName = req.body.username;
+    console.log('userName in controller  ===>>>>>>', userName);
+
     console.log('patentData in service', body);
     const patentData = body;
     console.log('patentData in service', patentData);
@@ -105,7 +110,7 @@ module.exports.insertPatentFormData = async(body , files) => {
     console.log('FacultydataArray ===>>>>>', FacultydataArray);
     const patentDataFilesString = files?.map(file => file.filename).join(',');
 
-    const insertPatentData = await patentFormsModels.insertPatentData(patentData, patentDataFilesString, sdgGoalsIdArray, inventionIdsArray, FacultydataArray, patentStatusArray);
+    const insertPatentData = await patentFormsModels.insertPatentData(patentData, patentDataFilesString, sdgGoalsIdArray, inventionIdsArray, FacultydataArray, patentStatusArray, userName);
 
     console.log('insertPatentData in service ====>>>', insertPatentData);
 
@@ -131,6 +136,9 @@ module.exports.insertPatentFormData = async(body , files) => {
 
 
 module.exports.updatPatentSubmission = async(body, patentId, files) => {
+    const  userName = req.body.username;
+    console.log('userName in controller  ===>>>>>>', userName);
+
     const updatedPatentData = body;
     console.log('body in service  ====>>>>', body);
     const sdgDataIds =  updatedPatentData.sdgGoalsContainer !== 'undefined' || null ? JSON.parse(updatedPatentData.sdgGoalsContainer) : null;
@@ -155,7 +163,7 @@ module.exports.updatPatentSubmission = async(body, patentId, files) => {
     console.log('FacultydataArray ===>>>>>', FacultydataArray);
     const patentDataFiles = files ?.map(file => file.filename).join(',')
 
-    const upadtedPatentSubmissionData = await patentFormsModels.updatePatentsubmissionData(updatedPatentData, patentId, patentDataFiles, sdgGoalsIdArray, inventionIdsArray, FacultydataArray, patentStatusIdArray);
+    const upadtedPatentSubmissionData = await patentFormsModels.updatePatentsubmissionData(updatedPatentData, patentId, patentDataFiles, sdgGoalsIdArray, inventionIdsArray, FacultydataArray, patentStatusIdArray, userName);
 
     console.log('upadtedPatentSubmissionData ====>>>>', upadtedPatentSubmissionData);
 
@@ -195,9 +203,12 @@ module.exports.deletePatentSubmission = async(body) => {
 }
 
 module.exports.viewPatentsubmission = async(patentId) => {
+    const  userName = req.body.username;
+    console.log('userName in controller  ===>>>>>>', userName);
+
     console.log('id', patentId);
 
-    const patentDataViewed = await patentFormsModels.viewPatentSubmission(patentId);
+    const patentDataViewed = await patentFormsModels.viewPatentSubmission(patentId, userName);
 
     console.log('patentDataViewed ===>>>>>>', patentDataViewed);
     const patentSubmissionMap = {};

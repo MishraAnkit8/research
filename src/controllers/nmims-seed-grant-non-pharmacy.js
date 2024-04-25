@@ -6,8 +6,10 @@
 const seedGrantNonForphacyService = require('../services/nmims-seed-grant-non-pharmacy.service');
 
 module.exports.renderNmimsSeedGrantNonFormacy = async(req, res, next) => {
+    const  userName = req.body.username;
+    console.log('userName in controller  ===>>>>>>', userName);
 
-    const renderSeedGrantFormData = await seedGrantNonForphacyService.fetchNoFormacyForm();
+    const renderSeedGrantFormData = await seedGrantNonForphacyService.fetchNoFormacyForm(userName);
     console.log('renderSeedGrantFormData in controller ===>>>>', renderSeedGrantFormData)
     res.render('nmims-seed-grant-non-pharmacy', {
         status : renderSeedGrantFormData.status,
@@ -22,8 +24,10 @@ module.exports.renderNmimsSeedGrantNonFormacy = async(req, res, next) => {
 
 module.exports.viewNonformacyForm = async(req, res, next) => {
     console.log('grantedSeedId id in controller ===>>>>', req.body);
+    const  userName = req.body.username;
+    console.log('userName in controller  ===>>>>>>', userName);
 
-    const constViewGrantedSeedForm = await seedGrantNonForphacyService.viewGrantedSeedNonFormacyData(req.body) ;
+    const constViewGrantedSeedForm = await seedGrantNonForphacyService.viewGrantedSeedNonFormacyData(req.body, userName) ;
 
     console.log('constViewGrantedSeedForm ===>>>>', constViewGrantedSeedForm);
 
@@ -52,8 +56,10 @@ module.exports.viewNonformacyForm = async(req, res, next) => {
 
 module.exports.insertGrantedSeedNonFormacyForm = async(req, res, next) => {
     console.log('req.body in controller ====>>>>>', req.body);
+    const  userName = req.body.username;
+    console.log('userName in controller  ===>>>>>>', userName);
 
-    const insertNonFormacyFormdata = await seedGrantNonForphacyService.insertSeedGrantNonFormacy(req.body);
+    const insertNonFormacyFormdata = await seedGrantNonForphacyService.insertSeedGrantNonFormacy(req.body, userName);
 
     console.log('insertNonFormacyFormdata ===>>>>>', insertNonFormacyFormdata);
     const statusCode = insertNonFormacyFormdata.status === "Done" ? 200 : (insertNonFormacyFormdata.errorCode ? 400 : 500);
@@ -71,8 +77,10 @@ module.exports.insertGrantedSeedNonFormacyForm = async(req, res, next) => {
 
 module.exports.updatedNonFormacyform = async(req, res, next) => {
     console.log('data in controller ====>>>>', req.body);
+    const  userName = req.body.username;
+    console.log('userName in controller  ===>>>>>>', userName);
 
-    const updatedNonFormacyDataFormacyFormData = await seedGrantNonForphacyService.updateSeedGrantNonFormacyData(req.body);
+    const updatedNonFormacyDataFormacyFormData = await seedGrantNonForphacyService.updateSeedGrantNonFormacyData(req.body,userName);
 
     console.log('updatedNonFormacyDataFormacyFormData ====>>>>>>', updatedNonFormacyDataFormacyFormData)
     const statusCode = updatedNonFormacyDataFormacyFormData.status === "Done" ? 200 : (updatedNonFormacyDataFormacyFormData.errorCode ? 400 : 500);

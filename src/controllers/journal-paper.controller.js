@@ -1,11 +1,14 @@
 const journalPaperService = require('../services/journal-paper.service');
+const { getRedisData } = require('../../utils/redis.utils');
 
 
 module.exports.renderJournalPaper = async (req, res, next) => {
+    const  userName = req.body.username;
+    console.log('userName in controller  ===>>>>>>', userName);
 
-    const journalList = await journalPaperService.renderJournalPaper();
+    const journalList = await journalPaperService.renderJournalPaper(userName);
 
-    console.log('journalList in controller ====>>>>', journalList.rowCount);
+    // console.log('journalList in controller ====>>>>', journalList.rowCount);
     // console.log('journalList.allAuthorList ===>>>>>>>', journalList.allAuthorList)
     
     res.render('journal-paper', {
@@ -26,10 +29,10 @@ module.exports.renderJournalPaper = async (req, res, next) => {
 
 module.exports.insertJournalPapperDetails = async (req, res, next) => {
 
-    console.log('data comming from ejs  in controller', req.journalDetails);
-    console.log('files in controller ===>>>>>', req.files);
+    const  userName = req.body.username;
+    console.log('userName in controller  ===>>>>>>', userName);
 
-    const journalPaperData = await journalPaperService.insertJournalPapper(req.body, req.files);
+    const journalPaperData = await journalPaperService.insertJournalPapper(req.body, req.files, userName);
 
     console.log("journalPaperData ===>" , journalPaperData.rowCount);
 
@@ -68,6 +71,7 @@ module.exports.insertJournalPapperDetails = async (req, res, next) => {
 
 module.exports.delJournalPaper = async (req, res, next) => {
     const journalPaperId = req.body.journalPaperId;
+    const  userName = req.body.username;
 
     const delJournalData = await journalPaperService.deleteJournalPaper(journalPaperId);
 
@@ -83,10 +87,11 @@ module.exports.delJournalPaper = async (req, res, next) => {
  
 
 module.exports.updateJournalPaper = async (req, res, next) => {
+    const  userName = req.body.username;
     console.log('data is comming from template ==>>>>>', req.body);
     console.log('files in conteroller ===>>>>', req.files)
     
-    const updatePaper = await journalPaperService.updateJournalPaper(req.body, req.files);
+    const updatePaper = await journalPaperService.updateJournalPaper(req.body, req.files, userName);
 
     console.log('updatePaper updation in controller', updatePaper);
     const statusCode = updatePaper.status === "Done" ? 200 : (updatePaper.errorCode ? 400 : 500);
@@ -124,11 +129,12 @@ module.exports.updateJournalPaper = async (req, res, next) => {
 };
 
 module.exports.viewJournalPaper = async(req, res, next) => {
+    const  userName = req.body.username;
     const journalPaperId = req.body.journalPaperId;
     console.log('journalPaperId for View' , journalPaperId);
 
 
-    const viewJournalDetails = await journalPaperService.viewJournalPaper({journalPaperId});
+    const viewJournalDetails = await journalPaperService.viewJournalPaper({journalPaperId}, userName);
 
     console.log('viewJournalDetails in controller ====>>>>>>', viewJournalDetails);
 

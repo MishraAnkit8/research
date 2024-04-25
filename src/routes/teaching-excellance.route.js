@@ -7,27 +7,31 @@ const teachingExecellanceServices = require('../services/teaching-excellance.ser
 // middleware for server side validation and error handler
 const { asyncErrorHandler } = require('../middleware/error.middleware');
 
+//logger file middle ware
+const { authMiddleware } = require('../middleware/authMiddleware');
+
 //middleware for download file
 const downloadFileService = require('../middleware/download-file.middleware');
 
 const router = express.Router();
 
 // teaching execellance
-router.get('/', asyncErrorHandler(teachingExecellanceController.renderTeachingExecellance));
+router.get('/', asyncErrorHandler(authMiddleware),
+asyncErrorHandler(teachingExecellanceController.renderTeachingExecellance));
 router.post('/insert', upload.fields([
     { name: 'pedagogyInnovationFile', maxCount: 5 },
     { name: 'fdpProgramFile', maxCount: 5 },
     { name: 'workShopFile', maxCount: 5 },
     { name: 'invitingFacultyFile', maxCount: 5 },
     { name: 'programOrientationFile', maxCount: 5 }
-]),asyncErrorHandler(teachingExecellanceController.insertTeachingExecellance));
+]), asyncErrorHandler(authMiddleware), asyncErrorHandler(teachingExecellanceController.insertTeachingExecellance));
 router.post('/update', upload.fields([
     { name: 'pedagogyInnovationFile', maxCount: 5 },
     { name: 'fdpProgramFile', maxCount: 5 },
     { name: 'workShopFile', maxCount: 5 },
     { name: 'invitingFacultyFile', maxCount: 5 },
     { name: 'programOrientationFile', maxCount: 5 }
-]),asyncErrorHandler(teachingExecellanceController.updatTeachingData));
+]), asyncErrorHandler(authMiddleware), asyncErrorHandler(teachingExecellanceController.updatTeachingData));
 router.post('/delete', asyncErrorHandler(teachingExecellanceController.deleteTeachingExecellance));
 router.post('/view', asyncErrorHandler(teachingExecellanceController.viewTeachingExecellance));
 router.get('/download/:fileName', downloadFileService.downloadFile);

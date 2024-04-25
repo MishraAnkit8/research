@@ -1,8 +1,10 @@
 const consultancyFormService = require('../services/NMIMS-consultancy-form.service');
 
 module.exports.renderNmimsConsultancyForm = async(req, res, next) => {
+    const  userName = req.body.username;
+    console.log('userName in controller  ===>>>>>>', userName);
 
-    const renderConsultancyData = await consultancyFormService.fetchConsultancyFormData();
+    const renderConsultancyData = await consultancyFormService.fetchConsultancyFormData(userName);
     console.log('renderConsultancyData in controller ===>>>>', renderConsultancyData)
     res.render('nmims-consultancy-approval-form', {
         status : renderConsultancyData.status,
@@ -16,9 +18,12 @@ module.exports.renderNmimsConsultancyForm = async(req, res, next) => {
 
 
 module.exports.viewConsultancyFormApprovalData = async(req, res, next) => {
+    const  userName = req.body.username;
+    console.log('userName in controller  ===>>>>>>', userName);
+
     console.log('nmimsConsultancyFormId in controller ===>>>>', req.body);
 
-    const consultancyApprovalFormData = await consultancyFormService.viewApprovedformRecord(req.body) ;
+    const consultancyApprovalFormData = await consultancyFormService.viewApprovedformRecord(req.body, userName) ;
 
     console.log('consultancyApprovalFormData ===>>>>', consultancyApprovalFormData);
 
@@ -47,8 +52,10 @@ module.exports.viewConsultancyFormApprovalData = async(req, res, next) => {
 
 module.exports.insertconsultancyFormData = async(req, res, next) => {
     console.log('req.body in controller ====>>>>>', req.body);
+    const  userName = req.body.username;
+    console.log('userName in controller  ===>>>>>>', userName);
 
-    const insertApprovalFormData = await consultancyFormService.insertApprovalFormDataService(req.body);
+    const insertApprovalFormData = await consultancyFormService.insertApprovalFormDataService(req.body, userName);
 
     console.log('insertApprovalFormData ===>>>>>', insertApprovalFormData);
     const statusCode = insertApprovalFormData.status === "Done" ? 200 : (insertApprovalFormData.errorCode ? 400 : 500);
@@ -65,9 +72,11 @@ module.exports.insertconsultancyFormData = async(req, res, next) => {
 
 
 module.exports.updateConsultancyApprovalFormData = async(req, res, next) => {
+    const  userName = req.body.username;
+    console.log('userName in controller  ===>>>>>>', userName);
     console.log('data in controller ====>>>>', req.body);
 
-    const updatedApprovalForm = await consultancyFormService.updateConsultancyApprovalData(req.body);
+    const updatedApprovalForm = await consultancyFormService.updateConsultancyApprovalData(req.body, userName);
 
     console.log('updatedApprovalForm ====>>>>>>', updatedApprovalForm)
     const statusCode = updatedApprovalForm.status === "Done" ? 200 : (updatedApprovalForm.errorCode ? 400 : 500);
@@ -81,6 +90,8 @@ module.exports.updateConsultancyApprovalFormData = async(req, res, next) => {
 }
 
 module.exports.deleteConsultancyFormData = async(req, res, next) => {
+    const  userName = req.body.username;
+    console.log('userName in controller  ===>>>>>>', userName);
     console.log('sata in controller', req.body);
 
     const deleteConsultancyForm = await consultancyFormService.deleteconsultancyFormRecord(req.body);

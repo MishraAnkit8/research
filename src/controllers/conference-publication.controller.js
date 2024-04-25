@@ -1,7 +1,10 @@
 const conferencePublicationServices = require('../services/conference-publications.service');
 
 module.exports.renderConferencePage = async(req, res, next) => {
-    const conferenceData = await conferencePublicationServices.fetchConferencePublication();
+    const  userName = req.body.username;
+    console.log('userName in controller  ===>>>>>>', userName);
+
+    const conferenceData = await conferencePublicationServices.fetchConferencePublication(userName);
     console.log('conferenceData ====>>>>>', conferenceData);
     res.render('conference-publication' , {
         status : 'Done',
@@ -15,9 +18,12 @@ module.exports.renderConferencePage = async(req, res, next) => {
 
 
 module.exports.insertConferencePublicationSData = async (req, res, next) => {
+    const  userName = req.body.username;
+    console.log('userName in controller  ===>>>>>>', userName);
+
     console.log('Data comming From Template', req.body);
     console.log('files in controller ==>>>', req.files)
-    const insertConferenceDataForm = await conferencePublicationServices.insertConferenceData(req.body, req.files);
+    const insertConferenceDataForm = await conferencePublicationServices.insertConferenceData(req.body, req.files, userName);
     console.log('insertConferenceDataForm in controller ===>>>>', insertConferenceDataForm);
     const statusCode = insertConferenceDataForm.status === "Done" ? 200 : (insertConferenceDataForm.errorCode ? 400 : 500);
     res.status(statusCode).send({
@@ -49,12 +55,15 @@ module.exports.deleteConferencePublication = async(req, res, next) => {
 }
 
 module.exports.updateConferencePublication = async(req, res, next) => {
+    const  userName = req.body.username;
+    console.log('userName in controller  ===>>>>>>', userName);
+
     const conferenceId = req.body.id;
     console.log('id for updation', conferenceId)
     console.log('files in side controller ==>>', req.files);
     console.log('data in controller for updation ==>>', req.body);
     const upadtedConferenceData = req.body;
-    const updatedConference = await conferencePublicationServices.updatedConferencePublication(req.body, req.files);
+    const updatedConference = await conferencePublicationServices.updatedConferencePublication(req.body, req.files, userName);
     console.log('updatedConference in controller ===>>>', updatedConference)
     const statusCode = updatedConference.status === "Done" ? 200 :(updatedConference.errorCode ? 400 : 500)
     res.status(statusCode).send({
@@ -72,10 +81,13 @@ module.exports.updateConferencePublication = async(req, res, next) => {
 }
 
 module.exports.viewConferencePublication = async(req, res, next) => {
+    const  userName = req.body.username;
+    console.log('userName in controller  ===>>>>>>', userName);
+
     console.log('data Id in Controller', req.body);
     const {conferenceId} = req.body
     
-    const viewConferencePublicationData = await conferencePublicationServices.viewConferencePublication(conferenceId);
+    const viewConferencePublicationData = await conferencePublicationServices.viewConferencePublication(conferenceId, userName);
     
     console.log('viewConferencePublicationData in controller ===>>>>', viewConferencePublicationData);
     const statusCode = viewConferencePublicationData.status === "Done" ? 200 : (viewConferencePublicationData.errorCode ? 400 : 500);

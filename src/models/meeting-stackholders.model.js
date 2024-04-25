@@ -5,23 +5,24 @@ const moment = require('moment');
 const researchDbR = dbPoolManager.get('researchDbR', research_read_db);
 const researchDbW = dbPoolManager.get('researchDbW', research_write_db);
 
-module.exports.fetchMeetingStackholdersData = async() => {
+module.exports.fetchMeetingStackholdersData = async(userName) => {
     let sql = {
-        text : `SELECT * FROM meeting_stackholders ORDER BY id`
+        text : `SELECT * FROM meeting_stackholders WHERE created_by = $1  ORDER BY id`,
+        values : [userName]
     }
     console.log('sql ==>>', sql);
     return researchDbR.query(sql);
 }
 
-module.exports.insertMeetingStackholders = async(meetingStackholderData, meetingFilesData) => {
+module.exports.insertMeetingStackholders = async(meetingStackholderData, meetingFilesData, userName) => {
     const {ranking, rankingLink, accreditation, accreditationLink, achievements, achievementsLink, convocation, convocationLink, 
         inauguralProgram, inauguralProgramLink, events, eventsLink } = meetingStackholderData;
     let sql = {
         text : `INSERT INTO  meeting_stackholders (ranking, ranking_link, accreditation, accreditation_link, school_campus_achievements, 
             achievements_link, convocation, convocation_link, inaugural_program, inaugural_program_link, events, events_link, 
-            ranking_documents, accreditation_documents, achievements_documents, convocation_documents, inaugural_program_documents, events_documents) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18) RETURNING id`,
+            ranking_documents, accreditation_documents, achievements_documents, convocation_documents, inaugural_program_documents, events_documents, created_by) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19) RETURNING id`,
         values : [ranking, rankingLink, accreditation, accreditationLink, achievements, achievementsLink, convocation, convocationLink, 
-            inauguralProgram, inauguralProgramLink, events, eventsLink, meetingFilesData.rankingDocuments, meetingFilesData.accreditationFile, meetingFilesData.achievementsFile, meetingFilesData.convocationFile, meetingFilesData.inauguralProgramFile, meetingFilesData.eventFile]
+            inauguralProgram, inauguralProgramLink, events, eventsLink, meetingFilesData.rankingDocuments, meetingFilesData.accreditationFile, meetingFilesData.achievementsFile, meetingFilesData.convocationFile, meetingFilesData.inauguralProgramFile, meetingFilesData.eventFile, userName]
     }
 
     console.log('sql ==>>', sql)
@@ -35,7 +36,7 @@ module.exports.insertMeetingStackholders = async(meetingStackholderData, meeting
     })
 }
 
-module.exports.updateMeetingData = async(meetingId, updateMeetingData, updatedMeetingFilesData) => {
+module.exports.updateMeetingData = async(meetingId, updateMeetingData, updatedMeetingFilesData, userName) => {
     const {ranking, rankingLink, accreditation, accreditationLink, achievements, achievementsLink, convocation, convocationLink, 
         inauguralProgram, inauguralProgramLink, events, eventsLink} = updateMeetingData;
     
@@ -74,7 +75,9 @@ module.exports.updateMeetingData = async(meetingId, updateMeetingData, updatedMe
             { field: 'events', value: events },
             { field: 'events_documents', value: eventFile },
             { field: 'events_link', value: eventsLink },
+            { field: 'updated_by', value: userName },
         ]
+        
 
         console.log('meetingFieldToBeUpdated ===>>> :::', meetingFieldToBeUpdated);
         const setStatements = meetingFieldToBeUpdated
@@ -141,11 +144,11 @@ module.exports.updateMeetingData = async(meetingId, updateMeetingData, updatedMe
         })
 }
 
-module.exports.viewMeeting = async(meetingId) => {
+module.exports.viewMeeting = async(meetingId, userName) => {
     console.log('meetingId in models  ===>', meetingId)
     let sql = {
-        text : `SELECT * FROM meeting_stackholders WHERE id = $1`,
-        values : [meetingId]
+        text : `SELECT * FROM meeting_stackholders WHERE id = $1 AND created_by = $2`,
+        values : [meetingId, userName]
     }
     console.log('sql ==>>', sql);
     return researchDbR.query(sql)

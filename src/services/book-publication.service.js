@@ -1,20 +1,20 @@
 const bookPublicationModel = require('../models/book-publication.models');
 
 
-module.exports.fetchBookPublicationData = async() => {
-    const bookPublicationdata = await bookPublicationModel.fetchBookPublication();
+module.exports.fetchBookPublicationData = async(userName) => {
+    const bookPublicationdata = await bookPublicationModel.fetchBookPublication(userName);
     console.log(bookPublicationdata.rows[0]);
     return bookPublicationdata
 }
 
-module.exports.insertBookPublication = async(body, files) => {
+module.exports.insertBookPublication = async(body, files, userName) => {
   console.log('files ====>>>', files);
   const bookPublicationfileData = files?.map(file => file.filename).join(',');
   const bookPublicationData = body;
   console.log('Data in Service ===>>>', bookPublicationData);
   console.log('bookPublicationfileData In service ===>>>', bookPublicationfileData);
 
-  const insertBookPublication = await bookPublicationModel.insertBookPublicationData(bookPublicationData , bookPublicationfileData);
+  const insertBookPublication = await bookPublicationModel.insertBookPublicationData(bookPublicationData , bookPublicationfileData, userName);
 
   console.log('insertBookPublication in service ===>>>>', insertBookPublication);
   return insertBookPublication.status === "Done" ? {
@@ -31,12 +31,12 @@ module.exports.insertBookPublication = async(body, files) => {
   }
 }
 
-module.exports.updateBookPublication = async(bookPublicationId, updatedBookPublicationData, files) => {
+module.exports.updateBookPublication = async(bookPublicationId, updatedBookPublicationData, files, userName) => {
     const upadteDataFileString = files?.map(file => file.filename).join(',');
     console.log('updatedBookPublicationData ===>>>>', updatedBookPublicationData);
     console.log('upadteDataFileString ====>>>>>', upadteDataFileString);
 
-    const updatedBookPublication = await bookPublicationModel.updatedBookPublication(bookPublicationId , updatedBookPublicationData, upadteDataFileString);
+    const updatedBookPublication = await bookPublicationModel.updatedBookPublication(bookPublicationId , updatedBookPublicationData, upadteDataFileString, userName);
 
     console.log('updatedBookPublication in service ===>>>>', updatedBookPublication);
     return updatedBookPublication.status === "Done" ? {
@@ -69,8 +69,8 @@ module.exports.deleteBookPublicationData = async({bookPublicationId}) => {
     }
 }
 
-module.exports.viewBookPublication = async(bookPublicationId) => {
-    const bookPublicationDataViw = await bookPublicationModel.viewBookPublicationData(bookPublicationId);
+module.exports.viewBookPublication = async(bookPublicationId, userName) => {
+    const bookPublicationDataViw = await bookPublicationModel.viewBookPublicationData(bookPublicationId, userName);
     console.log('bookPublicationDataViw ==>>', bookPublicationDataViw.rows[0]);
     if(bookPublicationDataViw.rows[0] && bookPublicationDataViw.rowCount === 1){
         return bookPublicationDataViw.rows[0]

@@ -1,8 +1,8 @@
 const IPRModels = require('../models/IPR.models');
 
 
-module.exports.fetchPatentForm = async() => {
-    const IPRFormData = await IPRModels.fetchIPRData();
+module.exports.fetchPatentForm = async(userName) => {
+    const IPRFormData = await IPRModels.fetchIPRData(userName);
     console.log('IPRFormData ===>>>>>', IPRFormData);
 
     const iprData = IPRFormData.iprData;
@@ -25,7 +25,7 @@ module.exports.fetchPatentForm = async() => {
 }
 
 
-module.exports.IprInsertDataService = async(body, files) => {
+module.exports.IprInsertDataService = async(body, files, userName) => {
     const iprFilesNamesArray = files ?.map(file => file.filename);
     console.log('iprFilesNamesArray ====>>>>', iprFilesNamesArray);
     const IprData = body;
@@ -55,7 +55,7 @@ module.exports.IprInsertDataService = async(body, files) => {
     console.log('campusIdsArray ===>>>>>', campusIdsArray);
     console.log('inventionTypeIdsArray ===>>>>>', inventionTypeIdsArray);
 
-    const insertIprData = await IPRModels.InsetIPRDataModels(IprData, iprFilesNamesArray, FacultydataArray, schoolIdsArray, campusIdsArray, inventionTypeIdsArray, patentStatus);
+    const insertIprData = await IPRModels.InsetIPRDataModels(IprData, iprFilesNamesArray, FacultydataArray, schoolIdsArray, campusIdsArray, inventionTypeIdsArray, patentStatus, userName);
 
     console.log('insertIprData ===>>>>', insertIprData);
     console.log('schoolDataList ===>>>>', insertIprData.schoolNames);
@@ -106,7 +106,7 @@ module.exports.deleteIPRRow = async(iprId) => {
 }
 
 
-module.exports.updatedIprData = async(iprId, body, files) => {
+module.exports.updatedIprData = async(iprId, body, files, userName) => {
     console.log('iprId in service ===>>>', iprId);
     const iprFilesNamesArray = files ?.map(file => file.filename);
     console.log('iprFilesNamesArray ====>>>>', iprFilesNamesArray);
@@ -133,7 +133,7 @@ module.exports.updatedIprData = async(iprId, body, files) => {
     // console.log('campusIdsArray ===>>>>>', campusIdsArray);
     // console.log('inventionTypeIdsArray ===>>>>>', inventionTypeIdsArray);
    
-    const iprDataToBeUpdated = await IPRModels.updateIPRRecordData(iprId, updatedIPRData,  iprFilesNamesArray, FacultydataArray, schoolIdsArray, campusIdsArray, inventionTypeIdsArray, patentStatus);
+    const iprDataToBeUpdated = await IPRModels.updateIPRRecordData(iprId, updatedIPRData,  iprFilesNamesArray, FacultydataArray, schoolIdsArray, campusIdsArray, inventionTypeIdsArray, patentStatus, userName);
 
     console.log('iprDataToBeUpdated ====>>>>', iprDataToBeUpdated);
 
@@ -159,10 +159,10 @@ module.exports.updatedIprData = async(iprId, body, files) => {
 
 }
 
-module.exports.viewIprRecordDataRecord = async(iprId) => {
+module.exports.viewIprRecordDataRecord = async(iprId, userName) => {
     console.log('iprId in service ===>>>>', iprId);
 
-    const viewIprRowData = await IPRModels.iprRecordToBeViewed(iprId);
+    const viewIprRowData = await IPRModels.iprRecordToBeViewed(iprId, userName);
 
     console.log('viewIprRowData ===>>>', viewIprRowData);
 

@@ -5,12 +5,14 @@ const moment = require('moment');
 const researchDbR = dbPoolManager.get('researchDbR', research_read_db);
 const researchDbW = dbPoolManager.get('researchDbW', research_write_db);
 
-module.exports.fetchIPRData = async() => {
+module.exports.fetchIPRData = async(userName) => {
     
     let iPRSql = {
         text: `
             SELECT
                 ipr.id AS ipr_id,
+                ipr.created_by AS created_by,
+                ipr.updated_by AS updated_by,
                 ipr.patent_title,
                 ipr.patent_application_number,
                 ipr.applicant_name,
@@ -51,6 +53,8 @@ module.exports.fetchIPRData = async() => {
                 ipr_nmims_campus inc ON ipr.id = inc.ipr_id
             LEFT JOIN
                 nmims_campus nc ON inc.campus_id = nc.id
+            WHERE
+                ipr.created_by = $1
             GROUP BY
                 ipr.id,
                 ipr.patent_title,
@@ -63,7 +67,8 @@ module.exports.fetchIPRData = async() => {
                 ipr.institutional_affiliation
             ORDER BY
                 ipr.id
-        `
+        `,
+        values : [userName]
     };
     
 
@@ -148,17 +153,17 @@ module.exports.fetchIPRData = async() => {
            
 }
 
-module.exports.InsetIPRDataModels = async (IprData, iprFilesNamesArray, FacultydataArray, schoolIdsArray, campusIdsArray, inventionTypeIdsArray, patentStatus) => {
+module.exports.InsetIPRDataModels = async (IprData, iprFilesNamesArray, FacultydataArray, schoolIdsArray, campusIdsArray, inventionTypeIdsArray, patentStatus, userName) => {
     console.log('iprFilesString in models ====>>>>', iprFilesNamesArray);
     console.log('patentStatus ===>>>>>', patentStatus)
     const { titleOfInvention, applicationNum, applicantName, patentFiledDate, patentPublishedDate, patentGrantDate, 
         patentPublishedNumber, patentGrantedNo, instituteAffiliation} = IprData;
 
     let iprSql = {
-        text: `INSERT INTO IPR (patent_title, patent_application_number, applicant_name, patent_filed_date, patent_published_date, patent_grant_date, patent_publication_number, patent_grant_number, institutional_affiliation)
-                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id`,
+        text: `INSERT INTO IPR (patent_title, patent_application_number, applicant_name, patent_filed_date, patent_published_date, patent_grant_date, patent_publication_number, patent_grant_number, institutional_affiliation, created_by)
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9 $10) RETURNING id`,
         values: [titleOfInvention, applicationNum, applicantName, patentFiledDate, patentPublishedDate, patentGrantDate, 
-            patentPublishedNumber, patentGrantedNo, instituteAffiliation]
+            patentPublishedNumber, patentGrantedNo, instituteAffiliation, userName]
     };
 
     const insertDocumentPromises = iprFilesNamesArray ? iprFilesNamesArray.map(async (fileName) => {
@@ -414,7 +419,7 @@ module.exports.deleteIPRData = async(iprId) => {
 
 }
 
-module.exports.updateIPRRecordData = async(iprId, updatedIPRData,  iprFilesNamesArray, FacultydataArray, schoolIdsArray, campusIdsArray, inventionTypeIdsArray, patentStatus) => {
+module.exports.updateIPRRecordData = async(iprId, updatedIPRData,  iprFilesNamesArray, FacultydataArray, schoolIdsArray, campusIdsArray, inventionTypeIdsArray, patentStatus, userName) => {
     console.log('data in models for updation ===>>>>', updatedIPRData);
     console.log('iprFilesNamesArray ===>>>>>>', iprFilesNamesArray);
 
@@ -425,10 +430,10 @@ module.exports.updateIPRRecordData = async(iprId, updatedIPRData,  iprFilesNames
 
 
     let iprSql =  {
-        text  : `UPDATE IPR  SET patent_title = $2, patent_application_number = $3, applicant_name = $4, patent_filed_date = $5, patent_published_date = $6, patent_grant_date = $7, patent_publication_number = $8, patent_grant_number = $9, institutional_affiliation = $10
-                WHERE id = $1`,
+        text  : `UPDATE IPR  SET patent_title = $2, patent_application_number = $3, applicant_name = $4, patent_filed_date = $5, patent_published_date = $6, patent_grant_date = $7, patent_publication_number = $8, patent_grant_number = $9, institutional_affiliation = $10,
+                updated_by = $11 WHERE id = $1`,
         values : [iprId, titleOfInvention, applicationNum, applicantName, patentFiledDate, patentPublishedDate, patentGrantDate, 
-                patentPublishedNumber, patentGrantedNo, instituteAffiliation]
+                patentPublishedNumber, patentGrantedNo, instituteAffiliation, userName]
     }
     console.log('iprSql ===>>>>', iprSql);
     const iprResult = await researchDbW.query(iprSql);
@@ -651,11 +656,13 @@ module.exports.updateIPRRecordData = async(iprId, updatedIPRData,  iprFilesNames
 
 }
 
-module.exports.iprRecordToBeViewed = async(iprId) => {
+module.exports.iprRecordToBeViewed = async(iprId, userName) => {
     let iprSql = {
         text : `SELECT
             ipr.id AS ipr_id,
             ipr.patent_title,
+            ipr.created_by AS created_by,
+            ipr.updated_by AS updated_by,
             ipr.patent_application_number,
             ipr.applicant_name,
             ipr.patent_filed_date,
@@ -706,7 +713,7 @@ module.exports.iprRecordToBeViewed = async(iprId) => {
         LEFT JOIN
             nmims_campus nc ON inc.campus_id = nc.id
         WHERE
-            ipr.id = $1
+            ipr.id = $1 AND ipr.created_by  = $2
         GROUP BY
             ipr.id,
             ipr.patent_title,
@@ -723,7 +730,7 @@ module.exports.iprRecordToBeViewed = async(iprId) => {
             f.address,
             f.employee_id`,
 
-    values : [iprId]
+    values : [iprId, userName]
     }
 
     const iprFacultySql = {

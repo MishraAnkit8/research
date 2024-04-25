@@ -7,6 +7,9 @@ const { asyncErrorHandler } = require('../middleware/error.middleware');
 //middleware for download file
 const downloadFileService = require('../middleware/download-file.middleware');
 
+//logger file middle ware
+const { authMiddleware } = require('../middleware/authMiddleware');
+
 //branding advertising controller
 const brandingAndAdvertisingController = require('../controllers/branding-advertising.controller');
 
@@ -17,7 +20,7 @@ const brandingandAdvertisingServices = require('../services/branding-advertising
 const router = express.Router();
 
 // branding and advertising
-router.get('/' , asyncErrorHandler(brandingAndAdvertisingController.renderBrandingAndAdvertising));
+router.get('/' , asyncErrorHandler(authMiddleware), asyncErrorHandler(brandingAndAdvertisingController.renderBrandingAndAdvertising));
 router.post('/insert', upload.fields([
     { name: 'facultyRecognitionDocuments', maxCount: 5 },
     { name: 'facultyAwardDocuments', maxCount: 5 },
@@ -29,7 +32,7 @@ router.post('/insert', upload.fields([
     { name: 'organisingConferenceDocuments', maxCount: 5 },
     { name: 'studentEventParticipationDocuments', maxCount: 5 },
     { name: 'newspaperArticleDocuments', maxCount: 5 }
-]) , asyncErrorHandler(brandingAndAdvertisingController.insertBrandingAndAdvertising));
+]) , asyncErrorHandler(authMiddleware), asyncErrorHandler(brandingAndAdvertisingController.insertBrandingAndAdvertising));
 
 router.post('/update', upload.fields([
     { name: 'facultyRecognitionDocuments', maxCount: 5 },
@@ -42,10 +45,10 @@ router.post('/update', upload.fields([
     { name: 'organisingConferenceDocuments', maxCount: 5 },
     { name: 'studentEventParticipationDocuments', maxCount: 5 },
     { name: 'newspaperArticleDocuments', maxCount: 5 }
-]), asyncErrorHandler(brandingAndAdvertisingController.updateBrandingAdvertising));
+]), asyncErrorHandler(authMiddleware), asyncErrorHandler(brandingAndAdvertisingController.updateBrandingAdvertising));
 
-router.post('/view' , asyncErrorHandler(brandingAndAdvertisingController.viewBrandingadvertising));
-router.post('/delete' , asyncErrorHandler(brandingAndAdvertisingController.deleteBrandingAdvertising));
+router.post('/view' , asyncErrorHandler(authMiddleware), asyncErrorHandler(brandingAndAdvertisingController.viewBrandingadvertising));
+router.post('/delete' , asyncErrorHandler(authMiddleware), asyncErrorHandler(brandingAndAdvertisingController.deleteBrandingAdvertising));
 router.get('/download/:fileName', downloadFileService.downloadFile);
 router.get('/viewing/:fileName', downloadFileService.viewFile);
 

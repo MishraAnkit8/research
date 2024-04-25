@@ -2,7 +2,10 @@ const bookPublicationService = require('../services/book-publication.service');
 
 
 module.exports.renderBookPublication = async(req, res, next) => {
-    const fetchBookPublicationData = await bookPublicationService.fetchBookPublicationData();
+    const  userName = req.body.username;
+    console.log('userName in controller  ===>>>>>>', userName);
+
+    const fetchBookPublicationData = await bookPublicationService.fetchBookPublicationData(userName);
     console.log('bookPublicationList  in controller ==>>', fetchBookPublicationData);
     if(fetchBookPublicationData){
         res.render('book-publication' , {
@@ -13,11 +16,14 @@ module.exports.renderBookPublication = async(req, res, next) => {
 }
 
 module.exports.insertBookPublication = async(req, res, next) => {
+    const  userName = req.body.username;
+    console.log('userName in controller  ===>>>>>>', userName);
+
     const bookPublicationData  = req.body;
     console.log('data in controller ==>>', req.body);
     console.log('files in controller ==>>>', req.files);
 
-    const insertBookPublicarionData = await bookPublicationService.insertBookPublication(req.body, req.files);
+    const insertBookPublicarionData = await bookPublicationService.insertBookPublication(req.body, req.files, userName);
 
     console.log('insertBookPublicarionData ====>>>>', insertBookPublicarionData);
     const statusCode = insertBookPublicarionData.status === "Done" ? 200 : (insertBookPublicarionData.errorCode === "23505" ? 400 : 500);
@@ -34,12 +40,15 @@ module.exports.insertBookPublication = async(req, res, next) => {
 }
 
 module.exports.updateBookPublication = async(req, res, next) => {
+    const  userName = req.body.username;
+    console.log('userName in controller  ===>>>>>>', userName);
+
     console.log('data comming from frontend ==>>', req.body);
     const updatedBookPublicationData = req.body;
     const bookPublicationId  = req.body.bookPublicationId ;
     console.log('id ==', bookPublicationId );
 
-    const updatedBookPublication = await bookPublicationService.updateBookPublication( bookPublicationId, updatedBookPublicationData, req.files);
+    const updatedBookPublication = await bookPublicationService.updateBookPublication( bookPublicationId, updatedBookPublicationData, req.files, userName);
 
     console.log('updatedBookPublication =====>>>>>', updatedBookPublication);
     const statuscode = updatedBookPublication.status === "Done" ? 200 : (updatedBookPublication.errorCode === '23505' ? 502 : 500);
@@ -71,8 +80,11 @@ module.exports.deleteBookPublication = async(req, res, next) => {
 }
 
 module.exports.viewBookPublication = async(req, res, next) => {
+    const  userName = req.body.username;
+    console.log('userName in controller  ===>>>>>>', userName);
+
     const {bookPublicationId} = req.body;
-    const bookPublicationView = await bookPublicationService.viewBookPublication(bookPublicationId);
+    const bookPublicationView = await bookPublicationService.viewBookPublication(bookPublicationId, userName);
     console.log('data in controller ==>>', bookPublicationView)
     if(bookPublicationView){
         res.status(200).send({

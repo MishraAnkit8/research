@@ -3,8 +3,8 @@ const moment = require('moment');
 const consultancyFormModels = require('../models/NMIMS-consultancy-form.models');
 
 
-module.exports.fetchConsultancyFormData = async() => {
-    const consultancyFormRecord = await consultancyFormModels.renderNmimsConsultancyApprovalForm();
+module.exports.fetchConsultancyFormData = async(userName) => {
+    const consultancyFormRecord = await consultancyFormModels.renderNmimsConsultancyApprovalForm(userName);
 
     console.log('consultancyFormRecord ===>>>>', consultancyFormRecord);
     return consultancyFormRecord.status === "Done" ? {
@@ -22,11 +22,11 @@ module.exports.fetchConsultancyFormData = async() => {
 
 
 
-module.exports.insertApprovalFormDataService = async(body) => {
+module.exports.insertApprovalFormDataService = async(body, userName) => {
     const consultancyFormData = body.consultancyObject;
     console.log('consultancyFormData in service ==>>>', consultancyFormData)
 
-    const consultancyApprovalFormData =  await consultancyFormModels.insertConsultancyApprovalFormData(consultancyFormData);
+    const consultancyApprovalFormData =  await consultancyFormModels.insertConsultancyApprovalFormData(consultancyFormData, userName);
 
     console.log('consultancyApprovalFormData ====>>>>', consultancyApprovalFormData);
 
@@ -43,11 +43,11 @@ module.exports.insertApprovalFormDataService = async(body) => {
     }
 }
 
-module.exports.updateConsultancyApprovalData = async(body) => {
+module.exports.updateConsultancyApprovalData = async(body, userName) => {
     const nmimsConsultancyFormId = body.updatedConsultancyObject.nmimsConsultancyFormId;
     const updatedConsultancyApprovalRecord = body.updatedConsultancyObject;
 
-    const updateConsultancyApprovalFormData  = await consultancyFormModels.updateApprovalFormData(nmimsConsultancyFormId, updatedConsultancyApprovalRecord);
+    const updateConsultancyApprovalFormData  = await consultancyFormModels.updateApprovalFormData(nmimsConsultancyFormId, updatedConsultancyApprovalRecord, userName);
     console.log('updateConsultancyApprovalFormData ====>>>>>', updateConsultancyApprovalFormData);
 
     return updateConsultancyApprovalFormData.status === "Done" ? {
@@ -82,10 +82,10 @@ module.exports.deleteconsultancyFormRecord = async (body) => {
 }
 
 
-module.exports.viewApprovedformRecord = async (body) => {
+module.exports.viewApprovedformRecord = async (body, userName) => {
     const nmimsConsultancyFormId = body.nmimsConsultancyFormId;
 
-    const approvalFormData = await consultancyFormModels.viewConsultancyApprovalForm(nmimsConsultancyFormId);
+    const approvalFormData = await consultancyFormModels.viewConsultancyApprovalForm(nmimsConsultancyFormId, userName);
 
     console.log('approvalFormData ===>>>>>>', approvalFormData);
     const advancedPayment = approvalFormData.approvedFormData[0].advanced_payment;

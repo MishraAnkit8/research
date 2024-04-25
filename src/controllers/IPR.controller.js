@@ -1,7 +1,9 @@
 const iprServices = require('../services/IPR.services')
 module.exports.renderIPR = async(req, res, next) => {
+    const  userName = req.body.username;
+    console.log('userName in controller  ===>>>>>>', userName);
 
-    const iprList = await iprServices.fetchPatentForm();
+    const iprList = await iprServices.fetchPatentForm(userName);
 
     // console.log('iprList ===>>>', iprList);
     console.log('iprList.iprData ===>>>>>>', iprList.iprData);
@@ -26,10 +28,13 @@ module.exports.renderIPR = async(req, res, next) => {
 
 
 module.exports.IPRInsertedData = async(req, res, next) => {
+    const  userName = req.body.username;
+    console.log('userName in controller  ===>>>>>>', userName);
+
     console.log('data in controller ====>>>>', req.body);
     console.log('files in controller ===>>>>>', req.files);
 
-    const IPRInsertedData = await iprServices.IprInsertDataService(req.body, req.files);
+    const IPRInsertedData = await iprServices.IprInsertDataService(req.body, req.files, userName);
 
     console.log('IPRInsertedData ===>>> in controller', IPRInsertedData);
     
@@ -75,10 +80,12 @@ module.exports.deleteIPRData = async(req, res, next) => {
 }
 
 module.exports.updateIPRRowData = async(req, res, next) => {
+    const  userName = req.body.username;
+    console.log('userName in controller  ===>>>>>>', userName);
 
     console.log('data in controller ===>>>', req.body);
     const iprId = req.body.iprId;
-    const iprRowDataToBeUpdated = await iprServices.updatedIprData(iprId, req.body, req.files);
+    const iprRowDataToBeUpdated = await iprServices.updatedIprData(iprId, req.body, req.files, userName);
 
     console.log('iprRowDataToBeUpdated updated data in controller ====>>>>', iprRowDataToBeUpdated);
 
@@ -102,10 +109,13 @@ module.exports.updateIPRRowData = async(req, res, next) => {
 
 
 module.exports.viewIprRecordData = async(req, res, next) => {
+    const  userName = req.body.username;
+    console.log('userName in controller  ===>>>>>>', userName);
+
     console.log('Data In Controller :::>>>>>', req.body);
     const iprId = req.body.iprId;
 
-    const iprRowToBeViewed = await iprServices.viewIprRecordDataRecord(iprId);
+    const iprRowToBeViewed = await iprServices.viewIprRecordDataRecord(iprId, userName);
 
     console.log('iprRowToBeViewed ===>>>>>', iprRowToBeViewed);
     const statusCode = iprRowToBeViewed.status === "Done" ? 200 : (iprRowToBeViewed.errorCode ? 400 : 500);

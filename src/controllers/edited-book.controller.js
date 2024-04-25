@@ -1,7 +1,10 @@
 const editedBookPublication = require('../services/edited-book.service');
 
 module.exports.renderEdietedBookPublication = async(req, res, next) => {
-    const editedBookPublicationData = await editedBookPublication.fetchEditedBookPublicationData();
+    const  userName = req.body.username;
+ console.log('userName in controller  ===>>>>>>', userName);
+
+    const editedBookPublicationData = await editedBookPublication.fetchEditedBookPublicationData(userName);
     console.log('editeBookList  in controller ==>>', editedBookPublicationData);
     if(editedBookPublicationData){
         res.render('edited-book-publication' , {
@@ -12,10 +15,13 @@ module.exports.renderEdietedBookPublication = async(req, res, next) => {
 }
 
 module.exports.insertEditedBookPublication = async(req, res, next) => {
+    const  userName = req.body.username;
+    console.log('userName in controller  ===>>>>>>', userName);
+
     const editedBook  = req.body;
     console.log('editedBookPublication ==>>', editedBook);
     console.log('data in controller ==>>', req.body);
-    const insertEditedBookPublication = await editedBookPublication.insertEditedBookPublication(editedBook, req.files);
+    const insertEditedBookPublication = await editedBookPublication.insertEditedBookPublication(editedBook, req.files, userName);
     console.log('insertEditedBookPublication in controller =====>>>>>>>', insertEditedBookPublication);
     const statuscode = insertEditedBookPublication.status === "Done"? 200 : (insertEditedBookPublication.errorCode === insertEditedBookPublication.errorCode ? 502 : 500);
     console.log('statuscode ====>>>>', statuscode);
@@ -32,12 +38,15 @@ module.exports.insertEditedBookPublication = async(req, res, next) => {
     })
 }
 module.exports.updateEditedBookPublication = async(req, res, next) => {
+    const  userName = req.body.username;
+    console.log('userName in controller  ===>>>>>>', userName);
+
     console.log('data comming from frontend ==>>', req.body);
     const editedBookId  = req.body.editedBookId;
     console.log('id ==', editedBookId)
     const updatedEditedBookPublication = req.body;
 
-    const updatedEditedBookData = await editedBookPublication.updateEditedBook(editedBookId, updatedEditedBookPublication, req.files);
+    const updatedEditedBookData = await editedBookPublication.updateEditedBook(editedBookId, updatedEditedBookPublication, req.files, userName);
 
     console.log('updatedEditedBookData in controller ===>>>>', updatedEditedBookData);
     const statusCode = updatedEditedBookData.status === "Done" ? 200 : (updatedEditedBookData.errorCode ? 502 : 500);
@@ -65,8 +74,11 @@ module.exports.deleteEditedBookPublication = async(req, res, next) => {
 }
 
 module.exports.viewEditedBookPublication = async(req, res, next) => {
+    const  userName = req.body.username;
+    console.log('userName in controller  ===>>>>>>', userName);
+
     const {editedBookId} = req.body;
-    const editedBookView = await editedBookPublication.editedBookPublicationView(editedBookId);
+    const editedBookView = await editedBookPublication.editedBookPublicationView(editedBookId, userName);
     console.log('data in controller ==>>', editedBookView)
     if(editedBookView){
         res.status(200).send({

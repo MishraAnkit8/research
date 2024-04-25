@@ -6,11 +6,12 @@ const researchDbR = dbPoolManager.get('researchDbR', research_read_db);
 const researchDbW = dbPoolManager.get('researchDbW', research_write_db);
 
 // for fetching journal paper data 
-module.exports.fetchJournalPaper = async () => {
+module.exports.fetchJournalPaper = async (userName) => {
     let sql = {
         text :` SELECT
                     jpa.id AS article_id,
                     jpa.title_of_paper,
+                  
                     jpa.total_authors,
                     jpa.count_other_faculty,
                     jpa.nmims_authors_count,
@@ -73,6 +74,7 @@ module.exports.fetchJournalPaper = async () => {
                     journal_article_policy_cadre japc ON jpa.id = japc.journal_article_id
                 LEFT JOIN
                     policy_cadre pc ON japc.policy_cadre_id = pc.id
+               
                 GROUP BY
                     jpa.id,
                     jpa.title_of_paper,
@@ -92,7 +94,8 @@ module.exports.fetchJournalPaper = async () => {
                     jpa.ugc_indexed,
                     jpa.web_link_doi_number
                 ORDER BY
-                    jpa.id`
+                    jpa.id`,
+
     }
 
     let internalEmpSql = {
@@ -145,7 +148,7 @@ module.exports.fetchJournalPaper = async () => {
                 status : 'Done',
                 message : "Data Fetched Successfully",
                 journalArticleData : journalArticleData.rows,
-                rowCount : journalPaper.rowCount,
+                rowCount : journalArticleData.rowCount,
                 nmimsSchool : nmimsSchool.rows,
                 internalEmpList : nmimsFaculty.rows,
                 nmimsCampus : nmimsCampus.rows,
@@ -162,7 +165,7 @@ module.exports.fetchJournalPaper = async () => {
 
 // for inserting journal paper  data
 module.exports.insertJournalArticle = async (journalDetails, articleFilesNameArray, schoolIdsArray, campusIdsArray,
-        impactFactorArray, policyCadreArray, allAuthorsArray, nmimsAuthorsArray) => {
+        impactFactorArray, policyCadreArray, allAuthorsArray, nmimsAuthorsArray, userName) => {
     console.log('journalDetails in models ==>>', journalDetails);
     const { year, publisher, totalAuthors, journalName, countOtherFaculty, pages, issnNo, scsCiteScore, wosIndexedCategory,
             abdcIndexedCategory, ugcIndexedCategory, webLinkNumber, uid, dateOfPublishing, titleOfPaper, journalCategory, nmimsAuthorsCount, gsIndex
@@ -171,14 +174,14 @@ module.exports.insertJournalArticle = async (journalDetails, articleFilesNameArr
 
     let articleSql = {
         text: `INSERT INTO journal_paper_article (year, publisher, total_authors, journal_name, count_other_faculty, pages, issn_no, scs_cite_score, wos_indexed,
-                abdc_indexed, ugc_indexed, web_link_doi_number, uid, date_of_publishing, title_of_paper, jorunal_article_type_id, nmims_authors_count, gs_index)
-                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18) RETURNING id`,
+                abdc_indexed, ugc_indexed, web_link_doi_number, uid, date_of_publishing, title_of_paper, jorunal_article_type_id, nmims_authors_count, gs_index, created_by)
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19) RETURNING id`,
 
         values: [year, publisher, totalAuthors, journalName, countOtherFaculty, pages, issnNo, scsCiteScore, wosIndexedCategory,
-                abdcIndexedCategory, ugcIndexedCategory, webLinkNumber, uid, dateOfPublishing, titleOfPaper, journalCategory, nmimsAuthorsCount, gsIndex]
+                abdcIndexedCategory, ugcIndexedCategory, webLinkNumber, uid, dateOfPublishing, titleOfPaper, journalCategory, nmimsAuthorsCount, gsIndex, userName]
     };
 
-    // console.log('articleSql ==>>', articleSql);
+    console.log('articleSql ==>>', articleSql);
 
     const insertDocumentPromises = articleFilesNameArray ? articleFilesNameArray.map(async (fileName) => {
         const documentInsertSql = {
@@ -474,7 +477,7 @@ module.exports.deleteJournalPaper =  async({journalPaperId}) => {
 }
 // for updating 
 module.exports.updateJournalPaperData = async (journalPaperId, updateJournalDetails, updateSchoolIdsArray, updateCampusIdsArray, updateNmimsAuthorsArray,
-    updateImpactFactorArray, updatePolicyCadreArray, updateAllAuthorsArray, updatedArticleFilesNameArray) => {
+    updateImpactFactorArray, updatePolicyCadreArray, updateAllAuthorsArray, updatedArticleFilesNameArray, userName) => {
 
     console.log('updateJournalDetails in models:', updateJournalDetails);
     console.log('journalPaperId ===>>>>', journalPaperId);
@@ -488,10 +491,10 @@ module.exports.updateJournalPaperData = async (journalPaperId, updateJournalDeta
     let sql = {
         text: `UPDATE journal_paper_article SET
                 year = $2, publisher = $3, total_authors= $4, journal_name= $5, count_other_faculty= $6, pages= $7, issn_no= $8, scs_cite_score= $9, wos_indexed= $10,
-                abdc_indexed= $11, ugc_indexed= $12, web_link_doi_number= $13, uid= $14, date_of_publishing= $15, title_of_paper= $16, jorunal_article_type_id= $17, nmims_authors_count= $18, gs_index= $19
+                abdc_indexed= $11, ugc_indexed= $12, web_link_doi_number= $13, uid= $14, date_of_publishing= $15, title_of_paper= $16, jorunal_article_type_id= $17, nmims_authors_count= $18, gs_index= $19, updated_by= $20
                 WHERE id = $1`,
         values: [journalPaperId, year, publisher, totalAuthors, journalName, countOtherFaculty, pages, issnNo, scsCiteScore, wosIndexedCategory,
-                abdcIndexedCategory, ugcIndexedCategory, webLinkNumber, uid, dateOfPublishing, titleOfPaper, journalCategory, nmimsAuthorsCount, gsIndex
+                abdcIndexedCategory, ugcIndexedCategory, webLinkNumber, uid, dateOfPublishing, titleOfPaper, journalCategory, nmimsAuthorsCount, gsIndex, userName
         ]
     };
     console.log('sql ====>>>', sql);
@@ -735,11 +738,13 @@ module.exports.updateJournalPaperData = async (journalPaperId, updateJournalDeta
 };
 
 // for viewing 
-module.exports.viewJournalPaperData = async ({journalPaperId}) => {
+module.exports.viewJournalPaperData = async ({journalPaperId}, userName) => {
     const sql = {
         text : `SELECT
                     jpa.id AS article_id,
                     jpa.title_of_paper,
+                    jpa.created_by AS created_by,
+                    
                     jpa.total_authors,
                     jpa.count_other_faculty,
                     jpa.nmims_authors_count,
@@ -803,7 +808,7 @@ module.exports.viewJournalPaperData = async ({journalPaperId}) => {
                 LEFT JOIN
                     policy_cadre pc ON japc.policy_cadre_id = pc.id
                 WHERE 
-                    jpa.id = $1 
+                        jpa.created_by = $1 AND jpa.id = $2
                 GROUP BY
                     jpa.id,
                     jpa.title_of_paper,
@@ -822,7 +827,7 @@ module.exports.viewJournalPaperData = async ({journalPaperId}) => {
                     jpa.wos_indexed,
                     jpa.ugc_indexed,
                     jpa.web_link_doi_number`,
-    values : [journalPaperId]
+    values : [userName, journalPaperId]
     }
 
     const nmimsAuthorsSql = {

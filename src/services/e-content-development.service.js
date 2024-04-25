@@ -2,8 +2,8 @@
 const eContentModels = require('../models/e-content-development.models');
 
 
-module.exports.renderEContentDevelopmentModel = async() => {
-    const eContentFetchedData = await eContentModels.fetchEContentDevelopmentData();
+module.exports.renderEContentDevelopmentModel = async(userName) => {
+    const eContentFetchedData = await eContentModels.fetchEContentDevelopmentData(userName);
 
     console.log('eContentFetchedData =====>>>>', eContentFetchedData)
     return {
@@ -13,11 +13,11 @@ module.exports.renderEContentDevelopmentModel = async() => {
 }
 
 
-module.exports.insertEcontentRow = async(body) => {
+module.exports.insertEcontentRow = async(body, userName) => {
     const EcontentFormData = body.EcontentFormData;
     console.log('EcontentFormData  in service ===>>>', EcontentFormData)
 
-    const EcontentRecordInserted = await eContentModels.insertEContentRecord(EcontentFormData);
+    const EcontentRecordInserted = await eContentModels.insertEContentRecord(EcontentFormData, userName);
 
     console.log('EcontentRecordInserted ===>>>>', EcontentRecordInserted);
     return EcontentRecordInserted.status === 'Done' ? {
@@ -34,13 +34,13 @@ module.exports.insertEcontentRow = async(body) => {
     }
 }
 
-module.exports.updateEContentReconrd = async(body) => {
+module.exports.updateEContentReconrd = async(body, userName) => {
     const eContentId = body.updatedEContentData.eContentId;
     console.log('eContentId ====>>>', eContentId)
     const updatedEContentData = body.updatedEContentData;
     console.log('updatedEContentData ===>>>>', updatedEContentData);
 
-    const updateEcontentDevelopmentData = await eContentModels.updateEcontentRow(updatedEContentData, eContentId);
+    const updateEcontentDevelopmentData = await eContentModels.updateEcontentRow(updatedEContentData, eContentId, userName);
 
     console.log('updateEcontentDevelopmentData ===>>>>', updateEcontentDevelopmentData);
     return updateEcontentDevelopmentData.status === "Done" ? {
@@ -73,10 +73,10 @@ module.exports.deleteEcontentData = async(body) => {
     }
 }
 
-module.exports.viewEContentRecordData = async(body) => {
+module.exports.viewEContentRecordData = async(body, userName) => {
     const eContentId = body.eContentId;
 
-    const EcontentDataToBeViewed = await eContentModels.viewEContentDevelopmentData(eContentId);
+    const EcontentDataToBeViewed = await eContentModels.viewEContentDevelopmentData(eContentId, userName);
 
     console.log('EcontentDataToBeViewed ===>>>>', EcontentDataToBeViewed);
     return EcontentDataToBeViewed.status === "Done" ? {

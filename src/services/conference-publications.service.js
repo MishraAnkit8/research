@@ -1,8 +1,8 @@
 const conferencePublicationModels = require('../models/conference-publications.modles');
 const errorMsgMidWare = require('../middleware/error.middleware');
 
-module.exports.fetchConferencePublication = async() => {
-    const conferencePublicationData = await conferencePublicationModels.fetchConferencePublication();
+module.exports.fetchConferencePublication = async(userName) => {
+    const conferencePublicationData = await conferencePublicationModels.fetchConferencePublication(userName);
     console.log('feched data in service  ==>' , conferencePublicationData);
     const conferenceDataList = conferencePublicationData.conferenceDataList.rows;
     const externalEmpList = conferencePublicationData.externalEmpList.rows;
@@ -38,7 +38,7 @@ module.exports.fetchConferencePublication = async() => {
     }
 };
 
-module.exports.insertConferenceData = async(body , files) => {
+module.exports.insertConferenceData = async(body , files, userName) => {
     console.log('data in service' , body);
     console.log('files in service ==>' , files);
     const conferencePublications = body;
@@ -95,7 +95,7 @@ module.exports.deleteConferencePublicationData = async(body) => {
     }
 }
 
-module.exports.updatedConferencePublication = async (body, files) => {
+module.exports.updatedConferencePublication = async (body, files, userName) => {
     console.log('data in service' , body);
     const upadtedConferenceData = body
     const conferenceId =  body.conferenceId;
@@ -129,7 +129,8 @@ module.exports.updatedConferencePublication = async (body, files) => {
         conferenceProofString,
         internalNamesString,
         externalNamesString,
-        existingNameString
+        existingNameString,
+        userName
       );
     console.log('updateConferencePublicationData  in service ===>>>>', updateConferencePublicationData);
 
@@ -152,8 +153,8 @@ module.exports.updatedConferencePublication = async (body, files) => {
      
 }
 
-module.exports.viewConferencePublication = async(conferenceId) => {
-    const viewConferenceData  = await conferencePublicationModels.viewConferencePublication(conferenceId);
+module.exports.viewConferencePublication = async(conferenceId, userName) => {
+    const viewConferenceData  = await conferencePublicationModels.viewConferencePublication(conferenceId, userName);
     console.log('viewConferenceData ====>>>>', viewConferenceData);
     return viewConferenceData.status === "Done" ? {
       status : viewConferenceData.status,
@@ -164,7 +165,4 @@ module.exports.viewConferencePublication = async(conferenceId) => {
       message : viewConferenceData.message,
       errorCode : viewConferenceData.errorCode
     }
-    // if(viewConferenceData && viewConferenceData.rowCount === 1){
-    //     return viewConferenceData
-    // }
 }

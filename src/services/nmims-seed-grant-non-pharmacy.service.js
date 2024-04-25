@@ -3,8 +3,8 @@ const moment = require('moment');
 const seedGrantModels = require('../models/nmims-seed-grant-non-pharmacy.models');
 
 
-module.exports.fetchNoFormacyForm = async() => {
-    const seedGrantFormData = await seedGrantModels.renderSeedGrantNonFormacy();
+module.exports.fetchNoFormacyForm = async(userName) => {
+    const seedGrantFormData = await seedGrantModels.renderSeedGrantNonFormacy(userName);
 
     console.log('seedGrantFormData ===>>>>', seedGrantFormData);
     return seedGrantFormData.status === "Done" ? {
@@ -22,11 +22,11 @@ module.exports.fetchNoFormacyForm = async() => {
 
 
 
-module.exports.insertSeedGrantNonFormacy = async(body) => {
+module.exports.insertSeedGrantNonFormacy = async(body, userName) => {
     const seedGrantFormData = body.seedGrantFormData;
     console.log('seedGrantFormData in service ==>>>', seedGrantFormData)
 
-    const insertSeedGrantNonFormacyData =  await seedGrantModels.insertSeedGrantNonformacyForm(seedGrantFormData);
+    const insertSeedGrantNonFormacyData =  await seedGrantModels.insertSeedGrantNonformacyForm(seedGrantFormData, userName);
 
     console.log('insertSeedGrantNonFormacyData ====>>>>', insertSeedGrantNonFormacyData);
 
@@ -43,11 +43,11 @@ module.exports.insertSeedGrantNonFormacy = async(body) => {
     }
 }
 
-module.exports.updateSeedGrantNonFormacyData = async(body) => {
+module.exports.updateSeedGrantNonFormacyData = async(body, userName) => {
     const grantedSeedId = body.updatedSeedGrantData.grantedSeedId;
     const updatedSeedGrantData = body.updatedSeedGrantData;
 
-    const updatedNonFormacyData  = await seedGrantModels.updateSeedGrantNonformacyForm(grantedSeedId, updatedSeedGrantData);
+    const updatedNonFormacyData  = await seedGrantModels.updateSeedGrantNonformacyForm(grantedSeedId, updatedSeedGrantData, userName);
     console.log('updatedNonFormacyData ====>>>>>', updatedNonFormacyData);
 
     return updatedNonFormacyData.status === "Done" ? {
@@ -82,10 +82,10 @@ module.exports.deleteSeedGrantData = async (body) => {
 }
 
 
-module.exports.viewGrantedSeedNonFormacyData = async (body) => {
+module.exports.viewGrantedSeedNonFormacyData = async (body, userName) => {
     const grantedSeedId = body.grantedSeedId;
 
-    const nonFormacyData = await seedGrantModels.viewSeedGrantNonFormacy(grantedSeedId);
+    const nonFormacyData = await seedGrantModels.viewSeedGrantNonFormacy(grantedSeedId, userName);
 
     console.log('nonFormacyData ===>>>>>>', nonFormacyData);
     const advancedPayment = nonFormacyData.nonFormacyformData[0].advanced_payment;

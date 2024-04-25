@@ -1,7 +1,10 @@
 const brandingAndAdvertisingServices = require('../services/branding-advertising.service');
 
 module.exports.renderBrandingAndAdvertising = async(req, res, next) => {
-    const brandingAndAdvertising = await brandingAndAdvertisingServices.fetchBrandingandAdvertisingData();
+    const  userName = req.body.username;
+    console.log('userName in controller  ===>>>>>>', userName);
+
+    const brandingAndAdvertising = await brandingAndAdvertisingServices.fetchBrandingandAdvertisingData(userName);
     if(brandingAndAdvertising){
         res.render('branding-advertising' , {
             advertisingData : brandingAndAdvertising.rows,
@@ -11,11 +14,14 @@ module.exports.renderBrandingAndAdvertising = async(req, res, next) => {
 }
 
 module.exports.insertBrandingAndAdvertising = async(req, res, next) => {
+    const  userName = req.body.username;
+    console.log('userName in controller  ===>>>>>>', userName);
+
     const advertisingData = req.body;
     console.log('data comming from frontend ==>>', advertisingData);
     console.log('files in controller  ==>>', res.files);
 
-    const brandingAndAdvertising = await brandingAndAdvertisingServices.insertBrandingAdvertising(req.body, req.files);
+    const brandingAndAdvertising = await brandingAndAdvertisingServices.insertBrandingAdvertising(req.body, req.files, userName);
 
     console.log('brandingAndAdvertising in controller ==>>', brandingAndAdvertising);
     const statusCode = brandingAndAdvertising.status === "Done" ? 200 : (brandingAndAdvertising.errorCode ? 400  : 500);
@@ -68,12 +74,15 @@ module.exports.insertBrandingAndAdvertising = async(req, res, next) => {
 }
 
 module.exports.updateBrandingAdvertising = async(req, res, next) => {
+    const  userName = req.body.username;
+    console.log('userName in controller  ===>>>>>>', userName);
+
     const updatedAdvertisingData = req.body;
     const advertisingId = req.body.advertisingId;
     console.log('files in controller ===>>', req.files)
     console.log('updated advertising data ==>>', updatedAdvertisingData);
 
-    const updatedAdvertising = await brandingAndAdvertisingServices.updateBrandingAndAdvertising(advertisingId, updatedAdvertisingData, req.files);
+    const updatedAdvertising = await brandingAndAdvertisingServices.updateBrandingAndAdvertising(advertisingId, updatedAdvertisingData, req.files, userName);
 
     console.log('updatedAdvertising in controller for update ===>>>:::', updatedAdvertising);
     const statusCode = updatedAdvertising.status === "Done" ? 200 : (updatedAdvertising.errorCode ? 400 : 500);
@@ -126,9 +135,12 @@ module.exports.updateBrandingAdvertising = async(req, res, next) => {
 }
 
 module.exports.viewBrandingadvertising = async(req, res, next) => {
+    const  userName = req.body.username;
+    console.log('userName in controller  ===>>>>>>', userName);
+
     console.log('id ==>>', req.body)
     const {advertisingId} = req.body;
-    const brandingAndAdvertisingview = await brandingAndAdvertisingServices.viewBrandingadvertising(advertisingId);
+    const brandingAndAdvertisingview = await brandingAndAdvertisingServices.viewBrandingadvertising(advertisingId, userName);
     console.log('brandingAndAdvertisingview' , brandingAndAdvertisingview)
     if(brandingAndAdvertisingview) {
         res.status(200).send({

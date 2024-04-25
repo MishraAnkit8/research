@@ -1,13 +1,13 @@
 const editedBookPublicationModel = require('../models/edited-book.model');
 
 
-module.exports.fetchEditedBookPublicationData = async() => {
-    const editedBookPublicationdata = await editedBookPublicationModel.fetchEditedBookPublication();
+module.exports.fetchEditedBookPublicationData = async(userName) => {
+    const editedBookPublicationdata = await editedBookPublicationModel.fetchEditedBookPublication(userName);
     console.log(editedBookPublicationdata.rows[0]);
     return editedBookPublicationdata
 }
 
-module.exports.insertEditedBookPublication = async(editedBook , files) => {
+module.exports.insertEditedBookPublication = async(editedBook , files, userName) => {
     const editedBookFilesData = files?.map(file => file.filename).join(',');
     // console.log('files ===>>>', files);
     // var editedBookFilesData = '';
@@ -19,7 +19,7 @@ module.exports.insertEditedBookPublication = async(editedBook , files) => {
     //   }
     // }
     console.log('editedBookFilesData in service ===>>>>', editedBookFilesData);
-    const insertEitedBookData = await editedBookPublicationModel.insertEditedBook(editedBook, editedBookFilesData);
+    const insertEitedBookData = await editedBookPublicationModel.insertEditedBook(editedBook, editedBookFilesData, userName);
     // const editedBookId = insertEitedBookData.id;
     console.log('insertEitedBookData =====>>>>>>', insertEitedBookData);
     return {
@@ -32,11 +32,11 @@ module.exports.insertEditedBookPublication = async(editedBook , files) => {
     }
 }
 
-module.exports.updateEditedBook = async(editedBookId , updatedEditedBookPublication, files) => {
+module.exports.updateEditedBook = async(editedBookId , updatedEditedBookPublication, files, userName) => {
     console.log('data in service ==>>', updatedEditedBookPublication);
     const updatedEditedBookFiles = files ?.map(file => file.filename).join(',');
 
-    const updatedEditedBookData = await editedBookPublicationModel.updatedEditedBookPublication(editedBookId , updatedEditedBookPublication, updatedEditedBookFiles);
+    const updatedEditedBookData = await editedBookPublicationModel.updatedEditedBookPublication(editedBookId , updatedEditedBookPublication, updatedEditedBookFiles, userName);
 
     console.log('updatedEditedBookData in service ====>>>>>>', updatedEditedBookData);
     return updatedEditedBookData.status === "Done" ? {
@@ -99,9 +99,9 @@ module.exports.deleteEditedBookPublication = async({editedBookId}) => {
     }
 }
 
-module.exports.editedBookPublicationView = async(editedBookId) => {
+module.exports.editedBookPublicationView = async(editedBookId, userName) => {
     console.log('id IN service ==>>', editedBookId);
-    const editedbookPublicationDataView = await editedBookPublicationModel.viewEditedBookPublicationData(editedBookId);
+    const editedbookPublicationDataView = await editedBookPublicationModel.viewEditedBookPublicationData(editedBookId, userName);
     console.log('editedbookPublicationData ==>>', editedbookPublicationDataView.rows[0]);
     if(editedbookPublicationDataView.rows[0] && editedbookPublicationDataView.rowCount === 1){
         return editedbookPublicationDataView.rows[0]

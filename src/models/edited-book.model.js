@@ -5,15 +5,16 @@ const moment = require('moment');
 const researchDbR = dbPoolManager.get('researchDbR', research_read_db);
 const researchDbW = dbPoolManager.get('researchDbW', research_write_db);
 
-module.exports.fetchEditedBookPublication = async() => {
+module.exports.fetchEditedBookPublication = async(userName ) => {
     let sql = {
-        text : `SELECT * FROM edited_book_publications ORDER BY id`
+        text : `SELECT * FROM edited_book_publications WHERE created_by = $1 ORDER BY id`,
+        values : [userName]
     }
     console.log('sql ==>', sql)
     return researchDbR.query(sql)
 }
 
-module.exports.insertEditedBook = async(editedBook, editedBookFilesData) => {
+module.exports.insertEditedBook = async(editedBook, editedBookFilesData, userName) => {
     const {authorName, bookTitle, edition, editorName, chapterTitle, publicationPlace, publisherCategory, pageNumber, publisherName, publicationYear,
         bookUrl, doiBookId, isbnNo, numberOfNmimsAuthors, nmimsAuthors, nmimsCampusAuthors, nmimsSchoolAuthors} = editedBook;
 
@@ -21,10 +22,10 @@ module.exports.insertEditedBook = async(editedBook, editedBookFilesData) => {
 
     let sql = {
         text : `INSERT INTO edited_book_publications (author_name, book_title, edition, editor_name, chapter_title, publication_place, publisher_category, page_number, publisher_name, 
-            publication_year, book_url, doi_id, isbn_no, number_of_nmims_authors, nmims_authors, nmims_campus_authors, nmims_school_authors, supporting_documents)
-            VALUES ($1, $2 , $3 ,$4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18) RETURNING id `,
+            publication_year, book_url, doi_id, isbn_no, number_of_nmims_authors, nmims_authors, nmims_campus_authors, nmims_school_authors, supporting_documents, created_by)
+            VALUES ($1, $2 , $3 ,$4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19) RETURNING id `,
         values : [authorName, bookTitle, edition, editorName, chapterTitle, publicationPlace, publisherCategory, pageNumber, publisherName, publicationYear,
-            bookUrl, doiIdParsed, isbnNo, numberOfNmimsAuthors, nmimsAuthors, nmimsCampusAuthors, nmimsSchoolAuthors, editedBookFilesData]
+            bookUrl, doiIdParsed, isbnNo, numberOfNmimsAuthors, nmimsAuthors, nmimsCampusAuthors, nmimsSchoolAuthors, editedBookFilesData, userName]
     }
 
     return researchDbW.query(sql)
@@ -53,21 +54,21 @@ module.exports.insertEditedBook = async(editedBook, editedBookFilesData) => {
     });
 }
 
-module.exports.updatedEditedBookPublication = async(editedBookId, updatedEditedBookPublication, updatedEditedBookFiles) => {
+module.exports.updatedEditedBookPublication = async(editedBookId, updatedEditedBookPublication, updatedEditedBookFiles, userName) => {
 
     const {authorName, bookTitle, edition, editorName, chapterTitle, publicationPlace, publisherCategory, pageNumber, publisherName, publicationYear,
             bookUrl, doiBookId, isbnNo, numberOfNmimsAuthors, nmimsAuthors, nmimsCampusAuthors, nmimsSchoolAuthors} = updatedEditedBookPublication; 
     const supportingDocumentString = updatedEditedBookFiles ? updatedEditedBookFiles : null;
     const doiIdParsed = doiBookId === '' ? null : parseInt(doiBookId , 10);
     let querywithOutDoc =    `UPDATE edited_book_publications SET author_name = $2, book_title = $3, edition = $4, editor_name = $5, chapter_title = $6, publication_place = $7, publisher_category = $8, page_number = $9, publisher_name = $10, 
-                            publication_year = $11, book_url = $12, doi_id = $13, isbn_no = $14, number_of_nmims_authors = $15, nmims_authors = $16, nmims_campus_authors = $17, nmims_school_authors = $18`; 
+                            publication_year = $11, book_url = $12, doi_id = $13, isbn_no = $14, number_of_nmims_authors = $15, nmims_authors = $16, nmims_campus_authors = $17, nmims_school_authors = $18,  updated_by = $19`; 
     console.log('querywithOutDoc ====>>>', querywithOutDoc)
-    let docQuery = supportingDocumentString ? `, supporting_documents = $19` : '';
+    let docQuery = supportingDocumentString ? `, supporting_documents = $20` : '';
 
     let queryText =  querywithOutDoc + docQuery + ` WHERE id = $1`;
     console.log('queryText ====>>>>', queryText);
     let values = [editedBookId, authorName, bookTitle, edition, editorName, chapterTitle, publicationPlace, publisherCategory, pageNumber, publisherName, publicationYear,
-        bookUrl, doiIdParsed, isbnNo, numberOfNmimsAuthors, nmimsAuthors, nmimsCampusAuthors, nmimsSchoolAuthors, ...(supportingDocumentString ? [supportingDocumentString] : [])];
+        bookUrl, doiIdParsed, isbnNo, numberOfNmimsAuthors, nmimsAuthors, nmimsCampusAuthors, nmimsSchoolAuthors, ...(supportingDocumentString ? [supportingDocumentString] : []), userName];
     let sql = {
         text : queryText,
         values : values
@@ -156,10 +157,10 @@ module.exports.deleteEditedBookPublicationData = async(editedBookId) => {
     return researchDbW.query(sql);
 }
 
-module.exports.viewEditedBookPublicationData = async(editedBookId) => {
+module.exports.viewEditedBookPublicationData = async(editedBookId, userName) => {
     let sql = {
-        text : `SELECT * FROM edited_book_publications WHERE id = $1`,
-        values : [editedBookId]
+        text : `SELECT * FROM edited_book_publications WHERE id = $1 AND created_by = $2`,
+        values : [editedBookId, userName]
     }
     return researchDbW.query(sql);
 }
