@@ -11,7 +11,7 @@ module.exports.renderLoginPage = async(req, res, next) => {
     console.log("sessionDataL::::::::", sessionid);
 
     if(sessionid){
-        res.redirect('/dashboard-page');
+        res.redirect(`${process.env.BASE_URL}dashboard-page`);
     }else{
         res.render('user-login');
     }
@@ -66,12 +66,12 @@ module.exports.userLoginSession = async (req, res, body) => {
                 res.status(500).json({
                     message: "Internal Server Error!",
                     "redirect" : 
-                    "/dashboard-page"
+                    `${process.env.BASE_URL}user`
                 })
             }
 
         }else{
-            res.status(401).json({"redirect" : "/user", message: "Internal Server Error!"});
+            res.status(401).json({"redirect" : `${process.env.BASE_URL}user`, message: "Internal Server Error!"});
         }
 
       } catch (error) {
@@ -110,14 +110,14 @@ module.exports.userLogoutSession= async(req, res, next) => {
     
         if(userLogOutSession.status === "Done") {
             res.clearCookie('session');
-            res.redirect('/user');
+            res.redirect(`${process.env.BASE_URL}user`);
     
         }
         
     } catch (error) {
         console.log("error logout : ",error);
         res.clearCookie('session');
-        res.redirect('/user');
+        res.redirect(`${process.env.BASE_URL}user`);
     }
             
     }
