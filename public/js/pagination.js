@@ -1,26 +1,25 @@
 let searchInput = document.getElementById("searchKeyword");
+let currentPage = 1;
 // const tableDataList = document.getElementById('journal-paper-list').getElementsByTagName('tr');
-function initializePagination() {
-  let entriesPerPage = 5;
-  let currentPage = 1;
-  console.log('currentPage ===>>>>>', currentPage)
-  let table = document.querySelector(".research-pagination");
-  let rows = table.querySelectorAll("tbody tr");
-  let rowCount = document.getElementById('row-count');
-  let totalRowCount = document.getElementById('total-row-count');
-  let indexValue = parseInt(rowCount.innerText, 10);
-  let totalEntries = indexValue;
-  let totalPages = Math.ceil(totalEntries / entriesPerPage);
 
-  showPage(currentPage);
+let entriesPerPage = 5;
+console.log('currentPage ===>>>>>', currentPage)
+let table = document.querySelector(".research-pagination");
+let rows = table.querySelectorAll("tbody tr");
+// let rowCount = document.getElementById('row-count');
+// let totalRowCount = document.getElementById('total-row-count');
+// let indexValue = parseInt(rowCount.innerText, 10);
+let totalEntries = indexValue;
+let totalPages = Math.ceil(totalEntries / entriesPerPage);
 
-  // Attach event listeners
-  document.getElementById("changeEntry").addEventListener("change", handleEntriesChange);
-  document.getElementById("pagination").addEventListener("click", handlePaginationClick);
-  document.getElementById("nextBtn").addEventListener("click", handleNextClick);
-  document.getElementById("prevBtn").addEventListener("click", handlePrevClick);
-  document.getElementById("searchBtn").addEventListener("click", handleSearchClick);
-  document.getElementById("searchKeyword").addEventListener("input", handleSearchInput);
+
+// Attach event listeners
+document.getElementById("changeEntry").addEventListener("change", handleEntriesChange);
+document.getElementById("pagination").addEventListener("click", handlePaginationClick);
+document.getElementById("nextBtn").addEventListener("click", handleNextClick);
+document.getElementById("prevBtn").addEventListener("click", handlePrevClick);
+document.getElementById("searchBtn").addEventListener("click", handleSearchClick);
+document.getElementById("searchKeyword").addEventListener("input", handleSearchInput);
 
   function showPage(page) {
     currentPage = page;
@@ -77,6 +76,7 @@ function initializePagination() {
     filterRows(searchKeyword);
   }
 
+// for filtering the rows
   function filterRows(searchKeyword) {
     console.log('searchKeyword ====>>>>>>>', searchKeyword);
     let matchedRowCount = 0;
@@ -128,11 +128,8 @@ function initializePagination() {
     totalPages = Math.ceil(totalEntries / entriesPerPage);
     showPage(1);
   }
-  
-  
-  
-  
 
+//update the pagination
   function updatePagination(currentPage) {
     let pagination = document.getElementById("pagination");
     pagination.innerHTML = "";
@@ -166,7 +163,8 @@ function initializePagination() {
   }
 
 
-}
+
+//event listner for search bar
 searchInput.addEventListener('keyup', function() {
   const searchTerm = searchInput.value.toLowerCase();
 
@@ -177,14 +175,20 @@ tableRows.forEach(row => {
     const tableData = row.textContent.toLowerCase();
   console.log("row:::::::::::::::::",row)
     if (tableData.includes(searchTerm)) {
+        console.log('searchTerm ====>>>>', searchTerm)
         row.style.display = 'table-row';
 
-    } else {
-        row.style.display = 'none';
+    } 
+    else{
+      row.style.display = 'none';
+    }
+    if (searchTerm === '') {
+      showPage(1);
     }
 });
 });
 
+showPage(currentPage);
 
 
-initializePagination();
+// initializePagination();
