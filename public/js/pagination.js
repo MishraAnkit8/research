@@ -3,6 +3,7 @@ const tableDataList = document.getElementById('journal-paper-list').getElementsB
 function initializePagination() {
   let entriesPerPage = 5;
   let currentPage = 1;
+  console.log('currentPage ===>>>>>', currentPage)
   let table = document.querySelector(".research-pagination");
   let rows = table.querySelectorAll("tbody tr");
   let rowCount = document.getElementById('row-count');
@@ -15,6 +16,7 @@ function initializePagination() {
 
   // Attach event listeners
   document.getElementById("changeEntry").addEventListener("change", handleEntriesChange);
+  document.getElementById("pagination").addEventListener("click", handlePaginationClick);
   document.getElementById("nextBtn").addEventListener("click", handleNextClick);
   document.getElementById("prevBtn").addEventListener("click", handlePrevClick);
   document.getElementById("searchBtn").addEventListener("click", handleSearchClick);
@@ -43,6 +45,16 @@ function initializePagination() {
     showPage(1);
   }
 
+  function handlePaginationClick(e) {
+    if (e.target.tagName === "A") {
+      e.preventDefault();
+      let clickedPage = parseInt(e.target.dataset.page);
+
+      if (clickedPage !== currentPage) {
+        showPage(clickedPage);
+      }
+    }
+  }
   function handleNextClick() {
     if (currentPage < totalPages) {
       showPage(currentPage + 1);
@@ -128,7 +140,6 @@ function initializePagination() {
     for (let i = 1; i <= totalPages; i++) {
       let pageLink = document.createElement("a");
       pageLink.href = "#";
-      // console.log('i =====>>>>>', i)
       pageLink.textContent = i;
       pageLink.dataset.page = i;
       if (i === currentPage) {
