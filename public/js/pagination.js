@@ -165,22 +165,25 @@ function initializePagination() {
     
   }
 
-// let searchInput = document.getElementById("searchKeyword");
-// const tableDataList = document.getElementById('journal-paper-list').getElementsByTagName('tr');
 
 }
 searchInput.addEventListener('keyup', function() {
   const searchTerm = searchInput.value.toLowerCase();
 
-  for (let i = 0; i < tableDataList.length; i++) {
-      const tableDataRow = tableDataList[i].textContent.toLowerCase();
+  const tableRows = document.querySelectorAll('#data-list tr');
 
-      if (tableDataRow.includes(searchTerm)) {
-          tableDataList[i].style.display = 'list-item';
-      } else {
-          tableDataList[i].style.display = 'none';
-      }
-  }
+
+tableRows.forEach(row => {
+    const tableData = row.textContent.toLowerCase();
+
+    if (tableData.includes(searchTerm)) {
+        row.style.display = 'table-row';
+
+    } else {
+        row.style.display = 'none';
+        // row.querySelector('.action-buttons').style.visibility = 'collapse';
+    }
+});
 });
 
 
