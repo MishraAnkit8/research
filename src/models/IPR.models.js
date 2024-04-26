@@ -161,7 +161,7 @@ module.exports.InsetIPRDataModels = async (IprData, iprFilesNamesArray, Facultyd
 
     let iprSql = {
         text: `INSERT INTO IPR (patent_title, patent_application_number, applicant_name, patent_filed_date, patent_published_date, patent_grant_date, patent_publication_number, patent_grant_number, institutional_affiliation, created_by)
-                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9 $10) RETURNING id`,
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9 , $10) RETURNING id`,
         values: [titleOfInvention, applicationNum, applicantName, patentFiledDate, patentPublishedDate, patentGrantDate, 
             patentPublishedNumber, patentGrantedNo, instituteAffiliation, userName]
     };

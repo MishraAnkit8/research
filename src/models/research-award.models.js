@@ -5,9 +5,10 @@ const moment = require('moment');
 const researchDbR = dbPoolManager.get('researchDbR', research_read_db);
 const researchDbW = dbPoolManager.get('researchDbW', research_write_db);
 
-module.exports.fetchResearchAward = async() => {
+module.exports.fetchResearchAward = async(userName) => {
     let sql = {
-        text : `SELECT * FROM research_award ORDER BY id`
+        text : `SELECT * FROM research_award WHERE created_by = $1 ORDER BY id`,
+        values : [userName]
     }
     console.log('sql ===>>>>>', sql);
 
@@ -15,14 +16,14 @@ module.exports.fetchResearchAward = async() => {
 }
 
 
-module.exports.insertResearchAwardRow = async(awardFiles, researchAwardData) => {
+module.exports.insertResearchAwardRow = async(awardFiles, researchAwardData, userName) => {
 
     const {campus, school, facultyName, awardName, awardDetails, organisationName, awardDate, awardPlace, awardCategory} = researchAwardData;
 
     let sql = {
         text : `INSERT INTO research_award(nmims_campus, nmims_school, faculty_name, award_name, award_details, organisation_name_coferring_award, date,
-            place, award_category, supporting_documents) VALUES ($1, $2, $3, $4, $5, $6, $7, $8 , $9, $10) RETURNING id`,
-        values : [campus, school, facultyName, awardName, awardDetails, organisationName, awardDate, awardPlace, awardCategory, awardFiles]
+            place, award_category, supporting_documents, created_by) VALUES ($1, $2, $3, $4, $5, $6, $7, $8 , $9, $10, $11) RETURNING id`,
+        values : [campus, school, facultyName, awardName, awardDetails, organisationName, awardDate, awardPlace, awardCategory, awardFiles, userName]
     }
 
     console.log('sql ===>>>>', sql);
@@ -45,14 +46,14 @@ module.exports.insertResearchAwardRow = async(awardFiles, researchAwardData) => 
 
 }
 
-module.exports.updatedResearchRowData = async(awardId, updatedReseachAwardDocuments, updatedAwardData) => {{
+module.exports.updatedResearchRowData = async(awardId, updatedReseachAwardDocuments, updatedAwardData, userName) => {{
 
     const {campus, school, facultyName, awardName, awardDetails, organisationName, awardDate, awardPlace, awardCategory} = updatedAwardData;
     let baseQuery = `UPDATE research_award  SET nmims_campus = $2, nmims_school = $3, faculty_name = $4, award_name = $5, award_details = $6, organisation_name_coferring_award = $7, date = $8,
-    place = $9, award_category = $10`;
+    place = $9, award_category = $10, updated_by = $11`;
 
-    let supportingDocQuery = updatedReseachAwardDocuments ?  `, supporting_documents = $11` : '';
-    let values = [awardId, campus, school, facultyName, awardName, awardDetails, organisationName, awardDate, awardPlace, awardCategory, ...(updatedReseachAwardDocuments ? [updatedReseachAwardDocuments] : [])];
+    let supportingDocQuery = updatedReseachAwardDocuments ?  `, supporting_documents = $12` : '';
+    let values = [awardId, campus, school, facultyName, awardName, awardDetails, organisationName, awardDate, awardPlace, awardCategory, userName, ...(updatedReseachAwardDocuments ? [updatedReseachAwardDocuments] : [])];
 
     let textQuery = baseQuery + supportingDocQuery + ` WHERE id = $1`;
 
@@ -103,11 +104,11 @@ module.exports.deleteResearchawardRow = async(awardId) => {
     return response;
 }
 
-module.exports.veiwResearchAwardRow = async (awardId) => {
+module.exports.veiwResearchAwardRow = async (awardId, userName) => {
     let sql = {
         text : `SELECT  nmims_campus, nmims_school, faculty_name, award_name, award_details, organisation_name_coferring_award, TO_CHAR(date, 'DD-MM-YYYY') as date,
-        place, award_category, supporting_documents FROM research_award WHERE id = $1`,
-        values : [awardId]
+        place, award_category, supporting_documents FROM research_award WHERE id = $1 AND created_by = $2`,
+        values : [awardId, userName]
     }
     console.log('sql ===>>>', awardId)
     const researchAward = await researchDbW.query(sql);

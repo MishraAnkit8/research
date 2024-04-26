@@ -1,15 +1,15 @@
 const researchSeminarModel = require('../models/research-seminar.model');
 // service for fetch
-module.exports.renderResearchSeminar = async () => {
-    let result = await researchSeminarModel.fetchResearchSeminar(); 
+module.exports.renderResearchSeminar = async (userName) => {
+    let result = await researchSeminarModel.fetchResearchSeminar(userName); 
     console.log('result ===>', result)
     return result  
 };
 
 // service for insert
-module.exports.insertResearchSeminar = async (body) => {
+module.exports.insertResearchSeminar = async (body, userName) => {
     const seminarDetails =  body;
-    const newResearchSeminar = await researchSeminarModel.createResearchSeminar(seminarDetails);
+    const newResearchSeminar = await researchSeminarModel.createResearchSeminar(seminarDetails, userName);
     return newResearchSeminar ;
 };
 
@@ -31,8 +31,8 @@ module.exports.deleteResearchSeminar = async (seminarId) => {
 };
 
 // service for update
-module.exports.updateResearchSeminar = async ({seminarId, updateResearchSeminar}) => {
-    const updatedResearchSeminarData = await researchSeminarModel.updateRsearchSeminar({seminarId, updateResearchSeminar});
+module.exports.updateResearchSeminar = async ({seminarId, updateResearchSeminar}, userName) => {
+    const updatedResearchSeminarData = await researchSeminarModel.updateRsearchSeminar({seminarId, updateResearchSeminar}, userName);
     console.log('id for  updation in service', seminarId);
     if( updatedResearchSeminarData.rowCount === 1){
         return {
@@ -49,8 +49,8 @@ module.exports.updateResearchSeminar = async ({seminarId, updateResearchSeminar}
 }
 
 // service for view
-module.exports.viewResearchSeminar = async ({seminarId}) => {
-    const viewRsearchSeminarData = await researchSeminarModel.viewRsearchSeminarData({seminarId});
+module.exports.viewResearchSeminar = async ({seminarId}, userName) => {
+    const viewRsearchSeminarData = await researchSeminarModel.viewRsearchSeminarData({seminarId}, userName);
     console.log('viewRsearchSeminarData ==>>', viewRsearchSeminarData.rows)
     if(viewRsearchSeminarData.rowCount === 1){
         return  viewRsearchSeminarData.rows;

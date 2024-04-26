@@ -8,13 +8,15 @@ const researchDbW = dbPoolManager.get('researchDbW', research_write_db);
 
 
 
-module.exports.fetchPatentSubMissionForms = async () => {
+module.exports.fetchPatentSubMissionForms = async (userName) => {
 
     let patentSubmissionSql = {
         text: `SELECT 
                     psg.id AS patent_submission_grant_id,
                     psg.innovation_title,
                     psg.application_number,
+                    psg.created_by AS created_by,
+                    jpa.created_by As updated_by
                     psg.grant_date,
                     psg.supporting_documents,
                     sg.name AS sdg_goal_name,
@@ -45,9 +47,13 @@ module.exports.fetchPatentSubMissionForms = async () => {
                 LEFT JOIN 
                     patent_submission_faculty psf ON psg.id = psf.patent_submission_grant_id
                 LEFT JOIN 
+                WHERE
+                    created_by = $1 
                     faculties f ON psf.faculty_id = f.id 
-                    ORDER BY psg.id`
+                    ORDER BY psg.id`,
+            values : [userName]
     };
+    console.log('sql ===.>>>>>', sql);
 
     let internalEmpSql = {
         text: `select *  FROM faculties WHERE faculty_type_id = 1`
@@ -130,14 +136,14 @@ module.exports.fetchPatentSubMissionForms = async () => {
 
 
 
-module.exports.insertPatentData = async (patentData, patentDataFilesString, sdgGoalsIdArray, inventionIdsArray, FacultydataArray, patentStatusArray) => {
+module.exports.insertPatentData = async (patentData, patentDataFilesString, sdgGoalsIdArray, inventionIdsArray, FacultydataArray, patentStatusArray, userName) => {
     console.log('patentData inside models ===>>>', patentData);
 
     const { titleOfInvention, applicationNum, subMissionDate } = patentData;
 
     const patentDataSql = {
-        text: `INSERT INTO patent_submission_grant (innovation_title, application_number, grant_date, supporting_documents) VALUES ($1, $2, $3, $4) RETURNING id`,
-        values: [titleOfInvention, applicationNum, subMissionDate, patentDataFilesString]
+        text: `INSERT INTO patent_submission_grant (innovation_title, application_number, grant_date, supporting_documents, created_by) VALUES ($1, $2, $3, $4, $5) RETURNING id`,
+        values: [titleOfInvention, applicationNum, subMissionDate, patentDataFilesString, userName]
     };
 
     console.log('patentDataSql ===>>>>>', patentDataSql);
@@ -227,17 +233,17 @@ module.exports.insertPatentData = async (patentData, patentDataFilesString, sdgG
 };
 
 
-module.exports.updatePatentsubmissionData = async (updatedPatentData, patentId, patentDataFiles, sdgGoalsIdArray, inventionIdsArray, FacultydataArray, patentStatusIdArray) => {
+module.exports.updatePatentsubmissionData = async (updatedPatentData, patentId, patentDataFiles, sdgGoalsIdArray, inventionIdsArray, FacultydataArray, patentStatusIdArray, userName) => {
     console.log('Data in models:', updatedPatentData);
 
     const { titleOfInvention, applicationNum, subMissionDate } = updatedPatentData;
     const supportingDocument = patentDataFiles || null;
 
-    let baseQuery = `UPDATE patent_submission_grant SET innovation_title = $2, application_number = $3, grant_date = $4`;
-    let documentsQuery = supportingDocument ? `, supporting_documents = $5` : '';
+    let baseQuery = `UPDATE patent_submission_grant SET innovation_title = $2, application_number = $3, grant_date = $4, updated_by = $5`;
+    let documentsQuery = supportingDocument ? `, supporting_documents = $6` : '';
     let queryText = `${baseQuery}${documentsQuery} WHERE id = $1`;
 
-    let values = [patentId, titleOfInvention, applicationNum, subMissionDate, supportingDocument].filter(Boolean);
+    let values = [patentId, titleOfInvention, applicationNum, subMissionDate, userName, supportingDocument].filter(Boolean);
 
     const patentsubmissonSql = {
         text: queryText,
@@ -418,14 +424,16 @@ module.exports.deletePatentSubmissionData = async (patentId) => {
   
 
 
-module.exports.viewPatentSubmission = async(patentId) => {
+module.exports.viewPatentSubmission = async(patentId, userName) => {
     console.log('id' , patentId);
 
     let patentSubmissionSql = {
         text : `SELECT 
             psg.id AS patent_submission_grant_id,
             psg.innovation_title,
-            psg.application_number,
+            psg.created_by AS created_by,
+            psg.updated_by AS updated_by,
+            psg.application_number
             psg.grant_date,
             psg.supporting_documents,
             sg.name AS sdg_goal_name,
@@ -457,9 +465,9 @@ module.exports.viewPatentSubmission = async(patentId) => {
             patent_submission_faculty psf ON psg.id = psf.patent_submission_grant_id
         LEFT JOIN 
             faculties f ON psf.faculty_id = f.id 
-        where  psg.id = $1`,
+        where  psg.id = $1 AND created_by = $2`,
 
-     values : [patentId]
+     values : [patentId, userName]
     };
     console.log('sql qury for view', patentSubmissionSql);
 

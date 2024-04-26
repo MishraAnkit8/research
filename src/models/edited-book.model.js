@@ -68,7 +68,7 @@ module.exports.updatedEditedBookPublication = async(editedBookId, updatedEditedB
     let queryText =  querywithOutDoc + docQuery + ` WHERE id = $1`;
     console.log('queryText ====>>>>', queryText);
     let values = [editedBookId, authorName, bookTitle, edition, editorName, chapterTitle, publicationPlace, publisherCategory, pageNumber, publisherName, publicationYear,
-        bookUrl, doiIdParsed, isbnNo, numberOfNmimsAuthors, nmimsAuthors, nmimsCampusAuthors, nmimsSchoolAuthors, ...(supportingDocumentString ? [supportingDocumentString] : []), userName];
+        bookUrl, doiIdParsed, isbnNo, numberOfNmimsAuthors, nmimsAuthors, nmimsCampusAuthors, nmimsSchoolAuthors, userName, ...(supportingDocumentString ? [supportingDocumentString] : [])];
     let sql = {
         text : queryText,
         values : values

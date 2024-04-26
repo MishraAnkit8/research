@@ -1,8 +1,10 @@
 
 const researchAwardServices = require('../services/research-award.services');
 module.exports.renderResearchAward = async(req, res, next) => {
+    const  userName = req.body.username;
+    console.log('userName in controller  ===>>>>>>', userName);
     
-    const researchAwardRenderedData = await researchAwardServices.renderResearchAwardData();
+    const researchAwardRenderedData = await researchAwardServices.renderResearchAwardData(userName);
     console.log('researchAwardRenderedData :::::', researchAwardRenderedData);
     res.render('research-award' , {
         status : researchAwardRenderedData.status,
@@ -14,9 +16,12 @@ module.exports.renderResearchAward = async(req, res, next) => {
 
 
 module.exports.insertResearchAwardFormData = async(req, res, next) => {
+    const  userName = req.body.username;
+    console.log('userName in controller  ===>>>>>>', userName);
+
     console.log('data in controller ===>>>>>', req.body);
 
-    const researchAwardData = await researchAwardServices.insertResearchAwardData(req.body, req.files);
+    const researchAwardData = await researchAwardServices.insertResearchAwardData(req.body, req.files, userName);
     console.log('researchAwardData ===>>>>>', researchAwardData);
 
     const statusCode = researchAwardData.status === "Done" ? 200 : (researchAwardData.errorCode ? 400 : 500)
@@ -33,9 +38,12 @@ module.exports.insertResearchAwardFormData = async(req, res, next) => {
 }
 
 module.exports.updateResearchAwardData = async(req, res, next) => {
+    const  userName = req.body.username;
+    console.log('userName in controller  ===>>>>>>', userName);
+
     console.log('Data Comming From Template ===>>>', req.body);
 
-    const udateResearchAward = await researchAwardServices.updateResearchAward(req.body, req.files);
+    const udateResearchAward = await researchAwardServices.updateResearchAward(req.body, req.files, userName);
 
     console.log('udateResearchAward ===>>>>>', udateResearchAward);
     const statusCode = udateResearchAward.status === "Done" ? 200 : (udateResearchAward.errorCode ? 400 : 500);
@@ -65,9 +73,12 @@ module.exports.deleteResearchAwardRow = async(req, res, next) => {
 }
 
 module.exports.viewResearchAwardData = async(req,res, next) => {
+    const  userName = req.body.username;
+    console.log('userName in controller  ===>>>>>>', userName);
+
     console.log('award Id In Controller ===>>>', req.body);
 
-    const viewReseachAward = await researchAwardServices.viewResearchRowData(req.body);
+    const viewReseachAward = await researchAwardServices.viewResearchRowData(req.body, userName);
 
     console.log('viewReseachAward data in controller ===>>>', viewReseachAward);
     const statusCode = viewReseachAward.status === "Done" ? 200 : (viewReseachAward.errorCode ? 400 : 500)

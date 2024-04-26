@@ -1,7 +1,7 @@
 const researchCunsultancyModel = require('../models/research-project-grant.models');
 
-module.exports.fetchResearConsultacyData = async() => {
-    const researchConsultancyData = await researchCunsultancyModel.fetchResearchConsultancy();
+module.exports.fetchResearConsultacyData = async(userName) => {
+    const researchConsultancyData = await researchCunsultancyModel.fetchResearchConsultancy(userName);
     console.log('researchConsultancyData in services ===>>>>>',researchConsultancyData.researchData);
     console.log('facultTableData in services :::::===>>>>>',researchConsultancyData.facultTableData);
     console.log('research_project_grant_faculty Data In Service ::: ==>>>>', researchConsultancyData.researchPojectGrantFacultyData)
@@ -50,7 +50,7 @@ module.exports.fetchResearConsultacyData = async() => {
 }
 
 
-module.exports.insertResearchConsultancyData = async(body , files) => {
+module.exports.insertResearchConsultancyData = async(body , files, userName) => {
     const researchCunsultancyData = body;
 
     const facultyData = JSON.parse(researchCunsultancyData.facultyDataContainer);
@@ -65,7 +65,7 @@ module.exports.insertResearchConsultancyData = async(body , files) => {
     const consultancyDataFiles = files?.map(file => file.filename).join(',');
     console.log('consultancyDataFiles ===>>>>', consultancyDataFiles)
 
-    const researchProjectConsultancy = await researchCunsultancyModel.insertResearhcProjectConstancyData(researchCunsultancyData , consultancyDataFiles, FacultydataArray);
+    const researchProjectConsultancy = await researchCunsultancyModel.insertResearhcProjectConstancyData(researchCunsultancyData , consultancyDataFiles, FacultydataArray, userName);
 
       console.log('researchProjectConsultancy ===>>>' , researchProjectConsultancy);
       return researchProjectConsultancy.status === "Done" ? {
@@ -84,7 +84,7 @@ module.exports.insertResearchConsultancyData = async(body , files) => {
 }
 
 
-module.exports.updateResearchConstant = async(consultantId, body, files) => {
+module.exports.updateResearchConstant = async(consultantId, body, files, userName) => {
   console.log('data in service ====>>>>>>>', body);
   const updatedResearchGrant = body;
   // console.log('data in service =====>>>>', updatedResearchGrant.internalEmpId)
@@ -101,7 +101,7 @@ module.exports.updateResearchConstant = async(consultantId, body, files) => {
 
     const updatedConsultantFilesData = files ?.map(file => file.filename).join(',');
 
-    const updateResearchProjectConstant = await researchCunsultancyModel.updateResearchConsultantData(consultantId ,updatedResearchGrant, updatedConsultantFilesData, FacultydataArray);
+    const updateResearchProjectConstant = await researchCunsultancyModel.updateResearchConsultantData(consultantId ,updatedResearchGrant, updatedConsultantFilesData, FacultydataArray, userName);
     
     console.log('updateResearchProjectConstant =====>>>>>', updateResearchProjectConstant);
     return updateResearchProjectConstant.status === "Done" ? 
@@ -139,9 +139,9 @@ module.exports.deleteResearchConsultant = async({consultantId}) => {
 
 }
 
-module.exports.viewReseachProjectData = async(consultantId) => {
+module.exports.viewReseachProjectData = async(consultantId, userName) => {
     console.log('consultantId in servicve ===>>>', consultantId)
-    const researchConsultancy = await researchCunsultancyModel.viewResearchConsultancy(consultantId);
+    const researchConsultancy = await researchCunsultancyModel.viewResearchConsultancy(consultantId, userName);
 
     console.log('researchConsultancy ==>>', researchConsultancy);
 

@@ -8,7 +8,7 @@ module.exports.renderIPR = async(req, res, next) => {
     // console.log('iprList ===>>>', iprList);
     console.log('iprList.iprData ===>>>>>>', iprList.iprData);
     console.log('iprList.internalEmpList ===>>>>>>', iprList.internalEmpList);
-    console.log('iprList.inventiontype ===>>>>>>', iprList.inventiontype);
+    // console.log('iprList.inventiontype ===>>>>>>', iprList.inventiontype);
     console.log('iprList.patentStatus ===>>>>>>', iprList.patentStatus);
     console.log('iprList.schoolList ===>>>>>>', iprList.schoolList);
     console.log('iprList.schoolList ===>>>>>>', iprList.schoolList);

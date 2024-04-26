@@ -3,7 +3,10 @@ const patentSubmissionservice = require('../services/patent-submission.service')
 
 module.exports.renderPatentSubMissionAndGrant = async(req, res, next) =>{
     console.log('data in controller ')
-    const patentSubmissionList = await patentSubmissionservice.fetchPatentForm();
+    const  userName = req.body.username;
+    console.log('userName in controller  ===>>>>>>', userName);
+
+    const patentSubmissionList = await patentSubmissionservice.fetchPatentForm(userName);
     console.log('patentSubmissionList ===>>>>', patentSubmissionList);
 
     res.render('patent-submission', {
@@ -30,8 +33,10 @@ module.exports.renderPatentSubMissionAndGrant = async(req, res, next) =>{
 module.exports.insertPatentsubmission = async(req, res, next) => {
         console.log('patentData in Controller', req.body);
         console.log('patentFilesData ===>>>>::::', req.files);
+        const  userName = req.body.username;
+        console.log('userName in controller  ===>>>>>>', userName);
 
-        const patentDataSubmission = await patentSubmissionservice.insertPatentFormData(req.body, req.files);
+        const patentDataSubmission = await patentSubmissionservice.insertPatentFormData(req.body, req.files, userName);
 
         console.log('patentDataSubmission ===>>>>', patentDataSubmission);
 
@@ -58,9 +63,12 @@ module.exports.insertPatentsubmission = async(req, res, next) => {
 module.exports.updatePatentSubMissiom = async(req, res, next) => {
     console.log('data in controller' , req.body);
     console.log('ID in controller ==>', req.body.patentId);
+    const  userName = req.body.username;
+    console.log('userName in controller  ===>>>>>>', userName);
+
     const  patentId = req.body.patentId;
 
-    const updatedPatentSubmissionData = await patentSubmissionservice.updatPatentSubmission(req.body, patentId, req.files);
+    const updatedPatentSubmissionData = await patentSubmissionservice.updatPatentSubmission(req.body, patentId, req.files, userName);
 
     console.log('updatedPatentSubmissionData in controller ====>>>>>', updatedPatentSubmissionData);
     const statusCode = updatedPatentSubmissionData.status === "Done" ? 200 : (updatedPatentSubmissionData.errorCode ? 400 : 500);
@@ -96,10 +104,13 @@ module.exports.deletePatentData = async(req, res, next) => {
 }
 
 module.exports.viewPatentSubmissionData = async(req, res, next) => {
+    const  userName = req.body.username;
+    console.log('userName in controller  ===>>>>>>', userName);
+
     const {patentId} = req.body;
     console.log('patentId in controller  ===>>>>', patentId);
 
-    const viewPatentsubmissionData = await patentSubmissionservice.viewPatentsubmission(patentId);
+    const viewPatentsubmissionData = await patentSubmissionservice.viewPatentsubmission(patentId, userName);
 
     console.log('viewPatentsubmissionData ====>>>>>>', viewPatentsubmissionData);
 

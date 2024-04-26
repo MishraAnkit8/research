@@ -5,22 +5,23 @@ const moment = require('moment');
 const researchDbR = dbPoolManager.get('researchDbR', research_read_db);
 const researchDbW = dbPoolManager.get('researchDbW', research_write_db);
 
-module.exports.fetchTeachingExecellance = async() => {
+module.exports.fetchTeachingExecellance = async(userName) => {
     let sql = {
-        text : `SELECT * FROM teaching_execellance ORDER BY id`
+        text : `SELECT * FROM teaching_execellance WHERE created_by = $1 ORDER BY id`,
+        values : [userName]
     }
     return researchDbR.query(sql);
 }
 
-module.exports.insertTeachingExecellanceData = async(teachingExecellance, teachingFilesArrayData) => {
+module.exports.insertTeachingExecellanceData = async(teachingExecellance, teachingFilesArrayData, userName) => {
     const {pedagogyInnovation, pedagogyLink, fdpProgram, fdpProgramLink, workShopDetails, workShopLink, invitingFaculty, 
         invitingFacultyLink, programOrientation, programOrientationLink} = teachingExecellance;
     let sql = {
         text : `INSERT INTO teaching_execellance (pedagogy_innovation, pedagogy_innovation_link, fdp_program, fdp_program_link,workshop_details,
              workshop_link, inviting_faculty, inviting_faculty_link, program_orientation, program_orientation_link,
-            pedagogy_innovation_file, fdp_program_file, workshop_file, inviting_faculty_file, program_orientation_file) VALUES($1, $2 , $3 ,$4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) RETURNING id`,
+            pedagogy_innovation_file, fdp_program_file, workshop_file, inviting_faculty_file, program_orientation_file, created_by) VALUES($1, $2 , $3 ,$4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16) RETURNING id`,
         values : [pedagogyInnovation, pedagogyLink, fdpProgram, fdpProgramLink, workShopDetails, workShopLink, invitingFaculty, 
-            invitingFacultyLink, programOrientation, programOrientationLink, teachingFilesArrayData.pedagogyInnovationFileString, teachingFilesArrayData.fdpProgramFileString, teachingFilesArrayData.workShopFileString, teachingFilesArrayData.invitingFacultyFileString, teachingFilesArrayData.programOrientationFileString]
+            invitingFacultyLink, programOrientation, programOrientationLink, teachingFilesArrayData.pedagogyInnovationFileString, teachingFilesArrayData.fdpProgramFileString, teachingFilesArrayData.workShopFileString, teachingFilesArrayData.invitingFacultyFileString, teachingFilesArrayData.programOrientationFileString, userName]
     }
     console.log('data inserted successfully ==>>', sql);
     // console.log('researchDbW.query(sql) in models ===>>', researchDbW.query(sql));
@@ -35,7 +36,7 @@ module.exports.insertTeachingExecellanceData = async(teachingExecellance, teachi
 }
 
 
-module.exports.updateTeachingExecellance = async(teachingId, updatedTeachingExecellance, teachingDocumentToBeUpdate) => {
+module.exports.updateTeachingExecellance = async(teachingId, updatedTeachingExecellance, teachingDocumentToBeUpdate, userName) => {
     const {pedagogyInnovation, pedagogyLink, fdpProgram, fdpProgramLink, workShopDetails, workShopLink, invitingFaculty, 
         invitingFacultyLink, programOrientation, programOrientationLink} = updatedTeachingExecellance;
 
@@ -71,6 +72,7 @@ module.exports.updateTeachingExecellance = async(teachingId, updatedTeachingExec
             { field: 'program_orientation', value: programOrientation },
             { field: 'program_orientation_file', value: programOrientationFile },
             { field: 'program_orientation_link', value: programOrientationLink },
+            { field: 'updated_by', value: userName },
         ]
 
         console.log('teachingFieldsToUpdate ===>>>', teachingFieldsToUpdate);
@@ -158,10 +160,10 @@ module.exports.deleteTeachingExecellance = async(teachingId) =>{
     })
 }
 
-module.exports.teachingExecellanceView = async(teachingId) => {
+module.exports.teachingExecellanceView = async(teachingId, userName) => {
     let sql = {
-        text : `SELECT * FROM teaching_execellance WHERE id = $1`,
-        values : [teachingId]
+        text : `SELECT * FROM teaching_execellance WHERE id = $1 AND created_by = $2`,
+        values : [teachingId, userName]
     }
 
     return researchDbR.query(sql)

@@ -1,8 +1,10 @@
 const researchConsultancyService = require('../services/research-project-grant.service');
 
 module.exports.renderResearchProjectConsultancy = async(req, res, next) => {
+    const  userName = req.body.username;
+    console.log('userName in controller  ===>>>>>>', userName);
 
-    const researchcConsultancyData = await researchConsultancyService.fetchResearConsultacyData();
+    const researchcConsultancyData = await researchConsultancyService.fetchResearConsultacyData(userName);
 
     // console.log('researchcConsultancyData in controller ===>>>>>', researchcConsultancyData);
 
@@ -22,11 +24,14 @@ module.exports.renderResearchProjectConsultancy = async(req, res, next) => {
 
 
 module.exports.insertResearchConsultancyData = async(req, res, next) => {
+    const  userName = req.body.username;
+    console.log('userName in controller  ===>>>>>>', userName);
+
     const researchConsultantData =  req.body;
     console.log('researchConsultantData ==>>', researchConsultantData);
     console.log('files in controllerr ==>>>', req.files);
 
-    const researchcConsultancyData = await researchConsultancyService.insertResearchConsultancyData(req.body, req.files);
+    const researchcConsultancyData = await researchConsultancyService.insertResearchConsultancyData(req.body, req.files, userName);
 
     console.log('researchcConsultancyData ====>>>>>', researchcConsultancyData)
     const statusCode = researchcConsultancyData.status === "Done" ? 200 : (researchcConsultancyData.errorCode ? 400 : 500);
@@ -50,11 +55,14 @@ module.exports.insertResearchConsultancyData = async(req, res, next) => {
 }
 
 module.exports.updatedConsultantData = async(req, res, next) => {
+    const  userName = req.body.username;
+    console.log('userName in controller  ===>>>>>>', userName);
+
     console.log('data comming from templates ==>>', req.body);
     const consultantId = req.body.consultantId;
     const updatedConsultant = req.body;
 
-    const updatedResearchGrant = await researchConsultancyService.updateResearchConstant(consultantId, req.body, req.files);
+    const updatedResearchGrant = await researchConsultancyService.updateResearchConstant(consultantId, req.body, req.files, userName);
 
     console.log('updatedResearchGrant ===>>>>', updatedResearchGrant)
 
@@ -89,10 +97,13 @@ module.exports.deleteResearchConsultant = async(req, res, next) => {
 }
 
 module.exports.viewResearchProjectConsultancy = async(req, res, next) => {
+    const  userName = req.body.username;
+    console.log('userName in controller  ===>>>>>>', userName);
+
     console.log('body ===>>>', req.body.consultantId)
     const consultantId = req.body.consultantId;
     console.log('consultantId  in controller ==>>', consultantId);
-    const viewResearchConsultantData = await researchConsultancyService.viewReseachProjectData(consultantId);
+    const viewResearchConsultantData = await researchConsultancyService.viewReseachProjectData(consultantId, userName);
 
     console.log('viewResearchConsultantData in controller ===>>', viewResearchConsultantData)
     const submissionGrantDate = formatDate(viewResearchConsultantData.researchData.submission_date);

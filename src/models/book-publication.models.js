@@ -68,7 +68,7 @@ module.exports.updatedBookPublication = async(bookPublicationId, updatedBookPubl
     console.log('queryText ====>>>>', queryText);
     let values = [
         bookPublicationId, authorLastName, bookTitle, edition, publicationPlace, publisherCategory, volumeNumber, publisherName, publicationYear,
-        bookUrl, doiBookIdParsed, isbnNo, numberOfNmimsAuthors, nmimsAuthors, nmimsCampusAuthors, nmimsSchoolAuthors, ...(DataFileString ? [DataFileString] : [], userName)
+        bookUrl, doiBookIdParsed, isbnNo, numberOfNmimsAuthors, nmimsAuthors, nmimsCampusAuthors, nmimsSchoolAuthors, userName, ...(DataFileString ? [DataFileString] : [])
     ];
 
     let sql = {

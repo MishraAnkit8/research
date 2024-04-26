@@ -1,12 +1,12 @@
 const teachingExecellanceModel = require('../models/teaching-excellance.model');
 
 
-module.exports.fetchTeachingExecellanceData = async() => {
-    const teachingExecellanceData = await teachingExecellanceModel.fetchTeachingExecellance();
+module.exports.fetchTeachingExecellanceData = async(userName) => {
+    const teachingExecellanceData = await teachingExecellanceModel.fetchTeachingExecellance(userName);
     return teachingExecellanceData;
 }
 
-module.exports.insertTeachingExecellance = async(teachingExecellance, files) => {
+module.exports.insertTeachingExecellance = async(teachingExecellance, files, userName) => {
     console.log('files in service ===>', files);
     // var pedagogyInnovationFileString = '';
     // var fdpProgramFileString = '';
@@ -69,7 +69,7 @@ module.exports.insertTeachingExecellance = async(teachingExecellance, files) => 
     console.log('fileArrayStringValues ===>>>', fileArrayStringValues);
     console.log('teachingFilesArrayData ===>>', teachingFilesArrayData);
 
-    const teachingExecellanceData = await teachingExecellanceModel.insertTeachingExecellanceData(teachingExecellance, teachingFilesArrayData);
+    const teachingExecellanceData = await teachingExecellanceModel.insertTeachingExecellanceData(teachingExecellance, teachingFilesArrayData, userName);
     if(teachingExecellanceData){
         return {
             status : 'done',
@@ -79,7 +79,7 @@ module.exports.insertTeachingExecellance = async(teachingExecellance, files) => 
     }
 }
 
-module.exports.updatedTeachingExecellance = async(teachingId, updatedTeachingExecellance, files) => {
+module.exports.updatedTeachingExecellance = async(teachingId, updatedTeachingExecellance, files, userName) => {
     console.log('files for updat in services ==>>>', files);
     let teachingDocumentToBeUpdate = {};
     console.log('length of files ==>>>', Object.keys(files).length);
@@ -149,7 +149,7 @@ module.exports.updatedTeachingExecellance = async(teachingId, updatedTeachingExe
     }
   
   
-    const updatedTeachingExecellanceData = await teachingExecellanceModel.updateTeachingExecellance(teachingId, updatedTeachingExecellance, teachingDocumentToBeUpdate);
+    const updatedTeachingExecellanceData = await teachingExecellanceModel.updateTeachingExecellance(teachingId, updatedTeachingExecellance, teachingDocumentToBeUpdate, userName);
     console.log('updated data in services ==>>>::::', updatedTeachingExecellanceData);
     if(updatedTeachingExecellanceData && updatedTeachingExecellanceData.rowCount === 1){
         return {
@@ -172,8 +172,8 @@ module.exports.deleteTeachingExecellance = async (teachingId) => {
     }
 }
 
-module.exports.viewTeachingExecellance = async(teachingId) => {
-    const teachingExecellanceViewData = await teachingExecellanceModel.teachingExecellanceView(teachingId);
+module.exports.viewTeachingExecellance = async(teachingId, userName) => {
+    const teachingExecellanceViewData = await teachingExecellanceModel.teachingExecellanceView(teachingId, userName);
     console.log('teachingExecellanceViewData' , teachingExecellanceViewData.rows[0]);
     if(teachingExecellanceViewData && teachingExecellanceViewData.rowCount === 1){
         return teachingExecellanceViewData.rows[0]

@@ -2,9 +2,9 @@
 
 const researchawardModels = require('../models/research-award.models');
 
-module.exports.renderResearchAwardData = async() => {
+module.exports.renderResearchAwardData = async(userName) => {
 
-    const researchAwardData = await researchawardModels.fetchResearchAward();
+    const researchAwardData = await researchawardModels.fetchResearchAward(userName);
     console.log('data in service ===>>>>', researchAwardData.rowCount);
     return  researchAwardData ? {
         status : "Done",
@@ -18,13 +18,13 @@ module.exports.renderResearchAwardData = async() => {
 }
 
 
-module.exports.insertResearchAwardData = async(body, files) => {
+module.exports.insertResearchAwardData = async(body, files, userName) => {
     const awardFiles = files ?.map(file => file.filename).join(',');
     const researchAwardData = body;
     console.log('awardFiles ===>>>>>', awardFiles);
     console.log('researchAwardData in service ==>>>', researchAwardData)
 
-    const insertAwardData = await researchawardModels.insertResearchAwardRow(awardFiles, researchAwardData);
+    const insertAwardData = await researchawardModels.insertResearchAwardRow(awardFiles, researchAwardData, userName);
     console.log('insertAwardData ===>>>>', insertAwardData)
 
     return insertAwardData.status === "Done" ? {
@@ -42,13 +42,13 @@ module.exports.insertResearchAwardData = async(body, files) => {
 }
 
 
-module.exports.updateResearchAward = async( body, files) => {
+module.exports.updateResearchAward = async( body, files, userName) => {
     const updatedReseachAwardDocuments = files ?.map(file => file.filename).join(',');
     const updatedAwardData = body;
     const awardId = body.awardId;
     console.log('awardId ===>>>>', awardId);
 
-    const updatedAwardRowData = await researchawardModels.updatedResearchRowData(awardId, updatedReseachAwardDocuments, updatedAwardData);
+    const updatedAwardRowData = await researchawardModels.updatedResearchRowData(awardId, updatedReseachAwardDocuments, updatedAwardData, userName);
     console.log('updatedAwardRowData ===>>>>', updatedAwardRowData);
 
     return updatedAwardRowData.status === "Done" ? {
@@ -83,11 +83,11 @@ module.exports.deleteResearchAwardData = async(body) => {
     }
 }
 
-module.exports.viewResearchRowData = async(body) => {
+module.exports.viewResearchRowData = async(body, userName) => {
     const awardId = body.awardId;
     console.log('awardId ===>>>', awardId)
 
-    const researchAwardDataView = await researchawardModels.veiwResearchAwardRow(awardId);
+    const researchAwardDataView = await researchawardModels.veiwResearchAwardRow(awardId, userName);
 
     console.log('researchAwardDataView ===>>>>', researchAwardDataView);
     return researchAwardDataView.status === "Done" ? {

@@ -5,7 +5,7 @@ const moment = require('moment');
 const researchDbR = dbPoolManager.get('researchDbR', research_read_db);
 const researchDbW = dbPoolManager.get('researchDbW', research_write_db);
 
-module.exports.fetchResearchConsultancy = async() => {
+module.exports.fetchResearchConsultancy = async(userName) => {
     let researchProjectSql = {
         text : `SELECT * FROM research_project_grant ORDER BY id`,
     }
@@ -23,6 +23,8 @@ module.exports.fetchResearchConsultancy = async() => {
         r.funding_amount,
         r.status_of_research_project,
         r.submission_date,
+        r.created_by AS created_by,
+        r.updated_by AS updated_by,
         r.supporting_documents,
         f.id AS faculty_id,
         f.employee_id,
@@ -38,8 +40,11 @@ module.exports.fetchResearchConsultancy = async() => {
         faculties AS f ON rf.faculty_id = f.id
     LEFT JOIN 
         faculty_types AS ft ON f.faculty_type_id = ft.id
+    WHERE
+       created_by = $1
     ORDER BY  r.id
-        `
+        `,
+    values : [userName]
     }
 
     let internalFacultySql = {
@@ -94,16 +99,16 @@ module.exports.fetchResearchConsultancy = async() => {
 }
 
 
-module.exports.insertResearhcProjectConstancyData = async (researchCunsultancyData, consultancyDataFiles, FacultydataArray) => {
+module.exports.insertResearhcProjectConstancyData = async (researchCunsultancyData, consultancyDataFiles, FacultydataArray, userName) => {
     console.log('researchCunsultancyData inside models ===>>>', researchCunsultancyData);
 
     const { grantProposalCategory, typeOfGrant, titleOfProject, thurstAreaOfResearch, fundingAgency, fundingAmount,
         statusOfResearchProject, submissionGrantDate } = researchCunsultancyData
 
     let researchSql = {
-        text: `INSERT INTO research_project_grant (grant_proposal_category, type_of_research_grant, title_of_project, thrust_area_of_research, name_of_funding_agency, funding_amount, status_of_research_project, submission_date, supporting_documents) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id`,
+        text: `INSERT INTO research_project_grant (grant_proposal_category, type_of_research_grant, title_of_project, thrust_area_of_research, name_of_funding_agency, funding_amount, status_of_research_project, submission_date, supporting_documents, created_by) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING id`,
         values: [grantProposalCategory, typeOfGrant, titleOfProject, thurstAreaOfResearch, fundingAgency, fundingAmount,
-            statusOfResearchProject, submissionGrantDate, consultancyDataFiles]
+            statusOfResearchProject, submissionGrantDate, consultancyDataFiles, userName]
     };
 
     let promises = [];
@@ -146,7 +151,7 @@ module.exports.insertResearhcProjectConstancyData = async (researchCunsultancyDa
 }
 
 
-module.exports.updateResearchConsultantData = async(consultantId, updatedResearchGrant, updatedConsultantFilesData, FacultydataArray) => {
+module.exports.updateResearchConsultantData = async(consultantId, updatedResearchGrant, updatedConsultantFilesData, FacultydataArray, userName) => {
     console.log('data in models ===>>>>', updatedResearchGrant);
     const supportingDocuments = updatedConsultantFilesData ? updatedConsultantFilesData : null;
     console.log('supportingDocuments ====>>>>', supportingDocuments);
@@ -155,14 +160,14 @@ module.exports.updateResearchConsultantData = async(consultantId, updatedResearc
          statusOfResearchProject, submissionGrantDate} = updatedResearchGrant;
    
 
-    let baseQuery = `UPDATE research_project_grant SET  grant_proposal_category = $2, type_of_research_grant = $3, title_of_project = $4, thrust_area_of_research = $5, name_of_funding_agency = $6, funding_amount = $7, status_of_research_project = $8, submission_date = $9`;
-    let documentsQuery =  supportingDocuments ? `, supporting_documents = $10` : '';
+    let baseQuery = `UPDATE research_project_grant SET  grant_proposal_category = $2, type_of_research_grant = $3, title_of_project = $4, thrust_area_of_research = $5, name_of_funding_agency = $6, funding_amount = $7, status_of_research_project = $8, submission_date = $9, updated_by = $10`;
+    let documentsQuery =  supportingDocuments ? `, supporting_documents = $11` : '';
     console.log('documentsQuery ====>>>>', documentsQuery);
     let queryText = baseQuery + documentsQuery +  ` WHERE id = $1`;
     console.log('queryText ===>>>>', queryText)
 
     let values = [consultantId, grantProposalCategory, typeOfGrant, titleOfProject, thurstAreaOfResearch, fundingAgency, fundingAmount,
-         statusOfResearchProject, submissionGrantDate, ...(supportingDocuments ? [supportingDocuments] : [])];
+         statusOfResearchProject, submissionGrantDate, userName,  ...(supportingDocuments ? [supportingDocuments] : [])];
     console.log('values ===>>>>', values)
     
 
@@ -248,7 +253,7 @@ module.exports.deleteResearchConsultantData = async (consultantId) => {
   };
   
 
-module.exports.viewResearchConsultancy = async(consultantId) => {
+module.exports.viewResearchConsultancy = async(consultantId, userName) => {
     console.log('consultantId in models ==>>', consultantId);
     let sql = {
         text : `SELECT
@@ -264,9 +269,9 @@ module.exports.viewResearchConsultancy = async(consultantId) => {
         LEFT JOIN
             faculties f ON rgf.faculty_id = f.id
         WHERE
-            rg.id = $1;
+            rg.id = $1 AND created_by = $2
         `,
-        values : [consultantId]
+        values : [consultantId, userName]
     }
     console.log('sql ==>>', sql);
     const researchProjectData = await researchDbR.query(sql)
