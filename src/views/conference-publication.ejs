@@ -57,7 +57,7 @@
                         </div>
                     </div>
                 </div>
-                <table class="table vertical-lines custom-table table-responsive research-pagination" id="conference-publication-list">
+                <table class="table vertical-lines custom-table table-responsive research-pagination data-list" id="conference-publication-list">
                     <thead>
                         <th class="col-lg-1">#</th>
                         <th class="col-lg-1 campus">Campus</th>
@@ -68,7 +68,7 @@
                         <th class="col-lg-1">ISSN/ISNB No</th>
                         <th class="col-lg-1">Action</th>
                     </thead>
-                    <tbody id="data-list">
+                    <tbody >
                     <% conferenceData.forEach(function(conference,index) { %>
                         <% const externalEmp=externalEmpList[index]; %>
                             <tr data-conference-id="<%- conference.id %>" data-is-presenter="<%- conference.is_presenter %>"
@@ -111,20 +111,25 @@
                                 </td>
                             </tr>
                             <% }); %>
+
+                            <tr>
+                                <div id="no-records-message"  style="display: none; color: red; margin-top: 10px; padding-left: 40%;">
+                                    <b class="no-record">No records found.</b> 
+                                 </div>
+                            </tr>
                     </tbody>
                 </table>
-                <div class="d-flex justify-content-between">
-                    <div>
-                        Total Entries : <label id="row-count"> <%- rowCount %> </label>
-                    </div>
-                    <div>
-                        <div>
-                            <button id="prevBtn" class="btn btn-primary">Previous</button>
-                            <button id="nextBtn" class="btn btn-primary">Next</button>
-                            <p id="pagination" class="pagination-search"></p>
-                        </div>
-                    </div>
-                </div>
+            </div>
+        </div>
+        <div class="d-flex justify-content-between">
+            <div>
+                <label id="total-row-count">Total entries : <%- rowCount %> </label>
+                <label class="d-none" id="row-count"> <%- rowCount %></label>
+            </div>
+            <div>
+                <button id="prevBtn" class="btn btn-primary">Previous</button>
+                <button id="nextBtn" class="btn btn-primary">Next</button>
+                <p id="pagination" class="pagination-search"></p>
             </div>
         </div>
         <!--Import Modal -->

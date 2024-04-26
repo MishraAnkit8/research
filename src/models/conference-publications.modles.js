@@ -8,7 +8,7 @@ const researchDbW = dbPoolManager.get('researchDbW', research_write_db);
 module.exports.fetchConferencePublication = async(userName) => {
     let conferenceSql = {
         text : `SELECT * FROM  conference_presentation WHERE created_by = $1 ORDER BY id `,
-        value : [userName]
+        values : [userName]
     }
 
     let internalEmpSql = {
@@ -22,17 +22,22 @@ module.exports.fetchConferencePublication = async(userName) => {
     console.log('externalEmpSql ===<>>>>', externalEmpSql);
     console.log('conferenceSql ===>>>', conferenceSql);
     console.log('internalEmpSql ===>>>', internalEmpSql)
-    const conferencePromise = researchDbR.query(conferenceSql);
-    const internalEmpPromise = researchDbR.query(internalEmpSql);
-    const externalEmpPromise = researchDbR.query(externalEmpSql);
+    const conferencePromise = await researchDbR.query(conferenceSql);
+    const internalEmpPromise = await researchDbR.query(internalEmpSql);
+    const externalEmpPromise = await researchDbR.query(externalEmpSql);
+    const promises = [conferencePromise, internalEmpPromise, externalEmpPromise]
 
-    const [conferencePublicationTable, internalEmpList, externalEmpList] = await Promise.all([conferencePromise, internalEmpPromise, externalEmpPromise]);
-
+   return Promise.all(promises).then(([conferencePromise, internalEmpPromise, externalEmpPromise]) => {
     return {
-        conferenceDataList: conferencePublicationTable,
-        internalEmpList: internalEmpList,
-        externalEmpList : externalEmpList
+        conferenceDataList: conferencePromise.rows,
+        internalEmpList: internalEmpPromise.rows,
+        externalEmpList : externalEmpPromise.rows,
+        rowCount : conferencePromise.rowCount
     };
+   }) .catch((error) => {
+    return{status : "Failed" , message : error.message , errorCode : error.code}
+    }) 
+
 }
 
 // module.exports.viewConferenceData = async(conferenceId, userName) => {

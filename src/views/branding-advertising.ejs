@@ -57,7 +57,7 @@
                         </div>
                     </div>
                 </div>
-                <table class="table vertical-lines custom-table table-responsive research-pagination" id="branding-advertising-list">
+                <table class="table vertical-lines custom-table table-responsive data-list research-pagination" id="branding-advertising-list">
                     <thead>
                         <th class="col-lg-1">#</th>
                         <th class="col-lg-1">Faculty Recognition</th>
@@ -70,7 +70,7 @@
                         <th class="col-lg-1">Organising Conference at NMIMS</th>
                         <th class="col-lg-1">Student Event Participation</th>
                         <th class="col-lg-1">Newspaper Article</th>
-                        <th class="col-lg-1">Action</th>
+                        <th class="col-lg-1" colspan="3">Action</th>
                     </thead>
                     <tbody id="data-list">
                     <% advertisingData.forEach(function(advertising, index) { %>
@@ -106,7 +106,7 @@
                             <td class="organising-conference col-lg-1 "> <%- advertising.organising_conference %></td>
                             <td class="student-event-participation col-lg-1 "> <%- advertising.student_event_participation %></td>
                             <td class="newspaper-article col-lg-1 "> <%- advertising.newspaper_article %></td>
-                            <td>
+                            <!-- <td>
                                 <label class="view" data-advertising-id="<%- advertising.id %>"><i class="fa-solid fa-eye view text-danger"
                                     data-advertising-id="<%- advertising.id %>"></i></label>
                                 <label class="edit" data-advertising-id="<%- advertising.id %>"><i class="fa fa-edit edit text-danger"
@@ -114,23 +114,31 @@
                                 <label class="delete" data-advertising-id="<%- advertising.id %>"><i
                                     class="fa-solid fa-trash delete text-danger"
                                     data-advertising-id="<%- advertising.id %>"></i></label>
+                            </td> -->
+                            <td title="View" class="col-lg-1 view text-danger" style="cursor: pointer;" id="label-cals"  data-advertising-id="<%- advertising.id %>">
+                                &#128065;
+                            </td>
+                            <td title="Edit" class="col-lg-1 edit text-danger" style="cursor: pointer;" id="label-cals"  data-advertising-id="<%- advertising.id %>">
+                                &#9998;
+                            </td>
+                            <td title="Delete" class="col-lg-1 delete text-danger" style="cursor: pointer;" id="label-cals"  data-advertising-id="<%- advertising.id %>">
+                                &#128465;
                             </td>
                         </tr>
                         <% }); %>
                     </tbody>
                 </table>
             </div>
-            <div class="d-flex justify-content-between">
-                <div>
-                    <label id="total-entry" class="d-none">
-                    </label>
-                    <label id="total-row-count"> Total entries : <span id="row-count"> <%- rowCount %> </span> </label>
-                </div>
-                <div>
-                    <button id="prevBtn" class="btn btn-primary">Previous</button>
-                    <button id="nextBtn" class="btn btn-primary">Next</button>
-                    <p id="pagination" class="pagination-search"></p>
-                </div>
+        </div>
+        <div class="d-flex justify-content-between">
+            <div>
+                <label id="total-row-count">Total entries : <%- rowCount %> </label>
+                <label class="d-none" id="row-count"> <%- rowCount %></label>
+            </div>
+            <div>
+                <button id="prevBtn" class="btn btn-primary">Previous</button>
+                <button id="nextBtn" class="btn btn-primary">Next</button>
+                <p id="pagination" class="pagination-search"></p>
             </div>
         </div>
         <!--Import Modal -->
@@ -707,11 +715,11 @@
 <!-- inline javascript -->
 <script>
     //   for index icrement
-    const rowCount = document.getElementById('row-count');
+    let rowCount = document.getElementById('row-count');
+    const totalRowCount = document.getElementById('total-row-count');
     let rowIndex = rowCount.innerText;
-    console.log('rowIndex ===>>>', rowIndex)
     let indexValue = parseInt(rowIndex, 10);
-    console.log('indexValue ===>>>', indexValue)
+    
     const brandingAdvertisingAddModal = document.getElementById('branding-advertising-add-modal');
     const brandingAdvertisingList = document.getElementById('branding-advertising-list')
     const submitBtn= document.getElementById('submit-btn');
@@ -932,21 +940,10 @@
         .then((data) => {
             if(data.status === 'Done'){
                 console.log('data ==>>', data);
-                console.log('IndexEntry ====>>>', IndexEntry);
-                console.log('');
-                let rowCountInteger = parseInt(data.rowCount, 10);
-                console.log('rowCountInteger ===>>>>>', rowCountInteger);
-                IndexEntry = (rowCountInteger + indexValue < IndexEntry) ? IndexEntry : rowCountInteger + indexValue;
-                console.log('IndexEntry ===>>>>', IndexEntry);
-                // let IndexEntry = rowCountInteger + indexValue;
-                // if(IndexEntry === rowCountInteger){
-                //     console.log('yes both are same')
-                // }
+                const rowCountInteger = parseInt(data.rowCount, 10);
+                const IndexEntry = rowCountInteger + indexValue;
+                indexValue = IndexEntry;
                 console.log('IndexEntry ===>>>', IndexEntry);
-                totalRowCountData.classList.add('d-none');
-                totalEntry.classList.remove('d-none');
-                totalEntry.innerText = ` Total Entries : ${IndexEntry}`;
-                console.log('totalEntry ===>>>', totalEntry)
                 // totalEntry.classList.remove('d-none');
                 const newBrandingAdvertisingRow = document.createElement('tr');
                 newBrandingAdvertisingRow.setAttribute('data-advertising-id', advertisingId);
@@ -983,14 +980,16 @@
                                     <td class="organising-conference">${ data.advertisingData.organisingConference}</td>
                                     <td class="student-event-participation">${ data.advertisingData.studentEventParticipation}</td>
                                     <td class="newspaper-article">${ data.advertisingData.newsPaperArticle}</td>
-                                    <td>
-                                        <label class="view" data-advertising-id=${data.advertisingId}><i class="fa-solid fa-eye view text-danger"
-                                            data-advertising-id=${data.advertisingId}></i></label>
-                                        <label class="edit" data-advertising-id=${data.advertisingId}><i class="fa fa-edit edit text-danger"
-                                            data-advertising-id=${data.advertisingId}></i></label>
-                                        <label class="delete" data-advertising-id=${data.advertisingId}><i class="fa-solid fa-trash delete text-danger"
-                                            data-advertising-id=${data.advertisingId}></i></label>
-                                    </td> `;
+                                    <td title="View" class="col-lg-1 view text-danger" style="cursor: pointer;"  data-advertising-id=${data.advertisingId}>
+                                        &#128065;
+                                    </td>
+                                    <td title="Edit" class="col-lg-1 edit text-danger" style="cursor: pointer;" id="label-cals"  data-advertising-id=${data.advertisingId}>
+                                        &#9998;
+                                    </td>
+                                    <td title="Delete" class="col-lg-1 delete text-danger" style="cursor: pointer;" id="label-cals"  data-advertising-id=${data.advertisingId}>
+                                        &#128465;
+                                    </td>
+                                     `;
                 brandingAdvertisingList.appendChild(newBrandingAdvertisingRow);
                 Swal.fire({
                     position: "top-center",
@@ -1000,6 +999,9 @@
                     // timer: 1500
                 });
                 $('#branding-advertising-modal').modal('hide');
+                rowCount.classList.remove('d-none');
+                totalRowCount.classList.add('d-none');
+                rowCount.innerText = `Total entries : ${IndexEntry}`
                 }
                 else {
                 console.log('data ====>>>>>', data);

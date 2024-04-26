@@ -68,7 +68,7 @@
                         <th class="col-lg-1">Book title</th>
                         <th class="col-lg-1">ISBN Number</th>
                         <th class="col-lg-1">Publisher Name</th>
-                        <th class="col-lg-1">Action</th>
+                        <th class="col-lg-1" colspan="3">Action</th>
                     </thead>
                     <tbody id="data-list">
                     <% bookChapterData.forEach(function(bookChapter,index) { %>
@@ -91,7 +91,7 @@
                             <td class="book-title col-lg-1"><%- bookChapter.book_title %></td>
                             <td class="isbn-no col-lg-1"><%- bookChapter.isbn %></td>
                             <td class="publisher-name col-lg-1"><%- bookChapter.publisher_name %></td>
-                            <td>
+                            <!-- <td>
                                 <label class="view" data-bookChapter-id="<%- bookChapter.id %>"><i
                                         class="fa-solid fa-eye view text-danger"
                                         data-bookChapter-id="<%- bookChapter.id %>"></i></label>
@@ -101,22 +101,32 @@
                                 <label class="delete" data-bookChapter-id="<%- bookChapter.id %>"><i
                                         class="fa-solid fa-trash delete text-danger"
                                         data-bookChapter-id="<%- bookChapter.id %>"></i></label>
+                            </td> -->
+                            <td title="View" class="col-lg-1 view text-danger" style="cursor: pointer;" <td title="View" class="col-lg-1 view text-danger" style="cursor: pointer;"   data-bookChapter-id="<%- bookChapter.id %>">
+                                &#128065;
                             </td>
+                            <td title="Edit" class="col-lg-1 edit text-danger" style="cursor: pointer;"   data-bookChapter-id="<%- bookChapter.id %>">
+                                &#9998;
+                            </td>
+                            <td title="Delete" class="col-lg-1 delete text-danger" style="cursor: pointer;"   data-bookChapter-id="<%- bookChapter.id %>">
+                                &#128465;
+                            </td>
+                          
                         </tr>
                         <% }); %>
                     </tbody>
                 </table>
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <label>Total entries : <%- rowCount %> </label>
-                        <label class="d-none" id="row-count"> <%- rowCount %> </label>
-                    </div>
-                    <div>
-                        <button id="prevBtn" class="btn btn-primary">Previous</button>
-                        <button id="nextBtn" class="btn btn-primary">Next</button>
-                        <p id="pagination" class="pagination-search"></p>
-                    </div>
-                </div>
+            </div>
+        </div>
+        <div class="d-flex justify-content-between">
+            <div>
+                <label id="total-row-count">Total entries : <%- rowCount %> </label>
+                <label class="d-none" id="row-count"> <%- rowCount %></label>
+            </div>
+            <div>
+                <button id="prevBtn" class="btn btn-primary">Previous</button>
+                <button id="nextBtn" class="btn btn-primary">Next</button>
+                <p id="pagination" class="pagination-search"></p>
             </div>
         </div>
         <!--Import Modal -->
@@ -454,10 +464,13 @@
 </div>
 <!-- inline javascript -->
 <script>
-    //   for index icrement
-    const rowCount = document.getElementById('row-count');
+
+    // for index icrement
+    let rowCount = document.getElementById('row-count');
+    const totalRowCount = document.getElementById('total-row-count');
     let rowIndex = rowCount.innerText;
     let indexValue = parseInt(rowIndex, 10);
+
     const doiIdBookDisplay = document.querySelector('.doi-book-id')
     
     const bookChapterList = document.getElementById('book-chapter-list');
@@ -583,7 +596,11 @@
         })
         .then((data) => {
            if(data.status === 'Done'){
-            console.log('data ==>>', data)
+            console.log('data ==>>', data);
+            const rowCountInteger = parseInt(data.rowCount, 10);
+            const IndexEntry = rowCountInteger + indexValue;
+            indexValue = IndexEntry;
+            console.log('IndexEntry ===>>>', IndexEntry);
             const message = data.message;
             console.log('message ====>>>>>', message)
             const newBookChapter = document.createElement('tr');
@@ -602,7 +619,7 @@
             newBookChapter.setAttribute('data-nmims-school-authors' , data.bookChapter.nmimsSchoolAuthors);
             newBookChapter.setAttribute('data-supporting-documents' , data.bookChapter.supportingDocuments);
             newBookChapter.innerHTML = `
-                        <td >${data.bookChapterId}</td>
+                            <td>${IndexEntry}</td>
                             <td class="author-name">${data.bookChapter.authorName}</td>
                             <td class="publication-year">${data.bookChapter.publicationYear}</td>
                             <td class="book-title">${data.bookChapter.bookTitle}</td>
@@ -615,7 +632,17 @@
                                     data-bookChapter-id="${data.bookChapterId}"></i></label>
                                 <label class="delete"data-bookChapter-id="${data.bookChapterId}"><i class="fa-solid fa-trash delete text-danger"
                                     data-bookChapter-id="${data.bookChapterId}"></i></label>
-                            </td> `;
+                            </td>
+                            <td title="View" class="col-lg-1 view text-danger" style="cursor: pointer;" <td title="View" class="col-lg-1 view text-danger" style="cursor: pointer;"   data-bookChapter-id=${data.bookChapterId}>
+                                &#128065;
+                            </td>
+                            <td title="Edit" class="col-lg-1 edit text-danger" style="cursor: pointer;"   data-bookChapter-id=${data.bookChapterId}>
+                                &#9998;
+                            </td>
+                            <td title="Delete" class="col-lg-1 delete text-danger" style="cursor: pointer;"   data-bookChapter-id="${data.bookChapterId}>
+                                &#128465;
+                            </td>
+                             `;
             bookChapterList.append(newBookChapter);
             Swal.fire({
 							position: "top-center",
@@ -625,6 +652,9 @@
 							timer: 1500
 						});
             $('#book-chapter-modal').modal('hide');
+            rowCount.classList.remove('d-none');
+            totalRowCount.classList.add('d-none');
+            rowCount.innerText = `Total entries : ${IndexEntry}`
            }
            else{
             const message = data.message;

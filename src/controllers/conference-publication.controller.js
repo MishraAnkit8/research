@@ -2,7 +2,7 @@ const conferencePublicationServices = require('../services/conference-publicatio
 
 module.exports.renderConferencePage = async(req, res, next) => {
     const  userName = req.body.username;
-    console.log('userName in controller  ===>>>>>>', userName);
+    console.log('userName in controller in conference  ===>>>>>>', userName);
 
     const conferenceData = await conferencePublicationServices.fetchConferencePublication(userName);
     console.log('conferenceData ====>>>>>', conferenceData);

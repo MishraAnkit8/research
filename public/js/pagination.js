@@ -1,5 +1,5 @@
 let searchInput = document.getElementById("searchKeyword");
-const tableDataList = document.getElementById('journal-paper-list').getElementsByTagName('tr');
+// const tableDataList = document.getElementById('journal-paper-list').getElementsByTagName('tr');
 function initializePagination() {
   let entriesPerPage = 5;
   let currentPage = 1;
@@ -81,9 +81,9 @@ function initializePagination() {
     console.log('searchKeyword ====>>>>>>>', searchKeyword);
     let matchedRowCount = 0;
     let noRecordsMessage = document.getElementById('no-records-message');
-    let journalList = document.getElementById('journal-paper-list');
+    let dataList = document.querySelector('.data-list');
   
-    let rows = journalList.querySelectorAll("tbody tr");
+    let rows = dataList.querySelectorAll("tbody tr");
     console.log('rows ===>>>>>>', rows)
   
     rows.forEach(function (row) {
@@ -116,10 +116,10 @@ function initializePagination() {
     // Show/hide no records message based on matched row count
     if (matchedRowCount === 0) {
       noRecordsMessage.style.display = "block";
-      journalList.style.display = "none";
+      dataList.style.display = "none";
     } else {
       noRecordsMessage.style.display = "none";
-      journalList.style.display = "block";
+      dataList.style.display = "block";
     }
   
     // total row count and pagination based on matched rows
@@ -170,18 +170,17 @@ function initializePagination() {
 searchInput.addEventListener('keyup', function() {
   const searchTerm = searchInput.value.toLowerCase();
 
-  const tableRows = document.querySelectorAll('#data-list tr');
-
+  const tableRows = document.querySelectorAll('.data-list tr');
+  console.log('tableRows ===>>>>>', tableRows)
 
 tableRows.forEach(row => {
     const tableData = row.textContent.toLowerCase();
-
+  console.log("row:::::::::::::::::",row)
     if (tableData.includes(searchTerm)) {
         row.style.display = 'table-row';
 
     } else {
         row.style.display = 'none';
-        // row.querySelector('.action-buttons').style.visibility = 'collapse';
     }
 });
 });

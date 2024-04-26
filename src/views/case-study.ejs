@@ -57,7 +57,7 @@
                         </div>
                     </div>
                 </div>
-                <table class="table vertical-lines custom-table table-responsive research-pagination" id="case-studies-data-list">
+                <table class="table vertical-lines custom-table table-responsive data-list research-pagination" id="case-studies-data-list">
                     <thead>
                         <th class="col-lg-1">#</th>
                         <th class="col-lg-1">Author First Name</th>
@@ -67,7 +67,7 @@
                         <th class="col-lg-1">Publisher Name</th>
                         <th class="col-lg-1">Volume Number</th>
                         <th class="col-lg-1">Publication Year</th>
-                        <th class="col-lg-1">Action</th>
+                        <th class="col-lg-1" colspan="3">Action</th>
                     </thead>
                     <tbody id="data-list">
                     <% caseStudiesData.forEach(function(caseStudy, index) { %>
@@ -86,29 +86,38 @@
                             <td class="cell publisher-name col-lg-1"> <%- caseStudy.publisher_name %> </td>
                             <td class="cell volume-number col-lg-1"> <%- caseStudy.volume_number %> </td>
                             <td class="cell publication-year col-lg-1"> <%- caseStudy.publication_year %> </td>
-                            <td class="cell col-lg-1">
+                            <!-- <td class="cell col-lg-1">
                                 <label class="view" data-case-id="<%- caseStudy.id %>"><i class="fa-solid fa-eye view text-danger"
                                     data-case-id="<%- caseStudy.id %>"></i></label>
                                 <label class="edit" data-case-id="<%- caseStudy.id %>"><i class="fa fa-edit edit text-danger"
                                     data-case-id="<%- caseStudy.id %>"></i></label>
                                 <label class="delete" data-case-id="<%- caseStudy.id %>"><i class="fa-solid fa-trash delete text-danger"
                                     data-case-id="<%- caseStudy.id %>"></i></label>
+                            </td> -->
+                            <td title="View" class="col-lg-1 view text-danger" style="cursor: pointer;"  data-case-id="<%- caseStudy.id %>">
+                                &#128065;
+                            </td>
+                            <td title="Edit" class="col-lg-1 edit text-danger" style="cursor: pointer;"  data-case-id="<%- caseStudy.id %>">
+                                &#9998;
+                            </td>
+                            <td title="Delete" class="col-lg-1 delete text-danger" style="cursor: pointer;"   data-case-id="<%- caseStudy.id %>">
+                                &#128465;
                             </td>
                         </tr>
                         <% }); %>
                     </tbody>
                 </table>
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <label> Total entries: <%- rowCount %> </label>
-                        <label class="d-none" id="row-count"> <%- rowCount %> </label>
-                    </div>
-                    <div>
-                        <button id="prevBtn" class="btn btn-primary">Previous</button>
-                        <button id="nextBtn" class="btn btn-primary">Next</button>
-                        <p id="pagination" class="pagination-search"></p>
-                    </div>
-                </div>
+            </div>
+        </div>
+        <div class="d-flex justify-content-between">
+            <div>
+                <label id="total-row-count">Total entries : <%- rowCount %> </label>
+                <label class="d-none" id="row-count"> <%- rowCount %></label>
+            </div>
+            <div>
+                <button id="prevBtn" class="btn btn-primary">Previous</button>
+                <button id="nextBtn" class="btn btn-primary">Next</button>
+                <p id="pagination" class="pagination-search"></p>
             </div>
         </div>
         <!--Import Modal -->
@@ -389,9 +398,11 @@
 <!-- inline javascript -->
 <script>
     //   for index icrement
-    const rowCount = document.getElementById('row-count');
+    let rowCount = document.getElementById('row-count');
+    const totalRowCount = document.getElementById('total-row-count');
     let rowIndex = rowCount.innerText;
     let indexValue = parseInt(rowIndex, 10);
+
     const caseStudiesDataList = document.getElementById('case-studies-data-list');
     const submitBtn = document.getElementById('submit-btn');
     const updateBtn = document.getElementById('update-btn');
@@ -456,6 +467,11 @@
             console.log('data ==>>' , data);
             if(data.status === 'done'){
                 caseStudyId = data.caseStudyId;
+                const rowCountInteger = parseInt(data.rowCount, 10);
+                const IndexEntry = rowCountInteger + indexValue;
+                indexValue = IndexEntry;
+                console.log('IndexEntry ===>>>', IndexEntry);
+
                 console.log('caseStudyId', caseStudyId);
                 const newCaseStudy = document.createElement('tr');
                 newCaseStudy.setAttribute('data-page-number', caseStudyData.pageNumber);
@@ -466,7 +482,7 @@
                 newCaseStudy.setAttribute('data-nmims-campus-authors', caseStudyData.nmimsCampusAuthors);
                 newCaseStudy.setAttribute('data-nmims-school-authors', caseStudyData.nmimsSchoolAuthors);
                 newCaseStudy.innerHTML = `
-                        <td class="cell" id="rowCount">${indexValue}</td>
+                        <td class="cell" id="rowCount">${IndexEntry}</td>
                         <td class="cell author-first-name">${caseStudyData.authorsFirstName}</td>
                         <td class="cell author-last-name">${caseStudyData.authorLastName}</td>
                         <td class="cell title-of-case-study">${caseStudyData.titleOfCaseStudy}</td>
@@ -474,14 +490,21 @@
                         <td class="cell volume-number">${caseStudyData.volumeNumber}</td>
                         <td class="cell publisher-name">${caseStudyData.publisherName}</td>
                         <td class="cell publication-year">${caseStudyData.publicationYear}</td>
-                        <td class="cell actions">
-                            <label class="view" data-case-id="${caseStudyId}"><i data-case-id="${caseStudyId}" class="fa-solid fa-eye view text-danger"></i></label>
-                            <label class="edit" data-case-id="${caseStudyId}"><i data-case-id="${caseStudyId}" class="fa fa-edit edit text-danger"></i></label>
-                            <label class="delete" data-case-id="${caseStudyId}"><i data-case-id="${caseStudyId}" class="fa-solid fa-trash delete text-danger"></i></label>  
+                        <td title="View" class="col-lg-1 view text-danger" style="cursor: pointer;"  data-case-id="${caseStudyId}">
+                                &#128065;
+                        </td>
+                        <td title="Edit" class="col-lg-1 edit text-danger" style="cursor: pointer;"  data-case-id="${caseStudyId}">
+                                &#9998;
+                        </td>
+                        <td title="Delete" class="col-lg-1 delete text-danger" style="cursor: pointer;"   data-case-id="${caseStudyId}">
+                                &#128465;
                         </td> `;
                         
                         caseStudiesDataList.appendChild(newCaseStudy);
                         $('#case-study-modal').modal('hide');
+                        rowCount.classList.remove('d-none');
+                        totalRowCount.classList.add('d-none');
+                        rowCount.innerText = `Total entries : ${IndexEntry}`
             }
         })
         .catch((error) => {

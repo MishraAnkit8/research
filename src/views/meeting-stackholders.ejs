@@ -57,7 +57,7 @@
                         </div>
                     </div>
                 </div>
-                <table class="table vertical-lines custom-table table-responsive research-pagination" id="meeting-stackholders-list">
+                <table class="table vertical-lines custom-table table-responsive data-list research-pagination" id="meeting-stackholders-list">
                     <thead>
                         <th class="col-lg-1">#</th>
                         <th class="col-lg-1">Ranking Description</th>
@@ -66,9 +66,9 @@
                         <th class="col-lg-1">School/Campus Achievements</th>
                         <th class="col-lg-1">Inaugural Program at NMIMS</th>
                         <th class="col-lg-1">Events at NMIMS</th>
-                        <th class="col-lg-1">Action</th>
+                        <th class="col-lg-1" colspan="3">Action</th>
                     </thead>
-                    <tbody id="data-list">
+                    <tbody >
                     <% meetingData.forEach(function(meeting, index) { %>
                         <tr scope="row" data-meeting-id="<%- meeting.id %>"
                             data-ranking-documents="<%- meeting.ranking_documents %>"
@@ -90,29 +90,38 @@
                             <td class="achievements col-lg-1"><%- meeting.school_campus_achievements %></td>
                             <td class="inaugural-program col-lg-1"><%- meeting.inaugural_program %></td>
                             <td class="events col-lg-1"><%- meeting.events %></td>
-                            <td class="col-lg-1">
+                            <!-- <td class="col-lg-1">
                                 <label class="view" data-meeting-id="<%- meeting.id %>"><i class="fa-solid fa-eye view text-danger"
                                     data-meeting-id="<%- meeting.id %>"></i></label>
                                 <label class="edit" data-meeting-id="<%- meeting.id %>"><i class="fa fa-edit edit text-danger"
                                     data-meeting-id="<%- meeting.id %>"></i></label>
                                 <label class="delete" data-meeting-id="<%- meeting.id %>"><i
                                     class="fa-solid fa-trash delete text-danger" data-meeting-id="<%- meeting.id %>"></i></label>
+                            </td> -->
+                            <td title="View" class="col-lg-1 view text-danger" style="cursor: pointer;"   data-meeting-id="<%- meeting.id %>">
+                                &#128065;
+                            </td>
+                            <td title="Edit" class="col-lg-1 edit text-danger" style="cursor: pointer;"   data-meeting-id="<%- meeting.id %>">
+                                &#9998;
+                            </td>
+                            <td title="Delete" class="col-lg-1 delete text-danger" style="cursor: pointer;"    data-meeting-id="<%- meeting.id %>">
+                                &#128465;
                             </td>
                         </tr>
                         <% }); %>
                     </tbody>
                 </table>
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <label> Total entries: <%- rowCount %> </label>
-                        <label class="d-none" id="row-count"> <%- rowCount %> </label>
-                    </div>
-                    <div>
-                        <button id="prevBtn" class="btn btn-primary">Previous</button>
-                        <button id="nextBtn" class="btn btn-primary">Next</button>
-                        <p id="pagination" class="pagination-search"></p>
-                    </div>
-                </div>
+            </div>
+        </div>
+        <div class="d-flex justify-content-between">
+            <div>
+                <label id="total-row-count">Total entries : <%- rowCount %> </label>
+                <label class="d-none" id="row-count"> <%- rowCount %></label>
+            </div>
+            <div>
+                <button id="prevBtn" class="btn btn-primary">Previous</button>
+                <button id="nextBtn" class="btn btn-primary">Next</button>
+                <p id="pagination" class="pagination-search"></p>
             </div>
         </div>
         <!--Import Modal -->
@@ -511,9 +520,11 @@
 <!-- inline javascript -->
 <script>
     //   for index icrement
-    const rowCount = document.getElementById('row-count');
+    let rowCount = document.getElementById('row-count');
+    const totalRowCount = document.getElementById('total-row-count');
     let rowIndex = rowCount.innerText;
     let indexValue = parseInt(rowIndex, 10);
+
     const meetingSatckholdersAddModal = document.getElementById('meeting-stackholders-add-modal');
     const meetingStackholdersList = document.getElementById('meeting-stackholders-list')
     const submitBtn = document.getElementById('submit-btn');
@@ -669,6 +680,11 @@
             .then((data) => {
                 if (data.status === 'done') {
                     console.log('data ==>', data);
+                    const rowCountInteger = parseInt(data.rowCount, 10);
+                    const IndexEntry = rowCountInteger + indexValue;
+                    indexValue = IndexEntry;
+                    console.log('IndexEntry ===>>>', IndexEntry);
+
                     const newMeeting = document.createElement('tr');
                     newMeeting.setAttribute('data-ranking-documents', data.rankingDocuments);
                     newMeeting.setAttribute('data-accreditation-documents', data.accreditationFile);
@@ -684,25 +700,30 @@
                     newMeeting.setAttribute('data-events-link', data.meetingData.eventsLink);
 
                     newMeeting.innerHTML = `
-                    <td >${indexValue}</td>
+                    <td >${IndexEntry}</td>
                     <td class="ranking">${data.meetingData.ranking}</td>
                     <td class="accreditation">${data.meetingData.accreditation}</td>
                     <td class="convocation">${data.meetingData.convocation}</td>
                     <td class="achievements">${data.meetingData.achievements}</td>
                     <td class="inaugural-program">${data.meetingData.inauguralProgram}</td>
                     <td class="events">${data.meetingData.events}</td>
-                    <td>
-                        <label class="view" data-meeting-id="${data.meetingId}"><i class="fa-solid fa-eye view text-danger"
-                            data-meeting-id="${data.meetingId}"></i></label>
-                        <label class="edit" data-meeting-id="${data.meetingId}"><i class="fa fa-edit edit text-danger"
-                            data-meeting-id="${data.meetingId}"></i></label>
-                        <label class="delete" data-meeting-id="${data.meetingId}"><i class="fa-solid fa-trash delete text-danger"
-                            data-meeting-id="${data.meetingId}"></i></label>
-                    </td>`;
+                    <td title="View" class="col-lg-1 view text-danger" style="cursor: pointer;"   data-meeting-id="${data.meetingId}">
+                        &#128065;
+                    </td>
+                    <td title="Edit" class="col-lg-1 edit text-danger" style="cursor: pointer;"   data-meeting-id="${data.meetingId}">
+                         &#9998;
+                    </td>
+                    <td title="Delete" class="col-lg-1 delete text-danger" style="cursor: pointer;"    data-meeting-id="${data.meetingId}">
+                        &#128465;
+                    </td>
+                    `;
 
                     meetingStackholdersList.appendChild(newMeeting);
                 }
                 $('#meeting-stackholders-modal').modal('hide');
+                rowCount.classList.remove('d-none');
+                totalRowCount.classList.add('d-none');
+                rowCount.innerText = `Total entries : ${IndexEntry}`
                 alert('Data Inserted Successfully');
             })
     }

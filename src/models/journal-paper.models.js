@@ -11,7 +11,6 @@ module.exports.fetchJournalPaper = async (userName) => {
         text :` SELECT
                     jpa.id AS article_id,
                     jpa.title_of_paper,
-                  
                     jpa.total_authors,
                     jpa.count_other_faculty,
                     jpa.nmims_authors_count,
@@ -808,7 +807,7 @@ module.exports.viewJournalPaperData = async ({journalPaperId}, userName) => {
                 LEFT JOIN
                     policy_cadre pc ON japc.policy_cadre_id = pc.id
                 WHERE 
-                        jpa.created_by = $1 AND jpa.id = $2
+                         jpa.id = $1 AND created_by = $2 
                 GROUP BY
                     jpa.id,
                     jpa.title_of_paper,
@@ -827,7 +826,7 @@ module.exports.viewJournalPaperData = async ({journalPaperId}, userName) => {
                     jpa.wos_indexed,
                     jpa.ugc_indexed,
                     jpa.web_link_doi_number`,
-    values : [userName, journalPaperId]
+    values : [journalPaperId, userName]
     }
 
     const nmimsAuthorsSql = {

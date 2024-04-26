@@ -58,7 +58,7 @@
                         </div>
                     </div>
                 </div>
-                <table class="table vertical-lines custom-table table-responsive research-pagination" id="consultancy-list">
+                <table class="table vertical-lines custom-table table-responsive data-list research-pagination" id="consultancy-list">
                     <thead>
                         <th class="col-lg-1">#</th>
                         <th class="col-lg-1">Grant Proposal</th>
@@ -68,9 +68,9 @@
                         <th class="col-lg-1">Name of Funding Agency</th>
                         <th class="col-lg-1">Funding Amount</th>
                         <th class="col-lg-1"> Project Status</th>
-                        <th class="col-lg-1">Action</th>
+                        <th class="col-lg-1" colspan="3">Action</th>
                     </thead>
-                    <tbody id="data-list">
+                    <tbody >
                     <% researchProjectData.forEach(function(consultancy, index) { %>
                         <tr scope="row" data-consultancy-id="<%- consultancy.id %>" 
                             data-submission-date="<%- consultancy.submission_date.toISOString().split('T')[0] %>"
@@ -83,7 +83,7 @@
                             <td class="funding-agency col-lg-1"><%- consultancy.name_of_funding_agency %></td>
                             <td class="funding-amount col-lg-1"><%- consultancy.funding_amount %></td>
                             <td class="research-project-status col-lg-1"><%- consultancy.status_of_research_project %></td>
-                            <td class="col-lg-1">
+                            <!-- <td class="col-lg-1">
                                 <label class="view" data-consultancy-id="<%- consultancy.id %>"><i
                                         class="fa-solid fa-eye view text-danger"
                                         data-consultancy-id="<%- consultancy.id %>"></i></label>
@@ -92,6 +92,15 @@
                                 <label class="delete" data-consultancy-id="<%- consultancy.id %>"><i
                                         class="fa-solid fa-trash delete text-danger"
                                         data-consultancy-id="<%- consultancy.id %>"></i></label>
+                            </td> -->
+                            <td title="View" class="col-lg-1 view text-danger" style="cursor: pointer;" data-consultancy-id="<%- consultancy.id %>">
+                                &#128065;
+                            </td>
+                            <td title="Edit" class="col-lg-1 edit text-danger" style="cursor: pointer;" data-consultancy-id="<%- consultancy.id %>">
+                                &#9998;
+                            </td>
+                            <td title="Delete" class="col-lg-1 delete text-danger" style="cursor: pointer;"  data-consultancy-id="<%- consultancy.id %>">
+                                &#128465;
                             </td>
                         </tr>
                     <% }); %>
@@ -746,14 +755,17 @@
                         <td class="funding-agency">${data.researchConsultantData.fundingAgency}</td>
                         <td class="funding-amount">${data.researchConsultantData.fundingAmount}</td>
                         <td class="research-project-status">${data.researchConsultantData.statusOfResearchProject}</td>
-                        <td>
-                            <label class="view" data-consultancy-id="${consultantId}"><i class="fa-solid fa-eye view text-danger"
-                                data-consultancy-id="${consultantId}"></i></label>
-                            <label class="edit" data-consultancy-id="${consultantId}"><i class="fa fa-edit edit text-danger"
-                                data-consultancy-id="${consultantId}"></i></label>
-                            <label class="delete" data-consultancy-id="${consultantId}"><i class="fa-solid fa-trash delete text-danger"
-                                data-consultancy-id="${consultantId}"></i></label>
-                        </td>`;
+
+                        <td title="View" class="col-lg-1 view text-danger" style="cursor: pointer;" data-consultancy-id="${consultantId}">
+                            &#128065;
+                        </td>
+                        <td title="Edit" class="col-lg-1 edit text-danger" style="cursor: pointer;" data-consultancy-id="${consultantId}">
+                            &#9998;
+                        </td>
+                        <td title="Delete" class="col-lg-1 delete text-danger" style="cursor: pointer;"  data-consultancy-id="${consultantId}">
+                            &#128465;
+                        </td>
+                        `;
 
                         researchProjectConsultancyList.appendChild(newResearchConsultant);
                         rowCount.classList.remove('d-none');

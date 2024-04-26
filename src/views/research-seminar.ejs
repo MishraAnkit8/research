@@ -59,7 +59,7 @@
                         </div>
                     </div>
                 </div>
-                <table class="table vertical-lines custom-table table-responsive research-pagination" id="research-seminar-list">
+                <table class="table vertical-lines custom-table table-responsive data-list research-pagination" id="research-seminar-list">
                     <thead>
                         <th class="col-lg-1">#</th>
                         <th class="col-lg-1">Year</th>
@@ -68,9 +68,9 @@
                         <th class="col-lg-1">Publisher</th>
                         <th class="col-lg-1">Name of NMIMS Faculty</th>
                         <th class="col-lg-1">Journal Name</th>
-                        <th class="col-lg-1">Action</th>
+                        <th class="col-lg-1" colspan="3">Action</th>
                     </thead>
-                    <tbody id="data-list">
+                    <tbody >
                     <% seminarList .forEach(function(seminar, index) { %>
                         <tr scope="row" data-publisher-category="<%- seminar.publisher_category %>"
                             data-pages="<%- seminar.pages %>" data-issn-no="<%- seminar.issn_no %>" data-scs-cite-score="<%- seminar.scs_cite_score %>"
@@ -84,26 +84,35 @@
                             <td class=" cell publisher col-lg-1"><%- seminar.publisher %></td>
                             <td class=" cell nmims-faculty col-lg-1"><%- seminar.nmims_faculty %></td>
                             <td class=" cell journal-name col-lg-1"><%- seminar.journal_name %></td>
-                            <td class="col-lg-1"> 
+                            <!-- <td class="col-lg-1"> 
                                 <label class=" view" data-seminar-id="<%- seminar.id %>"><i class="fa-solid fa-eye view text-danger" data-seminar-id="<%- seminar.id %>"></i></label>
                                 <label  class="edit" data-seminar-id="<%- seminar.id %>"><i class="fa fa-edit edit text-danger" data-seminar-id="<%- seminar.id %>"></i></label>
                                 <label  class="delete"  data-seminar-id="<%- seminar.id %>"><i class="fa-solid fa-trash delete text-danger"  data-seminar-id="<%- seminar.id %>"></i></label>
+                            </td> -->
+                            <td title="View" class="col-lg-1 view text-danger" style="cursor: pointer;" data-seminar-id="<%- seminar.id %>">
+                                &#128065;
+                            </td>
+                            <td title="Edit" class="col-lg-1 edit text-danger" style="cursor: pointer;" data-seminar-id="<%- seminar.id %>">
+                                &#9998;
+                            </td>
+                            <td title="Delete" class="col-lg-1 delete text-danger" style="cursor: pointer;"  data-seminar-id="<%- seminar.id %>">
+                                &#128465;
                             </td>
                         </tr>
                         <% }); %>
                     </tbody>
                 </table>
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <label> Total entries: <%- rowCount %> </label>
-                        <label class="d-none" id="row-count"> <%- rowCount %> </label>
-                    </div>
-                    <div>
-                        <button id="prevBtn" class="btn btn-primary">Previous</button>
-                        <button id="nextBtn" class="btn btn-primary">Next</button>
-                        <p id="pagination" class="pagination-search"></p>
-                    </div>
-                </div>
+            </div>
+        </div>
+        <div class="d-flex justify-content-between">
+            <div>
+                <label id="total-row-count">Total entries : <%- rowCount %> </label>
+                <label class="d-none" id="row-count"> <%- rowCount %></label>
+            </div>
+            <div>
+                <button id="prevBtn" class="btn btn-primary">Previous</button>
+                <button id="nextBtn" class="btn btn-primary">Next</button>
+                <p id="pagination" class="pagination-search"></p>
             </div>
         </div>
         <!--Import Modal -->
@@ -457,7 +466,8 @@
 
 <script>
     //   for index icrement
-    const rowCount = document.getElementById('row-count');
+    let rowCount = document.getElementById('row-count');
+    const totalRowCount = document.getElementById('total-row-count');
     let rowIndex = rowCount.innerText;
     let indexValue = parseInt(rowIndex, 10);
     
@@ -552,6 +562,11 @@
                 if (data.status === 'done') {
                     seminarId = data.seminarId;
                     console.log('seminarId ==>', seminarId);
+                    const rowCountInteger = parseInt(data.rowCount, 10);
+                    const IndexEntry = rowCountInteger + indexValue;
+                    indexValue = IndexEntry;
+                    console.log('IndexEntry ===>>>', IndexEntry);
+
                     //insert new row to the journal_papers table 
                     const newResearchSeminar = document.createElement('tr');
                     newResearchSeminar.setAttribute('data-pages', seminarDetails.pages);
@@ -569,20 +584,30 @@
                     newResearchSeminar.setAttribute('data-date-of-publishing', seminarDetails.dateOfPublishing);
                     newResearchSeminar.setAttribute('data-title-of-paper', seminarDetails.titleOfPaper);
                     newResearchSeminar.innerHTML = `
-                            <td >${indexValue}</td>
+                            <td >${IndexEntry}</td>
                             <td class="year">${seminarDetails.year}</td>
                             <td class="school">${seminarDetails.school}</td>
                             <td class="campus">${seminarDetails.campus}</td>
                             <td class="publisher">${seminarDetails.publisher}</td>
                             <td class="nmims-faculty">${seminarDetails.NmimsFaculty}</td>
                             <td class="journal-name">${seminarDetails.journalName}</td>
-                            <td>
-                                <label class="view" data-seminar-id="${seminarId}"><i data-seminar-id="${seminarId}" class="fa-solid fa-eye view text-danger"></i></label>
-                                <label class="edit"  data-seminar-id="${seminarId}"><i  data-seminar-id="${seminarId}" class="fa fa-edit edit text-danger"></i></label>
-                                <label class="delete" data-seminar-id="${seminarId}"><i  data-seminar-id="${seminarId}" class="fa-solid fa-trash delete text-danger"></i></label>
-                            </td>  ` ;
+
+                            <td title="View" class="col-lg-1 view text-danger" style="cursor: pointer;" data-seminar-id="${seminarId}">
+                                &#128065;
+                            </td>
+                            <td title="Edit" class="col-lg-1 edit text-danger" style="cursor: pointer;" data-seminar-id="${seminarId}">
+                                &#9998;
+                            </td>
+                            <td title="Delete" class="col-lg-1 delete text-danger" style="cursor: pointer;"  data-seminar-id="${seminarId}">
+                                &#128465;
+                            </td> 
+                             ` ;
                         researchSeminarList.appendChild(newResearchSeminar);
+                        rowCount.classList.remove('d-none');
+                        totalRowCount.classList.add('d-none');
+                        rowCount.innerText = `Total entries : ${IndexEntry}`;
                     $('#research-seminar-modal').modal('hide');
+                    
                     alert('Data  Inserted  SuccessFully');
                     // for clear input field
                 }

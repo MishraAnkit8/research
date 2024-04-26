@@ -61,7 +61,7 @@
                         </div>
                     </div>
                 </div>
-                <table class="table vertical-lines custom-table research-pagination" id="edited-book-list">
+                <table class="table vertical-lines custom-table data-list research-pagination" id="edited-book-list">
                     <thead>
                         <th class="col-lg-1">#</th>
                         <th class="col-lg-1">Author's name</th>
@@ -69,7 +69,7 @@
                         <th class="col-lg-1">Book title</th>
                         <th class="col-lg-1">ISBN Number</th>
                         <th class="col-lg-1">Publisher Name</th>
-                        <th class="col-lg-1">Action</th>
+                        <th class="col-lg-1" colspan="">Action</th>
                     </thead>
                     <tbody id="data-list">
                     <% editedBookList.forEach(function(editedBook,index) { %>
@@ -91,29 +91,38 @@
                             <td class="book-title col-lg-1"><%- editedBook.book_title %></td>
                             <td class="isbn-no col-lg-1"><%- editedBook.isbn_no %></td>
                             <td class="publisher-name col-lg-1"><%- editedBook.publisher_name %></td>
-                            <td class="col-lg-1">
+                            <!-- <td class="col-lg-1">
                                 <label class="view" data-editedBook-id="<%- editedBook.id %>"><i class="fa-solid fa-eye view text-danger"
                                     data-editedBook-id="<%- editedBook.id %>"></i></label>
                                 <label class="edit" data-editedBook-id="<%- editedBook.id %>"><i class="fa fa-edit edit text-danger"
                                     data-editedBook-id="<%- editedBook.id %>"></i></label>
                                 <label class="delete" data-editedBook-id="<%- editedBook.id %>"><i
                                     class="fa-solid fa-trash delete text-danger" data-editedBook-id="<%- editedBook.id %>"></i></label>
+                            </td> -->
+                            <td title="View" class="col-lg-1 view text-danger" style="cursor: pointer;"  data-editedBook-id="<%- editedBook.id %>">
+                                &#128065;
+                            </td>
+                            <td title="Edit" class="col-lg-1 edit text-danger" style="cursor: pointer;"  data-editedBook-id="<%- editedBook.id %>">
+                                &#9998;
+                            </td>
+                            <td title="Delete" class="col-lg-1 delete text-danger" style="cursor: pointer;"   data-editedBook-id="<%- editedBook.id %>">
+                                &#128465;
                             </td>
                         </tr>
                         <% }); %>
                     </tbody>
                 </table>
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <label>Total entries: <%- rowCount %></label>
-                        <label class="d-none" id="row-count"> <%- rowCount %></label>
-                    </div>
-                    <div>
-                        <button id="prevBtn" class="btn btn-primary">Previous</button>
-                        <button id="nextBtn" class="btn btn-primary">Next</button>
-                        <p id="pagination" class="pagination-search"></p>
-                    </div>
-                </div>
+            </div>
+        </div>
+        <div class="d-flex justify-content-between">
+            <div>
+                <label id="total-row-count">Total entries : <%- rowCount %> </label>
+                <label class="d-none" id="row-count"> <%- rowCount %></label>
+            </div>
+            <div>
+                <button id="prevBtn" class="btn btn-primary">Previous</button>
+                <button id="nextBtn" class="btn btn-primary">Next</button>
+                <p id="pagination" class="pagination-search"></p>
             </div>
         </div>
         <!--Import Modal -->
@@ -453,9 +462,11 @@
 <!-- inline javascript -->
 <script>
     //for index icrement
-    const rowCount = document.getElementById('row-count');
+    let rowCount = document.getElementById('row-count');
+    const totalRowCount = document.getElementById('total-row-count');
     let rowIndex = rowCount.innerText;
     let indexValue = parseInt(rowIndex, 10);
+
     const editedBookList = document.getElementById('edited-book-list');
     const submitBtn = document.getElementById('submit-btn');
     const updateBtn = document.getElementById('update-btn');
@@ -581,6 +592,11 @@
                 .then((data) => {
                     if (data.status === 'Done') {
                         console.log('data ==>>', data)
+                        const rowCountInteger = parseInt(data.rowCount, 10);
+                        const IndexEntry = rowCountInteger + indexValue;
+                        indexValue = IndexEntry;
+                        console.log('IndexEntry ===>>>', IndexEntry);
+
                         const newEditedBook = document.createElement('tr');
                         newEditedBook.setAttribute('data-page-number', data.editedBooKData.pageNumber);
                         newEditedBook.setAttribute('data-edition', data.editedBooKData.edition);
@@ -595,25 +611,29 @@
                         newEditedBook.setAttribute('data-nmims-campus-authors', data.editedBooKData.nmimsCampusAuthors);
                         newEditedBook.setAttribute('data-nmims-school-authors', data.editedBooKData.nmimsSchoolAuthors);
                         newEditedBook.setAttribute('data-supporting-documents', data.editedBooKData.supportingDocuments);
-                        const sum = indexValue + Number(data.rowCount);
-                        console.log('sum ===>>>>', sum)
+                        
                         newEditedBook.innerHTML = `
-                            <td> ${sum}</td>
+                            <td> ${IndexEntry}</td>
                             <td class="author-first-name">${data.editedBooKData.authorName}</td>
                             <td class="publication-year">${data.editedBooKData.publicationYear}</td>
                             <td class="book-title">${data.editedBooKData.bookTitle}</td>
                             <td class="isbn-no">${data.editedBooKData.isbnNo}</td>
                             <td class="publisher-name">${data.editedBooKData.publisherName}</td>
-                            <td>
-                                <label class="view" data-editedbook-id="${data.editedBookId}"><i class="fa-solid fa-eye view text-danger"
-                                    data-editedbook-id="${data.editedBookId}"></i></label>
-                                <label class="edit"data-editedbook-id="${data.editedBookId}"><i class="fa fa-edit edit text-danger"
-                                    data-editedbook-id="${data.editedBookId}"></i></label>
-                                <label class="delete"data-editedbook-id="${data.editedBookId}"><i class="fa-solid fa-trash delete text-danger"
-                                    data-editedbook-id="${data.editedBookId}"></i></label>
+                            <td title="View" class="col-lg-1 view text-danger" style="cursor: pointer;"  data-editedBook-id="${data.editedBookId}">
+                                &#128065;
+                            </td>
+                            <td title="Edit" class="col-lg-1 edit text-danger" style="cursor: pointer;"  data-editedBook-id="${data.editedBookId}">
+                                &#9998;
+                            </td>
+                            <td title="Delete" class="col-lg-1 delete text-danger" style="cursor: pointer;"   data-editedBook-id="${data.editedBookId}">
+                                &#128465;
                             </td> `;
                         editedBookList.append(newEditedBook);
-                        // $('#edited-book-modal').modal('hide');
+                        $('#edited-book-modal').modal('hide');
+                        rowCount.classList.remove('d-none');
+                        totalRowCount.classList.add('d-none');
+                        rowCount.innerText = `Total entries : ${IndexEntry}`
+                        
                         Swal.fire({
 							position: "top-center",
 							icon: "success",

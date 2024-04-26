@@ -65,16 +65,16 @@
                         </div>
                     </div>
                 </div>
-                <table class="table vertical-lines custom-table table-responsive research-pagination" id="patent-submisson-list">
+                <table class="table vertical-lines custom-table data-list table-responsive research-pagination" id="patent-submisson-list">
                     <thead>
                         <th class="col-lg-1">#</th>
                         <th class="col-lg-1">Submission Date</th>
                         <th class="col-lg-1">Title of Invention</th>
                         <th class="col-lg-1">Supporting Documents</th>
                         <th class="col-lg-1">Application Number</th>
-                        <th class="col-lg-1">Action</th>
+                        <th class="col-lg-1" colspan="3">Action</th>
                     </thead>
-                    <tbody id="data-list">
+                    <tbody >
                     <% if (patentSubmissionsData) { %>
                     <% patentSubmissionsData.forEach(function(patent,index) {%>
                         <tr data-patent-id="<%- patent.patent_submission_grant_id %>" data-patent-stage-id="<%- patent.patent_stage_status_id %>"
@@ -84,13 +84,22 @@
                             <td class="title-of-invention col-lg-1"><%- patent.innovation_title %></td>
                             <td class="support-documents col-lg-1"><%- patent.supporting_documents %></td>
                             <td class="application-no col-lg-1"><%- patent.application_number %></td>
-                            <td class="col-lg-1">
+                            <!-- <td class="col-lg-1">
                                 <label class="view" data-patent-id="<%- patent.patent_submission_grant_id %>"><i class="fa-solid fa-eye view text-danger"
                                     data-patent-id="<%- patent.patent_submission_grant_id %>"></i></label>
                                 <label class="edit" data-patent-id="<%- patent.patent_submission_grant_id %>"><i class="fa fa-edit edit text-danger"
                                     data-patent-id="<%- patent.patent_submission_grant_id %>"></i></label>
                                 <label class="delete" data-patent-id="<%- patent.patent_submission_grant_id %>"><i class="fa-solid fa-trash delete text-danger"
                                     data-patent-id="<%- patent.patent_submission_grant_id %>"></i></label>
+                            </td> -->
+                            <td title="View" class="col-lg-1 view text-danger" style="cursor: pointer;"   data-patent-id="<%- patent.patent_submission_grant_id %>">
+                                &#128065;
+                            </td>
+                            <td title="Edit" class="col-lg-1 edit text-danger" style="cursor: pointer;"   data-patent-id="<%- patent.patent_submission_grant_id %>">
+                                 &#9998;
+                            </td>
+                            <td title="Delete" class="col-lg-1 delete text-danger" style="cursor: pointer;"    data-patent-id="<%- patent.patent_submission_grant_id %>">
+                                &#128465;
                             </td>
                         </tr>
                         <% }); %>
@@ -555,15 +564,17 @@
                             <td class="submission-date">${data.patentData.subMissionDate}</td>
                             <td class="supporting-documents">${data.patentDataFilesString}</td>
                             <td class="application-no">${data.patentData.applicationNum}</td>
-                            
-                            <td class="cell ">
-                                <label class="view" data-patent-id="${patentId}"><i class="fa-solid fa-eye view text-danger"
-                                    data-patent-id="${patentId}"></i></label>
-                                <label class="edit" data-patent-id="${patentId}"><i class="fa fa-edit edit text-danger"
-                                    data-patent-id="${patentId}"></i></label>
-                                <label class="delete" data-patent-id="${patentId}"><i class="fa-solid fa-trash delete text-danger"
-                                    data-patent-id="${patentId}"></i></label>
-                           </td> `;
+                          
+                           <td title="View" class="col-lg-1 view text-danger" style="cursor: pointer;" data-patent-id="${patentId}">
+                                &#128065;
+                            </td>
+                            <td title="Edit" class="col-lg-1 edit text-danger" style="cursor: pointer;" data-patent-id="${patentId}">
+                                &#9998;
+                            </td>
+                            <td title="Delete" class="col-lg-1 delete text-danger" style="cursor: pointer;"  data-patent-id="${patentId}">
+                                &#128465;
+                            </td>
+                            `;
 
                 patenetSubMissionList.appendChild(newPatentRow);
                 $('#patent-submission-modal').modal('hide');

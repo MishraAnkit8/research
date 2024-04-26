@@ -59,7 +59,7 @@
                         </div>
                     </div>
                 </div>
-                <table class="table vertical-lines custom-table research-pagination" id="book-Publication-list">
+                <table class="table vertical-lines custom-table data-list research-pagination" id="book-Publication-list">
                     <thead>
                         <th class="col-lg-1">#</th>
                         <th class="col-lg-1">Author's name</th>
@@ -67,9 +67,8 @@
                         <th class="col-lg-1">Book title</th>
                         <th class="col-lg-1">ISBN Number</th>
                         <th class="col-lg-1">Publisher Name</th>
-                        <th class="col-lg-1">Action</th>
+                        <th class="col-lg-1" colspan="3">Action</th>
                     </thead>
-                    <tbody id="data-list">
                     <% bookPublicationList.forEach(function(publication,index) { %>
                         <tr row="scope" data-publication-id="<%- publication.id %>"
                             data-volume-number="<%- publication.volume_number %>" data-edition="<%- publication.edition %>"
@@ -88,7 +87,7 @@
                             <td class="book-title col-lg-1"><%- publication.book_title %></td>
                             <td class="isbn-no col-lg-1"><%- publication.isbn %></td>
                             <td class="publisher-name col-lg-1"><%- publication.publisher_name %></td>
-                            <td>
+                            <!-- <td>
                                 <label class="view" data-publication-id="<%- publication.id %>"><i
                                         class="fa-solid fa-eye view text-danger"
                                         data-publication-id="<%- publication.id %>"></i></label>
@@ -98,6 +97,15 @@
                                 <label class="delete" data-publication-id="<%- publication.id %>"><i
                                         class="fa-solid fa-trash delete text-danger"
                                         data-publication-id="<%- publication.id %>"></i></label>
+                            </td> -->
+                            <td title="View" class="col-lg-1 view text-danger" style="cursor: pointer;" id="label-cals"  data-publication-id="<%- publication.id %>">
+                                &#128065;
+                            </td>
+                            <td title="Edit" class="col-lg-1 edit text-danger" style="cursor: pointer;" id="label-cals"  data-publication-id="<%- publication.id %>">
+                                &#9998;
+                            </td>
+                            <td title="Delete" class="col-lg-1 delete text-danger" style="cursor: pointer;" id="label-cals"  data-publication-id="<%- publication.id %>">
+                                &#128465;
                             </td>
         
                         </tr>
@@ -105,18 +113,18 @@
                     </tbody>
         
                 </table>
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <label> Total entries: <%- rowCount %> </label>
-                        <label class="d-none" id="row-count"> <%- rowCount %> </label>
-                    </div>
-                    <div>
-                        <button id="prevBtn" class="btn btn-primary">Previous</button>
-                        <button id="nextBtn" class="btn btn-primary">Next</button>
-                        <p id="pagination" class="pagination-search"></p>
-                    </div>
+            </div>
+            </div>
+            <div class="d-flex justify-content-between">
+                <div>
+                    <label id="total-row-count">Total entries : <%- rowCount %> </label>
+                    <label class="d-none" id="row-count"> <%- rowCount %></label>
                 </div>
-        
+                <div>
+                    <button id="prevBtn" class="btn btn-primary">Previous</button>
+                    <button id="nextBtn" class="btn btn-primary">Next</button>
+                    <p id="pagination" class="pagination-search"></p>
+                </div>
             </div>
             <!--Import Modal -->
             <div class="modal fade" id="open-program-modal" tabindex="-1" aria-labelledby="open-program-modal"
@@ -433,9 +441,11 @@
 </div>
 <script>
     //   for index icrement
-    const rowCount = document.getElementById('row-count');
+    let rowCount = document.getElementById('row-count');
+    const totalRowCount = document.getElementById('total-row-count');
     let rowIndex = rowCount.innerText;
     let indexValue = parseInt(rowIndex, 10);
+
     const bookPublicationList = document.getElementById('book-Publication-list');
     const submitBtn = document.getElementById('submit-btn');
     const updateBtn = document.getElementById('update-btn');
@@ -551,8 +561,10 @@
                     if (data.status === 'Done') {
                         console.log('data ==>>', data)
                         const rowCountInteger = parseInt(data.rowCount, 10);
-                        const IndexEntry = rowCountInteger + indexValue
+                        const IndexEntry = rowCountInteger + indexValue;
+                        indexValue = IndexEntry;
                         console.log('IndexEntry ===>>>', IndexEntry);
+
                         const newBookPublication = document.createElement('tr');
                         newBookPublication.setAttribute('data-volume-number', data.bookPublicationData.volumeNumber);
                         newBookPublication.setAttribute('data-edition', data.bookPublicationData.edition);
@@ -573,13 +585,14 @@
                             <td class="book-title">${data.bookPublicationData.bookTitle}</td>
                             <td class="isbn-no">${data.bookPublicationData.isbnNo}</td>
                             <td class="publisher-name">${data.bookPublicationData.publisherName}</td>
-                            <td>
-                                <label class="view" data-publication-id="${data.bookPublicationId}"><i class="fa-solid fa-eye view text-danger"
-                                    data-publication-id="${data.bookPublicationId}"></i></label>
-                                <label class="edit"data-publication-id="${data.bookPublicationId}"><i class="fa fa-edit edit text-danger"
-                                    data-publication-id="${data.bookPublicationId}"></i></label>
-                                <label class="delete"data-publication-id="${data.bookPublicationId}"><i class="fa-solid fa-trash delete text-danger"
-                                    data-publication-id="${data.bookPublicationId}"></i></label>
+                            <td title="View" class="col-lg-1 view text-danger" style="cursor: pointer;"  data-publication-id="${data.bookPublicationId}">
+                                &#128065;
+                            </td>
+                            <td title="Edit" class="col-lg-1 edit text-danger" style="cursor: pointer;"  data-publication-id="${data.bookPublicationId}">
+                                &#9998;
+                            </td>
+                            <td title="Delete" class="col-lg-1 delete text-danger" style="cursor: pointer;"   data-publication-id="${data.bookPublicationId}">
+                                &#128465;
                             </td> `;
                         bookPublicationList.append(newBookPublication);
                         
@@ -591,6 +604,9 @@
 							// timer: 1500
 						});
                         $('#book-publication-modal').modal('hide');
+                        rowCount.classList.remove('d-none');
+                        totalRowCount.classList.add('d-none');
+                        rowCount.innerText = `Total entries : ${IndexEntry}`
                     }
                     else{
                         console.log('data ====>>>>>', data);

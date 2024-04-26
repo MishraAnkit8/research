@@ -57,7 +57,7 @@
                         </div>
                     </div>
                 </div>
-                <table class="table custom-table table-responsive research-pagination" id="teaching-execellance-data-list">
+                <table class="table custom-table table-responsive data-list research-pagination" id="teaching-execellance-data-list">
                     <tr scope="row">
                         <th class="col-lg-1">#</th>
                         <th class="col-lg-1">Pedagogy innovation</th>
@@ -65,9 +65,9 @@
                         <th class="col-lg-1">Workshop for Students</th>
                         <th class="col-lg-1">Inviting visiting faculty from the industry to handle workshops</th>
                         <th class="col-lg-1">Program Orientation</th>
-                        <th class="col-lg-1">Action</th>
+                        <th class="col-lg-1" colspan="3">Action</th>
                     </tr>
-                    <tbody id="data-list">
+                    <tbody >
                     <% teachingExecellance.forEach(function(teaching, index) { %>
                         <tr scope="row" data-teaching-id="<%- teaching.id %>"
                             data-pedagogy-innovation-file="<%- teaching.pedagogy_innovation_file %>"
@@ -86,29 +86,39 @@
                             <td class="workshop-details col-lg-1"><%- teaching.workshop_details %></td>
                             <td class="inviting-faculty col-lg-1"><%- teaching.inviting_faculty %></td>
                             <td class="program-orientation col-lg-1"><%- teaching.program_orientation %></td>
-                            <td class="cell col-lg-1">
+                            <!-- <td class="cell col-lg-1">
                                 <label class="view" data-teaching-id="<%- teaching.id %>"><i class="fa-solid fa-eye view text-danger"
                                     data-teaching-id="<%- teaching.id %>"></i></label>
                                 <label class="edit" data-teaching-id="<%- teaching.id %>"><i class="fa fa-edit edit text-danger"
                                     data-teaching-id="<%- teaching.id %>"></i></label>
                                 <label class="delete" data-teaching-id="<%- teaching.id %>"><i class="fa-solid fa-trash delete text-danger"
                                     data-teaching-id="<%- teaching.id %>"></i></label>
+                            </td> -->
+                            <td title="View" class="col-lg-1 view text-danger" style="cursor: pointer;" data-teaching-id="<%- teaching.id %>">
+                                &#128065;
+                            </td>
+                            <td title="Edit" class="col-lg-1 edit text-danger" style="cursor: pointer;" data-teaching-id="<%- teaching.id %>">
+                                &#9998;
+                            </td>
+                            <td title="Delete" class="col-lg-1 delete text-danger" style="cursor: pointer;"  data-teaching-id="<%- teaching.id %>">
+                                &#128465;
                             </td>
                         </tr>
                         <% }); %>
                     </tbody>
                 </table>
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <label> Total entries: <%- rowCount %> </label>
-                        <label class="d-none" id="row-count"> <%- rowCount %> </label>
-                    </div>
-                    <div>
-                        <button id="prevBtn" class="btn btn-primary">Previous</button>
-                        <button id="nextBtn" class="btn btn-primary">Next</button>
-                        <p id="pagination" class="pagination-search"></p>
-                    </div>
-                </div>
+              
+            </div>
+        </div>
+        <div class="d-flex justify-content-between">
+            <div>
+                <label id="total-row-count">Total entries : <%- rowCount %> </label>
+                <label class="d-none" id="row-count"> <%- rowCount %></label>
+            </div>
+            <div>
+                <button id="prevBtn" class="btn btn-primary">Previous</button>
+                <button id="nextBtn" class="btn btn-primary">Next</button>
+                <p id="pagination" class="pagination-search"></p>
             </div>
         </div>
         <!--Import Modal -->
@@ -459,9 +469,11 @@
 <!-- inline script -->
 <script>
     // for index icrement
-    const rowCount = document.getElementById('row-count');
+    let rowCount = document.getElementById('row-count');
+    const totalRowCount = document.getElementById('total-row-count');
     let rowIndex = rowCount.innerText;
     let indexValue = parseInt(rowIndex, 10);
+
     const teachingExecellanceAddModal = document.getElementById('teaching-execellance-add-modal');
     const teachingExecellanceList = document.getElementById('teaching-execellance-data-list');
     const submitBtn = document.getElementById('submit-btn');
@@ -597,7 +609,12 @@
         })
         .then((data) => {
             if(data.status === 'done'){
-                console.log('data ==>>', data)
+                console.log('data ==>>', data);
+                const rowCountInteger = parseInt(data.rowCount, 10);
+                const IndexEntry = rowCountInteger + indexValue;
+                indexValue = IndexEntry;
+                console.log('IndexEntry ===>>>', IndexEntry);
+
                 const newTeachingExecellance = document.createElement('tr');
                 newTeachingExecellance.setAttribute('data-pedagogy-innovation-file' , data.pedagogyInnovationFile);
                 newTeachingExecellance.setAttribute('data-fdp-program-file' , data.fdpProgramFile); 
@@ -610,23 +627,27 @@
                 newTeachingExecellance.setAttribute('data-program-orientation-file' , data.programOrientationFile); 
                 newTeachingExecellance.setAttribute('data-program-orientation-link' , data.teachingData.programOrientationLink);
                 newTeachingExecellance.innerHTML = `
-                                    <td >${indexValue}</td>
+                                    <td >${IndexEntry}</td>
                                     <td class="pedagogy-innovation">${data.teachingData.pedagogyInnovation}</td>
                                     <td class="fdp-program">${data.teachingData.fdpProgram}</td>
                                     <td class="workshop-details">${data.teachingData.workShopDetails}</td>
                                     <td class="inviting-faculty">${data.teachingData.invitingFaculty}</td>
                                     <td class="program-orientation">${data.teachingData.programOrientation}</td>
-                                    <td class="cell ">
-                                        <label class="view" data-teaching-id=${data.teachingId}><i class="fa-solid fa-eye view text-danger"
-                                            data-teaching-id=${data.teachingId}></i></label>
-                                        <label class="edit" data-teaching-id=${data.teachingId}><i class="fa fa-edit edit text-danger"
-                                            data-teaching-id=${data.teachingId}></i></label>
-                                        <label class="delete" data-teaching-id=${data.teachingId}><i class="fa-solid fa-trash delete text-danger"
-                                            data-teaching-id=${data.teachingId}></i></label>
-                                    </td>`;
+                                    <td title="View" class="col-lg-1 view text-danger" style="cursor: pointer;" data-teaching-id=${data.teachingId}>
+                                        &#128065;
+                                    </td>
+                                    <td title="Edit" class="col-lg-1 edit text-danger" style="cursor: pointer;" data-teaching-id=${data.teachingId}>
+                                        &#9998;
+                                    </td>
+                                    <td title="Delete" class="col-lg-1 delete text-danger" style="cursor: pointer;"  data-teaching-id=${data.teachingId}>
+                                        &#128465;
+                                    </td>
+                                    `;
                                     teachingExecellanceList.appendChild(newTeachingExecellance);
             }
-            // $('#teaching-execellance-modal').modal('hide');
+            $('#teaching-execellance-modal').modal('hide');
+            rowCount.classList.remove('d-none');
+            totalRowCount.classList.add('d-none');
             alert('Data Inserted Successfully')
         })
     }

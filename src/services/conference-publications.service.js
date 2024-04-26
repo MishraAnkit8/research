@@ -2,39 +2,41 @@ const conferencePublicationModels = require('../models/conference-publications.m
 const errorMsgMidWare = require('../middleware/error.middleware');
 
 module.exports.fetchConferencePublication = async(userName) => {
+
     const conferencePublicationData = await conferencePublicationModels.fetchConferencePublication(userName);
+    
     console.log('feched data in service  ==>' , conferencePublicationData);
-    const conferenceDataList = conferencePublicationData.conferenceDataList.rows;
-    const externalEmpList = conferencePublicationData.externalEmpList.rows;
-    const internalEmpList = conferencePublicationData.internalEmpList.rows;
+    const conferenceDataList = conferencePublicationData.conferenceDataList;
+    const externalEmpList = conferencePublicationData.externalEmpList;
+    const internalEmpList = conferencePublicationData.internalEmpList;
 
     // Extract author names from patentList
-    const authorNameArray = conferencePublicationData.conferenceDataList.rows.map(conference => conference.author_type);
-    const resultArray = [
-        ...conferencePublicationData.internalEmpList.rows.map(emp => ({ authorName: emp.employee_name, table: 'internalEmpList' })),
-        ...conferencePublicationData.externalEmpList.rows.map(emp => ({ authorName: emp.external_emp_name, table: 'externalEmpList' }))
-    ];
+    // const authorNameArray = conferenceDataList ? conferencePublicationData.conferenceDataList.rows.map(conference => conference.author_type) : [];
+    // const resultArray = [
+    //     ...conferencePublicationData.internalEmpList.rows.map(emp => ({ authorName: emp.employee_name, table: 'internalEmpList' })),
+    //     ...conferencePublicationData.externalEmpList.rows.map(emp => ({ authorName: emp.external_emp_name, table: 'externalEmpList' }))
+    // ];
 
-    console.log('resultArray ====>>>>>>', resultArray)
+    // console.log('resultArray ====>>>>>>', resultArray)
 
-    conferenceDataList.map(conference => {
-        console.log('project in service====>>>>', conference.author_type);
-        const facultyTypeAuthors = conference.author_type;
-        console.log('facultyTypeAuthors ===>>>>', facultyTypeAuthors);
-        const matchedAuthor = resultArray.find(item => item.authorName === facultyTypeAuthors);
-        conference.author_type = matchedAuthor ? matchedAuthor : { authorName:facultyTypeAuthors, table : "internalEmpList"}
-        console.log('matchedAuthor ====>>>>', matchedAuthor)
+    // conferenceDataList ?  conferenceDataList.map(conference => {
+    //     console.log('project in service====>>>>', conference.author_type);
+    //     const facultyTypeAuthors = conference.author_type;
+    //     console.log('facultyTypeAuthors ===>>>>', facultyTypeAuthors);
+    //     const matchedAuthor = resultArray.find(item => item.authorName === facultyTypeAuthors);
+    //     conference.author_type = matchedAuthor ? matchedAuthor : { authorName:facultyTypeAuthors, table : "internalEmpList"}
+    //     console.log('matchedAuthor ====>>>>', matchedAuthor)
         
-    });
-    console.log('conferenceDataList ===>>>', conferenceDataList)
-    const rowCount = conferencePublicationData.conferenceDataList.rowCount;
-    console.log('rowCount ===>>>', rowCount)
-    console.log('conferenceDataList ===>>>', conferenceDataList)
+    // }) : [];
+    // console.log('conferenceDataList ===>>>', conferenceDataList)
+    // const rowCount = conferencePublicationData.conferenceDataList.rowCount;
+    // console.log('rowCount ===>>>', rowCount)
+    // console.log('conferenceDataList ===>>>', conferenceDataList)
     return {
-      conferenceDataList : conferenceDataList,
+        conferenceDataList : conferenceDataList,
         internalEmpList : internalEmpList,
         externalEmpList : externalEmpList,
-        rowCount : rowCount
+        rowCount : conferencePublicationData.rowCount
     }
 };
 
@@ -59,7 +61,7 @@ module.exports.insertConferenceData = async(body , files, userName) => {
     console.log('authorNameString ===>>>', authorNameString)
     console.log('conferenceDocumentData string in service ===>>>', conferenceDocument)
     console.log('conferenceProofData string in service  ==>>>', conferenceProofFile)
-    const insertConferencePublication = await conferencePublicationModels.insertConferencePublication(conferencePublications, conferenceDocument, conferenceProofFile, internalNamesString, externalNamesString);
+    const insertConferencePublication = await conferencePublicationModels.insertConferencePublication(conferencePublications, conferenceDocument, conferenceProofFile, internalNamesString, externalNamesString, userName);
     console.log('insertConferencePublication in service ===>>>>', insertConferencePublication);
     return insertConferencePublication.status === "Done" ? {
       status : "Done",
