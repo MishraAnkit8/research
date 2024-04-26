@@ -3,7 +3,7 @@ const bookPublicationService = require('../services/book-publication.service');
 
 module.exports.renderBookPublication = async(req, res, next) => {
     const  userName = req.body.username;
-    console.log('userName in controller  ===>>>>>>', userName);
+    console.log('userName in controller in book publication  ===>>>>>>', userName);
 
     const fetchBookPublicationData = await bookPublicationService.fetchBookPublicationData(userName);
     console.log('bookPublicationList  in controller ==>>', fetchBookPublicationData);
