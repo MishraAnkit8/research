@@ -15,6 +15,7 @@ module.exports.fetchEditedBookPublication = async(userName) => {
 }
 
 module.exports.insertBookChapterData = async(bookChapter, bookChapterDataFiles, userName) => {
+    console.log('user name in models ===>>>>>', userName);
     const {authorName, bookTitle, edition, editorName, bookEditor, chapterTitle, volumeNumber, publisherCategory, pageNumber, publisherName, publicationYear,
         bookUrl, doiBookId, isbnNo, numberOfNmimsAuthors, nmimsAuthors, nmimsCampusAuthors, nmimsSchoolAuthors} = bookChapter;
         const doiBookIdParsed = doiBookId === "" ? null : parseInt(doiBookId, 10);

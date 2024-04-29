@@ -6,10 +6,10 @@ let entriesPerPage = 5;
 console.log('currentPage ===>>>>>', currentPage)
 let table = document.querySelector(".research-pagination");
 let rows = table.querySelectorAll("tbody tr");
-// let rowCount = document.getElementById('row-count');
-// let totalRowCount = document.getElementById('total-row-count');
-// let indexValue = parseInt(rowCount.innerText, 10);
-let totalEntries = indexValue;
+let rowCountPagination = document.getElementById('row-count');
+let totalRowCountNumber = document.getElementById('total-row-count');
+let totaEntry = parseInt(rowCountPagination.innerText, 10);
+let totalEntries = totaEntry;
 let totalPages = Math.ceil(totalEntries / entriesPerPage);
 
 
@@ -123,7 +123,7 @@ document.getElementById("searchKeyword").addEventListener("input", handleSearchI
     }
   
     // total row count and pagination based on matched rows
-    totalRowCount.innerText = matchedRowCount;
+    totalRowCountNumber.innerText = matchedRowCount;
     totalEntries = matchedRowCount;
     totalPages = Math.ceil(totalEntries / entriesPerPage);
     showPage(1);

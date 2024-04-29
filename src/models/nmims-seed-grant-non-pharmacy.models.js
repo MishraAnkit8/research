@@ -16,6 +16,8 @@ module.exports.renderSeedGrantNonFormacy = async(userName) => {
                     faculty_table f
                 JOIN 
                     nmims_seed_grant_non_formacy c ON f.id = c.faculty_table_id
+                WHERE
+                    created_by = $1
                 ORDER BY 
                     c.id`,
           values : [userName]

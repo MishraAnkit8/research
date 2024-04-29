@@ -1,12 +1,13 @@
 
 const bookChapterServices = require('../services/book-chapter.service');
+const { getRedisData } = require('../../utils/redis.utils');
 
 module.exports.renderBookChapterPublication = async(req, res, next) => {
     const  userName = req.body.username;
-    console.log('userName in controller  ===>>>>>>', userName);
+    console.log('userName in book chapter controller  ===>>>>>>', userName);
 
     const bookChapterData = await bookChapterServices.fetchBookChapter(userName);
-    console.log('bookChapterData in controller ==>>', bookChapterData);
+    // console.log('bookChapterData in controller ==>>', bookChapterData);
     if(bookChapterData){
         res.render('book-chapter-publication' , {
                 bookChapterData : bookChapterData.rows,
@@ -16,9 +17,30 @@ module.exports.renderBookChapterPublication = async(req, res, next) => {
 }
 
 module.exports.insertBookChapterPublication = async(req, res, next) => {
-    const  userName = req.body.username;
-    console.log('userName in controller  ===>>>>>>', userName);
+    // const  userName = req.body.username;
+    // console.log('userName in controller fghjh ===>>>>>>', userName);
+    const cookies = req.cookies;
+    console.log('cookies ==>>>>>', cookies);
+    const key = cookies.session;
+    const userSession = await getRedisData(`${key}:session`);
+    console.log('userSession ====>>>>>>>', userSession);
 
+    const userName = userSession.username;
+    try {
+           const {status , headers, body} = await serverFetch('https://portal.svkm.ac.in/api-gateway/auth/mobile/auth/logout', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(userName),
+          });   
+    } catch (error) {
+        console.log('errrror ::::::::', error)
+        
+    }
+
+
+    const bookChapter = req.body;
     console.log('bookChapter ==>>', req.body);
     console.log('files  in controller ==>>', req.files);
 

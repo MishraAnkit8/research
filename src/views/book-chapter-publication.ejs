@@ -17,7 +17,7 @@
                 <li class="breadcrumb-link">
                     <a href="<%- BASE_URL %>research/book-publication-main"> Book Publication Dashboard </a>
                 </li>
-                <li class="breadcrumb-link"> BOOK PUBLICATION CHAPTER </li>
+                <li class="breadcrumb-link"> Book  Publication Chapter </li>
             </ul>
         </div>
         <div>
@@ -60,7 +60,7 @@
                         </div>
                     </div>
                 </div>
-                <table class="table vertical-lines custom-table research-pagination" id="book-chapter-list">
+                <table class="table vertical-lines custom-table data-list research-pagination" id="book-chapter-list">
                     <thead>
                         <th class="col-lg-1">#</th>
                         <th class="col-lg-1">Author's name</th>
@@ -70,7 +70,7 @@
                         <th class="col-lg-1">Publisher Name</th>
                         <th class="col-lg-1" colspan="3">Action</th>
                     </thead>
-                    <tbody id="data-list">
+                    <tbody>
                     <% bookChapterData.forEach(function(bookChapter,index) { %>
                         <tr row="scope" data-bookChapter-id="<%- bookChapter.id %>"
                             data-page-number="<%- bookChapter.page_number %>" data-edition="<%- bookChapter.edition %>"
@@ -102,7 +102,7 @@
                                         class="fa-solid fa-trash delete text-danger"
                                         data-bookChapter-id="<%- bookChapter.id %>"></i></label>
                             </td> -->
-                            <td title="View" class="col-lg-1 view text-danger" style="cursor: pointer;" <td title="View" class="col-lg-1 view text-danger" style="cursor: pointer;"   data-bookChapter-id="<%- bookChapter.id %>">
+                            <td title="View" class="col-lg-1 view text-danger" style="cursor: pointer;"   data-bookChapter-id="<%- bookChapter.id %>">
                                 &#128065;
                             </td>
                             <td title="Edit" class="col-lg-1 edit text-danger" style="cursor: pointer;"   data-bookChapter-id="<%- bookChapter.id %>">
@@ -115,6 +115,11 @@
                         </tr>
                         <% }); %>
                     </tbody>
+                    <tr>
+                        <div id="no-records-message"  style="display: none; color: red; margin-top: 10px; padding-left: 40%;">
+                            <b class="no-record">No records found.</b> 
+                         </div>
+                    </tr>
                 </table>
             </div>
         </div>
@@ -625,14 +630,6 @@
                             <td class="book-title">${data.bookChapter.bookTitle}</td>
                             <td class="isbn-no">${data.bookChapter.isbnNo}</td>
                             <td class="publisher-name">${data.bookChapter.publisherName}</td>
-                            <td>
-                                <label class="view" data-bookChapter-id="${data.bookChapterId}"><i class="fa-solid fa-eye view text-danger"
-                                    data-bookChapter-id="${data.bookChapterId}"></i></label>
-                                <label class="edit"data-bookChapter-id="${data.bookChapterId}"><i class="fa fa-edit edit text-danger"
-                                    data-bookChapter-id="${data.bookChapterId}"></i></label>
-                                <label class="delete"data-bookChapter-id="${data.bookChapterId}"><i class="fa-solid fa-trash delete text-danger"
-                                    data-bookChapter-id="${data.bookChapterId}"></i></label>
-                            </td>
                             <td title="View" class="col-lg-1 view text-danger" style="cursor: pointer;" <td title="View" class="col-lg-1 view text-danger" style="cursor: pointer;"   data-bookChapter-id=${data.bookChapterId}>
                                 &#128065;
                             </td>
@@ -685,7 +682,6 @@
             const isValid = validateRequiredFormFields(submitBtn);
             if (isValid) {
                 await insertbookChapter('<%- BASE_URL %>research/book-publication-main/book-chapter-publication/insert');
-                indexValue += 1
             }
             else {
                 Swal.fire({
