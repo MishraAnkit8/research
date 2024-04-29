@@ -31,6 +31,7 @@ module.exports.insertTeachingExecellance = async(req, res, next) => {
     const programOrientationFile = teachingExecellanceData.teachingFilesArrayData.programOrientationFileString;
 
     console.log('ID in controller ==>>', teachingExecellanceData);
+
     if(teachingExecellanceData){
         res.status(200).send({
             status : 'done',
@@ -40,7 +41,8 @@ module.exports.insertTeachingExecellance = async(req, res, next) => {
             fdpProgramFile,
             workShopFile, 
             invitingFacultyFile,
-            programOrientationFile
+            programOrientationFile,
+            rowCount : teachingExecellanceData.rowCount
         })
     }
 };

@@ -70,11 +70,15 @@ module.exports.insertTeachingExecellance = async(teachingExecellance, files, use
     console.log('teachingFilesArrayData ===>>', teachingFilesArrayData);
 
     const teachingExecellanceData = await teachingExecellanceModel.insertTeachingExecellanceData(teachingExecellance, teachingFilesArrayData, userName);
+    console.log('teachingExecellanceData ====>>>>>>>', teachingExecellanceData);
     if(teachingExecellanceData){
         return {
             status : 'done',
-            teachingId : teachingExecellanceData.rows[0].id,
-            teachingFilesArrayData
+            teachingId : teachingExecellanceData.teachingId,
+            teachingFilesArrayData,
+            rowCount : teachingExecellanceData.rowCount,
+            teachingExecellance : teachingExecellance
+
         }
     }
 }

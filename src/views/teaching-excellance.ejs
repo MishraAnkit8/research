@@ -649,19 +649,50 @@
                                     </td>
                                     `;
                                     teachingExecellanceList.appendChild(newTeachingExecellance);
+                                    $('#teaching-execellance-modal').modal('hide');
+                                    rowCount.classList.remove('d-none');
+                                    totalRowCount.classList.add('d-none');
+                                    Swal.fire({
+                                            position: "top-center",
+                                            icon: "success",
+                                            title: `Data Inserted successfully`,
+                                            showConfirmButton: false,
+                                    
+                                });
             }
-            $('#teaching-execellance-modal').modal('hide');
-            rowCount.classList.remove('d-none');
-            totalRowCount.classList.add('d-none');
-            alert('Data Inserted Successfully')
+            else{
+                    console.log('data in failed condition ====>>>>', data)
+                    Swal.fire({
+                        position: "top-center",
+                        icon: "error",
+                        title: "Failed To Insert",
+                        color: "red",
+                        with: "20PX",
+                        showConfirmButton: false,
+                    });  
+                }
+           
         })
+        .catch((error) => {
+                console.error("ERROR:", error);
+                const message = "Internal Server Error";
+                const errTitle = error
+                Swal.fire({
+                    position: "top-center",
+                    icon: "error",
+                    title: `${message}`,
+                    color: "red",
+                    with: "20PX",
+                    html: `<span style="color: red;">${errTitle}</span>`,
+                    showConfirmButton: false,
+                }); 
+            })
     }
 
     submitBtn.addEventListener('click', async () => {
         const isValid = validateRequiredFormFields(submitBtn);
             if (isValid) {
                 await insertTeachingExecellance('<%- BASE_URL %>teaching-excellance/insert');
-                indexValue += 1;
             }
             else {
                 console.log('validation failed');
@@ -938,9 +969,18 @@
                 teachingRowToBeUpdated.setAttribute('data-workshop-link' , data.updatedTeachingExecellance.workShopLink); 
                 teachingRowToBeUpdated.setAttribute('data-inviting-faculty-link' , data.updatedTeachingExecellance.invitingFacultyLink); 
                 teachingRowToBeUpdated.setAttribute('data-program-orientation-link' , data.updatedTeachingExecellance.programOrientationLink);
+
+                $('#teaching-execellance-modal').modal('hide');
+
+                Swal.fire({
+                    position: "top-center",
+                    icon: "success",
+                    title: `Data Updated successfully`,
+                    showConfirmButton: false,
+
+                });
             }
-            $('#teaching-execellance-modal').modal('hide');
-            alert('Data Updated SuccessFully')
+            
         })
 
     };
