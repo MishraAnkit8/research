@@ -71,12 +71,13 @@
                         <th class="col-lg-1" colspan="3">Action</th>
                     </thead>
                     <tbody >
-                    <% seminarList .forEach(function(seminar, index) { %>
+                    <% seminarData.forEach(function(seminar, index) { %>
                         <tr scope="row" data-publisher-category="<%- seminar.publisher_category %>"
                             data-pages="<%- seminar.pages %>" data-issn-no="<%- seminar.issn_no %>" data-scs-cite-score="<%- seminar.scs_cite_score %>"
                             data-impact-factor="<%- seminar.impact_factor %>" data-scs-indexed="<%- seminar.scs_indexed %>" data-wos-indexed="<%- seminar.wos_indexed %>"
                             data-gs-indexed="<%- seminar.gs_indexed %>" data-title-of-paper="<%- seminar.title_of_paper %>" data-abdc-indexed="<%- seminar.abdc_indexed %>" data-ugc-indexed="<%- seminar.ugc_indexed %>"
-                            data-web-link="<%- seminar.web_link %>" data-uid="<%- seminar.uid %>" data-date-of-publishing="<%- seminar.date_of_publishing %>"  >
+                            data-web-link="<%- seminar.web_link %>" data-uid="<%- seminar.uid %>" data-date-of-publishing="<%- seminar.date_of_publishing %>"  
+                            data-supporting-documents="<%- seminar.research_seminars %>">
                             <td> <%- index+1 %> </td>
                             <td class=" cell year col-lg-1"> <%- seminar.year %> </td>
                             <td class=" cell school col-lg-1"> <%- seminar.school %> </td>
@@ -287,7 +288,7 @@
 
                     <!-- Date of Publishing -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="date-of-publishing" class="form-label fw-bold">Date of Publishing/DDDD</label>
+                        <label for="date-of-publishing" class="form-label fw-bold">Date of Publishing</label>
                         <input type="date" name="dateOfPublishing" id="date-of-publishing" class="form-control" data-validate="isEmpty,isExist" data-err-msg="Date is required." required>
                     </div>
 
@@ -472,6 +473,16 @@
                             <label id="view-publisher-category"></label>
                         </div>
                     </div>
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="sub-title-text sub-title">
+                                <button class="btn btn-primary h-10 w-10 download-file" id="supporting-document">
+                                    <i class="fas fa-download text-danger"></i> Seminar Documents
+                                </button>
+                            </div>
+                            <label class="view-content" id="view-patent-file"></label>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -532,13 +543,16 @@
         }
     })
 
-    const insertResearchConsultancyForm =  async function (url) {
+    const insertResearchSeminar =  async function (url) {
+
+        const seminarDetails = new FormData();
+
         const seminarDocuments = document.getElementById('journal-article-documents');
         const seminarDataFile = seminarDocuments.files;
         console.log('seminarDataFile ===>>>', seminarDataFile)
         for (let i = 0; i < seminarDataFile.length; i++) {
             console.log('file name  ==>>', seminarDataFile[i].name);
-            journalDetails.append('seminarDocuments', seminarDataFile[i]);
+            seminarDetails.append('seminarDocuments', seminarDataFile[i]);
         }
         // const year = document.getElementById('year');
 
@@ -569,7 +583,7 @@
         seminarDetails.append('school', school)
         seminarDetails.append('campus', campus)
         seminarDetails.append('publisher', publisher)
-        seminarDetails.append(' publisherCategory', publisherCategory)
+        seminarDetails.append('publisherCategory', publisherCategory)
         seminarDetails.append('NmimsFaculty', NmimsFaculty)
         seminarDetails.append('journalName', journalName)
         seminarDetails.append('pages', pages)
@@ -586,27 +600,18 @@
         seminarDetails.append('dateOfPublishing', dateOfPublishing)
         seminarDetails.append('titleOfPaper', titleOfPaper)
 
-        // inserting data from frontEnd
-        console.log('seminarDetails==>>',seminarDetails);
-        const payload = {
-            seminarDetails: seminarDetails
-        }
-
-        console.log('PAYLOAD : ', payload);
-
         fetch(url, {
             method: 'POST',
-            headers: {
-                'content-type': 'application/json'
-            },
-            body: JSON.stringify(payload)
+            body: seminarDetails
         })
             .then((result) => {
                 return result.json()
             })
             .then((data) => {
                 console.log('data ===>>>', data);
-                if (data.status === 'done') {
+
+                if (data.status === 'Done') {
+                    const seminarDetails = data.seminarDetails;
                     seminarId = data.seminarId;
                     console.log('seminarId ==>', seminarId);
                     const rowCountInteger = parseInt(data.rowCount, 10);
@@ -630,6 +635,8 @@
                     newResearchSeminar.setAttribute('data-publisher-category' , seminarDetails.publisherCategory);
                     newResearchSeminar.setAttribute('data-date-of-publishing', seminarDetails.dateOfPublishing);
                     newResearchSeminar.setAttribute('data-title-of-paper', seminarDetails.titleOfPaper);
+                    newResearchSeminar.setAttribute('data-supporting-documents', seminarDetails.titleOfPaper);
+
                     newResearchSeminar.innerHTML = `
                             <td >${IndexEntry}</td>
                             <td class="year">${seminarDetails.year}</td>
@@ -683,7 +690,7 @@
     submitBtn.addEventListener('click', async () => {
         const isValid = validateRequiredFormFields(submitBtn);
             if (isValid) {
-                await insertResearchConsultancyForm('<%- BASE_URL %>research/research-seminar/insert');
+                await insertResearchSeminar('<%- BASE_URL %>research/research-seminar/insert');
                 }
             else {
                 alert('validation Failed');
@@ -826,27 +833,28 @@
                         return result.json();
                     })
                     .then((data) => {
+                        setFileNameInButtons(data) ;
                         console.log('data is viewing', data);
-                        viewYear.innerText = data[0].year;
-                        viewCampus.innerText = data[0].campus;
-                        viewJournalName.innerText = data[0].journal_name;
-                        viewNmimsFaculty.innerText = data[0].nmims_faculty;
-                        viewSchool.innerText = data[0].school;
-                        viewPublisher.innerText = data[0].publisher;
-                        viewIssNo.innerText = data[0].issn_no;
-                        viewAbcdIndexed.innerText = data[0].abdc_indexed;
-                        viewWebLink.innerText = data[0].web_link;
-                        viewPages.innerText = data[0].pages;
-                        viewScsCiteScore.innerText = data[0].pages;
-                        viewImpactFactor.innerText = data[0].impact_factor;
-                        viewScsIndexed.innerText = data[0].scs_indexed;
-                        viewGsIndexed.innerText = data[0].gs_indexed;
-                        viewUgcIndexed.innerText = data[0].ugc_indexed;
-                        viewDateOfPublishing.innerText = data[0].date_of_publishing.split('T')[0];
-                        viewTitle.innerText = data[0].title_of_paper;
-                        viewPublisherCategory.innerText = data[0].publisher_category;
-                        viewWosIndexed.innerText = data[0].wos_indexed;
-                        viewUid.innerText = data[0].uid;
+                        viewYear.innerText = data.seminarData[0].year;
+                        viewCampus.innerText = data.seminarData[0].campus;
+                        viewJournalName.innerText = data.seminarData[0].journal_name;
+                        viewNmimsFaculty.innerText = data.seminarData[0].nmims_faculty;
+                        viewSchool.innerText = data.seminarData[0].school;
+                        viewPublisher.innerText = data.seminarData[0].publisher;
+                        viewIssNo.innerText = data.seminarData[0].issn_no;
+                        viewAbcdIndexed.innerText = data.seminarData[0].abdc_indexed;
+                        viewWebLink.innerText = data.seminarData[0].web_link;
+                        viewPages.innerText = data.seminarData[0].pages;
+                        viewScsCiteScore.innerText = data.seminarData[0].pages;
+                        viewImpactFactor.innerText = data.seminarData[0].impact_factor;
+                        viewScsIndexed.innerText = data.seminarData[0].scs_indexed;
+                        viewGsIndexed.innerText = data.seminarData[0].gs_indexed;
+                        viewUgcIndexed.innerText = data.seminarData[0].ugc_indexed;
+                        viewDateOfPublishing.innerText = data.seminarData[0].date_of_publishing.split('T')[0];
+                        viewTitle.innerText = data.seminarData[0].title_of_paper;
+                        viewPublisherCategory.innerText = data.seminarData[0].publisher_category;
+                        viewWosIndexed.innerText = data.seminarData[0].wos_indexed;
+                        viewUid.innerText = data.seminarData[0].uid;
 
                     }).catch((error) => {
                         console.log('error:', error);
@@ -858,113 +866,226 @@
         });
 
     const updateResearchSeminar = async(url) => {
-        // for assigning store value in our data base
-        const updatedYear = document.getElementById('year').value;
-        const updatedSchool = document.getElementById('school').value;
-        const updatedCampus = document.getElementById('campus').value;
-        const updatedPublisher = document.getElementById('publisher').value;
-        const updatedNmimsFaculty = document.getElementById('nmims-faculty').value;
-        const updatedJournalName = document.getElementById('journal-name').value;
-        const updatedTitleOfPaper = document.getElementById('title-of-paper').value ;
-        const updatedPublisherCategory = document.querySelector('input[name="publisher-category"]:checked').value;
-        const updatedPages = document.getElementById('pages').value;
-        const updatedIssnNo = document.getElementById('issn-no').value;
-        const updatedDateOfPublishing =  document.getElementById('date-of-publishing').value ;
-        const updatedImpactFactor = document.getElementById('impact-factor').value;
-        const updatedScsCiteScore = document.getElementById('scs-cite-score').value;
-        const updatedWosIndexed = document.getElementById('wos-indexed').value;
-        const updatedGsIndexed = document.getElementById('gs-indexed').value;
-        const updatedAbcdIndexed = document.getElementById('abdc-indexed').value;
-        const updatedUgcIndexed  = document.getElementById('ugc-indexed').value;
-        const updatedWebLink = document.getElementById('web-link').value;
-        const updatedUid = document.getElementById('uid').value;
-        const updatedScsIndexed= document.getElementById('scs-indexed').value
+        const updateSeminarDetails = new FormData();
 
-        updatedResearchSeminar.seminarId = seminarId
-        updatedResearchSeminar.year = updatedYear
-        updatedResearchSeminar.school = updatedSchool
-        updatedResearchSeminar.campus = updatedCampus
-        updatedResearchSeminar.publisher = updatedPublisher
-        updatedResearchSeminar.NmimsFaculty = updatedNmimsFaculty
-        updatedResearchSeminar.journalName = updatedJournalName
-        updatedResearchSeminar.titleOfPaper = updatedTitleOfPaper;
-        updatedResearchSeminar.pages = updatedPages;
-        updatedResearchSeminar.issnNo = updatedIssnNo;
-        updatedResearchSeminar.dateOfPublishing = updatedDateOfPublishing;
-        updatedResearchSeminar.impactFactor = updatedImpactFactor;
-        updatedResearchSeminar.scsCiteScore = updatedScsCiteScore;
-        updatedResearchSeminar.wosIndexed = updatedWosIndexed;
-        updatedResearchSeminar. gsIndexed = updatedGsIndexed;
-        updatedResearchSeminar.abcdIndexed = updatedAbcdIndexed;
-        updatedResearchSeminar.ugcIndexed = updatedUgcIndexed;
-        updatedResearchSeminar.webLink = updatedWebLink;
-        updatedResearchSeminar.uid = updatedUid;
-        updatedResearchSeminar.publisherCategory = updatedPublisherCategory;
-        updatedResearchSeminar.scsIndexed = updatedScsIndexed;
+        const seminarDocuments = document.getElementById('journal-article-documents');
+        let seminarDataFile = seminarDocuments.files;
+        seminarDataFile ?
+            Array.from(seminarDataFile).forEach(file => {
+                console.log('file name  ==>>', file.name);
+                updateSeminarDetails.append('seminarDocuments', file);
+            }) :
+            (seminarDataFile = null, updateSeminarDetails.append('seminarDocuments', seminarDataFile));
+
+        const year = document.getElementById('year').value;
+        const school = document.getElementById('school').value;
+        const campus = document.getElementById('campus').value;
+        const publisher = document.getElementById('publisher').value;
+        const  publisherCategory = document.querySelector('input[name="publisher-category"]:checked').value;
+        const NmimsFaculty = document.getElementById('nmims-faculty').value;
+        const journalName = document.getElementById('journal-name').value;
+        const pages = document.getElementById('pages').value;
+        const issnNo  = document.getElementById('issn-no').value;
+        const scsCiteScore = document.getElementById('scs-cite-score').value;
+        const impactFactor = document.getElementById('impact-factor').value;
+        const scsIndexed = document.getElementById('scs-indexed').value;
+        const wosIndexed = document.getElementById('wos-indexed').value;
+        const gsIndexed = document.getElementById('gs-indexed').value;
+        const abcdIndexed = document.getElementById('abdc-indexed').value;
+        const ugcIndexed = document.getElementById('ugc-indexed').value;
+        const webLink = document.getElementById('web-link').value;
+        const uid = document.getElementById('uid').value;
+        const dateOfPublishing = document.getElementById('date-of-publishing').value;
+        const titleOfPaper = document.getElementById('title-of-paper').value;
+
+        console.log('titleOfPaper ====>>>>>>', titleOfPaper)
+        console.log('seminarId ====>>>>>>', seminarId);
+        
+        updateSeminarDetails.append('seminarId', seminarId)
+        updateSeminarDetails.append('year', year)
+        updateSeminarDetails.append('school', school)
+        updateSeminarDetails.append('campus', campus)
+        updateSeminarDetails.append('publisher', publisher)
+        updateSeminarDetails.append('publisherCategory', publisherCategory)
+        updateSeminarDetails.append('NmimsFaculty', NmimsFaculty)
+        updateSeminarDetails.append('journalName', journalName)
+        updateSeminarDetails.append('pages', pages)
+        updateSeminarDetails.append('issnNo', issnNo)
+        updateSeminarDetails.append('scsCiteScore', scsCiteScore)
+        updateSeminarDetails.append('impactFactor', impactFactor)
+        updateSeminarDetails.append('scsIndexed', scsIndexed)
+        updateSeminarDetails.append('wosIndexed', wosIndexed)
+        updateSeminarDetails.append('gsIndexed', gsIndexed)
+        updateSeminarDetails.append('abcdIndexed', abcdIndexed)
+        updateSeminarDetails.append('ugcIndexed', ugcIndexed)
+        updateSeminarDetails.append('webLink', webLink)
+        updateSeminarDetails.append('uid', uid)
+        updateSeminarDetails.append('dateOfPublishing', dateOfPublishing)
+        updateSeminarDetails.append('titleOfPaper', titleOfPaper)
 
         // sending  updated data to database by fetch api for update the value in db
         fetch(url, {
-            method: 'post',
-            headers: {
-                'content-type': 'application/json'
-            },
-            body: JSON.stringify(updatedResearchSeminar)
-        })
-            .then((result) => {
+            method: 'POST',
+            body: updateSeminarDetails
+        }).then((result) => {
                 if (result) {
                     return result.json();
                 }
                 else {
                     console.log('failed update data on server ');
                 }
-            })
-            .then((data) => {
+        }).then((data) => {
                 console.log('data ==>>>', data);
-
-                if (data.status === 'done') {
+                const updateSeminarDetails = data.updateSeminarDetails;
+                if (data.status === 'Done') {
                     console.log('seminarId >>>> ', seminarId);
-                    seminarRowToBeUpdated.querySelector('.year').innerText = updatedResearchSeminar.year;
-                    seminarRowToBeUpdated.querySelector('.school').innerText = updatedResearchSeminar.school;
-                    seminarRowToBeUpdated.querySelector('.campus').innerText = updatedResearchSeminar.campus;
-                    seminarRowToBeUpdated.querySelector('.nmims-faculty').innerText = updatedResearchSeminar.NmimsFaculty;
-                    seminarRowToBeUpdated.querySelector('.journal-name').innerText = updatedResearchSeminar.journalName;
-                    seminarRowToBeUpdated.querySelector('.publisher').innerText = updatedResearchSeminar.publisher;
-                    seminarRowToBeUpdated.setAttribute('data-pages' , updatedPages);
-                    seminarRowToBeUpdated.setAttribute('data-issn-no' , updatedIssnNo);
-                    seminarRowToBeUpdated.setAttribute('data-scs-cite-score' , updatedScsCiteScore);
-                    seminarRowToBeUpdated.setAttribute('data-impact-factor' , updatedImpactFactor);
-                    seminarRowToBeUpdated.setAttribute('data-scs-indexed' , updatedScsIndexed );
-                    seminarRowToBeUpdated.setAttribute('data-wos-indexed' , updatedWosIndexed);
-                    seminarRowToBeUpdated.setAttribute('data-gs-indexed' , updatedGsIndexed);
-                    seminarRowToBeUpdated.setAttribute('data-abdc-indexed' , updatedAbcdIndexed);
-                    seminarRowToBeUpdated.setAttribute('data-ugc-indexed' , updatedUgcIndexed);
-                    seminarRowToBeUpdated.setAttribute('data-web-link' , updatedWebLink);
-                    seminarRowToBeUpdated.setAttribute('data-uid' , updatedUid);
-                    seminarRowToBeUpdated.setAttribute('data-publisher-category' , updatedPublisherCategory);
-                    seminarRowToBeUpdated.setAttribute('data-date-of-publishing' , updatedDateOfPublishing);
-                    seminarRowToBeUpdated.setAttribute('data-title-of-paper' , updatedTitleOfPaper);
+                    seminarRowToBeUpdated.querySelector('.year').innerText = updateSeminarDetails.year;
+                    seminarRowToBeUpdated.querySelector('.school').innerText = updateSeminarDetails.school;
+                    seminarRowToBeUpdated.querySelector('.campus').innerText = updateSeminarDetails.campus;
+                    seminarRowToBeUpdated.querySelector('.nmims-faculty').innerText = updateSeminarDetails.NmimsFaculty;
+                    seminarRowToBeUpdated.querySelector('.journal-name').innerText = updateSeminarDetails.journalName;
+                    seminarRowToBeUpdated.querySelector('.publisher').innerText = updateSeminarDetails.publisher;
+                    seminarRowToBeUpdated.setAttribute('data-pages', updateSeminarDetails.pages);
+                    seminarRowToBeUpdated.setAttribute('data-issn-no', updateSeminarDetails.issnNo);
+                    seminarRowToBeUpdated.setAttribute('data-scs-cite-score', updateSeminarDetails.scsCiteScore);
+                    seminarRowToBeUpdated.setAttribute('data-impact-factor', updateSeminarDetails.impactFactor);
+                    seminarRowToBeUpdated.setAttribute('data-scs-indexed', updateSeminarDetails.scsIndexed);
+                    seminarRowToBeUpdated.setAttribute('data-wos-indexed', updateSeminarDetails.wosIndexed);
+                    seminarRowToBeUpdated.setAttribute('data-gs-indexed', updateSeminarDetails.gsIndexed);
+                    seminarRowToBeUpdated.setAttribute('data-abdc-indexed', updateSeminarDetails.abcdIndexed);
+                    seminarRowToBeUpdated.setAttribute('data-ugc-indexed', updateSeminarDetails.ugcIndexed);
+                    seminarRowToBeUpdated.setAttribute('data-web-link', updateSeminarDetails.webLink);
+                    seminarRowToBeUpdated.setAttribute('data-uid', updateSeminarDetails.uid);
+                    seminarRowToBeUpdated.setAttribute('data-publisher-category' , updateSeminarDetails.publisherCategory);
+                    seminarRowToBeUpdated.setAttribute('data-date-of-publishing', updateSeminarDetails.dateOfPublishing);
+                    seminarRowToBeUpdated.setAttribute('data-title-of-paper', updateSeminarDetails.titleOfPaper);
+                    seminarRowToBeUpdated.setAttribute('data-supporting-documents', data.updatedSeminarFiles);
+
+                    Swal.fire({
+                        position: "top-center",
+                        icon: "success",
+                        title: `${data.message}`,
+                        showConfirmButton: false
+                        // timer: 1500
+                    });
+                    $('#research-seminar-modal').modal('hide');
                 }
-                $('#research-seminar-modal').modal('hide');
-                alert('Data Updated SuccessFully');
+                else{
+                    Swal.fire({
+                        position: "top-center",
+                        icon: "error",
+                        title: "Updation Failed",
+                        color : "red",
+                        with : "20PX",
+                        showConfirmButton: false,
+                    });
+                }
             })
             .catch((error) => {
                 console.log("ERROIR : ", error);
-                alert('An error occurred while updating the element');
-                $('#research-seminar-modal').modal('hide');
-               
+                const errTitle = "Internal Server Error";
+                const message = error
+                // alert('An error occurred while updating the element');
+                Swal.fire({
+                        position: "top-center",
+                        icon: "error",
+                        title: `${message}`,
+                        color : "red",
+                        with : "20PX",
+                        html: `<span style="color: red;">${errTitle}</span>`,
+                        showConfirmButton: false,
+                    });
             })
         }
 
     updateBtn.addEventListener('click' , async() => {
+        formGroup = updateBtn.closest('.validate-input')
+        console.log("formGroup::::::::", formGroup)
+        formGroup.querySelectorAll('input[type="file"]')?.forEach(elm => {
+            console.log("elm:::::::::", elm);
+            elm.removeAttribute('data-validate')
+        })
+
         const isValid = validateRequiredFormFields(submitBtn);
             if (isValid) {
                 await updateResearchSeminar('<%- BASE_URL %>research/research-seminar/update');
                 }
             else {
-                alert('Validation Failed');
+                 Swal.fire({
+                        position: "top-center",
+                        icon: "error",
+                        title: "Validation Failed",
+                        color : "red",
+                        showConfirmButton: false,
+                    });
             }
 
     })
+
+
+    
+    function setFileNameInButtons(data) {
+        console.log('data ==>>>', data);
+        articleDoucments = document.getElementById('supporting-document');
+        articleDoucments.setAttribute('data-filename', data.seminarData[0].supporting_documents);
+    } 
+
+    //eventlistner for download files
+    document.addEventListener('click', async function (event) {
+            const button = event.target.closest('button');
+            if (button && button.id && button.classList.contains('download-file')) {
+                console.log('button ===>>>', button)
+                try {
+                    const fileDataString = button.getAttribute('data-filename');
+                    if (!fileDataString) {
+                        throw new Error('Data filename attribute not found on button.');
+                    }
+
+                    const fileArray = fileDataString.split(',').map(fileName => fileName.trim()).filter(Boolean); 
+                    if (fileArray.length === 0) {
+                        throw new Error('No file names found in data filename attribute.');
+                    }
+
+                    const downloadPromises = fileArray.map(async (fileName) => {
+                        console.log('fileName ===>>>', fileName)
+                        const fileUrl = `<%- BASE_URL %>research/research-seminar/download/${fileName}`;
+                        downloadFile(fileName, fileUrl)
+                        try {
+                            const response = await fetch(fileUrl);
+                            if (!response.ok) {
+                                throw new Error(`Failed to download file: ${fileName}`);
+                            }
+                            console.log('File downloaded successfully:', fileName);
+                            return fileName;
+                        } catch (error) {
+                            console.error('Error downloading file:', error);
+                            throw error;
+                        }
+                    });
+
+                    const downloadedFiles = await Promise.all(downloadPromises);
+                    console.log('All files downloaded successfully:', downloadedFiles);
+                } catch (error) {
+                    console.error('Error downloading files:', error);
+                    alert(`There was a problem downloading files: ${error.message}`);
+                }
+            }
+        });
+
+
+    // set string file value into button
+    function setFileNameAttributeToBeDownload(data) {
+            console.log('data row in side function ===>>', data);
+            const articleDataFiles = document.getElementById('journal-data-file-edit');
+            console.log('articleDataFiles ===>>>>>', articleDataFiles)
+            articleDataFiles.classList.remove('d-none');
+            const articleDataString = data.getAttribute('data-documents');
+            console.log('articleDataString ====>>>>>>', articleDataString);
+            // setAttribute into button
+            articleDataFiles.setAttribute('data-filename', articleDataString);
+
+        };
+
 
 
 

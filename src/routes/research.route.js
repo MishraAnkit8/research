@@ -100,10 +100,13 @@ router.use('/book-publication-main', bookPublicationRoutes);
 //research-seminar
 
 router.get('/research-seminar', asyncErrorHandler(authMiddleware), asyncErrorHandler(researchSeminarController.renderResearchSeminar))
-router.post('/research-seminar/insert', validateResearchSeminar, asyncErrorHandler(authMiddleware), asyncErrorHandler(researchSeminarController.createResearchSeminar));
-router.post('/research-seminar/update' , asyncErrorHandler(authMiddleware), asyncErrorHandler(researchSeminarController.updateResearchSeminar));
-router.post('/research-seminar/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(researchSeminarController.delResearchSeminar));
+router.post('/research-seminar/insert',  upload.array('seminarDocuments', 5), asyncErrorHandler(authMiddleware), asyncErrorHandler(researchSeminarController.createResearchSeminar));
+router.post('/research-seminar/update' ,upload.array('seminarDocuments', 5), asyncErrorHandler(authMiddleware), asyncErrorHandler(researchSeminarController.updateResearchSeminar));
+router.post('/research-seminar/delete',asyncErrorHandler(authMiddleware), asyncErrorHandler(researchSeminarController.delResearchSeminar));
 router.post('/research-seminar/view', asyncErrorHandler(authMiddleware), asyncErrorHandler(researchSeminarController.viewResearchSeminar));
+router.get('/research-seminar/download/:fileName',asyncErrorHandler(downloadFileService.downloadFile));
+router.get('/research-seminar/viewing/:fileName', asyncErrorHandler(downloadFileService.viewFile));
+
 
 //IPR 
 router.get('/IPR', asyncErrorHandler(authMiddleware), asyncErrorHandler(IPRController.renderIPR));
