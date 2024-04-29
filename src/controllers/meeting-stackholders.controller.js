@@ -22,7 +22,9 @@ module.exports.insertMeetingStackholders = async(req, res, next) => {
     console.log('files in controller ==>>', req.files);
     // const {rankingDocuments, accreditationFile, achievementsFile, convocationFile, inauguralProgramFile, eventFile} = req.files
     const meetingStackholdersData = await meetingServices.insertMeetingStackholder(req.body, req.files, userName);
-    const meetingId = meetingStackholdersData.meetingId;
+    // const meetingId = meetingStackholdersData.meetingId;
+    console.log('meetingStackholdersData in controller ===>>>>>', meetingStackholdersData);
+
     const rankingDocuments = meetingStackholdersData.meetingFilesData.rankingDocuments;
     const accreditationFile = meetingStackholdersData.meetingFilesData.accreditationFile; 
     const achievementsFile = meetingStackholdersData.meetingFilesData.achievementsFile 
@@ -30,19 +32,33 @@ module.exports.insertMeetingStackholders = async(req, res, next) => {
     const inauguralProgramFile = meetingStackholdersData.meetingFilesData.inauguralProgramFile; 
     const eventFile = meetingStackholdersData.meetingFilesData.eventFile;
 
-    if(meetingStackholdersData) {
-        res.status(200).send({
-            status : 'done',
-            meetingData : meetingData,
-            meetingId,
-            rankingDocuments,
-            accreditationFile, 
-            achievementsFile, 
-            convocationFile, 
-            inauguralProgramFile, 
-            eventFile
-        })
-    }
+    // if(meetingStackholdersData) {
+    //     res.status(200).send({
+    //         status : 'done',
+    //         meetingData : meetingData,
+    //         meetingId,
+    //         rankingDocuments,
+    //         accreditationFile, 
+    //         achievementsFile, 
+    //         convocationFile, 
+    //         inauguralProgramFile, 
+    //         eventFile
+    //     })
+    // }
+    res.status(200).send({
+        status : meetingStackholdersData.status,
+        message : meetingStackholdersData.message,
+        meetingId : meetingStackholdersData.meetingId,
+        meetingData : meetingData,
+        rankingDocuments,
+        accreditationFile, 
+        achievementsFile, 
+        convocationFile, 
+        inauguralProgramFile, 
+        eventFile,
+        errorCode : meetingStackholdersData.errorCode,
+        rowCount : meetingStackholdersData.rowCount
+    })
 }
 
 module.exports.updateMeetingStackholders = async(req, res, next) => {

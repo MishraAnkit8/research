@@ -683,7 +683,7 @@
                 return result.json()
             })
             .then((data) => {
-                if (data.status === 'done') {
+                if (data.status === 'Done') {
                     console.log('data ==>', data);
                     const rowCountInteger = parseInt(data.rowCount, 10);
                     const IndexEntry = rowCountInteger + indexValue;
@@ -729,7 +729,13 @@
                 rowCount.classList.remove('d-none');
                 totalRowCount.classList.add('d-none');
                 rowCount.innerText = `Total entries : ${IndexEntry}`
-                alert('Data Inserted Successfully');
+                Swal.fire({
+							position: "top-center",
+							icon: "success",
+							title: `${data.message}`,
+							showConfirmButton: false,
+							
+						});
             })
     }
 
@@ -737,7 +743,6 @@
         const isValid = validateRequiredFormFields(submitBtn);
         if (isValid) {
             await insertMeetingStackholders('<%- BASE_URL %>meeting-stackholders/insert');
-            indexValue += 1;
             console.log('data inserted successfully');
         }
         else {

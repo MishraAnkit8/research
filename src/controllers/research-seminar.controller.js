@@ -21,18 +21,28 @@ module.exports.createResearchSeminar = async (req, res, next) => {
     console.log('data in controller', req.body);
     const researchSeminarData = await researchSeminarServices.insertResearchSeminar(req.body, userName) ;
     console.log(" researchSeminarData ===>" , researchSeminarData);
-    if(researchSeminarData && researchSeminarData.rows[0].id) {
-        res.status(200).send({
-            status : 'done',
-            seminarId: researchSeminarData.rows[0].id
-        });
-    }
-    else {
-        res.status(500).send({
-            status : 'failed',
-            'massage' : 'failed to insert new row'
-        });
-    };
+    const statusCode = researchSeminarData.status === "Done" ? 200 : (researchSeminarData.errorCode ? 400 : 500);
+
+    res.status(statusCode).send({
+        status : researchSeminarData.status,
+        message : researchSeminarData.message,
+        seminarDetails : researchSeminarData.seminarDetails,
+        seminarId : researchSeminarData.seminarId,
+        errorCode : researchSeminarData.errorCode ? researchSeminarData.errorCode : null
+
+    })
+    // if(researchSeminarData && researchSeminarData.rows[0].id) {
+    //     res.status(200).send({
+    //         status : 'done',
+    //         seminarId: researchSeminarData.rows[0].id
+    //     });
+    // }
+    // else {
+    //     res.status(500).send({
+    //         status : 'failed',
+    //         'massage' : 'failed to insert new row'
+    //     });
+    // };
 };
 
 

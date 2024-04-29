@@ -70,13 +70,27 @@ module.exports.insertMeetingStackholder = async(body, files, userName) => {
     const meetingStackholderData = body;
     console.log('meetingStackholderData  ==>>', meetingStackholderData)
     const insertmMeetingStackholderData = await meetingModels.insertMeetingStackholders(meetingStackholderData, meetingFilesData, userName);
-    console.log('insertmMeetingStackholderData ==>>', insertmMeetingStackholderData.rows[0].id);
-    const meetingId = insertmMeetingStackholderData.rows[0].id
-    if(insertmMeetingStackholderData){
-        return {
-          meetingId,
-          meetingFilesData
-        }
+    console.log('insertmMeetingStackholderData ===>>>>>', insertmMeetingStackholderData)
+
+    // console.log('insertmMeetingStackholderData ==>>', insertmMeetingStackholderData.rows[0].id);
+    // const meetingId = insertmMeetingStackholderData.rows[0].id
+    // if(insertmMeetingStackholderData){
+    //     return {
+    //       meetingId,
+    //       meetingFilesData
+    //     }
+    // }
+    return insertmMeetingStackholderData.status ===  "Done" ? {
+        status : insertmMeetingStackholderData.status,
+        message : insertmMeetingStackholderData.message,
+        meetingId : insertmMeetingStackholderData.meetingId,
+        meetingStackholderData : meetingStackholderData,
+        meetingFilesData  : meetingFilesData,
+        rowCount : insertmMeetingStackholderData.rowCount
+    } : {
+      status : insertmMeetingStackholderData.status,
+      message : insertmMeetingStackholderData.message,
+      errorCode : insertmMeetingStackholderData.errorCode
     }
 
 
@@ -158,6 +172,7 @@ module.exports.viewMeetingStackholders = async(meetingId, userName) => {
 module.exports.deleteMeetingData = async(meetingId) => {
     
     const deletMeeting = await meetingModels.deleteMeetingStackholders(meetingId);
+   
     if(deletMeeting.rowCount === 1  && deletMeeting){
         return{
             status : 'done',

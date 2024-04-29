@@ -296,6 +296,19 @@
                         <label for="title-of-paper" class="form-label fw-bold">Title Of Paper</label>
                         <input type="text" name="titleOfPaper" id="title-of-paper" class="form-control" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="This field is required and min length > 1." required>
                     </div>
+                    <!-- Upload Supporting Documents-->
+                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="supporting-documents" class="form-label fw-bold ">
+                            Upload Supporting Documents
+                        </label>
+                        <div class="d-flex">
+                            <input type="file" name="journal-article-documents" id="journal-article-documents"
+                                class="col-md-12 form-control" data-validate="isEmpty,isExist,isFile" data-err-msg="File is required."
+                                required multiple>
+                            <button class="download-btn download-file" id="journal-data-file-edit"><i
+                                    class="fas fa-download text-danger"></i></button>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -520,29 +533,57 @@
     })
 
     const insertResearchConsultancyForm =  async function (url) {
-        const year = document.getElementById('year')
-        console.log('year value ==>>', year.value);
-        const seminarDetails = {};
-        seminarDetails.year = document.getElementById('year').value;
-        seminarDetails.school = document.getElementById('school').value;
-        seminarDetails.campus = document.getElementById('campus').value;
-        seminarDetails.publisher = document.getElementById('publisher').value;
-        seminarDetails. publisherCategory = document.querySelector('input[name="publisher-category"]:checked').value;
-        seminarDetails.NmimsFaculty = document.getElementById('nmims-faculty').value;
-        seminarDetails.journalName = document.getElementById('journal-name').value;
-        seminarDetails.pages = document.getElementById('pages').value;
-        seminarDetails.issnNo  = document.getElementById('issn-no').value;
-        seminarDetails.scsCiteScore = document.getElementById('scs-cite-score').value;
-        seminarDetails.impactFactor = document.getElementById('impact-factor').value;
-        seminarDetails.scsIndexed = document.getElementById('scs-indexed').value;
-        seminarDetails.wosIndexed = document.getElementById('wos-indexed').value;
-        seminarDetails.gsIndexed = document.getElementById('gs-indexed').value;
-        seminarDetails.abcdIndexed = document.getElementById('abdc-indexed').value;
-        seminarDetails.ugcIndexed = document.getElementById('ugc-indexed').value;
-        seminarDetails.webLink = document.getElementById('web-link').value;
-        seminarDetails.uid = document.getElementById('uid').value;
-        seminarDetails.dateOfPublishing = document.getElementById('date-of-publishing').value;
-        seminarDetails.titleOfPaper = document.getElementById('title-of-paper').value;
+        const seminarDocuments = document.getElementById('journal-article-documents');
+        const seminarDataFile = seminarDocuments.files;
+        console.log('seminarDataFile ===>>>', seminarDataFile)
+        for (let i = 0; i < seminarDataFile.length; i++) {
+            console.log('file name  ==>>', seminarDataFile[i].name);
+            journalDetails.append('seminarDocuments', seminarDataFile[i]);
+        }
+        // const year = document.getElementById('year');
+
+        // console.log('year value ==>>', year.value);
+        // const seminarDetails = {};
+        const year = document.getElementById('year').value;
+        const school = document.getElementById('school').value;
+        const campus = document.getElementById('campus').value;
+        const publisher = document.getElementById('publisher').value;
+        const  publisherCategory = document.querySelector('input[name="publisher-category"]:checked').value;
+        const NmimsFaculty = document.getElementById('nmims-faculty').value;
+        const journalName = document.getElementById('journal-name').value;
+        const pages = document.getElementById('pages').value;
+        const issnNo  = document.getElementById('issn-no').value;
+        const scsCiteScore = document.getElementById('scs-cite-score').value;
+        const impactFactor = document.getElementById('impact-factor').value;
+        const scsIndexed = document.getElementById('scs-indexed').value;
+        const wosIndexed = document.getElementById('wos-indexed').value;
+        const gsIndexed = document.getElementById('gs-indexed').value;
+        const abcdIndexed = document.getElementById('abdc-indexed').value;
+        const ugcIndexed = document.getElementById('ugc-indexed').value;
+        const webLink = document.getElementById('web-link').value;
+        const uid = document.getElementById('uid').value;
+        const dateOfPublishing = document.getElementById('date-of-publishing').value;
+        const titleOfPaper = document.getElementById('title-of-paper').value;
+        seminarDetails.append('year')
+        seminarDetails.append('school')
+        seminarDetails.append('campus')
+        seminarDetails.append('publisher')
+        seminarDetails.append(' publisherCategory')
+        seminarDetails.append('NmimsFaculty')
+        seminarDetails.append('journalName')
+        seminarDetails.append('pages')
+        seminarDetails.append('issnNo')
+        seminarDetails.append('scsCiteScore')
+        seminarDetails.append('impactFactor')
+        seminarDetails.append('scsIndexed')
+        seminarDetails.append('wosIndexed')
+        seminarDetails.append('gsIndexed')
+        seminarDetails.append('abcdIndexed')
+        seminarDetails.append('ugcIndexed')
+        seminarDetails.append('webLink')
+        seminarDetails.append('uid')
+        seminarDetails.append('dateOfPublishing')
+        seminarDetails.append('titleOfPaper')
 
         // inserting data from frontEnd
         console.log('seminarDetails==>>',seminarDetails);
@@ -613,8 +654,25 @@
                         rowCount.innerText = `Total entries : ${IndexEntry}`;
                     $('#research-seminar-modal').modal('hide');
                     
-                    alert('Data  Inserted  SuccessFully');
+                    Swal.fire({
+							position: "top-center",
+							icon: "success",
+							title: `${data.message}`,
+							showConfirmButton: false,
+							
+						});
                     // for clear input field
+                }
+                else{
+                    console.log('data in failed condition ====>>>>', data)
+                    Swal.fire({
+                        position: "top-center",
+                        icon: "error",
+                        title: "Failed To Insert",
+                        color: "red",
+                        with: "20PX",
+                        showConfirmButton: false,
+                    });
                 }
             }).catch((error) => {
                 console.error("ERROR:", error);
