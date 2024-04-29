@@ -197,7 +197,7 @@ aria-hidden="true">
                     <!-- Faculty ID -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="faculty-id" class="form-label fw-bold ">Name of Faculty , Id And Designation</label>
-                        <select id="faculty-id" class=""  required>
+                        <select id="faculty-id" class="select-option" data-validate="isEmpty,isExist" data-err-msg="This  field  is requird."  required>
                         </select>
                     </div>
                     <!--Date of Commencement-->
@@ -241,13 +241,13 @@ aria-hidden="true">
                     <!-- Faculty Share -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="total-fees" class=" sub-title fw-bold">Faculty Share 70%(a)</label>
-                        <input type="text" name="total-fees" id="faculty-share" data-validate="isEmpty,isExist" data-err-msg="Value is required." class="form-control"
+                        <input type="text" name="total-fees" id="faculty-share" data-validate="isEmpty,isExist, isNumber" data-err-msg="Value is required." class="form-control"
                             value="70%">
                     </div>
                     <!-- NMIMS Share -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="NMIMSAuthors" class=" sub-title fw-bold">NMIMS Share 30%(a)</label>
-                        <input type="text" name="volumes" id="nmims-share" data-validate="isEmpty,isExist" data-err-msg="Value is required." class="form-control"
+                        <input type="text" name="volumes" id="nmims-share" data-validate="isEmpty,isExist, isNumber" data-err-msg="Value is required." class="form-control"
                              value="30%">
                     </div>
                     <!-- Details of Distribution of Faculty Share (if more than one faculty) -->
@@ -998,6 +998,10 @@ aria-hidden="true">
             console.log("elm:::::::::", elm);
             elm.removeAttribute('data-validate')
         })
+        formGroup.querySelectorAll('.select-option')?.forEach(elm => {
+            console.log("elm:::::::::", elm);
+            elm.removeAttribute('data-validate')
+        });
         const isValid = validateRequiredFormFields(updateBtn);
        if(isValid) {
             await updateApprovalFormRecordData('<%- BASE_URL %>research/nmims-seed-grant-non-pharmacy/update');
