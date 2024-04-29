@@ -8,13 +8,13 @@ module.exports.fetchMeetingData = async(userName) => {
 }
 
 module.exports.insertMeetingStackholder = async(body, files, userName) => {
-    // const rankingDocuments = files.rankingDocuments[0].filename;
-    // console.log('rankingDocuments ==>', rankingDocuments)
-    // const accreditationFile = files.accreditationFile[0].filename;
-    // const achievementsFile = files.achievementsFile[0].filename;
-    // const convocationFile = files.convocationFile[0].filename;
-    // const inauguralProgramFile = files.inauguralProgramFile[0].filename;
-    // const eventFile = files.eventFile[0].filename;
+    const rankingDocuments = files.rankingDocuments[0].filename;
+    console.log('rankingDocuments ==>', rankingDocuments)
+    const accreditationFile = files.accreditationFile[0].filename;
+    const achievementsFile = files.achievementsFile[0].filename;
+    const convocationFile = files.convocationFile[0].filename;
+    const inauguralProgramFile = files.inauguralProgramFile[0].filename;
+    const eventFile = files.eventFile[0].filename;
     let meetingFilesData = {};
     if(Object.keys(files).length > 0){
       console.log('files in services ===>>>', files);
