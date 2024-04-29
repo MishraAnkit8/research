@@ -140,10 +140,10 @@ module.exports.deleteBookPublicationData = async(bookPublicationId, userName) =>
     });
 }
 
-module.exports.viewBookPublicationData = async(bookPublicationId, userName) => {
+module.exports.viewBookPublicationData = async(bookPublicationId) => {
     let sql = {
-        text : `SELECT * FROM book_publications WHERE  id = $1 AND created_by = $2`,
-        values : [bookPublicationId, userName]
+        text : `SELECT * FROM book_publications WHERE  id = $1 `,
+        values : [bookPublicationId]
     }
     return researchDbW.query(sql)
 }

@@ -69,10 +69,10 @@ module.exports.deleteBookPublicationData = async({bookPublicationId}) => {
     }
 }
 
-module.exports.viewBookPublication = async(bookPublicationId, userName) => {
-    const bookPublicationDataViw = await bookPublicationModel.viewBookPublicationData(bookPublicationId, userName);
-    console.log('bookPublicationDataViw ==>>', bookPublicationDataViw.rows[0]);
-    if(bookPublicationDataViw.rows[0] && bookPublicationDataViw.rowCount === 1){
-        return bookPublicationDataViw.rows[0]
+module.exports.viewBookPublication = async(bookPublicationId) => {
+    const bookPublicationDataViw = await bookPublicationModel.viewBookPublicationData(bookPublicationId);
+    console.log('bookPublicationDataViw ==>>', bookPublicationDataViw.rows);
+    if(bookPublicationDataViw.rowCount > 0){
+      return bookPublicationDataViw.rows;
     }
 }

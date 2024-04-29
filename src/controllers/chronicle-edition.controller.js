@@ -80,12 +80,13 @@ module.exports.renderChronicleEdition = async (req, res, next) => {
 
   // console.log('dataContainerArray ===>>>',dataContainerArray)
   // console.log('vcOfficeData ===>>>', dataContainerArray.vcOfficeData)
-  const totalRowCount = vcRowCount + researchCount + meetingRowCount + brandingRowCount;
-  console.log('totalRowCount ====>>>', totalRowCount)
+  // const totalRowCount = vcRowCount + researchCount + meetingRowCount + brandingRowCount;
+  // console.log('totalRowCount ====>>>', totalRowCount)
 
+  const rowCount = vcRowCount + researchCount + meetingRowCount + brandingRowCount;
   res.render("chronicle-edition", {
     chronicleEditorData,
-    totalRowCount
+    rowCount
   });
 };
 
