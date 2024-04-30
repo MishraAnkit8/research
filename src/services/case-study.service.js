@@ -49,16 +49,27 @@ module.exports.delCaseStudies = async(caseStudyId) => {
 module.exports.viewCaseStudies = async(caseStudyId, userName) => {
     console.log("ID :::::::::::::::::::::",caseStudyId);
     const caseStudyViewData = await caseStudyModel.viewCaseStudyData(caseStudyId, userName);
-    console.log('View inService =>>' ,caseStudyViewData.rows)
-    if(caseStudyViewData.rowCount === 1){
-        return caseStudyViewData.rows
+    console.log('View inService =>>' ,caseStudyViewData);
+
+    return caseStudyViewData.status === "Done" ? {
+        status : caseStudyViewData.status,
+        message : caseStudyViewData.message,
+        caseStudyData : caseStudyViewData.caseStudyData,
+        rowCount : caseStudyViewData.rowCount
+    } : {
+        status : caseStudyViewData.status,
+        message : caseStudyViewData.message,
+        errorCode : caseStudyViewData.errorCode
     }
-    else{
-        return {
-            status : 'failed',
-            massage : 'failed to view'
-        }
-    }
+    // if(caseStudyViewData.rowCount === 1){
+    //     return caseStudyViewData.rows
+    // }
+    // else{
+    //     return {
+    //         status : 'failed',
+    //         massage : 'failed to view'
+    //     }
+    // }
 }
 
 module.exports.updatedCaseStudies = async(caseStudyId, updatedCaseStudies, userName, files) => {

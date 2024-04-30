@@ -58,10 +58,24 @@ module.exports.deleteCaseStudies = async ({caseStudyId}) => {
 
 module.exports.viewCaseStudyData = async (caseStudyId, userName) => {
     let sql = {
-        text : `  SELECT * FROM case_studies WHERE  id = $1 AND created_by = $2 `,
+        text : `  SELECT author_first_name, author_last_name, title_of_case_study, edition, volume_number, publisher_name, publication_year, page_number, url_of_case_study,
+        number_of_nmims_authors, nmims_authors, nmims_campus_authors, nmims_school_authors, publisher_category, supporting_documents, created_by  FROM case_studies WHERE  id = $1 AND created_by = $2 `,
         values : [caseStudyId, userName]
     }
-    return researchDbR.query(sql)
+    const caseStudyData =  await researchDbR.query(sql);
+    const promises = [caseStudyData]
+
+    return Promise.all(promises).then(([caseStudyData]) => {
+        return {
+            status : 'Done',
+            message : "Data Fetched for view",
+            caseStudyData : caseStudyData.rows,
+            rowCount : caseStudyData.rowCount
+        }
+    })
+    .catch((error) => {
+        return{status : "Failed" , message : error.message , errorCode : error.code}
+    })
 
 }
 

@@ -74,17 +74,26 @@ module.exports.caseStudyView = async (req, res, next) => {
     const casestudyId = req.body.caseStudyId;
     console.log('CaseID For View' ,casestudyId);
     const caseStudiesView = await caseStudyService.viewCaseStudies(casestudyId, userName);
-    console.log('data for view', caseStudiesView)
-    if(caseStudiesView){
-        res.status(200).send(caseStudiesView)
-    }
-    else{
-        res.staus(500).send({
-            status : 'Failed',
-            massage : 'failed to view caseStudy'
+    console.log('data for view', caseStudiesView);
 
-        })
-    }
+    const statusCode = caseStudiesView.status === "Done" ? 200 : (caseStudiesView.errorCode ? 400 : 500);
+    res.status(statusCode).send({
+        status : caseStudiesView.status,
+        message : caseStudiesView.message,
+        caseStudiesView : caseStudiesView.caseStudyData,
+        rowCount : caseStudiesView.rowCount,
+        errorCode : caseStudiesView.errorCode ? caseStudiesView.errorCode : null
+    })
+    // if(caseStudiesView){
+    //     res.status(200).send(caseStudiesView)
+    // }
+    // else{
+    //     res.staus(500).send({
+    //         status : 'Failed',
+    //         massage : 'failed to view caseStudy'
+
+    //     })
+    // }
 }
 
 module.exports.updatedCaseStudies = async(req, res, next) => {
