@@ -3,7 +3,7 @@ const brandingAndAdvertisingModels = require('../models/branding-advertising.mod
 
 
 module.exports.fetchBrandingandAdvertisingData = async(userName) => {
-    const brandingAndAdvertising = await brandingAndAdvertisingModels.fetchBrandingAndadvertising();
+    const brandingAndAdvertising = await brandingAndAdvertisingModels.fetchBrandingAndadvertising(userName);
     console.log('brandingAndAdvertising ==>>', brandingAndAdvertising.rows)
     return brandingAndAdvertising;
 }

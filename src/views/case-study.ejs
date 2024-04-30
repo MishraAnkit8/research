@@ -403,6 +403,17 @@
                         </div>
                     </div>
                 </div>
+                <!-- case study documents -->
+                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                    <div class="box">
+                        <div class="sub-title-text sub-title">
+                            <button class="btn btn-primary h-10 w-10 download-file" id="supporting-document">
+                                <i class="fas fa-download text-danger"></i> Artciles Documents
+                            </button>
+                        </div>
+                        <label class="view-content" id="view-patent-file"></label>
+                    </div>
+                </div>
             </div>
             <!-- footer button -->
             <div class="modal-footer">
@@ -631,6 +642,7 @@
             })
             .then((data) => {
                 console.log('data ==>>', data);
+                setFileNameInButtons(data) 
                 viewAuthorFirstName.innerText = data[0].author_first_name;
                 viewAuthorLastName.innerText = data[0].author_last_name;
                 viewTitleOfCaseStudy.innerText = data[0].title_of_case_study;
@@ -874,6 +886,69 @@
                     });            }
                 
     })
+
+
+    function setFileNameInButtons(data) {
+        console.log('data ==>>>', data);
+        articleDoucments = document.getElementById('supporting-document');
+        articleDoucments.setAttribute('data-filename', data.journalAricleData.supporting_documents);
+    } 
+
+    //eventlistner for download files
+    document.addEventListener('click', async function (event) {
+            const button = event.target.closest('button');
+            if (button && button.id && button.classList.contains('download-file')) {
+                console.log('button ===>>>', button)
+                try {
+                    const fileDataString = button.getAttribute('data-filename');
+                    if (!fileDataString) {
+                        throw new Error('Data filename attribute not found on button.');
+                    }
+
+                    const fileArray = fileDataString.split(',').map(fileName => fileName.trim()).filter(Boolean); 
+                    if (fileArray.length === 0) {
+                        throw new Error('No file names found in data filename attribute.');
+                    }
+
+                    const downloadPromises = fileArray.map(async (fileName) => {
+                        console.log('fileName ===>>>', fileName)
+                        const fileUrl = `<%- BASE_URL %>research/journal-paper/download/${fileName}`;
+                        downloadFile(fileName, fileUrl)
+                        try {
+                            const response = await fetch(fileUrl);
+                            if (!response.ok) {
+                                throw new Error(`Failed to download file: ${fileName}`);
+                            }
+                            console.log('File downloaded successfully:', fileName);
+                            return fileName;
+                        } catch (error) {
+                            console.error('Error downloading file:', error);
+                            throw error;
+                        }
+                    });
+
+                    const downloadedFiles = await Promise.all(downloadPromises);
+                    console.log('All files downloaded successfully:', downloadedFiles);
+                } catch (error) {
+                    console.error('Error downloading files:', error);
+                    alert(`There was a problem downloading files: ${error.message}`);
+                }
+            }
+        });
+
+
+    // set string file value into button
+    function setFileNameAttributeToBeDownload(data) {
+            console.log('data row in side function ===>>', data);
+            const articleDataFiles = document.getElementById('journal-data-file-edit');
+            console.log('articleDataFiles ===>>>>>', articleDataFiles)
+            articleDataFiles.classList.remove('d-none');
+            const articleDataString = data.getAttribute('data-documents');
+            console.log('articleDataString ====>>>>>>', articleDataString);
+            // setAttribute into button
+            articleDataFiles.setAttribute('data-filename', articleDataString);
+
+        };
 
 </script>
 <!-- footer section -->
