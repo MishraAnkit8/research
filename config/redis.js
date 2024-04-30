@@ -7,7 +7,6 @@ const redisClientConn = redis.createClient({
     password: process.env.REDIS_PASSWORD || 'yourpassword'
 });
 
-// /redis
 // redis passWord yourpassword for server
 const redisClient = redisClientConn.connect();
 
