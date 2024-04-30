@@ -77,7 +77,8 @@
                             data-nmims-authors="<%- caseStudy.nmims_authors %>"
                             data-nmims-campus-authors="<%- caseStudy.nmims_campus_authors %>"
                             data-nmims-school-authors="<%- caseStudy.nmims_school_authors %>"
-                            data-publisher-category="<%- caseStudy.publisher_category %>">
+                            data-publisher-category="<%- caseStudy.publisher_category %>"
+                            data-supporting-documents="<%- caseStudy.supporting_documents %>">
                             <td > <%- index+1 %> </td>
                             <td class="cell author-first-name col-lg-1"> <%- caseStudy.author_first_name %> </td>
                             <td class="cell author-last-name col-lg-1"> <%- caseStudy.author_last_name %> </td>
@@ -262,6 +263,19 @@
                         <label for="nmims-school-authors" class="form-label fw-bold ">NMIMS School Author</label>
                         <input type="text" name="nmimsSchoolAuthors" id="nmims-school-authors" data-validate="isEmpty,isAlphabeticWords" data-err-msg="This field is required and min length > 1." class="form-control" required/>
                     </div>
+                     <!-- Upload Supporting Documents-->
+                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="supporting-documents" class="form-label fw-bold ">
+                            Upload Supporting Documents
+                        </label>
+                        <div class="d-flex">
+                            <input type="file" name="supporting-documents" id="supporting-documents"
+                                class="col-md-12 form-control" data-validate="isEmpty,isExist,isFile" data-err-msg="File is required."
+                                required multiple>
+                            <button class="download-btn download-file" id="journal-data-file-edit"><i
+                                    class="fas fa-download text-danger"></i></button>
+                        </div>
+                    </div>
                 </div>
             </div>
             <!-- footer button -->
@@ -435,33 +449,53 @@
     
     const insertCaseStudy = async(url) => {
         console.log('clickeddd');
-        const caseStudyData = {};
-        caseStudyData.authorsFirstName = document.getElementById('author-first-name').value;
-        caseStudyData.authorLastName = document.getElementById('author-last-name').value;
-        caseStudyData.titleOfCaseStudy = document.getElementById('title-of-case-study').value;
-        caseStudyData.edition = document.getElementById('edition').value;
-        caseStudyData.publisherCategory = document.querySelector('input[name="publisher-category"]:checked').value;
-        caseStudyData.volumeNumber = document.getElementById('volume-number').value;
-        caseStudyData.publisherName = document.getElementById('publisher-name').value;
-        caseStudyData.publicationYear = document.getElementById('publication-year').value;
-        caseStudyData.pageNumber = document.getElementById('page-number').value;
-        caseStudyData.urlOfCaseStudy = document.getElementById('url-of-case-study').value;
-        caseStudyData.numberOfNmimsAuthors = document.getElementById('number-of-nmims-authors').value;
-        caseStudyData.nmimsAuthors = document.getElementById('nmims-authors').value;
-        caseStudyData.nmimsCampusAuthors = document.getElementById('nmims-campus-authors').value;
-        caseStudyData.nmimsSchoolAuthors = document.getElementById('nmims-school-authors').value;
-        console.log('caseStudyData.nmimsSchoolAuthors' , caseStudyData.nmimsSchoolAuthors)
+        const caseStudyData = new FormData();
+    
+        const authorsFirstName = document.getElementById('author-first-name').value;
+        const authorLastName = document.getElementById('author-last-name').value;
+        const titleOfCaseStudy = document.getElementById('title-of-case-study').value;
+        const edition = document.getElementById('edition').value;
+        const publisherCategory = document.querySelector('input[name="publisher-category"]:checked').value;
+        const volumeNumber = document.getElementById('volume-number').value;
+        const publisherName = document.getElementById('publisher-name').value;
+        const publicationYear = document.getElementById('publication-year').value;
+        const pageNumber = document.getElementById('page-number').value;
+        const urlOfCaseStudy = document.getElementById('url-of-case-study').value;
+        const numberOfNmimsAuthors = document.getElementById('number-of-nmims-authors').value;
+        const nmimsAuthors = document.getElementById('nmims-authors').value;
+        const nmimsCampusAuthors = document.getElementById('nmims-campus-authors').value;
+        const nmimsSchoolAuthors = document.getElementById('nmims-school-authors').value;
 
-        const payload = {
-            caseStudyData : caseStudyData
+        const caseStudyDoc = document.getElementById('supporting-documents');
+        const caseStudyFiles = caseStudyDoc.files;
+        console.log('caseStudyFiles ===>>>', caseStudyFiles)
+        for (let i = 0; i < caseStudyFiles.length; i++) {
+            console.log('file name  ==>>', caseStudyFiles[i].name);
+            caseStudyData.append('caseStudyDocuments', caseStudyFiles[i]);
         }
+
+        caseStudyData.append('authorsFirstName', authorsFirstName)
+        caseStudyData.append('authorLastName', authorLastName)
+        caseStudyData.append('titleOfCaseStudy', titleOfCaseStudy)
+        caseStudyData.append('edition', edition)
+        caseStudyData.append('publisherCategory', publisherCategory)
+        caseStudyData.append('volumeNumber', volumeNumber)
+        caseStudyData.append('publisherName', publisherName)
+        caseStudyData.append('publicationYear', publicationYear)
+        caseStudyData.append('pageNumber', pageNumber)
+        caseStudyData.append('urlOfCaseStudy', urlOfCaseStudy)
+        caseStudyData.append('numberOfNmimsAuthors', numberOfNmimsAuthors)
+        caseStudyData.append('nmimsAuthors', nmimsAuthors)
+        caseStudyData.append('nmimsCampusAuthors', nmimsCampusAuthors)
+        caseStudyData.append('nmimsSchoolAuthors', nmimsSchoolAuthors)
+
+        // const payload = {
+        //     caseStudyData : caseStudyData
+        // }
 
         fetch(url , {
             method : 'POST',
-            headers : {
-                'content-type' : 'application/json'
-            },
-            body : JSON.stringify(payload)
+            body : caseStudyData
         })
         .then((result) => {
             return result.json();
@@ -469,7 +503,8 @@
         .then ((data) => {
             console.log('data ==>>' , data);
             if(data.status === 'Done'){
-                caseStudyId = data.caseStudyId;
+                console.log('')
+                const caseStudyData = data.caseStudyData;
                 const rowCountInteger = parseInt(data.rowCount, 10);
                 const IndexEntry = rowCountInteger + indexValue;
                 indexValue = IndexEntry;
@@ -477,13 +512,16 @@
 
                 console.log('caseStudyId', caseStudyId);
                 const newCaseStudy = document.createElement('tr');
+                
+                newCaseStudy.setAttribute('data-case-id', data.caseStudyId)
                 newCaseStudy.setAttribute('data-page-number', caseStudyData.pageNumber);
-                newCaseStudy.setAttribute('data-url-of-caseStudy', caseStudyData.urlOfCaseStudy);
+                newCaseStudy.setAttribute('data-url-of-casestudy', caseStudyData.urlOfCaseStudy);
                 newCaseStudy.setAttribute('data-number-of-nmims-authors', caseStudyData.numberOfNmimsAuthors);
                 newCaseStudy.setAttribute('data-nmims-authors', caseStudyData.nmimsAuthors);
                 newCaseStudy.setAttribute('data-publisher-category' , caseStudyData.publisherCategory);
                 newCaseStudy.setAttribute('data-nmims-campus-authors', caseStudyData.nmimsCampusAuthors);
                 newCaseStudy.setAttribute('data-nmims-school-authors', caseStudyData.nmimsSchoolAuthors);
+                newCaseStudy.setAttribute('data-supporting-documents', data.caseStudyFiles)
                 newCaseStudy.innerHTML = `
                         <td class="cell" id="rowCount">${IndexEntry}</td>
                         <td class="cell author-first-name">${caseStudyData.authorsFirstName}</td>
@@ -493,13 +531,13 @@
                         <td class="cell volume-number">${caseStudyData.volumeNumber}</td>
                         <td class="cell publisher-name">${caseStudyData.publisherName}</td>
                         <td class="cell publication-year">${caseStudyData.publicationYear}</td>
-                        <td title="View" class="col-lg-1 view text-danger" style="cursor: pointer;"  data-case-id="${caseStudyId}">
+                        <td title="View" class="col-lg-1 view text-danger" style="cursor: pointer;"  data-case-id="${data.caseStudyId}">
                                 &#128065;
                         </td>
-                        <td title="Edit" class="col-lg-1 edit text-danger" style="cursor: pointer;"  data-case-id="${caseStudyId}">
+                        <td title="Edit" class="col-lg-1 edit text-danger" style="cursor: pointer;"  data-case-id="${data.caseStudyId}">
                                 &#9998;
                         </td>
-                        <td title="Delete" class="col-lg-1 delete text-danger" style="cursor: pointer;"   data-case-id="${caseStudyId}">
+                        <td title="Delete" class="col-lg-1 delete text-danger" style="cursor: pointer;"   data-case-id="${data.caseStudyId}">
                                 &#128465;
                         </td> `;
                         
@@ -508,28 +546,62 @@
                         rowCount.classList.remove('d-none');
                         totalRowCount.classList.add('d-none');
                         rowCount.innerText = `Total entries : ${IndexEntry}`
+                        Swal.fire({
+							position: "top-center",
+							icon: "success",
+							title: `${data.message}`,
+							showConfirmButton: false,
+							
+						});
+            }
+            else{
+                console.log('data in failed condition ====>>>>', data)
+                    Swal.fire({
+                        position: "top-center",
+                        icon: "error",
+                        title: "Failed To Insert",
+                        color: "red",
+                        with: "20PX",
+                        showConfirmButton: false,
+                    }); 
             }
         })
         .catch((error) => {
-            console.log('ERROR' , error);
-        })
+                console.error("ERROR:", error);
+                const message = "Internal Server Error";
+                const errTitle = error
+                Swal.fire({
+                    position: "top-center",
+                    icon: "error",
+                    title: `${message}`,
+                    color: "red",
+                    with: "20PX",
+                    html: `<span style="color: red;">${errTitle}</span>`,
+                    showConfirmButton: false,
+                }); 
+            })
     }
     
     submitBtn.addEventListener('click' , async function(){
         const isValid = validateRequiredFormFields(submitBtn);
             if (isValid) {
                 await insertCaseStudy('<%- BASE_URL %>research/case-study/insert');
-                indexValue += 1
-                alert('Data Inserted Successfully');
             }
             else {
-                alert('Validation Failed');
-            }
+            Swal.fire({
+                position: "top-center",
+                icon: "error",
+                title: "Validation Failed",
+                color: "red",
+                showConfirmButton: false,
+            });
+        }
     });
 
     caseStudiesDataList.addEventListener('click' , async function(event) {
         if(event.target.classList.contains('view')){
-            caseStudyId = event.target.getAttribute('data-case-id');
+            const rowToBeView = event.target.closest('tr');
+            caseStudyId = rowToBeView.getAttribute('data-case-id');
             const viewAuthorFirstName = document.getElementById('view-first-name');
             const viewAuthorLastName = document.getElementById('view-last-name');
             const viewTitleOfCaseStudy =document.getElementById('view-title-of-case-study');
@@ -584,8 +656,9 @@
         // for deleting
         if(event.target.classList.contains('delete')){
             console.log('clickkeddd');
-            caseStudyId = event.target.getAttribute('data-case-id');
-            const rowToBeDelete = event.target.parentElement.parentElement.parentElement;
+            const rowToBeDelete = event.target.closest('tr');
+            caseStudyId = rowToBeDelete.getAttribute('data-case-id');
+
             console.log('==>>>', rowToBeDelete)
             console.log('ID', caseStudyId);
             let confirmDelete = confirm("Do you want to delete the Case Study?");
@@ -624,10 +697,13 @@
             // button visualization
             submitBtn.classList.add('d-none');
             updateBtn.classList.remove('d-none');
-            caseStudyId = event.target.getAttribute('data-case-id');
-            console.log('ID For Updation' , caseStudyId);
+            // caseStudyId = event.target.getAttribute('data-case-id');
+            // console.log('ID For Updation' , caseStudyId);
             rowToBeUpdate = event.target.closest('tr');
             console.log('rowToBeUpdate ===>>>>>>', rowToBeUpdate);
+            caseStudyId = rowToBeUpdate.getAttribute('data-case-id');
+
+            console.log('caseStudyId ===>>>>>>', caseStudyId)
             // capturing specific data
             const pageNumber =  rowToBeUpdate.getAttribute('data-page-number');
             const urlOfCaseStudy = rowToBeUpdate.getAttribute('data-url-of-caseStudy');
@@ -672,45 +748,48 @@
     
     const updateCaseStudy = async(url) => {
         console.log('data is updated');
-        const updatedName = document.getElementById('author-first-name').value;
-        const updatedPage = document.getElementById('page-number').value;
-        const updateLastName = document.getElementById('author-last-name').value;
-        const updatedEdition = document.getElementById('edition').value;
-        const updatedPublisherCategory = document.querySelector('input[name="publisher-category"]:checked').value;
-        const updatedVolume = document.getElementById('volume-number').value;
-        const updatedPublisher = document.getElementById('publisher-name').value;
-        const updatedPublicationYear = document.getElementById('publication-year').value;
-        const updatedUrl = document.getElementById('url-of-case-study').value;
-        const updatedNmimsAuthors = document.getElementById('nmims-authors').value;
-        const updatedNumberOfNmimsAuthor = document.getElementById('number-of-nmims-authors').value;
-        const updatedCampus = document.getElementById('nmims-campus-authors').value;
-        const updatedschool = document.getElementById('nmims-school-authors').value;
-        const updatedtitle = document.getElementById('title-of-case-study').value;
-        console.log(' updatedPageNumber ===>>', updatedPage);
+        const updatedCaseStudies = new FormData
+        const authorsFirstName = document.getElementById('author-first-name').value;
+        const authorLastName = document.getElementById('author-last-name').value;
+        const titleOfCaseStudy = document.getElementById('title-of-case-study').value;
+        const edition = document.getElementById('edition').value;
+        const publisherCategory = document.querySelector('input[name="publisher-category"]:checked').value;
+        const volumeNumber = document.getElementById('volume-number').value;
+        const publisherName = document.getElementById('publisher-name').value;
+        const publicationYear = document.getElementById('publication-year').value;
+        const pageNumber = document.getElementById('page-number').value;
+        const urlOfCaseStudy = document.getElementById('url-of-case-study').value;
+        const numberOfNmimsAuthors = document.getElementById('number-of-nmims-authors').value;
+        const nmimsAuthors = document.getElementById('nmims-authors').value;
+        const nmimsCampusAuthors = document.getElementById('nmims-campus-authors').value;
+        const nmimsSchoolAuthors = document.getElementById('nmims-school-authors').value;
 
-        const updatedCaseStudies = {};
-        updatedCaseStudies.caseStudyId = caseStudyId;
-        updatedCaseStudies.authorsFirstName = updatedName;
-        updatedCaseStudies.authorLastName = updateLastName;
-        updatedCaseStudies.pageNumber = updatedPage;
-        updatedCaseStudies.edition = updatedEdition;
-        updatedCaseStudies.volumeNumber = updatedVolume;
-        updatedCaseStudies.publisherCategory = updatedPublisherCategory;
-        updatedCaseStudies.publicationYear =updatedPublicationYear;
-        updatedCaseStudies.publisherName = updatedPublisher;
-        updatedCaseStudies.urlOfCaseStudy = updatedUrl;
-        updatedCaseStudies.nmimsAuthors = updatedNmimsAuthors;
-        updatedCaseStudies.numberOfNmimsAuthors = updatedNumberOfNmimsAuthor;
-        updatedCaseStudies.nmimsCampusAuthors = updatedCampus;
-        updatedCaseStudies.nmimsSchoolAuthors = updatedschool;
-        updatedCaseStudies.titleOfCaseStudy = updatedtitle;
+        const caseStudyDoc = document.getElementById('supporting-documents');
+        const caseStudyFiles = caseStudyDoc.files;
+        console.log('caseStudyFiles ===>>>', caseStudyFiles);
+        caseStudyFiles ?
+        Array.from(caseStudyFiles).forEach(file => {
+                console.log('file name  ==>>', file.name);
+                updatedCaseStudies.append('caseStudyDocuments', file);
+            }) :
+            (caseStudyFiles = null, updatedCaseStudies.append('caseStudyDocuments', caseStudyFiles));
+
+        updatedCaseStudies.append('caseStudyId', caseStudyId)
+        updatedCaseStudies.append('authorsFirstName', authorsFirstName)
+        updatedCaseStudies.append('authorLastName', authorLastName)
+        updatedCaseStudies.append('titleOfCaseStudy', titleOfCaseStudy)
+        updatedCaseStudies.append('edition', edition)
+        updatedCaseStudies.append('publisherCategory', publisherCategory)
+        updatedCaseStudies.append('volumeNumber', volumeNumber)
+        updatedCaseStudies.append('publisherName', publisherName)
+        updatedCaseStudies.append('publicationYear', publicationYear)
+        updatedCaseStudies.append('pageNumber', pageNumber)
+        updatedCaseStudies.append('urlOfCaseStudy', urlOfCaseStudy)
+        updatedCaseStudies.append('numberOfNmimsAuthors', numberOfNmimsAuthors)
 
         fetch(url , {
             method : 'POST',
-            headers : {
-                'content-type' : 'application/json'
-            },
-            body : JSON.stringify(updatedCaseStudies)
+            body : updatedCaseStudies
         })
         .then((result) => {
             return result.json();
@@ -718,6 +797,7 @@
         .then((data) => {
             console.log('data ===>>>' , data);
             if(data.status === 'Done'){
+                const updatedCaseStudies = data.updatedCaseStudies
                 console.log('caseID >>>', caseStudyId);
                 rowToBeUpdate.querySelector('.author-first-name').innerText = updatedCaseStudies.authorsFirstName;
                 rowToBeUpdate.querySelector('.author-last-name').innerText = updatedCaseStudies.authorLastName;
@@ -731,21 +811,67 @@
                 rowToBeUpdate.setAttribute('data-nmims-authors', updatedCaseStudies.nmimsAuthors);
                 rowToBeUpdate.setAttribute('data-nmims-campus-authors', updatedCaseStudies.nmimsCampusAuthors);
                 rowToBeUpdate.setAttribute('data-nmims-school-authors', updatedCaseStudies.nmimsSchoolAuthors);
-                $('#case-study-modal').modal('hide');           
+                rowToBeUpdate.setAttribute('data-supporting-documents', data.caseStudyFiles);
+
+                $('#case-study-modal').modal('hide');  
+                Swal.fire({
+                        position: "top-center",
+                        icon: "success",
+                        title: `${data.message}`,
+                        showConfirmButton: false
+                        // timer: 1500
+                    });         
             }
+            else{
+                    Swal.fire({
+                        position: "top-center",
+                        icon: "error",
+                        title: "Updation Failed",
+                        color : "red",
+                        with : "20PX",
+                        showConfirmButton: false,
+                    });
+                }
+                
         })
+        .catch((error) => {
+                console.log("ERROIR : ", error);
+                const errTitle = "Internal Server Error";
+                const message = error
+                // alert('An error occurred while updating the element');
+                Swal.fire({
+                        position: "top-center",
+                        icon: "error",
+                        title: `${message}`,
+                        color : "red",
+                        with : "20PX",
+                        html: `<span style="color: red;">${errTitle}</span>`,
+                        showConfirmButton: false,
+                    });
+            })
     };
 
     updateBtn.addEventListener('click' , async() => {
+        formGroup = updateBtn.closest('.validate-input')
+        console.log("formGroup::::::::", formGroup)
+        formGroup.querySelectorAll('input[type="file"]')?.forEach(elm => {
+            console.log("elm:::::::::", elm);
+            elm.removeAttribute('data-validate')
+        })
+
         const isValid = validateRequiredFormFields(updateBtn);
             if (isValid) {
                 await updateCaseStudy('<%- BASE_URL %>research/case-study/update');
-                alert('Data Updated SuccessFully'); 
 
             }
             else {
-                alert('Data Validation Failed');
-            }
+                Swal.fire({
+                        position: "top-center",
+                        icon: "error",
+                        title: "Validation Failed",
+                        color : "red",
+                        showConfirmButton: false,
+                    });            }
                 
     })
 

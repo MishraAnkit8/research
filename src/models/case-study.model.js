@@ -14,21 +14,21 @@ module.exports.fetchCaseStudy = async(userName) =>{
     return researchDbR.query(sql);
 };
 
-module.exports.insertDataIntoCaseStudies =async ({caseStudyData}, userName) => {
+module.exports.insertDataIntoCaseStudies =async (caseStudyData, caseStudyFiles, userName) => {
     console.log('caseStudyData in models ==>>', caseStudyData);
     const {authorsFirstName, authorLastName, titleOfCaseStudy, edition, volumeNumber, publisherName, publicationYear, pageNumber, urlOfCaseStudy,
                numberOfNmimsAuthors, nmimsAuthors, nmimsCampusAuthors, nmimsSchoolAuthors, publisherCategory } = caseStudyData ;
     let sql = {
         text : `INSERT INTO case_studies (author_first_name, author_last_name, title_of_case_study, edition, volume_number, publisher_name, publication_year, page_number, url_of_case_study,
-                number_of_nmims_authors, nmims_authors, nmims_campus_authors, nmims_school_authors, publisher_category, created_by) VALUES ($1, $2 , $3 ,$4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) RETURNING id ` ,
+                number_of_nmims_authors, nmims_authors, nmims_campus_authors, nmims_school_authors, publisher_category, supporting_documents, created_by) VALUES ($1, $2 , $3 ,$4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16) RETURNING id ` ,
         values : [authorsFirstName, authorLastName, titleOfCaseStudy, edition, volumeNumber, publisherName, publicationYear, pageNumber, urlOfCaseStudy,
-                 numberOfNmimsAuthors, nmimsAuthors, nmimsCampusAuthors, nmimsSchoolAuthors, publisherCategory, userName]
+                 numberOfNmimsAuthors, nmimsAuthors, nmimsCampusAuthors, nmimsSchoolAuthors, publisherCategory, caseStudyFiles, userName]
     }
     console.log('sql ==>>', sql)
     const insertCaseStudyRecord = await researchDbW.query(sql);
     const promises = [insertCaseStudyRecord];
     return Promise.all(promises).then(([insertCaseStudyRecord]) => {
-        return  { status : "Done" , message : "Record Inserted Successfully" , caseStudyId : insertCaseStudyRecord.rows.id, rowCount : insertCaseStudyRecord.rowCount}
+        return  { status : "Done" , message : "Record Inserted Successfully" , caseStudyId : insertCaseStudyRecord.rows[0].id, rowCount : insertCaseStudyRecord.rowCount}
     })
     .catch((error) => {
         return{status : "Failed" , message : error.message , errorCode : error.code}
@@ -65,19 +65,29 @@ module.exports.viewCaseStudyData = async (caseStudyId, userName) => {
 
 }
 
-module.exports.updateCaseStudies = async (caseStudyId, updatedCaseStudies, userName) => {
+module.exports.updateCaseStudies = async (caseStudyId, updatedCaseStudies, userName, caseStudyFiles) => {
     const {authorsFirstName, authorLastName, titleOfCaseStudy, edition, volumeNumber, publisherName, publicationYear, pageNumber, urlOfCaseStudy,
         numberOfNmimsAuthors, nmimsAuthors, nmimsCampusAuthors, nmimsSchoolAuthors, publisherCategory} = updatedCaseStudies;
-    let sql = {
-        text : ` UPDATE case_studies SET 
+
+    const DataFileString = caseStudyFiles ? caseStudyFiles : null;
+    let baseSql =  ` UPDATE case_studies SET 
                 author_first_name = $2, author_last_name = $3, title_of_case_study = $4, edition = $5, volume_number = $6, publisher_name = $7,
                 publication_year = $8, page_number = $9, url_of_case_study = $10, number_of_nmims_authors = $11, nmims_authors = $12, nmims_campus_authors = $13, nmims_school_authors = $14, publisher_category = $15,
-                updated_by = $16  WHERE id = $1 ` ,
-        values : [caseStudyId, authorsFirstName, authorLastName, titleOfCaseStudy, edition, volumeNumber, publisherName, publicationYear, pageNumber, urlOfCaseStudy,
-            numberOfNmimsAuthors, nmimsAuthors, nmimsCampusAuthors, nmimsSchoolAuthors, publisherCategory, userName]
+                updated_by = $16` 
 
-    }
+
+    let supportingDocumentsUpdate = DataFileString ? `, supporting_documents = $17` : '';
+
+    let queryText = baseSql + supportingDocumentsUpdate + ` WHERE id = $1`;
+
+    let values = [caseStudyId, authorsFirstName, authorLastName, titleOfCaseStudy, edition, volumeNumber, publisherName, publicationYear, pageNumber, urlOfCaseStudy,
+        numberOfNmimsAuthors, nmimsAuthors, nmimsCampusAuthors, nmimsSchoolAuthors, publisherCategory, userName, ...(DataFileString ? [DataFileString] : [])]
     // return researchDbW.query(sql);
+
+    let sql = {
+        text: queryText,
+        values: values
+    };
     const updatedCaseStudyRecord = await researchDbW.query(sql);
     const promises = [updatedCaseStudyRecord];
     return Promise.all(promises).then(([updatedCaseStudyRecord]) => {

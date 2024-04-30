@@ -18,21 +18,34 @@ module.exports.insertCaseStudies  = async(req, res, next) => {
     console.log('userName in controller  ===>>>>>>', userName);
     console.log('caseStudy template data ==>>', req.body);
 
-    const insertCaseStudy = await caseStudyService.insertCaseStudies(req.body, userName);
-    console.log('caseStudyId ==>>' , insertCaseStudy.rows[0].id);
-    if(insertCaseStudy && insertCaseStudy.rows[0].id){
-        res.status(200).send({
-            status : 'done',
-            caseStudyId : insertCaseStudy.rows[0].id
-        })
+    const insertCaseStudy = await caseStudyService.insertCaseStudies(req.body, req.files, userName);
 
-    }
-    else{
-        res.status(500).send({
-            status : 'failed',
-            massage : 'Data is Not inserted'
-        })
-    }
+
+    const statusCode = insertCaseStudy.status === "Done" ? 200 : (insertCaseStudy.errorCode ? 400 : 500);
+    res.status(statusCode).send({
+        status : insertCaseStudy.status,
+        message : insertCaseStudy.message,
+        caseStudyId : insertCaseStudy.caseStudyId,
+        caseStudyFiles : insertCaseStudy.caseStudyFiles,
+        caseStudyData : insertCaseStudy.caseStudyData,
+        rowCount : insertCaseStudy.rowCount,
+        errorCode : insertCaseStudy.errorCode ? insertCaseStudy.errorCode : null
+
+    })
+    // console.log('caseStudyId ==>>' , insertCaseStudy.rows[0].id);
+    // if(insertCaseStudy && insertCaseStudy.rows[0].id){
+    //     res.status(200).send({
+    //         status : 'done',
+    //         caseStudyId : insertCaseStudy.rows[0].id
+    //     })
+
+    // }
+    // else{
+    //     res.status(500).send({
+    //         status : 'failed',
+    //         massage : 'Data is Not inserted'
+    //     })
+    // }
 }
 
 module.exports.delCaseStudies = async(req, res, next) => {
@@ -82,25 +95,15 @@ module.exports.updatedCaseStudies = async(req, res, next) => {
     console.log('updatedCaseStudies ====>>>>>>>>', updatedCaseStudies);
     const caseStudyId = req.body.caseStudyId;
     console.log('caseId For Updation ::', caseStudyId);
-    const updatdeCaseStudiesData = await caseStudyService.updatedCaseStudies(caseStudyId, updatedCaseStudies, userName);
+    const updatdeCaseStudiesData = await caseStudyService.updatedCaseStudies(caseStudyId, updatedCaseStudies, userName, req.files);
 
     const statusCode = updatdeCaseStudiesData.status === 'Done' ? 200 : (updatdeCaseStudiesData.errorCode ? 400 : 500);
     res.status(statusCode).send({
         status : updatdeCaseStudiesData.status,
         message : updatdeCaseStudiesData.message,
         updatedCaseStudies : updatdeCaseStudiesData.updatedCaseStudies,
+        caseStudyFiles : updatdeCaseStudiesData.caseStudyFiles,
         errorCode : updatdeCaseStudiesData.errorCode ? updatdeCaseStudiesData.errorCode : null
     })
-    // if(updatdeCaseStudiesData.status === 'done'){
-    //     res.status(200).send({
-    //         status : 'done',
-    //         massage : updatdeCaseStudiesData.massage
-    //     })
-    // }
-    // else{
-    //     res.status(500).send({
-    //         status : 'failed',
-    //         massage : updatdeCaseStudiesData.massage
-    //     })
-    // }
+
 }

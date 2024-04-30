@@ -64,6 +64,7 @@ module.exports.updatedBookPublication = async(bookPublicationId, updatedBookPubl
     let supportingDocumentsUpdate = DataFileString ? `, supporting_documents = $18` : '';
     //merge both query 
     let queryText = baseQuery + supportingDocumentsUpdate + ` WHERE id = $1`;
+    
 
     console.log('queryText ====>>>>', queryText);
     let values = [

@@ -6,10 +6,27 @@ module.exports.createCaseStudy = async (userName) => {
     return caseStudyFetchData;
 }
 
-module.exports.insertCaseStudies = async (body, userName) => {
+module.exports.insertCaseStudies = async (body, files, userName) => {
+    const caseStudyFiles = files?.map(file => file.filename).join(',');
     const caseStudyData = body;
     console.log('inserted data in service ==>>', body);
-    const createCaseStudies = await caseStudyModel.insertDataIntoCaseStudies(caseStudyData, userName);
+    const createCaseStudies = await caseStudyModel.insertDataIntoCaseStudies(caseStudyData, caseStudyFiles, userName);
+
+    console.log('createCaseStudies ===>>>>>', createCaseStudies);
+
+    return createCaseStudies.status === "Done" ? {
+        status : createCaseStudies.status,
+        message : createCaseStudies.message,
+        caseStudyId : createCaseStudies.caseStudyId,
+        caseStudyFiles : caseStudyFiles,
+        caseStudyData : caseStudyData,
+        rowCount : createCaseStudies.rowCount
+
+    } : {
+        status : createCaseStudies.status,
+        message : createCaseStudies.message,
+        errorCode : createCaseStudies.errorCode
+    }
     return createCaseStudies ;
 }
 
@@ -44,15 +61,17 @@ module.exports.viewCaseStudies = async(caseStudyId, userName) => {
     }
 }
 
-module.exports.updatedCaseStudies = async(caseStudyId, updatedCaseStudies, userName) => {
+module.exports.updatedCaseStudies = async(caseStudyId, updatedCaseStudies, userName, files) => {
     console.log('updatedCaseStudies ===>>>>>>>', updatedCaseStudies);
+    const caseStudyFiles = files?.map(file => file.filename).join(',');
 
-    const updateCaseStudy = await caseStudyModel.updateCaseStudies(caseStudyId, updatedCaseStudies, userName);
+    const updateCaseStudy = await caseStudyModel.updateCaseStudies(caseStudyId, updatedCaseStudies, userName, caseStudyFiles);
 
     return updateCaseStudy.status === "Done" ? {
         status : updateCaseStudy.status,
         message : updateCaseStudy.message,
-        updatedCaseStudies : updatedCaseStudies
+        updatedCaseStudies : updatedCaseStudies,
+        caseStudyFiles : caseStudyFiles
 
     } : {
         status : updateCaseStudy.status,
