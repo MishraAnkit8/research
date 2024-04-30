@@ -5,6 +5,15 @@
             width: 200px;
             border: 1px solid red;
         }
+
+        .tomselect .remove-option {
+    position: absolute;
+    top: 50%;
+    right: 12px;
+    transform: translateY(-50%);
+    font-size: 1.2rem;
+    cursor: pointer;
+}
 </style>
 <!-- Navbar section -->
 <%- include('./partials/header') %>
@@ -188,7 +197,7 @@
                 <div class="row">
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="type-of-invention" class="form-label fw-bold">Type of Invention(IPR)</label>
-                        <select class="select-option drop-list" id="type-of-invention" data-validate="isEmpty,isExist" data-err-msg="This field is required and select value" required>
+                        <select id="type-of-invention" data-validate="isEmpty,isExist" data-err-msg="This field is required and select value" required multiple>
                             <option value="">Select IPR</option>
                             <!-- Use server-side or client-side code to dynamically generate options -->
                             <% patentInventionTypeData.forEach(function(invention) { %>
@@ -205,7 +214,7 @@
                     <!-- Patent Stage -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="patent-stage" class="form-label fw-bold">Patent Stage</label>
-                        <select class="select-option drop-list" id="patent-stage"  required >
+                        <select  id="patent-stage"  required multiple>
                             <option value="" >Select Patent Stage</option>
                             <% patentStagData.forEach(function(status) { %>
                                 <option value="<%= status.id %>">
@@ -367,12 +376,12 @@
                         </div>
                     </div>
                     <!-- Are you achieve SDG -->
-                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                    <!-- <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
                             <div class="sub-title-text sub-title">Sustainable Development Goals (SDG) :</div>
                             <label class="view-content" id="view-achive-sdg"></label>
                         </div>
-                    </div>
+                    </div> -->
                     <!-- APPLICATION NUMBER -->
                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
@@ -504,6 +513,10 @@
             const selectItems = document.querySelectorAll('.item');
             selectItems.forEach(item => {
                 item.classList.add('d-none');
+            });
+
+            $('#patent-submission-modal').modal({
+                backdrop: 'static'
             });
 
         }
@@ -647,6 +660,16 @@
 
             if (event.target.classList.contains('edit')) {
                 submitBtn.classList.add('d-none');
+
+                $('#patent-submission-modal').modal({
+                    backdrop: 'static'
+                });
+
+                const selectItems = document.querySelectorAll('.item');
+                selectItems.forEach(item => {
+                    item.classList.add('d-none');
+                });
+
                 updateBtn.classList.remove('d-none');
                 employeeList.classList.add('d-none');
                 authorDetails.classList.add('d-none');
@@ -769,12 +792,17 @@
             // patent submission view
             if (event.target.classList.contains('view')) {
                 console.log('data ready for view');
+                $('#patent-submission-modal-view').modal({
+                    backdrop: 'static'
+                });
+                
                 const patentSubmissionDataToBeViewed = event.target.closest('tr');
                 console.log('row to be viewed', patentSubmissionDataToBeViewed);
                 let patentFile = patentSubmissionDataToBeViewed.querySelector('.patent-file');
                 console.log('patentFile ==>>', patentFile)
-                patentId = event.target.getAttribute('data-patent-id')
+                patentId = patentSubmissionDataToBeViewed.getAttribute('data-patent-id')
                 $('#patent-submission-modal-view').modal('show');
+
                 const viewTypeOfInvetion = document.getElementById('view-type-of-invetion');
                 const viewTitleOfinvetion = document.getElementById('view-title-of-invetion');
                 const viewDate = document.getElementById('view-date');

@@ -488,6 +488,10 @@
                 submitBtn.classList.remove('d-none');
                 // fileView.classList.add('d-none');
                 // modalImage.classList.add('d-none');
+
+                $('#edited-book-modal').modal({
+                    backdrop: 'static'
+                });
                 // d-none download button
                 const editedBookDataFiles = document.querySelector('#edited-book-edit');
                 editedBookDataFiles.classList.add('d-none');
@@ -693,11 +697,14 @@
             if (event.target.classList.contains('edit')) {
                 console.log('clickeddd');
                 removeErrorMsg();
+                $('#edited-book-modal').modal({
+                    backdrop: 'static'
+                });
                 editedBookRowToBeUpdated = event.target.closest('tr');
                 // console.log('editedBookRowToBeUpdated ==>>', editedBookRowToBeUpdated);
                 // function call tyo set download attribut into button
                 setFileNameAttributeToBeDownload(editedBookRowToBeUpdated)
-                editedBookId = event.target.getAttribute('data-editedbook-id');
+                editedBookId = editedBookRowToBeUpdated.getAttribute('data-editedbook-id');
                 console.log('editedBookId ==>>', editedBookId);
                 $('#edited-book-modal').modal('show');
                 updateBtn.classList.remove('d-none');
@@ -835,8 +842,12 @@
             // for view
             if (event.target.classList.contains('view')) {
                 console.log('clickedddd');
+
+                $('#edited-book-view-modal').modal({
+                    backdrop: 'static'
+                });
                 const editedBookRowToBeViewed = event.target.closest('tr');
-                editedBookId = event.target.getAttribute('data-editedbook-id');
+                editedBookId = editedBookRowToBeViewed.getAttribute('data-editedbook-id');
                 console.log('ID ==>>', editedBookId);
                 $('#edited-book-view-modal').modal('show');
                 const viewauthorName = document.getElementById('view-first-name');

@@ -432,7 +432,7 @@ module.exports.viewPatentSubmission = async(patentId, userName) => {
             psg.innovation_title,
             psg.created_by AS created_by,
             psg.updated_by AS updated_by,
-            psg.application_number
+            psg.application_number,
             psg.grant_date,
             psg.supporting_documents,
             sg.name AS sdg_goal_name,
