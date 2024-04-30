@@ -49,7 +49,7 @@ module.exports.delCaseStudies = async(caseStudyId) => {
 module.exports.viewCaseStudies = async(caseStudyId, userName) => {
     console.log("ID :::::::::::::::::::::",caseStudyId);
     const caseStudyViewData = await caseStudyModel.viewCaseStudyData(caseStudyId, userName);
-    console.log('View inService =>>' ,caseStudyViewData);
+    console.log('View inService =>>' ,caseStudyViewData.caseStudyData);
 
     return caseStudyViewData.status === "Done" ? {
         status : caseStudyViewData.status,

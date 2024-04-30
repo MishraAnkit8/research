@@ -85,9 +85,8 @@ module.exports.updateCaseStudies = async (caseStudyId, updatedCaseStudies, userN
 
     const DataFileString = caseStudyFiles ? caseStudyFiles : null;
     let baseSql =  ` UPDATE case_studies SET 
-                author_first_name = $2, author_last_name = $3, title_of_case_study = $4, edition = $5, volume_number = $6, publisher_name = $7,
-                publication_year = $8, page_number = $9, url_of_case_study = $10, number_of_nmims_authors = $11, nmims_authors = $12, nmims_campus_authors = $13, nmims_school_authors = $14, publisher_category = $15,
-                updated_by = $16` 
+                    author_first_name = $2, author_last_name = $3, title_of_case_study = $4, edition = $5, volume_number = $6, publisher_name = $7, publication_year = $8, page_number = $9, url_of_case_study = $10,
+                    number_of_nmims_authors = $11, nmims_authors = $12, nmims_campus_authors = $13, nmims_school_authors = $14, publisher_category = $15, updated_by = $16` 
 
 
     let supportingDocumentsUpdate = DataFileString ? `, supporting_documents = $17` : '';

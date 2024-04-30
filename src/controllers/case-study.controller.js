@@ -80,7 +80,7 @@ module.exports.caseStudyView = async (req, res, next) => {
     res.status(statusCode).send({
         status : caseStudiesView.status,
         message : caseStudiesView.message,
-        caseStudiesView : caseStudiesView.caseStudyData,
+        caseStudyData : caseStudiesView.caseStudyData,
         rowCount : caseStudiesView.rowCount,
         errorCode : caseStudiesView.errorCode ? caseStudiesView.errorCode : null
     })

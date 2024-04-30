@@ -518,7 +518,7 @@ aria-hidden="true">
             console.log('data ==>>' , data);
             if(data.status === 'Done'){
                 console.log('')
-                const caseStudyData = data.caseStudyData;
+                const caseStudyData = data.caseStudyData[0];
                 const rowCountInteger = parseInt(data.rowCount, 10);
                 const IndexEntry = rowCountInteger + indexValue;
                 indexValue = IndexEntry;
@@ -651,20 +651,20 @@ aria-hidden="true">
             .then((data) => {
                 console.log('data ==>>', data);
                 setFileNameInButtons(data) 
-                viewAuthorFirstName.innerText = data[0].author_first_name;
-                viewAuthorLastName.innerText = data[0].author_last_name;
-                viewTitleOfCaseStudy.innerText = data[0].title_of_case_study;
-                viewEdition.innerText = data[0].edition;
-                viewPublisherCategory.innerText = data[0].publisher_category; 
-                viewVolumeNumber.innerText = data[0].volume_number;
-                viewPublisherName.innerText = data[0].publisher_name;
-                viewPublicationYear.innerText = data[0].publication_year;
-                viewPageNumber.innerText = data[0].page_number;
-                viewUrlOfCaseStudy.innerText = data[0].url_of_case_study;
-                viewNoOfNmimsAuthors.innerText = data[0].number_of_nmims_authors;
-                viewNmimsAuthors.innerText = data[0].nmims_authors;
-                viewNmimsCampusAuthors.innerText = data[0].nmims_campus_authors;
-                viewNmimsSchoolAuthors.innerText = data[0].nmims_school_authors;   
+                viewAuthorFirstName.innerText = data.caseStudyData[0].author_first_name;
+                viewAuthorLastName.innerText = data.caseStudyData[0].author_last_name;
+                viewTitleOfCaseStudy.innerText = data.caseStudyData[0].title_of_case_study;
+                viewEdition.innerText = data.caseStudyData[0].edition;
+                viewPublisherCategory.innerText = data.caseStudyData[0].publisher_category; 
+                viewVolumeNumber.innerText = data.caseStudyData[0].volume_number;
+                viewPublisherName.innerText = data.caseStudyData[0].publisher_name;
+                viewPublicationYear.innerText = data.caseStudyData[0].publication_year;
+                viewPageNumber.innerText = data.caseStudyData[0].page_number;
+                viewUrlOfCaseStudy.innerText = data.caseStudyData[0].url_of_case_study;
+                viewNoOfNmimsAuthors.innerText = data.caseStudyData[0].number_of_nmims_authors;
+                viewNmimsAuthors.innerText = data.caseStudyData[0].nmims_authors;
+                viewNmimsCampusAuthors.innerText = data.caseStudyData[0].nmims_campus_authors;
+                viewNmimsSchoolAuthors.innerText = data.caseStudyData[0].nmims_school_authors;   
             })
             .catch((error) => {
                 console.log('ERROR :', error);
@@ -806,7 +806,10 @@ aria-hidden="true">
         updatedCaseStudies.append('publicationYear', publicationYear)
         updatedCaseStudies.append('pageNumber', pageNumber)
         updatedCaseStudies.append('urlOfCaseStudy', urlOfCaseStudy)
-        updatedCaseStudies.append('numberOfNmimsAuthors', numberOfNmimsAuthors)
+        updatedCaseStudies.append('numberOfNmimsAuthors', numberOfNmimsAuthors);
+        updatedCaseStudies.append('nmimsAuthors', nmimsAuthors)
+        updatedCaseStudies.append('nmimsCampusAuthors', nmimsCampusAuthors)
+        updatedCaseStudies.append('nmimsSchoolAuthors', nmimsSchoolAuthors)
 
         fetch(url , {
             method : 'POST',
@@ -900,7 +903,7 @@ aria-hidden="true">
     function setFileNameInButtons(data) {
         console.log('data ==>>>', data);
         let caseStudyDocuments = document.getElementById('supporting-document');
-        caseStudyDocuments.setAttribute('data-filename', data[0].supporting_documents);
+        caseStudyDocuments.setAttribute('data-filename', data.caseStudyData[0].supporting_documents);
     } 
 
     //eventlistner for download files
