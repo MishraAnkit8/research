@@ -517,6 +517,13 @@
             // for button visualization
             submitBtn.classList.remove('d-none');
             updateBtn.classList.add('d-none');
+
+            removeErrorMsg();
+
+            $('#consultancy-modal').modal({
+                    backdrop: 'static'
+                });
+
             // make input field empty
             const publisherCategoryNational = document.getElementById('national');
             const publisherCategoryInternational = document.getElementById('inter-national');
@@ -732,6 +739,10 @@
 
             if (event.target.classList.contains('edit')) {
                 removeErrorMsg();
+                $('#research-seminar-modal').modal({
+                    backdrop: 'static'
+                });
+
                 seminarRowToBeUpdated = event.target.closest('tr');
                 console.log('seminarRowToBeUpdated ==>>>', seminarRowToBeUpdated)
                 seminarId = event.target.getAttribute('data-seminar-id');
@@ -796,7 +807,11 @@
 
             // for viewing record of journal paper
             if (event.target.classList.contains('view')) {
-                seminarId = event.target.getAttribute('data-seminar-id');
+                const seminarRowToBeViewed = event.target.closest('tr')
+                seminarId = seminarRowToBeViewed.getAttribute('data-seminar-id');
+                $('#research-seminar-modal-view').modal({
+                    backdrop: 'static'
+                });
                 // updating value with actuall value
                 const viewYear = document.getElementById('view-year');
                 const viewSchool = document.getElementById('view-school');

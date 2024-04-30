@@ -758,6 +758,10 @@
             // for button visualization
             submitBtn.classList.remove('d-none');
             updateBtn.classList.add('d-none');
+
+            $('#journal-paper-modal').modal({
+                backdrop: 'static'
+            });
             // make input field empty
             document.getElementById('year').value = '';
             document.getElementById('publisher').value = '';
@@ -1048,6 +1052,9 @@
         if (event.target.classList.contains('edit')) {
             console.log('clicked')
             removeErrorMsg();
+            $('#journal-paper-modal').modal({
+                backdrop: 'static'
+            });
 
             const selectItems = document.querySelectorAll('.item');
             selectItems.forEach(item => {
@@ -1149,12 +1156,6 @@
             }
 
 
-
-
-
-
-
-
             // For journal category
             journalCategory === '1' ? journalCategoryNational.checked = true : journalCategoryInternational.checked = true;
 
@@ -1179,8 +1180,13 @@
         // for viewing record of journal paper
         if (event.target.classList.contains('view')) {
             console.log('clicked');
-            console.log('event.target ===>>>>', event.target);
-            journalPaperId = event.target.getAttribute('data-journal-article-id');
+
+            $('#journal-paper-modal-view').modal({
+                backdrop: 'static'
+            });
+            const rowToBeViewed = event.target.closest('tr');
+            console.log('rowToBeViewed ===>>>>', rowToBeViewed);
+            journalPaperId = rowToBeViewed.getAttribute('data-journal-article-id');
             console.log('journalPaperId ==>>', journalPaperId)
             // updating value with actuall value
            
