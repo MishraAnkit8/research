@@ -27,6 +27,8 @@ module.exports.insertBookPublication = async(req, res, next) => {
 
     console.log('insertBookPublicarionData ====>>>>', insertBookPublicarionData);
     const statusCode = insertBookPublicarionData.status === "Done" ? 200 : (insertBookPublicarionData.errorCode === "23505" ? 400 : 500);
+    console.log('book data ',JSON.stringify(insertBookPublicarionData));
+    
     res.status(statusCode).send({
         status : insertBookPublicarionData.status,
         message : insertBookPublicarionData.message,
@@ -80,16 +82,17 @@ module.exports.deleteBookPublication = async(req, res, next) => {
 }
 
 module.exports.viewBookPublication = async(req, res, next) => {
-    const  userName = req.body.username;
-    console.log('userName in controller  ===>>>>>>', userName);
+    // const  userName = req.body.username;
+    // console.log('userName in controller  ===>>>>>>', userName);
 
     const {bookPublicationId} = req.body;
-    const bookPublicationView = await bookPublicationService.viewBookPublication(bookPublicationId, userName);
+    console.log('book published id ',bookPublicationId)
+    const bookPublicationView = await bookPublicationService.viewBookPublication(bookPublicationId);
     console.log('data in controller ==>>', bookPublicationView)
     if(bookPublicationView){
         res.status(200).send({
             status : 'done',
-            bookPublicationView : bookPublicationView
+            bookPublicationView : bookPublicationView[0]
         })
     }
 }

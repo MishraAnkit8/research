@@ -46,14 +46,13 @@ module.exports.fetchPatentSubMissionForms = async (userName) => {
                     pantent_stage_status pss ON psss.pantent_stage_status_id = pss.id
                 LEFT JOIN 
                     patent_submission_faculty psf ON psg.id = psf.patent_submission_grant_id
-                LEFT JOIN 
+                    LEFT JOIN 
+                    faculties f ON psf.faculty_id = f.id
                 WHERE
                     created_by = $1 
-                    faculties f ON psf.faculty_id = f.id 
-                    ORDER BY psg.id`,
+                ORDER BY psg.id`,
             values : [userName]
     };
-    console.log('sql ===.>>>>>', sql);
 
     let internalEmpSql = {
         text: `select *  FROM faculties WHERE faculty_type_id = 1`
