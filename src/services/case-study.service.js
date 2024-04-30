@@ -48,8 +48,21 @@ module.exports.updatedCaseStudies = async(caseStudyId, updatedCaseStudies, userN
     console.log('updatedCaseStudies ===>>>>>>>', updatedCaseStudies);
 
     const updateCaseStudy = await caseStudyModel.updateCaseStudies(caseStudyId, updatedCaseStudies, userName);
-    console.log('data in service for updation' , updateCaseStudy.rows);
-    
+
+    return updateCaseStudy.status === "Done" ? {
+        status : updateCaseStudy.status,
+        message : updateCaseStudy.message,
+        updatedCaseStudies : updatedCaseStudies
+
+    } : {
+        status : updateCaseStudy.status,
+        message : updateCaseStudy.message,
+        errorCode : updateCaseStudy.errorCode
+    }
+    // console.log('data in service for updation' , updateCaseStudy.rows);
+
+
+
     // if(updateCaseStudy.rowCount === 1){
     //     return {
     //         status : 'done' ,

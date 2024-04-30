@@ -16,7 +16,7 @@ module.exports.fetchPatentSubMissionForms = async (userName) => {
                     psg.innovation_title,
                     psg.application_number,
                     psg.created_by AS created_by,
-                    jpa.created_by As updated_by
+                    psg.created_by AS updated_by,
                     psg.grant_date,
                     psg.supporting_documents,
                     sg.name AS sdg_goal_name,
@@ -46,7 +46,7 @@ module.exports.fetchPatentSubMissionForms = async (userName) => {
                     pantent_stage_status pss ON psss.pantent_stage_status_id = pss.id
                 LEFT JOIN 
                     patent_submission_faculty psf ON psg.id = psf.patent_submission_grant_id
-                    LEFT JOIN 
+                LEFT JOIN 
                     faculties f ON psf.faculty_id = f.id
                 WHERE
                     created_by = $1 
@@ -123,7 +123,7 @@ module.exports.fetchPatentSubMissionForms = async (userName) => {
 
     const promises = [patentData, patentStagData, patentSubmissionsData, internalFacultyData, patentSdgGoalData, patentInventionTypeData, patentData, internalPatentFacultyId, externalPatentFacultyId, patentGrantFacultyIds];
     return Promise.all(promises).then(([patentData, patentStagData, patentSubmissionsData, internalFacultyData, patentSdgGoalData, patentInventionTypeData, internalPatentFacultyId, externalPatentFacultyId, patentGrantFacultyIds]) => {
-      return  { status : "Done" , message : "Record Fetched Successfully" ,  rowCount : patentData.rowCount, patentData : patentData.rows, patentStagData : patentStagData.rows, patentSubmissionsData : patentSubmissionsData.rows, 
+      return  { status : "Done" , message : "Record Fetched Successfully" ,  rowCount : patentSubmissionsData.rowCount, patentData : patentData.rows, patentStagData : patentStagData.rows, patentSubmissionsData : patentSubmissionsData.rows, 
       internalFacultyData : internalFacultyData.rows, patentSdgGoalData : patentSdgGoalData.rows, patentInventionTypeData : patentInventionTypeData.rows, patentData : patentData.rows, internalPatentFacultyId : internalPatentFacultyId.rows, externalPatentFacultyId : externalPatentFacultyId.rows,
       patentGrantFacultyIds : patentGrantFacultyIds.rows};
   })

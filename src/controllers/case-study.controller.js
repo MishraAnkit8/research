@@ -83,16 +83,24 @@ module.exports.updatedCaseStudies = async(req, res, next) => {
     const caseStudyId = req.body.caseStudyId;
     console.log('caseId For Updation ::', caseStudyId);
     const updatdeCaseStudiesData = await caseStudyService.updatedCaseStudies(caseStudyId, updatedCaseStudies, userName);
-    if(updatdeCaseStudiesData.status === 'done'){
-        res.status(200).send({
-            status : 'done',
-            massage : updatdeCaseStudiesData.massage
-        })
-    }
-    else{
-        res.status(500).send({
-            status : 'failed',
-            massage : updatdeCaseStudiesData.massage
-        })
-    }
+
+    const statusCode = updatdeCaseStudiesData.status === 'Done' ? 200 : (updatdeCaseStudiesData.errorCode ? 400 : 500);
+    res.status(statusCode).send({
+        status : updatdeCaseStudiesData.status,
+        message : updatdeCaseStudiesData.message,
+        updatedCaseStudies : updatdeCaseStudiesData.updatedCaseStudies,
+        errorCode : updatdeCaseStudiesData.errorCode ? updatdeCaseStudiesData.errorCode : null
+    })
+    // if(updatdeCaseStudiesData.status === 'done'){
+    //     res.status(200).send({
+    //         status : 'done',
+    //         massage : updatdeCaseStudiesData.massage
+    //     })
+    // }
+    // else{
+    //     res.status(500).send({
+    //         status : 'failed',
+    //         massage : updatdeCaseStudiesData.massage
+    //     })
+    // }
 }

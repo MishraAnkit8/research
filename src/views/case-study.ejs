@@ -181,10 +181,8 @@
                 <div class="row">
                     <!-- author's first name -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <div class="form-group col">
                             <label for="author-first-name" class="form-label  fw-bold">Author's First Name</label>
                             <input type="text" name="author-first-name" id="author-first-name" data-validate="isEmpty,isAlphabeticWords" data-err-msg="This field is required and min length > 1." class="form-control"  required>
-                        </div>
                     </div>
 
                     <!-- Author's last name -->
@@ -470,7 +468,7 @@
         })
         .then ((data) => {
             console.log('data ==>>' , data);
-            if(data.status === 'done'){
+            if(data.status === 'Done'){
                 caseStudyId = data.caseStudyId;
                 const rowCountInteger = parseInt(data.rowCount, 10);
                 const IndexEntry = rowCountInteger + indexValue;
@@ -506,7 +504,7 @@
                         </td> `;
                         
                         caseStudiesDataList.appendChild(newCaseStudy);
-                        $('#case-study-modal').modal('hide');
+                        $('#case-study-modal').modal('hide');  
                         rowCount.classList.remove('d-none');
                         totalRowCount.classList.add('d-none');
                         rowCount.innerText = `Total entries : ${IndexEntry}`
@@ -607,7 +605,7 @@
                 return result.json();
             })
             .then((data) => {
-                if(data.status === 'done'){
+                if(data.status === 'Done'){
                     console.log('data ==>>', data);
                     rowToBeDelete.remove();
                     location.reload();
@@ -719,20 +717,20 @@
         })
         .then((data) => {
             console.log('data ===>>>' , data);
-            if(data.status === 'done'){
+            if(data.status === 'Done'){
                 console.log('caseID >>>', caseStudyId);
                 rowToBeUpdate.querySelector('.author-first-name').innerText = updatedCaseStudies.authorsFirstName;
                 rowToBeUpdate.querySelector('.author-last-name').innerText = updatedCaseStudies.authorLastName;
                 rowToBeUpdate.querySelector('.edition').innerText = updatedCaseStudies.edition;
                 rowToBeUpdate.querySelector('.volume-number').innerText = updatedCaseStudies.volumeNumber;
                 rowToBeUpdate.querySelector('.publication-year').innerText = updatedCaseStudies.publicationYear;
-                rowToBeUpdate.setAttribute('data-page-number', updatedPage);
-                rowToBeUpdate.setAttribute('data-publisher-category' , updatedPublisherCategory);
-                rowToBeUpdate.setAttribute('data-url-of-caseStudy', updatedUrl);
-                rowToBeUpdate.setAttribute('data-numberOfNmimsAuthors', updatedNumberOfNmimsAuthor);
-                rowToBeUpdate.setAttribute('data-nmims-authors', updatedNmimsAuthors);
-                rowToBeUpdate.setAttribute('data-nmims-campus-authors', updatedCampus);
-                rowToBeUpdate.setAttribute('data-nmims-school-authors', updatedschool);
+                rowToBeUpdate.setAttribute('data-page-number', updatedCaseStudies.pageNumber);
+                rowToBeUpdate.setAttribute('data-publisher-category' , updatedCaseStudies.publisherCategory);
+                rowToBeUpdate.setAttribute('data-url-of-caseStudy', updatedCaseStudies.urlOfCaseStudy);
+                rowToBeUpdate.setAttribute('data-numberOfNmimsAuthors', updatedCaseStudies.numberOfNmimsAuthors);
+                rowToBeUpdate.setAttribute('data-nmims-authors', updatedCaseStudies.nmimsAuthors);
+                rowToBeUpdate.setAttribute('data-nmims-campus-authors', updatedCaseStudies.nmimsCampusAuthors);
+                rowToBeUpdate.setAttribute('data-nmims-school-authors', updatedCaseStudies.nmimsSchoolAuthors);
                 $('#case-study-modal').modal('hide');           
             }
         })
