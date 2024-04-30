@@ -58,6 +58,9 @@ router.post('/case-study/insert', upload.array('caseStudyDocuments', 5), asyncEr
 router.post('/case-study/delete',  asyncErrorHandler(authMiddleware), asyncErrorHandler(caseStudyController.delCaseStudies));
 router.post('/case-study/view',  asyncErrorHandler(authMiddleware), asyncErrorHandler(caseStudyController.caseStudyView));
 router.post('/case-study/update',  upload.array('caseStudyDocuments', 5), asyncErrorHandler(authMiddleware), asyncErrorHandler(caseStudyController.updatedCaseStudies));
+router.post('/journal-paper/view', asyncErrorHandler(authMiddleware), asyncErrorHandler(journalController.viewJournalPaper));
+router.get('/case-study/download/:fileName', asyncErrorHandler(authMiddleware), downloadFileService.downloadFile);
+router.get('/case-study/viewing/:fileName', downloadFileService.viewFile);
 
 
 //conference-publication

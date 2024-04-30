@@ -17,7 +17,7 @@ router.use('/dashboard-page', dashboardRoute);
 router.use('/research', researchRoute);
 router.use('/teaching-excellance' , teachingExecellanceRoute);
 router.use('/meeting-stackholders' , meetingStackholdersRoute);
-router.use('/branding-advertising' , brandingAndAdvertisingRoute);
+router.use('/brandingAdvertising' , brandingAndAdvertisingRoute);
 router.use('/chronicle-edition' , chronicleRoutes);
 router.use('/chronicle-page' , chroniclePageRoutes);
 router.use('/user' , userRegistrationRoutes);

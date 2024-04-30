@@ -169,7 +169,7 @@
 </main>
 <!-- case study Modal  form -->
 <div class="modal fade " id="case-study-modal" tabindex="-1" role="dialog" aria-labelledby="case-study"
-    aria-hidden="true">
+aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable modal-lg modal-fullscreen p-5" role="document">
         <div class="modal-content modal-content-data validate-input">
             <div class="modal-header">
@@ -272,7 +272,7 @@
                             <input type="file" name="supporting-documents" id="supporting-documents"
                                 class="col-md-12 form-control" data-validate="isEmpty,isExist,isFile" data-err-msg="File is required."
                                 required multiple>
-                            <button class="download-btn download-file" id="journal-data-file-edit"><i
+                            <button class="download-btn download-file" id="case-study-doc-edit"><i
                                     class="fas fa-download text-danger"></i></button>
                         </div>
                     </div>
@@ -398,7 +398,7 @@
                     <!-- Publication Year -->
                     <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                         <div class="box">
-                            <div class="task-sub-title sub-title-text">NMIMS School Authors's :</div>
+                            <div class="task-sub-title sub-title-text">NMIMS School Author's :</div>
                             <label class="view-content" id="view-nmims-school-authors"></label>
                         </div>
                     </div>
@@ -408,7 +408,7 @@
                     <div class="box">
                         <div class="sub-title-text sub-title">
                             <button class="btn btn-primary h-10 w-10 download-file" id="supporting-document">
-                                <i class="fas fa-download text-danger"></i> Artciles Documents
+                                <i class="fas fa-download text-danger"></i> Case Study Documents
                             </button>
                         </div>
                         <label class="view-content" id="view-patent-file"></label>
@@ -440,6 +440,9 @@
     addNewCaseStudyData.addEventListener('click' , async function(event){
         if(event.target.tagName === 'BUTTON' && event.target.classList.contains('add-modal') || event.target.classList.contains('plus')){
             // for button visualization
+            $('#case-study-modal').modal({
+            backdrop: 'static'
+        });
             submitBtn.classList.remove('d-none');
             updateBtn.classList.add('d-none');
             document.getElementById('author-first-name').value = '';
@@ -611,6 +614,9 @@
 
     caseStudiesDataList.addEventListener('click' , async function(event) {
         if(event.target.classList.contains('view')){
+            $('#case-view-modal').modal({
+                backdrop: 'static'
+            });
             const rowToBeView = event.target.closest('tr');
             caseStudyId = rowToBeView.getAttribute('data-case-id');
             const viewAuthorFirstName = document.getElementById('view-first-name');
@@ -627,6 +633,8 @@
             const viewNmimsAuthors = document.getElementById('view-nmims-authors');
             const viewNmimsCampusAuthors = document.getElementById('view-nmims-campus-authors');
             const viewNmimsSchoolAuthors = document.getElementById('view-nmims-school-authors');
+
+            $('#case-view-modal').modal('show');
 
             fetch('<%- BASE_URL %>research/case-study/view' , {
                 method : 'POST',
@@ -656,13 +664,11 @@
                 viewNoOfNmimsAuthors.innerText = data[0].number_of_nmims_authors;
                 viewNmimsAuthors.innerText = data[0].nmims_authors;
                 viewNmimsCampusAuthors.innerText = data[0].nmims_campus_authors;
-                viewNmimsSchoolAuthors.innerText = data[0].nmims_school_authors;      
+                viewNmimsSchoolAuthors.innerText = data[0].nmims_school_authors;   
             })
             .catch((error) => {
                 console.log('ERROR :', error);
             })
-
-            $('#case-view-modal').modal('show');
         }
 
         // for deleting
@@ -703,6 +709,9 @@
         }
 
         if(event.target.classList.contains('edit')){
+            $('#case-study-modal').modal({
+            backdrop: 'static'
+        });
             console.log('clickeddddd');
             removeErrorMsg();
             $('#case-study-modal').modal('show');
@@ -890,8 +899,8 @@
 
     function setFileNameInButtons(data) {
         console.log('data ==>>>', data);
-        articleDoucments = document.getElementById('supporting-document');
-        articleDoucments.setAttribute('data-filename', data.journalAricleData.supporting_documents);
+        let caseStudyDocuments = document.getElementById('supporting-document');
+        caseStudyDocuments.setAttribute('data-filename', data[0].supporting_documents);
     } 
 
     //eventlistner for download files
@@ -912,7 +921,7 @@
 
                     const downloadPromises = fileArray.map(async (fileName) => {
                         console.log('fileName ===>>>', fileName)
-                        const fileUrl = `<%- BASE_URL %>research/journal-paper/download/${fileName}`;
+                        const fileUrl = `<%- BASE_URL %>research/case-study/download/${fileName}`;
                         downloadFile(fileName, fileUrl)
                         try {
                             const response = await fetch(fileUrl);
@@ -940,15 +949,19 @@
     // set string file value into button
     function setFileNameAttributeToBeDownload(data) {
             console.log('data row in side function ===>>', data);
-            const articleDataFiles = document.getElementById('journal-data-file-edit');
-            console.log('articleDataFiles ===>>>>>', articleDataFiles)
+            const caseStudyFiles = document.getElementById('case-study-doc-edit');
+            console.log('articleDataFiles ===>>>>>', caseStudyFiles)
             articleDataFiles.classList.remove('d-none');
-            const articleDataString = data.getAttribute('data-documents');
-            console.log('articleDataString ====>>>>>>', articleDataString);
+            const caseStudyDocString = data.getAttribute('data-supporting-documents');
+            console.log('caseStudyDocString ====>>>>>>', caseStudyDocString);
             // setAttribute into button
-            articleDataFiles.setAttribute('data-filename', articleDataString);
+            articleDataFiles.setAttribute('data-filename', caseStudyDocString);
 
         };
+
+
+
+
 
 </script>
 <!-- footer section -->

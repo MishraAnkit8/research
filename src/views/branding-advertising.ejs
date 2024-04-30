@@ -4,6 +4,8 @@
 <%- include('./partials/header') %>
 <!-- This is left sidebar  -->
 <%- include('./partials/left-sidebar') %>
+<%- include('./partials/loader') %>
+
 <!-- This is right side section -->
 <main class="main" id="main-content">
     <div class="base-section coustom-section">
@@ -737,6 +739,10 @@
             // for button visualization
             submitBtn.classList.remove('d-none');
             updateBtn.classList.add('d-none');
+            $('#branding-advertising-modal').modal({
+            backdrop: 'static'
+            });
+        
             const facultyRecogDataFiles = document.querySelector('#faculty-recog-doc-edit');
             const facultyAwardsFiles = document.querySelector('#faculty-awards-doc-edit');
             const staffAwardsfiles = document.querySelector('#staff-awards-doc-edit');
@@ -933,7 +939,6 @@
         brandingAdvertisingData.append('studentEventParticipationLink' , studentEventParticipationLink);
         brandingAdvertisingData.append('newsPaperArticle' , newsPaperArticle);
         brandingAdvertisingData.append('newsPaperArticleLink' , newsPaperArticleLink);
-
         //api fetching 
         fetch(url , {
             method : 'POST',
@@ -1033,16 +1038,24 @@
                     html: `<span style="color: red;">${message}</span>`,
                     showConfirmButton: false,
                 });
+                let loader = document.querySelector('.overlay');
             });
     }
     
     submitBtn.addEventListener('click', async () => {
     const isValid = validateRequiredFormFields(submitBtn);
+    let loader = document.querySelector('.overlay');
+    loader.style.display = 'block'; // Show the loader
     if (isValid) {
         try {
+
             await Promise.all([
-                insertBrandingAndAdvertising('<%- BASE_URL %>branding-advertising/insert'),
+                insertBrandingAndAdvertising('<%- BASE_URL %>brandingAdvertising/insert'),
             ]);
+
+            loader = document.querySelector('.overlay');
+            loader.style.display = 'none';
+
         } catch (error) {
             console.error('An error occurred:', error);
             Swal.fire({
@@ -1052,6 +1065,8 @@
                 color: "red",
                 showConfirmButton: false,
             });
+            loader.style.display = 'none'; 
+
         }
     } else {
         Swal.fire({
@@ -1061,6 +1076,7 @@
             color: "red",
             showConfirmButton: false,
         });
+        loader.style.display = 'none'; // Hide the loader
     }
 });
 
@@ -1085,7 +1101,7 @@
                     }).then((result) => {
                         if (result.isConfirmed) {
                             // Execute fetch request here after confirmation
-                            fetch('<%- BASE_URL %>branding-advertising/delete', {
+                            fetch('<%- BASE_URL %>brandingAdvertising/delete', {
                                 method: 'POST',
                                 headers: {
                                     'content-type': 'application/json'
@@ -1127,7 +1143,11 @@
             }
             // view advertising
             if (event.target.classList.contains('view')) {
-                console.log('clcikedd');
+                console.log('clcikedd')
+            
+                $('#branding-advertising-view-modal').modal({
+                    backdrop: 'static'
+                });
                 const advertisingRowToBeViewed = event.target.closest('tr');
                 advertisingId = event.target.getAttribute('data-advertising-id');
                 console.log('advertisingId ===>>>', advertisingId);
@@ -1163,7 +1183,7 @@
                 const viewNewsPaperArticle = document.getElementById('view-newspaper-article');
                 const viewNewsPaperArticleLink = document.getElementById('view-newspaper-article-link');
 
-                fetch('<%- BASE_URL %>branding-advertising/view', {
+                fetch('<%- BASE_URL %>brandingAdvertising/view', {
                     method: 'POST',
                     headers: {
                         'content-type': 'application/json'
@@ -1218,6 +1238,10 @@
                 removeErrorMsg();
                 submitBtn.classList.add('d-none');
                 updateBtn.classList.remove('d-none');
+                
+                $('#branding-advertising-modal').modal({
+                    backdrop: 'static'
+                });
                 // facultyRecogdocuments.classList.remove('d-none'); 
                 // facultyAwardsDoc.classList.remove('d-none'); 
                 // staffAwardsDoc.classList.remove('d-none'); 
@@ -1485,10 +1509,42 @@
                         }
                     }
                 }
+                $('#branding-advertising-modal').modal('hide');
+                Swal.fire({
+                            position: "top-center",
+                            icon: "success",
+                            title: `${data.message}`,
+                            showConfirmButton: false
+                            // timer: 1500
+                        });
             }
-            $('#branding-advertising-modal').modal('hide');
-            alert(`${data.message}`);
+            else{
+                    Swal.fire({
+                        position: "top-center",
+                        icon: "error",
+                        title: "Updation Failed",
+                        color : "red",
+                        with : "20PX",
+                        showConfirmButton: false,
+                    });
+                }
+            
         })
+        .catch((error) => {
+                console.log("ERROIR : ", error);
+                const errTitle = "Internal Server Error";
+                const message = error
+                // alert('An error occurred while updating the element');
+                Swal.fire({
+                        position: "top-center",
+                        icon: "error",
+                        title: `${message}`,
+                        color : "red",
+                        with : "20PX",
+                        html: `<span style="color: red;">${errTitle}</span>`,
+                        showConfirmButton: false,
+                    });
+            })
     }
 
     updateBtn.addEventListener('click', async () => {
@@ -1500,7 +1556,10 @@
         })
             const isValid = validateRequiredFormFields(updateBtn);
             if (isValid) {
-                await updateBrandingAndAdvertising('<%- BASE_URL %>branding-advertising/update');;;
+                let loader = document.querySelector('.overlay');
+                loader.style.display = 'block';
+
+                await updateBrandingAndAdvertising('<%- BASE_URL %>brandingAdvertising/update');;;
             }
             else {
                 console.log('validation failed');

@@ -188,8 +188,8 @@
                 <div class="row">
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="type-of-invention" class="form-label fw-bold">Type of Invention(IPR)</label>
-                        <select id="type-of-invention" data-validate="isEmpty,isExist" data-err-msg="This field is required and select value" required>
-                            <option value="">Select option</option>
+                        <select class="select-option drop-list" id="type-of-invention" data-validate="isEmpty,isExist" data-err-msg="This field is required and select value" required>
+                            <option value="">Select IPR</option>
                             <!-- Use server-side or client-side code to dynamically generate options -->
                             <% patentInventionTypeData.forEach(function(invention) { %>
                                 <option value="<%= invention.id %>"><%= invention.name %></option>
@@ -205,8 +205,8 @@
                     <!-- Patent Stage -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="patent-stage" class="form-label fw-bold">Patent Stage</label>
-                        <select class="" id="patent-stage"  required >
-                            <option value="" >Select option</option>
+                        <select class="select-option drop-list" id="patent-stage"  required >
+                            <option value="" >Select Patent Stage</option>
                             <% patentStagData.forEach(function(status) { %>
                                 <option value="<%= status.id %>">
                                    <%= status.name %>
@@ -218,8 +218,8 @@
                     <!-- Sustainable Development Goals (SDG) [dropdown list to be added] ? -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="sdg-goals" class="form-label fw-bold ">Sustainable Development Goals (SDG)?</label>
-                        <select  class="" id="sdg-goals-data"  required multiple>
-                            <option value="" selected >Select option</option>
+                        <select class="select-option drop-list" id="sdg-goals-data"  required multiple>
+                            <option value="" selected >Select SDG Goals</option>
                             <% patentSdgGoalData.forEach(function(goals) { %>
                                 <option value="<%= goals.id %>">
                                    <%= goals.name %>
@@ -267,7 +267,7 @@
                                    <span id="enternal-text">Internal</span>
                                 </label>
                                 <div class="col-lg-1 p-6 w-100 d-none" id="employee-list">
-                                    <select id="emp-name" style="width: 200px;" multiple> 
+                                    <select class="select-option drop-list" id="emp-name" style="width: 200px;" multiple> 
                                         <option value="">select employee name</option>
                                         <% internalFacultyData.forEach(function(employee) { %>
                                             <option value="<%= employee.employee_name %>">
@@ -500,6 +500,11 @@
             date.value = '';
             isInternalFaculty.checked = false;
             isExternalFaculty.checked = false;
+
+            const selectItems = document.querySelectorAll('.item');
+            selectItems.forEach(item => {
+                item.classList.add('d-none');
+            });
 
         }
     })
