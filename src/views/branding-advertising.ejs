@@ -1036,22 +1036,33 @@
             });
     }
     
-    submitBtn.addEventListener('click' , async() => {
-        const isValid = validateRequiredFormFields(submitBtn);
-            if (isValid) {
-                await insertBrandingAndAdvertising('<%- BASE_URL %>branding-advertising/insert');
-                IndexEntry += 1
-            }
-            else {
-                Swal.fire({
-				position: "top-center",
-				icon: "error",
-				title: "Validation Failed",
-				color : "red",
-				showConfirmButton: false,
-		});
-            }
-    }) 
+    submitBtn.addEventListener('click', async () => {
+    const isValid = validateRequiredFormFields(submitBtn);
+    if (isValid) {
+        try {
+            await Promise.all([
+                insertBrandingAndAdvertising('<%- BASE_URL %>branding-advertising/insert'),
+            ]);
+        } catch (error) {
+            console.error('An error occurred:', error);
+            Swal.fire({
+                position: "top-center",
+                icon: "error",
+                title: "An error occurred",
+                color: "red",
+                showConfirmButton: false,
+            });
+        }
+    } else {
+        Swal.fire({
+            position: "top-center",
+            icon: "error",
+            title: "Validation Failed",
+            color: "red",
+            showConfirmButton: false,
+        });
+    }
+});
 
     brandingAdvertisingList.addEventListener('click', (event) => {
 
