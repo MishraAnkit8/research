@@ -8,7 +8,7 @@ module.exports.fetchBrandingandAdvertisingData = async(userName) => {
     return brandingAndAdvertising;
 }
 
-module.exports.insertBrandingAdvertising = async(body , files) => {
+module.exports.insertBrandingAdvertising = async(body , files, userName) => {
     const advertisingData = body;
     const facultyRecognitionFilesArray = files.facultyRecognitionDocuments ?.map(file => file.filename).join(',');
     const facultyAwardFilesArray = files.facultyAwardDocuments ?.map(file => file.filename).join(',');
