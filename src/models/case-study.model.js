@@ -65,7 +65,7 @@ module.exports.viewCaseStudyData = async (caseStudyId, userName) => {
 
 }
 
-module.exports.updateCaseStudies = async ({caseStudyId, updatedCaseStudies}, userName) => {
+module.exports.updateCaseStudies = async (caseStudyId, updatedCaseStudies, userName) => {
     const {authorsFirstName, authorLastName, titleOfCaseStudy, edition, volumeNumber, publisherName, publicationYear, pageNumber, urlOfCaseStudy,
         numberOfNmimsAuthors, nmimsAuthors, nmimsCampusAuthors, nmimsSchoolAuthors, publisherCategory} = updatedCaseStudies;
     let sql = {

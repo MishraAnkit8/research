@@ -16,8 +16,8 @@ module.exports.renderCaseStudy = async(req, res, next) => {
 module.exports.insertCaseStudies  = async(req, res, next) => {
     const  userName = req.body.username;
     console.log('userName in controller  ===>>>>>>', userName);
-
     console.log('caseStudy template data ==>>', req.body);
+
     const insertCaseStudy = await caseStudyService.insertCaseStudies(req.body, userName);
     console.log('caseStudyId ==>>' , insertCaseStudy.rows[0].id);
     if(insertCaseStudy && insertCaseStudy.rows[0].id){
@@ -38,6 +38,7 @@ module.exports.insertCaseStudies  = async(req, res, next) => {
 module.exports.delCaseStudies = async(req, res, next) => {
     const caseStudyId = req.body.caseStudyId;
     console.log('ID ==>', caseStudyId);
+
     const caseStudies = await caseStudyService.delCaseStudies(caseStudyId);
     if(caseStudies.status === 'done'){
         res.status(200).send({
@@ -78,9 +79,10 @@ module.exports.updatedCaseStudies = async(req, res, next) => {
     console.log('userName in controller  ===>>>>>>', userName);
 
     const updatedCaseStudies = req.body;
+    console.log('updatedCaseStudies ====>>>>>>>>', updatedCaseStudies);
     const caseStudyId = req.body.caseStudyId;
     console.log('caseId For Updation ::', caseStudyId);
-    const updatdeCaseStudiesData = await caseStudyService.updatedCaseStudies({caseStudyId, updatedCaseStudies}, userName);
+    const updatdeCaseStudiesData = await caseStudyService.updatedCaseStudies(caseStudyId, updatedCaseStudies, userName);
     if(updatdeCaseStudiesData.status === 'done'){
         res.status(200).send({
             status : 'done',

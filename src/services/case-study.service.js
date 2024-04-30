@@ -8,7 +8,7 @@ module.exports.createCaseStudy = async (userName) => {
 
 module.exports.insertCaseStudies = async (body, userName) => {
     const caseStudyData = body;
-    console.log('inserted data in service ==>>', caseStudyData);
+    console.log('inserted data in service ==>>', body);
     const createCaseStudies = await caseStudyModel.insertDataIntoCaseStudies(caseStudyData, userName);
     return createCaseStudies ;
 }
@@ -44,20 +44,23 @@ module.exports.viewCaseStudies = async(caseStudyId, userName) => {
     }
 }
 
-module.exports.updatedCaseStudies = async({caseStudyId ,updatedCaseStudies}, userName) => {
-    const updateCaseStudy = await caseStudyModel.updateCaseStudies({caseStudyId , updatedCaseStudies}, userName);
+module.exports.updatedCaseStudies = async(caseStudyId, updatedCaseStudies, userName) => {
+    console.log('updatedCaseStudies ===>>>>>>>', updatedCaseStudies);
+
+    const updateCaseStudy = await caseStudyModel.updateCaseStudies(caseStudyId, updatedCaseStudies, userName);
     console.log('data in service for updation' , updateCaseStudy.rows);
-    if(updateCaseStudy.rowCount === 1){
-        return {
-            status : 'done' ,
-            massage : 'data updated successfully'
-        }
-    }
-    else{
-        return {
-            status : 'failed',
-            massage : 'error to update data'
-        }
-    }
+    
+    // if(updateCaseStudy.rowCount === 1){
+    //     return {
+    //         status : 'done' ,
+    //         massage : 'data updated successfully'
+    //     }
+    // }
+    // else{
+    //     return {
+    //         status : 'failed',
+    //         massage : 'error to update data'
+    //     }
+    // }
 
 };
