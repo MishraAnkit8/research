@@ -150,16 +150,13 @@ document.getElementById("searchKeyword").addEventListener("input", handleSearchI
     let prevBtn = document.getElementById("prevBtn");
     let nextBtn = document.getElementById("nextBtn");
 
-    if (totalPages <= 1) {
-      prevBtn.classList.add("d-none");
-      nextBtn.classList.add("d-none");
-    } else {
-      prevBtn.disabled = currentPage === 1;
-      nextBtn.disabled = currentPage === totalPages;
+    console.log('curent page ',currentPage)
       prevBtn.classList.remove("d-none");
       nextBtn.classList.remove("d-none");
-    }
-    
+      prevBtn.disabled = currentPage === 1;
+      nextBtn.disabled = currentPage === totalPages;
+      
+  
   }
 
 

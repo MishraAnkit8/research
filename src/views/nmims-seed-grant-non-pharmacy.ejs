@@ -99,14 +99,16 @@
                                         class="fa-solid fa-trash delete text-danger"
                                         data-consultancy-id="<%- grantSeedData.consultancy_id %>"></i></label>
                             </td> -->
-                            <td title="View" class="col-lg-1 view text-danger" style="cursor: pointer;"   data-consultancy-id="<%- grantSeedData.consultancy_id %>">
+                            <td colspan="3px" style="display:flex;justify-content: center;">
+                            <p title="View" class="col-lg-1 view text-danger" style="cursor: pointer;"   data-consultancy-id="<%- grantSeedData.consultancy_id %>">
                                 &#128065;
-                            </td>
-                            <td title="Edit" class="col-lg-1 edit text-danger" style="cursor: pointer;"   data-consultancy-id="<%- grantSeedData.consultancy_id %>">
+                            </p>
+                            <p title="Edit" class="col-lg-1 edit text-danger" style="cursor: pointer;"   data-consultancy-id="<%- grantSeedData.consultancy_id %>">
                                  &#9998;
-                            </td>
-                            <td title="Delete" class="col-lg-1 delete text-danger" style="cursor: pointer;"    data-consultancy-id="<%- grantSeedData.consultancy_id %>">
+                            </p>
+                            <p title="Delete" class="col-lg-1 delete text-danger" style="cursor: pointer;"    data-consultancy-id="<%- grantSeedData.consultancy_id %>">
                                 &#128465;
+                            </p>
                             </td>
                         </tr>
                         <%}) %>
@@ -139,7 +141,7 @@
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="editModalLabel">Update Program</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                <button type="button" class="btn-close" id="headerEditClose" data-bs-dismiss="modal"
                                     aria-label="Close"></button>
                             </div>
                             <div id="errorHtml"></div>
@@ -163,7 +165,7 @@
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-secondary" id="editClose" data-bs-dismiss="modal">Close</button>
                                 <button type="button" class="btn btn-primary updateProgram">Update</button>
                             </div>
                         </div>
@@ -177,7 +179,7 @@ aria-hidden="true">
         <div class="modal-content modal-content-data validate-input">
             <div class="modal-header">
                 <h5 class="modal-title" id="grantSeedData-study">NMIMS Seed Grant Non Pharmacy Form  </h5>
-                <div type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <div type="button" class="close" id="headerClose" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true"><i class="fas fa-times "></i></span>
                 </div>
             </div>
@@ -190,26 +192,26 @@ aria-hidden="true">
                     </div>
                     <!-- title -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="campus" class=" sub-title fw-bold"> Title(Brif) </label>
+                        <label for="campus" class=" sub-title fw-bold"> Title(Brief) </label>
                         <input type="text" name="SchoolName" id="title" data-validate="isEmpty,isNotNumber,isExist,isNotSpecialChar" data-err-msg="This field is required and min length > 1." class="form-control"
                              required/>
                     </div>
                     <!-- Faculty ID -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="faculty-id" class="form-label fw-bold ">Name of Faculty , Id And Designation</label>
-                        <select id="faculty-id" class="select-option" data-validate="isEmpty,isExist" data-err-msg="This  field  is requird."  required>
+                        <select id="faculty-id" class="select-option facultiesId" data-validate="isEmpty,isExist" data-err-msg="This  field  is required."  required>
                         </select>
                     </div>
                     <!--Date of Commencement-->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="commencement-date" class=" sub-title fw-bold"> Date of Commencement </label>
-                        <input type="Date" name="policy-cadre" id="commencement-date" data-validate="isEmpty,isExist" data-err-msg="Date is requird." class="form-control"
+                        <input type="Date" name="policy-cadre" id="commencement-date" data-validate="isEmpty,isExist" data-err-msg="Date is required." class="form-control"
                              required />
                     </div>
                     <!-- Date of Completion -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="completion-date" class=" sub-title fw-bold">Date of Completion</label>
-                        <input type="date" name="completion-date" id="completion-date" data-validate="isEmpty,isExist" data-err-msg="Date is requird." class="form-control" required>
+                        <input type="date" name="completion-date" id="completion-date" data-validate="isEmpty,isExist" data-err-msg="Date is required." class="form-control" required>
                     </div>
                     <!-- Days -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
@@ -304,7 +306,7 @@ aria-hidden="true">
             
             <!-- Add your modal footer buttons if needed -->
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger" id ="insertClose" data-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-md btn-primary submit-btn d-none" id="submit-btn">Submit</button>
                 <button class="btn btn-md btn-primary update-btn d-none" id="update-btn">Update</button>
             </div>
@@ -662,7 +664,9 @@ aria-hidden="true">
 							position: "top-center",
 							icon: "success",
 							title: `${data.message}`,
-							showConfirmButton: false
+							showConfirmButton: true,
+                                confirmButtonText:"OK",
+                                confirmButtonColor: "#DD6B55"
 							// timer: 1500
 						});
                 rowCount.classList.remove('d-none');
@@ -678,7 +682,9 @@ aria-hidden="true">
 							color : "red",
 							with : "20PX",
 							html: `<span style="color: red;">${data.message}</span>`,
-							showConfirmButton: false,
+							showConfirmButton: true,
+                                confirmButtonText:"OK",
+                                confirmButtonColor: "#DD6B55"
 						});
                     }
         })
@@ -691,7 +697,9 @@ aria-hidden="true">
                 color: "red",
                 with: "20PX",
                 html: `<span style="color: red;">${error}</span>`,
-                showConfirmButton: false,
+                showConfirmButton: true,
+                                confirmButtonText:"OK",
+                                confirmButtonColor: "#DD6B55"
             });
         })
     }
@@ -707,7 +715,9 @@ aria-hidden="true">
 				icon: "error",
 				title: "Validation Failed",
 				color : "red",
-				showConfirmButton: false,
+				showConfirmButton: true,
+                                confirmButtonText:"OK",
+                                confirmButtonColor: "#DD6B55"
 		});
        }
     });
@@ -773,6 +783,11 @@ aria-hidden="true">
             })
             
         }
+
+
+
+
+
         //for delete the record
         if(event.target.classList.contains('delete')){
             formDataToBeDeleted = event.target.closest('tr');
@@ -809,7 +824,10 @@ aria-hidden="true">
                                     Swal.fire({
                                         title: "Deleted!",
                                         text: "Record has been deleted.",
-                                        icon: "success"
+                                        icon: "success",
+                                        showConfirmButton: true,
+                                confirmButtonText:"OK",
+                                confirmButtonColor: "#DD6B55"
                                     }).then(() => {
                                         location.reload();
                                     });
@@ -823,7 +841,9 @@ aria-hidden="true">
                                     icon: "error",
                                     title: `${message}`,
                                     color: "red",
-                                    showConfirmButton: false,
+                                    showConfirmButton: true,
+                                confirmButtonText:"OK",
+                                confirmButtonColor: "#DD6B55"
                                 });
                             });
                     }
@@ -843,11 +863,43 @@ aria-hidden="true">
                 });
             updateBtn.classList.remove('d-none');
             approvalFormRecordToBeUpdated = event.target.closest('tr');
-            console.log('approvalFormRecordToBeUpdated ===>>>>', approvalFormRecordToBeUpdated);
+            console.log('approvalFormRecordToBeUpdated ===>>>>', JSON.stringify(approvalFormRecordToBeUpdated));
+
             grantedSeedId = approvalFormRecordToBeUpdated.getAttribute('data-consultancy-id');
             console.log('grantedSeedId ====>>>>', grantedSeedId);
             facultyId = approvalFormRecordToBeUpdated.getAttribute('data-faculty-id')
             console.log('facultyId ====>>>>>', facultyId);
+         
+            //let facultydata = document.getElementById('faculty-list-data');
+            let facultydata = '<%- JSON.stringify(facultyData) %>';
+            let parsedFacultyData = JSON.parse(facultydata);
+            console.log('faculty data ',facultydata)
+
+            let facultyName;
+
+            Array.from(parsedFacultyData).forEach(data => {
+                console.log('faculty data ',facultyId,JSON.stringify(data))
+                if(facultyId == data.id){
+                    console.log('faculty inside')
+                    facultyName = `${data.id},${data.faculty_name},${data.designation},${data.address}`;
+                }
+            })
+
+            console.log('faculty name ',facultyName);
+            let fId  = document.querySelector('.faculty-name');
+            console.log('fcul name ',fId)
+            // for (let i = 0; i < fId.options.length; i++) {
+            //     fId.options[i].value = facultyName;
+            //     if (fId.options[i].value === facultyName) {
+            //         fId.selectedIndex = i;
+            //         break;
+            //     }
+            // }
+
+            
+
+
+
             document.getElementById('year').value = approvalFormRecordToBeUpdated.querySelector('.year').innerText;
             document.getElementById('title').value = approvalFormRecordToBeUpdated.querySelector('.project-title').innerText;
             const commencementDate = approvalFormRecordToBeUpdated.getAttribute('data-commencement-date');
@@ -971,7 +1023,9 @@ aria-hidden="true">
                     position: "top-center",
                     icon: "success",
                     title: `${data.message}`,
-                    showConfirmButton: false,
+                    showConfirmButton: true,
+                                confirmButtonText:"OK",
+                                confirmButtonColor: "#DD6B55",
                     timer: 1500
                 });
                 $('#consultancy-modal-form').modal('hide');
@@ -987,7 +1041,9 @@ aria-hidden="true">
                     color: "red",
                     with: "20PX",
                     html: `<span style="color: red;">${data.message}</span>`,
-                    showConfirmButton: false,
+                    showConfirmButton: true,
+                                confirmButtonText:"OK",
+                                confirmButtonColor: "#DD6B55"
                 });
            }
         })
@@ -998,7 +1054,9 @@ aria-hidden="true">
                 icon: "error",
                 title: `${message}`,
                 color: "red",
-                showConfirmButton: false,
+                showConfirmButton: true,
+                                confirmButtonText:"OK",
+                                confirmButtonColor: "#DD6B55"
             });
         })
     }
@@ -1025,9 +1083,29 @@ aria-hidden="true">
 							icon: "error",
 							title: "Validation Failed",
 							color : "red",
-							showConfirmButton: false,
+							showConfirmButton: true,
+                                confirmButtonText:"OK",
+                                confirmButtonColor: "#DD6B55"
 						});
        }
+    })
+
+    document.getElementById('headerClose').addEventListener('click',() => {
+        console.log('header close ')
+        document.location.reload();
+    })
+
+    document.getElementById('insertClose').addEventListener('click',() => {
+        console.log('header close ')
+        document.location.reload();
+    })
+
+    document.getElementById('headerEditClose').addEventListener('click',() => {
+        document.location.reload();
+    })
+
+    document.getElementById('editClose').addEventListener('click',() => {
+        document.location.reload();
     })
 
 </script>
