@@ -22,7 +22,7 @@ module.exports.renderSeedGrantNonFormacy = async(userName) => {
                     c.id desc`,
           values : [userName]
         };
-        let facultySql = `SELECT * FROM faculty_table ORDER BY id`;
+        let facultySql = `SELECT id, faculty_name , designation FROM faculty_table ORDER BY id`;
         const fetchSeedGrantFormData = await researchDbW.query(grantedSeedSql);
         const facultyRecord = await researchDbW.query(facultySql);
         const promises = [fetchSeedGrantFormData, facultyRecord];

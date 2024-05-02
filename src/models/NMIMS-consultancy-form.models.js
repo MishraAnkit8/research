@@ -22,7 +22,7 @@ module.exports.renderNmimsConsultancyApprovalForm = async(userName) => {
         values : [userName]
 }
                       
-        let facultySql = `SELECT * FROM faculty_table ORDER BY id`;
+        let facultySql = `SELECT id, faculty_name , designation FROM faculty_table ORDER BY id`;
         const fetchConsultancyRecord = await researchDbW.query(approvalFormSql);
         const facultyRecord = await researchDbW.query(facultySql);
         const promises = [fetchConsultancyRecord, facultyRecord];
