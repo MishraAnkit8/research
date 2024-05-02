@@ -10,15 +10,18 @@ module.exports.renderNmimsSeedGrantNonFormacy = async(req, res, next) => {
     console.log('userName in controller  ===>>>>>>', userName);
 
     const renderSeedGrantFormData = await seedGrantNonForphacyService.fetchNoFormacyForm(userName);
-    console.log('renderSeedGrantFormData in controller ===>>>>', renderSeedGrantFormData)
-    res.render('nmims-seed-grant-non-pharmacy', {
-        status : renderSeedGrantFormData.status,
-        message : renderSeedGrantFormData.message,
-        seedGrantFormData : renderSeedGrantFormData.seedGrantFormData,
-        rowCount : renderSeedGrantFormData.rowCount,
-        facultyData : renderSeedGrantFormData.facultyData,
-        errorCode : renderSeedGrantFormData.errorCode ? renderSeedGrantFormData.errorCode : null
-    })
+    // console.log('renderSeedGrantFormData in controller ===>>>>', renderSeedGrantFormData)
+    res.render("nmims-seed-grant-non-pharmacy", {
+      status: renderSeedGrantFormData.status,
+      message: renderSeedGrantFormData.message,
+      seedGrantFormData: renderSeedGrantFormData.seedGrantFormData,
+      rowCount: renderSeedGrantFormData.rowCount,
+      facultyData: renderSeedGrantFormData.facultyData,
+      totalPayment: renderSeedGrantFormData.totalPayment,
+      errorCode: renderSeedGrantFormData.errorCode
+        ? renderSeedGrantFormData.errorCode
+        : null,
+    });
 }
 
 
@@ -37,7 +40,7 @@ module.exports.viewNonformacyForm = async(req, res, next) => {
         status : constViewGrantedSeedForm.status,
         message : constViewGrantedSeedForm.message,
         nonFormacyData : constViewGrantedSeedForm.nonFormacyData,
-        totalExpensesAmount : constViewGrantedSeedForm.totalExpensesAmount,
+        // totalExpensesAmount : constViewGrantedSeedForm.totalExpensesAmount,
         commencementDateFormate : constViewGrantedSeedForm.commencementDateFormate,
         completionDateFormate : constViewGrantedSeedForm.completionDateFormate,
         totalFees : constViewGrantedSeedForm.totalFees,
