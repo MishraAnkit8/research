@@ -151,13 +151,13 @@ document.getElementById("searchKeyword").addEventListener("input", handleSearchI
     let nextBtn = document.getElementById("nextBtn");
 
     if (totalPages <= 1) {
-      prevBtn.classList.add("d-none");
-      nextBtn.classList.add("d-none");
+      prevBtn.disabled = true;
+      nextBtn.disabled = true;
     } else {
       prevBtn.disabled = currentPage === 1;
       nextBtn.disabled = currentPage === totalPages;
-      prevBtn.classList.remove("d-none");
-      nextBtn.classList.remove("d-none");
+      // prevBtn.classList.remove("d-none");
+      // nextBtn.classList.remove("d-none");
     }
     
   }
