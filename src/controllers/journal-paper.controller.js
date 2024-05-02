@@ -22,6 +22,7 @@ module.exports.renderJournalPaper = async (req, res, next) => {
         policyCadre : journalList.policyCadre,
         impactFactor : journalList.impactFactor,
         allAuthorList : journalList.allAuthorList,
+        userName : userName,
         errorCode : journalList.errorCode ? journalList.errorCode : null
     });
 };
