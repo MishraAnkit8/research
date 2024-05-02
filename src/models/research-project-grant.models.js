@@ -42,7 +42,7 @@ module.exports.fetchResearchConsultancy = async(userName) => {
         faculty_types AS ft ON f.faculty_type_id = ft.id
     WHERE
        created_by = $1
-    ORDER BY  r.id
+    ORDER BY  r.id desc
         `,
     values : [userName]
     }

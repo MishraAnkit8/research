@@ -7,7 +7,7 @@ const researchDbW = dbPoolManager.get('researchDbW', research_write_db);
 
 module.exports.fetchEditedBookPublication = async(userName) => {
     let sql = {
-        text : `SELECT * FROM book_chapter_publications WHERE created_by = $1 ORDER BY id`,
+        text : `SELECT * FROM book_chapter_publications WHERE created_by = $1 ORDER BY id desc`,
         values : [userName]
     }
     console.log('sql ==>', sql)

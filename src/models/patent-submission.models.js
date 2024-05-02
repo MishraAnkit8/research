@@ -50,7 +50,7 @@ module.exports.fetchPatentSubMissionForms = async (userName) => {
                     faculties f ON psf.faculty_id = f.id
                 WHERE
                     created_by = $1 
-                ORDER BY psg.id`,
+                ORDER BY psg.id desc`,
             values : [userName]
     };
 

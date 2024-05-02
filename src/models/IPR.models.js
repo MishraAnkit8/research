@@ -66,7 +66,7 @@ module.exports.fetchIPRData = async(userName) => {
                 ipr.patent_grant_number,
                 ipr.institutional_affiliation
             ORDER BY
-                ipr.id
+                ipr.id desc
         `,
         values : [userName]
     };

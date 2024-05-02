@@ -93,7 +93,7 @@ module.exports.fetchJournalPaper = async (userName) => {
                     jpa.ugc_indexed,
                     jpa.web_link_doi_number
                 ORDER BY
-                    jpa.id`,
+                    jpa.id desc`,
 
     }
 

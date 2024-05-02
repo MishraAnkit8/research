@@ -18,7 +18,7 @@ module.exports.renderNmimsConsultancyApprovalForm = async(userName) => {
                           consultancy_approval_form c ON f.id = c.faculty_table_id
                       WHERE created_by = $1 
                       ORDER BY 
-                          c.id`,
+                          c.id desc`,
         values : [userName]
 }
                       

@@ -1,1126 +1,1190 @@
 <%- include('./partials/head') %>
-<!-- inline css -->
-<!-- Navbar section -->
-<%- include('./partials/header') %>
+    <!-- inline css -->
+    <!-- Navbar section -->
+    <%- include('./partials/header') %>
 
-<!-- This is left sidebar  -->
-<%- include('./partials/left-sidebar') %>
+        <!-- This is left sidebar  -->
+        <%- include('./partials/left-sidebar') %>
 
-<!-- This is right side section -->
-<main class="main" id="main-content">
-    <div class="base-section coustom-section ">
-        <!--DASHBOARD CONTENT START-->
-        <div class="errorHtml"></div>
-        <div class="breadcrumbs-container">
-            <ul class="breadcrumb">
-                <li class="breadcrumb-link">
-                    <a href="<%- BASE_URL %>research"> Research </a>
-                </li>
-                <li class="breadcrumb-link">Research Seminar</li>
-            </ul>
-        </div>
-        <div>
-            <div class="table-card-header text-uppercase d-flex align-items-center justify-content-between">
-                <div>
-                    <h5 class="pl-2">RESEARCH SEMINAR LIST</h5>
-                </div>
-                <div >
-                    <button id="research-seminar-add-modal" type="button" class="btn btn-primary add-modal" data-toggle="modal"
-                        data-target="#research-seminar-modal">
-                        <i  class="fas fa-plus plus"></i></button>
-                    </button>
-                </div>
-            </div>
-            <div class="card-body table-responsive">
-                <div class="d-flex justify-content-between">
+            <!-- This is right side section -->
+            <main class="main" id="main-content">
+                <div class="base-section coustom-section ">
+                    <!--DASHBOARD CONTENT START-->
+                    <div class="errorHtml"></div>
+                    <div class="breadcrumbs-container">
+                        <ul class="breadcrumb">
+                            <li class="breadcrumb-link">
+                                <a href="<%- BASE_URL %>research"> Research </a>
+                            </li>
+                            <li class="breadcrumb-link">Research Seminar</li>
+                        </ul>
+                    </div>
                     <div>
-                        <label>Show Entries</label>
-                        <select class="form-select" id="changeEntry">
-                            <option value="5">5</option>
-                            <option value="10">10</option>
-                            <option value="25">25</option>
-                            <option value="50">50</option>
-                            <option value="100">100</option>
-                            <option value="150">150</option>
-                            <option value="200">200</option>
-                            <option value="250">250</option>
-                            <option value="300">300</option>
-                            <option value="350">350</option>
-                            <option value="400">400</option>
-                            <option value="500">500</option>
-                            <option value="800">800</option>
-                            <option value="1000">1000</option>
-                        </select>
-                    </div>
-                <div>
-                        <div class="table-searchbar-container">
-                            <button type="button" id="searchBtn"><i class="fas fa-search"></i></button>
-                            <input type="search" id="searchKeyword" placeholder="Enter keywords" class="table-searchbar">
+                        <div class="table-card-header text-uppercase d-flex align-items-center justify-content-between">
+                            <div>
+                                <h5 class="pl-2">RESEARCH SEMINAR LIST</h5>
+                            </div>
+                            <div>
+                                <button id="research-seminar-add-modal" type="button" class="btn btn-primary add-modal"
+                                    data-toggle="modal" data-target="#research-seminar-modal">
+                                    <i class="fas fa-plus plus"></i></button>
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <table class="table vertical-lines custom-table table-responsive data-list research-pagination" id="research-seminar-list">
-                    <thead>
-                        <th class="col-lg-1">#</th>
-                        <th class="col-lg-1">Year</th>
-                        <th class="col-lg-1">School</th>
-                        <th class="col-lg-1">Campus</th>
-                        <th class="col-lg-1">Publisher</th>
-                        <th class="col-lg-1">Name of NMIMS Faculty</th>
-                        <th class="col-lg-1">Journal Name</th>
-                        <th class="col-lg-1" colspan="3">Action</th>
-                    </thead>
-                    <tbody >
-                    <% seminarData.forEach(function(seminar, index) { %>
-                        <tr scope="row" data-publisher-category="<%- seminar.publisher_category %>"
-                            data-pages="<%- seminar.pages %>" data-issn-no="<%- seminar.issn_no %>" data-scs-cite-score="<%- seminar.scs_cite_score %>"
-                            data-impact-factor="<%- seminar.impact_factor %>" data-scs-indexed="<%- seminar.scs_indexed %>" data-wos-indexed="<%- seminar.wos_indexed %>"
-                            data-gs-indexed="<%- seminar.gs_indexed %>" data-title-of-paper="<%- seminar.title_of_paper %>" data-abdc-indexed="<%- seminar.abdc_indexed %>" data-ugc-indexed="<%- seminar.ugc_indexed %>"
-                            data-web-link="<%- seminar.web_link %>" data-uid="<%- seminar.uid %>" data-date-of-publishing="<%- seminar.date_of_publishing %>"  
-                            data-supporting-documents="<%- seminar.research_seminars %>">
-                            <td> <%- index+1 %> </td>
-                            <td class=" cell year col-lg-1"> <%- seminar.year %> </td>
-                            <td class=" cell school col-lg-1"> <%- seminar.school %> </td>
-                            <td class=" cell campus col-lg-1"> <%- seminar.campus %> </td>
-                            <td class=" cell publisher col-lg-1"><%- seminar.publisher %></td>
-                            <td class=" cell nmims-faculty col-lg-1"><%- seminar.nmims_faculty %></td>
-                            <td class=" cell journal-name col-lg-1"><%- seminar.journal_name %></td>
-                            <!-- <td class="col-lg-1"> 
+                        <div class="card-body table-responsive">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <label>Show Entries</label>
+                                    <select class="form-select" id="changeEntry">
+                                        <option value="5">5</option>
+                                        <option value="10">10</option>
+                                        <option value="25">25</option>
+                                        <option value="50">50</option>
+                                        <option value="100">100</option>
+                                        <option value="150">150</option>
+                                        <option value="200">200</option>
+                                        <option value="250">250</option>
+                                        <option value="300">300</option>
+                                        <option value="350">350</option>
+                                        <option value="400">400</option>
+                                        <option value="500">500</option>
+                                        <option value="800">800</option>
+                                        <option value="1000">1000</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <div class="table-searchbar-container">
+                                        <button type="button" id="searchBtn"><i class="fas fa-search"></i></button>
+                                        <input type="search" id="searchKeyword" placeholder="Enter keywords"
+                                            class="table-searchbar">
+                                    </div>
+                                </div>
+                            </div>
+                            <table
+                                class="table vertical-lines custom-table table-responsive data-list research-pagination"
+                                id="research-seminar-list">
+                                <thead>
+                                    <th class="col-lg-1">#</th>
+                                    <th class="col-lg-1">Year</th>
+                                    <th class="col-lg-1">School</th>
+                                    <th class="col-lg-1">Campus</th>
+                                    <th class="col-lg-1">Publisher</th>
+                                    <th class="col-lg-1">Name of NMIMS Faculty</th>
+                                    <th class="col-lg-1">Journal Name</th>
+                                    <th class="col-lg-1" colspan="3">Action</th>
+                                </thead>
+                                <tbody>
+                                    <% seminarData.forEach(function(seminar, index) { %>
+                                        <tr scope="row" data-publisher-category="<%- seminar.publisher_category %>"
+                                            data-pages="<%- seminar.pages %>" data-issn-no="<%- seminar.issn_no %>"
+                                            data-scs-cite-score="<%- seminar.scs_cite_score %>"
+                                            data-impact-factor="<%- seminar.impact_factor %>"
+                                            data-scs-indexed="<%- seminar.scs_indexed %>"
+                                            data-wos-indexed="<%- seminar.wos_indexed %>"
+                                            data-gs-indexed="<%- seminar.gs_indexed %>"
+                                            data-title-of-paper="<%- seminar.title_of_paper %>"
+                                            data-abdc-indexed="<%- seminar.abdc_indexed %>"
+                                            data-ugc-indexed="<%- seminar.ugc_indexed %>"
+                                            data-web-link="<%- seminar.web_link %>" data-uid="<%- seminar.uid %>"
+                                            data-date-of-publishing="<%- seminar.date_of_publishing %>"
+                                            data-supporting-documents="<%- seminar.research_seminars %>">
+                                            <td> <%- index+1 %> </td>
+                                            <td class=" cell year col-lg-1"> <%- seminar.year %> </td>
+                                            <td class=" cell school col-lg-1"> <%- seminar.school %> </td>
+                                            <td class=" cell campus col-lg-1"> <%- seminar.campus %> </td>
+                                            <td class=" cell publisher col-lg-1"><%- seminar.publisher %></td>
+                                            <td class=" cell nmims-faculty col-lg-1"><%- seminar.nmims_faculty %></td>
+                                            <td class=" cell journal-name col-lg-1"><%- seminar.journal_name %></td>
+                                            <!-- <td class="col-lg-1"> 
                                 <label class=" view" data-seminar-id="<%- seminar.id %>"><i class="fa-solid fa-eye view text-danger" data-seminar-id="<%- seminar.id %>"></i></label>
                                 <label  class="edit" data-seminar-id="<%- seminar.id %>"><i class="fa fa-edit edit text-danger" data-seminar-id="<%- seminar.id %>"></i></label>
                                 <label  class="delete"  data-seminar-id="<%- seminar.id %>"><i class="fa-solid fa-trash delete text-danger"  data-seminar-id="<%- seminar.id %>"></i></label>
                             </td> -->
-                            <td colspan="3px" style="display:flex;justify-content: center;">
-                            <p title="View" class="col-lg-1 view text-danger" style="cursor: pointer;" data-seminar-id="<%- seminar.id %>">
-                                &#128065;
-                            </p>
-                            <p title="Edit" class="col-lg-1 edit text-danger" style="cursor: pointer;" data-seminar-id="<%- seminar.id %>">
-                                &#9998;
-                            </p>
-                            <p title="Delete" class="col-lg-1 delete text-danger" style="cursor: pointer;"  data-seminar-id="<%- seminar.id %>">
-                                &#128465;
-                            </p>
-                            </td>
-                        </tr>
-                        <% }); %>
-                    </tbody>
-                    <tr>
-                        <div id="no-records-message"  style="display: none; color: red; margin-top: 10px; padding-left: 40%;">
-                            <b class="no-record">No records found.</b> 
-                         </div>
-                    </tr>
-                </table>
-            </div>
-        </div>
-        <div class="d-flex justify-content-between">
-            <div>
-                <label id="total-row-count">Total entries : <%- rowCount %> </label>
-                <label class="d-none" id="row-count"> <%- rowCount %></label>
-            </div>
-            <div>
-                <button id="prevBtn" class="btn btn-primary">Previous</button>
-                <button id="nextBtn" class="btn btn-primary">Next</button>
-                <p id="pagination" class="pagination-search"></p>
-            </div>
-        </div>
-        <!--Import Modal -->
-        <div class="modal fade" id="open-program-modal" tabindex="-1" aria-labelledby="open-program-modal"
-            aria-hidden="true">
-        </div>
-        <!-- EDIT PROGRAM AND UPDATE -->
-        <div class="modal fade" id="edit-program-modal" tabindex="-1" aria-labelledby="editModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <div class="modal-title" id="editModalLabel">Update Program</div>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div id="errorHtml"></div>
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label for="exampleInputEmail1" class="form-label">Program Name</label>
-                            <input type="text" class="form-control" id="program_name" name="program_name">
-                            <input type="hidden" class="form-control" id="hidden_id" name="hidden_id">
-                        </div>
-                        <div class="mb-3">
-                            <label for="exampleInputPassword1" class="form-label">Program Type</label>
-                            <select class="form-control" name="program_type_lid" id="program_type_lid">
-                                <option value="1">Full Time</option>
-                                <option value="2">Part Time</option>
-                            </select>
-                        </div>
+                                            <!-- <td colspan="3px" style="display:flex;justify-content: center;"> -->
+                                            <td title="View" class="border-right-0 view" style="cursor: pointer;"
+                                                data-seminar-id="<%- seminar.id %>">
+                                                &#128065;
+                                            </td>
+                                            <td title="Edit" class="border-right-0 edit" style="cursor: pointer;"
+                                                data-seminar-id="<%- seminar.id %>">
+                                                &#9998;
+                                            </td>
+                                            <td title="Delete" class="border-right-0 delete" style="cursor: pointer;"
+                                                data-seminar-id="<%- seminar.id %>">
+                                                &#128465;
 
-                        <div class="mb-3">
-                            <label for="abbr" class="form-label">Program Abbr</label>
-                            <input type="text" class="form-control" id="abbr" name="abbr">
+                                            </td>
+                                        </tr>
+                                        <% }); %>
+                                </tbody>
+                                <tr>
+                                    <div id="no-records-message"
+                                        style="display: none; color: red; margin-top: 10px; padding-left: 40%;">
+                                        <b class="no-record">No records found.</b>
+                                    </div>
+                                </tr>
+                            </table>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</main>
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <label id="total-row-count">Total entries : <%- rowCount %> </label>
+                            <label class="d-none" id="row-count"> <%- rowCount %></label>
+                        </div>
+                        <div>
+                            <button id="prevBtn" class="btn btn-primary">Previous</button>
+                            <button id="nextBtn" class="btn btn-primary">Next</button>
+                            <p id="pagination" class="pagination-search"></p>
+                        </div>
+                    </div>
+                    <!--Import Modal -->
+                    <div class="modal fade" id="open-program-modal" tabindex="-1" aria-labelledby="open-program-modal"
+                        aria-hidden="true">
+                    </div>
+                    <!-- EDIT PROGRAM AND UPDATE -->
+                    <div class="modal fade" id="edit-program-modal" tabindex="-1" aria-labelledby="editModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <div class="modal-title" id="editModalLabel">Update Program</div>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div id="errorHtml"></div>
+                                <div class="modal-body">
+                                    <div class="mb-3">
+                                        <label for="exampleInputEmail1" class="form-label">Program Name</label>
+                                        <input type="text" class="form-control" id="program_name" name="program_name">
+                                        <input type="hidden" class="form-control" id="hidden_id" name="hidden_id">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="exampleInputPassword1" class="form-label">Program Type</label>
+                                        <select class="form-control" name="program_type_lid" id="program_type_lid">
+                                            <option value="1">Full Time</option>
+                                            <option value="2">Part Time</option>
+                                        </select>
+                                    </div>
 
-<!-- reserach seminar  modal form  -->
-<div class="modal fade " id="research-seminar-modal" tabindex="-1" role="dialog" aria-labelledby="research-seminar"
-    aria-hidden="true">
-    <div class="modal-dialog modal-dialog-scrollable modal-lg modal-fullscreen p-5" role="document">
-        <div class="modal-content modal-content-data validate-input">
-            <div class="modal-header">
-                <div class="modal-title" id="research-seminar">RESEARCH SEMINAR</div>
-                <div class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true"><i class="fas fa-times "></i></span>
-                </div>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <!-- year -->
-                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="year" class="form-label fw-bold">Year</label>
-                        <input type="number" name="year" id="year" class="form-control" data-validate="isEmpty,isNumber,isValidYear" data-err-msg="Year is required." required/>
-                    </div>
-                    <!-- school -->
-                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="school" class="form-label fw-bold">School:</label>
-                        <input type="text" name="schoolname" id="school" class="form-control" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="This field is required and min length > 1."  required>
-                    </div>
-                    <!-- Campus -->
-                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="campus" class="form-label fw-bold">Campus:</label>
-                        <input type="text" name="campusname" id="campus" class="form-control" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="This field is required and min length > 1." required/>
-                    </div>
-
-                    <!-- Name of NMIMS faculty -->
-                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="nmims-authors" class="form-label fw-bold">Name of NMIMS Faculty</label>
-                        <input type="text" name="nmims-faculty" id="nmims-faculty" data-validate="isEmpty,isAlphabeticWords,isLength:2:255" data-err-msg="This field is required and min length > 1." class="form-control"  required>
-                    </div>
-                    <!-- Journal Name -->
-                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="journal-name" class="form-label fw-bold">Journal Name</label>
-                        <input type="text" name="journal-name" id="journal-name" data-validate="isEmpty,isAlphabeticWords,isLength:2:255" data-err-msg="This field is required and min length > 1." class="form-control"  required>
-                    </div>
-
-                    <!-- Publisher -->
-                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="publisher" class="form-label fw-bold">
-                            Publisher
-                        </label>
-                        <input type="text" name="publisher" id="publisher" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" class="form-control" required/>
-                    </div>
-                      <!-- Publisher Category  -->
-                   <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                    <label for="publisher-category" id="publisher-category" class="form-label fw-bold mb-3">Publisher Category</label><br>
-                    <div class="form-check-inline">
-                        <label for="inter-national" class="form-check-label">
-                            <input type="radio" class="form-check-input" id="inter-national" name="publisher-category" value="International"> International
-                        </label>
-                    </div>
-                    <div class="form-check-inline">
-                        <label for="national" class="form-check-label">
-                            <input type="radio" class="form-check-input" id="national" name="publisher-category" value="National" checked> National
-                        </label>
-                    </div>
-                    </div>
-                    <!-- Pages-->
-                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="pages" class="form-label fw-bold">Vol,ISS,Pages</label>
-                        <input type="number" name="pages" id="pages" class="form-control" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required." required>
-                    </div>
-
-                    <!-- ISSN No. -->
-                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="iss-no" class="form-label fw-bold">ISSN No.</label>
-                        <input type="number" name="iss-no" id="issn-no" class="form-control" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required." required>
-                    </div>
-
-                    <!-- SCS Cite Score -->
-                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="scs-cite-score" class="form-label fw-bold">SCS Cite Score</label>
-                        <input type="number" name="scsCiteScores" id="scs-cite-score" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required." class="form-control" required>
-                    </div>
-                    <!-- Impact Factor -->
-                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="impact-factor" class="form-label fw-bold">Impact Factor</label>
-                        <input type="text" name="impactFactors" id="impact-factor" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="This field is required and min length > 1." class="form-control" required>
-                    </div>
-
-                    <!-- SCS Indexed -->
-                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="scs-indexed" class="form-label fw-bold">SCS Indexed</label>
-                        <input type="number" name="scs-indexed" id="scs-indexed" class="form-control" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required." required>
-                    </div>
-
-                    <!-- WoS Indexed -->
-                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="wos-indexed" class="form-label fw-bold">WoS Indexed</label>
-                        <input type="number" name="wos-indexed" id="wos-indexed" class="form-control" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required." required>
-                    </div>
-
-                    <!-- GS Indexed -->
-                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="gs-indexed" class="form-label fw-bold">GS Indexed</label>
-                        <input type="number" name="gs-indexed" id="gs-indexed" class="form-control" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required." required>
-                    </div>
-
-                    <!-- ABDC Indexed -->
-                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="abdc-indexed" class="form-label fw-bold">ABDC Indexed</label>
-                        <input type="number" name="abdc-indexed" id="abdc-indexed" class="form-control" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required." required>
-                    </div>
-
-                    <!-- UGC Indexed -->
-                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="ugc-indexed" class="form-label fw-bold">UGC Indexed</label>
-                        <input type="number" name="abdc-indexed" id="ugc-indexed" class="form-control" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required." required>
-                    </div>
-
-                    <!-- Weblink-DOI Number -->
-                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="web-link" class="form-label fw-bold">WEB Link</label>
-                        <input type="text" name="webLinks" id="web-link" class="form-control" data-validate="isEmpty,isNotNumber,isExist" data-err-msg="This field is required." required>
-                    </div>
-
-                    <!-- UID -->
-                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="uid" class="form-label fw-bold">UID</label>
-                        <input type="number" name="uid-number" id="uid" class="form-control" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required." required>
-                    </div>
-
-                    <!-- Date of Publishing -->
-                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="date-of-publishing" class="form-label fw-bold">Date of Publishing</label>
-                        <input type="date" name="dateOfPublishing" id="date-of-publishing" class="form-control" data-validate="isEmpty,isExist" data-err-msg="Date is required." required>
-                    </div>
-
-                    <!-- title-of-paper -->
-                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="title-of-paper" class="form-label fw-bold">Title Of Paper</label>
-                        <input type="text" name="titleOfPaper" id="title-of-paper" class="form-control" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="This field is required and min length > 1." required>
-                    </div>
-                    <!-- Upload Supporting Documents-->
-                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="supporting-documents" class="form-label fw-bold ">
-                            Upload Supporting Documents
-                        </label>
-                        <div class="d-flex">
-                            <input type="file" name="journal-article-documents" id="journal-article-documents"
-                                class="col-md-12 form-control" data-validate="isEmpty,isExist,isFile" data-err-msg="File is required."
-                                required multiple>
-                            <button class="download-btn download-file" id="journal-data-file-edit"><i
-                                    class="fas fa-download text-danger"></i></button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary d-none" id="submit-btn">Submit</button>
-                <button type="button" class="btn btn-primary d-none " id="update-btn">Update</button>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- reserach seminar modal form for view -->
-<div class="modal fade " id="research-seminar-modal-view" tabindex="-1" role="dialog" aria-labelledby="research-seminar"
-    aria-hidden="true">
-    <div class="modal-dialog modal-dialog-scrollable modal-lg modal-fullscreen p-5" role="document">
-        <div class="modal-content modal-content-data">
-            <div class="modal-header">
-                <div class="modal-title" id="research-seminar">RESEARCH SEMINAR</div>
-                <div class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true"><i class="fas fa-times "></i></span>
-                </div>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <!-- Year -->
-                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                        <div class="box">
-                            <div class="sub-title-text sub-title">Year:</div>
-                            <label id="view-year"></label>
-                        </div>
-                    </div>
-                    <!-- school -->
-                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                        <div class="box">
-                            <div class="sub-title-text sub-title">School:</div>
-                            <label id="view-school"></label>
-                        </div>
-                    </div>
-                    <!-- Campus -->
-                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                        <div class="box">
-                            <div class="sub-title-text sub-title">Campus</div>
-                            <label id="view-campus"></label>
-                        </div>
-                    </div>
-                    <!-- All authors -->
-                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                        <div class="box">
-                            <div class="sub-title-text sub-title">Name NMIMS Faculty:</div>
-                            <label id="view-nmims-faculty"></label>
-                        </div>
-                    </div>
-                    <!-- Journal Name -->
-                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                        <div class="box">
-                            <div class="sub-title-text sub-title">Journal Name:</div>
-                            <label id="view-journal-name"></label>
-                        </div>
-                    </div>
-                    <!-- Publisher -->
-                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                        <div class="box">
-                            <div class="sub-title-text sub-title">Publisher:</div>
-                            <label id="view-publisher"></label>
-                        </div>
-                    </div>
-                    <!-- iss -number -->
-                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                        <div class="box">
-                            <div class="sub-title-text sub-title">ISSN No:</div>
-                            <label id="view-issn-no"></label>
-                        </div>
-                    </div>
-                    <!-- pages -->
-                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                        <div class="box">
-                            <div class="sub-title-text sub-title">Vol ISS Pages:</div>
-                            <label id="view-pages"></label>
-                        </div>
-                    </div>
-                    <!-- Scs-cite-score -->
-                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                        <div class="box">
-                            <div class="sub-title-text sub-title">Scs Cite Score:</div>
-                            <label id="view-scs-cite-score"></label>
-                        </div>
-                    </div>
-                    <!-- impact-factor -->
-                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                        <div class="box">
-                            <div class="sub-title-text sub-title">Impact Factor:</div>
-                            <label id="view-impact-factor"></label>
-                        </div>
-                    </div>
-                    <!--scs-indexed -->
-                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                        <div class="box">
-                            <div class="sub-title-text sub-title">Scs Indexed:</div>
-                            <label id="view-scs-indexed"></label>
-                        </div>
-                    </div>
-                    <!--wos-indexed -->
-                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                        <div class="box">
-                            <div class="sub-title-text sub-title">WOS Indexed:</div>
-                            <label id="view-wos-indexed"></label>
-                        </div>
-                    </div>
-                    <!--gs-index-->
-                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                        <div class="box">
-                            <div class="sub-title-text sub-title">GS Index:</div>
-                            <label id="view-gs-indexed"></label>
-                        </div>
-                    </div>
-                    <!--abdc-indexed-->
-                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                        <div class="box">
-                            <div class="sub-title-text sub-title">ABCD Indexed:</div>
-                            <label id="view-abdc-indexed"></label>
-                        </div>
-                    </div>
-                    <!--ugc-indexed -->
-                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                        <div class="box">
-                            <div class="sub-title-text sub-title">UGC Indexed:</div>
-                            <label id="view-ugc-indexed"></label>
-                        </div>
-                    </div>
-                    <!--web-link -->
-                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                        <div class="box">
-                            <div class="sub-title-text sub-title">WEB LINK:</div>
-                            <label id="view-web-link"></label>
-                        </div>
-                    </div>
-                    <!--UID -->
-                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                        <div class="box">
-                            <div class="sub-title-text sub-title">UID:</div>
-                            <label id="view-uid"></label>
-                        </div>
-                    </div>
-                    <!--date-of-publishing -->
-                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                        <div class="box">
-                            <div class="sub-title-text sub-title">Date Of Publishing:</div>
-                            <label id="view-date-of-publishing"></label>
-                        </div>
-                    </div>
-                    <!--Title of Paper -->
-                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                        <div class="box">
-                            <div class="sub-title-text sub-title">Title Of Paper :</div>
-                            <label id="view-title-of-paper"></label>
-                        </div>
-                    </div>
-                    <!--Publisher Category -->
-                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                        <div class="box">
-                            <div class="sub-title-text sub-title">Publisher Category :</div>
-                            <label id="view-publisher-category"></label>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                        <div class="box">
-                            <div class="sub-title-text sub-title">
-                                <button class="btn btn-primary h-10 w-10 download-file" id="supporting-document">
-                                    <i class="fas fa-download text-danger"></i> Seminar Documents
-                                </button>
+                                    <div class="mb-3">
+                                        <label for="abbr" class="form-label">Program Abbr</label>
+                                        <input type="text" class="form-control" id="abbr" name="abbr">
+                                    </div>
+                                </div>
                             </div>
-                            <label class="view-content" id="view-patent-file"></label>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <!-- reserach seminar  modal form  -->
+            <div class="modal fade " id="research-seminar-modal" tabindex="-1" role="dialog"
+                aria-labelledby="research-seminar" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-scrollable modal-lg modal-fullscreen p-5" role="document">
+                    <div class="modal-content modal-content-data validate-input">
+                        <div class="modal-header">
+                            <div class="modal-title" id="research-seminar">RESEARCH SEMINAR</div>
+                            <div class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true"><i class="fas fa-times "></i></span>
+                            </div>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <!-- year -->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="year" class="form-label fw-bold">Year</label>
+                                    <input type="number" name="year" id="year" class="form-control"
+                                        data-validate="isEmpty,isNumber,isValidYear" data-err-msg="Year is required."
+                                        required />
+                                </div>
+                                <!-- school -->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="school" class="form-label fw-bold">School:</label>
+                                    <input type="text" name="schoolname" id="school" class="form-control"
+                                        data-validate="isEmpty,isNotNumber,isExist,isLength:2:255"
+                                        data-err-msg="This field is required and min length > 1." required>
+                                </div>
+                                <!-- Campus -->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="campus" class="form-label fw-bold">Campus:</label>
+                                    <input type="text" name="campusname" id="campus" class="form-control"
+                                        data-validate="isEmpty,isNotNumber,isExist,isLength:2:255"
+                                        data-err-msg="This field is required and min length > 1." required />
+                                </div>
+
+                                <!-- Name of NMIMS faculty -->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="nmims-authors" class="form-label fw-bold">Name of NMIMS Faculty</label>
+                                    <input type="text" name="nmims-faculty" id="nmims-faculty"
+                                        data-validate="isEmpty,isAlphabeticWords,isLength:2:255"
+                                        data-err-msg="This field is required and min length > 1." class="form-control"
+                                        required>
+                                </div>
+                                <!-- Journal Name -->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="journal-name" class="form-label fw-bold">Journal Name</label>
+                                    <input type="text" name="journal-name" id="journal-name"
+                                        data-validate="isEmpty,isAlphabeticWords,isLength:2:255"
+                                        data-err-msg="This field is required and min length > 1." class="form-control"
+                                        required>
+                                </div>
+
+                                <!-- Publisher -->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="publisher" class="form-label fw-bold">
+                                        Publisher
+                                    </label>
+                                    <input type="text" name="publisher" id="publisher"
+                                        data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" class="form-control"
+                                        required />
+                                </div>
+                                <!-- Publisher Category  -->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="publisher-category" id="publisher-category"
+                                        class="form-label fw-bold mb-3">Publisher Category</label><br>
+                                    <div class="form-check-inline">
+                                        <label for="inter-national" class="form-check-label">
+                                            <input type="radio" class="form-check-input" id="inter-national"
+                                                name="publisher-category" value="International"> International
+                                        </label>
+                                    </div>
+                                    <div class="form-check-inline">
+                                        <label for="national" class="form-check-label">
+                                            <input type="radio" class="form-check-input" id="national"
+                                                name="publisher-category" value="National" checked> National
+                                        </label>
+                                    </div>
+                                </div>
+                                <!-- Pages-->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="pages" class="form-label fw-bold">Vol,ISS,Pages</label>
+                                    <input type="number" name="pages" id="pages" class="form-control"
+                                        data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required."
+                                        required>
+                                </div>
+
+                                <!-- ISSN No. -->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="iss-no" class="form-label fw-bold">ISSN No.</label>
+                                    <input type="number" name="iss-no" id="issn-no" class="form-control"
+                                        data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required."
+                                        required>
+                                </div>
+
+                                <!-- SCS Cite Score -->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="scs-cite-score" class="form-label fw-bold">SCS Cite Score</label>
+                                    <input type="number" name="scsCiteScores" id="scs-cite-score"
+                                        data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required."
+                                        class="form-control" required>
+                                </div>
+                                <!-- Impact Factor -->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="impact-factor" class="form-label fw-bold">Impact Factor</label>
+                                    <input type="text" name="impactFactors" id="impact-factor"
+                                        data-validate="isEmpty,isNotNumber,isExist,isLength:2:255"
+                                        data-err-msg="This field is required and min length > 1." class="form-control"
+                                        required>
+                                </div>
+
+                                <!-- SCS Indexed -->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="scs-indexed" class="form-label fw-bold">SCS Indexed</label>
+                                    <input type="number" name="scs-indexed" id="scs-indexed" class="form-control"
+                                        data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required."
+                                        required>
+                                </div>
+
+                                <!-- WoS Indexed -->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="wos-indexed" class="form-label fw-bold">WoS Indexed</label>
+                                    <input type="number" name="wos-indexed" id="wos-indexed" class="form-control"
+                                        data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required."
+                                        required>
+                                </div>
+
+                                <!-- GS Indexed -->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="gs-indexed" class="form-label fw-bold">GS Indexed</label>
+                                    <input type="number" name="gs-indexed" id="gs-indexed" class="form-control"
+                                        data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required."
+                                        required>
+                                </div>
+
+                                <!-- ABDC Indexed -->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="abdc-indexed" class="form-label fw-bold">ABDC Indexed</label>
+                                    <input type="number" name="abdc-indexed" id="abdc-indexed" class="form-control"
+                                        data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required."
+                                        required>
+                                </div>
+
+                                <!-- UGC Indexed -->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="ugc-indexed" class="form-label fw-bold">UGC Indexed</label>
+                                    <input type="number" name="abdc-indexed" id="ugc-indexed" class="form-control"
+                                        data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required."
+                                        required>
+                                </div>
+
+                                <!-- Weblink-DOI Number -->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="web-link" class="form-label fw-bold">WEB Link</label>
+                                    <input type="text" name="webLinks" id="web-link" class="form-control"
+                                        data-validate="isEmpty,isNotNumber,isExist"
+                                        data-err-msg="This field is required." required>
+                                </div>
+
+                                <!-- UID -->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="uid" class="form-label fw-bold">UID</label>
+                                    <input type="number" name="uid-number" id="uid" class="form-control"
+                                        data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required."
+                                        required>
+                                </div>
+
+                                <!-- Date of Publishing -->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="date-of-publishing" class="form-label fw-bold">Date of
+                                        Publishing</label>
+                                    <input type="date" name="dateOfPublishing" id="date-of-publishing"
+                                        class="form-control" data-validate="isEmpty,isExist"
+                                        data-err-msg="Date is required." required>
+                                </div>
+
+                                <!-- title-of-paper -->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="title-of-paper" class="form-label fw-bold">Title Of Paper</label>
+                                    <input type="text" name="titleOfPaper" id="title-of-paper" class="form-control"
+                                        data-validate="isEmpty,isNotNumber,isExist,isLength:2:255"
+                                        data-err-msg="This field is required and min length > 1." required>
+                                </div>
+                                <!-- Upload Supporting Documents-->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="supporting-documents" class="form-label fw-bold ">
+                                        Upload Supporting Documents
+                                    </label>
+                                    <div class="d-flex">
+                                        <input type="file" name="journal-article-documents"
+                                            id="journal-article-documents" class="col-md-12 form-control"
+                                            data-validate="isEmpty,isExist,isFile" data-err-msg="File is required."
+                                            required multiple>
+                                        <button class="download-btn download-file" id="journal-data-file-edit"><i
+                                                class="fas fa-download text-danger"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary d-none" id="submit-btn">Submit</button>
+                            <button type="button" class="btn btn-primary d-none " id="update-btn">Update</button>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            <!-- reserach seminar modal form for view -->
+            <div class="modal fade " id="research-seminar-modal-view" tabindex="-1" role="dialog"
+                aria-labelledby="research-seminar" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-scrollable modal-lg modal-fullscreen p-5" role="document">
+                    <div class="modal-content modal-content-data">
+                        <div class="modal-header">
+                            <div class="modal-title" id="research-seminar">RESEARCH SEMINAR</div>
+                            <div class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true"><i class="fas fa-times "></i></span>
+                            </div>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <!-- Year -->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="sub-title-text sub-title">Year:</div>
+                                        <label id="view-year"></label>
+                                    </div>
+                                </div>
+                                <!-- school -->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="sub-title-text sub-title">School:</div>
+                                        <label id="view-school"></label>
+                                    </div>
+                                </div>
+                                <!-- Campus -->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="sub-title-text sub-title">Campus</div>
+                                        <label id="view-campus"></label>
+                                    </div>
+                                </div>
+                                <!-- All authors -->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="sub-title-text sub-title">Name NMIMS Faculty:</div>
+                                        <label id="view-nmims-faculty"></label>
+                                    </div>
+                                </div>
+                                <!-- Journal Name -->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="sub-title-text sub-title">Journal Name:</div>
+                                        <label id="view-journal-name"></label>
+                                    </div>
+                                </div>
+                                <!-- Publisher -->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="sub-title-text sub-title">Publisher:</div>
+                                        <label id="view-publisher"></label>
+                                    </div>
+                                </div>
+                                <!-- iss -number -->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="sub-title-text sub-title">ISSN No:</div>
+                                        <label id="view-issn-no"></label>
+                                    </div>
+                                </div>
+                                <!-- pages -->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="sub-title-text sub-title">Vol ISS Pages:</div>
+                                        <label id="view-pages"></label>
+                                    </div>
+                                </div>
+                                <!-- Scs-cite-score -->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="sub-title-text sub-title">Scs Cite Score:</div>
+                                        <label id="view-scs-cite-score"></label>
+                                    </div>
+                                </div>
+                                <!-- impact-factor -->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="sub-title-text sub-title">Impact Factor:</div>
+                                        <label id="view-impact-factor"></label>
+                                    </div>
+                                </div>
+                                <!--scs-indexed -->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="sub-title-text sub-title">Scs Indexed:</div>
+                                        <label id="view-scs-indexed"></label>
+                                    </div>
+                                </div>
+                                <!--wos-indexed -->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="sub-title-text sub-title">WOS Indexed:</div>
+                                        <label id="view-wos-indexed"></label>
+                                    </div>
+                                </div>
+                                <!--gs-index-->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="sub-title-text sub-title">GS Index:</div>
+                                        <label id="view-gs-indexed"></label>
+                                    </div>
+                                </div>
+                                <!--abdc-indexed-->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="sub-title-text sub-title">ABCD Indexed:</div>
+                                        <label id="view-abdc-indexed"></label>
+                                    </div>
+                                </div>
+                                <!--ugc-indexed -->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="sub-title-text sub-title">UGC Indexed:</div>
+                                        <label id="view-ugc-indexed"></label>
+                                    </div>
+                                </div>
+                                <!--web-link -->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="sub-title-text sub-title">WEB LINK:</div>
+                                        <label id="view-web-link"></label>
+                                    </div>
+                                </div>
+                                <!--UID -->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="sub-title-text sub-title">UID:</div>
+                                        <label id="view-uid"></label>
+                                    </div>
+                                </div>
+                                <!--date-of-publishing -->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="sub-title-text sub-title">Date Of Publishing:</div>
+                                        <label id="view-date-of-publishing"></label>
+                                    </div>
+                                </div>
+                                <!--Title of Paper -->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="sub-title-text sub-title">Title Of Paper :</div>
+                                        <label id="view-title-of-paper"></label>
+                                    </div>
+                                </div>
+                                <!--Publisher Category -->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="sub-title-text sub-title">Publisher Category :</div>
+                                        <label id="view-publisher-category"></label>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="sub-title-text sub-title">
+                                            <button class="btn btn-primary h-10 w-10 download-file"
+                                                id="supporting-document">
+                                                <i class="fas fa-download text-danger"></i> Seminar Documents
+                                            </button>
+                                        </div>
+                                        <label class="view-content" id="view-patent-file"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-</div>
-<!-- inline Javascript -->
+            <!-- inline Javascript -->
 
-<script>
-    //   for index icrement
-    let rowCount = document.getElementById('row-count');
-    const totalRowCount = document.getElementById('total-row-count');
-    let rowIndex = rowCount.innerText;
-    let indexValue = parseInt(rowIndex, 10);
-    
-    const seminarModal = document.getElementById('research-seminar-modall');
-    const seminarModalView = document.getElementById('research-seminar-modal-view');
-    seminarModalView.style.display ='none';
-    let desiredDate = '2024-01-16';
-    const researchSeminarList = document.getElementById('research-seminar-list');
-    const submitBtn = document.getElementById('submit-btn');
-    const updateBtn = document.getElementById('update-btn');
-    const seminarAddModal = document.getElementById('research-seminar-add-modal');
-    let seminarRowToBeUpdated, seminarId;
-    let updatedResearchSeminar = {};
-    
-    seminarAddModal.addEventListener('click' , async function(event){
-        if(event.target.tagName === 'BUTTON' && event.target.classList.contains('add-modal') || event.target.classList.contains('plus')){
-           console.log('clicked');
-            // for button visualization
-            submitBtn.classList.remove('d-none');
-            updateBtn.classList.add('d-none');
+            <script>
+                //   for index icrement
+                let rowCount = document.getElementById('row-count');
+                const totalRowCount = document.getElementById('total-row-count');
+                let rowIndex = rowCount.innerText;
+                let indexValue = parseInt(rowIndex, 10);
 
-            removeErrorMsg();
+                const seminarModal = document.getElementById('research-seminar-modall');
+                const seminarModalView = document.getElementById('research-seminar-modal-view');
+                seminarModalView.style.display = 'none';
+                let desiredDate = '2024-01-16';
+                const researchSeminarList = document.getElementById('research-seminar-list');
+                const submitBtn = document.getElementById('submit-btn');
+                const updateBtn = document.getElementById('update-btn');
+                const seminarAddModal = document.getElementById('research-seminar-add-modal');
+                let seminarRowToBeUpdated, seminarId;
+                let updatedResearchSeminar = {};
 
-            $('#research-seminar-modal').modal({
-                    backdrop: 'static'
-                });
+                seminarAddModal.addEventListener('click', async function (event) {
+                    if (event.target.tagName === 'BUTTON' && event.target.classList.contains('add-modal') || event.target.classList.contains('plus')) {
+                        console.log('clicked');
+                        // for button visualization
+                        submitBtn.classList.remove('d-none');
+                        updateBtn.classList.add('d-none');
 
-            // make input field empty
-            const publisherCategoryNational = document.getElementById('national');
-            const publisherCategoryInternational = document.getElementById('inter-national');
-           
-            document.getElementById('year').value = '';
-            document.getElementById('school').value = '';
-            document.getElementById('campus').value = '';
-            document.getElementById('publisher').value = '';
-            document.getElementById('nmims-faculty').value = '';
-            document.getElementById('journal-name').value = '';
-            document.getElementById('pages').value = '';
-            document.getElementById('issn-no').value = '';
-            document.getElementById('scs-cite-score').value = '';
-            document.getElementById('impact-factor').value = '';
-            document.getElementById('scs-indexed').value = '';
-            document.getElementById('wos-indexed').value = '';
-            document.getElementById('gs-indexed').value = '';
-            document.getElementById('abdc-indexed').value = '';
-            document.getElementById('ugc-indexed').value = '';
-            document.getElementById('web-link').value = '';
-            document.getElementById('uid').value = '';
-            document.getElementById('date-of-publishing').value = '';
-            document.getElementById('title-of-paper').value = '';
-        }
-    })
+                        removeErrorMsg();
 
-    const insertResearchSeminar =  async function (url) {
+                        $('#research-seminar-modal').modal({
+                            backdrop: 'static'
+                        });
 
-        const seminarDetails = new FormData();
+                        // make input field empty
+                        const publisherCategoryNational = document.getElementById('national');
+                        const publisherCategoryInternational = document.getElementById('inter-national');
 
-        const seminarDocuments = document.getElementById('journal-article-documents');
-        const seminarDataFile = seminarDocuments.files;
-        console.log('seminarDataFile ===>>>', seminarDataFile)
-        for (let i = 0; i < seminarDataFile.length; i++) {
-            console.log('file name  ==>>', seminarDataFile[i].name);
-            seminarDetails.append('seminarDocuments', seminarDataFile[i]);
-        }
-        // const year = document.getElementById('year');
-
-        // console.log('year value ==>>', year.value);
-        // const seminarDetails = {};
-        const year = document.getElementById('year').value;
-        const school = document.getElementById('school').value;
-        const campus = document.getElementById('campus').value;
-        const publisher = document.getElementById('publisher').value;
-        const  publisherCategory = document.querySelector('input[name="publisher-category"]:checked').value;
-        const NmimsFaculty = document.getElementById('nmims-faculty').value;
-        const journalName = document.getElementById('journal-name').value;
-        const pages = document.getElementById('pages').value;
-        const issnNo  = document.getElementById('issn-no').value;
-        const scsCiteScore = document.getElementById('scs-cite-score').value;
-        const impactFactor = document.getElementById('impact-factor').value;
-        const scsIndexed = document.getElementById('scs-indexed').value;
-        const wosIndexed = document.getElementById('wos-indexed').value;
-        const gsIndexed = document.getElementById('gs-indexed').value;
-        const abcdIndexed = document.getElementById('abdc-indexed').value;
-        const ugcIndexed = document.getElementById('ugc-indexed').value;
-        const webLink = document.getElementById('web-link').value;
-        const uid = document.getElementById('uid').value;
-        const dateOfPublishing = document.getElementById('date-of-publishing').value;
-        const titleOfPaper = document.getElementById('title-of-paper').value;
-        
-        seminarDetails.append('year', year)
-        seminarDetails.append('school', school)
-        seminarDetails.append('campus', campus)
-        seminarDetails.append('publisher', publisher)
-        seminarDetails.append('publisherCategory', publisherCategory)
-        seminarDetails.append('NmimsFaculty', NmimsFaculty)
-        seminarDetails.append('journalName', journalName)
-        seminarDetails.append('pages', pages)
-        seminarDetails.append('issnNo', issnNo)
-        seminarDetails.append('scsCiteScore', scsCiteScore)
-        seminarDetails.append('impactFactor', impactFactor)
-        seminarDetails.append('scsIndexed', scsIndexed)
-        seminarDetails.append('wosIndexed', wosIndexed)
-        seminarDetails.append('gsIndexed', gsIndexed)
-        seminarDetails.append('abcdIndexed', abcdIndexed)
-        seminarDetails.append('ugcIndexed', ugcIndexed)
-        seminarDetails.append('webLink', webLink)
-        seminarDetails.append('uid', uid)
-        seminarDetails.append('dateOfPublishing', dateOfPublishing)
-        seminarDetails.append('titleOfPaper', titleOfPaper)
-
-        fetch(url, {
-            method: 'POST',
-            body: seminarDetails
-        })
-            .then((result) => {
-                return result.json()
-            })
-            .then((data) => {
-                console.log('data ===>>>', data);
-
-                if (data.status === 'Done') {
-                    const seminarDetails = data.seminarDetails;
-                    seminarId = data.seminarId;
-                    console.log('seminarId ==>', seminarId);
-                    const rowCountInteger = parseInt(data.rowCount, 10);
-                    const IndexEntry = rowCountInteger + indexValue;
-                    indexValue = IndexEntry;
-                    console.log('IndexEntry ===>>>', IndexEntry);
-
-                    //insert new row to the journal_papers table 
-                    const newResearchSeminar = document.createElement('tr');
-                    newResearchSeminar.setAttribute('data-pages', seminarDetails.pages);
-                    newResearchSeminar.setAttribute('data-issn-no', seminarDetails.issnNo);
-                    newResearchSeminar.setAttribute('data-scs-cite-score', seminarDetails.scsCiteScore);
-                    newResearchSeminar.setAttribute('data-impact-factor', seminarDetails.impactFactor);
-                    newResearchSeminar.setAttribute('data-scs-indexed', seminarDetails.scsIndexed);
-                    newResearchSeminar.setAttribute('data-wos-indexed', seminarDetails.wosIndexed);
-                    newResearchSeminar.setAttribute('data-gs-indexed', seminarDetails.gsIndexed);
-                    newResearchSeminar.setAttribute('data-abdc-indexed', seminarDetails.abcdIndexed);
-                    newResearchSeminar.setAttribute('data-ugc-indexed', seminarDetails.ugcIndexed);
-                    newResearchSeminar.setAttribute('data-web-link', seminarDetails.webLink);
-                    newResearchSeminar.setAttribute('data-uid', seminarDetails.uid);
-                    newResearchSeminar.setAttribute('data-publisher-category' , seminarDetails.publisherCategory);
-                    newResearchSeminar.setAttribute('data-date-of-publishing', seminarDetails.dateOfPublishing);
-                    newResearchSeminar.setAttribute('data-title-of-paper', seminarDetails.titleOfPaper);
-                    newResearchSeminar.setAttribute('data-supporting-documents', seminarDetails.titleOfPaper);
-
-                    newResearchSeminar.innerHTML = `
-                            <td >${IndexEntry}</td>
-                            <td class="year">${seminarDetails.year}</td>
-                            <td class="school">${seminarDetails.school}</td>
-                            <td class="campus">${seminarDetails.campus}</td>
-                            <td class="publisher">${seminarDetails.publisher}</td>
-                            <td class="nmims-faculty">${seminarDetails.NmimsFaculty}</td>
-                            <td class="journal-name">${seminarDetails.journalName}</td>
-
-                            <td title="View" class="col-lg-1 view text-danger" style="cursor: pointer;" data-seminar-id="${seminarId}">
-                                &#128065;
-                            </td>
-                            <td title="Edit" class="col-lg-1 edit text-danger" style="cursor: pointer;" data-seminar-id="${seminarId}">
-                                &#9998;
-                            </td>
-                            <td title="Delete" class="col-lg-1 delete text-danger" style="cursor: pointer;"  data-seminar-id="${seminarId}">
-                                &#128465;
-                            </td> 
-                             ` ;
-                        researchSeminarList.appendChild(newResearchSeminar);
-                        rowCount.classList.remove('d-none');
-                        totalRowCount.classList.add('d-none');
-                        rowCount.innerText = `Total entries : ${IndexEntry}`;
-                    $('#research-seminar-modal').modal('hide');
-                    
-                    Swal.fire({
-							position: "top-center",
-							icon: "success",
-							title: `${data.message}`,
-							showConfirmButton: true,
-                                confirmButtonText:"OK",
-                                confirmButtonColor: "#DD6B55"
-							
-						});
-                    // for clear input field
-                }
-                else{
-                    console.log('data in failed condition ====>>>>', data)
-                    Swal.fire({
-                        position: "top-center",
-                        icon: "error",
-                        title: "Failed To Insert",
-                        color: "red",
-                        with: "20PX",
-                        showConfirmButton: true,
-                                confirmButtonText:"OK",
-                                confirmButtonColor: "#DD6B55"
-                    });
-                }
-            }).catch((error) => {
-                console.error("ERROR:", error);
-            })
-    };
-
-    submitBtn.addEventListener('click', async () => {
-        const isValid = validateRequiredFormFields(submitBtn);
-            if (isValid) {
-                await insertResearchSeminar('<%- BASE_URL %>research/research-seminar/insert');
-                }
-            else {
-                alert('validation Failed');
-            }
-    });
-    
-    researchSeminarList.addEventListener('click', function (event) {
-
-            if (event.target.classList.contains('delete')) {
-                const seminarRowData = event.target.parentElement.parentElement.parentElement;
-                const seminarId = event.target.getAttribute('data-seminar-id');
-                console.log('seminarId for delete :', seminarId);
-                let confirmDelete = confirm("Do you want to delete the Seminar?");
-                if (!confirmDelete) {
-                    return;
-                }
-
-                fetch('<%- BASE_URL %>research/research-seminar/delete', {
-                    method: 'post',
-                    headers: {
-                        'content-type': 'application/json'
-                    },
-                    body: JSON.stringify({ seminarId })
-                })
-                    .then((result) => {
-                        return result.json();
-                    })
-                    .then((data) => {
-                        if (data.status === 'done') {
-                            seminarRowData.remove();
-                            location.reload();
-                        }
-                    })
-                    .catch((error) => {
-                        console.log(error)
-                    });
-            }
-            // for updating 
-
-            if (event.target.classList.contains('edit')) {
-                removeErrorMsg();
-
-                $('#research-seminar-modal').modal({
-                    backdrop: 'static'
-                });
-
-                seminarRowToBeUpdated = event.target.closest('tr');
-                console.log('seminarRowToBeUpdated ==>>>', seminarRowToBeUpdated)
-                seminarId = event.target.getAttribute('data-seminar-id');
-                console.log('seminarId ==>>', seminarId);
-                // for button visualization
-                submitBtn.classList.add('d-none');
-                updateBtn.classList.remove('d-none');
-                // Capturing  the specific row's data and seminar ID
-                const year = seminarRowToBeUpdated.querySelector('.year');
-                const school = seminarRowToBeUpdated.querySelector('.school');
-                const campus = seminarRowToBeUpdated.querySelector('.campus');
-                const publisherCategoryNational = document.getElementById('national');
-                const publisherCategoryInternational = document.getElementById('inter-national');
-                const nmimsfaculty = seminarRowToBeUpdated.querySelector('.nmims-faculty');
-                const journalName = seminarRowToBeUpdated.querySelector('.journal-name');
-                const publisher = seminarRowToBeUpdated.querySelector('.publisher');
-                const titleOfPaper = seminarRowToBeUpdated.getAttribute('data-title-of-paper');
-                const pages = seminarRowToBeUpdated.getAttribute('data-pages');
-                const issnNo = seminarRowToBeUpdated.getAttribute('data-issn-no');
-                const dateOfPublishing = new Date(seminarRowToBeUpdated.getAttribute('data-date-of-publishing'));
-                const formattedDate = formatDateToYYYYMMDD(dateOfPublishing);
-                const impactFactor = seminarRowToBeUpdated.getAttribute('data-impact-factor');
-                const scsCiteScore = seminarRowToBeUpdated.getAttribute('data-scs-cite-score');
-                const wosIndexed = seminarRowToBeUpdated.getAttribute('data-wos-indexed');
-                const gsIndexed = seminarRowToBeUpdated.getAttribute('data-gs-indexed');
-                const abcdIndexed = seminarRowToBeUpdated.getAttribute('data-abdc-indexed');
-                const ugcIndexed = seminarRowToBeUpdated.getAttribute('data-ugc-indexed');
-                const webLink = seminarRowToBeUpdated.getAttribute('data-web-link');
-                const uid = seminarRowToBeUpdated.getAttribute('data-uid');
-                const scsIndexed = seminarRowToBeUpdated.getAttribute('data-scs-indexed');
-                // for displaying alredy stored value
-                const publisherCategory = seminarRowToBeUpdated.getAttribute('data-publisher-category');
-                if (publisherCategory === 'National') {
-                    publisherCategoryNational.checked = true;
-                }
-                else {
-                    publisherCategoryInternational.checked = true;
-                }
-                document.getElementById('year').value = year.innerText.trim();
-                console.log('====>>>>', year.innerText.trim())
-                document.getElementById('school').value = school.innerText.trim();
-                document.getElementById('campus').value = campus.innerText.trim();
-                document.getElementById('publisher').value = publisher.innerText.trim();
-                document.getElementById('nmims-faculty').value = nmimsfaculty.innerText.trim();
-                document.getElementById('journal-name').value = journalName.innerText.trim();
-                document.getElementById('title-of-paper').value = titleOfPaper;
-                document.getElementById('pages').value = pages.trim();
-                document.getElementById('issn-no').value = issnNo.trim();
-                document.getElementById('date-of-publishing').value = formattedDate.replace(/\//g, '-');
-                document.getElementById('impact-factor').value = impactFactor.trim();
-                document.getElementById('scs-cite-score').value = scsCiteScore.trim();
-                document.getElementById('wos-indexed').value = wosIndexed.trim();
-                document.getElementById('gs-indexed').value = gsIndexed.trim();
-                document.getElementById('abdc-indexed').value = abcdIndexed.trim();
-                document.getElementById('ugc-indexed').value = ugcIndexed.trim();
-                document.getElementById('web-link').value = webLink.trim();
-                document.getElementById('uid').value = uid.trim();
-                document.getElementById('scs-indexed').value = scsIndexed.trim();
-
-                $('#research-seminar-modal').modal('show');
-            }
-
-            // for viewing record of journal paper
-            if (event.target.classList.contains('view')) {
-                const seminarRowToBeViewed = event.target.closest('tr')
-                seminarId = seminarRowToBeViewed.getAttribute('data-seminar-id');
-                $('#research-seminar-modal-view').modal({
-                    backdrop: 'static'
-                });
-                // updating value with actuall value
-                const viewYear = document.getElementById('view-year');
-                const viewSchool = document.getElementById('view-school');
-                const viewCampus = document.getElementById('view-campus');
-                const viewPublisher = document.getElementById('view-publisher');
-                const viewNmimsFaculty = document.getElementById('view-nmims-faculty');
-                const viewJournalName = document.getElementById('view-journal-name');
-                const viewIssNo = document.getElementById('view-issn-no');
-                const viewAbcdIndexed = document.getElementById('view-abdc-indexed');
-                const viewWebLink = document.getElementById('view-web-link');
-                const viewPages = document.getElementById('view-pages');
-                const viewScsCiteScore = document.getElementById('view-scs-cite-score');
-                const viewImpactFactor = document.getElementById('view-impact-factor');
-                const viewScsIndexed = document.getElementById('view-scs-indexed');
-                const viewWosIndexed = document.getElementById('view-wos-indexed');
-                const viewGsIndexed = document.getElementById('view-gs-indexed');
-                const viewUgcIndexed = document.getElementById('view-ugc-indexed');
-                const viewDateOfPublishing = document.getElementById('view-date-of-publishing');
-                const viewUid = document.getElementById('view-uid');
-                const viewTitle = document.getElementById('view-title-of-paper');
-                const viewPublisherCategory = document.getElementById('view-publisher-category');
-
-                fetch('<%- BASE_URL %>research/research-seminar/view', {
-                    method: 'POST',
-                    headers: {
-                        'content-type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        seminarId: seminarId
-                    })
-
-                })
-                    .then((result) => {
-                        return result.json();
-                    })
-                    .then((data) => {
-                        setFileNameInButtons(data) ;
-                        console.log('data is viewing', data);
-                        viewYear.innerText = data.seminarData[0].year;
-                        viewCampus.innerText = data.seminarData[0].campus;
-                        viewJournalName.innerText = data.seminarData[0].journal_name;
-                        viewNmimsFaculty.innerText = data.seminarData[0].nmims_faculty;
-                        viewSchool.innerText = data.seminarData[0].school;
-                        viewPublisher.innerText = data.seminarData[0].publisher;
-                        viewIssNo.innerText = data.seminarData[0].issn_no;
-                        viewAbcdIndexed.innerText = data.seminarData[0].abdc_indexed;
-                        viewWebLink.innerText = data.seminarData[0].web_link;
-                        viewPages.innerText = data.seminarData[0].pages;
-                        viewScsCiteScore.innerText = data.seminarData[0].pages;
-                        viewImpactFactor.innerText = data.seminarData[0].impact_factor;
-                        viewScsIndexed.innerText = data.seminarData[0].scs_indexed;
-                        viewGsIndexed.innerText = data.seminarData[0].gs_indexed;
-                        viewUgcIndexed.innerText = data.seminarData[0].ugc_indexed;
-                        viewDateOfPublishing.innerText = data.seminarData[0].date_of_publishing.split('T')[0];
-                        viewTitle.innerText = data.seminarData[0].title_of_paper;
-                        viewPublisherCategory.innerText = data.seminarData[0].publisher_category;
-                        viewWosIndexed.innerText = data.seminarData[0].wos_indexed;
-                        viewUid.innerText = data.seminarData[0].uid;
-
-                    }).catch((error) => {
-                        console.log('error:', error);
-
-                    });
-                $('#research-seminar-modal-view').modal('show');
-            }
-
-        });
-
-    const updateResearchSeminar = async(url) => {
-        const updateSeminarDetails = new FormData();
-
-        const seminarDocuments = document.getElementById('journal-article-documents');
-        let seminarDataFile = seminarDocuments.files;
-        seminarDataFile ?
-            Array.from(seminarDataFile).forEach(file => {
-                console.log('file name  ==>>', file.name);
-                updateSeminarDetails.append('seminarDocuments', file);
-            }) :
-            (seminarDataFile = null, updateSeminarDetails.append('seminarDocuments', seminarDataFile));
-
-        const year = document.getElementById('year').value;
-        const school = document.getElementById('school').value;
-        const campus = document.getElementById('campus').value;
-        const publisher = document.getElementById('publisher').value;
-        const  publisherCategory = document.querySelector('input[name="publisher-category"]:checked').value;
-        const NmimsFaculty = document.getElementById('nmims-faculty').value;
-        const journalName = document.getElementById('journal-name').value;
-        const pages = document.getElementById('pages').value;
-        const issnNo  = document.getElementById('issn-no').value;
-        const scsCiteScore = document.getElementById('scs-cite-score').value;
-        const impactFactor = document.getElementById('impact-factor').value;
-        const scsIndexed = document.getElementById('scs-indexed').value;
-        const wosIndexed = document.getElementById('wos-indexed').value;
-        const gsIndexed = document.getElementById('gs-indexed').value;
-        const abcdIndexed = document.getElementById('abdc-indexed').value;
-        const ugcIndexed = document.getElementById('ugc-indexed').value;
-        const webLink = document.getElementById('web-link').value;
-        const uid = document.getElementById('uid').value;
-        const dateOfPublishing = document.getElementById('date-of-publishing').value;
-        const titleOfPaper = document.getElementById('title-of-paper').value;
-
-        console.log('titleOfPaper ====>>>>>>', titleOfPaper)
-        console.log('seminarId ====>>>>>>', seminarId);
-        
-        updateSeminarDetails.append('seminarId', seminarId)
-        updateSeminarDetails.append('year', year)
-        updateSeminarDetails.append('school', school)
-        updateSeminarDetails.append('campus', campus)
-        updateSeminarDetails.append('publisher', publisher)
-        updateSeminarDetails.append('publisherCategory', publisherCategory)
-        updateSeminarDetails.append('NmimsFaculty', NmimsFaculty)
-        updateSeminarDetails.append('journalName', journalName)
-        updateSeminarDetails.append('pages', pages)
-        updateSeminarDetails.append('issnNo', issnNo)
-        updateSeminarDetails.append('scsCiteScore', scsCiteScore)
-        updateSeminarDetails.append('impactFactor', impactFactor)
-        updateSeminarDetails.append('scsIndexed', scsIndexed)
-        updateSeminarDetails.append('wosIndexed', wosIndexed)
-        updateSeminarDetails.append('gsIndexed', gsIndexed)
-        updateSeminarDetails.append('abcdIndexed', abcdIndexed)
-        updateSeminarDetails.append('ugcIndexed', ugcIndexed)
-        updateSeminarDetails.append('webLink', webLink)
-        updateSeminarDetails.append('uid', uid)
-        updateSeminarDetails.append('dateOfPublishing', dateOfPublishing)
-        updateSeminarDetails.append('titleOfPaper', titleOfPaper)
-
-        // sending  updated data to database by fetch api for update the value in db
-        fetch(url, {
-            method: 'POST',
-            body: updateSeminarDetails
-        }).then((result) => {
-                if (result) {
-                    return result.json();
-                }
-                else {
-                    console.log('failed update data on server ');
-                }
-        }).then((data) => {
-                console.log('data ==>>>', data);
-                const updateSeminarDetails = data.updateSeminarDetails;
-                if (data.status === 'Done') {
-                    console.log('seminarId >>>> ', seminarId);
-                    seminarRowToBeUpdated.querySelector('.year').innerText = updateSeminarDetails.year;
-                    seminarRowToBeUpdated.querySelector('.school').innerText = updateSeminarDetails.school;
-                    seminarRowToBeUpdated.querySelector('.campus').innerText = updateSeminarDetails.campus;
-                    seminarRowToBeUpdated.querySelector('.nmims-faculty').innerText = updateSeminarDetails.NmimsFaculty;
-                    seminarRowToBeUpdated.querySelector('.journal-name').innerText = updateSeminarDetails.journalName;
-                    seminarRowToBeUpdated.querySelector('.publisher').innerText = updateSeminarDetails.publisher;
-                    seminarRowToBeUpdated.setAttribute('data-pages', updateSeminarDetails.pages);
-                    seminarRowToBeUpdated.setAttribute('data-issn-no', updateSeminarDetails.issnNo);
-                    seminarRowToBeUpdated.setAttribute('data-scs-cite-score', updateSeminarDetails.scsCiteScore);
-                    seminarRowToBeUpdated.setAttribute('data-impact-factor', updateSeminarDetails.impactFactor);
-                    seminarRowToBeUpdated.setAttribute('data-scs-indexed', updateSeminarDetails.scsIndexed);
-                    seminarRowToBeUpdated.setAttribute('data-wos-indexed', updateSeminarDetails.wosIndexed);
-                    seminarRowToBeUpdated.setAttribute('data-gs-indexed', updateSeminarDetails.gsIndexed);
-                    seminarRowToBeUpdated.setAttribute('data-abdc-indexed', updateSeminarDetails.abcdIndexed);
-                    seminarRowToBeUpdated.setAttribute('data-ugc-indexed', updateSeminarDetails.ugcIndexed);
-                    seminarRowToBeUpdated.setAttribute('data-web-link', updateSeminarDetails.webLink);
-                    seminarRowToBeUpdated.setAttribute('data-uid', updateSeminarDetails.uid);
-                    seminarRowToBeUpdated.setAttribute('data-publisher-category' , updateSeminarDetails.publisherCategory);
-                    seminarRowToBeUpdated.setAttribute('data-date-of-publishing', updateSeminarDetails.dateOfPublishing);
-                    seminarRowToBeUpdated.setAttribute('data-title-of-paper', updateSeminarDetails.titleOfPaper);
-                    seminarRowToBeUpdated.setAttribute('data-supporting-documents', data.updatedSeminarFiles);
-
-                    Swal.fire({
-                        position: "top-center",
-                        icon: "success",
-                        title: `${data.message}`,
-                        showConfirmButton: true,
-                                confirmButtonText:"OK",
-                                confirmButtonColor: "#DD6B55"
-                        // timer: 1500
-                    });
-                    $('#research-seminar-modal').modal('hide');
-                }
-                else{
-                    Swal.fire({
-                        position: "top-center",
-                        icon: "error",
-                        title: "Updation Failed",
-                        color : "red",
-                        with : "20PX",
-                        showConfirmButton: true,
-                                confirmButtonText:"OK",
-                                confirmButtonColor: "#DD6B55"
-                    });
-                }
-            })
-            .catch((error) => {
-                console.log("ERROIR : ", error);
-                const errTitle = "Internal Server Error";
-                const message = error
-                // alert('An error occurred while updating the element');
-                Swal.fire({
-                        position: "top-center",
-                        icon: "error",
-                        title: `${message}`,
-                        color : "red",
-                        with : "20PX",
-                        html: `<span style="color: red;">${errTitle}</span>`,
-                        showConfirmButton: true,
-                                confirmButtonText:"OK",
-                                confirmButtonColor: "#DD6B55"
-                    });
-            })
-        }
-
-    updateBtn.addEventListener('click' , async() => {
-        formGroup = updateBtn.closest('.validate-input')
-        console.log("formGroup::::::::", formGroup)
-        formGroup.querySelectorAll('input[type="file"]')?.forEach(elm => {
-            console.log("elm:::::::::", elm);
-            elm.removeAttribute('data-validate')
-        })
-
-        const isValid = validateRequiredFormFields(submitBtn);
-            if (isValid) {
-                await updateResearchSeminar('<%- BASE_URL %>research/research-seminar/update');
-                }
-            else {
-                 Swal.fire({
-                        position: "top-center",
-                        icon: "error",
-                        title: "Validation Failed",
-                        color : "red",
-                        showConfirmButton: true,
-                                confirmButtonText:"OK",
-                                confirmButtonColor: "#DD6B55"
-                    });
-            }
-
-    })
-
-
-    
-    function setFileNameInButtons(data) {
-        console.log('data ==>>>', data);
-        articleDoucments = document.getElementById('supporting-document');
-        articleDoucments.setAttribute('data-filename', data.seminarData[0].supporting_documents);
-    } 
-
-    //eventlistner for download files
-    document.addEventListener('click', async function (event) {
-            const button = event.target.closest('button');
-            if (button && button.id && button.classList.contains('download-file')) {
-                console.log('button ===>>>', button)
-                try {
-                    const fileDataString = button.getAttribute('data-filename');
-                    if (!fileDataString) {
-                        throw new Error('Data filename attribute not found on button.');
+                        document.getElementById('year').value = '';
+                        document.getElementById('school').value = '';
+                        document.getElementById('campus').value = '';
+                        document.getElementById('publisher').value = '';
+                        document.getElementById('nmims-faculty').value = '';
+                        document.getElementById('journal-name').value = '';
+                        document.getElementById('pages').value = '';
+                        document.getElementById('issn-no').value = '';
+                        document.getElementById('scs-cite-score').value = '';
+                        document.getElementById('impact-factor').value = '';
+                        document.getElementById('scs-indexed').value = '';
+                        document.getElementById('wos-indexed').value = '';
+                        document.getElementById('gs-indexed').value = '';
+                        document.getElementById('abdc-indexed').value = '';
+                        document.getElementById('ugc-indexed').value = '';
+                        document.getElementById('web-link').value = '';
+                        document.getElementById('uid').value = '';
+                        document.getElementById('date-of-publishing').value = '';
+                        document.getElementById('title-of-paper').value = '';
                     }
+                })
 
-                    const fileArray = fileDataString.split(',').map(fileName => fileName.trim()).filter(Boolean); 
-                    if (fileArray.length === 0) {
-                        throw new Error('No file names found in data filename attribute.');
+                const insertResearchSeminar = async function (url) {
+
+                    const seminarDetails = new FormData();
+
+                    const seminarDocuments = document.getElementById('journal-article-documents');
+                    const seminarDataFile = seminarDocuments.files;
+                    console.log('seminarDataFile ===>>>', seminarDataFile)
+                    for (let i = 0; i < seminarDataFile.length; i++) {
+                        console.log('file name  ==>>', seminarDataFile[i].name);
+                        seminarDetails.append('seminarDocuments', seminarDataFile[i]);
                     }
+                    // const year = document.getElementById('year');
 
-                    const downloadPromises = fileArray.map(async (fileName) => {
-                        console.log('fileName ===>>>', fileName)
-                        const fileUrl = `<%- BASE_URL %>research/research-seminar/download/${fileName}`;
-                        downloadFile(fileName, fileUrl)
-                        try {
-                            const response = await fetch(fileUrl);
-                            if (!response.ok) {
-                                throw new Error(`Failed to download file: ${fileName}`);
+                    // console.log('year value ==>>', year.value);
+                    // const seminarDetails = {};
+                    const year = document.getElementById('year').value;
+                    const school = document.getElementById('school').value;
+                    const campus = document.getElementById('campus').value;
+                    const publisher = document.getElementById('publisher').value;
+                    const publisherCategory = document.querySelector('input[name="publisher-category"]:checked').value;
+                    const NmimsFaculty = document.getElementById('nmims-faculty').value;
+                    const journalName = document.getElementById('journal-name').value;
+                    const pages = document.getElementById('pages').value;
+                    const issnNo = document.getElementById('issn-no').value;
+                    const scsCiteScore = document.getElementById('scs-cite-score').value;
+                    const impactFactor = document.getElementById('impact-factor').value;
+                    const scsIndexed = document.getElementById('scs-indexed').value;
+                    const wosIndexed = document.getElementById('wos-indexed').value;
+                    const gsIndexed = document.getElementById('gs-indexed').value;
+                    const abcdIndexed = document.getElementById('abdc-indexed').value;
+                    const ugcIndexed = document.getElementById('ugc-indexed').value;
+                    const webLink = document.getElementById('web-link').value;
+                    const uid = document.getElementById('uid').value;
+                    const dateOfPublishing = document.getElementById('date-of-publishing').value;
+                    const titleOfPaper = document.getElementById('title-of-paper').value;
+
+                    seminarDetails.append('year', year)
+                    seminarDetails.append('school', school)
+                    seminarDetails.append('campus', campus)
+                    seminarDetails.append('publisher', publisher)
+                    seminarDetails.append('publisherCategory', publisherCategory)
+                    seminarDetails.append('NmimsFaculty', NmimsFaculty)
+                    seminarDetails.append('journalName', journalName)
+                    seminarDetails.append('pages', pages)
+                    seminarDetails.append('issnNo', issnNo)
+                    seminarDetails.append('scsCiteScore', scsCiteScore)
+                    seminarDetails.append('impactFactor', impactFactor)
+                    seminarDetails.append('scsIndexed', scsIndexed)
+                    seminarDetails.append('wosIndexed', wosIndexed)
+                    seminarDetails.append('gsIndexed', gsIndexed)
+                    seminarDetails.append('abcdIndexed', abcdIndexed)
+                    seminarDetails.append('ugcIndexed', ugcIndexed)
+                    seminarDetails.append('webLink', webLink)
+                    seminarDetails.append('uid', uid)
+                    seminarDetails.append('dateOfPublishing', dateOfPublishing)
+                    seminarDetails.append('titleOfPaper', titleOfPaper)
+
+                    fetch(url, {
+                        method: 'POST',
+                        body: seminarDetails
+                    })
+                        .then((result) => {
+                            return result.json()
+                        })
+                        .then((data) => {
+                            console.log('data ===>>>', data);
+
+                            if (data.status === 'Done') {
+                                //     const seminarDetails = data.seminarDetails;
+                                //     seminarId = data.seminarId;
+                                //     console.log('seminarId ==>', seminarId);
+                                //     const rowCountInteger = parseInt(data.rowCount, 10);
+                                //     const IndexEntry = rowCountInteger + indexValue;
+                                //     indexValue = IndexEntry;
+                                //     console.log('IndexEntry ===>>>', IndexEntry);
+
+                                //     //insert new row to the journal_papers table 
+                                //     const newResearchSeminar = document.createElement('tr');
+                                //     newResearchSeminar.setAttribute('data-pages', seminarDetails.pages);
+                                //     newResearchSeminar.setAttribute('data-issn-no', seminarDetails.issnNo);
+                                //     newResearchSeminar.setAttribute('data-scs-cite-score', seminarDetails.scsCiteScore);
+                                //     newResearchSeminar.setAttribute('data-impact-factor', seminarDetails.impactFactor);
+                                //     newResearchSeminar.setAttribute('data-scs-indexed', seminarDetails.scsIndexed);
+                                //     newResearchSeminar.setAttribute('data-wos-indexed', seminarDetails.wosIndexed);
+                                //     newResearchSeminar.setAttribute('data-gs-indexed', seminarDetails.gsIndexed);
+                                //     newResearchSeminar.setAttribute('data-abdc-indexed', seminarDetails.abcdIndexed);
+                                //     newResearchSeminar.setAttribute('data-ugc-indexed', seminarDetails.ugcIndexed);
+                                //     newResearchSeminar.setAttribute('data-web-link', seminarDetails.webLink);
+                                //     newResearchSeminar.setAttribute('data-uid', seminarDetails.uid);
+                                //     newResearchSeminar.setAttribute('data-publisher-category', seminarDetails.publisherCategory);
+                                //     newResearchSeminar.setAttribute('data-date-of-publishing', seminarDetails.dateOfPublishing);
+                                //     newResearchSeminar.setAttribute('data-title-of-paper', seminarDetails.titleOfPaper);
+                                //     newResearchSeminar.setAttribute('data-supporting-documents', seminarDetails.titleOfPaper);
+
+                                //     newResearchSeminar.innerHTML = `
+                                // <td >${IndexEntry}</td>
+                                // <td class="year">${seminarDetails.year}</td>
+                                // <td class="school">${seminarDetails.school}</td>
+                                // <td class="campus">${seminarDetails.campus}</td>
+                                // <td class="publisher">${seminarDetails.publisher}</td>
+                                // <td class="nmims-faculty">${seminarDetails.NmimsFaculty}</td>
+                                // <td class="journal-name">${seminarDetails.journalName}</td>
+
+                                // <td title="View" class="border-right-0 view" style="cursor: pointer;" data-seminar-id="${seminarId}">
+                                //     &#128065;
+                                // </td>
+                                // <td title="Edit" class="border-right-0 edit" style="cursor: pointer;" data-seminar-id="${seminarId}">
+                                //     &#9998;
+                                // </td>
+                                // <td title="Delete" class="border-right-0 delete" style="cursor: pointer;"  data-seminar-id="${seminarId}">
+                                //     &#128465;
+                                // </td> 
+                                //  ` ;
+                                //     researchSeminarList.appendChild(newResearchSeminar);
+                                //     rowCount.classList.remove('d-none');
+                                //     totalRowCount.classList.add('d-none');
+                                //     rowCount.innerText = `Total entries : ${IndexEntry}`;
+                                $('#research-seminar-modal').modal('hide');
+
+                                Swal.fire({
+                                    position: "top-center",
+                                    icon: "success",
+                                    title: `${data.message}`,
+                                    showConfirmButton: true,
+                                    confirmButtonText: "OK",
+                                    confirmButtonColor: "#DD6B55"
+
+                                }).then(() => {
+                                    document.location.reload()
+                                });
+                                // for clear input field
                             }
-                            console.log('File downloaded successfully:', fileName);
-                            return fileName;
-                        } catch (error) {
-                            console.error('Error downloading file:', error);
-                            throw error;
+                            else {
+                                console.log('data in failed condition ====>>>>', data)
+                                Swal.fire({
+                                    position: "top-center",
+                                    icon: "error",
+                                    title: "Failed To Insert",
+                                    color: "red",
+                                    with: "20PX",
+                                    showConfirmButton: true,
+                                    confirmButtonText: "OK",
+                                    confirmButtonColor: "#DD6B55"
+                                });
+                            }
+                        }).catch((error) => {
+                            console.error("ERROR:", error);
+                        })
+                };
+
+                submitBtn.addEventListener('click', async () => {
+                    const isValid = validateRequiredFormFields(submitBtn);
+                    if (isValid) {
+                        await insertResearchSeminar('<%- BASE_URL %>research/research-seminar/insert');
+                    }
+                    else {
+                        alert('validation Failed');
+                    }
+                });
+
+                researchSeminarList.addEventListener('click', function (event) {
+
+                    if (event.target.classList.contains('delete')) {
+                        const seminarRowData = event.target.parentElement.parentElement.parentElement;
+                        const seminarId = event.target.getAttribute('data-seminar-id');
+                        console.log('seminarId for delete :', seminarId);
+                        let confirmDelete = confirm("Do you want to delete the Seminar?");
+                        if (!confirmDelete) {
+                            return;
                         }
-                    });
 
-                    const downloadedFiles = await Promise.all(downloadPromises);
-                    console.log('All files downloaded successfully:', downloadedFiles);
-                } catch (error) {
-                    console.error('Error downloading files:', error);
-                    alert(`There was a problem downloading files: ${error.message}`);
+                        fetch('<%- BASE_URL %>research/research-seminar/delete', {
+                            method: 'post',
+                            headers: {
+                                'content-type': 'application/json'
+                            },
+                            body: JSON.stringify({ seminarId })
+                        })
+                            .then((result) => {
+                                return result.json();
+                            })
+                            .then((data) => {
+                                if (data.status === 'done') {
+                                    seminarRowData.remove();
+                                    location.reload();
+                                }
+                            })
+                            .catch((error) => {
+                                console.log(error)
+                            });
+                    }
+                    // for updating 
+
+                    if (event.target.classList.contains('edit')) {
+                        removeErrorMsg();
+
+                        $('#research-seminar-modal').modal({
+                            backdrop: 'static'
+                        });
+
+                        seminarRowToBeUpdated = event.target.closest('tr');
+                        console.log('seminarRowToBeUpdated ==>>>', seminarRowToBeUpdated)
+                        seminarId = event.target.getAttribute('data-seminar-id');
+                        console.log('seminarId ==>>', seminarId);
+                        // for button visualization
+                        submitBtn.classList.add('d-none');
+                        updateBtn.classList.remove('d-none');
+                        // Capturing  the specific row's data and seminar ID
+                        const year = seminarRowToBeUpdated.querySelector('.year');
+                        const school = seminarRowToBeUpdated.querySelector('.school');
+                        const campus = seminarRowToBeUpdated.querySelector('.campus');
+                        const publisherCategoryNational = document.getElementById('national');
+                        const publisherCategoryInternational = document.getElementById('inter-national');
+                        const nmimsfaculty = seminarRowToBeUpdated.querySelector('.nmims-faculty');
+                        const journalName = seminarRowToBeUpdated.querySelector('.journal-name');
+                        const publisher = seminarRowToBeUpdated.querySelector('.publisher');
+                        const titleOfPaper = seminarRowToBeUpdated.getAttribute('data-title-of-paper');
+                        const pages = seminarRowToBeUpdated.getAttribute('data-pages');
+                        const issnNo = seminarRowToBeUpdated.getAttribute('data-issn-no');
+                        const dateOfPublishing = new Date(seminarRowToBeUpdated.getAttribute('data-date-of-publishing'));
+                        const formattedDate = formatDateToYYYYMMDD(dateOfPublishing);
+                        const impactFactor = seminarRowToBeUpdated.getAttribute('data-impact-factor');
+                        const scsCiteScore = seminarRowToBeUpdated.getAttribute('data-scs-cite-score');
+                        const wosIndexed = seminarRowToBeUpdated.getAttribute('data-wos-indexed');
+                        const gsIndexed = seminarRowToBeUpdated.getAttribute('data-gs-indexed');
+                        const abcdIndexed = seminarRowToBeUpdated.getAttribute('data-abdc-indexed');
+                        const ugcIndexed = seminarRowToBeUpdated.getAttribute('data-ugc-indexed');
+                        const webLink = seminarRowToBeUpdated.getAttribute('data-web-link');
+                        const uid = seminarRowToBeUpdated.getAttribute('data-uid');
+                        const scsIndexed = seminarRowToBeUpdated.getAttribute('data-scs-indexed');
+                        // for displaying alredy stored value
+                        const publisherCategory = seminarRowToBeUpdated.getAttribute('data-publisher-category');
+                        if (publisherCategory === 'National') {
+                            publisherCategoryNational.checked = true;
+                        }
+                        else {
+                            publisherCategoryInternational.checked = true;
+                        }
+                        document.getElementById('year').value = year.innerText.trim();
+                        console.log('====>>>>', year.innerText.trim())
+                        document.getElementById('school').value = school.innerText.trim();
+                        document.getElementById('campus').value = campus.innerText.trim();
+                        document.getElementById('publisher').value = publisher.innerText.trim();
+                        document.getElementById('nmims-faculty').value = nmimsfaculty.innerText.trim();
+                        document.getElementById('journal-name').value = journalName.innerText.trim();
+                        document.getElementById('title-of-paper').value = titleOfPaper;
+                        document.getElementById('pages').value = pages.trim();
+                        document.getElementById('issn-no').value = issnNo.trim();
+                        document.getElementById('date-of-publishing').value = formattedDate.replace(/\//g, '-');
+                        document.getElementById('impact-factor').value = impactFactor.trim();
+                        document.getElementById('scs-cite-score').value = scsCiteScore.trim();
+                        document.getElementById('wos-indexed').value = wosIndexed.trim();
+                        document.getElementById('gs-indexed').value = gsIndexed.trim();
+                        document.getElementById('abdc-indexed').value = abcdIndexed.trim();
+                        document.getElementById('ugc-indexed').value = ugcIndexed.trim();
+                        document.getElementById('web-link').value = webLink.trim();
+                        document.getElementById('uid').value = uid.trim();
+                        document.getElementById('scs-indexed').value = scsIndexed.trim();
+
+                        $('#research-seminar-modal').modal('show');
+                    }
+
+                    // for viewing record of journal paper
+                    if (event.target.classList.contains('view')) {
+                        const seminarRowToBeViewed = event.target.closest('tr')
+                        seminarId = seminarRowToBeViewed.getAttribute('data-seminar-id');
+                        $('#research-seminar-modal-view').modal({
+                            backdrop: 'static'
+                        });
+                        // updating value with actuall value
+                        const viewYear = document.getElementById('view-year');
+                        const viewSchool = document.getElementById('view-school');
+                        const viewCampus = document.getElementById('view-campus');
+                        const viewPublisher = document.getElementById('view-publisher');
+                        const viewNmimsFaculty = document.getElementById('view-nmims-faculty');
+                        const viewJournalName = document.getElementById('view-journal-name');
+                        const viewIssNo = document.getElementById('view-issn-no');
+                        const viewAbcdIndexed = document.getElementById('view-abdc-indexed');
+                        const viewWebLink = document.getElementById('view-web-link');
+                        const viewPages = document.getElementById('view-pages');
+                        const viewScsCiteScore = document.getElementById('view-scs-cite-score');
+                        const viewImpactFactor = document.getElementById('view-impact-factor');
+                        const viewScsIndexed = document.getElementById('view-scs-indexed');
+                        const viewWosIndexed = document.getElementById('view-wos-indexed');
+                        const viewGsIndexed = document.getElementById('view-gs-indexed');
+                        const viewUgcIndexed = document.getElementById('view-ugc-indexed');
+                        const viewDateOfPublishing = document.getElementById('view-date-of-publishing');
+                        const viewUid = document.getElementById('view-uid');
+                        const viewTitle = document.getElementById('view-title-of-paper');
+                        const viewPublisherCategory = document.getElementById('view-publisher-category');
+
+                        fetch('<%- BASE_URL %>research/research-seminar/view', {
+                            method: 'POST',
+                            headers: {
+                                'content-type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                seminarId: seminarId
+                            })
+
+                        })
+                            .then((result) => {
+                                return result.json();
+                            })
+                            .then((data) => {
+                                setFileNameInButtons(data);
+                                console.log('data is viewing', data);
+                                viewYear.innerText = data.seminarData[0].year;
+                                viewCampus.innerText = data.seminarData[0].campus;
+                                viewJournalName.innerText = data.seminarData[0].journal_name;
+                                viewNmimsFaculty.innerText = data.seminarData[0].nmims_faculty;
+                                viewSchool.innerText = data.seminarData[0].school;
+                                viewPublisher.innerText = data.seminarData[0].publisher;
+                                viewIssNo.innerText = data.seminarData[0].issn_no;
+                                viewAbcdIndexed.innerText = data.seminarData[0].abdc_indexed;
+                                viewWebLink.innerText = data.seminarData[0].web_link;
+                                viewPages.innerText = data.seminarData[0].pages;
+                                viewScsCiteScore.innerText = data.seminarData[0].pages;
+                                viewImpactFactor.innerText = data.seminarData[0].impact_factor;
+                                viewScsIndexed.innerText = data.seminarData[0].scs_indexed;
+                                viewGsIndexed.innerText = data.seminarData[0].gs_indexed;
+                                viewUgcIndexed.innerText = data.seminarData[0].ugc_indexed;
+                                viewDateOfPublishing.innerText = data.seminarData[0].date_of_publishing.split('T')[0];
+                                viewTitle.innerText = data.seminarData[0].title_of_paper;
+                                viewPublisherCategory.innerText = data.seminarData[0].publisher_category;
+                                viewWosIndexed.innerText = data.seminarData[0].wos_indexed;
+                                viewUid.innerText = data.seminarData[0].uid;
+
+                            }).catch((error) => {
+                                console.log('error:', error);
+
+                            });
+                        $('#research-seminar-modal-view').modal('show');
+                    }
+
+                });
+
+                const updateResearchSeminar = async (url) => {
+                    const updateSeminarDetails = new FormData();
+
+                    const seminarDocuments = document.getElementById('journal-article-documents');
+                    let seminarDataFile = seminarDocuments.files;
+                    seminarDataFile ?
+                        Array.from(seminarDataFile).forEach(file => {
+                            console.log('file name  ==>>', file.name);
+                            updateSeminarDetails.append('seminarDocuments', file);
+                        }) :
+                        (seminarDataFile = null, updateSeminarDetails.append('seminarDocuments', seminarDataFile));
+
+                    const year = document.getElementById('year').value;
+                    const school = document.getElementById('school').value;
+                    const campus = document.getElementById('campus').value;
+                    const publisher = document.getElementById('publisher').value;
+                    const publisherCategory = document.querySelector('input[name="publisher-category"]:checked').value;
+                    const NmimsFaculty = document.getElementById('nmims-faculty').value;
+                    const journalName = document.getElementById('journal-name').value;
+                    const pages = document.getElementById('pages').value;
+                    const issnNo = document.getElementById('issn-no').value;
+                    const scsCiteScore = document.getElementById('scs-cite-score').value;
+                    const impactFactor = document.getElementById('impact-factor').value;
+                    const scsIndexed = document.getElementById('scs-indexed').value;
+                    const wosIndexed = document.getElementById('wos-indexed').value;
+                    const gsIndexed = document.getElementById('gs-indexed').value;
+                    const abcdIndexed = document.getElementById('abdc-indexed').value;
+                    const ugcIndexed = document.getElementById('ugc-indexed').value;
+                    const webLink = document.getElementById('web-link').value;
+                    const uid = document.getElementById('uid').value;
+                    const dateOfPublishing = document.getElementById('date-of-publishing').value;
+                    const titleOfPaper = document.getElementById('title-of-paper').value;
+
+                    console.log('titleOfPaper ====>>>>>>', titleOfPaper)
+                    console.log('seminarId ====>>>>>>', seminarId);
+
+                    updateSeminarDetails.append('seminarId', seminarId)
+                    updateSeminarDetails.append('year', year)
+                    updateSeminarDetails.append('school', school)
+                    updateSeminarDetails.append('campus', campus)
+                    updateSeminarDetails.append('publisher', publisher)
+                    updateSeminarDetails.append('publisherCategory', publisherCategory)
+                    updateSeminarDetails.append('NmimsFaculty', NmimsFaculty)
+                    updateSeminarDetails.append('journalName', journalName)
+                    updateSeminarDetails.append('pages', pages)
+                    updateSeminarDetails.append('issnNo', issnNo)
+                    updateSeminarDetails.append('scsCiteScore', scsCiteScore)
+                    updateSeminarDetails.append('impactFactor', impactFactor)
+                    updateSeminarDetails.append('scsIndexed', scsIndexed)
+                    updateSeminarDetails.append('wosIndexed', wosIndexed)
+                    updateSeminarDetails.append('gsIndexed', gsIndexed)
+                    updateSeminarDetails.append('abcdIndexed', abcdIndexed)
+                    updateSeminarDetails.append('ugcIndexed', ugcIndexed)
+                    updateSeminarDetails.append('webLink', webLink)
+                    updateSeminarDetails.append('uid', uid)
+                    updateSeminarDetails.append('dateOfPublishing', dateOfPublishing)
+                    updateSeminarDetails.append('titleOfPaper', titleOfPaper)
+
+                    // sending  updated data to database by fetch api for update the value in db
+                    fetch(url, {
+                        method: 'POST',
+                        body: updateSeminarDetails
+                    }).then((result) => {
+                        if (result) {
+                            return result.json();
+                        }
+                        else {
+                            console.log('failed update data on server ');
+                        }
+                    }).then((data) => {
+                        console.log('data ==>>>', data);
+                        const updateSeminarDetails = data.updateSeminarDetails;
+                        if (data.status === 'Done') {
+                            console.log('seminarId >>>> ', seminarId);
+                            seminarRowToBeUpdated.querySelector('.year').innerText = updateSeminarDetails.year;
+                            seminarRowToBeUpdated.querySelector('.school').innerText = updateSeminarDetails.school;
+                            seminarRowToBeUpdated.querySelector('.campus').innerText = updateSeminarDetails.campus;
+                            seminarRowToBeUpdated.querySelector('.nmims-faculty').innerText = updateSeminarDetails.NmimsFaculty;
+                            seminarRowToBeUpdated.querySelector('.journal-name').innerText = updateSeminarDetails.journalName;
+                            seminarRowToBeUpdated.querySelector('.publisher').innerText = updateSeminarDetails.publisher;
+                            seminarRowToBeUpdated.setAttribute('data-pages', updateSeminarDetails.pages);
+                            seminarRowToBeUpdated.setAttribute('data-issn-no', updateSeminarDetails.issnNo);
+                            seminarRowToBeUpdated.setAttribute('data-scs-cite-score', updateSeminarDetails.scsCiteScore);
+                            seminarRowToBeUpdated.setAttribute('data-impact-factor', updateSeminarDetails.impactFactor);
+                            seminarRowToBeUpdated.setAttribute('data-scs-indexed', updateSeminarDetails.scsIndexed);
+                            seminarRowToBeUpdated.setAttribute('data-wos-indexed', updateSeminarDetails.wosIndexed);
+                            seminarRowToBeUpdated.setAttribute('data-gs-indexed', updateSeminarDetails.gsIndexed);
+                            seminarRowToBeUpdated.setAttribute('data-abdc-indexed', updateSeminarDetails.abcdIndexed);
+                            seminarRowToBeUpdated.setAttribute('data-ugc-indexed', updateSeminarDetails.ugcIndexed);
+                            seminarRowToBeUpdated.setAttribute('data-web-link', updateSeminarDetails.webLink);
+                            seminarRowToBeUpdated.setAttribute('data-uid', updateSeminarDetails.uid);
+                            seminarRowToBeUpdated.setAttribute('data-publisher-category', updateSeminarDetails.publisherCategory);
+                            seminarRowToBeUpdated.setAttribute('data-date-of-publishing', updateSeminarDetails.dateOfPublishing);
+                            seminarRowToBeUpdated.setAttribute('data-title-of-paper', updateSeminarDetails.titleOfPaper);
+                            seminarRowToBeUpdated.setAttribute('data-supporting-documents', data.updatedSeminarFiles);
+
+                            Swal.fire({
+                                position: "top-center",
+                                icon: "success",
+                                title: `${data.message}`,
+                                showConfirmButton: true,
+                                confirmButtonText: "OK",
+                                confirmButtonColor: "#DD6B55"
+                                // timer: 1500
+                            });
+                            $('#research-seminar-modal').modal('hide');
+                        }
+                        else {
+                            Swal.fire({
+                                position: "top-center",
+                                icon: "error",
+                                title: "Updation Failed",
+                                color: "red",
+                                with: "20PX",
+                                showConfirmButton: true,
+                                confirmButtonText: "OK",
+                                confirmButtonColor: "#DD6B55"
+                            });
+                        }
+                    })
+                        .catch((error) => {
+                            console.log("ERROIR : ", error);
+                            const errTitle = "Internal Server Error";
+                            const message = error
+                            // alert('An error occurred while updating the element');
+                            Swal.fire({
+                                position: "top-center",
+                                icon: "error",
+                                title: `${message}`,
+                                color: "red",
+                                with: "20PX",
+                                html: `<span style="color: red;">${errTitle}</span>`,
+                                showConfirmButton: true,
+                                confirmButtonText: "OK",
+                                confirmButtonColor: "#DD6B55"
+                            });
+                        })
                 }
-            }
-        });
+
+                updateBtn.addEventListener('click', async () => {
+                    formGroup = updateBtn.closest('.validate-input')
+                    console.log("formGroup::::::::", formGroup)
+                    formGroup.querySelectorAll('input[type="file"]')?.forEach(elm => {
+                        console.log("elm:::::::::", elm);
+                        elm.removeAttribute('data-validate')
+                    })
+
+                    const isValid = validateRequiredFormFields(submitBtn);
+                    if (isValid) {
+                        await updateResearchSeminar('<%- BASE_URL %>research/research-seminar/update');
+                    }
+                    else {
+                        Swal.fire({
+                            position: "top-center",
+                            icon: "error",
+                            title: "Validation Failed",
+                            color: "red",
+                            showConfirmButton: true,
+                            confirmButtonText: "OK",
+                            confirmButtonColor: "#DD6B55"
+                        });
+                    }
+
+                })
 
 
-    // set string file value into button
-    function setFileNameAttributeToBeDownload(data) {
-            console.log('data row in side function ===>>', data);
-            const articleDataFiles = document.getElementById('journal-data-file-edit');
-            console.log('articleDataFiles ===>>>>>', articleDataFiles)
-            articleDataFiles.classList.remove('d-none');
-            const articleDataString = data.getAttribute('data-documents');
-            console.log('articleDataString ====>>>>>>', articleDataString);
-            // setAttribute into button
-            articleDataFiles.setAttribute('data-filename', articleDataString);
 
-        };
+                function setFileNameInButtons(data) {
+                    console.log('data ==>>>', data);
+                    articleDoucments = document.getElementById('supporting-document');
+                    articleDoucments.setAttribute('data-filename', data.seminarData[0].supporting_documents);
+                }
+
+                //eventlistner for download files
+                document.addEventListener('click', async function (event) {
+                    const button = event.target.closest('button');
+                    if (button && button.id && button.classList.contains('download-file')) {
+                        console.log('button ===>>>', button)
+                        try {
+                            const fileDataString = button.getAttribute('data-filename');
+                            if (!fileDataString) {
+                                throw new Error('Data filename attribute not found on button.');
+                            }
+
+                            const fileArray = fileDataString.split(',').map(fileName => fileName.trim()).filter(Boolean);
+                            if (fileArray.length === 0) {
+                                throw new Error('No file names found in data filename attribute.');
+                            }
+
+                            const downloadPromises = fileArray.map(async (fileName) => {
+                                console.log('fileName ===>>>', fileName)
+                                const fileUrl = `<%- BASE_URL %>research/research-seminar/download/${fileName}`;
+                                downloadFile(fileName, fileUrl)
+                                try {
+                                    const response = await fetch(fileUrl);
+                                    if (!response.ok) {
+                                        throw new Error(`Failed to download file: ${fileName}`);
+                                    }
+                                    console.log('File downloaded successfully:', fileName);
+                                    return fileName;
+                                } catch (error) {
+                                    console.error('Error downloading file:', error);
+                                    throw error;
+                                }
+                            });
+
+                            const downloadedFiles = await Promise.all(downloadPromises);
+                            console.log('All files downloaded successfully:', downloadedFiles);
+                        } catch (error) {
+                            console.error('Error downloading files:', error);
+                            alert(`There was a problem downloading files: ${error.message}`);
+                        }
+                    }
+                });
+
+
+                // set string file value into button
+                function setFileNameAttributeToBeDownload(data) {
+                    console.log('data row in side function ===>>', data);
+                    const articleDataFiles = document.getElementById('journal-data-file-edit');
+                    console.log('articleDataFiles ===>>>>>', articleDataFiles)
+                    articleDataFiles.classList.remove('d-none');
+                    const articleDataString = data.getAttribute('data-documents');
+                    console.log('articleDataString ====>>>>>>', articleDataString);
+                    // setAttribute into button
+                    articleDataFiles.setAttribute('data-filename', articleDataString);
+
+                };
 
 
 
 
-    </script>
-<!-- footer and pagination -->
-<%- include('./partials/pagination') %>
-<%- include('./partials/footer') %>
-<%- include('./partials/footer-end') %>
+            </script>
+            <!-- footer and pagination -->
+            <%- include('./partials/pagination') %>
+                <%- include('./partials/footer') %>
+                    <%- include('./partials/footer-end') %>

@@ -8,7 +8,7 @@ const researchDbW = dbPoolManager.get('researchDbW', research_write_db);
 // for fetching journal paper data 
 module.exports.fetchResearchSeminar = async(userName) => {
     let sql = {
-        text : 'SELECT * FROM research_seminars WHERE created_by = $1  ORDER BY id',
+        text : 'SELECT * FROM research_seminars WHERE created_by = $1  ORDER BY id desc',
         values : [userName]
 
     };

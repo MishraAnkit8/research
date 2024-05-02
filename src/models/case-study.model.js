@@ -7,7 +7,7 @@ const researchDbW = dbPoolManager.get('researchDbW', research_write_db);
 
 module.exports.fetchCaseStudy = async(userName) =>{
     const sql = {
-        text : `SELECT * FROM case_studies  WHERE created_by = $1  ORDER BY id`,
+        text : `SELECT * FROM case_studies  WHERE created_by = $1  ORDER BY id desc`,
         values : [userName]
 
     }

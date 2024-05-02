@@ -1,85 +1,92 @@
 <%- include('./partials/head') %>
-<!-- inline css -->
-<!-- Navbar section -->
-<%- include('./partials/header') %>
-<!-- This is left sidebar  -->
-<%- include('./partials/left-sidebar') %>
+    <!-- inline css -->
+    <!-- Navbar section -->
+    <%- include('./partials/header') %>
+        <!-- This is left sidebar  -->
+        <%- include('./partials/left-sidebar') %>
 
-<main class="main" id="main-content">
-    <div class="base-section coustom-section">
-        <!--DASHBOARD CONTENT START-->
-        <div class="errorHtml"></div>
-        <div class="breadcrumbs-container">
-            <ul class="breadcrumb">
-                <li class="breadcrumb-link">
-                    <a href="<%- BASE_URL %>research"> Research </a>
-                </li>
-                <li class="breadcrumb-link">Research Award</li>
-            </ul>
-        </div>
-        <div>
-            <div class="table-card-header text-uppercase d-flex align-items-center justify-content-between">
-                <div>
-                    <h5 class="pl-2">RESEARCH AWARD LIST</h5>
-                </div>
-                <div >
-                    <button id="add-research-award-form" type="button" class="btn btn-primary btn-circle btn-xl add-modal"
-                        data-toggle="modal" data-target="#research-award-modal">
-                        <i class="fas fa-plus plus"></i>
-                    </button>
-                </div>
-            </div>
-            <div class="card-body table-responsive">
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <label>Show Entries</label>
-                        <select class="form-select" id="changeEntry">
-                            <option value="5">5</option>
-                            <option value="10">10</option>
-                            <option value="25">25</option>
-                            <option value="50">50</option>
-                            <option value="100">100</option>
-                            <option value="150">150</option>
-                            <option value="200">200</option>
-                            <option value="250">250</option>
-                            <option value="300">300</option>
-                            <option value="350">350</option>
-                            <option value="400">400</option>
-                            <option value="500">500</option>
-                            <option value="800">800</option>
-                            <option value="1000">1000</option>
-                        </select>
+            <main class="main" id="main-content">
+                <div class="base-section coustom-section">
+                    <!--DASHBOARD CONTENT START-->
+                    <div class="errorHtml"></div>
+                    <div class="breadcrumbs-container">
+                        <ul class="breadcrumb">
+                            <li class="breadcrumb-link">
+                                <a href="<%- BASE_URL %>research"> Research </a>
+                            </li>
+                            <li class="breadcrumb-link">Research Award</li>
+                        </ul>
                     </div>
                     <div>
-                        <div class="table-searchbar-container">
-                            <button type="button" id="searchBtn"><i class="fas fa-search"></i></button>
-                            <input type="search" id="searchKeyword" placeholder="Enter keywords" class="table-searchbar">
+                        <div class="table-card-header text-uppercase d-flex align-items-center justify-content-between">
+                            <div>
+                                <h5 class="pl-2">RESEARCH AWARD LIST</h5>
+                            </div>
+                            <div>
+                                <button id="add-research-award-form" type="button"
+                                    class="btn btn-primary btn-circle btn-xl add-modal" data-toggle="modal"
+                                    data-target="#research-award-modal">
+                                    <i class="fas fa-plus plus"></i>
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <table class="table vertical-lines custom-table data-list table-responsive research-pagination" id="research-award-list">
-                    <th class="col-lg-1">#</th>
-                    <th class="col-lg-1">Campus</th>
-                    <th class="col-lg-1">School</th>
-                    <th class="col-lg-1">Name Of Faculty</th>
-                    <th class="col-lg-1">Name Of Award</th>
-                    <th class="col-lg-1">Details Of Awards</th>
-                    <th class="col-lg-1">Name Of Organisation The conferring Award</th>
-                    <th class="col-lg-1" colspan="3">Actions</th>
+                        <div class="card-body table-responsive">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <label>Show Entries</label>
+                                    <select class="form-select" id="changeEntry">
+                                        <option value="5">5</option>
+                                        <option value="10">10</option>
+                                        <option value="25">25</option>
+                                        <option value="50">50</option>
+                                        <option value="100">100</option>
+                                        <option value="150">150</option>
+                                        <option value="200">200</option>
+                                        <option value="250">250</option>
+                                        <option value="300">300</option>
+                                        <option value="350">350</option>
+                                        <option value="400">400</option>
+                                        <option value="500">500</option>
+                                        <option value="800">800</option>
+                                        <option value="1000">1000</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <div class="table-searchbar-container">
+                                        <button type="button" id="searchBtn"><i class="fas fa-search"></i></button>
+                                        <input type="search" id="searchKeyword" placeholder="Enter keywords"
+                                            class="table-searchbar">
+                                    </div>
+                                </div>
+                            </div>
+                            <table
+                                class="table vertical-lines custom-table data-list table-responsive research-pagination"
+                                id="research-award-list">
+                                <th class="col-lg-1">#</th>
+                                <th class="col-lg-1">Campus</th>
+                                <th class="col-lg-1">School</th>
+                                <th class="col-lg-1">Name Of Faculty</th>
+                                <th class="col-lg-1">Name Of Award</th>
+                                <th class="col-lg-1">Details Of Awards</th>
+                                <th class="col-lg-1">Name Of Organisation The conferring Award</th>
+                                <th class="col-lg-1" colspan="3">Actions</th>
 
-                    <tbody >
-                    <% researchAwardData .forEach(function(researchAward, index)  { %>
-                        <tr data-award-id="<%- researchAward.id %>" data-date="<%- researchAward.date %>"
-                            data-award-category="<%- researchAward.award_category %>" data-support-documents="<%- researchAward.supporting_documents %>"
-                            data-place="<%- researchAward.place %>">
-                            <td class="col-lg-1 "><%- index +1 %></td>
-                            <td class="col-lg-1 campus"><%- researchAward.nmims_campus %></td>
-                            <td class="col-lg-1 school"><%- researchAward.nmims_school %></td>
-                            <td class="col-lg-1 faculty-name"><%- researchAward.faculty_name %></td>
-                            <td class="col-lg-1 award-name"><%- researchAward.award_name %></td>
-                            <td class="col-lg-1 award-details"><%- researchAward.award_details %></td>
-                            <td class="col-lg-1 organisation-name"><%- researchAward.organisation_name_coferring_award %></td>
-                            <!-- <td class="col-lg-1">
+                                <tbody>
+                                    <% researchAwardData .forEach(function(researchAward, index) { %>
+                                        <tr data-award-id="<%- researchAward.id %>"
+                                            data-date="<%- researchAward.date %>"
+                                            data-award-category="<%- researchAward.award_category %>"
+                                            data-support-documents="<%- researchAward.supporting_documents %>"
+                                            data-place="<%- researchAward.place %>">
+                                            <td class="col-lg-1 "><%- index +1 %></td>
+                                            <td class="col-lg-1 campus"><%- researchAward.nmims_campus %></td>
+                                            <td class="col-lg-1 school"><%- researchAward.nmims_school %></td>
+                                            <td class="col-lg-1 faculty-name"><%- researchAward.faculty_name %></td>
+                                            <td class="col-lg-1 award-name"><%- researchAward.award_name %></td>
+                                            <td class="col-lg-1 award-details"><%- researchAward.award_details %></td>
+                                            <td class="col-lg-1 organisation-name"><%-
+                                                    researchAward.organisation_name_coferring_award %></td>
+                                            <!-- <td class="col-lg-1">
                                 <label class="view" data-award-id="<%- researchAward.id %>"><i class="fa-solid fa-eye view text-danger"
                                     data-award-id="<%- researchAward.id %>"></i></label>
                                 <label class="edit" data-award-id="<%- researchAward.id %>"><i class="fa fa-edit edit text-danger"
@@ -87,837 +94,861 @@
                                 <label class="delete" data-award-id="<%- researchAward.id %>"><i class="fa-solid fa-trash delete text-danger"
                                     data-award-id="<%- researchAward.id %>"></i></label>
                             </td> -->
-                            <td colspan="3px" style="display:flex;justify-content: center;">
-                            <p title="View" class="col-lg-1 view text-danger" style="cursor: pointer;" data-award-id="<%- researchAward.id %>">
-                                &#128065;
-                            </p>
-                            <p title="Edit" class="col-lg-1 edit text-danger" style="cursor: pointer;" data-award-id="<%- researchAward.id %>">
-                                &#9998;
-                            </p>
-                            <p title="Delete" class="col-lg-1 delete text-danger" style="cursor: pointer;"  data-award-id="<%- researchAward.id %>">
-                                &#128465;
-                            </p>
-                            </td>
-                        </tr>
-                        <% }); %>
-                    </tbody>
-                    <tr>
-                        <div id="no-records-message"  style="display: none; color: red; margin-top: 10px; padding-left: 40%;">
-                            <b class="no-record">No records found.</b> 
-                         </div>
-                    </tr>
-                 </table>
-            </div>
-        </div>
-        <div class="d-flex justify-content-between">
-            <div>
-                <label >Total entries : <%- rowCount %>
-                </label>
-                <label class="d-none" id="row-count"> <%- rowCount %></label>
-            </div>
-            <div>
-                <button id="prevBtn" class="btn btn-primary">Previous</button>
-                <button id="nextBtn" class="btn btn-primary">Next</button>
-                <p id="pagination" class="pagination-search"></p>
-            </div>
-        </div>
-        <!--Import Modal -->
-        <div class="modal fade" id="open-program-modal" tabindex="-1" aria-labelledby="open-program-modal"
-            aria-hidden="true">
-        </div>
-        <!-- EDIT PROGRAM AND UPDATE -->
-        <div class="modal fade" id="edit-program-modal" tabindex="-1" aria-labelledby="editModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="editModalLabel">Update Program</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div id="errorHtml"></div>
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label for="exampleInputEmail1" class="form-label">Program Name</label>
-                            <input type="text" class="form-control" id="program_name" name="program_name">
-                            <input type="hidden" class="form-control" id="hidden_id" name="hidden_id">
-                        </div>
-                        <div class="mb-3">
-                            <label for="exampleInputPassword1" class="form-label">Program Type</label>
-                            <select class="form-control" name="program_type_lid" id="program_type_lid">
+                                            <!-- <td colspan="3px" style="display:flex;justify-content: center;"> -->
+                                            <td title="View" class="view border-right-0" style="cursor: pointer;"
+                                                data-award-id="<%- researchAward.id %>">
+                                                &#128065;
+                                            </td>
+                                            <td title="Edit" class="edit border-right-0" style="cursor: pointer;"
+                                                data-award-id="<%- researchAward.id %>">
+                                                &#9998;
+                                            </td>
+                                            <td title="Delete" class="delete border-right-0" style="cursor: pointer;"
+                                                data-award-id="<%- researchAward.id %>">
+                                                &#128465;
 
-                                <option value="1">Full Time</option>
-
-                                <option value="2">Part Time</option>
-
-                            </select>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="abbr" class="form-label">Program Abbr</label>
-                            <input type="text" class="form-control" id="abbr" name="abbr">
+                                            </td>
+                                        </tr>
+                                        <% }); %>
+                                </tbody>
+                                <tr>
+                                    <div id="no-records-message"
+                                        style="display: none; color: red; margin-top: 10px; padding-left: 40%;">
+                                        <b class="no-record">No records found.</b>
+                                    </div>
+                                </tr>
+                            </table>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary updateProgram">Update</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</main>
-
-<div class="modal fade " id="research-award-modal" tabindex="-1" role="dialog" aria-labelledby="research-award-modal"
-    aria-hidden="true">
-    <div class="modal-dialog modal-dialog-scrollable modal-lg modal-fullscreen p-5" role="document">
-        <div class="modal-content modal-content-data validate-input">
-            <div class="modal-header">
-                <h5 class="modal-title" id="patent-study">RESEARCH AWARD FORM </h5>
-                <div type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true"><i class="fas fa-times "></i></span>
-                </div>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <!-- Campus -->
-                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="application-no" class="form-label fw-bold">Campus </label>
-                        <input type="text"  id="campus" data-validate="isEmpty,isExist" data data-err-msg="This field is required and min length > 1." class="form-control number"
-                            required>
-                    </div>
-                    <!-- school -->
-                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="application-no" class="form-label fw-bold">School </label>
-                        <input type="text"  id="school" data-validate="isEmpty,isExist" data data-err-msg="This field is required and min length > 1." class="form-control number"
-                            required>
-                    </div>
-                    <!-- Name Of Faculty -->
-                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="application-no" class="form-label fw-bold">Name Of Faculty </label>
-                        <input type="text"  id="faculty-name" data-validate="isEmpty,isExist" data data-err-msg="This field is required and min length > 1." class="form-control number"
-                            required>
-                    </div>
-                    <!-- Name Of Award  -->
-                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="application-no" class="form-label fw-bold">Name Of Award </label>
-                        <input type="text"  id="award-name" data-validate="isEmpty,isExist" data data-err-msg="This field is required and min length > 1." class="form-control number"
-                            required>
-                    </div>
-                    <!-- Details Of Award -->
-                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="award-details" class="form-label fw-bold">Details Of Award </label>
-                        <input type="text"  id="award-details" data-validate="isEmpty,isExist" data data-err-msg="This field is required and min length > 1." class="form-control number"
-                            required>
-                    </div>
-                    <!-- Name Of The Organisation Coferring Award -->
-                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="application-no" class="form-label fw-bold">Name Of The Organisation Coferring Award </label>
-                        <input type="text"  id="organisation-name" data-validate="isEmpty,isExist" data data-err-msg="This field is required and min length > 1." class="form-control number"
-                            required>
-                    </div>
-                    <!-- Date -->
-                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="application-no" class="form-label fw-bold">Date </label>
-                        <input type="date"  id="award-date" data-validate="isEmpty,isExist" data data-err-msg="Date is required." class="form-control number"
-                            required>
-                    </div>
-                    <!-- place -->
-                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="application-no" class="form-label fw-bold">Place </label>
-                        <input type="text"  id="place" data-validate="isEmpty,isExist" data data-err-msg="This field is required and min length > 1." class="form-control number"
-                            required>
-                    </div>
-
-                      <!-- Award  Category  -->
-                   <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                    <label for="award-category" id="award-category" class="form-label fw-bold mb-3">Award  Category</label><br>
-                    <div class="form-check-inline">
-                        <label for="inter-national" class="form-check-label">
-                            <input type="radio" class="form-check-input" id="inter-national" name="award-category" value="International"> International
-                        </label>
-                    </div>
-                    <div class="form-check-inline">
-                        <label for="national" class="form-check-label">
-                            <input type="radio" class="form-check-input" id="national" name="award-category" value="National" checked> National
-                        </label>
-                    </div>
-                    </div>
-                     <!-- Upload Supporting Documents-->
-                     <div class="form-group col-lg-6 col-md-8 col-sm-12 mb-4">
-                        <div class="col-lg-6 col-md-8 col-sm-12">
-                            <label for="supporting-documents" class="form-label fw-bold ">
-                                Upload Supporting Documents
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <label>Total entries : <%- rowCount %>
                             </label>
-                            <div class="d-flex">
-                                <input type="file" name="supporting-documents" id="supporting-documents"
-                                    class="col-md-12 form-control" data-validate="isEmpty,isExist,isFile" data-err-msg="File is required." required multiple>
-                                    <button class="download-btn download-file" id="research-award-file-btn-edit"><i class="fas fa-download text-danger"></i></button>
+                            <label class="d-none" id="row-count"> <%- rowCount %></label>
+                        </div>
+                        <div>
+                            <button id="prevBtn" class="btn btn-primary">Previous</button>
+                            <button id="nextBtn" class="btn btn-primary">Next</button>
+                            <p id="pagination" class="pagination-search"></p>
+                        </div>
+                    </div>
+                    <!--Import Modal -->
+                    <div class="modal fade" id="open-program-modal" tabindex="-1" aria-labelledby="open-program-modal"
+                        aria-hidden="true">
+                    </div>
+                    <!-- EDIT PROGRAM AND UPDATE -->
+                    <div class="modal fade" id="edit-program-modal" tabindex="-1" aria-labelledby="editModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="editModalLabel">Update Program</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div id="errorHtml"></div>
+                                <div class="modal-body">
+                                    <div class="mb-3">
+                                        <label for="exampleInputEmail1" class="form-label">Program Name</label>
+                                        <input type="text" class="form-control" id="program_name" name="program_name">
+                                        <input type="hidden" class="form-control" id="hidden_id" name="hidden_id">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="exampleInputPassword1" class="form-label">Program Type</label>
+                                        <select class="form-control" name="program_type_lid" id="program_type_lid">
+
+                                            <option value="1">Full Time</option>
+
+                                            <option value="2">Part Time</option>
+
+                                        </select>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="abbr" class="form-label">Program Abbr</label>
+                                        <input type="text" class="form-control" id="abbr" name="abbr">
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-primary updateProgram">Update</button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </main>
 
-            <!-- Add your modal footer buttons if needed -->
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-md btn-primary submit-btn d-none" id="submit-btn">Submit</button>
-                <button class="btn btn-md btn-primary update-btn d-none" id="update-btn">Update</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade " id="research-award-modal-view" tabindex="-1" role="dialog" aria-labelledby="research-award-modal-view"
-    aria-hidden="true">
-    <div class="modal-dialog modal-dialog-scrollable modal-lg modal-fullscreen p-5" role="document">
-        <div class="modal-content modal-content-data">
-            <div class="modal-header">
-                <h5 class="modal-title" id="research-award">Research Award </h5>
-                <div type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true"><i class="fas fa-times "></i></span>
-                </div>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <!-- Campus -->
-                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                        <div class="box">
-                            <div class="sub-title-text sub-title">Campus :</div>
-                            <label class="view-content" id="view-campus"></label>
-                        </div>
-                    </div>
-                    <!-- School -->
-                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                        <div class="box">
-                            <div class="sub-title-text sub-title">School :</div>
-                            <label class="view-content" id="view-school"></label>
-                        </div>
-                    </div>
-                    <!-- Name Of Faculty -->
-                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                        <div class="box">
-                            <div class="sub-title-text sub-title">Name Of Faculty :</div>
-                            <label class="view-content" id="view-faculty-name"></label>
-                        </div>
-                    </div>
-                    <!-- Name Of Award -->
-                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                        <div class="box">
-                            <div class="sub-title-text sub-title">Name Of Award :</div>
-                            <label class="view-content" id="view-award-name"></label>
-                        </div>
-                    </div>
-                    <!-- Details Of Award -->
-                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                        <div class="box">
-                            <div class="sub-title-text sub-title"> Details Of Award :</div>
-                            <label class="view-content" id="view-award-details"></label>
-                        </div>
-                    </div>
-                    <!-- Name Of The Organisation Coferring Award -->
-                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                        <div class="box">
-                            <div class="sub-title-text sub-title"> Name Of The Organisation Coferring Award:</div>
-                            <label class="view-content" id="view-organisation-name"></label>
-                        </div>
-                    </div>
-                    <!-- Date -->
-                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                        <div class="box">
-                            <div class="sub-title-text sub-title"> Date :</div>
-                            <label class="view-content" id="view-date"></label>
-                        </div>
-                    </div>
-
-                    <!-- Place -->
-                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                        <div class="box">
-                            <div class="sub-title-text sub-title"> Place :</div>
-                            <label class="view-content" id="view-place"></label>
-                        </div>
-                    </div>
-
-                    <!-- Award Category -->
-                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                        <div class="box">
-                            <div class="sub-title-text sub-title"> Award Category :</div>
-                            <label class="view-content" id="view-award-category"></label>
-                        </div>
-                    </div>
-                    <!--Download  -->
-                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                        <div class="box">
-                            <div class="sub-title-text sub-title">
-                                <button class="btn btn-primary h-10 w-10 download-file" id="view-research-award-file-btn">
-                                    <i class="fas fa-download text-danger"></i>  Research Award Documents
-                                </button>
+            <div class="modal fade " id="research-award-modal" tabindex="-1" role="dialog"
+                aria-labelledby="research-award-modal" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-scrollable modal-lg modal-fullscreen p-5" role="document">
+                    <div class="modal-content modal-content-data validate-input">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="patent-study">RESEARCH AWARD FORM </h5>
+                            <div type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true"><i class="fas fa-times "></i></span>
                             </div>
-                            <label class="view-content" id="view-research-award-file"></label>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <!-- Campus -->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="application-no" class="form-label fw-bold">Campus </label>
+                                    <input type="text" id="campus" data-validate="isEmpty,isExist" data
+                                        data-err-msg="This field is required and min length > 1."
+                                        class="form-control number" required>
+                                </div>
+                                <!-- school -->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="application-no" class="form-label fw-bold">School </label>
+                                    <input type="text" id="school" data-validate="isEmpty,isExist" data
+                                        data-err-msg="This field is required and min length > 1."
+                                        class="form-control number" required>
+                                </div>
+                                <!-- Name Of Faculty -->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="application-no" class="form-label fw-bold">Name Of Faculty </label>
+                                    <input type="text" id="faculty-name" data-validate="isEmpty,isExist" data
+                                        data-err-msg="This field is required and min length > 1."
+                                        class="form-control number" required>
+                                </div>
+                                <!-- Name Of Award  -->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="application-no" class="form-label fw-bold">Name Of Award </label>
+                                    <input type="text" id="award-name" data-validate="isEmpty,isExist" data
+                                        data-err-msg="This field is required and min length > 1."
+                                        class="form-control number" required>
+                                </div>
+                                <!-- Details Of Award -->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="award-details" class="form-label fw-bold">Details Of Award </label>
+                                    <input type="text" id="award-details" data-validate="isEmpty,isExist" data
+                                        data-err-msg="This field is required and min length > 1."
+                                        class="form-control number" required>
+                                </div>
+                                <!-- Name Of The Organisation Coferring Award -->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="application-no" class="form-label fw-bold">Name Of The Organisation
+                                        Coferring Award </label>
+                                    <input type="text" id="organisation-name" data-validate="isEmpty,isExist" data
+                                        data-err-msg="This field is required and min length > 1."
+                                        class="form-control number" required>
+                                </div>
+                                <!-- Date -->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="application-no" class="form-label fw-bold">Date </label>
+                                    <input type="date" id="award-date" data-validate="isEmpty,isExist" data
+                                        data-err-msg="Date is required." class="form-control number" required>
+                                </div>
+                                <!-- place -->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="application-no" class="form-label fw-bold">Place </label>
+                                    <input type="text" id="place" data-validate="isEmpty,isExist" data
+                                        data-err-msg="This field is required and min length > 1."
+                                        class="form-control number" required>
+                                </div>
+
+                                <!-- Award  Category  -->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="award-category" id="award-category"
+                                        class="form-label fw-bold mb-3">Award Category</label><br>
+                                    <div class="form-check-inline">
+                                        <label for="inter-national" class="form-check-label">
+                                            <input type="radio" class="form-check-input" id="inter-national"
+                                                name="award-category" value="International"> International
+                                        </label>
+                                    </div>
+                                    <div class="form-check-inline">
+                                        <label for="national" class="form-check-label">
+                                            <input type="radio" class="form-check-input" id="national"
+                                                name="award-category" value="National" checked> National
+                                        </label>
+                                    </div>
+                                </div>
+                                <!-- Upload Supporting Documents-->
+                                <div class="form-group col-lg-6 col-md-8 col-sm-12 mb-4">
+                                    <div class="col-lg-6 col-md-8 col-sm-12">
+                                        <label for="supporting-documents" class="form-label fw-bold ">
+                                            Upload Supporting Documents
+                                        </label>
+                                        <div class="d-flex">
+                                            <input type="file" name="supporting-documents" id="supporting-documents"
+                                                class="col-md-12 form-control" data-validate="isEmpty,isExist,isFile"
+                                                data-err-msg="File is required." required multiple>
+                                            <button class="download-btn download-file"
+                                                id="research-award-file-btn-edit"><i
+                                                    class="fas fa-download text-danger"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Add your modal footer buttons if needed -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-md btn-primary submit-btn d-none"
+                                id="submit-btn">Submit</button>
+                            <button class="btn btn-md btn-primary update-btn d-none" id="update-btn">Update</button>
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- Add your modal footer buttons if needed -->
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+
+            <div class="modal fade " id="research-award-modal-view" tabindex="-1" role="dialog"
+                aria-labelledby="research-award-modal-view" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-scrollable modal-lg modal-fullscreen p-5" role="document">
+                    <div class="modal-content modal-content-data">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="research-award">Research Award </h5>
+                            <div type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true"><i class="fas fa-times "></i></span>
+                            </div>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <!-- Campus -->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="sub-title-text sub-title">Campus :</div>
+                                        <label class="view-content" id="view-campus"></label>
+                                    </div>
+                                </div>
+                                <!-- School -->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="sub-title-text sub-title">School :</div>
+                                        <label class="view-content" id="view-school"></label>
+                                    </div>
+                                </div>
+                                <!-- Name Of Faculty -->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="sub-title-text sub-title">Name Of Faculty :</div>
+                                        <label class="view-content" id="view-faculty-name"></label>
+                                    </div>
+                                </div>
+                                <!-- Name Of Award -->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="sub-title-text sub-title">Name Of Award :</div>
+                                        <label class="view-content" id="view-award-name"></label>
+                                    </div>
+                                </div>
+                                <!-- Details Of Award -->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="sub-title-text sub-title"> Details Of Award :</div>
+                                        <label class="view-content" id="view-award-details"></label>
+                                    </div>
+                                </div>
+                                <!-- Name Of The Organisation Coferring Award -->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="sub-title-text sub-title"> Name Of The Organisation Coferring Award:
+                                        </div>
+                                        <label class="view-content" id="view-organisation-name"></label>
+                                    </div>
+                                </div>
+                                <!-- Date -->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="sub-title-text sub-title"> Date :</div>
+                                        <label class="view-content" id="view-date"></label>
+                                    </div>
+                                </div>
+
+                                <!-- Place -->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="sub-title-text sub-title"> Place :</div>
+                                        <label class="view-content" id="view-place"></label>
+                                    </div>
+                                </div>
+
+                                <!-- Award Category -->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="sub-title-text sub-title"> Award Category :</div>
+                                        <label class="view-content" id="view-award-category"></label>
+                                    </div>
+                                </div>
+                                <!--Download  -->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="sub-title-text sub-title">
+                                            <button class="btn btn-primary h-10 w-10 download-file"
+                                                id="view-research-award-file-btn">
+                                                <i class="fas fa-download text-danger"></i> Research Award Documents
+                                            </button>
+                                        </div>
+                                        <label class="view-content" id="view-research-award-file"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Add your modal footer buttons if needed -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-</div>
-<script>
-    const rowCount = document.getElementById('row-count');
-    let rowIndex = rowCount.innerText;
-    let indexValue = parseInt(rowIndex, 10);
-    console.log('indexValue ===>>>', indexValue)
-    const addNewRseachAward = document.getElementById('add-research-award-form');
-    const researchAwardList = document.getElementById('research-award-list');
-    const submitBtn = document.getElementById('submit-btn');
-    const updateBtn = document.getElementById('update-btn');
-    // const fileView = document.getElementById('file-view');
-    const downloadLink = document.getElementById('downloadLink');
-    let awardId , researchAwardRow
+            <script>
+                const rowCount = document.getElementById('row-count');
+                let rowIndex = rowCount.innerText;
+                let indexValue = parseInt(rowIndex, 10);
+                console.log('indexValue ===>>>', indexValue)
+                const addNewRseachAward = document.getElementById('add-research-award-form');
+                const researchAwardList = document.getElementById('research-award-list');
+                const submitBtn = document.getElementById('submit-btn');
+                const updateBtn = document.getElementById('update-btn');
+                // const fileView = document.getElementById('file-view');
+                const downloadLink = document.getElementById('downloadLink');
+                let awardId, researchAwardRow
 
-    addNewRseachAward.addEventListener('click' , (event) => {
-        if(event.target.tagName === 'BUTTON' && event.target.classList.contains('add-modal') || event.target.classList.contains('plus')){
-            submitBtn.classList.remove('d-none');
-            updateBtn.classList.add('d-none');
-            removeErrorMsg()
-            
-            document.getElementById('supporting-documents');
+                addNewRseachAward.addEventListener('click', (event) => {
+                    if (event.target.tagName === 'BUTTON' && event.target.classList.contains('add-modal') || event.target.classList.contains('plus')) {
+                        submitBtn.classList.remove('d-none');
+                        updateBtn.classList.add('d-none');
+                        removeErrorMsg()
 
-            $('#research-award-modal').modal({
-                    backdrop: 'static'
-                });
+                        document.getElementById('supporting-documents');
 
-            document.getElementById('campus').value = '';
-            document.getElementById('school').value = '';
-            document.getElementById("faculty-name").value = '';
-            document.getElementById("award-name").value = '';
-            document.getElementById("award-details").value = '';
-            document.getElementById("organisation-name").value = '';
-            document.getElementById("award-date").value = '';
-            document.getElementById("place").value = '';
-            const researchAwardFiles = document.querySelector('#research-award-file-btn-edit');
-            researchAwardFiles.classList.add('d-none');
-        }
-        
-    });
+                        $('#research-award-modal').modal({
+                            backdrop: 'static'
+                        });
 
-    const  insertResearchAwardForm = async(url) => {
-
-        const researchAwardFiles = document.getElementById('supporting-documents');
-        // patentFile
-        const researchAwardDocuments = researchAwardFiles.files;
-        const researchAwardFormData = new FormData();
-        console.log('researchAwardDocuments ===>>>', researchAwardDocuments)
-        for (let i = 0; i < researchAwardDocuments.length; i++) {
-            console.log('file name  ==>>', researchAwardDocuments[i].name);
-            researchAwardFormData.append('researchAwardDocuments', researchAwardDocuments[i]);
-        }
-
-        const campus = document.getElementById('campus').value;
-        const school = document.getElementById('school').value;
-        const facultyName = document.getElementById("faculty-name").value;
-        const awardName = document.getElementById("award-name").value;
-        const awardDetails = document.getElementById("award-details").value;
-        const organisationName = document.getElementById("organisation-name").value;
-        const awardDate = document.getElementById("award-date").value;
-        const awardPlace = document.getElementById("place").value;
-        const awardCategory =document.querySelector('input[name="award-category"]:checked').value;
-
-        researchAwardFormData.append('campus' , campus);
-        researchAwardFormData.append('school' , school);
-        researchAwardFormData.append('facultyName' , facultyName);
-        researchAwardFormData.append('awardName' , awardName);
-        researchAwardFormData.append('awardDetails' , awardDetails);
-        researchAwardFormData.append('organisationName' , organisationName);
-        researchAwardFormData.append('awardDate' , awardDate);
-        researchAwardFormData.append('awardPlace' , awardPlace);
-        researchAwardFormData.append('awardCategory' , awardCategory);
-
-        fetch(url, {
-            method : "POST",
-            body : researchAwardFormData
-        })
-        .then((Response) => {
-            if(Response.ok){
-                return Response.json()
-            }
-        })
-        .then((data) => {
-            if(data.status === "Done"){
-                console.log('data ===>>>>', data);
-                awardId = data.awardId;
-                const rowCountInteger = parseInt(data.rowCount, 10);
-                const IndexEntry = rowCountInteger + indexValue
-                console.log('IndexEntry ===>>>', IndexEntry);
-                const newResearchAwardRow = document.createElement('tr');
-                newResearchAwardRow.setAttribute('data-date', data.researchAwardData.date);
-                newResearchAwardRow.setAttribute('data-award-category', data.researchAwardData.awardCategory);
-                newResearchAwardRow.setAttribute('data-support-documents', data.researchAwardData.researchAwardDocuments);
-                newResearchAwardRow.setAttribute('data-place', data.researchAwardData.awardPlace);
-
-                newResearchAwardRow.innerHTML = `
-                <td class="col-lg-1 ">${IndexEntry}</td>
-                            <td class="col-lg-1 campus">${data.researchAwardData.campus}</td>
-                            <td class="col-lg-1 school">${data.researchAwardData.school}</td>
-                            <td class="col-lg-1 faculty-name">${data.researchAwardData.facultyName}</td>
-                            <td class="col-lg-1 award-name">${data.researchAwardData.awardName}</td>
-                            <td class="col-lg-1 award-detals">${data.researchAwardData.awardDetails}</td>
-                            <td class="col-lg-1 organisation-name">${data.researchAwardData.organisationName}</td>
-
-                            <td title="View" class="col-lg-1 view text-danger" style="cursor: pointer;"   data-award-id="${data.awardId}">
-                                &#128065;
-                            </td>
-                            <td title="Edit" class="col-lg-1 edit text-danger" style="cursor: pointer;"   data-award-id="${data.awardId}">
-                                &#9998;
-                            </td>
-                            <td title="Delete" class="col-lg-1 delete text-danger" style="cursor: pointer;"    data-award-id="${data.awardId}">
-                                &#128465;
-                            </td>`
-                researchAwardList.appendChild(newResearchAwardRow)
-                Swal.fire({
-                    position: "top-center",
-                    icon: "success",
-                    title: `${data.message}`,
-                    showConfirmButton: true,
-                                confirmButtonText:"OK",
-                                confirmButtonColor: "#DD6B55"
-                    // timer: 1500
-                });
-                
-                $('#research-award-modal').modal('hide')
-                
+                        document.getElementById('campus').value = '';
+                        document.getElementById('school').value = '';
+                        document.getElementById("faculty-name").value = '';
+                        document.getElementById("award-name").value = '';
+                        document.getElementById("award-details").value = '';
+                        document.getElementById("organisation-name").value = '';
+                        document.getElementById("award-date").value = '';
+                        document.getElementById("place").value = '';
+                        const researchAwardFiles = document.querySelector('#research-award-file-btn-edit');
+                        researchAwardFiles.classList.add('d-none');
                     }
-                else {
-                console.log('data ====>>>>>', data);
-                Swal.fire({
-                    position: "top-center",
-                    icon: "error",
-                    title: `${data.errorCode}`,
-                    color: "red",
-                    with: "20PX",
-                    html: `<span style="color: red;">${data.message}</span>`,
-                    showConfirmButton: true,
-                                confirmButtonText:"OK",
-                                confirmButtonColor: "#DD6B55"
 
-                })
-        }
-        })
-        .catch((error) => {
-            Swal.fire({
+                });
+
+                const insertResearchAwardForm = async (url) => {
+
+                    const researchAwardFiles = document.getElementById('supporting-documents');
+                    // patentFile
+                    const researchAwardDocuments = researchAwardFiles.files;
+                    const researchAwardFormData = new FormData();
+                    console.log('researchAwardDocuments ===>>>', researchAwardDocuments)
+                    for (let i = 0; i < researchAwardDocuments.length; i++) {
+                        console.log('file name  ==>>', researchAwardDocuments[i].name);
+                        researchAwardFormData.append('researchAwardDocuments', researchAwardDocuments[i]);
+                    }
+
+                    const campus = document.getElementById('campus').value;
+                    const school = document.getElementById('school').value;
+                    const facultyName = document.getElementById("faculty-name").value;
+                    const awardName = document.getElementById("award-name").value;
+                    const awardDetails = document.getElementById("award-details").value;
+                    const organisationName = document.getElementById("organisation-name").value;
+                    const awardDate = document.getElementById("award-date").value;
+                    const awardPlace = document.getElementById("place").value;
+                    const awardCategory = document.querySelector('input[name="award-category"]:checked').value;
+
+                    researchAwardFormData.append('campus', campus);
+                    researchAwardFormData.append('school', school);
+                    researchAwardFormData.append('facultyName', facultyName);
+                    researchAwardFormData.append('awardName', awardName);
+                    researchAwardFormData.append('awardDetails', awardDetails);
+                    researchAwardFormData.append('organisationName', organisationName);
+                    researchAwardFormData.append('awardDate', awardDate);
+                    researchAwardFormData.append('awardPlace', awardPlace);
+                    researchAwardFormData.append('awardCategory', awardCategory);
+
+                    fetch(url, {
+                        method: "POST",
+                        body: researchAwardFormData
+                    })
+                        .then((Response) => {
+                            if (Response.ok) {
+                                return Response.json()
+                            }
+                        })
+                        .then((data) => {
+                            if (data.status === "Done") {
+                //                 console.log('data ===>>>>', data);
+                //                 awardId = data.awardId;
+                //                 const rowCountInteger = parseInt(data.rowCount, 10);
+                //                 const IndexEntry = rowCountInteger + indexValue
+                //                 console.log('IndexEntry ===>>>', IndexEntry);
+                //                 const newResearchAwardRow = document.createElement('tr');
+                //                 newResearchAwardRow.setAttribute('data-date', data.researchAwardData.date);
+                //                 newResearchAwardRow.setAttribute('data-award-category', data.researchAwardData.awardCategory);
+                //                 newResearchAwardRow.setAttribute('data-support-documents', data.researchAwardData.researchAwardDocuments);
+                //                 newResearchAwardRow.setAttribute('data-place', data.researchAwardData.awardPlace);
+
+                //                 newResearchAwardRow.innerHTML = `
+                // <td class="col-lg-1 ">${IndexEntry}</td>
+                //             <td class="col-lg-1 campus">${data.researchAwardData.campus}</td>
+                //             <td class="col-lg-1 school">${data.researchAwardData.school}</td>
+                //             <td class="col-lg-1 faculty-name">${data.researchAwardData.facultyName}</td>
+                //             <td class="col-lg-1 award-name">${data.researchAwardData.awardName}</td>
+                //             <td class="col-lg-1 award-detals">${data.researchAwardData.awardDetails}</td>
+                //             <td class="col-lg-1 organisation-name">${data.researchAwardData.organisationName}</td>
+
+                //             <td title="View" class="border-right-0 view" style="cursor: pointer;"   data-award-id="${data.awardId}">
+                //                 &#128065;
+                //             </td>
+                //             <td title="Edit" class="border-right-0 edit" style="cursor: pointer;"   data-award-id="${data.awardId}">
+                //                 &#9998;
+                //             </td>
+                //             <td title="Delete" class="border-right-0 delete" style="cursor: pointer;"    data-award-id="${data.awardId}">
+                //                 &#128465;
+                //             </td>`
+                //                 researchAwardList.appendChild(newResearchAwardRow)
+                                Swal.fire({
+                                    position: "top-center",
+                                    icon: "success",
+                                    title: `${data.message}`,
+                                    showConfirmButton: true,
+                                    confirmButtonText: "OK",
+                                    confirmButtonColor: "#DD6B55"
+                                    // timer: 1500
+                                }).then(() => {
+                                    document.location.reload()
+                                });
+
+                                $('#research-award-modal').modal('hide')
+
+                            }
+                            else {
+                                console.log('data ====>>>>>', data);
+                                Swal.fire({
+                                    position: "top-center",
+                                    icon: "error",
+                                    title: `${data.errorCode}`,
+                                    color: "red",
+                                    with: "20PX",
+                                    html: `<span style="color: red;">${data.message}</span>`,
+                                    showConfirmButton: true,
+                                    confirmButtonText: "OK",
+                                    confirmButtonColor: "#DD6B55"
+
+                                })
+                            }
+                        })
+                        .catch((error) => {
+                            Swal.fire({
                                 position: "top-center",
                                 icon: "error",
                                 title: "Data Insertion Failed",
-                                color : "red",
-                                with : "20PX",
+                                color: "red",
+                                with: "20PX",
                                 html: `<span style="color: red;">${error}</span>`,
                                 showConfirmButton: false,
                             });
 
-                })
-    }
-
-    submitBtn.addEventListener('click', async () => {
-        const isValid = validateRequiredFormFields(submitBtn);
-            if (isValid) {
-                await insertResearchAwardForm('<%- BASE_URL %>research/research-award/insert');
-                indexValue += 1;
+                        })
                 }
-            else {
-                alert('validation Failed');
-            }
-    });
 
-
-    researchAwardList.addEventListener('click' , function(event) {
-        if(event.target.classList.contains('edit')){
-
-            $('#research-award-modal').modal({
-                    backdrop: 'static'
+                submitBtn.addEventListener('click', async () => {
+                    const isValid = validateRequiredFormFields(submitBtn);
+                    if (isValid) {
+                        await insertResearchAwardForm('<%- BASE_URL %>research/research-award/insert');
+                        indexValue += 1;
+                    }
+                    else {
+                        alert('validation Failed');
+                    }
                 });
-            submitBtn.classList.add('d-none');
-            updateBtn.classList.remove('d-none');
-            researchAwardRow = event.target.closest('tr');
-            console.log('researchAwardRow ===>>>>', researchAwardRow);
-            // function call
-            setFileNameAttributeToBeDownload(researchAwardRow)
-            awardId = researchAwardRow.getAttribute('data-award-id');
-            console.log('awardId ===>>>>', awardId)
-            const campus = document.getElementById('campus');
-            const school = document.getElementById('school');
-            const facultyName = document.getElementById("faculty-name");
-            const awardName = document.getElementById("award-name");
-            const awardDetails = document.getElementById("award-details");
-            const organisationName = document.getElementById("organisation-name");
-            const awardDate = document.getElementById("award-date");
-            const awardPlace = document.getElementById("place");
-            const isIternational = document.getElementById('inter-national');
-            const isNational = document.getElementById('national');
-            const awardCategory = researchAwardRow.getAttribute('data-award-category');
-            console.log('awardCategory ===>>>>>', awardCategory);
-            awardCategory === 'National' ? isNational.checked = true : isIternational.checked = true;
-            $('#research-award-modal').modal('show');
-            campus.value = researchAwardRow.querySelector('.campus').innerText;
-            school.value = researchAwardRow.querySelector('.school').innerText;
-            facultyName.value = researchAwardRow.querySelector('.faculty-name').innerText;
-            awardName.value = researchAwardRow.querySelector('.award-name').innerText;
-            awardDetails.value = researchAwardRow.querySelector('.award-details').innerText;
-            organisationName.value = researchAwardRow.querySelector('.organisation-name').innerText;
-            const DateData = researchAwardRow.getAttribute('data-date');
-            console.log('awardDate.value ===>>>>', DateData)
-            awardDate.value = formatDateToYYYYMMDD(DateData);
-            awardPlace.value = researchAwardRow.getAttribute('data-place');
-            const supportingDocuments = researchAwardRow.getAttribute('data-support-documents');
-            console.log('supportingDocuments ===>>>', supportingDocuments);
-        }
 
-        // for delete research award row
 
-        if(event.target.classList.contains('delete')){
-            const rowToBeDeleted = event.target.closest('tr');
-            awardId = rowToBeDeleted.getAttribute('data-award-id');
-            console.log('awardId ===>>>>', awardId);
+                researchAwardList.addEventListener('click', function (event) {
+                    if (event.target.classList.contains('edit')) {
 
-            let confirmDelete = "Do you want to delete the Research Award Row?";
-                if (confirmDelete) {
-                    Swal.fire({
-                        title: "Are you sure?",
-                        text: "You won't be able to revert this!",
-                        icon: "warning",
-                        showCancelButton: true,
-                        confirmButtonColor: "#3085d6",
-                        cancelButtonColor: "#d33",
-                        confirmButtonText: "Yes, delete it!"
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            // Execute fetch request here after confirmation
-                            fetch('<%- BASE_URL %>research/research-award/delete', {
-                                method: 'POST',
-                                headers: {
-                                    'content-type': 'application/json'
-                                },
-                                body: JSON.stringify({ awardId })
-                            })
-                                .then((result) => result.json())
-                                .then((data) => {
-                                    if (data.status === 'Done') {
-                                        console.log('data ==>>', data);
-                                        rowToBeDeleted.remove();
-                                        Swal.fire({
-                                            title: "Deleted!",
-                                            text: "Record has been deleted.",
-                                            icon: "success",
-                                            showConfirmButton: true,
-                                confirmButtonText:"OK",
-                                confirmButtonColor: "#DD6B55"
-                                        }).then(() => {
-                                            location.reload();
+                        $('#research-award-modal').modal({
+                            backdrop: 'static'
+                        });
+                        submitBtn.classList.add('d-none');
+                        updateBtn.classList.remove('d-none');
+                        researchAwardRow = event.target.closest('tr');
+                        console.log('researchAwardRow ===>>>>', researchAwardRow);
+                        // function call
+                        setFileNameAttributeToBeDownload(researchAwardRow)
+                        awardId = researchAwardRow.getAttribute('data-award-id');
+                        console.log('awardId ===>>>>', awardId)
+                        const campus = document.getElementById('campus');
+                        const school = document.getElementById('school');
+                        const facultyName = document.getElementById("faculty-name");
+                        const awardName = document.getElementById("award-name");
+                        const awardDetails = document.getElementById("award-details");
+                        const organisationName = document.getElementById("organisation-name");
+                        const awardDate = document.getElementById("award-date");
+                        const awardPlace = document.getElementById("place");
+                        const isIternational = document.getElementById('inter-national');
+                        const isNational = document.getElementById('national');
+                        const awardCategory = researchAwardRow.getAttribute('data-award-category');
+                        console.log('awardCategory ===>>>>>', awardCategory);
+                        awardCategory === 'National' ? isNational.checked = true : isIternational.checked = true;
+                        $('#research-award-modal').modal('show');
+                        campus.value = researchAwardRow.querySelector('.campus').innerText;
+                        school.value = researchAwardRow.querySelector('.school').innerText;
+                        facultyName.value = researchAwardRow.querySelector('.faculty-name').innerText;
+                        awardName.value = researchAwardRow.querySelector('.award-name').innerText;
+                        awardDetails.value = researchAwardRow.querySelector('.award-details').innerText;
+                        organisationName.value = researchAwardRow.querySelector('.organisation-name').innerText;
+                        const DateData = researchAwardRow.getAttribute('data-date');
+                        console.log('awardDate.value ===>>>>', DateData)
+                        awardDate.value = formatDateToYYYYMMDD(DateData);
+                        awardPlace.value = researchAwardRow.getAttribute('data-place');
+                        const supportingDocuments = researchAwardRow.getAttribute('data-support-documents');
+                        console.log('supportingDocuments ===>>>', supportingDocuments);
+                    }
+
+                    // for delete research award row
+
+                    if (event.target.classList.contains('delete')) {
+                        const rowToBeDeleted = event.target.closest('tr');
+                        awardId = rowToBeDeleted.getAttribute('data-award-id');
+                        console.log('awardId ===>>>>', awardId);
+
+                        let confirmDelete = "Do you want to delete the Research Award Row?";
+                        if (confirmDelete) {
+                            Swal.fire({
+                                title: "Are you sure?",
+                                text: "You won't be able to revert this!",
+                                icon: "warning",
+                                showCancelButton: true,
+                                confirmButtonColor: "#3085d6",
+                                cancelButtonColor: "#d33",
+                                confirmButtonText: "Yes, delete it!"
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    // Execute fetch request here after confirmation
+                                    fetch('<%- BASE_URL %>research/research-award/delete', {
+                                        method: 'POST',
+                                        headers: {
+                                            'content-type': 'application/json'
+                                        },
+                                        body: JSON.stringify({ awardId })
+                                    })
+                                        .then((result) => result.json())
+                                        .then((data) => {
+                                            if (data.status === 'Done') {
+                                                console.log('data ==>>', data);
+                                                rowToBeDeleted.remove();
+                                                Swal.fire({
+                                                    title: "Deleted!",
+                                                    text: "Record has been deleted.",
+                                                    icon: "success",
+                                                    showConfirmButton: true,
+                                                    confirmButtonText: "OK",
+                                                    confirmButtonColor: "#DD6B55"
+                                                }).then(() => {
+                                                    location.reload();
+                                                });
+                                            }
+                                        })
+                                        .catch((error) => {
+                                            console.error('Error:', error);
+                                            const message = error;
+                                            Swal.fire({
+                                                position: "top-center",
+                                                icon: "error",
+                                                title: `${message}`,
+                                                color: "red",
+                                                showConfirmButton: true,
+                                                confirmButtonText: "OK",
+                                                confirmButtonColor: "#DD6B55"
+                                            });
                                         });
-                                    }
-                                })
-                                .catch((error) => {
-                                    console.error('Error:', error);
-                                    const message = error;
+                                }
+                            });
+                        }
+                        else {
+                            return
+                        }
+                    }
+
+                    // view research award data
+                    if (event.target.classList.contains('view')) {
+                        const rowToBeViewed = event.target.closest('tr');
+
+                        $('#research-award-modal-view').modal({
+                            backdrop: 'static'
+                        });
+
+                        console.log('rowToBeViewed ===>>>', rowToBeViewed);
+                        awardId = rowToBeViewed.getAttribute('data-award-id');
+                        console.log('awardId ===>>>>', awardId);
+                        $('#research-award-modal-view').modal('show');
+                        const viewCampus = document.getElementById('view-campus');
+                        const viewSchool = document.getElementById('view-school');
+                        const viewFacultyName = document.getElementById('view-faculty-name');
+                        const viewAwardName = document.getElementById('view-award-name');
+                        const viewAwardDetails = document.getElementById('view-award-details');
+                        const viewOrganisationName = document.getElementById('view-organisation-name');
+                        const viewDate = document.getElementById('view-date');
+                        const viewPlace = document.getElementById('view-place');
+                        const viewAwardCategory = document.getElementById('view-award-category');
+                        const viewfileName = document.getElementById('view-research-award-file');
+                        fetch('<%- BASE_URL %>research/research-award/view', {
+                            method: "POST",
+                            headers: {
+                                'content-type': 'application/json'
+                            },
+                            body: JSON.stringify({ awardId })
+                        })
+                            .then((Response) => {
+                                return Response.ok ? Response.json() : "NetWorkResponse Was Not Ok"
+                            })
+                            .then((data) => {
+                                if (data.status === "Done") {
+                                    console.log('data ===>>>', data);
+                                    setFileNameInButtons(data)
+                                    viewCampus.innerText = data.veiwResearchAwardRow[0].nmims_campus;
+                                    console.log('viewCampus.innerText ===>>>', viewCampus.innerText)
+                                    viewSchool.innerText = data.veiwResearchAwardRow[0].nmims_school;
+                                    viewFacultyName.innerText = data.veiwResearchAwardRow[0].faculty_name;
+                                    viewAwardName.innerText = data.veiwResearchAwardRow[0].award_name;
+                                    viewAwardDetails.innerText = data.veiwResearchAwardRow[0].award_details;
+                                    viewOrganisationName.innerText = data.veiwResearchAwardRow[0].organisation_name_coferring_award;
+                                    viewDate.innerText = data.veiwResearchAwardRow[0].date;
+                                    viewPlace.innerText = data.veiwResearchAwardRow[0].place;
+                                    viewAwardCategory.innerText = data.veiwResearchAwardRow[0].award_category;
+                                    // viewfileName.innerText = data.veiwResearchAwardRow[0].supporting_documents;
+
+                                }
+                                else {
                                     Swal.fire({
                                         position: "top-center",
                                         icon: "error",
-                                        title: `${message}`,
+                                        title: `${data.errorCode}`,
                                         color: "red",
+                                        with: "20PX",
+                                        html: `<span style="color: red;">${data.message}</span>`,
                                         showConfirmButton: true,
-                                confirmButtonText:"OK",
-                                confirmButtonColor: "#DD6B55"
-                                    });
+                                        confirmButtonText: "OK",
+                                        confirmButtonColor: "#DD6B55"
+
+                                    })
+                                }
+                            })
+                            .catch((error) => {
+                                Swal.fire({
+                                    position: "top-center",
+                                    icon: "error",
+                                    title: "Data Fetching Failed",
+                                    color: "red",
+                                    with: "20PX",
+                                    html: `<span style="color: red;">${error}</span>`,
+                                    showConfirmButton: true,
+                                    confirmButtonText: "OK",
+                                    confirmButtonColor: "#DD6B55"
                                 });
-                        }
-                    });
-                }
-                else {
-                    return
-                }
-        }
 
-        // view research award data
-        if(event.target.classList.contains('view')){
-            const rowToBeViewed = event.target.closest('tr');
-
-            $('#research-award-modal-view').modal({
-                    backdrop: 'static'
-                });
-
-            console.log('rowToBeViewed ===>>>', rowToBeViewed);
-            awardId = rowToBeViewed.getAttribute('data-award-id');
-            console.log('awardId ===>>>>', awardId);
-            $('#research-award-modal-view').modal('show');
-           const viewCampus = document.getElementById('view-campus');
-           const viewSchool = document.getElementById('view-school');
-           const viewFacultyName = document.getElementById('view-faculty-name');
-           const viewAwardName = document.getElementById('view-award-name');
-           const viewAwardDetails = document.getElementById('view-award-details');
-           const viewOrganisationName = document.getElementById('view-organisation-name');
-           const viewDate = document.getElementById('view-date');
-           const viewPlace = document.getElementById('view-place');
-           const viewAwardCategory = document.getElementById('view-award-category');
-           const viewfileName = document.getElementById('view-research-award-file');
-           fetch('<%- BASE_URL %>research/research-award/view', {
-            method: "POST",
-               headers: {
-                   'content-type': 'application/json'
-               },
-               body: JSON.stringify({ awardId })
-           })
-           .then((Response) => {
-            return Response.ok ? Response.json() : "NetWorkResponse Was Not Ok"
-           })
-           .then((data) => {
-            if(data.status === "Done"){
-                console.log('data ===>>>', data);
-                setFileNameInButtons(data)
-                viewCampus.innerText = data.veiwResearchAwardRow[0].nmims_campus;
-                console.log('viewCampus.innerText ===>>>', viewCampus.innerText)
-                viewSchool.innerText = data.veiwResearchAwardRow[0].nmims_school;
-                viewFacultyName.innerText = data.veiwResearchAwardRow[0].faculty_name;
-                viewAwardName.innerText = data.veiwResearchAwardRow[0].award_name;
-                viewAwardDetails.innerText = data.veiwResearchAwardRow[0].award_details;
-                viewOrganisationName.innerText = data.veiwResearchAwardRow[0].organisation_name_coferring_award;
-                viewDate.innerText = data.veiwResearchAwardRow[0].date;
-                viewPlace.innerText = data.veiwResearchAwardRow[0].place;
-                viewAwardCategory.innerText = data.veiwResearchAwardRow[0].award_category;
-                // viewfileName.innerText = data.veiwResearchAwardRow[0].supporting_documents;
-               
-            }
-            else{
-                Swal.fire({
-                    position: "top-center",
-                    icon: "error",
-                    title: `${data.errorCode}`,
-                    color: "red",
-                    with: "20PX",
-                    html: `<span style="color: red;">${data.message}</span>`,
-                    showConfirmButton: true,
-                                confirmButtonText:"OK",
-                                confirmButtonColor: "#DD6B55"
-
+                            })
+                    }
                 })
-            }
-           })
-           .catch((error) => {
-            Swal.fire({
-                position: "top-center",
-                icon: "error",
-                title: "Data Fetching Failed",
-                color: "red",
-                with: "20PX",
-                html: `<span style="color: red;">${error}</span>`,
-                showConfirmButton: true,
-                                confirmButtonText:"OK",
-                                confirmButtonColor: "#DD6B55"
-            });
-
-           })
-        }
-    })
 
 
-    const updateResearchAwardRecordData = async (url) => {
+                const updateResearchAwardRecordData = async (url) => {
 
-        const updatedResearchAwardData = new FormData();
-        const updatedAwardFiles = document.getElementById('supporting-documents');
-        // patentFile
-        const updatedawardDocuments = updatedAwardFiles.files;
-        console.log('updatedawardDocuments ===>>>', updatedawardDocuments)
-        for (let i = 0; i < updatedawardDocuments.length; i++) {
-            console.log('file name  ==>>', updatedawardDocuments[i].name);
-            updatedResearchAwardData.append('researchAwardDocuments', updatedawardDocuments[i]);
-        }
-
-        const updatedCampus = document.getElementById('campus').value;
-        const updatedSchool = document.getElementById('school').value;
-        const updatedFacultyName = document.getElementById("faculty-name").value;
-        const updatedAwardName = document.getElementById("award-name").value;
-        const updatedAwardDetails = document.getElementById("award-details").value;
-        const updatedOrganisationName = document.getElementById("organisation-name").value;
-        const updatedAwardDate = document.getElementById("award-date").value;
-        const updatedAwardPlace = document.getElementById("place").value;
-        const updatedAwardCategory =document.querySelector('input[name="award-category"]:checked').value;
-
-        updatedResearchAwardData.append('awardId' , awardId);
-        updatedResearchAwardData.append('campus' , updatedCampus);
-        updatedResearchAwardData.append('school' , updatedSchool);
-        updatedResearchAwardData.append('facultyName' , updatedFacultyName);
-        updatedResearchAwardData.append('awardName' , updatedAwardName);
-        updatedResearchAwardData.append('awardDetails' , updatedAwardDetails);
-        updatedResearchAwardData.append('organisationName' , updatedOrganisationName);
-        updatedResearchAwardData.append('awardDate' , updatedAwardDate);
-        updatedResearchAwardData.append('awardPlace' , updatedAwardPlace);
-        updatedResearchAwardData.append('awardCategory' , updatedAwardCategory);
-
-        fetch(url , {
-            method : "POST",
-            body : updatedResearchAwardData
-        })
-        .then((Response) => {
-            return Response.ok ? Response.json() : "Network Response Not Ok";
-        })
-        .then((data) => {
-            if(data.status === "Done"){
-                console.log('data ===>>>', data);
-
-                researchAwardRow.setAttribute('data-award-id', data.updatedAwardData.awardId)
-                researchAwardRow.setAttribute('data-date', data.updatedAwardData.awardDate)
-                researchAwardRow.setAttribute('data-award-category', data.updatedAwardData.awardCategory)
-                updatedAwardFiles ? 
-                researchAwardRow.setAttribute('data-support-documents', data.updatedAwardData.researchAwardDocuments) : null;
-                researchAwardRow.querySelector('.campus').innerText = data.updatedAwardData.campus;
-                researchAwardRow.querySelector('.school').innerText = data.updatedAwardData.school;
-                researchAwardRow.querySelector('.faculty-name').innerText = data.updatedAwardData.facultyName;
-                researchAwardRow.querySelector('.award-name').innerText = data.updatedAwardData.awardName;
-                researchAwardRow.querySelector('.award-details').innerText = data.updatedAwardData.awardDetails;
-                researchAwardRow.querySelector('.organisation-name').innerText = data.updatedAwardData.organisationName;
-
-                Swal.fire({
-                    position: "top-center",
-                    icon: "success",
-                    title: `${data.message}`,
-                    showConfirmButton: true,
-                                confirmButtonText:"OK",
-                                confirmButtonColor: "#DD6B55"
-                    // timer: 1500
-                });
-                
-                $('#research-award-modal').modal('hide')
-                
-                    }
-                else {
-                console.log('data ====>>>>>', data);
-                Swal.fire({
-                    position: "top-center",
-                    icon: "error",
-                    title: `${data.errorCode}`,
-                    color: "red",
-                    with: "20PX",
-                    html: `<span style="color: red;">${data.message}</span>`,
-                    showConfirmButton: true,
-                                confirmButtonText:"OK",
-                                confirmButtonColor: "#DD6B55"
-
-                })
-        }
-        })
-        .catch((error) => {
-            Swal.fire({
-                position: "top-center",
-                icon: "error",
-                title: "Data Updation Failed",
-                color: "red",
-                with: "20PX",
-                html: `<span style="color: red;">${error}</span>`,
-                showConfirmButton: true,
-                                confirmButtonText:"OK",
-                                confirmButtonColor: "#DD6B55"
-            });
-
-                });
-        }
-
-        updateBtn.addEventListener('click' , async() => {
-        formGroup = updateBtn.closest('.validate-input')
-        console.log("formGroup::::::::", formGroup)
-        formGroup.querySelectorAll('input[type="file"]')?.forEach(elm => {
-            console.log("elm:::::::::", elm);
-            elm.removeAttribute('data-validate')
-        })
-        const isValid = validateRequiredFormFields(updateBtn);
-       if(isValid) {
-            await updateResearchAwardRecordData('<%- BASE_URL %>research/research-award/update');
-       }
-       else{
-        Swal.fire({
-               position: "top-center",
-               icon: "error",
-               title: "Validation Failed",
-               color: "red",
-               showConfirmButton: true,
-                                confirmButtonText:"OK",
-                                confirmButtonColor: "#DD6B55"
-           });
-       }
-    })
-
-
-     //  set file string into button
-     function setFileNameInButtons(data) {
-        console.log('data ==>>>', data);
-        const researchAwardDocuments = document.getElementById('view-research-award-file-btn');
-        console.log('researchAwardDocuments ===>>>', researchAwardDocuments)
-        console.log('data.veiwResearchAwardRow[0].supporting_documents ===>>>', data.veiwResearchAwardRow[0].supporting_documents)
-        researchAwardDocuments.setAttribute('data-filename', data.veiwResearchAwardRow[0].supporting_documents);
-    }
-
-
-    //eventlistner for download files
-    document.addEventListener('click', async function (event) {
-            const button = event.target.closest('button');
-            if (button && button.id && button.classList.contains('download-file')) {
-                console.log('button ===>>>', button)
-                try {
-                    const fileDataString = button.getAttribute('data-filename');
-                    if (!fileDataString) {
-                        throw new Error('Data filename attribute not found on button.');
+                    const updatedResearchAwardData = new FormData();
+                    const updatedAwardFiles = document.getElementById('supporting-documents');
+                    // patentFile
+                    const updatedawardDocuments = updatedAwardFiles.files;
+                    console.log('updatedawardDocuments ===>>>', updatedawardDocuments)
+                    for (let i = 0; i < updatedawardDocuments.length; i++) {
+                        console.log('file name  ==>>', updatedawardDocuments[i].name);
+                        updatedResearchAwardData.append('researchAwardDocuments', updatedawardDocuments[i]);
                     }
 
-                    const fileArray = fileDataString.split(',').map(fileName => fileName.trim()).filter(Boolean); 
-                    if (fileArray.length === 0) {
-                        throw new Error('No file names found in data filename attribute.');
-                    }
+                    const updatedCampus = document.getElementById('campus').value;
+                    const updatedSchool = document.getElementById('school').value;
+                    const updatedFacultyName = document.getElementById("faculty-name").value;
+                    const updatedAwardName = document.getElementById("award-name").value;
+                    const updatedAwardDetails = document.getElementById("award-details").value;
+                    const updatedOrganisationName = document.getElementById("organisation-name").value;
+                    const updatedAwardDate = document.getElementById("award-date").value;
+                    const updatedAwardPlace = document.getElementById("place").value;
+                    const updatedAwardCategory = document.querySelector('input[name="award-category"]:checked').value;
 
-                    const downloadPromises = fileArray.map(async (fileName) => {
-                        console.log('fileName ===>>>', fileName)
-                        const fileUrl = `<%- BASE_URL %>research/patent-submission/download/${fileName}`;
-                        downloadFile(fileName, fileUrl)
-                        try {
-                            const response = await fetch(fileUrl);
-                            if (!response.ok) {
-                                throw new Error(`Failed to download file: ${fileName}`);
+                    updatedResearchAwardData.append('awardId', awardId);
+                    updatedResearchAwardData.append('campus', updatedCampus);
+                    updatedResearchAwardData.append('school', updatedSchool);
+                    updatedResearchAwardData.append('facultyName', updatedFacultyName);
+                    updatedResearchAwardData.append('awardName', updatedAwardName);
+                    updatedResearchAwardData.append('awardDetails', updatedAwardDetails);
+                    updatedResearchAwardData.append('organisationName', updatedOrganisationName);
+                    updatedResearchAwardData.append('awardDate', updatedAwardDate);
+                    updatedResearchAwardData.append('awardPlace', updatedAwardPlace);
+                    updatedResearchAwardData.append('awardCategory', updatedAwardCategory);
+
+                    fetch(url, {
+                        method: "POST",
+                        body: updatedResearchAwardData
+                    })
+                        .then((Response) => {
+                            return Response.ok ? Response.json() : "Network Response Not Ok";
+                        })
+                        .then((data) => {
+                            if (data.status === "Done") {
+                                console.log('data ===>>>', data);
+
+                                researchAwardRow.setAttribute('data-award-id', data.updatedAwardData.awardId)
+                                researchAwardRow.setAttribute('data-date', data.updatedAwardData.awardDate)
+                                researchAwardRow.setAttribute('data-award-category', data.updatedAwardData.awardCategory)
+                                updatedAwardFiles ?
+                                    researchAwardRow.setAttribute('data-support-documents', data.updatedAwardData.researchAwardDocuments) : null;
+                                researchAwardRow.querySelector('.campus').innerText = data.updatedAwardData.campus;
+                                researchAwardRow.querySelector('.school').innerText = data.updatedAwardData.school;
+                                researchAwardRow.querySelector('.faculty-name').innerText = data.updatedAwardData.facultyName;
+                                researchAwardRow.querySelector('.award-name').innerText = data.updatedAwardData.awardName;
+                                researchAwardRow.querySelector('.award-details').innerText = data.updatedAwardData.awardDetails;
+                                researchAwardRow.querySelector('.organisation-name').innerText = data.updatedAwardData.organisationName;
+
+                                Swal.fire({
+                                    position: "top-center",
+                                    icon: "success",
+                                    title: `${data.message}`,
+                                    showConfirmButton: true,
+                                    confirmButtonText: "OK",
+                                    confirmButtonColor: "#DD6B55"
+                                    // timer: 1500
+                                });
+
+                                $('#research-award-modal').modal('hide')
+
                             }
-                            console.log('File downloaded successfully:', fileName);
-                            return fileName;
-                        } catch (error) {
-                            console.error('Error downloading file:', error);
-                            throw error;
-                        }
-                    });
+                            else {
+                                console.log('data ====>>>>>', data);
+                                Swal.fire({
+                                    position: "top-center",
+                                    icon: "error",
+                                    title: `${data.errorCode}`,
+                                    color: "red",
+                                    with: "20PX",
+                                    html: `<span style="color: red;">${data.message}</span>`,
+                                    showConfirmButton: true,
+                                    confirmButtonText: "OK",
+                                    confirmButtonColor: "#DD6B55"
 
-                    const downloadedFiles = await Promise.all(downloadPromises);
-                    console.log('All files downloaded successfully:', downloadedFiles);
-                } catch (error) {
-                    console.error('Error downloading files:', error);
-                    alert(`There was a problem downloading files: ${error.message}`);
+                                })
+                            }
+                        })
+                        .catch((error) => {
+                            Swal.fire({
+                                position: "top-center",
+                                icon: "error",
+                                title: "Data Updation Failed",
+                                color: "red",
+                                with: "20PX",
+                                html: `<span style="color: red;">${error}</span>`,
+                                showConfirmButton: true,
+                                confirmButtonText: "OK",
+                                confirmButtonColor: "#DD6B55"
+                            });
+
+                        });
                 }
-            }
-        });
 
-    // set string file value into button
-    function setFileNameAttributeToBeDownload(data) {
-            console.log('data row in side function ===>>', data);
-            const researchAwardDataFiles = document.getElementById('research-award-file-btn-edit');
-            researchAwardDataFiles.classList.remove('d-none');
-            const reseachAwardFilesString = data.getAttribute('data-support-documents');
+                updateBtn.addEventListener('click', async () => {
+                    formGroup = updateBtn.closest('.validate-input')
+                    console.log("formGroup::::::::", formGroup)
+                    formGroup.querySelectorAll('input[type="file"]')?.forEach(elm => {
+                        console.log("elm:::::::::", elm);
+                        elm.removeAttribute('data-validate')
+                    })
+                    const isValid = validateRequiredFormFields(updateBtn);
+                    if (isValid) {
+                        await updateResearchAwardRecordData('<%- BASE_URL %>research/research-award/update');
+                    }
+                    else {
+                        Swal.fire({
+                            position: "top-center",
+                            icon: "error",
+                            title: "Validation Failed",
+                            color: "red",
+                            showConfirmButton: true,
+                            confirmButtonText: "OK",
+                            confirmButtonColor: "#DD6B55"
+                        });
+                    }
+                })
 
-            // setAttribute into button
-            researchAwardDataFiles.setAttribute('data-filename', reseachAwardFilesString);
 
-        };
-    
+                //  set file string into button
+                function setFileNameInButtons(data) {
+                    console.log('data ==>>>', data);
+                    const researchAwardDocuments = document.getElementById('view-research-award-file-btn');
+                    console.log('researchAwardDocuments ===>>>', researchAwardDocuments)
+                    console.log('data.veiwResearchAwardRow[0].supporting_documents ===>>>', data.veiwResearchAwardRow[0].supporting_documents)
+                    researchAwardDocuments.setAttribute('data-filename', data.veiwResearchAwardRow[0].supporting_documents);
+                }
+
+
+                //eventlistner for download files
+                document.addEventListener('click', async function (event) {
+                    const button = event.target.closest('button');
+                    if (button && button.id && button.classList.contains('download-file')) {
+                        console.log('button ===>>>', button)
+                        try {
+                            const fileDataString = button.getAttribute('data-filename');
+                            if (!fileDataString) {
+                                throw new Error('Data filename attribute not found on button.');
+                            }
+
+                            const fileArray = fileDataString.split(',').map(fileName => fileName.trim()).filter(Boolean);
+                            if (fileArray.length === 0) {
+                                throw new Error('No file names found in data filename attribute.');
+                            }
+
+                            const downloadPromises = fileArray.map(async (fileName) => {
+                                console.log('fileName ===>>>', fileName)
+                                const fileUrl = `<%- BASE_URL %>research/patent-submission/download/${fileName}`;
+                                downloadFile(fileName, fileUrl)
+                                try {
+                                    const response = await fetch(fileUrl);
+                                    if (!response.ok) {
+                                        throw new Error(`Failed to download file: ${fileName}`);
+                                    }
+                                    console.log('File downloaded successfully:', fileName);
+                                    return fileName;
+                                } catch (error) {
+                                    console.error('Error downloading file:', error);
+                                    throw error;
+                                }
+                            });
+
+                            const downloadedFiles = await Promise.all(downloadPromises);
+                            console.log('All files downloaded successfully:', downloadedFiles);
+                        } catch (error) {
+                            console.error('Error downloading files:', error);
+                            alert(`There was a problem downloading files: ${error.message}`);
+                        }
+                    }
+                });
+
+                // set string file value into button
+                function setFileNameAttributeToBeDownload(data) {
+                    console.log('data row in side function ===>>', data);
+                    const researchAwardDataFiles = document.getElementById('research-award-file-btn-edit');
+                    researchAwardDataFiles.classList.remove('d-none');
+                    const reseachAwardFilesString = data.getAttribute('data-support-documents');
+
+                    // setAttribute into button
+                    researchAwardDataFiles.setAttribute('data-filename', reseachAwardFilesString);
+
+                };
 
 
 
 
-</script>
-<!-- footer section -->
-<%- include('./partials/pagination') %>
-<%- include('./partials/footer') %>
-<%- include('./partials/footer-end') %>
-           
+
+            </script>
+            <!-- footer section -->
+            <%- include('./partials/pagination') %>
+                <%- include('./partials/footer') %>
+                    <%- include('./partials/footer-end') %>

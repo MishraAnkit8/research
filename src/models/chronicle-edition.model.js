@@ -15,7 +15,7 @@ module.exports.fetchEditorData = async() =>{
           SELECT 'meeting_editor_table' AS table_name, id, editor_data AS editor_data, date as date FROM meeting_editor_table
           UNION ALL
           SELECT 'branding_editor_table' AS table_name, id, editor_data AS editor_data, date as date FROM branding_editor_table
-          ORDER BY table_name, id
+          ORDER BY table_name, id desc
       `,
     };
 

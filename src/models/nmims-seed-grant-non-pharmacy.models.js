@@ -19,7 +19,7 @@ module.exports.renderSeedGrantNonFormacy = async(userName) => {
                 WHERE
                     created_by = $1
                 ORDER BY 
-                    c.id`,
+                    c.id desc`,
           values : [userName]
         };
         let facultySql = `SELECT * FROM faculty_table ORDER BY id`;

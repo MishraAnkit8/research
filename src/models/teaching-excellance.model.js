@@ -7,7 +7,7 @@ const researchDbW = dbPoolManager.get('researchDbW', research_write_db);
 
 module.exports.fetchTeachingExecellance = async(userName) => {
     let sql = {
-        text : `SELECT * FROM teaching_execellance WHERE created_by = $1 ORDER BY id`,
+        text : `SELECT * FROM teaching_execellance WHERE created_by = $1 ORDER BY id desc`,
         values : [userName]
     }
     return researchDbR.query(sql);
