@@ -6,13 +6,26 @@ const seedGrantModels = require('../models/nmims-seed-grant-non-pharmacy.models'
 module.exports.fetchNoFormacyForm = async(userName) => {
     const seedGrantFormData = await seedGrantModels.renderSeedGrantNonFormacy(userName);
 
-    console.log('seedGrantFormData ===>>>>', seedGrantFormData);
+    console.log('seedGrantFormData ===>>>>', JSON.stringify(seedGrantFormData.seedGrantFormDataRows));
     const paymentDataArray = seedGrantFormData.seedGrantFormDataRows;
     console.log("paymentDataArray ====>>>>", paymentDataArray);
+    console.log('seed grant ',JSON.stringify(seedGrantFormData.seedGrantFormDataRows))
+
+
+
     let totalPayment = [];
+
     paymentDataArray.forEach(payment => {
-             const Data = payment.final_payment; +payment.advanced_payment;
-             totalPayment.push(Data);
+             const Data = parseInt(payment.final_payment) + parseInt(payment.advanced_payment);
+             let gstCharge = Data * 18/100;
+
+             let totalCost = parseInt(payment.research_staff_expenses) + parseInt(payment.travel)
+             + parseInt(payment.computer_charges) + parseInt(payment.nmims_facility_charges) + 
+             parseInt(payment.gross_fees) + parseInt(payment.miscellaneous_including_contingency)
+
+             let grantTotal = totalCost + parseInt(payment.total_fees) + gstCharge;
+
+             totalPayment.push({totalPayment : Data,totalGrant : grantTotal});
     })
 
     console.log("totalPayment", totalPayment);
@@ -24,7 +37,7 @@ module.exports.fetchNoFormacyForm = async(userName) => {
         seedGrantFormData : seedGrantFormData.seedGrantFormDataRows,
         rowCount : seedGrantFormData.rowCount,
         facultyData : seedGrantFormData.facultyData,
-        totalPayment : totalPayment
+        totalPayment : totalPayment,
     } : {
         status : seedGrantFormData.status,
         message : seedGrantFormData.message,
