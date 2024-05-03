@@ -436,7 +436,7 @@
                         <tr>
                             <td><input style="border: 0;" type="text" id="investigator-education" class="form-control"></td>
                             <td><input style="border: 0;" type="text" id="investigator-university" class="form-control"></td>
-                            <td><input style="border: 0;" type="text" id="investigator-investigator-passout-year" class="form-control"></td>
+                            <td><input style="border: 0;" type="text" id="investigator-passout-year" class="form-control"></td>
                         </tr>
                     
                     </table>
@@ -638,49 +638,246 @@
 
     const educationBtn = document.getElementById('submit-investor-education');
     const addMoreEducationalData = document.getElementById('add-investor-education-more-details');
+    let investigatorEducationalIdsArray = [];
 
-    const investigatorEducation = async(url) => {
-        const educationalDetails = {} ;
-        educationalDetails.education =  document.getElementById('investigator-education').value;
-        educationalDetails.university = document.getElementById('investigator-university').value;
-        educationalDetails.passoutYear = document.getElementById('investigator-passout-year').value;
+    // const investigatorEducation = async(url) => {
+    //     const educationalDetails = {} ;
+    //     educationalDetails.education =  document.getElementById('investigator-education').value;
+    //     educationalDetails.university = document.getElementById('investigator-university').value;
+    //     educationalDetails.passoutYear = document.getElementById('investigator-passout-year').value;
 
-        const payload = {
-            educationalDetails : educationalDetails
-        }
+    //     const payload = {
+    //         educationalDetails : educationalDetails
+    //     }
 
-        fetch(url , {
-            method : 'POST',
-            headers: {'content-type': 'application/json'
-            },
-            body : JSON.stringify(payload)
-        })
-        .then((Response) => {
-            return Response.ok ? JSON.Response() : 'There was network issue'
-        })
-        .then((data) => {
-            if(data.status === "Done"){
-                console.log('Data ====>>>>>>', data);
-            }
-        })
-        .catch((error) => {
-            console.log('error :::::', error)
-        })
+    //     fetch(url , {
+    //         method : 'POST',
+    //         headers: {'content-type': 'application/json'
+    //         },
+    //         body : JSON.stringify(payload)
+    //     })
+    //     .then((result) => {
+    //             return result.json()
+    //         })
+    //     .then((data) => {
+    //         if(data.status === "Done"){
+    //             console.log('Data ====>>>>>>', data);
+    //             investigatorEducationalIdsArray.push(data.investorEduId);
+    //             educationBtn.classList.add('d-none');
+    //             addMoreEducationalData.classList.remove('d-none');
 
-    }
+    //             Swal.fire({
+    //                 position: "top-center",
+    //                 icon: "success",
+    //                 title: `${data.message}`,
+    //                 showConfirmButton: true,
+    //                 confirmButtonText: "OK",
+    //                 confirmButtonColor: "#DD6B55"
+    //                 // timer: 1500
+    //             })
 
-    // educationBtn.addEventListener('click', async(url) => {
-    //     console.log('clciked educational details')
-    // })
-    educationBtn.addEventListener('click', async () => {
-                    const isValid = validateRequiredFormFields(submitBtn);
-                    if (isValid) {
-                        await investigatorEducation('<%- BASE_URL %>research/research-award/insert');
-                    }
-                    else {
-                        alert('validation Failed');
-                    }
+    //         }
+    //     })
+    //     .catch((error) => {
+    //         console.log('error :::::', error)
+    //     })
+    // }
+
+    const fetchData = async (url, payload) => {
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
                 });
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                console.error('Error:', error);
+                throw error;
+            }
+        };
+
+        const submitData = async (url, payload) => {
+            try {
+                const data = await fetchData(url, payload);
+                if (data.status === "Done") {
+                    console.log('Data ====>>>>>>', data);
+                    investigatorEducationalIdsArray.push(data.investorEduId);
+                    educationBtn.classList.add('d-none');
+                    addMoreEducationalData.classList.remove('d-none');
+
+                    Swal.fire({
+                        position: "top-center",
+                        icon: "success",
+                        title: `${data.message}`,
+                        showConfirmButton: true,
+                        confirmButtonText: "OK",
+                        confirmButtonColor: "#DD6B55"
+                    });
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        };
+
+        // Example usage:
+        const investigatorEducation = async (url) => {
+            const educationalDetails = {
+                education: document.getElementById('investigator-education').value,
+                university: document.getElementById('investigator-university').value,
+                passoutYear: document.getElementById('investigator-passout-year').value
+            };
+            const payload = { educationalDetails };
+            await submitData(url, payload);
+        };
+
+        const investigatorWorkExperience = async (url) => {
+            const workExperienceDetails = {};
+            workExperienceDetails.investigatorPossition = document.getElementById('investigator-postion').value;
+            workExperienceDetails.investigatorOrganization = document.getElementById('investigator-organigation').value;
+            workExperienceDetails.investigatorExperience = document.getElementById('investigator-period').value;
+            const payload = { workExperienceDetails };
+            await submitData(url, payload);
+        };
+
+        const investigatorBook = async (url) => {
+            const investigatorBookDetails = {};
+            investigatorBookDetails.investigatorbookAuthor = document.getElementById('investigator-book-author').value;
+            investigatorBookDetails.investigatorBookNames = document.getElementById('investigator-book-names').value;
+            investigatorBookDetails.investigatorBookYear = document.getElementById('investigator-book-year').value;
+            investigatorBookDetails.investigatorBookVolumne = document.getElementById('investigator-book-volume').value;
+            investigatorBookDetails.investigatorBookPublisher = document.getElementById('investigator-book-publisher').value;
+            investigatorBookDetails.investigatorBookIsbn = document.getElementById('investigator-book-isbn').value;
+            const payload = { investigatorBookDetails };
+            await submitData(url, payload);
+        };
+
+        const investigatorBookChapter = async (url) => {
+            const investigatorBookChapterDetails = {};
+
+            investigatorBookChapterDetails.investigatorbookChapterAuthor = document.getElementById('investigator-book-chapter-author').value;
+            investigatorBookChapterDetails.investigatorBookChapterTitle = document.getElementById('investigator-book-chapter-title').value;
+            investigatorBookChapterDetails.investigatorBookChapterNames = document.getElementById('investigator-book-chapter-book-name').value;
+            investigatorBookChapterDetails.investigatorBookVolumne = document.getElementById('investigator-book-chapter-year').value;
+            investigatorBookChapterDetails.investigatorBookChapterVolume = document.getElementById('investigator-book-chapter-volume').value;
+            investigatorBookChapterDetails.investigatorBookChapterPageNumber = document.getElementById('investigator-book-chapter-page-number').value;
+            investigatorBookChapterDetails.investigatorBookChapterPublisher = document.getElementById('investigator-book-chapter-publisher').value;
+            investigatorBookChapterDetails.investigatorBookChapterIsbn = document.getElementById('investigator-book-chapter-isbn').value;
+
+            const payload = { investigatorBookChapterDetails };
+            await submitData(url, payload);
+        };
+
+        const investigatorPatent = async (url) => {
+            const investigatorPatentDetails = {};
+    
+            investigatorPatentDetails.investigatorApplicantName = document.getElementById('investigator-patent-applicant-name').value;
+            investigatorPatentDetails.investigatorPatentTitle = document.getElementById('investigator-patent-title').value;
+            investigatorPatentDetails.investigatorPatentStatus = document.getElementById('investigator-patent-status').value;
+            investigatorPatentDetails.investigatorPatentYear = document.getElementById('investigator-patent-year-month').value;
+            
+            const payload = { investigatorPatentDetails };
+            await submitData(url, payload);
+        };
+
+        const researchProject = async (url) => {
+            const researchProjectDetails = {};
+
+            researchProjectDetails.researchTitle = document.getElementById('research-project-title').value;
+            researchProjectDetails.researchAgency = document.getElementById('research-project-agency').value;
+            researchProjectDetails.researchRole = document.getElementById('research-project-role').value;
+            researchProjectDetails.projectDuration = document.getElementById('research-project-duration').value;
+            researchProjectDetails.projectCost = document.getElementById('research-project-cost').value;
+
+            
+            const payload = { researchProjectDetails };
+            await submitData(url, payload);
+        };
+
+        const completedResearchProjectDetails = async (url) => {
+            const researchProjectCompleteDetails = {};
+
+            researchProjectCompleteDetails.compltedProjecTitle = document.getElementById('research-project-completed-title').value;
+            researchProjectCompleteDetails.completedProjectAgency = document.getElementById('research-project-completed-agency').value;
+            researchProjectCompleteDetails.completedProjectRole = document.getElementById('research-project-completed-role').value;
+            researchProjectCompleteDetails.completedProjectDuration = document.getElementById('research-project-completed-duration').value;
+            researchProjectCompleteDetails.completedProjectCost = document.getElementById('research-project-completed-cost').value;
+
+            
+            const payload = { researchProjectCompleteDetails };
+            await submitData(url, payload);
+        };
+
+
+
+    addMoreEducationalData.addEventListener('click', () => {
+        educationBtn.classList.remove('d-none');
+        addMoreEducationalData.classList.add('d-none');
+        document.getElementById('investigator-education').value = '';
+        document.getElementById('investigator-university').value = '';
+        document.getElementById('investigator-passout-year').value = '';
+    })
+
+  
+    educationBtn.addEventListener('click', async () => {
+            // const isValid = validateRequiredFormFields(educationBtn);
+            // if (isValid) {
+            console.log('clcikedddddd')
+            await investigatorEducation('<%- BASE_URL %>research/pharmacy-seed-grant-form/insert');
+            // }
+            // else {
+            //     alert('validation Failed');
+            // }
+        });
+
+        async function submitForm(url) {
+            console.log('clicked');
+            await investigatorEducation(url);
+
+            }
+        // education details
+        document.getElementById('educationBtn').addEventListener('click', async () => {
+            await submitForm('<%- BASE_URL %>research/pharmacy-seed-grant-form/investigator-education/insert');
+        });
+
+        // experience details
+        document.getElementById('submit-investor-experience').addEventListener('click', async () => {
+            await submitForm('<%- BASE_URL %>research/pharmacy-seed-grant-form/investigator-experience/insert');
+        });
+
+        //investigator book details
+        document.getElementById('educationBtn').addEventListener('click', async () => {
+            await submitForm('<%- BASE_URL %>research/pharmacy-seed-grant-form/investigator-book/insert');
+        });
+
+        // Book Chapter details
+        document.getElementById('submit-investor-experience').addEventListener('click', async () => {
+            await submitForm('<%- BASE_URL %>research/pharmacy-seed-grant-form/investigator-book-chapter/insert');
+        });
+
+        // Patent details
+        document.getElementById('educationBtn').addEventListener('click', async () => {
+            await submitForm('<%- BASE_URL %>research/pharmacy-seed-grant-form/investigator-patent/insert');
+        });
+
+        // Publicaation details
+        document.getElementById('submit-investor-experience').addEventListener('click', async () => {
+            await submitForm('<%- BASE_URL %>research/pharmacy-seed-grant-form/investigator-publication/insert');
+        });
+
+        // research project under implementaion details details
+        document.getElementById('educationBtn').addEventListener('click', async () => {
+            await submitForm('<%- BASE_URL %>research/pharmacy-seed-grant-form/investigator-research-implementation/insert');
+        });
+
+        // research project  completed details details
+        document.getElementById('submit-investor-experience').addEventListener('click', async () => {
+            await submitForm('<%- BASE_URL %>research/pharmacy-seed-grant-form/investigator-research-completed/insert');
+        });
+
 </script>
 <%- include('./partials/pagination') %>
 <%- include('./partials/footer') %>
