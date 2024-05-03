@@ -77,62 +77,62 @@ document.getElementById("searchKeyword").addEventListener("input", handleSearchI
   }
 
 // for filtering the rows
-  function filterRows(searchKeyword) {
-    console.log('searchKeyword ====>>>>>>>', searchKeyword);
-    let matchedRowCount = 0;
-    let noRecordsMessage = document.getElementById('no-records-message');
-    let dataList = document.querySelector('.data-list');
+  // function filterRows(searchKeyword) {
+  //   console.log('searchKeyword ====>>>>>>>', searchKeyword);
+  //   let matchedRowCount = 0;
+  //   let noRecordsMessage = document.getElementById('no-records-message');
+  //   let dataList = document.querySelector('.data-list');
   
-    let rows = dataList.querySelectorAll("tbody tr");
-    console.log('rows ===>>>>>>', rows)
+  //   let rows = dataList.querySelectorAll("tbody tr");
+  //   console.log('rows ===>>>>>>', rows)
   
-    rows.forEach(function (row) {
-      console.log('row ===>>>>>>', rows);
-      let hasMatch = false;
-      let cellContents = row.querySelectorAll("td");
-    console.log('cellContents ===>>>>>>>', cellContents);
-      cellContents.forEach(function (cell) {
-        let cellText = cell.textContent.toLowerCase();
-        console.log('cellText ===>>>>>>', cellText);
+  //   rows.forEach(function (row) {
+  //     console.log('row ===>>>>>>', rows);
+  //     let hasMatch = false;
+  //     let cellContents = row.querySelectorAll("td");
+  //   console.log('cellContents ===>>>>>>>', cellContents);
+  //     cellContents.forEach(function (cell) {
+  //       let cellText = cell.textContent.toLowerCase();
+  //       console.log('cellText ===>>>>>>', cellText);
   
-        if (cellText.includes(searchKeyword)) {
-          let newText = cellText.replace(new RegExp(searchKeyword, "gi"), match => `${match}`);
-          console.log('newText ====>>>>>>', newText);
-          cell.innerHTML = newText;
-          hasMatch = true;
-        } else {
-          cell.innerHTML = cellText; 
-        }
-      });
+  //       if (cellText.includes(searchKeyword)) {
+  //         let newText = cellText.replace(new RegExp(searchKeyword, "gi"), match => `${match}`);
+  //         console.log('newText ====>>>>>>', newText);
+  //         cell.textContent  = newText;
+  //         hasMatch = true;
+  //       } else {
+  //         cell.textContent  = cellText; 
+  //       }
+  //     });
   
-      if (hasMatch) {
-        row.style.display = "table-row";
-        matchedRowCount++;
-      } else {
-        row.style.display = "none"; 
-      }
-    });
+  //     if (hasMatch) {
+  //       row.style.display = "table-row";
+  //       matchedRowCount++;
+  //     } else {
+  //       row.style.display = "none"; 
+  //     }
+  //   });
   
-    // Show/hide no records message based on matched row count
-    if (matchedRowCount === 0) {
-      noRecordsMessage.style.display = "block";
-      dataList.style.display = "none";
-    } else {
-      noRecordsMessage.style.display = "none";
-      dataList.style.display = "block";
-    }
+  //   // Show/hide no records message based on matched row count
+  //   if (matchedRowCount === 0) {
+  //     noRecordsMessage.style.display = "block";
+  //     dataList.style.display = "none";
+  //   } else {
+  //     noRecordsMessage.style.display = "none";
+  //     dataList.style.display = "block";
+  //   }
   
-    // total row count and pagination based on matched rows
-    totalRowCountNumber.innerText = matchedRowCount;
-    totalEntries = matchedRowCount;
-    totalPages = Math.ceil(totalEntries / entriesPerPage);
-    showPage(1);
-  }
+  //   // total row count and pagination based on matched rows
+  //   totalRowCountNumber.innerText = matchedRowCount;
+  //   totalEntries = matchedRowCount;
+  //   totalPages = Math.ceil(totalEntries / entriesPerPage);
+  //   showPage(1);
+  // }
 
 //update the pagination
   function updatePagination(currentPage) {
     let pagination = document.getElementById("pagination");
-    pagination.innerHTML = "";
+    pagination.textContent  = "";
 
     for (let i = 1; i <= totalPages; i++) {
       let pageLink = document.createElement("a");
@@ -202,3 +202,39 @@ showPage(currentPage);
 
 
 // initializePagination();
+
+let originalContentMap = new Map();
+
+function filterRows(searchKeyword) {
+    rows.forEach(function (row) {
+        let hasMatch = false;
+        let cellContents = row.querySelectorAll("td");
+
+        cellContents.forEach(function (cell) {
+            let cellText = cell.textContent.toLowerCase();
+            originalContentMap.set(cell, cellText); // Store original content
+
+            if (cellText.includes(searchKeyword)) {
+                let newText = cellText.replace(new RegExp(searchKeyword, "gi"), match => `${match}`);
+                cell.textContent = newText;
+                hasMatch = true;
+            } else {
+                cell.textContent = cellText;
+            }
+        });
+
+        if (hasMatch) {
+            row.style.display = "table-row";
+            matchedRowCount++;
+        } else {
+            row.style.display = "none";
+        }
+    });
+}
+
+// Function to revert back to original cell content
+function revertToOriginalContent() {
+    originalContentMap.forEach(function (originalText, cell) {
+        cell.textContent = originalText;
+    });
+}
