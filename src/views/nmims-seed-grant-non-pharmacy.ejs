@@ -59,7 +59,7 @@
                                 </div>
                             </div>
                             <table
-                                class="table vertical-lines custom-table table-responsive data-list research-pagination"
+                                class="table vertical-lines custom-table table-responsive  research-pagination"
                                 id="approved-consultancy-form-data-list">
                                 <thead>
                                     <th class="col-lg-1">#</th>
@@ -69,9 +69,12 @@
                                     <th class="col-lg-1">Total Fees</th>
                                     <th class="col-lg-1" colspan="3">Action</th>
                                 </thead>
-                                <tbody>
+                                <tbody class="data-list">
+                               
                                     <% seedGrantFormData.forEach(function(grantSeedData , index) { %>
-                                        <tr data-consultancy-id="<%- grantSeedData.consultancy_id %>"
+                                        <tr id="commonTr" data-consultancy-id="<%- grantSeedData.consultancy_id %>"
+                                            data-total-payment="<%- grantSeedData.totalpayment %>"
+                                            data-grant-total-payment = "<%- grantSeedData.totalgrant %>"
                                             data-faculty-id="<%- grantSeedData.faculty_id %>"
                                             data-commencement-date="<%- grantSeedData.commencement_date %>"
                                             data-completion-date="<%- grantSeedData.completion_date %>"
@@ -88,11 +91,57 @@
                                             data-gross-fees="<%- grantSeedData.gross_fees %>"
                                             data-session-count-per-days="<%- grantSeedData.session_count_per_days %>">
                                             <td class="col-lg-1"><%- index + 1 %></td>
-                                            <td class="col-lg-1 faculty-name"><%- grantSeedData.faculty_name %> </td>
+                                            <td class="col-lg-1 faculty-name"><%- grantSeedData.faculty_name %>
+                                            </td>
                                             <td class="col-lg-1 project-title"><%- grantSeedData.title %></td>
                                             <td class="col-lg-1 year"><%- grantSeedData.year %></td>
                                             <td class="col-lg-1 total-fees"><%- grantSeedData.total_fees %></td>
-                                            <!-- <td class="col-lg-1">
+                                            <td title="View" class="view border-right-0" style="cursor: pointer;"
+                                            data-consultancy-id="<%- grantSeedData.consultancy_id %>">
+                                            &#128065;
+                                        </td>
+                                        <td title="Edit" class="edit border-right-0" style="cursor: pointer;"
+                                            data-consultancy-id="<%- grantSeedData.consultancy_id %>">
+                                            &#9998;
+                                        </td>
+                                        <td title="Delete" class="delete border-right-0"
+                                            style="cursor: pointer;"
+                                            data-consultancy-id="<%- grantSeedData.consultancy_id %>">
+                                            &#128465;
+
+                                        </td>
+                                        
+                                        
+                                        </tr>
+                                    <% })  %>
+
+                                    <!-- <% seedGrantFormData.forEach(function(grantSeedData , index) { %> -->
+                                        <!-- <% totalPayment.forEach(function(payment) { %> -->
+                                            <!-- <tr id="commonTr" data-consultancy-id="<%- grantSeedData.consultancy_id %>"
+                                                data-total-payment="<%- grantSeedData.totalpayment %>"
+                                                data-grant-total-payment = "<%- grantSeedData.totalgrant %>"
+                                                data-faculty-id="<%- grantSeedData.faculty_id %>"
+                                                data-commencement-date="<%- grantSeedData.commencement_date %>"
+                                                data-completion-date="<%- grantSeedData.completion_date %>"
+                                                data-research-staff-expenses="<%- grantSeedData.research_staff_expenses %>"
+                                                data-travel-expenses="<%- grantSeedData.travel %>"
+                                                data-computer-charges="<%- grantSeedData.computer_charges %>"
+                                                data-nmims-facility-charges="<%- grantSeedData.nmims_facility_charges %>"
+                                                data-miscellaneous-including-contingency="<%- grantSeedData.miscellaneous_including_contingency %>"
+                                                data-advanced-payment="<%- grantSeedData.advanced_payment %>"
+                                                data-final-payment="<%- grantSeedData.final_payment %>"
+                                                data-per-session-fees="<%- grantSeedData.per_session_fees %>"
+                                                data-faculty-shares="<%- grantSeedData.faculty_shares %>"
+                                                data-nmims-shares="<%- grantSeedData.nmims_shares %>"
+                                                data-gross-fees="<%- grantSeedData.gross_fees %>"
+                                                data-session-count-per-days="<%- grantSeedData.session_count_per_days %>">
+                                                <td class="col-lg-1"><%- index + 1 %></td>
+                                                <td class="col-lg-1 faculty-name"><%- grantSeedData.faculty_name %>
+                                                </td>
+                                                <td class="col-lg-1 project-title"><%- grantSeedData.title %></td>
+                                                <td class="col-lg-1 year"><%- grantSeedData.year %></td>
+                                                <td class="col-lg-1 total-fees"><%- grantSeedData.total_fees %></td> -->
+                                                <!-- <td class="col-lg-1">
                                 <label class="view" data-consultancy-id="<%- grantSeedData.consultancy_id %>"
                                     data-faculty-id="<%- grantSeedData.faculty_id %>"><i
                                         class="fa-solid fa-eye view text-danger"
@@ -105,22 +154,24 @@
                                         class="fa-solid fa-trash delete text-danger"
                                         data-consultancy-id="<%- grantSeedData.consultancy_id %>"></i></label>
                             </td> -->
-                                            <!-- <td colspan="3px" style="display:flex;justify-content: center;"> -->
-                                            <td title="View" class="view border-right-0" style="cursor: pointer;"
-                                                data-consultancy-id="<%- grantSeedData.consultancy_id %>">
-                                                &#128065;
-                                            </td>
-                                            <td title="Edit" class="edit border-right-0" style="cursor: pointer;"
-                                                data-consultancy-id="<%- grantSeedData.consultancy_id %>">
-                                                &#9998;
-                                            </td>
-                                            <td title="Delete" class="delete border-right-0" style="cursor: pointer;"
-                                                data-consultancy-id="<%- grantSeedData.consultancy_id %>">
-                                                &#128465;
+                                                <!-- <td colspan="3px" style="display:flex;justify-content: center;"> -->
+                                                <!-- <td title="View" class="view border-right-0" style="cursor: pointer;"
+                                                    data-consultancy-id="<%- grantSeedData.consultancy_id %>">
+                                                    &#128065;
+                                                </td>
+                                                <td title="Edit" class="edit border-right-0" style="cursor: pointer;"
+                                                    data-consultancy-id="<%- grantSeedData.consultancy_id %>">
+                                                    &#9998;
+                                                </td>
+                                                <td title="Delete" class="delete border-right-0"
+                                                    style="cursor: pointer;"
+                                                    data-consultancy-id="<%- grantSeedData.consultancy_id %>">
+                                                    &#128465;
 
-                                            </td>
-                                        </tr>
-                                        <%}) %>
+                                                </td> -->
+                                            <!-- </tr> -->
+                                            <!-- <% }) %> -->
+                                                <!-- <%}); %> -->
                                 </tbody>
                                 <tr>
                                     <div id="no-records-message"
@@ -217,8 +268,7 @@
                                 </div>
                                 <!-- Faculty ID -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <label for="faculty-id" class="form-label fw-bold ">Name of Faculty , Id And
-                                        Designation</label>
+                                    <label for="faculty-id" class="form-label fw-bold ">Name of Faculty</label>
                                     <select id="faculty-id" class="select-option facultiesId"
                                         data-validate="isEmpty,isExist" data-err-msg="This  field  is required."
                                         required multiple>
@@ -261,13 +311,8 @@
                                         data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required."
                                         class="form-control" required>
                                 </div>
-                                <!-- Gross Fees -->
-                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <label for="gross-fees" class=" sub-title fw-bold">(a) Gross Fees</label>
-                                    <input type="number" name="gross-fees" id="gross-fees"
-                                        data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required."
-                                        class="form-control" required>
-                                </div>
+
+
 
                                 <!-- Faculty Share -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
@@ -293,6 +338,40 @@
                                         </tbody>
                                     </table>
                                     <!-- <button id="add-row-button">Add More Details</button> -->
+                                </div>
+
+                                <!-- Advance Payment. -->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="advance-payment" class=" sub-title fw-bold">Advance Payment.</label>
+                                    <input type="number" name="advance-payment" id="advance-payment"
+                                        class="form-control" data-validate="isEmpty,isNumber"
+                                        data-err-msg="Numeric value is required." required>
+                                </div>
+
+
+                                <!-- Final Payment -->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="final-payment" class=" sub-title fw-bold">Final Payment </label>
+                                    <input type="number" name="final-payment" id="final-payment" class="form-control"
+                                        data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required"
+                                        required>
+                                </div>
+
+
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="total-amount" class=" sub-title fw-bold">Total Amount</label>
+                                    <input class="form-control" type="number" name="total-amount" id="total-amount"
+                                    disabled>
+                                </div>
+
+
+
+                                <!-- Gross Fees -->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="gross-fees" class=" sub-title fw-bold">(a) Gross Fees</label>
+                                    <input type="number" name="gross-fees" id="gross-fees"
+                                        data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required."
+                                        class="form-control" required>
                                 </div>
 
                                 <!-- Research Staff Expenses -->
@@ -334,20 +413,16 @@
                                         class="form-control" data-validate="isEmpty,isNumber"
                                         data-err-msg="Numeric value is required." required>
                                 </div>
-                                <!-- Final Payment -->
+
+                                <!-- Grand Total-->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <label for="final-payment" class=" sub-title fw-bold">Final Payment </label>
-                                    <input type="number" name="final-payment" id="final-payment" class="form-control"
-                                        data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required"
-                                        required>
+                                    <label for="grand-total" class=" sub-title fw-bold">Grand Total</label>
+                                    <input type="number" name="grand-total" id="grand-total" class="form-control"
+                                    disabled>
                                 </div>
-                                <!-- Advance Payment. -->
-                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <label for="advance-payment" class=" sub-title fw-bold">Advance Payment.</label>
-                                    <input type="number" name="advance-payment" id="advance-payment"
-                                        class="form-control" data-validate="isEmpty,isNumber"
-                                        data-err-msg="Numeric value is required." required>
-                                </div>
+
+
+
 
                             </div>
                         </div>
@@ -428,14 +503,14 @@
                             <hr>
                             <table class="table table-bordered">
                                 <thead>
-                                    <th class=" sub-title col-lg-3"></th>
+
                                     <th class=" sub-title col-lg-3">Days/Sessions</th>
                                     <th class=" sub-title col-lg-3">Fee per Day/Session (Rs).</th>
                                     <th class=" sub-title col-lg-3">Total Fee (Rs.)</th>
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td class=" sub-title col-lg-3"></td>
+
                                         <td class=" sub-title col-lg-4">
                                             <label for="" class="view-content" id="view-days"></label>
                                             <label for="" class="view-content" id="view-sessions"></label>
@@ -446,10 +521,7 @@
                                 </tbody>
                             </table>
                             <table class="table table-bordered">
-                                <tr>
-                                    <td class=" sub-title col-lg-4 text-start">(a) Gross Fees</td>
-                                    <td for="" class="view-content col-lg-4" id="view-gross-fees"></td>
-                                </tr>
+
                                 <tr>
                                     <td class=" sub-title col-lg-4 text-start">Faculty Shares (70% a)</td>
                                     <td class="view-content col-lg-4" id="view-faculty-shares"></td>
@@ -477,6 +549,12 @@
                                     <td></td>
                                 </tr>
                                 </tr>
+
+                                <tr>
+                                    <td class=" sub-title col-lg-4 text-start">(a) Gross Fees</td>
+                                    <td for="" class="view-content col-lg-4" id="view-gross-fees"></td>
+                                </tr>
+
                                 <tr>
                                     <td class=" sub-title col-lg-4 text-start">(b) Research Staff Expenses</td>
                                     <td class="view-content col-lg-4" id="view-research-staff-expenses"></td>
@@ -640,6 +718,8 @@
                         document.getElementById('advance-payment').value = '';
                         document.getElementById('final-payment').value = '';
                         document.getElementById('gross-fees').value = '';
+                        document.getElementById('total-amount').value = '';
+                        document.getElementById('grand-total').value = '';
                     }
                 });
 
@@ -681,48 +761,48 @@
                         })
                         .then((data) => {
                             if (data.status === "Done") {
-                    //             console.log('data ====>>>>>', data);
-                    //             patentId = data.patentId;
-                    //             const rowCountInteger = parseInt(data.rowCount, 10);
-                    //             const IndexEntry = rowCountInteger + indexValue;
-                    //             indexValue = IndexEntry;
-                    //             const newApprovalFormRow = document.createElement('tr');
-                    //             newApprovalFormRow.setAttribute('data-consultancy-id', data.grantedSeedId);
-                    //             newApprovalFormRow.setAttribute('data-faculty-id', data.nonFormacyFormData.facultyId);
-                    //             newApprovalFormRow.setAttribute('data-commencement-date', data.nonFormacyFormData.commencementDate);
-                    //             newApprovalFormRow.setAttribute('data-completion-date', data.nonFormacyFormData.completionDate);
-                    //             newApprovalFormRow.setAttribute('data-research-staff-expenses', data.nonFormacyFormData.researchStaffExpenses);
-                    //             newApprovalFormRow.setAttribute('data-travel-expenses', data.nonFormacyFormData.travlExpanses);
-                    //             newApprovalFormRow.setAttribute('data-computer-charges', data.nonFormacyFormData.computerCharges);
-                    //             newApprovalFormRow.setAttribute('data-nmims-facility-charges', data.nonFormacyFormData.faculityCharges);
-                    //             newApprovalFormRow.setAttribute('data-miscellaneous-including-contingency', data.nonFormacyFormData.miscellaneousContingencyCharges);
-                    //             newApprovalFormRow.setAttribute('data-advanced-payment', data.nonFormacyFormData.advancedPayment);
-                    //             newApprovalFormRow.setAttribute('data-final-payment', data.nonFormacyFormData.finalPayment);
-                    //             newApprovalFormRow.setAttribute('data-per-session-fees', data.nonFormacyFormData.sessionsFees);
-                    //             newApprovalFormRow.setAttribute('data-total-fees', data.nonFormacyFormData.totalFees);
-                    //             newApprovalFormRow.setAttribute('data-faculty-shares', data.nonFormacyFormData.facultyShare);
-                    //             newApprovalFormRow.setAttribute('data-nmims-shares', data.nonFormacyFormData.nmimsShare);
-                    //             newApprovalFormRow.setAttribute('data-gross-fees', data.nonFormacyFormData.grossFees);
+                                //             console.log('data ====>>>>>', data);
+                                //             patentId = data.patentId;
+                                //             const rowCountInteger = parseInt(data.rowCount, 10);
+                                //             const IndexEntry = rowCountInteger + indexValue;
+                                //             indexValue = IndexEntry;
+                                //             const newApprovalFormRow = document.createElement('tr');
+                                //             newApprovalFormRow.setAttribute('data-consultancy-id', data.grantedSeedId);
+                                //             newApprovalFormRow.setAttribute('data-faculty-id', data.nonFormacyFormData.facultyId);
+                                //             newApprovalFormRow.setAttribute('data-commencement-date', data.nonFormacyFormData.commencementDate);
+                                //             newApprovalFormRow.setAttribute('data-completion-date', data.nonFormacyFormData.completionDate);
+                                //             newApprovalFormRow.setAttribute('data-research-staff-expenses', data.nonFormacyFormData.researchStaffExpenses);
+                                //             newApprovalFormRow.setAttribute('data-travel-expenses', data.nonFormacyFormData.travlExpanses);
+                                //             newApprovalFormRow.setAttribute('data-computer-charges', data.nonFormacyFormData.computerCharges);
+                                //             newApprovalFormRow.setAttribute('data-nmims-facility-charges', data.nonFormacyFormData.faculityCharges);
+                                //             newApprovalFormRow.setAttribute('data-miscellaneous-including-contingency', data.nonFormacyFormData.miscellaneousContingencyCharges);
+                                //             newApprovalFormRow.setAttribute('data-advanced-payment', data.nonFormacyFormData.advancedPayment);
+                                //             newApprovalFormRow.setAttribute('data-final-payment', data.nonFormacyFormData.finalPayment);
+                                //             newApprovalFormRow.setAttribute('data-per-session-fees', data.nonFormacyFormData.sessionsFees);
+                                //             newApprovalFormRow.setAttribute('data-total-fees', data.nonFormacyFormData.totalFees);
+                                //             newApprovalFormRow.setAttribute('data-faculty-shares', data.nonFormacyFormData.facultyShare);
+                                //             newApprovalFormRow.setAttribute('data-nmims-shares', data.nonFormacyFormData.nmimsShare);
+                                //             newApprovalFormRow.setAttribute('data-gross-fees', data.nonFormacyFormData.grossFees);
 
-                    //             newApprovalFormRow.innerHTML = `
-                    //         <td class="col-lg-1">${IndexEntry}</td>
-                    //         <td class="col-lg-1 faculty-name">${data.nonFormacyFormData.facultyId} </td>
-                    //         <td class="col-lg-1 project-title">${data.nonFormacyFormData.title}</td>
-                    //         <td class="col-lg-1 year">${data.nonFormacyFormData.year}</td>
-                    //         <td class="col-lg-1 total-fees">${data.nonFormacyFormData.totalFees}</td>
-                       
-                    //         <td title="View" class="border-right-0 view"  style="cursor: pointer;" data-consultancy-id="${data.grantedSeedId}">
-                    //             &#128065;
-                    //         </td>
-                    //         <td title="Edit" class="border-right-0 edit" style="cursor: pointer;" data-consultancy-id="${data.grantedSeedId}">
-                    //             &#9998;
-                    //         </td>
-                    //         <td title="Delete" class="border-right-0 delete" style="cursor: pointer;" data-consultancy-id="${data.grantedSeedId}">
-                    //             &#128465;
-                    //         </td>
+                                //             newApprovalFormRow.innerHTML = `
+                                //         <td class="col-lg-1">${IndexEntry}</td>
+                                //         <td class="col-lg-1 faculty-name">${data.nonFormacyFormData.facultyId} </td>
+                                //         <td class="col-lg-1 project-title">${data.nonFormacyFormData.title}</td>
+                                //         <td class="col-lg-1 year">${data.nonFormacyFormData.year}</td>
+                                //         <td class="col-lg-1 total-fees">${data.nonFormacyFormData.totalFees}</td>
 
-                    // `;
-                    //             approvedFormList.appendChild(newApprovalFormRow);
+                                //         <td title="View" class="border-right-0 view"  style="cursor: pointer;" data-consultancy-id="${data.grantedSeedId}">
+                                //             &#128065;
+                                //         </td>
+                                //         <td title="Edit" class="border-right-0 edit" style="cursor: pointer;" data-consultancy-id="${data.grantedSeedId}">
+                                //             &#9998;
+                                //         </td>
+                                //         <td title="Delete" class="border-right-0 delete" style="cursor: pointer;" data-consultancy-id="${data.grantedSeedId}">
+                                //             &#128465;
+                                //         </td>
+
+                                // `;
+                                //             approvedFormList.appendChild(newApprovalFormRow);
                                 $('#consultancy-modal-form').modal('hide');
                                 Swal.fire({
                                     position: "top-center",
@@ -783,8 +863,18 @@
                             color: "red",
                             showConfirmButton: true,
                             confirmButtonText: "OK",
-                            confirmButtonColor: "#DD6B55"
+                            confirmButtonColor: "#DD6B55",
+    
                         });
+
+                //         $('body').keypress(function(e){ 
+                // alert(e.which); 
+                // if(e.which == 27){
+                // swal.close();
+                // } 
+                // });
+
+                       
                     }
                 });
 
@@ -930,11 +1020,14 @@
                         });
                         updateBtn.classList.remove('d-none');
                         approvalFormRecordToBeUpdated = event.target.closest('tr');
+                        console.log('approvalFormRecordToBeUpdated', approvalFormRecordToBeUpdated);
+
+
                         console.log('approvalFormRecordToBeUpdated ===>>>>', JSON.stringify(approvalFormRecordToBeUpdated));
 
                         grantedSeedId = approvalFormRecordToBeUpdated.getAttribute('data-consultancy-id');
                         console.log('grantedSeedId ====>>>>', grantedSeedId);
-                        facultyId = approvalFormRecordToBeUpdated.getAttribute('data-faculty-id')
+                        facultyId = approvalFormRecordToBeUpdated.getAttribute('data-faculty-id');
                         console.log('facultyId ====>>>>>', facultyId);
 
                         //let facultydata = document.getElementById('faculty-list-data');
@@ -986,6 +1079,11 @@
                         document.getElementById('advance-payment').value = approvalFormRecordToBeUpdated.getAttribute('data-advanced-payment');
                         document.getElementById('final-payment').value = approvalFormRecordToBeUpdated.getAttribute('data-final-payment');
                         document.getElementById('gross-fees').value = approvalFormRecordToBeUpdated.getAttribute('data-gross-fees');
+
+                        console.log('values of total amount ', approvalFormRecordToBeUpdated.getAttribute('data-total-amount'))
+                        document.getElementById('total-amount').value = approvalFormRecordToBeUpdated.getAttribute('data-total-payment');
+                        document.getElementById('grand-total').value = approvalFormRecordToBeUpdated.getAttribute('data-grant-total-payment');
+
                         // formatDateToYYYYMMDD(subMissionDate);
                         $('#consultancy-modal-form').modal('show');
                     }
@@ -998,7 +1096,7 @@
                 // Construct an array of objects with id and faculty_name
                 const facultyOptions = facultyListData.map(faculty => ({
                     value: faculty.id,
-                    text: `${faculty.id} ,  ${faculty.faculty_name}, ${faculty.address}, ${faculty.designation}`
+                    text: `${faculty.faculty_name} ${faculty.designation}`
                 }));
 
 
@@ -1157,23 +1255,67 @@
                     }
                 })
 
-                // document.getElementById('headerClose').addEventListener('click',() => {
-                //     console.log('header close ')
-                //     document.location.reload();
-                // })
+                document.getElementById('final-payment').addEventListener('input', () => {
+                    let finalPayment = document.getElementById('final-payment').value;
+                    let advancePayment = document.getElementById('advance-payment').value;
+                    let totalAmount = document.getElementById('total-amount');
 
-                // document.getElementById('insertClose').addEventListener('click',() => {
-                //     console.log('header close ')
-                //     document.location.reload();
-                // })
+                    let advance = Number.parseInt(advancePayment)
+                    let final = Number.parseInt(finalPayment);
 
-                // document.getElementById('headerEditClose').addEventListener('click',() => {
-                //     document.location.reload();
-                // })
+                    let total = advance + final
+                    totalAmount.value = total
 
-                // document.getElementById('editClose').addEventListener('click',() => {
-                //     document.location.reload();
-                // })
+                    document.querySelector('#commonTr').setAttribute('data-total-amount', totalAmount)
+                    console.log('advance and final ', finalPayment, advancePayment)
+                })
+
+
+                document.getElementById('miscellaneous-contingency').addEventListener('input', () => {
+
+                    let grossFees = Number.parseInt(document.getElementById('gross-fees').value);
+                    let researchStaffExpenses = Number.parseInt(document.getElementById('research-staff-expenses').value);
+                    let travel = Number.parseInt(document.getElementById('travel').value);
+                    let miscellaneous = Number.parseInt(document.getElementById('miscellaneous-contingency').value);
+                    let computerCharges = Number.parseInt(document.getElementById('computer-charges').value);
+                    let facultyCharges = Number.parseInt(document.getElementById('facility-charges').value);
+
+                    let finalPayment = document.getElementById('final-payment').value;
+                    let advancePayment = document.getElementById('advance-payment').value;
+
+
+                    let advance = Number.parseInt(advancePayment)
+                    let final = Number.parseInt(finalPayment);
+
+                    console.log('advance and final ', advance, final)
+
+                    let grandTotal = document.getElementById('grand-total')
+
+                    let total = grossFees + computerCharges + miscellaneous + computerCharges + travel + researchStaffExpenses
+                    let totalpayment = advance + final;
+
+                    const gstCharges = totalpayment * 18 / 100;
+                    console.log('gstCharges ====>>>>', gstCharges);
+
+                    let totalFees = parseInt(document.getElementById('no-of-session').value) + parseInt(document.getElementById('sessions-fees').value);
+
+                    const grandTotalAmount = total + gstCharges + totalFees;
+                    console.log('grandTotalAmount ====>>>>', grandTotalAmount);
+                    grandTotal.value = grandTotalAmount;
+                    let tr = document.getElementById('commonTr')
+                    console.log('tr ====>>>>', tr);
+                    document.querySelector('#commonTr').setAttribute('data-grand-total-amount', grandTotalAmount);
+
+                })
+
+                // $('body').keypress(function(e){ 
+                // alert(e.which); 
+                // if(e.which == 27){
+                // swal.close();
+                // } 
+                // });
+
+
 
             </script>
 

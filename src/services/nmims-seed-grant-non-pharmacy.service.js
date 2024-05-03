@@ -6,13 +6,38 @@ const seedGrantModels = require('../models/nmims-seed-grant-non-pharmacy.models'
 module.exports.fetchNoFormacyForm = async(userName) => {
     const seedGrantFormData = await seedGrantModels.renderSeedGrantNonFormacy(userName);
 
-    console.log('seedGrantFormData ===>>>>', seedGrantFormData);
+    console.log('seedGrantFormData ===>>>>', JSON.stringify(seedGrantFormData.seedGrantFormDataRows));
+    const paymentDataArray = seedGrantFormData.seedGrantFormDataRows;
+    console.log("paymentDataArray ====>>>>", paymentDataArray);
+    console.log('seed grant ',JSON.stringify(seedGrantFormData.seedGrantFormDataRows))
+
+
+
+    let totalPayment = [];
+
+    paymentDataArray.forEach(payment => {
+             const Data = parseInt(payment.final_payment) + parseInt(payment.advanced_payment);
+             let gstCharge = Data * 18/100;
+
+             let totalCost = parseInt(payment.research_staff_expenses) + parseInt(payment.travel)
+             + parseInt(payment.computer_charges) + parseInt(payment.nmims_facility_charges) + 
+             parseInt(payment.gross_fees) + parseInt(payment.miscellaneous_including_contingency)
+
+             let grantTotal = totalCost + parseInt(payment.total_fees) + gstCharge;
+
+             totalPayment.push({totalPayment : Data,totalGrant : grantTotal});
+    })
+
+    console.log("totalPayment", totalPayment);
+ 
+
     return seedGrantFormData.status === "Done" ? {
         status : seedGrantFormData.status,
         message : seedGrantFormData.message,
         seedGrantFormData : seedGrantFormData.seedGrantFormDataRows,
         rowCount : seedGrantFormData.rowCount,
-        facultyData : seedGrantFormData.facultyData
+        facultyData : seedGrantFormData.facultyData,
+        totalPayment : totalPayment,
     } : {
         status : seedGrantFormData.status,
         message : seedGrantFormData.message,
@@ -106,11 +131,11 @@ module.exports.viewGrantedSeedNonFormacyData = async (body, userName) => {
     const totalFees = nonFormacyData.nonFormacyformData[0].session_count_per_days * nonFormacyData.nonFormacyformData[0].per_session_fees;
     console.log('totalFees ===>>>>', totalFees);
 
-    const totalExpensesAmount = nonFormacyData.nonFormacyformData[0].research_staff_expenses + nonFormacyData.nonFormacyformData[0].travel + 
-                                nonFormacyData.nonFormacyformData[0].computer_charges + nonFormacyData.nonFormacyformData[0].nmims_facility_charges
-                                + nonFormacyData.nonFormacyformData[0].miscellaneous_including_contingency;
+    // const totalExpensesAmount = nonFormacyData.nonFormacyformData[0].research_staff_expenses + nonFormacyData.nonFormacyformData[0].travel + 
+    //                             nonFormacyData.nonFormacyformData[0].computer_charges + nonFormacyData.nonFormacyformData[0].nmims_facility_charges
+    //                             + nonFormacyData.nonFormacyformData[0].miscellaneous_including_contingency;
 
-    console.log('totalExpensesAmount ====>>>>>', totalExpensesAmount);
+    // console.log('totalExpensesAmount ====>>>>>', totalExpensesAmount);
     const commencementDate = nonFormacyData.nonFormacyformData[0].commencement_date;
     const commencementDateFormate = moment(commencementDate).format('DD-MM-YYYY');
     console.log('commencementDateFormate ===>>>>', commencementDateFormate);
@@ -126,14 +151,14 @@ module.exports.viewGrantedSeedNonFormacyData = async (body, userName) => {
     const gstCharges = totalAmount * 18 / 100;
     console.log('gstCharges ====>>>>', gstCharges);
 
-    const grandTotalAmount = totalExpensesAmount + aToFTotalAmount + gstCharges + totalFees;
+    const grandTotalAmount =  aToFTotalAmount + gstCharges + totalFees;
     console.log('grandTotalAmount ===>>>', grandTotalAmount);
 
     return nonFormacyData.status === "Done" ? {
         status : nonFormacyData.status,
         message : nonFormacyData.message,
         nonFormacyData : nonFormacyData.nonFormacyformData[0],
-        totalExpensesAmount : totalExpensesAmount,
+        // totalExpensesAmount : totalExpensesAmount,
         commencementDateFormate : commencementDateFormate,
         completionDateFormate : completionDateFormate,
         totalFees : totalFees,

@@ -77,7 +77,7 @@
                                 </div>
                             </div>
                             <table
-                                class="table vertical-lines custom-table data-list table-responsive research-pagination"
+                                class="table vertical-lines custom-table  table-responsive research-pagination"
                                 id="patent-submisson-list">
                                 <thead>
                                     <th class="col-lg-1">#</th>
@@ -87,7 +87,7 @@
                                     <th class="col-lg-1">Application Number</th>
                                     <th class="col-lg-1" colspan="3">Action</th>
                                 </thead>
-                                <tbody>
+                                <tbody class="data-list">
                                     <% if (patentSubmissionsData) { %>
                                         <% patentSubmissionsData.forEach(function(patent,index) {%>
                                             <tr data-patent-id="<%- patent.patent_submission_grant_id %>"
@@ -1202,20 +1202,84 @@
 
                         // Initialize TomSelect dropdown with options containing id and faculty_name
                         new TomSelect("#emp-name", {
-                            options: facultyOptions
+                            options: facultyOptions,
+                            placeholder : "Select Employee Name",
+                            hidePlaceholder : true,
+                            create: true,
+                            plugins: ['remove_button'],
+                            onItemAdd:function(){
+                                this.setTextboxValue('');
+                                this.refreshOptions();
+                            },
+                            render:{
+                                option:function(data,escape){
+                                    return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                                },
+                                item:function(data,escape){
+                                    return '<div>' + escape(data.text) + '</div>';
+                                }
+                            }
                         });
 
                         // Initialize TomSelect dropdown with options containing id and faculty_name
                         new TomSelect("#sdg-goals-data", {
-                            options: sdgOptions
+                            options: sdgOptions,
+                            placeholder : "Select SDG Goals",
+                            hidePlaceholder : true,
+                            create: true,
+                            plugins: ['remove_button'],
+                            onItemAdd:function(){
+                                this.setTextboxValue('');
+                                this.refreshOptions();
+                            },
+                            render:{
+                                option:function(data,escape){
+                                    return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                                },
+                                item:function(data,escape){
+                                    return '<div>' + escape(data.text) + '</div>';
+                                }
+                            }
                         });
 
                         new TomSelect("#patent-stage", {
-                            options: statusOptions
+                            options: statusOptions,
+                            placeholder : "Select patent status",
+                            hidePlaceholder : true,
+                            create: true,
+                            plugins: ['remove_button'],
+                            onItemAdd:function(){
+                                this.setTextboxValue('');
+                                this.refreshOptions();
+                            },
+                            render:{
+                                option:function(data,escape){
+                                    return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                                },
+                                item:function(data,escape){
+                                    return '<div>' + escape(data.text) + '</div>';
+                                }
+                            }
                         });
 
                         new TomSelect("#type-of-invention", {
-                            options: inventionTypeValue
+                            options: inventionTypeValue,
+                            placeholder : "Select Options",
+                            hidePlaceholder : true,
+                            create: true,
+                            plugins: ['remove_button'],
+                            onItemAdd:function(){
+                                this.setTextboxValue('');
+                                this.refreshOptions();
+                            },
+                            render:{
+                                option:function(data,escape){
+                                    return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                                },
+                                item:function(data,escape){
+                                    return '<div>' + escape(data.text) + '</div>';
+                                }
+                            }
                         });
 
                         // function for select author name from drop down list

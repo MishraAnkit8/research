@@ -61,7 +61,7 @@
                                 </div>
                             </div>
                             <table
-                                class="table vertical-lines custom-table table-responsive data-list research-pagination"
+                                class="table vertical-lines custom-table table-responsive research-pagination"
                                 id="consultancy-list">
                                 <thead>
                                     <th class="col-lg-1">#</th>
@@ -74,7 +74,7 @@
                                     <th class="col-lg-1"> Project Status</th>
                                     <th class="col-lg-1" colspan="3">Action</th>
                                 </thead>
-                                <tbody>
+                                <tbody class="data-list">
                                     <% researchProjectData.forEach(function(consultancy, index) { %>
                                         <tr scope="row" data-consultancy-id="<%- consultancy.id %>"
                                             data-submission-date="<%- consultancy.submission_date.toISOString().split('T')[0] %>"
@@ -1446,9 +1446,26 @@
 
 
                 // Initialize TomSelect dropdown with options containing id and faculty_name
-                new TomSelect("#emp-name", {
-                    options: facultyOptions
-                });
+               
+                    new TomSelect("#emp-name", {
+                            options: facultyOptions,
+                            placeholder: "Select Employee Name",
+                            hidePlaceholder: true,
+                            create: true,
+                            plugins: ['remove_button'],
+                            onItemAdd: function () {
+                                this.setTextboxValue('');
+                                this.refreshOptions();
+                            },
+                            render: {
+                                option: function (data, escape) {
+                                    return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                                },
+                                item: function (data, escape) {
+                                    return '<div>' + escape(data.text) + '</div>';
+                                }
+                            }
+                        });
                 // function for select author name from drop down list
 
                 function handleEmployeeDropdownChange() {

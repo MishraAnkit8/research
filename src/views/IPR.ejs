@@ -59,7 +59,7 @@
                                 </div>
                             </div>
                             <table
-                                class="table vertical-lines custom-table table-responsive data-list research-pagination"
+                                class="table vertical-lines custom-table table-responsive  research-pagination"
                                 id="ipr-data-list">
                                 <thead>
                                     <th class="col-lg-1">#</th>
@@ -72,7 +72,7 @@
                                     <th class="col-lg-1 nmims-campus">NMIMS Campus</th>
                                     <th class="col-lg-1" colspan="3">Action</th>
                                 </thead>
-                                <tbody>
+                                <tbody class="data-list">
                                     <% if (IPRDataList) { %>
                                         <% IPRDataList.forEach(function(iprData,index) {%>
                                             <tr data-ipr-id="<%- iprData.ipr_id %>"
@@ -604,7 +604,9 @@
             </div>
             <div id="employees-list-data" data-employees='<%- JSON.stringify(internalEmpList) %>'
                 style="display: none;"></div>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/tom-select/2.3.1/js/tom-select.complete.min.js"
+           
+​
+​<script src="https://cdnjs.cloudflare.com/ajax/libs/tom-select/2.3.1/js/tom-select.complete.min.js"
                 integrity="sha512-zdXqksVc9s0d2eoJGdQ2cEhS4mb62qJueasTG4HjCT9J8f9x5gXCQGSdeilD+C7RqvUi1b4DdD5XaGjJZSlP9Q=="
                 crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
@@ -1396,19 +1398,9 @@
                 }));
 
                 new TomSelect("#patent-stage", {
-                    options: statusOptions
-                });
-
-                // new TomSelect("#type-of-invention", {
-                //     options: inventionTypeValue
-                // });
-
-                console.log("inventionTypeValue : ",inventionTypeValue);
-
-                new TomSelect("#type-of-invention",{
-                    options: inventionTypeValue,
+                    options: statusOptions,
+                    placeholder : "Select Options",
                     plugins: ['remove_button'],
-                    placeholder : "Select Type of Invension",
                     hidePlaceholder : true,
                     create: true,
                     onItemAdd:function(){
@@ -1424,18 +1416,88 @@
                         }
                     }
                 });
-	
 
-                new TomSelect("#nmims-campus-list", {
-                    options: selectedCampus
+                new TomSelect("#type-of-invention", {
+                    options: inventionTypeValue,
+                    placeholder : "Select Options",
+                    plugins: ['remove_button'],
+                    hidePlaceholder : true
+                    ,
+                    create: true,
+                    onItemAdd:function(){
+                        this.setTextboxValue('');
+                        this.refreshOptions();
+                    },
+                    render:{
+                        option:function(data,escape){
+                            return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                        },
+                        item:function(data,escape){
+                            return '<div>' + escape(data.text) + '</div>';
+                        }
+                    }
                 });
 
+                new TomSelect("#nmims-campus-list", {
+                    options: selectedCampus,
+                    placeholder : "Select Options",
+                    hidePlaceholder : true,
+                    hidePlaceholder : true,
+                    create: true,
+                    plugins: ['remove_button'],
+                    onItemAdd:function(){
+                        this.setTextboxValue('');
+                        this.refreshOptions();
+                    },
+                    render:{
+                        option:function(data,escape){
+                            return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                        },
+                        item:function(data,escape){
+                            return '<div>' + escape(data.text) + '</div>';
+                        }
+                    }
+                });
+                
                 new TomSelect("#nmims-school-list", {
-                    options: selectedSchool
+                    options: selectedSchool,
+                    placeholder : "Select Options",
+                    plugins: ['remove_button'],
+                    hidePlaceholder : true
+                    ,
+                    create: true,
+                    onItemAdd:function(){
+                        this.setTextboxValue('');
+                        this.refreshOptions();
+                    },
+                    render:{
+                        option:function(data,escape){
+                            return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                        },
+                        item:function(data,escape){
+                            return '<div>' + escape(data.text) + '</div>';
+                        }
+                    }
                 });
 
                 new TomSelect("#emp-name", {
-                    options: facultyOptions
+                    options: facultyOptions,
+                    placeholder : "Select Options",
+                    hidePlaceholder : true,
+                    create: true,
+                    plugins: ['remove_button'],
+                    onItemAdd:function(){
+                        this.setTextboxValue('');
+                        this.refreshOptions();
+                    },
+                    render:{
+                        option:function(data,escape){
+                            return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                        },
+                        item:function(data,escape){
+                            return '<div>' + escape(data.text) + '</div>';
+                        }
+                    }
                 });
 
                 // function for select author name from drop down list

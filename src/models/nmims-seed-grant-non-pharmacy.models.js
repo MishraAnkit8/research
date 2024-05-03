@@ -11,7 +11,11 @@ module.exports.renderSeedGrantNonFormacy = async(userName) => {
                     c.year, c.title, c.commencement_date, c.created_by AS created_by, c.commencement_date, c.completion_date, c.research_staff_expenses,
                     c.travel, c.computer_charges, c.nmims_facility_charges, c.miscellaneous_including_contingency,
                     c.advanced_payment, c.final_payment, c.per_session_fees, c.session_count_per_days, c.total_fees,
-                    c.faculty_shares, c.nmims_shares, c.gross_fees 
+                    c.faculty_shares, c.nmims_shares, c.gross_fees ,
+                    (c.advanced_payment + c.final_payment) as totalPayment,
+                    (c.total_fees + (c.travel + research_staff_expenses + c.computer_charges + 
+                      c.nmims_facility_charges + c.miscellaneous_including_contingency + c.gross_fees ) +
+                    (c.advanced_payment + c.final_payment) * 18/100) as totalGrant
                 FROM 
                     faculty_table f
                 JOIN 
@@ -22,7 +26,7 @@ module.exports.renderSeedGrantNonFormacy = async(userName) => {
                     c.id desc`,
           values : [userName]
         };
-        let facultySql = `SELECT * FROM faculty_table ORDER BY id`;
+        let facultySql = `SELECT id, faculty_name , designation FROM faculty_table ORDER BY id`;
         const fetchSeedGrantFormData = await researchDbW.query(grantedSeedSql);
         const facultyRecord = await researchDbW.query(facultySql);
         const promises = [fetchSeedGrantFormData, facultyRecord];

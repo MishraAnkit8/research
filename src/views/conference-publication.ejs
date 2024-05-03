@@ -59,7 +59,7 @@
                                 </div>
                             </div>
                             <table
-                                class="table vertical-lines custom-table table-responsive data-list research-pagination"
+                                class="table vertical-lines custom-table table-responsive research-pagination"
                                 id="conference-publication-list">
                                 <thead>
                                     <th class="col-lg-1">#</th>
@@ -71,6 +71,7 @@
                                     <th class="col-lg-1">ISSN/ISNB No</th>
                                     <th class="col-lg-1" colspan="3">Action</th>
                                 </thead>
+                                <tbody class="data-list">
                                     <% conferenceData.forEach(function(conference,index) { %>
                                         <% const externalEmp=externalEmpList[index]; %>
                                             <tr data-conference-id="<%- conference.id %>"
@@ -144,6 +145,7 @@
                                                         <b class="no-record">No records found.</b>
                                                     </div>
                                                 </tr>
+                                </tbody>
                             </table>
                          
                         </div>
@@ -1392,8 +1394,30 @@
                 let employeeListArray = [];
 
 
-                // ajax for search bar to search employee name 
-                new TomSelect("#emp-name");
+                 // ajax for search bar to search employee name 
+                 const facultyOptions = employeesDataObj.map(faculty => ({
+                            value: faculty.id,
+                            text: ` ${faculty.employee_id}  ${faculty.employee_name}`
+                        }));
+                new TomSelect("#emp-name", {
+                        options: facultyOptions,
+                        placeholder: "Select Employee Name",
+                        hidePlaceholder: true,
+                        create: true,
+                        plugins: ['remove_button'],
+                        onItemAdd: function () {
+                            this.setTextboxValue('');
+                            this.refreshOptions();
+                        },
+                        render: {
+                            option: function (data, escape) {
+                                return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                            },
+                            item: function (data, escape) {
+                                return '<div>' + escape(data.text) + '</div>';
+                            }
+                        }
+                    });
                 const authorNamesArray = [];
                 // function for select author name from drop down list
                 function handleEmployeeDropdownChange() {
