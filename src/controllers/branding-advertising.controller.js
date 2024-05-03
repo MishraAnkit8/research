@@ -20,8 +20,8 @@ module.exports.insertBrandingAndAdvertising = async(req, res, next) => {
     const advertisingData = req.body;
     console.log('data comming from frontend ==>>', advertisingData);
     console.log('files in controller  ==>>', res.files);
-
     const brandingAndAdvertising = await brandingAndAdvertisingServices.insertBrandingAdvertising(req.body, req.files, userName);
+    
 
     console.log('brandingAndAdvertising in controller ==>>', brandingAndAdvertising);
     const statusCode = brandingAndAdvertising.status === "Done" ? 200 : (brandingAndAdvertising.errorCode ? 400  : 500);
