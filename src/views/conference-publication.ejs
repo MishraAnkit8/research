@@ -1392,8 +1392,30 @@
                 let employeeListArray = [];
 
 
-                // ajax for search bar to search employee name 
-                new TomSelect("#emp-name");
+                 // ajax for search bar to search employee name 
+                 const facultyOptions = employeesDataObj.map(faculty => ({
+                            value: faculty.id,
+                            text: ` ${faculty.employee_id}  ${faculty.employee_name}`
+                        }));
+                new TomSelect("#emp-name", {
+                        options: facultyOptions,
+                        placeholder: "Select Employee Name",
+                        hidePlaceholder: true,
+                        create: true,
+                        plugins: ['remove_button'],
+                        onItemAdd: function () {
+                            this.setTextboxValue('');
+                            this.refreshOptions();
+                        },
+                        render: {
+                            option: function (data, escape) {
+                                return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                            },
+                            item: function (data, escape) {
+                                return '<div>' + escape(data.text) + '</div>';
+                            }
+                        }
+                    });
                 const authorNamesArray = [];
                 // function for select author name from drop down list
                 function handleEmployeeDropdownChange() {
