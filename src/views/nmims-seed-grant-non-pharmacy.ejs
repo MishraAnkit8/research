@@ -1,5 +1,6 @@
 <%- include('./partials/head') %>
     <!-- inline css -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css" />
 
     <!-- Navbar section -->
     <%- include('./partials/header') %>
@@ -14,7 +15,7 @@
                             <li class="breadcrumb-link">
                                 <a href="<%- BASE_URL %>research"> Research </a>
                             </li>
-                            <li class="breadcrumb-link">NMIMS Seed Non Pharmacy</li>
+                            <li class="breadcrumb-link">NMIMS Seed Grant Non Pharmacy</li>
                         </ul>
                     </div>
                     <div>
@@ -23,45 +24,48 @@
                                 <h5 class="pl-2">NMIMS Seed Grant Non Pharmacy LIST</h5>
                             </div>
                             <div>
-                                <button id="Consultancy-add-new-form" type="button" class="btn btn-primary add-modal"
-                                    data-toggle="modal" data-target="#consultancy-modal-form">
-                                    <i class="fas fa-plus plus"></i></button>
-                                </button>
+                                <div>
+                                    <button id="Consultancy-add-new-form" type="button"
+                                        class="btn btn-primary add-modal" data-toggle="modal"
+                                        data-target="#consultancy-modal-form">
+                                        <i class="fas fa-plus plus"></i></button>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                         <div class="card-body table-responsive">
                             <div class="d-flex justify-content-between">
-                                <div>
-                                    <label>Show Entries</label>
-                                    <select class="form-select" id="changeEntry">
-                                        <option value="5">5</option>
-                                        <option value="10">10</option>
-                                        <option value="25">25</option>
-                                        <option value="50">50</option>
-                                        <option value="100">100</option>
-                                        <option value="150">150</option>
-                                        <option value="200">200</option>
-                                        <option value="250">250</option>
-                                        <option value="300">300</option>
-                                        <option value="350">350</option>
-                                        <option value="400">400</option>
-                                        <option value="500">500</option>
-                                        <option value="800">800</option>
-                                        <option value="1000">1000</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <div class="table-searchbar-container">
-                                        <button type="button" id="searchBtn"><i class="fas fa-search"></i></button>
-                                        <input type="search" id="searchKeyword" placeholder="Enter keywords"
-                                            class="table-searchbar">
-                                    </div>
-                                </div>
+                                <!-- <div>
+                                        <label>Show Entries</label>
+                                        <select class="form-select" id="changeEntry">
+                                            <option value="5">5</option>
+                                            <option value="10">10</option>
+                                            <option value="25">25</option>
+                                            <option value="50">50</option>
+                                            <option value="100">100</option>
+                                            <option value="150">150</option>
+                                            <option value="200">200</option>
+                                            <option value="250">250</option>
+                                            <option value="300">300</option>
+                                            <option value="350">350</option>
+                                            <option value="400">400</option>
+                                            <option value="500">500</option>
+                                            <option value="800">800</option>
+                                            <option value="1000">1000</option>
+                                        </select>
+                                    </div> -->
+                                <!-- <div>
+                                        <div class="table-searchbar-container">
+                                            <button type="button" id="searchBtn"><i class="fas fa-search"></i></button>
+                                            <input type="search" id="searchKeyword" placeholder="Enter keywords"
+                                                class="table-searchbar">
+                                        </div>
+                                    </div> -->
                             </div>
                             <table
                                 class="table vertical-lines custom-table table-responsive  research-pagination"
                                 id="approved-consultancy-form-data-list">
-                                <thead>
+                                <thead scope="row">
                                     <th class="col-lg-1">#</th>
                                     <th class="col-lg-1">Faculty Name </th>
                                     <th class="col-lg-1">Title</th>
@@ -72,9 +76,10 @@
                                 <tbody class="data-list">
                                
                                     <% seedGrantFormData.forEach(function(grantSeedData , index) { %>
-                                        <tr id="commonTr" data-consultancy-id="<%- grantSeedData.consultancy_id %>"
-                                            data-total-payment="<%- grantSeedData.totalpayment %>"
-                                            data-grant-total-payment = "<%- grantSeedData.totalgrant %>"
+                                        <tr scope="row" id="commonTr"
+                                            data-consultancy-id="<%- grantSeedData.consultancy_id %>"
+                                            data-total-payment="<%- grantSeedData.totalamount %>"
+                                            data-grant-total-payment="<%- grantSeedData.grandtotal %>"
                                             data-faculty-id="<%- grantSeedData.faculty_id %>"
                                             data-commencement-date="<%- grantSeedData.commencement_date %>"
                                             data-completion-date="<%- grantSeedData.completion_date %>"
@@ -97,81 +102,20 @@
                                             <td class="col-lg-1 year"><%- grantSeedData.year %></td>
                                             <td class="col-lg-1 total-fees"><%- grantSeedData.total_fees %></td>
                                             <td title="View" class="view border-right-0" style="cursor: pointer;"
-                                            data-consultancy-id="<%- grantSeedData.consultancy_id %>">
-                                            &#128065;
-                                        </td>
-                                        <td title="Edit" class="edit border-right-0" style="cursor: pointer;"
-                                            data-consultancy-id="<%- grantSeedData.consultancy_id %>">
-                                            &#9998;
-                                        </td>
-                                        <td title="Delete" class="delete border-right-0"
-                                            style="cursor: pointer;"
-                                            data-consultancy-id="<%- grantSeedData.consultancy_id %>">
-                                            &#128465;
+                                                data-consultancy-id="<%- grantSeedData.consultancy_id %>">
+                                                &#128065;
+                                            </td>
+                                            <td title="Edit" class="edit border-right-0" style="cursor: pointer;"
+                                                data-consultancy-id="<%- grantSeedData.consultancy_id %>">
+                                                &#9998;
+                                            </td>
+                                            <td title="Delete" class="delete border-right-0" style="cursor: pointer;"
+                                                data-consultancy-id="<%- grantSeedData.consultancy_id %>">
+                                                &#128465;
 
-                                        </td>
-                                        
-                                        
+                                            </td>
                                         </tr>
-                                    <% })  %>
-
-                                    <!-- <% seedGrantFormData.forEach(function(grantSeedData , index) { %> -->
-                                        <!-- <% totalPayment.forEach(function(payment) { %> -->
-                                            <!-- <tr id="commonTr" data-consultancy-id="<%- grantSeedData.consultancy_id %>"
-                                                data-total-payment="<%- grantSeedData.totalpayment %>"
-                                                data-grant-total-payment = "<%- grantSeedData.totalgrant %>"
-                                                data-faculty-id="<%- grantSeedData.faculty_id %>"
-                                                data-commencement-date="<%- grantSeedData.commencement_date %>"
-                                                data-completion-date="<%- grantSeedData.completion_date %>"
-                                                data-research-staff-expenses="<%- grantSeedData.research_staff_expenses %>"
-                                                data-travel-expenses="<%- grantSeedData.travel %>"
-                                                data-computer-charges="<%- grantSeedData.computer_charges %>"
-                                                data-nmims-facility-charges="<%- grantSeedData.nmims_facility_charges %>"
-                                                data-miscellaneous-including-contingency="<%- grantSeedData.miscellaneous_including_contingency %>"
-                                                data-advanced-payment="<%- grantSeedData.advanced_payment %>"
-                                                data-final-payment="<%- grantSeedData.final_payment %>"
-                                                data-per-session-fees="<%- grantSeedData.per_session_fees %>"
-                                                data-faculty-shares="<%- grantSeedData.faculty_shares %>"
-                                                data-nmims-shares="<%- grantSeedData.nmims_shares %>"
-                                                data-gross-fees="<%- grantSeedData.gross_fees %>"
-                                                data-session-count-per-days="<%- grantSeedData.session_count_per_days %>">
-                                                <td class="col-lg-1"><%- index + 1 %></td>
-                                                <td class="col-lg-1 faculty-name"><%- grantSeedData.faculty_name %>
-                                                </td>
-                                                <td class="col-lg-1 project-title"><%- grantSeedData.title %></td>
-                                                <td class="col-lg-1 year"><%- grantSeedData.year %></td>
-                                                <td class="col-lg-1 total-fees"><%- grantSeedData.total_fees %></td> -->
-                                                <!-- <td class="col-lg-1">
-                                <label class="view" data-consultancy-id="<%- grantSeedData.consultancy_id %>"
-                                    data-faculty-id="<%- grantSeedData.faculty_id %>"><i
-                                        class="fa-solid fa-eye view text-danger"
-                                        data-consultancy-id="<%- grantSeedData.consultancy_id %>"
-                                        data-faculty-id="<%- grantSeedData.faculty_id %>"></i></label>
-                                <label class="edit" data-consultancy-id="<%- grantSeedData.consultancy_id %>"><i
-                                        class="fa fa-edit edit text-danger"
-                                        data-consultancy-id="<%- grantSeedData.consultancy_id %>"></i></label>
-                                <label class="delete" data-consultancy-id="<%- grantSeedData.consultancy_id %>"><i
-                                        class="fa-solid fa-trash delete text-danger"
-                                        data-consultancy-id="<%- grantSeedData.consultancy_id %>"></i></label>
-                            </td> -->
-                                                <!-- <td colspan="3px" style="display:flex;justify-content: center;"> -->
-                                                <!-- <td title="View" class="view border-right-0" style="cursor: pointer;"
-                                                    data-consultancy-id="<%- grantSeedData.consultancy_id %>">
-                                                    &#128065;
-                                                </td>
-                                                <td title="Edit" class="edit border-right-0" style="cursor: pointer;"
-                                                    data-consultancy-id="<%- grantSeedData.consultancy_id %>">
-                                                    &#9998;
-                                                </td>
-                                                <td title="Delete" class="delete border-right-0"
-                                                    style="cursor: pointer;"
-                                                    data-consultancy-id="<%- grantSeedData.consultancy_id %>">
-                                                    &#128465;
-
-                                                </td> -->
-                                            <!-- </tr> -->
-                                            <!-- <% }) %> -->
-                                                <!-- <%}); %> -->
+                                        <% }) %>
                                 </tbody>
                                 <tr>
                                     <div id="no-records-message"
@@ -180,71 +124,73 @@
                                     </div>
                                 </tr>
                             </table>
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <label id="total-row-count">Total entries : <%- rowCount %> </label>
-                                    <label class="d-none" id="row-count"> <%- rowCount %></label>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <label id="total-row-count">Total entries : <%- rowCount %> </label>
+                            <label class="d-none" id="row-count"> <%- rowCount %></label>
+                        </div>
+                        <div>
+                            <button id="prevBtn" class="btn btn-primary">Previous</button>
+                            <button id="nextBtn" class="btn btn-primary">Next</button>
+                            <p id="pagination" class="pagination-search"></p>
+                        </div>
+                    </div>
+                    <!--Import Modal -->
+                    <div class="modal fade" id="open-program-modal" tabindex="-1" aria-labelledby="open-program-modal"
+                        aria-hidden="true">
+                    </div>
+                    <!-- EDIT PROGRAM AND UPDATE -->
+                    <div class="modal fade" id="edit-program-modal" tabindex="-1" aria-labelledby="editModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="editModalLabel">Update Program</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
                                 </div>
-                                <div>
-                                    <button id="prevBtn" class="btn btn-primary">Previous</button>
-                                    <button id="nextBtn" class="btn btn-primary">Next</button>
-                                    <p id="pagination" class="pagination-search"></p>
-                                </div>
-                            </div>
-                            <!--Import Modal -->
-                            <div class="modal fade" id="open-program-modal" tabindex="-1"
-                                aria-labelledby="open-program-modal" aria-hidden="true">
-                            </div>
-                            <!-- EDIT PROGRAM AND UPDATE -->
-                            <div class="modal fade" id="edit-program-modal" tabindex="-1"
-                                aria-labelledby="editModalLabel" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="editModalLabel">Update Program</h5>
-                                            <button type="button" class="btn-close" id="headerEditClose"
-                                                data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div id="errorHtml"></div>
-                                        <div class="modal-body">
-                                            <div class="mb-3">
-                                                <label for="exampleInputEmail1" class=" sub-title">Program Name</label>
-                                                <input type="text" class="form-control" id="program_name"
-                                                    name="program_name">
-                                                <input type="hidden" class="form-control" id="hidden_id"
-                                                    name="hidden_id">
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="exampleInputPassword1" class=" sub-title">Program
-                                                    Type</label>
-                                                <select class="form-control" name="program_type_lid"
-                                                    id="program_type_lid">
-                                                    <option value="1">Full Time</option>
-                                                    <option value="2">Part Time</option>
-                                                </select>
-                                            </div>
-
-                                            <div class="mb-3">
-                                                <label for="abbr" class=" sub-title">Program Abbr</label>
-                                                <input type="text" class="form-control" id="abbr" name="abbr">
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" id="editClose"
-                                                data-bs-dismiss="modal">Close</button>
-                                            <button type="button" class="btn btn-primary updateProgram">Update</button>
-                                        </div>
+                                <div id="errorHtml"></div>
+                                <div class="modal-body">
+                                    <div class="mb-3">
+                                        <label for="exampleInputEmail1" class="form-label">Program Name</label>
+                                        <input type="text" class="form-control" id="program_name" name="program_name">
+                                        <input type="hidden" class="form-control" id="hidden_id" name="hidden_id">
                                     </div>
+                                    <div class="mb-3">
+                                        <label for="exampleInputPassword1" class="form-label">Program Type</label>
+                                        <select class="form-control" name="program_type_lid" id="program_type_lid">
+
+                                            <option value="1">Full Time</option>
+
+                                            <option value="2">Part Time</option>
+
+                                        </select>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="abbr" class="form-label">Program Abbr</label>
+                                        <input type="text" class="form-control" id="abbr" name="abbr">
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-primary updateProgram">Update</button>
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
             </main>
             <div class="modal fade " id="consultancy-modal-form" tabindex="-1" role="dialog"
                 aria-labelledby="consultancy-modal-form" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-scrollable modal-lg modal-fullscreen p-5" role="document">
                     <div class="modal-content modal-content-data validate-input">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="grantSeedData-study">NMIMS Seed Grant Non Pharmacy Form </h5>
+                            <h5 class="modal-title" id="grantSeedData-study">NMIMS Seed Grant [Non Pharmacy] APPROVAL
+                                Form </h5>
                             <div type="button" class="close" id="headerClose" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true"><i class="fas fa-times "></i></span>
                             </div>
@@ -263,7 +209,7 @@
                                     <label for="campus" class=" sub-title fw-bold"> Title(Brief) </label>
                                     <input type="text" name="SchoolName" id="title"
                                         data-validate="isEmpty,isNotNumber,isExist,isNotSpecialChar"
-                                        data-err-msg="This field is required and min length > 1." class="form-control"
+                                        data-err-msg="Provide Valid Input" class="form-control"
                                         required />
                                 </div>
                                 <!-- Faculty ID -->
@@ -318,15 +264,15 @@
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="total-fees" class=" sub-title fw-bold">Faculty Share 70%(a)</label>
                                     <input type="text" name="total-fees" id="faculty-share"
-                                        data-validate="isEmpty,isExist,isNumber" data-err-msg="Value is required."
-                                        class="form-control" value="70%">
+                                        data-validate="isEmpty,isExist,isNumericSpecialChar"
+                                        data-err-msg="Value is required." class="form-control" required>
                                 </div>
                                 <!-- NMIMS Share -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="NMIMSAuthors" class=" sub-title fw-bold">NMIMS Share 30%(a)</label>
                                     <input type="text" name="volumes" id="nmims-share"
-                                        data-validate="isEmpty,isExist,isNumber" data-err-msg="Value is required."
-                                        class="form-control" value="30%">
+                                        data-validate="isEmpty,isExist,isNumericSpecialChar"
+                                        data-err-msg="Value is required." class="form-control" required>
                                 </div>
                                 <!-- Details of Distribution of Faculty Share (if more than one faculty) -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
@@ -361,7 +307,7 @@
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="total-amount" class=" sub-title fw-bold">Total Amount</label>
                                     <input class="form-control" type="number" name="total-amount" id="total-amount"
-                                    disabled>
+                                        disabled>
                                 </div>
 
 
@@ -394,7 +340,7 @@
                                         Charges/Printing/publication/Editing/Communication/Consumables </label>
                                     <input type="number" name="computer-charges" id="computer-charges"
                                         data-validate="isEmpty,isNumber"
-                                        data-err-msg="This field is required and min length > 1." class="form-control"
+                                        data-err-msg="Provide Valid Input" class="form-control"
                                         required />
                                 </div>
                                 <!-- (e) Charges for NMIMS Facilities (Class-room, Conference room), if applicable: -->
@@ -418,7 +364,7 @@
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="grand-total" class=" sub-title fw-bold">Grand Total</label>
                                     <input type="number" name="grand-total" id="grand-total" class="form-control"
-                                    disabled>
+                                        disabled>
                                 </div>
 
 
@@ -659,6 +605,14 @@
             </div>
             <div id="faculty-list-data" data-faculty-list='<%- JSON.stringify(facultyData) %>' style="display: none;">
             </div>
+
+            <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js">
+            </script>
+            
+            <!--Datatable plugin JS library file -->
+            <script type="text/javascript" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js">
+            </script>
+            
             <script src="https://cdnjs.cloudflare.com/ajax/libs/tom-select/2.3.1/js/tom-select.complete.min.js"
                 integrity="sha512-zdXqksVc9s0d2eoJGdQ2cEhS4mb62qJueasTG4HjCT9J8f9x5gXCQGSdeilD+C7RqvUi1b4DdD5XaGjJZSlP9Q=="
                 crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -744,6 +698,9 @@
                     seedGrantFormData.finalPayment = document.getElementById('final-payment').value;
                     seedGrantFormData.grossFees = document.getElementById('gross-fees').value;
                     seedGrantFormData.facultyId = document.getElementById('faculty-id').value;
+                    seedGrantFormData.totalAmount = document.getElementById('total-amount').value;
+                    seedGrantFormData.grandTotal = document.getElementById('grand-total').value;
+
 
                     const payload = {
                         seedGrantFormData: seedGrantFormData
@@ -864,17 +821,17 @@
                             showConfirmButton: true,
                             confirmButtonText: "OK",
                             confirmButtonColor: "#DD6B55",
-    
+
                         });
 
-                //         $('body').keypress(function(e){ 
-                // alert(e.which); 
-                // if(e.which == 27){
-                // swal.close();
-                // } 
-                // });
+                        //         $('body').keypress(function(e){ 
+                        // alert(e.which); 
+                        // if(e.which == 27){
+                        // swal.close();
+                        // } 
+                        // });
 
-                       
+
                     }
                 });
 
@@ -928,8 +885,8 @@
                                     document.getElementById('view-gst-charges').innerText = data.gstCharges;
                                     document.getElementById('view-advanced-payment').innerText = data.nonFormacyData.advanced_payment;
                                     document.getElementById('view-final-payment').innerText = data.nonFormacyData.final_payment;
-                                    document.getElementById('view-total-payment').innerText = data.totalAmount;
-                                    document.getElementById('view-grand-total-amount').innerText = data.grandTotalAmount;
+                                    document.getElementById('view-total-payment').innerText = data.nonFormacyData.totalamount;
+                                    document.getElementById('view-grand-total-amount').innerText = data.nonFormacyData.grandtotal;
                                     // document.getElementById('view-coordinator-faculty').innerText = data
                                     // document.getElementById('view-vice-chancellor').innerText = data
                                     document.getElementById('view-vice-chancellor-date').innerText = data.completionDateFormate;
@@ -1011,6 +968,8 @@
                     }
                     // for update the data 
                     if (event.target.classList.contains('edit')) {
+
+
                         console.log('yes edit clickeddd ===');
                         submitBtn.classList.add('d-none');
                         removeErrorMsg()
@@ -1308,17 +1267,21 @@
 
                 })
 
+
+
                 // $('body').keypress(function(e){ 
-                // alert(e.which); 
+                // alert(e.which);
                 // if(e.which == 27){
                 // swal.close();
-                // } 
+                // }
                 // });
 
 
 
             </script>
 
-            <%- include('./partials/pagination') %>
-                <%- include('./partials/footer') %>
-                    <%- include('./partials/footer-end') %>
+
+
+            <!-- <%- include('./partials/pagination') %> -->
+            <%- include('./partials/footer') %>
+                <%- include('./partials/footer-end') %>

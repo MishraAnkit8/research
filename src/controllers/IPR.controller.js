@@ -117,7 +117,7 @@ module.exports.viewIprRecordData = async(req, res, next) => {
 
     const iprRowToBeViewed = await iprServices.viewIprRecordDataRecord(iprId, userName);
 
-    console.log('iprRowToBeViewed ===>>>>>', iprRowToBeViewed);
+    console.log('iprRowToBeViewed ===>>>>>', iprRowToBeViewed.IPRData);
     const statusCode = iprRowToBeViewed.status === "Done" ? 200 : (iprRowToBeViewed.errorCode ? 400 : 500);
     res.status(statusCode).send({
         status : iprRowToBeViewed.status,
