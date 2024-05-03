@@ -57,7 +57,7 @@ module.exports.updateEcontentData = async(req, res, next) => {
 module.exports.deleteEcontentRowData = async(req, res, next) => {
     console.log('data id for delete  in controller ===>>>', req.body);
 
-    const deleteEContentRecord = await eContentService.deleteEcontentData(req.body, userName);
+    const deleteEContentRecord = await eContentService.deleteEcontentData(req.body);
 
     console.log('deleteEContentRecord ===>>>>', deleteEContentRecord);
     const statusCode = deleteEContentRecord.status === "Done" ? 200 : (deleteEContentRecord.errorCode ? 400 : 500)

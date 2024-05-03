@@ -60,7 +60,7 @@
                                 </div>
                             </div>
                             <table
-                                class="table vertical-lines custom-table data-list table-responsive research-pagination"
+                                class="table vertical-lines custom-table table-responsive research-pagination"
                                 id="research-award-list">
                                 <th class="col-lg-1">#</th>
                                 <th class="col-lg-1">Campus</th>
@@ -71,7 +71,7 @@
                                 <th class="col-lg-1">Name Of Organisation The conferring Award</th>
                                 <th class="col-lg-1" colspan="3">Actions</th>
 
-                                <tbody>
+                                <tbody class="data-list">
                                     <% researchAwardData .forEach(function(researchAward, index) { %>
                                         <tr data-award-id="<%- researchAward.id %>"
                                             data-date="<%- researchAward.date %>"
@@ -196,35 +196,35 @@
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="application-no" class="form-label fw-bold">Campus </label>
                                     <input type="text" id="campus" data-validate="isEmpty,isExist" data
-                                        data-err-msg="This field is required and min length > 1."
+                                        data-err-msg="Provide Valid Input"
                                         class="form-control number" required>
                                 </div>
                                 <!-- school -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="application-no" class="form-label fw-bold">School </label>
                                     <input type="text" id="school" data-validate="isEmpty,isExist" data
-                                        data-err-msg="This field is required and min length > 1."
+                                        data-err-msg="Provide Valid Input"
                                         class="form-control number" required>
                                 </div>
                                 <!-- Name Of Faculty -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="application-no" class="form-label fw-bold">Name Of Faculty </label>
-                                    <input type="text" id="faculty-name" data-validate="isEmpty,isExist" data
-                                        data-err-msg="This field is required and min length > 1."
+                                    <input type="text" id="faculty-name" data-validate="isEmpty,isExist,isAlphabet" data
+                                        data-err-msg="Provide Valid Input"
                                         class="form-control number" required>
                                 </div>
                                 <!-- Name Of Award  -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="application-no" class="form-label fw-bold">Name Of Award </label>
                                     <input type="text" id="award-name" data-validate="isEmpty,isExist" data
-                                        data-err-msg="This field is required and min length > 1."
+                                        data-err-msg="Provide Valid Input"
                                         class="form-control number" required>
                                 </div>
                                 <!-- Details Of Award -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="award-details" class="form-label fw-bold">Details Of Award </label>
                                     <input type="text" id="award-details" data-validate="isEmpty,isExist" data
-                                        data-err-msg="This field is required and min length > 1."
+                                        data-err-msg="Provide Valid Input"
                                         class="form-control number" required>
                                 </div>
                                 <!-- Name Of The Organisation Coferring Award -->
@@ -232,7 +232,7 @@
                                     <label for="application-no" class="form-label fw-bold">Name Of The Organisation
                                         Coferring Award </label>
                                     <input type="text" id="organisation-name" data-validate="isEmpty,isExist" data
-                                        data-err-msg="This field is required and min length > 1."
+                                        data-err-msg="Provide Valid Input"
                                         class="form-control number" required>
                                 </div>
                                 <!-- Date -->
@@ -245,7 +245,7 @@
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="application-no" class="form-label fw-bold">Place </label>
                                     <input type="text" id="place" data-validate="isEmpty,isExist" data
-                                        data-err-msg="This field is required and min length > 1."
+                                        data-err-msg="Provide Valid Input"
                                         class="form-control number" required>
                                 </div>
 
@@ -556,10 +556,18 @@
                     const isValid = validateRequiredFormFields(submitBtn);
                     if (isValid) {
                         await insertResearchAwardForm('<%- BASE_URL %>research/research-award/insert');
-                        indexValue += 1;
                     }
                     else {
-                        alert('validation Failed');
+                        Swal.fire({
+                            position: "top-center",
+                            icon: "error",
+                            title: "Validation Failed",
+                            color: "red",
+                            showConfirmButton: true,
+                            confirmButtonText: "OK",
+                            confirmButtonColor: "#DD6B55",
+
+                        });
                     }
                 });
 

@@ -1,4 +1,4 @@
-const redis = require('redis');
+const redis = require("redis");
 
 // Redis client configuration
 const redisClientConn = redis.createClient({
@@ -11,14 +11,14 @@ const redisClientConn = redis.createClient({
 const redisClient = redisClientConn.connect();
 
 // Optional: Handle Redis client errors
-redisClientConn.on('connect', () => {
-    console.log('Connected to Redis');
+redisClientConn.on("connect", () => {
+  console.log("Connected to Redis");
 });
 
 // Handle Redis client errors
-redisClientConn.on('error', (err) => {
-    console.log('Redis error: ', err);
-    // internalServerError({ moduleName: 'redis.js', message: 'Redis connection failed!' });
+redisClientConn.on("error", (err) => {
+  console.log("Redis error: ", err);
+  // internalServerError({ moduleName: 'redis.js', message: 'Redis connection failed!' });
 });
 
-module.exports = { redisClient }
+module.exports = { redisClient };
