@@ -1,6 +1,5 @@
 <%- include('./partials/head') %>
     <!-- inline css -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css" />
 
     <!-- Navbar section -->
     <%- include('./partials/header') %>
@@ -62,10 +61,10 @@
                                         </div>
                                     </div> -->
                             </div>
-                            <table
-                                class="table vertical-lines custom-table table-responsive  research-pagination"
+
+                            <table class="table vertical-lines custom-table table-responsive  research-pagination"
                                 id="approved-consultancy-form-data-list">
-                                <thead scope="row">
+                                <thead>
                                     <th class="col-lg-1">#</th>
                                     <th class="col-lg-1">Faculty Name </th>
                                     <th class="col-lg-1">Title</th>
@@ -74,10 +73,9 @@
                                     <th class="col-lg-1" colspan="3">Action</th>
                                 </thead>
                                 <tbody class="data-list">
-                               
+
                                     <% seedGrantFormData.forEach(function(grantSeedData , index) { %>
-                                        <tr scope="row" id="commonTr"
-                                            data-consultancy-id="<%- grantSeedData.consultancy_id %>"
+                                        <tr id="commonTr" data-consultancy-id="<%- grantSeedData.consultancy_id %>"
                                             data-total-payment="<%- grantSeedData.totalamount %>"
                                             data-grant-total-payment="<%- grantSeedData.grandtotal %>"
                                             data-faculty-id="<%- grantSeedData.faculty_id %>"
@@ -101,6 +99,7 @@
                                             <td class="col-lg-1 project-title"><%- grantSeedData.title %></td>
                                             <td class="col-lg-1 year"><%- grantSeedData.year %></td>
                                             <td class="col-lg-1 total-fees"><%- grantSeedData.total_fees %></td>
+
                                             <td title="View" class="view border-right-0" style="cursor: pointer;"
                                                 data-consultancy-id="<%- grantSeedData.consultancy_id %>">
                                                 &#128065;
@@ -606,13 +605,9 @@
             <div id="faculty-list-data" data-faculty-list='<%- JSON.stringify(facultyData) %>' style="display: none;">
             </div>
 
-            <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js">
-            </script>
-            
-            <!--Datatable plugin JS library file -->
-            <script type="text/javascript" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js">
-            </script>
-            
+
+
+
             <script src="https://cdnjs.cloudflare.com/ajax/libs/tom-select/2.3.1/js/tom-select.complete.min.js"
                 integrity="sha512-zdXqksVc9s0d2eoJGdQ2cEhS4mb62qJueasTG4HjCT9J8f9x5gXCQGSdeilD+C7RqvUi1b4DdD5XaGjJZSlP9Q=="
                 crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -642,7 +637,14 @@
                 let facultyId, approvalFormRecordToBeUpdated, grantedSeedId;
 
                 const addnonFormacyFormData = document.getElementById('Consultancy-add-new-form');
+
+
+
                 addnonFormacyFormData.addEventListener('click', (event) => {
+
+                    let insertHead = document.getElementById('grantSeedData-study');
+                    insertHead.innerText = 'NMIMS Seed Grant [Non Pharmacy] APPROVAL Form'
+
                     if (event.target.tagName === 'BUTTON' && event.target.classList.contains('add-modal') || event.target.classList.contains('plus')) {
                         submitBtn.classList.remove('d-none');
                         updateBtn.classList.add('d-none');
@@ -969,6 +971,8 @@
                     // for update the data 
                     if (event.target.classList.contains('edit')) {
 
+                        let editHead = document.getElementById('grantSeedData-study');
+                        editHead.innerText = 'Edit: NMIMS Seed Grant [Non Pharmacy] APPROVAL Form'
 
                         console.log('yes edit clickeddd ===');
                         submitBtn.classList.add('d-none');
@@ -990,23 +994,32 @@
                         console.log('facultyId ====>>>>>', facultyId);
 
                         //let facultydata = document.getElementById('faculty-list-data');
-                        let facultydata = '<%- JSON.stringify(facultyData) %>';
-                        let parsedFacultyData = JSON.parse(facultydata);
-                        console.log('faculty data ', facultydata)
+                        const facultyDropDownList = document.getElementById("faculty-id");
+                        // Parse the JSON data
+                        const facultyListData = JSON.parse(document.getElementById('faculty-list-data').dataset.facultyList);
+                        let facultyOptions = facultyListData.map(faculty => ({
+                            value: faculty.id,
+                            text: `${faculty.faculty_name} ${faculty.designation}`
+                        }));;
 
-                        let facultyName;
+                        let selectList;
 
-                        Array.from(parsedFacultyData).forEach(data => {
-                            console.log('faculty data ', facultyId, JSON.stringify(data))
+                        facultyListData.forEach(data => {
                             if (facultyId == data.id) {
-                                console.log('faculty inside')
-                                facultyName = `${data.id},${data.faculty_name},${data.designation},${data.address}`;
+                                selectList = facultyListData.map(faculty =>
+                                    faculty.id,
+                                );
                             }
                         })
 
-                        console.log('faculty name ', facultyName);
+                        // Initialize TomSelect dropdown with options containing id and faculty_name
+                        new TomSelect("#faculty-id", {
+                            options: facultyOptions,
+                            items: selectList,
+                        });
+
                         let fId = document.querySelector('.faculty-name');
-                        console.log('fcul name ', fId)
+
                         // for (let i = 0; i < fId.options.length; i++) {
                         //     fId.options[i].value = facultyName;
                         //     if (fId.options[i].value === facultyName) {
@@ -1048,37 +1061,37 @@
                     }
                 })
 
-                const facultyDropDownList = document.getElementById("faculty-id");
-                // Parse the JSON data
-                const facultyListData = JSON.parse(document.getElementById('faculty-list-data').dataset.facultyList);
+                // const facultyDropDownList = document.getElementById("faculty-id");
+                // // Parse the JSON data
+                // const facultyListData = JSON.parse(document.getElementById('faculty-list-data').dataset.facultyList);
 
-                // Construct an array of objects with id and faculty_name
-                const facultyOptions = facultyListData.map(faculty => ({
-                    value: faculty.id,
-                    text: `${faculty.faculty_name} ${faculty.designation}`
-                }));
+                // // Construct an array of objects with id and faculty_name
+                // const facultyOptions = facultyListData.map(faculty => ({
+                //     value: faculty.id,
+                //     text: `${faculty.faculty_name} ${faculty.designation}`
+                // }));
 
 
-                // Initialize TomSelect dropdown with options containing id and faculty_name
-                new TomSelect("#faculty-id", {
-                    options: facultyOptions
-                });
+                // // Initialize TomSelect dropdown with options containing id and faculty_name
+                // new TomSelect("#faculty-id", {
+                //     options: facultyOptions
+                // });
 
-                let facultyIdContainerArray;
+                // let facultyIdContainerArray;
 
-                // function for select faculty id from drop down list
-                function handleFacultyDropDownListChange() {
-                    const selectedValues = Array.from(facultyDropDownList.options)
-                        .filter(option => option.selected)
-                        .map(option => option.value);
-                    console.log('selectedValues ===>>>', selectedValues);
-                    facultyId = selectedValues.length === 0 ? "" : selectedValues;
-                    facultyIdContainerArray.push({ 'facultyId': facultyId })
-                    console.log("Selected facultyId values:", facultyId);
+                // // function for select faculty id from drop down list
+                // function handleFacultyDropDownListChange() {
+                //     const selectedValues = Array.from(facultyDropDownList.options)
+                //         .filter(option => option.selected)
+                //         .map(option => option.value);
+                //     console.log('selectedValues ===>>>', selectedValues);
+                //     facultyId = selectedValues.length === 0 ? "" : selectedValues;
+                //     facultyIdContainerArray.push({ 'facultyId': facultyId })
+                //     console.log("Selected facultyId values:", facultyId);
 
-                }
+                // }
 
-                facultyDropDownList.addEventListener("change", handleFacultyDropDownListChange);
+                //facultyDropDownList.addEventListener("change", handleFacultyDropDownListChange);
 
                 const updateApprovalFormRecordData = async (url) => {
                     const updatedSeedGrantData = {};
@@ -1275,6 +1288,25 @@
                 // swal.close();
                 // }
                 // });
+
+
+                $("#approved-consultancy-form-data-list").DataTable({
+                    "columnDefs": [{
+                        "targets": [0, 1, 2, 3, 4],
+                        "className": "col-lg-1"
+                    },
+                    {
+                        "targets": [5, 6, 7],
+                        "className": "col-lg-1 border-right-0"
+                    }
+                    ],
+
+                    "paging": true,
+                    "pageLength": 5,
+                    "searching": true,
+                    "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+                    // "info": true
+                })
 
 
 
