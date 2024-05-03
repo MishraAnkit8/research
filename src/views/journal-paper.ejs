@@ -444,6 +444,10 @@
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="supporting-documents" class="form-label fw-bold ">
                                         Upload Supporting Documents
+                                        <div id="uploadNewSupportDocumentDiv">
+                                            <label for="uploadNewSupportDocument"><small>Click to Upload New File</small></label>
+                                            <input type="checkbox" name="uploadNewSupportDocument" id="uploadNewSupportDocument">
+                                        </div>
                                     </label>
                                     <div class="d-flex">
                                         <input type="file" name="journal-article-documents"
@@ -842,6 +846,9 @@
                         // for button visualization
                         submitBtn.classList.remove('d-none');
                         updateBtn.classList.add('d-none');
+                        document.querySelector('#journal-article-documents').classList.remove('d-none');
+                        document.querySelector('#uploadNewSupportDocumentDiv').classList.add('d-none');
+                        document.querySelector('#uploadNewSupportDocument').checked = false;
                         removeErrorMsg()
 
 
@@ -1168,6 +1175,8 @@
                         // for button visualization
                         submitBtn.classList.add('d-none');
                         updateBtn.classList.remove('d-none');
+                        document.querySelector('#journal-article-documents').classList.add('d-none');
+                        document.querySelector('#uploadNewSupportDocumentDiv').classList.remove('d-none');
                         const year = rowToBeUpdated.querySelector('.year');
                         console.log('year ==>>', year)
                         const totalAuthors = rowToBeUpdated.querySelector('.total-authors');
@@ -1897,6 +1906,17 @@
                     articleDataFiles.setAttribute('data-filename', articleDataString);
 
                 };
+
+document.querySelector('#uploadNewSupportDocument').addEventListener('click',function(e){
+
+    let is_checked = document.querySelector('#uploadNewSupportDocument').checked;
+    console.log("is_checked :",is_checked);
+    if(is_checked){
+        document.querySelector('#journal-article-documents').classList.remove('d-none');
+    }else{
+        document.querySelector('#journal-article-documents').classList.add('d-none');
+    }
+})
 
             </script>
             <!-- for pagination -->
