@@ -139,7 +139,7 @@ router.post('/e-content/view', asyncErrorHandler(authMiddleware), asyncErrorHand
 
 // nmims consultancy form
 router.get('/nmims-consultancy-approval-form', asyncErrorHandler(authMiddleware), asyncErrorHandler(nmimsConsultancyForm.renderNmimsConsultancyForm));
-router.post('/nmims-consultancy-approval-form/insert', asyncErrorHandler(authMiddleware), asyncErrorHandler(nmimsConsultancyForm));
+router.post('/nmims-consultancy-approval-form/insert', asyncErrorHandler(authMiddleware), asyncErrorHandler(nmimsConsultancyForm.insertconsultancyFormData));
 router.post('/nmims-consultancy-approval-form/view', asyncErrorHandler(authMiddleware), asyncErrorHandler(nmimsConsultancyForm.viewConsultancyFormApprovalData));
 router.post('/nmims-consultancy-approval-form/update', asyncErrorHandler(authMiddleware), asyncErrorHandler(nmimsConsultancyForm.updateConsultancyApprovalFormData));
 router.post('/nmims-consultancy-approval-form/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(nmimsConsultancyForm.deleteConsultancyFormData));

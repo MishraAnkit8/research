@@ -441,8 +441,8 @@
                     
                     </table>
                     <div class="modal-footer">                        
-                        <button class="btn btn-primary" id="submit-investor-experience">Insert Investigator Education</button>
-                        <button class="btn btn-primary d-none" id="add-investor-more-details">Add More Details</button>
+                        <button class="btn btn-primary" id="submit-investor-education">Insert Investigator Education</button>
+                        <button class="btn btn-primary d-none" id="add-investor-education-more-details">Add More Details</button>
                     </div>
                      <!-- investigator Experience Details -->
                      <label for="no-nmims-student-author" class="form-label text-center fw-bold">Add Investigator Work Experience </label>
@@ -636,6 +636,9 @@
 
 <script>
 
+    const educationBtn = document.getElementById('submit-investor-education');
+    const addMoreEducationalData = document.getElementById('add-investor-education-more-details');
+
     const investigatorEducation = async(url) => {
         const educationalDetails = {} ;
         educationalDetails.education =  document.getElementById('investigator-education').value;
@@ -655,8 +658,29 @@
         .then((Response) => {
             return Response.ok ? JSON.Response() : 'There was network issue'
         })
+        .then((data) => {
+            if(data.status === "Done"){
+                console.log('Data ====>>>>>>', data);
+            }
+        })
+        .catch((error) => {
+            console.log('error :::::', error)
+        })
 
     }
+
+    // educationBtn.addEventListener('click', async(url) => {
+    //     console.log('clciked educational details')
+    // })
+    educationBtn.addEventListener('click', async () => {
+                    const isValid = validateRequiredFormFields(submitBtn);
+                    if (isValid) {
+                        await investigatorEducation('<%- BASE_URL %>research/research-award/insert');
+                    }
+                    else {
+                        alert('validation Failed');
+                    }
+                });
 </script>
 <%- include('./partials/pagination') %>
 <%- include('./partials/footer') %>
