@@ -225,7 +225,7 @@
                                     <label for="title-of-invention" class="form-label fw-bold">Title of Patent /
                                         Invention</label>
                                     <input type="text" name="titleInvention" id="title-of-invention" data
-                                        data-err-msg="This field is required and min length > 1."
+                                        data-err-msg="This field is required"
                                         class="form-control fname" data-validate="isEmpty,isAlphabeticWords" required>
                                 </div>
                                 <!-- Patent Stage -->
@@ -234,7 +234,7 @@
                                     <label for="patent-stage" class="form-label fw-bold">Patent Status</label>
                                     <select class="select-option" id="patent-stage" data-validate="isEmpty,isExist"
                                         data-err-msg="This field is required and select value" required>
-                                        <option value="">Select option</option>
+                                        <!-- <option value="">Select option</option> -->
                                         <% patentStatus.forEach(function(status) { %>
                                             <option value="<%= status.id %>">
                                                 <%= status.name %>
@@ -258,8 +258,8 @@
                                         Applicants Names
                                     </label>
                                     <input type="text" name="nmims-school" id="applicant-name"
-                                        data-validate="isEmpty,isExist, isLength:2:255"
-                                        data-err-msg="This field is required and min length > 1." class="form-control"
+                                        data-validate="isEmpty,isExist,isLength:2:255,isAlphabet"
+                                        data-err-msg="This field is required" class="form-control"
                                         required>
                                 </div>
 
@@ -270,7 +270,7 @@
                                     </label>
                                     <input type="date" name="patent-filed-date" id="patent-filed-date"
                                         data-validate="isEmpty,isExist" data-err-msg="Date is required."
-                                        class="form-control" required>
+                                        class="form-control patent-filed-date" required>
                                 </div>
 
                                 <!-- Date of Grant -->
@@ -280,17 +280,17 @@
                                     </label>
                                     <input type="date" name="patent-grant-date" id="patent-grant-date"
                                         data-validate="isEmpty,isExist" data-err-msg="Date is required."
-                                        class="form-control" required>
+                                        class="form-control patent-grant-date" required>
                                 </div>
 
                                 <!-- Date of Published -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="patent-published-date" class="form-label fw-bold">
                                         Patent Published Date
-                                    </label>
+                                    </label><span id="patent-published-date-span" style="color: red; padding: 2px;"></span>
                                     <input type="date" name="GrantDate" id="patent-published-date"
                                         data-validate="isEmpty,isExist" data-err-msg="Date is required."
-                                        class="form-control" required>
+                                        class="form-control patent-published-date" required>
                                 </div>
 
                                 <!-- Patent Publication Number -->
@@ -319,8 +319,8 @@
                                         Institute Affiliation
                                     </label>
                                     <input type="text" name="institute-affiliation" id="institute-affiliation"
-                                        data-validate="isEmpty,isExist"
-                                        data-err-msg="This field is required and min length > 1." class="form-control"
+                                        data-validate="isEmpty,isExist,isAlphabet"
+                                        data-err-msg="Provide valid Input" class="form-control"
                                         required>
                                 </div>
 
@@ -357,13 +357,17 @@
                                     <div class="col-lg-6 col-md-8 col-sm-12">
                                         <label for="supporting-documents" class="form-label fw-bold ">
                                             Upload Supporting Documents
+                                            <div id="uploadNewSupportDocumentDiv">
+                                                <label for="uploadNewSupportDocument"><small>Click to Upload New File</small></label>
+                                                <input type="checkbox" name="uploadNewSupportDocument" id="uploadNewSupportDocument">
+                                            </div>
                                         </label>
                                         <div class="d-flex">
                                             <input type="file" name="IPRFile" id="ipr-file"
                                                 class="col-md-12 form-control" data-validate="isEmpty,isExist,isFile"
                                                 data-err-msg="File is required." required multiple>
                                             <button class="download-btn download-file" id="ipr-data-file-edit"><i
-                                                    class="fas fa-download text-danger"></i></button>
+                                                    class="fas fa-download text-danger"></i>Download</button>
                                         </div>
                                     </div>
                                 </div>
@@ -636,6 +640,9 @@
                     if (event.target.tagName === 'BUTTON' && event.target.classList.contains('add-modal') || event.target.classList.contains('plus')) {
                         submitBtn.classList.remove('d-none');
                         updateBtn.classList.add('d-none');
+                        document.querySelector('#ipr-file').classList.remove('d-none');
+                        document.querySelector('#uploadNewSupportDocumentDiv').classList.add('d-none');
+                        document.querySelector('#uploadNewSupportDocument').checked = false;
                         removeErrorMsg()
 
 
@@ -862,6 +869,8 @@
                         updateBtn.classList.remove('d-none');
                         employeeList.classList.add('d-none');
                         authorDetails.classList.add('d-none');
+                        document.querySelector('#ipr-file').classList.add('d-none');
+                        document.querySelector('#uploadNewSupportDocumentDiv').classList.remove('d-none');
 
                         $('#ipr-modal-form').modal({
                             backdrop: 'static'
@@ -1390,9 +1399,32 @@
                     options: statusOptions
                 });
 
-                new TomSelect("#type-of-invention", {
-                    options: inventionTypeValue
+                // new TomSelect("#type-of-invention", {
+                //     options: inventionTypeValue
+                // });
+
+                console.log("inventionTypeValue : ",inventionTypeValue);
+
+                new TomSelect("#type-of-invention",{
+                    options: inventionTypeValue,
+                    plugins: ['remove_button'],
+                    placeholder : "Select Type of Invension",
+                    hidePlaceholder : true,
+                    create: true,
+                    onItemAdd:function(){
+                        this.setTextboxValue('');
+                        this.refreshOptions();
+                    },
+                    render:{
+                        option:function(data,escape){
+                            return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                        },
+                        item:function(data,escape){
+                            return '<div>' + escape(data.text) + '</div>';
+                        }
+                    }
                 });
+	
 
                 new TomSelect("#nmims-campus-list", {
                     options: selectedCampus
@@ -1626,7 +1658,30 @@
                 schoolDropDown.addEventListener("change", handleSchoolDropDownList);
 
 
-            </script>
+function compareDates(date1, date2) {
+    const firstDate = new Date(date1);
+    const secondDate = new Date(date2);
+
+    if (secondDate > firstDate) {
+        return true;
+    }else {
+        return false;
+    }
+}
+
+document.querySelector('#uploadNewSupportDocument').addEventListener('click',function(e){
+
+    let is_checked = document.querySelector('#uploadNewSupportDocument').checked;
+    console.log("is_checked :",is_checked);
+    if(is_checked){
+        document.querySelector('#ipr-file').classList.remove('d-none');
+    }else{
+        document.querySelector('#ipr-file').classList.add('d-none');
+    }
+})
+
+
+</script>
             <!-- footer section -->
             <%- include('./partials/pagination') %>
                 <%- include('./partials/footer') %>
