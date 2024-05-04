@@ -1,6 +1,5 @@
 <%- include('./partials/head') %>
     <!-- inline css -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css" />
 
     <!-- Navbar section -->
     <%- include('./partials/header') %>
@@ -62,22 +61,21 @@
                                         </div>
                                     </div> -->
                             </div>
-                            <table
-                                class="table vertical-lines custom-table table-responsive  research-pagination"
+
+                            <table class="table vertical-lines custom-table table-responsive"
                                 id="approved-consultancy-form-data-list">
-                                <thead scope="row">
+                                <thead>
                                     <th class="col-lg-1">#</th>
                                     <th class="col-lg-1">Faculty Name </th>
                                     <th class="col-lg-1">Title</th>
                                     <th class="col-lg-1">Year</th>
                                     <th class="col-lg-1">Total Fees</th>
-                                    <th class="col-lg-1" colspan="3">Action</th>
+                                    <th class="col-lg-1">Action</th>
                                 </thead>
                                 <tbody class="data-list">
-                               
+
                                     <% seedGrantFormData.forEach(function(grantSeedData , index) { %>
-                                        <tr scope="row" id="commonTr"
-                                            data-consultancy-id="<%- grantSeedData.consultancy_id %>"
+                                        <tr id="commonTr" data-consultancy-id="<%- grantSeedData.consultancy_id %>"
                                             data-total-payment="<%- grantSeedData.totalamount %>"
                                             data-grant-total-payment="<%- grantSeedData.grandtotal %>"
                                             data-faculty-id="<%- grantSeedData.faculty_id %>"
@@ -96,23 +94,23 @@
                                             data-gross-fees="<%- grantSeedData.gross_fees %>"
                                             data-session-count-per-days="<%- grantSeedData.session_count_per_days %>">
                                             <td class="col-lg-1"><%- index + 1 %></td>
-                                            <td class="col-lg-1 faculty-name"><%- grantSeedData.faculty_name %>
-                                            </td>
+                                            <td class="col-lg-1 faculty-name"><%- grantSeedData.faculty_name %></td>
                                             <td class="col-lg-1 project-title"><%- grantSeedData.title %></td>
                                             <td class="col-lg-1 year"><%- grantSeedData.year %></td>
                                             <td class="col-lg-1 total-fees"><%- grantSeedData.total_fees %></td>
-                                            <td title="View" class="view border-right-0" style="cursor: pointer;"
-                                                data-consultancy-id="<%- grantSeedData.consultancy_id %>">
-                                                &#128065;
-                                            </td>
-                                            <td title="Edit" class="edit border-right-0" style="cursor: pointer;"
-                                                data-consultancy-id="<%- grantSeedData.consultancy_id %>">
-                                                &#9998;
-                                            </td>
-                                            <td title="Delete" class="delete border-right-0" style="cursor: pointer;"
-                                                data-consultancy-id="<%- grantSeedData.consultancy_id %>">
-                                                &#128465;
-
+                                            <td>
+                                                <b title="View" class="view" style="cursor: pointer;"
+                                                    data-consultancy-id="<%- grantSeedData.consultancy_id %>">
+                                                    &#128065;
+                                                </b>&ensp;
+                                                <b title="Edit" class="edit" style="cursor: pointer;"
+                                                    data-consultancy-id="<%- grantSeedData.consultancy_id %>">
+                                                    &#9998;
+                                                </b>&ensp;
+                                                <b title="Delete" class="delete" style="cursor: pointer;"
+                                                    data-consultancy-id="<%- grantSeedData.consultancy_id %>">
+                                                    &#128465;
+                                                </b>
                                             </td>
                                         </tr>
                                         <% }) %>
@@ -128,12 +126,12 @@
                     </div>
                     <div class="d-flex justify-content-between">
                         <div>
-                            <label id="total-row-count">Total entries : <%- rowCount %> </label>
-                            <label class="d-none" id="row-count"> <%- rowCount %></label>
+                            <label id="total-row-count"></label>
+                            <label class="d-none" id="row-count"></label>
                         </div>
                         <div>
-                            <button id="prevBtn" class="btn btn-primary">Previous</button>
-                            <button id="nextBtn" class="btn btn-primary">Next</button>
+                            <button id="prevBtn" class="btn"></button>
+                            <button id="nextBtn" class="btn"></button>
                             <p id="pagination" class="pagination-search"></p>
                         </div>
                     </div>
@@ -209,8 +207,7 @@
                                     <label for="campus" class=" sub-title fw-bold"> Title(Brief) </label>
                                     <input type="text" name="SchoolName" id="title"
                                         data-validate="isEmpty,isNotNumber,isExist,isNotSpecialChar"
-                                        data-err-msg="Provide Valid Input" class="form-control"
-                                        required />
+                                        data-err-msg="Provide Valid Input" class="form-control" required />
                                 </div>
                                 <!-- Faculty ID -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
@@ -339,9 +336,8 @@
                                     <label for="computer-charges" class=" sub-title fw-bold"> (d) Computer
                                         Charges/Printing/publication/Editing/Communication/Consumables </label>
                                     <input type="number" name="computer-charges" id="computer-charges"
-                                        data-validate="isEmpty,isNumber"
-                                        data-err-msg="Provide Valid Input" class="form-control"
-                                        required />
+                                        data-validate="isEmpty,isNumber" data-err-msg="Provide Valid Input"
+                                        class="form-control" required />
                                 </div>
                                 <!-- (e) Charges for NMIMS Facilities (Class-room, Conference room), if applicable: -->
                                 <div class="form-group">
@@ -606,13 +602,9 @@
             <div id="faculty-list-data" data-faculty-list='<%- JSON.stringify(facultyData) %>' style="display: none;">
             </div>
 
-            <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js">
-            </script>
-            
-            <!--Datatable plugin JS library file -->
-            <script type="text/javascript" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js">
-            </script>
-            
+
+
+
             <script src="https://cdnjs.cloudflare.com/ajax/libs/tom-select/2.3.1/js/tom-select.complete.min.js"
                 integrity="sha512-zdXqksVc9s0d2eoJGdQ2cEhS4mb62qJueasTG4HjCT9J8f9x5gXCQGSdeilD+C7RqvUi1b4DdD5XaGjJZSlP9Q=="
                 crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -642,7 +634,14 @@
                 let facultyId, approvalFormRecordToBeUpdated, grantedSeedId;
 
                 const addnonFormacyFormData = document.getElementById('Consultancy-add-new-form');
+
+
+
                 addnonFormacyFormData.addEventListener('click', (event) => {
+
+                    let insertHead = document.getElementById('grantSeedData-study');
+                    insertHead.innerText = 'NMIMS Seed Grant [Non Pharmacy] APPROVAL Form'
+
                     if (event.target.tagName === 'BUTTON' && event.target.classList.contains('add-modal') || event.target.classList.contains('plus')) {
                         submitBtn.classList.remove('d-none');
                         updateBtn.classList.add('d-none');
@@ -969,6 +968,8 @@
                     // for update the data 
                     if (event.target.classList.contains('edit')) {
 
+                        let editHead = document.getElementById('grantSeedData-study');
+                        editHead.innerText = 'Edit: NMIMS Seed Grant [Non Pharmacy] APPROVAL Form'
 
                         console.log('yes edit clickeddd ===');
                         submitBtn.classList.add('d-none');
@@ -990,23 +991,47 @@
                         console.log('facultyId ====>>>>>', facultyId);
 
                         //let facultydata = document.getElementById('faculty-list-data');
-                        let facultydata = '<%- JSON.stringify(facultyData) %>';
-                        let parsedFacultyData = JSON.parse(facultydata);
-                        console.log('faculty data ', facultydata)
+                        const facultyDropDownList = document.getElementById("faculty-id");
+                        // Parse the JSON data
+                        const facultyListData = JSON.parse(document.getElementById('faculty-list-data').dataset.facultyList);
+                        let facultyOptions = facultyListData.map(faculty => ({
+                            value: faculty.id,
+                            text: `${faculty.faculty_name} ${faculty.designation}`
+                        }));;
 
-                        let facultyName;
+                        let selectList;
 
-                        Array.from(parsedFacultyData).forEach(data => {
-                            console.log('faculty data ', facultyId, JSON.stringify(data))
+                        facultyListData.forEach(data => {
                             if (facultyId == data.id) {
-                                console.log('faculty inside')
-                                facultyName = `${data.id},${data.faculty_name},${data.designation},${data.address}`;
+                                selectList = facultyListData.map(faculty =>
+                                    faculty.id,
+                                );
                             }
                         })
 
-                        console.log('faculty name ', facultyName);
+                        // Initialize TomSelect dropdown with options containing id and faculty_name
+                        new TomSelect("#faculty-id", {
+                            options: facultyOptions,
+                            items: selectList,
+                            hidePlaceholder: true,
+                            create: true,
+                            plugins: ['remove_button'],
+                            onItemAdd: function () {
+                                this.setTextboxValue('');
+                                this.refreshOptions();
+                            },
+                            render: {
+                                option: function (data, escape) {
+                                    return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                                },
+                                item: function (data, escape) {
+                                    return '<div>' + escape(data.text) + '</div>';
+                                }
+                            }
+                        });
+
                         let fId = document.querySelector('.faculty-name');
-                        console.log('fcul name ', fId)
+
                         // for (let i = 0; i < fId.options.length; i++) {
                         //     fId.options[i].value = facultyName;
                         //     if (fId.options[i].value === facultyName) {
@@ -1048,37 +1073,37 @@
                     }
                 })
 
-                const facultyDropDownList = document.getElementById("faculty-id");
-                // Parse the JSON data
-                const facultyListData = JSON.parse(document.getElementById('faculty-list-data').dataset.facultyList);
+                // const facultyDropDownList = document.getElementById("faculty-id");
+                // // Parse the JSON data
+                // const facultyListData = JSON.parse(document.getElementById('faculty-list-data').dataset.facultyList);
 
-                // Construct an array of objects with id and faculty_name
-                const facultyOptions = facultyListData.map(faculty => ({
-                    value: faculty.id,
-                    text: `${faculty.faculty_name} ${faculty.designation}`
-                }));
+                // // Construct an array of objects with id and faculty_name
+                // const facultyOptions = facultyListData.map(faculty => ({
+                //     value: faculty.id,
+                //     text: `${faculty.faculty_name} ${faculty.designation}`
+                // }));
 
 
-                // Initialize TomSelect dropdown with options containing id and faculty_name
-                new TomSelect("#faculty-id", {
-                    options: facultyOptions
-                });
+                // // Initialize TomSelect dropdown with options containing id and faculty_name
+                // new TomSelect("#faculty-id", {
+                //     options: facultyOptions
+                // });
 
-                let facultyIdContainerArray;
+                // let facultyIdContainerArray;
 
-                // function for select faculty id from drop down list
-                function handleFacultyDropDownListChange() {
-                    const selectedValues = Array.from(facultyDropDownList.options)
-                        .filter(option => option.selected)
-                        .map(option => option.value);
-                    console.log('selectedValues ===>>>', selectedValues);
-                    facultyId = selectedValues.length === 0 ? "" : selectedValues;
-                    facultyIdContainerArray.push({ 'facultyId': facultyId })
-                    console.log("Selected facultyId values:", facultyId);
+                // // function for select faculty id from drop down list
+                // function handleFacultyDropDownListChange() {
+                //     const selectedValues = Array.from(facultyDropDownList.options)
+                //         .filter(option => option.selected)
+                //         .map(option => option.value);
+                //     console.log('selectedValues ===>>>', selectedValues);
+                //     facultyId = selectedValues.length === 0 ? "" : selectedValues;
+                //     facultyIdContainerArray.push({ 'facultyId': facultyId })
+                //     console.log("Selected facultyId values:", facultyId);
 
-                }
+                // }
 
-                facultyDropDownList.addEventListener("change", handleFacultyDropDownListChange);
+                //facultyDropDownList.addEventListener("change", handleFacultyDropDownListChange);
 
                 const updateApprovalFormRecordData = async (url) => {
                     const updatedSeedGrantData = {};
@@ -1278,7 +1303,16 @@
 
 
 
+                $("#approved-consultancy-form-data-list").DataTable({
+
+                    "pageLength": 5,
+                    "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+                })
+
+
+
             </script>
+
 
 
 
