@@ -388,7 +388,7 @@
                     <div class="modal-content modal-content-data">
                         <div class="modal-header">
                             <h4 class="modal-title" id="sed-grant-title">Seed Grant [Non-Pharmacy] Approval Form</h4>
-                            <div class="close" data-dismiss="modal" aria-label="Close">
+                            <div class="close" id="headerEdit" data-dismiss="modal" aria-label="Close">
                                 <span type="button" aria-hidden="true"><i class="fas fa-times "></i></span>
                             </div>
                         </div>
@@ -594,7 +594,8 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-danger" id="editClose"
+                                data-dismiss="modal">Close</button>
                         </div>
                     </div>
                 </div>
@@ -1001,15 +1002,9 @@
 
                         let selectList;
 
-                        facultyListData.forEach(data => {
-                            if (facultyId == data.id) {
-                                selectList = facultyListData.map(faculty =>
-                                    faculty.id,
-                                );
-                            }
-                        })
+                        selectList = facultyListData.filter(faculty => facultyId == faculty.id).map(fd => fd.id)
 
-                        // Initialize TomSelect dropdown with options containing id and faculty_name
+                        //  Initialize TomSelect dropdown with options containing id and faculty_name
                         new TomSelect("#faculty-id", {
                             options: facultyOptions,
                             items: selectList,
@@ -1029,6 +1024,9 @@
                                 }
                             }
                         });
+
+
+
 
                         let fId = document.querySelector('.faculty-name');
 
@@ -1308,6 +1306,20 @@
                     "pageLength": 5,
                     "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
                 })
+
+                document.getElementById('headerClose').addEventListener('click', () => {
+
+                    document.location.reload();
+                });
+
+                document.getElementById('insertClose').addEventListener('click', () => {
+
+
+                    console.log('close button clicked')
+                    document.location.reload();
+                });
+
+
 
 
 
