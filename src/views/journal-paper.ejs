@@ -15,7 +15,7 @@
                             <li class="breadcrumb-link">
                                 <a href="<%- BASE_URL %>research"> Research </a>
                             </li>
-                            <li class="breadcrumb-link">Journal Article Published</li>
+                            <li class="breadcrumb-link">Journal Articles Published</li>
                         </ul>
                     </div>
                     <div>
@@ -24,7 +24,7 @@
                                 <h5 class="pl-2">Journal Article Published List</h5>
                             </div>
                             <div>
-                                <span class="text"> Add Article</span>
+                                <span class="text"> Add</span>
                                 <button id="journal-paper-add-modal" type="button"
                                     class="btn btn-danger border border-primary add-modal" data-toggle="modal"
                                     data-target="#journal-paper-modal">
@@ -893,6 +893,7 @@
 
                     }
                 })
+                
 
                 const insertJournalPaper = async (url) => {
                     const journalDetails = new FormData();
@@ -1156,6 +1157,7 @@
                     }
                     // for updating 
                     if (event.target.classList.contains('edit')) {
+                        
                         console.log('clicked')
                         removeErrorMsg();
                         $('#journal-paper-modal').modal({
@@ -1166,12 +1168,17 @@
                         selectItems.forEach(item => {
                             item.classList.add('d-none');
                         });
+                     
 
                         $('#journal-paper-modal').modal('show');
                         rowToBeUpdated = event.target.closest('tr');
                         console.log('rowToBeUpdated ==>>', rowToBeUpdated)
                         journalPaperId = event.target.getAttribute('data-journal-article-id');
                         console.log('journalPaperId ==>>', journalPaperId);
+
+                        const schoolDataIdsStored = rowToBeUpdated.getAttribute('data-school-ids');
+                        console.log('schoolDataIdsStored ===>>>>>', schoolDataIdsStored);
+
                         // for button visualization
                         submitBtn.classList.add('d-none');
                         updateBtn.classList.remove('d-none');
