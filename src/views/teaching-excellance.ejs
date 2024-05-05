@@ -4,8 +4,29 @@
     <%- include('./partials/header') %>
         <!-- This is left sidebar  -->
         <%- include('./partials/left-sidebar') %>
+
+        <style>
+/* #modalHeader {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right:0;
+}
+
+.modal-title {
+    text-align: center;
+    display: flex;
+    align-items: center;
+} */
+
+
+        </style>
             <!-- This is right side section -->
+           
             <main class="main" id="main-content">
+
+                <%- include('./partials/loader') %>
+
                 <div class="base-section coustom-section">
                     <!--DASHBOARD CONTENT START-->
                     <div class="errorHtml"></div>
@@ -20,7 +41,7 @@
                     <div>
                         <div class="table-card-header text-uppercase d-flex align-items-center justify-content-between">
                             <div>
-                                <h5 class="pl-2">TEACHING EXECELLENCE LIST</h5>
+                                <h5  class="pl-2">TEACHING EXECELLENCE LIST</h5>
                             </div>
                             <div>
                                 <button id="teaching-execellance-add-modal" type="button"
@@ -191,7 +212,10 @@
                 <div class="modal-dialog modal-dialog-scrollable modal-lg modal-fullscreen p-5" role="document">
                     <div class="modal-content modal-content-data validate-input">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="teaching-execellance">TEACHING EXECELLENCE </h5>
+                            <div style="width:80%;" class="d-flex justify-content-center">
+                            <h2 style="position: absolute;left: 20px;"  id="modalHeader" class="d-none">Edit</h2>
+                            <h5 class="modal-title ml-4">TEACHING EXECELLENCE </h5>
+                            </div>
                             <div type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true"><i class="fas fa-times"></i></span>
                             </div>
@@ -225,7 +249,7 @@
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="pedagogy-innovation-link" class="form-label fw-bold">Link</label>
                                     <input type="text" name="pedagogyLink" id="pedagogy-innovation-link"
-                                        data-validate="isEmpty,isNotNumber,isExist,isLength:2:255"
+                                        data-validate="isEmpty,isValidHttpUrl,isExist,isLength:10:255"
                                         data-err-msg="Link is required." class="form-control" required />
                                 </div>
                             </div>
@@ -258,7 +282,7 @@
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="fdp-program-link" class="form-label fw-bold mb-4">Link</label>
                                     <input type="text" name="pada" id="fdp-program-link"
-                                        data-validate="isEmpty,isNotNumber,isExist,isLength:2:255"
+                                        data-validate="isEmpty,isValidHttpUrl,isExist,isLength:10:255"
                                         data-err-msg="Link is required." class="form-control" required />
                                 </div>
                             </div>
@@ -289,7 +313,7 @@
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="workshop-details-link" class="form-label fw-bold">Link</label>
                                     <input type="text" name="pada" id="workshop-details-link"
-                                        data-validate="isEmpty,isNotNumber,isExist,isLength:2:255"
+                                        data-validate="isEmpty,isValidHttpUrl,isExist,isLength:10:255"
                                         data-err-msg="Link is required." class="form-control" required />
                                 </div>
                             </div>
@@ -321,7 +345,7 @@
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="inviting-faculty-link" class="form-label fw-bold mb-4">Link</label>
                                     <input type="text" name="pada" id="inviting-faculty-link"
-                                        data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" class="form-control"
+                                        data-validate="isEmpty,isValidHttpUrl,isExist,isLength:10:255" class="form-control"
                                         data-err-msg="Link is required." required />
                                 </div>
                             </div>
@@ -353,7 +377,7 @@
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="program-orientation-link" class="form-label fw-bold">Link</label>
                                     <input type="text" name="programOrientationLink" id="program-orientation-link"
-                                        data-validate="isEmpty,isNotNumber,isExist,isLength:2:255"
+                                        data-validate="isEmpty,isValidHttpUrl,isExist,isLength:10:255"
                                         data-err-msg="Link is required." class="form-control" required />
                                 </div>
                             </div>
@@ -552,6 +576,10 @@
                 let teachingRowToBeUpdated, teachingId;
                 // const downloadFileBtn = document.querySelectorAll('.download-file');
                 teachingExecellanceAddModal.addEventListener('click', (event) => {
+
+                     let modalHeader = document.getElementById('modalHeader');
+                     modalHeader.classList.add('d-none');
+
                     if (event.target.tagName === 'BUTTON' && event.target.classList.contains('add-modal') || event.target.classList.contains('plus')) {
                         // for button visualization
                         submitBtn.classList.remove('d-none');
@@ -606,6 +634,8 @@
                         workShopFile.value = '';
                         fdpProgramFile.value = '';
                         invitingFacultyFile.value = '';
+
+                        
                     }
                 });
 
@@ -677,6 +707,8 @@
                     // teachingExecellanceData.append('programOrientationFile' , programOrientationFile.files[0]); 
                     teachingExecellanceData.append('programOrientationLink', programOrientationLink);
 
+                   
+
                     fetch(url, {
                         method: 'POST',
                         body: teachingExecellanceData
@@ -685,6 +717,9 @@
                             return result.json()
                         })
                         .then((data) => {
+                            let loader =document.getElementById('loader');
+                             loader.style.display='none';
+
                             if (data.status === 'done') {
                                 // console.log('data ==>>', data);
                                 // const rowCountInteger = parseInt(data.rowCount, 10);
@@ -770,13 +805,22 @@
                 }
 
                 submitBtn.addEventListener('click', async () => {
-                    const isValid = validateRequiredFormFields(submitBtn);
+
+              
+                   const isValid = validateRequiredFormFields(submitBtn);
                     if (isValid) {
+
+                        $('#teaching-execellance-modal').hide();
+
+                        let loader = document.getElementById('loader');
+                        loader.style.display='block';
                         await insertTeachingExecellance('<%- BASE_URL %>teaching-excellance/insert');
                     }
                     else {
                         console.log('validation failed');
-                    }
+                    }  
+                 
+                    
                 });
 
                 teachingExecellanceList.addEventListener('click', (event) => {
@@ -934,6 +978,11 @@
                     }
 
                     if (event.target.classList.contains('edit')) {
+
+                        let modalHeader = document.getElementById('modalHeader');
+                        modalHeader.classList.remove('d-none');
+                        // modalHeader.innerText = 'TEACHING EXECELLENCE';
+
                         console.log('clickeddddd')
                         removeErrorMsg();
 
@@ -1071,6 +1120,10 @@
                             return result.json()
                         })
                         .then((data) => {
+
+                            let loader = document.getElementById('loader');
+                            loader.style.display='none';
+
                             if (data.status === 'done') {
                                 console.log('data ==>>', data);
                                 teachingRowToBeUpdated.querySelector('.pedagogy-innovation').innerText = data.updatedTeachingExecellance.pedagogyInnovation;
@@ -1145,6 +1198,11 @@
                     })
                     const isValid = validateRequiredFormFields(updateBtn);
                     if (isValid) {
+
+                        $('#teaching-execellance-modal').hide();
+
+                            let loader = document.getElementById('loader');
+                            loader.style.display='block';
                         await updatedTeachingExecellanceData('<%- BASE_URL %>teaching-excellance/update');
                     }
                     else {
@@ -1172,8 +1230,13 @@
 
                 //eventlistner for download files
                 document.addEventListener('click', async function (event) {
+
+
                     const button = event.target.closest('button');
                     if (button && button.id && button.classList.contains('download-file')) {
+
+                        let modalHeader = document.getElementById('modalHeader');
+                        modalHeader.classList.add('d-none');
                         console.log('button ===>>>', button)
                         try {
                             const fileDataString = button.getAttribute('data-filename');
