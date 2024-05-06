@@ -140,3 +140,14 @@ module.exports.investigatorResearchCompleted = async(req, res, next) => {
         errorCode : insertInvestigatorResCompleted.errorCode
     })
 }
+
+
+module.exports.insertPharmacySeedForms = async(req, res, next) => {
+    console.log('data comming from frontend ====>>>>>', req.body);
+
+    const  userName = req.body.username;
+    console.log('userName in controller  ===>>>>>>', userName);
+
+    const pharmacyDataDetails = await pharmacyService.insertPharmacySeedDetials(req.body, userName);
+
+}

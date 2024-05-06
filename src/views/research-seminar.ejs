@@ -696,6 +696,7 @@
                             console.log('data ===>>>', data);
 
                             if (data.status === 'Done') {
+
                                 //     const seminarDetails = data.seminarDetails;
                                 //     seminarId = data.seminarId;
                                 //     console.log('seminarId ==>', seminarId);
@@ -781,7 +782,7 @@
                 submitBtn.addEventListener('click', async () => {
                     const isValid = validateRequiredFormFields(submitBtn);
                     if (isValid) {
-                        await insertResearchSeminar('<%- BASE_URL %>research/research-seminar/insert');
+                        await insertResearchSeminar('<%- BASE_URL %>research/researchSeminar/insert');
                     }
                     else {
                         alert('validation Failed');
@@ -812,7 +813,7 @@
                             }).then((result) => {
                                 if (result.isConfirmed) {
                                     // Execute fetch request here after confirmation
-                                    fetch('<%- BASE_URL %>research/research-seminar/delete', {
+                                    fetch('<%- BASE_URL %>research/researchSeminar/delete', {
                                         method: 'POST',
                                         headers: {
                                             'content-type': 'application/json'
@@ -964,7 +965,7 @@
                     // for viewing record of journal paper
                     if (event.target.classList.contains('view')) {
                         const seminarRowToBeViewed = event.target.closest('tr')
-                        seminarId = event.target.getAttribute('data-seminar-id');
+                        seminarId = seminarRowToBeViewed.getAttribute('data-seminar-id');
                         $('#research-seminar-modal-view').modal({
                             backdrop: 'static'
                         });
@@ -990,7 +991,7 @@
                         const viewTitle = document.getElementById('view-title-of-paper');
                         const viewPublisherCategory = document.getElementById('view-publisher-category');
 
-                        fetch('<%- BASE_URL %>research/research-seminar/view', {
+                        fetch('<%- BASE_URL %>research/researchSeminar/view', {
                             method: 'POST',
                             headers: {
                                 'content-type': 'application/json'
@@ -1185,7 +1186,7 @@
 
                     const isValid = validateRequiredFormFields(submitBtn);
                     if (isValid) {
-                        await updateResearchSeminar('<%- BASE_URL %>research/research-seminar/update');
+                        await updateResearchSeminar('<%- BASE_URL %>research/researchSeminar/update');
                     }
                     else {
                         Swal.fire({
@@ -1227,7 +1228,7 @@
 
                             const downloadPromises = fileArray.map(async (fileName) => {
                                 console.log('fileName ===>>>', fileName)
-                                const fileUrl = `<%- BASE_URL %>research/research-seminar/download/${fileName}`;
+                                const fileUrl = `<%- BASE_URL %>research/researchSeminar/download/${fileName}`;
                                 downloadFile(fileName, fileUrl)
                                 try {
                                     const response = await fetch(fileUrl);
