@@ -10,7 +10,7 @@ const researchDbW = dbPoolManager.get("researchDbW", research_write_db);
 
 module.exports.fetchTeachingExecellance = async (userName) => {
   let sql = {
-    text: `SELECT * FROM teaching_execellance WHERE created_by = $1 ORDER BY id desc`,
+    text: `SELECT * FROM teaching_execellance WHERE created_by = $1 and active=true ORDER BY id desc`,
     values: [userName],
   };
   return researchDbR.query(sql);
@@ -232,7 +232,8 @@ module.exports.updateTeachingExecellance = async (
 
 module.exports.deleteTeachingExecellance = async (teachingId) => {
   let sql = {
-    text: `DELETE FROM  teaching_execellance WHERE id = $1`,
+    // text: `DELETE FROM  teaching_execellance WHERE id = $1`,
+    text: `update teaching_execellance set active=false WHERE id = $1`,
     values: [teachingId],
   };
   console.log("sql ===>>>", sql);
@@ -257,7 +258,7 @@ module.exports.deleteTeachingExecellance = async (teachingId) => {
 
 module.exports.teachingExecellanceView = async (teachingId) => {
   let sql = {
-    text: `SELECT * FROM teaching_execellance WHERE id = $1 `,
+    text: `SELECT * FROM teaching_execellance WHERE id = $1 and active=true`,
     values: [teachingId],
   };
 

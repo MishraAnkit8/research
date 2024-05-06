@@ -8,7 +8,7 @@ const researchDbW = dbPoolManager.get('researchDbW', research_write_db);
 // for fetching journal paper data 
 module.exports.fetchResearchSeminar = async(userName) => {
     let sql = {
-        text : 'SELECT * FROM research_seminars WHERE created_by = $1  ORDER BY id desc',
+        text : 'SELECT * FROM research_seminars WHERE created_by = $1 and active=true  ORDER BY id desc',
         values : [userName]
 
     };
@@ -54,8 +54,9 @@ module.exports.createResearchSeminar = async (seminarDetails, seminarFiles, user
 // for deleting journal paper  data 
 module.exports.deleteRsearchSeminar =  async(seminarId, userName) => {
     let sql = {
-        text : `DELETE FROM research_seminars WHERE id = $1 AND  created_by = $2`,
-        values : [seminarId, userName]
+      // text : `DELETE FROM research_seminars WHERE id = $1 AND  created_by = $2`,
+      text: `update research_seminars set active=false WHERE id = $1 AND  created_by = $2`,
+      values: [seminarId, userName],
     };
     console.log('sql ===>>>', sql)
     const deletedRecord = await researchDbW.query(sql);
@@ -105,7 +106,7 @@ module.exports.updateRsearchSeminar = async (seminarId, updateSeminarDetails, up
 module.exports.viewRsearchSeminarData = async ({seminarId}, userName) => {
     const sql = {
         text : `SELECT  year, school, campus, nmims_faculty, publisher_category, title_of_paper, journal_name, publisher, 
-        pages, issn_no, TO_CHAR(date_of_publishing, 'DD-MM-YYYY') as date_of_publishing, impact_factor, scs_cite_score, scs_indexed, wos_indexed, gs_indexed, abdc_indexed, ugc_indexed, web_link, uid, supporting_documents FROM research_seminars WHERE id = $1 AND created_by = $2`,
+        pages, issn_no, TO_CHAR(date_of_publishing, 'DD-MM-YYYY') as date_of_publishing, impact_factor, scs_cite_score, scs_indexed, wos_indexed, gs_indexed, abdc_indexed, ugc_indexed, web_link, uid, supporting_documents FROM research_seminars WHERE id = $1 AND created_by = $2 and active=true`,
         values : [seminarId, userName]
     }
     console.log('sql ==>>>', sql)

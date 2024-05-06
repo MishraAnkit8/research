@@ -7,7 +7,7 @@ const researchDbW = dbPoolManager.get('researchDbW', research_write_db);
 
 module.exports.fetchMeetingStackholdersData = async(userName) => {
     let sql = {
-        text : `SELECT * FROM meeting_stackholders WHERE created_by = $1  ORDER BY id desc`,
+        text : `SELECT * FROM meeting_stackholders WHERE created_by = $1 and active=true ORDER BY id desc`,
         values : [userName]
     }
     console.log('sql ==>>', sql);
@@ -147,7 +147,7 @@ module.exports.updateMeetingData = async(meetingId, updateMeetingData, updatedMe
 module.exports.viewMeeting = async(meetingId, userName) => {
     console.log('meetingId in models  ===>', meetingId)
     let sql = {
-        text : `SELECT * FROM meeting_stackholders WHERE id = $1 AND created_by = $2`,
+        text : `SELECT * FROM meeting_stackholders WHERE id = $1 AND active=true and created_by = $2`,
         values : [meetingId, userName]
     }
     console.log('sql ==>>', sql);
@@ -156,9 +156,10 @@ module.exports.viewMeeting = async(meetingId, userName) => {
 
 module.exports.deleteMeetingStackholders = async(meetingId) => {
     let sql = {
-        text : `DELETE FROM  meeting_stackholders WHERE id = $1`,
-        values : [meetingId]
-    }
+      // text : `DELETE FROM  meeting_stackholders WHERE id = $1`,
+      text: `update meeting_stackholders set active=false WHERE id = $1`,
+      values: [meetingId],
+    };
     console.log('sql ===>>>', sql)
     const deletedRecord = await researchDbW.query(sql);
     const promises = [deletedRecord];
