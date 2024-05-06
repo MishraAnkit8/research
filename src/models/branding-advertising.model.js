@@ -236,7 +236,7 @@ module.exports.updateBrandingAdvertising = async (advertisingId, updatedAdvertis
 
 module.exports.brandingAndadvertisingview = async (advertisingId, userName) => {
   let sql = {
-    text: `SELECT * FROM branding_and_advertising WHERE id = $1 AND active=true created_by = $2`,
+    text: `SELECT * FROM branding_and_advertising WHERE id = $1 AND  created_by = $2 AND active=true`,
     values: [advertisingId, userName],
   };
   console.log("sql ==>>", sql);
