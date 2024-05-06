@@ -7,7 +7,7 @@ const researchDbW = dbPoolManager.get('researchDbW', research_write_db);
 
 module.exports.fetchResearchAward = async(userName) => {
     let sql = {
-        text : `SELECT * FROM research_award WHERE created_by = $1 ORDER BY id desc`,
+        text : `SELECT * FROM research_award WHERE created_by = $1 and active=true ORDER BY id desc`,
         values : [userName]
     }
     console.log('sql ===>>>>>', sql);
@@ -83,9 +83,10 @@ module.exports.updatedResearchRowData = async(awardId, updatedReseachAwardDocume
 
 module.exports.deleteResearchawardRow = async(awardId) => {
     let sql = {
-        text : `DELETE FROM research_award WHERE id = $1`,
-        values : [awardId]
-    }
+      // text : `DELETE FROM research_award WHERE id = $1`,
+      text: `update research_award set active=false WHERE id = $1`,
+      values: [awardId],
+    };
 
     console.log('sql ===>>>>', sql);
     const researchAward = await researchDbW.query(sql);
@@ -107,7 +108,7 @@ module.exports.deleteResearchawardRow = async(awardId) => {
 module.exports.veiwResearchAwardRow = async (awardId, userName) => {
     let sql = {
         text : `SELECT  nmims_campus, nmims_school, faculty_name, award_name, award_details, organisation_name_coferring_award, TO_CHAR(date, 'DD-MM-YYYY') as date,
-        place, award_category, supporting_documents FROM research_award WHERE id = $1 AND created_by = $2`,
+        place, award_category, supporting_documents FROM research_award WHERE id = $1 AND created_by = $2 and active=true `,
         values : [awardId, userName]
     }
     console.log('sql ===>>>', awardId)

@@ -7,16 +7,16 @@ const researchDbW = dbPoolManager.get('researchDbW', research_write_db);
 
 module.exports.fetchConferencePublication = async(userName) => {
     let conferenceSql = {
-        text : `SELECT * FROM  conference_presentation WHERE created_by = $1 ORDER BY id desc`,
+        text : `SELECT * FROM  conference_presentation WHERE created_by = $1 and active=true ORDER BY id desc`,
         values : [userName]
     }
 
     let internalEmpSql = {
-        text: `SELECT * FROM employee_table ORDER BY id`
+        text: `SELECT * FROM employee_table where active=true ORDER BY id`
     };
     
     let externalEmpSql = {
-        text: `SELECT * FROM external_emp ORDER BY id`
+        text: `SELECT * FROM external_emp where active=true ORDER BY id`
     }
 
     console.log('externalEmpSql ===<>>>>', externalEmpSql);
@@ -108,7 +108,8 @@ module.exports.insertConferencePublication = async (conferencePublications, conf
 module.exports.DeleteConference = async({conferenceId}) => {
     console.log('conference Id in models ==>>', conferenceId)
     let sql = {
-        text : `DELETE FROM conference_presentation WHERE id =$1`,
+        // text : `DELETE FROM conference_presentation WHERE id =$1`,
+        text : `update conference_presentation set active=false WHERE id =$1`,
         values : [conferenceId]
     }
     console.log('sql ===>>>', sql)
@@ -263,7 +264,7 @@ module.exports.viewConferencePublication = async(conferenceId, userName) => {
     let sql = {
         text : `SELECT nmims_campus, nmims_school, title_of_paper, conference_name, conference_place, proceedings_detail, conference_type,
         is_presenter, organizing_body, award_for_presentation, vol_and_issue_no, issn_isbn_no, doi_id,
-        sponsored, spent_amount, publication_date, presenting_authors, author_type, upload_proof, upload_files FROM  conference_presentation WHERE  id = $1 AND created_by = $2`,
+        sponsored, spent_amount, publication_date, presenting_authors, author_type, upload_proof, upload_files FROM  conference_presentation WHERE  id = $1 and active=true AND created_by = $2`,
         values : [conferenceId, userName]
     }
     // return researchDbR.query(sql);
