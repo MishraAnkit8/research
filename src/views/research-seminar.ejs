@@ -185,10 +185,9 @@
                         <div class="modal-header">
                             <!-- <div class="modal-title" id="research-seminar">RESEARCH SEMINAR</div> -->
                             <div style="width:80%;" class="d-flex justify-content-center">
-                                <h2 style="position: absolute;left: 20px;"  id="modalHeader" class="d-none">Edit</h2>
                                 <h5 class="modal-title ml-4" id="research-seminar">RESEARCH SEMINAR</h5>
-                                </div>
-                            
+                            </div>
+
                             <div class="close" id="headerClose" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true"><i class="fas fa-times "></i></span>
                             </div>
@@ -365,6 +364,12 @@
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="supporting-documents" class="form-label fw-bold ">
                                         Upload Supporting Documents
+                                        <div id="uploadNewSupportDocumentDiv">
+                                            <label for="uploadNewSupportDocument"><small>Click to Upload New
+                                                    File</small></label>
+                                            <input type="checkbox" name="uploadNewSupportDocument"
+                                                id="uploadNewSupportDocument">
+                                        </div>
                                     </label>
                                     <div class="d-flex">
                                         <input type="file" name="journal-article-documents"
@@ -372,13 +377,14 @@
                                             data-validate="isEmpty,isExist,isFile" data-err-msg="File is required."
                                             required multiple>
                                         <button class="download-btn download-file" id="journal-data-file-edit"><i
-                                                class="fas fa-download text-danger"></i></button>
+                                                class="fas fa-download text-danger"></i>Download</button>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" id="footerClose" class="btn btn-danger" data-dismiss="modal">Close</button>
+                            <button type="button" id="footerClose" class="btn btn-danger"
+                                data-dismiss="modal">Close</button>
                             <button type="button" class="btn btn-primary d-none" id="submit-btn">Submit</button>
                             <button type="button" class="btn btn-primary d-none " id="update-btn">Update</button>
                         </div>
@@ -391,7 +397,10 @@
                 <div class="modal-dialog modal-dialog-scrollable modal-lg modal-fullscreen p-5" role="document">
                     <div class="modal-content modal-content-data">
                         <div class="modal-header">
-                            <div class="modal-title" id="research-seminar">RESEARCH SEMINAR</div>
+                            <!-- <div class="modal-title" id="research-seminar">RESEARCH SEMINAR</div> -->
+                            <div style="width:80%;" class="d-flex justify-content-center">
+                                <h5 class="modal-title ml-4" id="research-seminar">RESEARCH SEMINAR View</h5>
+                            </div>
                             <div class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true"><i class="fas fa-times "></i></span>
                             </div>
@@ -583,6 +592,9 @@
                         // for button visualization
                         submitBtn.classList.remove('d-none');
                         updateBtn.classList.add('d-none');
+                        document.querySelector('#uploadNewSupportDocumentDiv').classList.add('d-none');
+                        document.querySelector('#journal-data-file-edit').classList.add('d-none')
+                        document.querySelector('#uploadNewSupportDocument').checked = false;
 
                         removeErrorMsg();
 
@@ -879,8 +891,7 @@
                     if (event.target.classList.contains('edit')) {
                         removeErrorMsg();
 
-                        let modalHeader = document.getElementById('modalHeader');
-                        modalHeader.classList.remove('d-none');
+                        let modalHeader = document.getElementById('research-seminar').innerText = 'RESEARCH SEMINAR Edit';
 
                         $('#research-seminar-modal').modal({
                             backdrop: 'static'
@@ -893,6 +904,8 @@
                         // for button visualization
                         submitBtn.classList.add('d-none');
                         updateBtn.classList.remove('d-none');
+                        document.querySelector('#uploadNewSupportDocumentDiv').classList.remove('d-none');
+                        document.querySelector('#journal-article-documents').classList.add('d-none');
                         // Capturing  the specific row's data and seminar ID
                         const year = seminarRowToBeUpdated.querySelector('.year');
                         const school = seminarRowToBeUpdated.querySelector('.school');
@@ -951,7 +964,7 @@
                     // for viewing record of journal paper
                     if (event.target.classList.contains('view')) {
                         const seminarRowToBeViewed = event.target.closest('tr')
-                        seminarId = seminarRowToBeViewed.getAttribute('data-seminar-id');
+                        seminarId = event.target.getAttribute('data-seminar-id');
                         $('#research-seminar-modal-view').modal({
                             backdrop: 'static'
                         });
@@ -1252,11 +1265,11 @@
 
                 };
 
-                document.getElementById('headerClose').addEventListener('click',() => {
+                document.getElementById('headerClose').addEventListener('click', () => {
                     document.location.reload();
                 })
 
-                document.getElementById('footerClose').addEventListener('click',() => {
+                document.getElementById('footerClose').addEventListener('click', () => {
                     document.location.reload();
                 })
 
@@ -1266,6 +1279,16 @@
                     "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
                 })
 
+                document.querySelector('#uploadNewSupportDocument').addEventListener('click', function (e) {
+
+                    let is_checked = document.querySelector('#uploadNewSupportDocument').checked;
+                    console.log("is_checked :", is_checked);
+                    if (is_checked) {
+                        document.querySelector('#journal-article-documents').classList.remove('d-none');
+                    } else {
+                        document.querySelector('#journal-article-documents').classList.add('d-none');
+                    }
+                })
 
             </script>
             <!-- footer and pagination -->

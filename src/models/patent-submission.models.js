@@ -49,30 +49,31 @@ module.exports.fetchPatentSubMissionForms = async (userName) => {
                 LEFT JOIN 
                     faculties f ON psf.faculty_id = f.id
                 WHERE
-                    created_by = $1 
+                    created_by = $1 and f.active=true and psf.active=true and pss.active=true and psss.active=true
+                    and it.active=true and psit.active=true and sg.active=true and pssg.active=true and psg.active=true 
                 ORDER BY psg.id desc`,
             values : [userName]
     };
 
     let internalEmpSql = {
-        text: `select *  FROM faculties WHERE faculty_type_id = 1`
+        text: `select *  FROM faculties WHERE faculty_type_id = 1 and active=true `
     };
 
     let sdgGoalSql = {
-        text: `select *  FROM sdg_goals ORDER BY id`
+        text: `select *  FROM sdg_goals where active=true  ORDER BY id`
     };
 
     let innovationTypeSql = {
-        text: `select *  FROM invention_type ORDER BY id`
+        text: `select *  FROM invention_type  where active=true ORDER BY id`
     };
 
     let patentStageSql = {
-        text: `select *  FROM pantent_stage_status ORDER BY id`
+        text: `select *  FROM pantent_stage_status where active=true ORDER BY id`
     };
 
     let patentGrantsubmission = {
-        text: `select *  FROM patent_submission_grant ORDER BY id`
-    }
+      text: `select *  FROM patent_submission_grant where active=true ORDER BY id`,
+    };
     
     let patentInternalFacultyIds = {
         text : `SELECT psf.id AS patent_submission_faculty_id, 
@@ -81,23 +82,23 @@ module.exports.fetchPatentSubMissionForms = async (userName) => {
         FROM patent_submission_faculty psf
         JOIN faculties f ON psf.faculty_id = f.id
         JOIN faculty_types ft ON f.faculty_type_id = ft.id
-        WHERE ft.name = 'Internal' 
+        WHERE ft.name = 'Internal' and psf.active=true and f.active=true and ft.active=true 
         ORDER BY psf.id`
     }
 
     let patentGrantExternalsql = {
-        text : `SELECT psf.id AS patent_submission_faculty_id, 
+      text: `SELECT psf.id AS patent_submission_faculty_id, 
         psf.patent_submission_grant_id, 
         psf.faculty_id 
         FROM patent_submission_faculty psf
         JOIN faculties f ON psf.faculty_id = f.id
         JOIN faculty_types ft ON f.faculty_type_id = ft.id
-        WHERE ft.name = 'External' 
-        ORDER BY psf.id`
-    }
+        WHERE ft.name = 'External' and psf.active=true and f.active=true and ft.active=true 
+        ORDER BY psf.id`,
+    };
 
     let patentGrantSql = {
-        text : `select id, patent_submission_grant_id, faculty_id from patent_submission_faculty order by id`
+        text : `select id, patent_submission_grant_id, faculty_id from patent_submission_faculty where active=true order by id`
     }
 
     console.log('patentSubmissionSql ===>>>', patentSubmissionSql);
@@ -255,7 +256,7 @@ module.exports.updatePatentsubmissionData = async (updatedPatentData, patentId, 
 
     const insertFacultyPromises = FacultydataArray.map(async faculty_id => {
         const existingRecord = await researchDbW.query({
-          text: `SELECT id FROM patent_submission_faculty WHERE patent_submission_grant_id = $1 AND faculty_id = $2`,
+          text: `SELECT id FROM patent_submission_faculty WHERE patent_submission_grant_id = $1 AND faculty_id = $2 and active=true `,
           values: [patentId, faculty_id]
         });
       
@@ -271,7 +272,7 @@ module.exports.updatePatentsubmissionData = async (updatedPatentData, patentId, 
 
     const insertSdgGoalsPromises = sdgGoalsIdArray.map(async sdg_goals_id => {
         const existingRecord = await researchDbW.query({
-          text: `SELECT id FROM patent_submission_sdg_goals WHERE patent_submission_grant_id = $1 AND sdg_goals_id = $2`,
+          text: `SELECT id FROM patent_submission_sdg_goals WHERE patent_submission_grant_id = $1 AND sdg_goals_id = $2 anmd active=true`,
           values: [patentId, sdg_goals_id]
         });
       
@@ -287,7 +288,7 @@ module.exports.updatePatentsubmissionData = async (updatedPatentData, patentId, 
 
     const insertInventionTypePromises = inventionIdsArray.map(async invention_type_id => {
         const existingRecord = await researchDbW.query({
-          text: `SELECT id FROM patent_submission_invention_type WHERE patent_submission_grant_id = $1 AND invention_type_id = $2`,
+          text: `SELECT id FROM patent_submission_invention_type WHERE patent_submission_grant_id = $1 AND invention_type_id = $2 and active=true`,
           values: [patentId, invention_type_id]
         });
       
@@ -303,7 +304,7 @@ module.exports.updatePatentsubmissionData = async (updatedPatentData, patentId, 
 
     const insertPatentStatusPromises = patentStatusIdArray.map(async pantent_stage_status_id => {
         const existingRecord = await researchDbW.query({
-          text: `SELECT id FROM patent_submission_stage_status WHERE patent_submission_grant_id = $1 AND pantent_stage_status_id = $2`,
+          text: `SELECT id FROM patent_submission_stage_status WHERE patent_submission_grant_id = $1 AND pantent_stage_status_id = $2 and active=true `,
           values: [patentId, pantent_stage_status_id]
         });
       
@@ -353,30 +354,34 @@ module.exports.deletePatentSubmissionData = async (patentId) => {
 
     // Delete records from child tables  patent_submission_invention_type
     const deletePatentInvention = {
-            text: 'DELETE FROM patent_submission_invention_type WHERE patent_submission_grant_id = $1',
+            // text: 'DELETE FROM patent_submission_invention_type WHERE patent_submission_grant_id = $1',
+            text: 'update patent_submission_invention_type set active=false WHERE patent_submission_grant_id = $1',
             values: [patentId]
     }
     console.log('deletePatentInvention ==>>>>', deletePatentInvention);
 
     // Delete records from child tables  patent_submission_sdg_goals
-    const deleteSdgSql =   {
-        text: 'DELETE FROM patent_submission_sdg_goals WHERE patent_submission_grant_id = $1',
-        values: [patentId]
-      }
+    const deleteSdgSql = {
+      // text: 'DELETE FROM patent_submission_sdg_goals WHERE patent_submission_grant_id = $1',
+      text: "update patent_submission_sdg_goals set active=false WHERE patent_submission_grant_id = $1",
+      values: [patentId],
+    };
       console.log('deleteSdgSql ==>>>>', deleteSdgSql);
 
     // Delete records from child tables  patent_submission_stage_status
     const deletePatentStatusSql = {
-        text: 'DELETE FROM patent_submission_stage_status WHERE patent_submission_grant_id = $1',
-        values: [patentId]
-    }
+      // text: 'DELETE FROM patent_submission_stage_status WHERE patent_submission_grant_id = $1',
+      text: "update patent_submission_stage_status set active=false WHERE patent_submission_grant_id = $1",
+      values: [patentId],
+    };
     console.log('deletePatentStatusSql ==>>>>', deletePatentStatusSql);
 
     // Delete records from child tables  patent_submission_faculty
     const patentGrantFacultySql = {
-        text: 'DELETE FROM patent_submission_faculty WHERE patent_submission_grant_id = $1',
-        values: [patentId]
-      }
+      // text: "DELETE FROM patent_submission_faculty WHERE patent_submission_grant_id = $1",
+      text: "update patent_submission_faculty set active=false WHERE patent_submission_grant_id = $1",
+      values: [patentId],
+    };
     console.log('patentGrantFacultySql ==>>>>', patentGrantFacultySql);
 
 
@@ -392,8 +397,9 @@ module.exports.deletePatentSubmissionData = async (patentId) => {
       .then((results) => {
         // Once child records are deleted, delete the parent record
         return researchDbW.query({
-          text: 'DELETE FROM patent_submission_grant WHERE id = $1',
-          values: [patentId]
+          // text: 'DELETE FROM patent_submission_grant WHERE id = $1',
+          text: "update patent_submission_grant set active=false WHERE id = $1",
+          values: [patentId],
         });
       })
       .then((grantDeletionResult) => {
@@ -464,7 +470,8 @@ module.exports.viewPatentSubmission = async(patentId, userName) => {
             patent_submission_faculty psf ON psg.id = psf.patent_submission_grant_id
         LEFT JOIN 
             faculties f ON psf.faculty_id = f.id 
-        where  psg.id = $1 AND created_by = $2`,
+        where  psg.id = $1 AND created_by = $2 and psf.active=true and pss.active=true and psss.active=true and
+        it.active=true and psit.active=true and sg.active=true and pssg.active=true and psg.active=true`,
 
      values : [patentId, userName]
     };
@@ -475,7 +482,7 @@ module.exports.viewPatentSubmission = async(patentId, userName) => {
         text: `SELECT sg.id, sg.name
             FROM patent_submission_sdg_goals psg
             JOIN sdg_goals sg ON psg.sdg_goals_id = sg.id
-            WHERE psg.patent_submission_grant_id = $1`,
+            WHERE psg.patent_submission_grant_id = $1 and psg.active=true and sg.active=true`,
         values : [patentId]
     };
     console.log('sdgGoalSql ===>>>>', sdgGoalSql)
@@ -483,7 +490,7 @@ module.exports.viewPatentSubmission = async(patentId, userName) => {
     let inventionSql = {
         text: `select it.id, it.name  FROM patent_submission_invention_type pit
                 JOIN invention_type it ON pit.invention_type_id = it.id
-                WHERE pit.patent_submission_grant_id = $1 `,
+                WHERE pit.patent_submission_grant_id = $1 and pit.active=true and it.active=true `,
         values : [patentId]
     };
     console.log('innovationTypeSql ===>>>>', inventionSql);
@@ -502,7 +509,7 @@ module.exports.viewPatentSubmission = async(patentId, userName) => {
         JOIN
             faculty_types ft ON f.faculty_type_id = ft.id
         WHERE
-            psf.patent_submission_grant_id = $1`,
+            psf.patent_submission_grant_id = $1 and psf.active=true and f.active=true and ft.active=true`,
 
         values : [patentId]
     };
