@@ -216,7 +216,7 @@
                     <div class="modal-content modal-content-data validate-input">
                         <div class="modal-header">
                             <p id="conference-publication">Conference </p>
-                            <div class="close" data-dismiss="modal" aria-label="Close">
+                            <div class="close" id= "headerClose" data-dismiss="modal" aria-label="Close">
                                 <span type="button"><i class="fas fa-times "></i></span>
                             </div>
                         </div>
@@ -380,7 +380,7 @@
                                 <!-- Any award for presentation -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12  mb-4">
                                     <label for="award-for-presentation" class="form-label fw-bold mb-3">Any Award For
-                                        Presentation</label><br>
+                                        Presentation (Upload Proof,If Any)</label><br>
                                     <div class="form-check-inline">
                                         <label for="award-yes" class="form-check-label">
                                             <input type="radio" class="form-check-input" id="is-award-yes"
@@ -419,7 +419,7 @@
                                     <label for="doi-weblink" class="form-label  fw-bold">
                                         DOI/Weblink of paper ID
                                     </label>
-                                    <input type="number" name="web-link" id="doi-weblink-id" class="form-control" />
+                                    <input  data-validate="isEmpty,isExist,isValidHttpUrl" data-err-msg="Link is required." type="number" name="web-link" id="doi-weblink-id" class="form-control" required />
                                 </div>
 
                                 <!-- Sponsored By NMIMS/Other -->
@@ -472,8 +472,10 @@
                                 </div>
                                 <!-- upload proof -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+        
                                     <label for="upload" class="form-label fw-bold ">Upload
-                                        Proof</label>
+                                        Proof</label>&ensp;
+                                        <span style="color:red" id="proofError"></span>
                                     <div class="d-flex">
                                         <input type="file" id="conference-proofs" name="conferenceProof"
                                             class="col-md-12 form-control " multiple>
@@ -485,7 +487,7 @@
                         </div>
                         <!-- footer button -->
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                            <button type="button" id="footerClose" class="btn btn-danger" data-dismiss="modal">Close</button>
                             <button type="button" class="btn btn-primary " id="submit-btn">Submit</button>
                             <button type="button" class="btn btn-primary d-none" id="update-btn">update</button>
                         </div>
@@ -694,6 +696,10 @@
                 const updateBtn = document.getElementById('update-btn');
                 //modal for button visualization
                 conferenceAddModal.addEventListener('click', function (event) {
+
+                //    let proofError = document.getElementById('proofError');
+                //    proofError.innerText= '';
+
                     if (event.target.tagName === 'BUTTON' && event.target.classList.contains('add-modal') || event.target.classList.contains('plus')) {
                         updateBtn.classList.add('d-none');
                         submitBtn.classList.remove('d-none');
@@ -1500,6 +1506,33 @@
                     "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
                     })
 
+                    document.getElementById('is-award-yes').addEventListener('click',() => {
+                        let isAward = document.getElementById('is-award-yes');
+                        let proofError = document.getElementById('proofError');
+                        if(isAward.checked){
+                           proofError.innerText = '*Please Enter the documents'
+                        }
+                    })
+
+                    document.getElementById('is-award-no').addEventListener('click',() => {
+                        let isAward = document.getElementById('is-award-no');
+                        let proofError = document.getElementById('proofError');
+                        if(isAward.checked){
+                           proofError.innerText = ''
+                        }
+                    })
+
+                    document.getElementById('headerClose').addEventListener('click',() => {
+                        document.location.reload();
+                    })
+
+                    document.getElementById('footerClose').addEventListener('click',() => {
+                        document.location.reload();
+
+                    })
+
+
+                   
             </script>
             <!-- <%- include('./partials/pagination') %> -->
                 <%- include('./partials/footer') %>

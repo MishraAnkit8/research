@@ -176,8 +176,8 @@ module.exports.deleteTeachingExecellance = async (teachingId) => {
     }
 }
 
-module.exports.viewTeachingExecellance = async(teachingId, userName) => {
-    const teachingExecellanceViewData = await teachingExecellanceModel.teachingExecellanceView(teachingId, userName);
+module.exports.viewTeachingExecellance = async(teachingId) => {
+    const teachingExecellanceViewData = await teachingExecellanceModel.teachingExecellanceView(teachingId);
     console.log('teachingExecellanceViewData' , teachingExecellanceViewData.rows[0]);
     if(teachingExecellanceViewData && teachingExecellanceViewData.rowCount === 1){
         return teachingExecellanceViewData.rows[0]

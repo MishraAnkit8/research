@@ -116,23 +116,23 @@
                                             <td class="journal-name col-lg-1"><%- journalPaper.journal_name %></td>
 
                      <td style="display:flex;justify-content: center;"> 
-                                            <b title="View" class="view border-right-0"
+                                            <b style="cursor: pointer;" title="View" class="view border-right-0"
                                                 
                                                 data-journal-article-id="<%- journalPaper.article_id %>">
                                                 <!-- <label class="view" data-journal-article-id="<%- journalPaper.article_id %>">
                                     <i class="fa-solid fa-eye view text-danger" data-journal-article-id="<%- journalPaper.article_id %>"></i>
                                 </label> -->
                                                 &#128065;
-                                            </b>
-                                            <b title="Edit" class="edit border-right-0" 
+                                            </b>&ensp;
+                                            <b style="cursor: pointer;" title="Edit" class="edit border-right-0" 
                                                
                                                 data-journal-article-id="<%- journalPaper.article_id %>">
                                                 <!-- <label class="edit" data-journal-article-id="<%- journalPaper.article_id %>">
                                     <i class="fa fa-edit edit text-danger" data-journal-article-id="<%- journalPaper.article_id %>"></i>
                                 </label> -->
                                                 &#9998;
-                                            </b>
-                                            <b title="Delete" class="delete border-right-0"
+                                            </b>&ensp;
+                                            <b style="cursor: pointer;" title="Delete" class="delete border-right-0"
                                                
                                                 data-journal-article-id="<%- journalPaper.article_id %>">
                                                 <!-- <label class="delete" data-journal-article-id="<%- journalPaper.article_id %>">
@@ -576,6 +576,7 @@
                                     <div class="box">
                                         <div class="sub-title-text sub-title">Year:</div>
                                         <label class="view-content" id="view-year"></label>
+
                                     </div>
                                 </div>
                                 <!-- school -->
@@ -803,6 +804,10 @@
 
 
             <script>
+               let tomSelectInstance = null;
+
+
+
                 //for index icrement
                 let rowCount = document.getElementById('row-count');
                 console.log('rowCount ===>>>>>>', rowCount);
@@ -1249,21 +1254,7 @@
                         impactFactorStoredIds = { 'impactFactor': impactFactorIdsArray };
                         console.log('journalCategory ===>>>>>>', journalCategory);
 
-                        let policyCadreList = document.querySelector('#policy-cadre-list');
-                        console.log('policies ', JSON.stringify(policyCadreIdsArray))
-
-                        for (let i = 0; i < policyCadreList.options.length; i++) {
-                            let optionValue = Number.parseInt(policyCadreList.options[i].value.trim());
-                            console.log('Index:', i, 'Option value:', optionValue);
-                            if (policyCadreIdsArray.includes(optionValue)) {
-                                policyCadreList.options[i].selected = true;
-                                console.log('Selected option:', optionValue);
-                            } else {
-                                console.log('Option not selected:', optionValue);
-                            }
-                        }
-
-
+            
                         // For journal category
                         journalCategory === '1' ? journalCategoryNational.checked = true : journalCategoryInternational.checked = true;
 
@@ -1282,6 +1273,262 @@
                         // For UGC indexed category
                         ugcIndexedYes.checked = ugcIndexedCategory === 'Yes';
                         ugcIndexedNo.checked = ugcIndexedCategory !== 'Yes';
+
+
+                // const nmimsSchoolList = document.getElementById('school-data-list').dataset.school;
+                // const nmimsCampusList = document.getElementById('campus-data-list').dataset.campus;
+                // const policyCadreList = document.getElementById('policy-cadre-data-list').dataset.policy;
+                // const impactFactorList = document.getElementById('impact-factor-data-list').dataset.factor;
+                // const inetrnalnmimsFaculty = document.getElementById('employees-list-data').dataset.employees;
+                // const allAuthorsList = document.getElementById('all-author-data-list').dataset.author;
+
+
+
+                // const schoolDataList = JSON.parse(nmimsSchoolList);
+                // const campusDataList = JSON.parse(nmimsCampusList);
+                // const policyCadreDataList = JSON.parse(policyCadreList);
+                // const impactFactorDataList = JSON.parse(impactFactorList);
+                // const nmimsFacultyDataList = JSON.parse(inetrnalnmimsFaculty);
+                // const allAuthorDataList = JSON.parse(allAuthorsList);
+
+                // let selectedFacultySchool = [];
+
+                // schoolDataList.forEach(data => {
+                //     campusIdsArray.forEach(cmp => {
+                //         if(cmp.id == data.id){
+                //             selectedFacultySchool.push(cmp.id)
+                //         }
+                //     })
+                // })
+                
+
+
+
+
+                // ajax for search bar to search status
+                // const selectedSchool = schoolDataList.map(school => ({
+                //     value: school.id,
+                //     text: `${school.school_name}`
+                // }));
+
+                // ajax for search bar to search status
+                // const selectedCampus = campusDataList.map(campus => ({
+                //     value: campus.id,
+                //     text: `${campus.campus_name}`
+                // }));
+
+                // ajax for search bar to search policy cadre
+                // const selectPolicyCadre = policyCadreDataList.map(cadre => ({
+                //     value: cadre.id,
+                //     text: `${cadre.cadre_name}`
+                // }));
+
+                // ajax for search bar to search impcat factor
+                // const selectImpcatFactor = impactFactorDataList.map(factor => ({
+                //     value: factor.id,
+                //     text: `${factor.impact_factor}`
+                // }));
+
+                // ajax for search bar to search impcat factor
+                // const selectInternalNmimsFaculty = nmimsFacultyDataList.map(faculty => ({
+                //     value: faculty.id,
+                //     text: ` ${faculty.employee_id}  ${faculty.faculty_name}`
+                // }));
+
+                // ajax for search bar to search all authors
+                // const selectedAuthors = allAuthorDataList.map(author => ({
+                //     value: author.id,
+                //     text: ` ${author.employee_id}  ${author.faculty_name}`
+                // }));
+
+                // new TomSelect("#nmims-campus-list", {
+                //     options: selectedCampus,
+                //     placeholder : "Select Options",
+                //     hidePlaceholder : true,
+                //     hidePlaceholder : true,
+                //     create: true,
+                //     plugins: ['remove_button'],
+                //     onItemAdd:function(){
+                //         this.setTextboxValue('');
+                //         this.refreshOptions();
+                //     },
+                //     render:{
+                //         option:function(data,escape){
+                //             return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                //         },
+                //         item:function(data,escape){
+                //             return '<div>' + escape(data.text) + '</div>';
+                //         }
+                //     }
+                // });
+
+            //     if(tomSelectInstance){
+
+            //     tomSelectInstance.destroy();    
+            //     new TomSelect("#nmims-school-list", {
+            //         options: selectedSchool,
+            //         items : selectedFacultySchool,
+            //         placeholder : "Select Options",
+            //         hidePlaceholder : true,
+            //         hidePlaceholder : true,
+            //         create: true,
+            //         plugins: ['remove_button'],
+            //         onItemAdd:function(){
+            //             this.setTextboxValue('');
+            //             this.refreshOptions();
+            //         },
+            //         render:{
+            //             option:function(data,escape){
+            //                 return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+            //             },
+            //             item:function(data,escape){
+            //                 return '<div>' + escape(data.text) + '</div>';
+            //             }
+            //         }
+            //     });
+            // }
+
+                // new TomSelect("#policy-cadre-list", {
+                //     options: selectPolicyCadre,
+                //     placeholder : "Select Options",
+                //     hidePlaceholder : true,
+                //     hidePlaceholder : true,
+                //     create: true,
+                //     plugins: ['remove_button'],
+                //     onItemAdd:function(){
+                //         this.setTextboxValue('');
+                //         this.refreshOptions();
+                //     },
+                //     render:{
+                //         option:function(data,escape){
+                //             return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                //         },
+                //         item:function(data,escape){
+                //             return '<div>' + escape(data.text) + '</div>';
+                //         }
+                //     }
+                // });
+
+                // new TomSelect("#impact-factor-list", {
+                //     options: selectImpcatFactor,
+                //     placeholder : "Select Options",
+                //     hidePlaceholder : true,
+                //     hidePlaceholder : true,
+                //     create: true,
+                //     plugins: ['remove_button'],
+                //     onItemAdd:function(){
+                //         this.setTextboxValue('');
+                //         this.refreshOptions();
+                //     },
+                //     render:{
+                //         option:function(data,escape){
+                //             return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                //         },
+                //         item:function(data,escape){
+                //             return '<div>' + escape(data.text) + '</div>';
+                //         }
+                //     }
+                // });
+
+                // new TomSelect("#internal-faculty-list", {
+                //     options: selectInternalNmimsFaculty,
+                //     placeholder : "Select Options",
+                //     hidePlaceholder : true,
+                //     hidePlaceholder : true,
+                //     create: true,
+                //     plugins: ['remove_button'],
+                //     onItemAdd:function(){
+                //         this.setTextboxValue('');
+                //         this.refreshOptions();
+                //     },
+                //     render:{
+                //         option:function(data,escape){
+                //             return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                //         },
+                //         item:function(data,escape){
+                //             return '<div>' + escape(data.text) + '</div>';
+                //         }
+                //     }
+                // });
+
+                // new TomSelect("#all-author-list", {
+                //     options: selectedAuthors,
+                //     placeholder : "Select Options",
+                //     hidePlaceholder : true,
+                //     hidePlaceholder : true,
+                //     create: true,
+                //     plugins: ['remove_button'],
+                //     onItemAdd:function(){
+                //         this.setTextboxValue('');
+                //         this.refreshOptions();
+                //     },
+                //     render:{
+                //         option:function(data,escape){
+                //             return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                //         },
+                //         item:function(data,escape){
+                //             return '<div>' + escape(data.text) + '</div>';
+                //         }
+                //     }
+                // });
+
+               
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
                     }
 

@@ -144,6 +144,16 @@ function validateRequiredFormFields(actionBtn) {
         }
       }
 
+
+      if (validate === "isValidHttpUrl") {
+        const isValid = isValidHttpUrl(elemVal);
+        if (!isValid) {
+          isValidElem = false;
+          validationState = false;
+          break;
+        }
+      }
+
       //isFloatingNumber
       if (validate === "isFloatingNumber") {
         const isValid = isFloatingNumber(elemVal);
@@ -288,6 +298,25 @@ function isAlphabet(input) {
   }
   return true;
 }
+
+function isValidHttpUrl(string) {
+  try {
+    const newUrl = new URL(string);
+
+    if(newUrl.protocol === 'http:' || newUrl.protocol === 'https:'){
+      return true;
+    }else{
+      return false;
+    }
+  } catch (err) {
+    return false;
+  }
+}
+
+
+
+
+
 
 function isAlphabeticWords(input) {
   if (!input || input.trim() === "") {
