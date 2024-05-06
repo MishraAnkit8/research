@@ -365,6 +365,10 @@
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="supporting-documents" class="form-label fw-bold ">
                                         Upload Supporting Documents
+                                        <div id="uploadNewSupportDocumentDiv">
+                                            <label for="uploadNewSupportDocument"><small>Click to Upload New File</small></label>
+                                            <input type="checkbox" name="uploadNewSupportDocument" id="uploadNewSupportDocument">
+                                        </div>
                                     </label>
                                     <div class="d-flex">
                                         <input type="file" name="journal-article-documents"
@@ -372,7 +376,7 @@
                                             data-validate="isEmpty,isExist,isFile" data-err-msg="File is required."
                                             required multiple>
                                         <button class="download-btn download-file" id="journal-data-file-edit"><i
-                                                class="fas fa-download text-danger"></i></button>
+                                                class="fas fa-download text-danger"></i>Download</button>
                                     </div>
                                 </div>
                             </div>
@@ -588,7 +592,10 @@
                         // for button visualization
                         submitBtn.classList.remove('d-none');
                         updateBtn.classList.add('d-none');
-
+                        document.querySelector('#uploadNewSupportDocumentDiv').classList.add('d-none');
+                        document.querySelector('#journal-data-file-edit').classList.add('d-none')
+                        document.querySelector('#uploadNewSupportDocument').checked = false;
+                        
                         removeErrorMsg();
 
                         $('#research-seminar-modal').modal({
@@ -898,6 +905,8 @@
                         // for button visualization
                         submitBtn.classList.add('d-none');
                         updateBtn.classList.remove('d-none');
+                        document.querySelector('#uploadNewSupportDocumentDiv').classList.remove('d-none');
+                        document.querySelector('#journal-article-documents').classList.add('d-none');
                         // Capturing  the specific row's data and seminar ID
                         const year = seminarRowToBeUpdated.querySelector('.year');
                         const school = seminarRowToBeUpdated.querySelector('.school');
@@ -1271,6 +1280,16 @@
                     "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
                 })
 
+document.querySelector('#uploadNewSupportDocument').addEventListener('click',function(e){
+
+    let is_checked = document.querySelector('#uploadNewSupportDocument').checked;
+    console.log("is_checked :",is_checked);
+    if(is_checked){
+        document.querySelector('#journal-article-documents').classList.remove('d-none');
+    }else{
+        document.querySelector('#journal-article-documents').classList.add('d-none');
+    }
+})
 
             </script>
             <!-- footer and pagination -->
