@@ -16,13 +16,15 @@ module.exports.fetchMeetingStackholdersData = async(userName) => {
 
 module.exports.insertMeetingStackholders = async(meetingStackholderData, meetingFilesData, userName) => {
     const {ranking, rankingLink, accreditation, accreditationLink, achievements, achievementsLink, convocation, convocationLink, 
-        inauguralProgram, inauguralProgramLink, events, eventsLink } = meetingStackholderData;
-    let sql = {
+        inauguralProgram, inauguralProgramLink, events, eventsLink, rankDescription, AccreditationDescription, schoolCampusDescription, conDescription, inuDescription, evntDescription } = meetingStackholderData;
+    console.log('Daoiooooooooooo',meetingStackholderData);
+        let sql = {
         text : `INSERT INTO  meeting_stackholders (ranking, ranking_link, accreditation, accreditation_link, school_campus_achievements, 
             achievements_link, convocation, convocation_link, inaugural_program, inaugural_program_link, events, events_link, 
-            ranking_documents, accreditation_documents, achievements_documents, convocation_documents, inaugural_program_documents, events_documents, created_by) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19) RETURNING id`,
+            ranking_documents, accreditation_documents, achievements_documents, convocation_documents, inaugural_program_documents, events_documents, created_by,
+            ranking_description, accreditation_description, achievements_description, convocation_description, inaugural_program_description, event_description) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25) RETURNING id`,
         values : [ranking, rankingLink, accreditation, accreditationLink, achievements, achievementsLink, convocation, convocationLink, 
-            inauguralProgram, inauguralProgramLink, events, eventsLink, meetingFilesData.rankingDocuments, meetingFilesData.accreditationFile, meetingFilesData.achievementsFile, meetingFilesData.convocationFile, meetingFilesData.inauguralProgramFile, meetingFilesData.eventFile, userName]
+            inauguralProgram, inauguralProgramLink, events, eventsLink, meetingFilesData.rankingDocuments, meetingFilesData.accreditationFile, meetingFilesData.achievementsFile, meetingFilesData.convocationFile, meetingFilesData.inauguralProgramFile, meetingFilesData.eventFile, userName, rankDescription, AccreditationDescription, schoolCampusDescription, conDescription, inuDescription, evntDescription]
     }
 
     console.log('sql ==>>', sql)
@@ -38,7 +40,7 @@ module.exports.insertMeetingStackholders = async(meetingStackholderData, meeting
 
 module.exports.updateMeetingData = async(meetingId, updateMeetingData, updatedMeetingFilesData, userName) => {
     const {ranking, rankingLink, accreditation, accreditationLink, achievements, achievementsLink, convocation, convocationLink, 
-        inauguralProgram, inauguralProgramLink, events, eventsLink} = updateMeetingData;
+        inauguralProgram, inauguralProgramLink, events, eventsLink, rankDescription, AccreditationDescription, schoolCampusDescription, conDescription, inuDescription, evntDescription} = updateMeetingData;
     
         const rankingDocuments = updatedMeetingFilesData.rankingDocuments ? updatedMeetingFilesData.rankingDocuments : null;
         const accreditationFile = updatedMeetingFilesData.accreditationFile ? updatedMeetingFilesData.accreditationFile : null;
@@ -76,6 +78,12 @@ module.exports.updateMeetingData = async(meetingId, updateMeetingData, updatedMe
             { field: 'events_documents', value: eventFile },
             { field: 'events_link', value: eventsLink },
             { field: 'updated_by', value: userName },
+            { field: 'ranking_description', value: rankDescription },
+            { field: 'accreditation_description', value: AccreditationDescription },
+            { field: 'achievements_description', value: schoolCampusDescription },
+            { field: 'convocation_description', value: conDescription },
+            { field: 'inaugural_program_description', value: inuDescription },
+            { field: 'event_description', value: evntDescription }
         ]
         
 
