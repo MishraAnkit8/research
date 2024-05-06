@@ -26,7 +26,7 @@
                             </div>
                             <div>
                                 <button id="research-seminar-add-modal" type="button" class="btn btn-primary add-modal"
-                                    data-toggle="modal" data-target="#research-seminar-modal">
+                                    data-toggle="modal" data-target="#research-seminar-modal">ADD
                                     <i class="fas fa-plus plus"></i></button>
                                 </button>
                             </div>
@@ -397,10 +397,7 @@
                 <div class="modal-dialog modal-dialog-scrollable modal-lg modal-fullscreen p-5" role="document">
                     <div class="modal-content modal-content-data">
                         <div class="modal-header">
-                            <!-- <div class="modal-title" id="research-seminar">RESEARCH SEMINAR</div> -->
-                            <div style="width:80%;" class="d-flex justify-content-center">
-                                <h5 class="modal-title ml-4" id="research-seminar">RESEARCH SEMINAR View</h5>
-                            </div>
+                            <div class="modal-title" id="research-seminar">RESEARCH SEMINAR VIEW</div>
                             <div class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true"><i class="fas fa-times "></i></span>
                             </div>
@@ -696,6 +693,7 @@
                             console.log('data ===>>>', data);
 
                             if (data.status === 'Done') {
+
                                 //     const seminarDetails = data.seminarDetails;
                                 //     seminarId = data.seminarId;
                                 //     console.log('seminarId ==>', seminarId);
@@ -784,7 +782,15 @@
                         await insertResearchSeminar('<%- BASE_URL %>research/researchSeminar/insert');
                     }
                     else {
-                        alert('validation Failed');
+                        Swal.fire({
+                        position: "top-center",
+                        icon: "error",
+                        title: "Validation Failed",
+                        color: "red",
+                        showConfirmButton: true,
+                        confirmButtonText: "OK",
+                        confirmButtonColor: "#DD6B55"
+                    });
                     }
                 });
 
@@ -964,7 +970,7 @@
                     // for viewing record of journal paper
                     if (event.target.classList.contains('view')) {
                         const seminarRowToBeViewed = event.target.closest('tr')
-                        seminarId = event.target.getAttribute('data-seminar-id');
+                        seminarId = seminarRowToBeViewed.getAttribute('data-seminar-id');
                         $('#research-seminar-modal-view').modal({
                             backdrop: 'static'
                         });
@@ -1258,6 +1264,7 @@
                     const articleDataFiles = document.getElementById('research-data-file-edit');
                     console.log('articleDataFiles ===>>>>>', articleDataFiles)
                     articleDataFiles.classList.remove('d-none');
+                    
                     const articleDataString = data.getAttribute('data-documents');
                     console.log('articleDataString ====>>>>>>', articleDataString);
                     // setAttribute into button

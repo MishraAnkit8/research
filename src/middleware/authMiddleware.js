@@ -36,6 +36,7 @@ module.exports.authMiddleware = async (req, res, next) => {
         sessionData = {...sessionData, accesstoken: accesstoken, refreshtoken: refreshtoken}
         setRedisData(`${sessionid}:session`, sessionData);
         const  userName = sessionData.username;
+        console.log("USERNAME IN MIDDLEWARE : ", userName);
         req.body.username = userName;
         next()
     } catch (error) {

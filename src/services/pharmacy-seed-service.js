@@ -62,6 +62,8 @@ module.exports.insertInvestorBook = async(body) => {
 
 module.exports.insertInvestorBookChapter = async(body) => {
     const investigatorBookChapterDetails = body.investigatorBookChapterDetails;
+    console.log('investigatorBookChapterDetails =====>>>>>>', investigatorBookChapterDetails);
+
     const insertInvestigatiorBookchapter = await pharmacySeedModels.insertInvestigatorBookChapterDetails(investigatorBookChapterDetails)
 
     return insertInvestigatiorBookchapter.status === "Done" ? {
@@ -103,7 +105,7 @@ module.exports.insertInvestorPublication = async(body) => {
     return insertInvestigatiorPublication.status === "Done" ? {
         status : insertInvestigatiorPublication.status,
         message : insertInvestigatiorPublication.message,
-        publicationId : insertInvestigatiorPublication.investorEduId,
+        publicationId : insertInvestigatiorPublication.publicationId,
         rowCount : insertInvestigatiorPublication.rowCount
     } : {
         status : insertInvestigatiorPublication.status,
@@ -116,7 +118,7 @@ module.exports.insertInvestorPublication = async(body) => {
 
 module.exports.insertInvestorResearchImplementation = async(body) => {
     const researchProjectDetails = body.researchProjectDetails;
-    const insertImplementationDetails = await pharmacySeedModels.insertInvestigatorEducationDetails(researchProjectDetails)
+    const insertImplementationDetails = await pharmacySeedModels.insertInvestigatorResearchImplementationDetails(researchProjectDetails)
 
     return insertImplementationDetails.status === "Done" ? {
         status : insertImplementationDetails.status,
@@ -150,4 +152,11 @@ module.exports.insertInvestorResearchCompleted = async(body) => {
     }
 
 
+}
+
+
+module.exports.insertPharmacySeedDetials = async(body, userName) => {
+    const pharmacySeedGrantDetails = body.pharmacySeedGrantDetails;
+
+    const pharmacyData = await pharmacySeedModels.insertPharmacyDetails(pharmacySeedGrantDetails, userName)
 }

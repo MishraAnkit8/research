@@ -18,75 +18,29 @@ module.exports.fetchBrandingAndadvertising = async (userName) => {
   return researchDbR.query(sql);
 };
 
-module.exports.insertBrandingAndAdvertisingData = async (
-  advertisingData,
-  brandingFilesContainer,
-  userName
-) => {
-  const {
-    facultyRecognition,
-    facultyRecognitionLink,
-    facultyAward,
-    facultyAwardLink,
-    staffAward,
-    staffAwardLink,
-    alumniAward,
-    alumniAwardLink,
-    studentAward,
-    studentAwardLink,
-    internationalLinkage,
-    internationalLinkageLink,
-    conferenceParticipation,
-    conferenceParticipationLink,
-    organisingConference,
-    organisingConferenceLink,
-    studentEventParticipation,
-    studentEventParticipationLink,
-    newsPaperArticle,
-    newsPaperArticleLink,
-  } = advertisingData;
-  let sql = {
-    text: `INSERT INTO branding_and_advertising (
+module.exports.insertBrandingAndAdvertisingData = async(advertisingData, brandingFilesContainer, userName) => {
+
+        const {facultyRecognition, facultyRecognitionLink, facultyAward, facultyAwardLink, staffAward, staffAwardLink, alumniAward, alumniAwardLink,
+            studentAward, studentAwardLink, internationalLinkage, internationalLinkageLink, conferenceParticipation, conferenceParticipationLink, organisingConference,
+            organisingConferenceLink, studentEventParticipation, studentEventParticipationLink, newsPaperArticle, newsPaperArticleLink,facultyRecognitionDescription, facultyAwardDescription, staffAwardDescription
+        , alumniAwardDescription, studentAwardDescription, internationalLinkageDescription, conferenceParticipationDescription, organisingConferenceDescription, studentEventParticipationDescription, newspaperArticleDescription } = advertisingData;
+    console.log('advertisingDataBefore Inserting',advertisingData);
+
+        let sql = {
+            text : `INSERT INTO branding_and_advertising (
                  faculty_recognition, faculty_recognition_link, faculty_award, faculty_award_link, staff_award, staff_award_link, alumni_award, alumni_award_link,
                  student_award, student_award_link, international_linkage, international_linkage_link, conference_participation, conference_participation_link,
                  organising_conference, organising_conference_link, student_event_participation, student_event_participation_link, newspaper_article, newspaper_article_link, 
                  faculty_recognition_documents, faculty_award_documents, staff_award_documents, alumni_award_documents, student_award_documents, international_linkage_documents, 
-                 conference_participation_documents, organising_conference_documents, student_event_participation_documents, newspaper_article_documents, created_by) 
-                 VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27 , $28, $29, $30, $31) RETURNING id`,
-    values: [
-      facultyRecognition,
-      facultyRecognitionLink,
-      facultyAward,
-      facultyAwardLink,
-      staffAward,
-      staffAwardLink,
-      alumniAward,
-      alumniAwardLink,
-      studentAward,
-      studentAwardLink,
-      internationalLinkage,
-      internationalLinkageLink,
-      conferenceParticipation,
-      conferenceParticipationLink,
-      organisingConference,
-      organisingConferenceLink,
-      studentEventParticipation,
-      studentEventParticipationLink,
-      newsPaperArticle,
-      newsPaperArticleLink,
-      brandingFilesContainer.facultyRecognitionDocuments,
-      brandingFilesContainer.facultyAwardDocuments,
-      brandingFilesContainer.staffAwardDocuments,
-      brandingFilesContainer.alumniAwardDocuments,
-      brandingFilesContainer.studentAwardDocuments,
-      brandingFilesContainer.internationalLinkageDocuments,
-      brandingFilesContainer.conferenceParticipationDocuments,
-      brandingFilesContainer.organisingConferenceDocuments,
-      brandingFilesContainer.studentEventParticipationDocuments,
-      brandingFilesContainer.newspaperArticleDocuments,
-      userName,
-    ],
-  };
+                 conference_participation_documents, organising_conference_documents, student_event_participation_documents, newspaper_article_documents, created_by, faculty_recognition_description, faculty_award_description, staff_award_description,
+                 alumni_award_description, student_award_description, international_linkage_description, conference_participation_description, organising_conference_description, student_event_participation_description, newspaper_article_description) 
+                 VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27 , $28, $29, $30, $31, $32, $33, $34, $35, $36, $37, $38, $39, $40, $41) RETURNING id`,
+            values : [facultyRecognition, facultyRecognitionLink, facultyAward, facultyAwardLink, staffAward, staffAwardLink, alumniAward, alumniAwardLink,
+                studentAward, studentAwardLink, internationalLinkage, internationalLinkageLink, conferenceParticipation, conferenceParticipationLink, organisingConference,
+                organisingConferenceLink, studentEventParticipation, studentEventParticipationLink, newsPaperArticle, newsPaperArticleLink, brandingFilesContainer.facultyRecognitionDocuments,
+                brandingFilesContainer.facultyAwardDocuments, brandingFilesContainer.staffAwardDocuments, brandingFilesContainer.alumniAwardDocuments, brandingFilesContainer.studentAwardDocuments, brandingFilesContainer.internationalLinkageDocuments, brandingFilesContainer.conferenceParticipationDocuments, brandingFilesContainer.organisingConferenceDocuments,
+                brandingFilesContainer.studentEventParticipationDocuments, brandingFilesContainer.newspaperArticleDocuments, userName, facultyRecognitionDescription, facultyAwardDescription, staffAwardDescription, alumniAwardDescription, studentAwardDescription, internationalLinkageDescription, conferenceParticipationDescription, organisingConferenceDescription, studentEventParticipationDescription, newspaperArticleDescription]
+        }
 
   //handle promise and throw error in case of Insert
   return researchDbW
@@ -112,116 +66,72 @@ module.exports.insertBrandingAndAdvertisingData = async (
     });
 };
 
-module.exports.updateBrandingAdvertising = async (
-  advertisingId,
-  updatedAdvertisingData,
-  updatedFacultyRecognitionFilesArray,
-  updatedFacultyAwardFilesArray,
-  updatedStaffAwardFilesArray,
-  updatedAlumniAwardFilesArray,
-  updatedStudentAwardFilesArray,
-  updatedInternationalLinkageFilesArray,
-  updatedConferenceParticipationFilesArray,
-  updatedOrganisingConferenceFilesArray,
-  updatedStudentEventParticipationFilesArray,
-  updatedNewspaperArticleFilesArray,
-  userName
-) => {
-  const {
-    facultyRecognition,
-    facultyRecognitionLink,
-    facultyAward,
-    facultyAwardLink,
-    staffAward,
-    staffAwardLink,
-    alumniAward,
-    alumniAwardLink,
-    studentAward,
-    studentAwardLink,
-    internationalLinkage,
-    internationalLinkageLink,
-    conferenceParticipation,
-    conferenceParticipationLink,
-    organisingConference,
-    organisingConferenceLink,
-    studentEventParticipation,
-    studentEventParticipationLink,
-    newsPaperArticle,
-    newsPaperArticleLink,
-  } = updatedAdvertisingData;
-
-  const filesArray = [
-    updatedFacultyRecognitionFilesArray,
-    updatedFacultyAwardFilesArray,
-    updatedStaffAwardFilesArray,
-    updatedAlumniAwardFilesArray,
-    updatedStudentAwardFilesArray,
-    updatedInternationalLinkageFilesArray,
-    updatedConferenceParticipationFilesArray,
-    updatedOrganisingConferenceFilesArray,
-    updatedStudentEventParticipationFilesArray,
-    updatedNewspaperArticleFilesArray,
-  ];
+module.exports.updateBrandingAdvertising = async (advertisingId, updatedAdvertisingData, updatedFacultyRecognitionFilesArray,
+    updatedFacultyAwardFilesArray, updatedStaffAwardFilesArray, updatedAlumniAwardFilesArray, updatedStudentAwardFilesArray,
+    updatedInternationalLinkageFilesArray, updatedConferenceParticipationFilesArray, updatedOrganisingConferenceFilesArray,
+    updatedStudentEventParticipationFilesArray, updatedNewspaperArticleFilesArray, userName) => {
+    const {
+        facultyRecognition, facultyRecognitionLink, facultyAward, facultyAwardLink,
+        staffAward, staffAwardLink, alumniAward, alumniAwardLink,
+        studentAward, studentAwardLink, internationalLinkage, internationalLinkageLink,
+        conferenceParticipation, conferenceParticipationLink, organisingConference,
+        organisingConferenceLink, studentEventParticipation, studentEventParticipationLink,
+        newsPaperArticle, newsPaperArticleLink, facultyRecognitionDescription, facultyAwardDescription, staffAwardDescription
+        , alumniAwardDescription, studentAwardDescription, internationalLinkageDescription, conferenceParticipationDescription, organisingConferenceDescription, studentEventParticipationDescription, newspaperArticleDescription
+    } = updatedAdvertisingData;
+   
+    const filesArray = [
+      updatedFacultyRecognitionFilesArray,
+      updatedFacultyAwardFilesArray, updatedStaffAwardFilesArray, updatedAlumniAwardFilesArray, updatedStudentAwardFilesArray,
+      updatedInternationalLinkageFilesArray, updatedConferenceParticipationFilesArray, updatedOrganisingConferenceFilesArray,
+      updatedStudentEventParticipationFilesArray, updatedNewspaperArticleFilesArray
+    ];
 
   console.log("filesArray ==>>", filesArray);
 
-  const fieldsToUpdate = [
-    { field: "faculty_recognition", value: facultyRecognition },
-    {
-      field: "faculty_recognition_documents",
-      value: updatedFacultyRecognitionFilesArray,
-    },
-    { field: "faculty_recognition_link", value: facultyRecognitionLink },
-    { field: "faculty_award", value: facultyAward },
-    { field: "faculty_award_link", value: facultyAwardLink },
-    { field: "faculty_award_documents", value: updatedFacultyAwardFilesArray },
-    { field: "staff_award", value: staffAward },
-    { field: "staff_award_documents", value: updatedStaffAwardFilesArray },
-    { field: "staff_award_link", value: staffAwardLink },
-    { field: "alumni_award", value: alumniAward },
-    { field: "alumni_award_documents", value: updatedAlumniAwardFilesArray },
-    { field: "alumni_award_link", value: alumniAwardLink },
-    { field: "student_award", value: studentAward },
-    { field: "student_award_link", value: studentAwardLink },
-    { field: "student_award_documents", value: updatedStudentAwardFilesArray },
-    { field: "international_linkage", value: internationalLinkage },
-    { field: "international_linkage_link", value: internationalLinkageLink },
-    {
-      field: "international_linkage_documents",
-      value: updatedInternationalLinkageFilesArray,
-    },
-    { field: "conference_participation", value: conferenceParticipation },
-    {
-      field: "conference_participation_documents",
-      value: updatedConferenceParticipationFilesArray,
-    },
-    {
-      field: "conference_participation_link",
-      value: conferenceParticipationLink,
-    },
-    { field: "organising_conference", value: organisingConference },
-    {
-      field: "organising_conference_documents",
-      value: updatedOrganisingConferenceFilesArray,
-    },
-    { field: "organising_conference_link", value: organisingConferenceLink },
-    { field: "student_event_participation", value: studentEventParticipation },
-    {
-      field: "student_event_participation_documents",
-      value: updatedStudentAwardFilesArray,
-    },
-    {
-      field: "student_event_participation_link",
-      value: studentEventParticipationLink,
-    },
-    { field: "newspaper_article", value: newsPaperArticle },
-    {
-      field: "newspaper_article_documents",
-      value: updatedNewspaperArticleFilesArray,
-    },
-    { field: "newspaper_article_link", value: newsPaperArticleLink },
-    { field: "updated_by", value: userName },
-  ];
+    const fieldsToUpdate = [
+        { field: 'faculty_recognition', value: facultyRecognition },
+        { field: 'faculty_recognition_documents', value: updatedFacultyRecognitionFilesArray },
+        { field: 'faculty_recognition_link', value: facultyRecognitionLink },
+        { field: 'faculty_award', value: facultyAward },
+        { field: 'faculty_award_link', value: facultyAwardLink },
+        { field: 'faculty_award_documents', value: updatedFacultyAwardFilesArray },
+        { field: 'staff_award', value: staffAward },
+        { field: 'staff_award_documents', value: updatedStaffAwardFilesArray },
+        { field: 'staff_award_link', value: staffAwardLink },
+        { field: 'alumni_award', value: alumniAward },
+        { field: 'alumni_award_documents', value: updatedAlumniAwardFilesArray },
+        { field: 'alumni_award_link', value: alumniAwardLink },
+        { field: 'student_award', value: studentAward },
+        { field: 'student_award_link', value: studentAwardLink },
+        { field: 'student_award_documents', value: updatedStudentAwardFilesArray },
+        { field: 'international_linkage', value: internationalLinkage },
+        { field: 'international_linkage_link', value: internationalLinkageLink },
+        { field: 'international_linkage_documents', value: updatedInternationalLinkageFilesArray },
+        { field: 'conference_participation', value: conferenceParticipation },
+        { field: 'conference_participation_documents', value: updatedConferenceParticipationFilesArray },
+        { field: 'conference_participation_link', value: conferenceParticipationLink },
+        { field: 'organising_conference', value: organisingConference },
+        { field: 'organising_conference_documents', value: updatedOrganisingConferenceFilesArray },
+        { field: 'organising_conference_link', value: organisingConferenceLink },
+        { field: 'student_event_participation', value: studentEventParticipation },
+        { field: 'student_event_participation_documents', value: updatedStudentAwardFilesArray },
+        { field: 'student_event_participation_link', value: studentEventParticipationLink },
+        { field: 'newspaper_article', value: newsPaperArticle },
+        { field: 'newspaper_article_documents', value: updatedNewspaperArticleFilesArray },
+        { field: 'newspaper_article_link', value: newsPaperArticleLink },
+        { field: 'updated_by', value: userName },
+        { field: 'faculty_recognition_description', value:facultyRecognitionDescription}, 
+        { field: 'faculty_award_description', value:facultyAwardDescription},
+        { field: 'staff_award_description' , value:staffAwardDescription},
+        { field: 'alumni_award_description' ,value:alumniAwardDescription},
+        { field: 'student_award_description', value:studentAwardDescription},
+        { field: 'international_linkage_description', value:internationalLinkageDescription },
+        { field: 'conference_participation_description', value:conferenceParticipationDescription},
+        { field: 'organising_conference_description' , value:organisingConferenceDescription},
+        { field: 'student_event_participation_description', value:studentEventParticipationDescription },
+        { field: 'newspaper_article_description', value:newspaperArticleDescription}
+    ];
 
   console.log("fieldsToUpdate ===>>", fieldsToUpdate);
 
@@ -326,7 +236,7 @@ module.exports.updateBrandingAdvertising = async (
 
 module.exports.brandingAndadvertisingview = async (advertisingId, userName) => {
   let sql = {
-    text: `SELECT * FROM branding_and_advertising WHERE id = $1 AND active=true created_by = $2`,
+    text: `SELECT * FROM branding_and_advertising WHERE id = $1 AND  created_by = $2 AND active=true`,
     values: [advertisingId, userName],
   };
   console.log("sql ==>>", sql);

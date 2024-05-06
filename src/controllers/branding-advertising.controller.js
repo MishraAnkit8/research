@@ -20,8 +20,8 @@ module.exports.insertBrandingAndAdvertising = async(req, res, next) => {
     const advertisingData = req.body;
     console.log('data comming from frontend ==>>', advertisingData);
     console.log('files in controller  ==>>', res.files);
-
     const brandingAndAdvertising = await brandingAndAdvertisingServices.insertBrandingAdvertising(req.body, req.files, userName);
+    
 
     console.log('brandingAndAdvertising in controller ==>>', brandingAndAdvertising);
     const statusCode = brandingAndAdvertising.status === "Done" ? 200 : (brandingAndAdvertising.errorCode ? 400  : 500);
@@ -141,11 +141,12 @@ module.exports.viewBrandingadvertising = async(req, res, next) => {
     console.log('id ==>>', req.body)
     const {advertisingId} = req.body;
     const brandingAndAdvertisingview = await brandingAndAdvertisingServices.viewBrandingadvertising(advertisingId, userName);
-    console.log('brandingAndAdvertisingview' , brandingAndAdvertisingview)
+    console.log('brandingAndAdvertisingview' , brandingAndAdvertisingview[0]);
+
     if(brandingAndAdvertisingview) {
         res.status(200).send({
             status : 'done',
-            brandingAndAdvertisingview : brandingAndAdvertisingview
+            brandingAndAdvertisingData : brandingAndAdvertisingview
         })
     }
 }
