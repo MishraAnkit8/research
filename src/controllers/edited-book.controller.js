@@ -1,3 +1,4 @@
+const { getRedisData } = require('../../utils/redis.utils');
 const editedBookPublication = require('../services/edited-book.service');
 
 module.exports.renderEdietedBookPublication = async(req, res, next) => {
@@ -15,8 +16,10 @@ module.exports.renderEdietedBookPublication = async(req, res, next) => {
 }
 
 module.exports.insertEditedBookPublication = async(req, res, next) => {
-    const  userName = req.body.username;
-    console.log('userName in controller  ===>>>>>>', userName);
+    const sessionid = req.cookies.session;
+    let sessionData = await getRedisData(`${sessionid}:session`)
+    const  userName = sessionData.username;
+    console.log('userName in controller insertEditedBookPublication===>>>>>>', userName);
 
     const editedBook  = req.body;
     console.log('editedBookPublication ==>>', editedBook);

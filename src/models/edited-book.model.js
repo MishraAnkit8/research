@@ -15,6 +15,7 @@ module.exports.fetchEditedBookPublication = async(userName ) => {
 }
 
 module.exports.insertEditedBook = async(editedBook, editedBookFilesData, userName) => {
+    console.log("insertEditedBook Query : ",userName);
     const {authorName, bookTitle, edition, editorName, chapterTitle, publicationPlace, publisherCategory, pageNumber, publisherName, publicationYear,
         bookUrl, doiBookId, isbnNo, numberOfNmimsAuthors, nmimsAuthors, nmimsCampusAuthors, nmimsSchoolAuthors} = editedBook;
 

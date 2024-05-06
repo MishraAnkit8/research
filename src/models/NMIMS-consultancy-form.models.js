@@ -53,7 +53,7 @@ module.exports.viewConsultancyApprovalForm = async(nmimsConsultancyFormId, userN
 
   let sql = {
     text: `SELECT f.id AS faculty_id, f.faculty_name, f.designation, f.address, c.id AS consultancy_id,
-                c.created_by AS created_by, c.updated_by AS updated_by
+                c.created_by AS created_by, c.updated_by AS updated_by,
                 c.year, c.title, c.commencement_date, c.completion_date, c.research_staff_expenses,
                 c.travel, c.computer_charges, c.nmims_facility_charges, c.miscellaneous_including_contingency,
                 c.advanced_payment, c.final_payment, c.per_session_fees, c.session_count_per_days, c.total_fees,
