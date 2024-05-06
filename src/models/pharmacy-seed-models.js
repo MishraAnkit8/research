@@ -74,7 +74,7 @@ module.exports.insertInvestigatorBookDetails = async(investigatorBookDetails) =>
     const {investigatorbookAuthor, investigatorBookNames, investigatorBookYear, investigatorBookVolumne, investigatorBookPublisher, investigatorBookIsbn} = investigatorBookDetails;
 
     let sql = {
-        text : `INSERT INTO investigator_book (book_author, book_names, book_year, book_volume, book_publisher, book_isbn) values ($1, $2, $3, $4, $5, $6, $7) returning id`,
+        text : `INSERT INTO investigator_book (book_author, book_names, book_year, book_volume, book_publisher, book_isbn) values ($1, $2, $3, $4, $5, $6) returning id`,
         values : [investigatorbookAuthor, investigatorBookNames, investigatorBookYear, investigatorBookVolumne, investigatorBookPublisher, investigatorBookIsbn]
     }
     console.log('sql ===>>>>', sql);
@@ -100,13 +100,12 @@ module.exports.insertInvestigatorBookDetails = async(investigatorBookDetails) =>
 module.exports.insertInvestigatorBookChapterDetails = async(investigatorBookChapterDetails) => {
     console.log('data in model ====>>>>>', investigatorBookChapterDetails);
 
-    const {investigatorbookChapterAuthor, investigatorBookChapterTitle, investigatorBookChapterNames, investigatorBookVolumne,
-        investigatorBookChapterPageNumber,
-       investigatorBookChapterPublisher, investigatorBookChapterIsbn} = investigatorBookChapterDetails;
+    const {investigatorbookChapterAuthor, investigatorBookChapterTitle, investigatorBookChapterNames, bookChapterYear, investigatorBookVolumne,
+        investigatorBookChapterPageNumber, investigatorBookChapterPublisher, investigatorBookChapterIsbn} = investigatorBookChapterDetails;
 
     let sql = {
-        text : `INSERT INTO investigator_book_chapter (book_chapter_author, book_chapter__title, book_chapter_names, book_chapter_volume,book_chapter_publisher, book_chapter_page_number, book_chapter_isbn) values ($1, $2, $3, $4, $5, $6, $7) returning id`,
-        values : [investigatorbookChapterAuthor, investigatorBookChapterTitle, investigatorBookChapterNames, investigatorBookVolumne,
+        text : `INSERT INTO investigator_book_chapter (book_chapter_author, book_chapter__title, book_chapter_names, book_chapter_year, book_chapter_volume, book_chapter_page_number, book_chapter_publisher, book_chapter_isbn) values ($1, $2, $3, $4, $5, $6, $7, $8) returning id`,
+        values : [investigatorbookChapterAuthor, investigatorBookChapterTitle, investigatorBookChapterNames,bookChapterYear,  investigatorBookVolumne,
                     investigatorBookChapterPageNumber, investigatorBookChapterPublisher, investigatorBookChapterIsbn]
     }
     console.log('sql ===>>>>', sql);
@@ -162,12 +161,13 @@ module.exports.insertInvestigatorPublicationDetails = async(investigatorPublicat
     console.log('data in service ====>>>>>', investigatorPublicationDetails);
 
     const {publicationAuthor, publicationTitle, publicationjournalName, publicationYear, publicationVolume,
-        publicationPublisher, publicationIsbn} = investigatorPublicationDetails;
+        publicationIssue, publicationArtcicleNumber, impactFactor} = investigatorPublicationDetails;
 
     let sql = {
-        text : `INSERT INTO investigator_publication (publication_author, publication_title, publication_jorunal_name, publication_publisher, publication_year, publication_volume, publication_isbn) values ($1, $2, $3, $4, $5, $6, $7) returning id`,
+        text : `INSERT INTO investigator_publication (publication_author, publication_title, publication_jorunal_name, publication_year, publication_volume, publication_issue, publication_artcile_number,
+            publication_impact_factor) values ($1, $2, $3, $4, $5, $6, $7, $8) returning id`,
         values : [publicationAuthor, publicationTitle, publicationjournalName, publicationYear, publicationVolume,
-            publicationPublisher, publicationIsbn]
+            publicationIssue, publicationArtcicleNumber, impactFactor]
     }
     console.log('sql ===>>>>', sql);
 
@@ -221,7 +221,7 @@ module.exports.insertInvestigatorResearchImplementationDetails = async(researchP
 module.exports.insertInvestigatorResearchCompletedDetails = async(researchProjectCompleteDetails) => {
     console.log('data in models ====>>>>>', researchProjectCompleteDetails);
 
-    const { compltedProjecTitle, completedProjectAgency, completedProjectRole, completedProjectDuration, completedProjectCost} = educationalDetails;
+    const { compltedProjecTitle, completedProjectAgency, completedProjectRole, completedProjectDuration, completedProjectCost} = researchProjectCompleteDetails;
 
     let sql = {
         text : `INSERT INTO investigator_research_complete (research_cm_title, research_cm_agency, research_cm_role, research_cm_duration, research_cm_project_cost) values ($1, $2, $3, $4, $5) returning id`,
@@ -247,3 +247,9 @@ module.exports.insertInvestigatorResearchCompletedDetails = async(researchProjec
 
 }
 
+
+module.exports.insertPharmacyDetails = async (pharmacySeedGrantDetails, userName) => {
+    console.log('pharmacySeedGrantDetails in models  ===>>>>', pharmacySeedGrantDetails);
+    
+
+}

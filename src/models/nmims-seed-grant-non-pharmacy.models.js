@@ -21,7 +21,7 @@ module.exports.renderSeedGrantNonFormacy = async (userName) => {
                 JOIN 
                     nmims_seed_grant_non_formacy c ON f.id = c.faculty_table_id
                 WHERE
-                    created_by = $1
+                    created_by = $1 and f.active=true and c.active=true 
                 ORDER BY 
                     c.id desc`,
     values: [userName],
@@ -61,7 +61,7 @@ module.exports.viewSeedGrantNonFormacy = async (grantedSeedId, userName) => {
             JOIN 
                 nmims_seed_grant_non_formacy c ON f.id = c.faculty_table_id
             WHERE
-                c.id = $1 AND created_by = $2 
+                c.id = $1 AND created_by = $2 and f.active=true and c.active=true 
             ORDER BY 
                 c.id`,
     values: [grantedSeedId, userName],
@@ -220,7 +220,7 @@ module.exports.updateSeedGrantNonformacyForm = async (
   };
 
   let facultySql = {
-    text: `SELECT * FROM faculty_table  WHERE id = $1`,
+    text: `SELECT * FROM faculty_table  WHERE id = $1 and active=true `,
     values: [facultyId],
   };
 
@@ -249,7 +249,8 @@ module.exports.updateSeedGrantNonformacyForm = async (
 
 module.exports.deleteSeedGrantNonFormacyForm = async (grantedSeedId) => {
   let sql = {
-    text: `DELETE FROM nmims_seed_grant_non_formacy WHERE id = $1`,
+    // text: `DELETE FROM nmims_seed_grant_non_formacy WHERE id = $1`,
+    text: `update nmims_seed_grant_non_formacy set active=false WHERE id = $1`,
     values: [grantedSeedId],
   };
 

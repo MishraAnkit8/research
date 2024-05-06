@@ -73,6 +73,7 @@ module.exports.insertBrandingAdvertising = async(body , files, userName) => {
     // };
 
     console.log('brandingFilesContainer ===>>>', brandingFilesContainer);
+    console.log('advertisingData==>>Service',advertisingData);
 
     const brandingAndAdvertising = await brandingAndAdvertisingModels.insertBrandingAndAdvertisingData(advertisingData, brandingFilesContainer, userName);
     console.log('brandingAndAdvertising in services ====>>>>>', brandingAndAdvertising);

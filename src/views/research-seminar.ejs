@@ -185,10 +185,9 @@
                         <div class="modal-header">
                             <!-- <div class="modal-title" id="research-seminar">RESEARCH SEMINAR</div> -->
                             <div style="width:80%;" class="d-flex justify-content-center">
-                                <h2 style="position: absolute;left: 20px;"  id="modalHeader" class="d-none">Edit</h2>
                                 <h5 class="modal-title ml-4" id="research-seminar">RESEARCH SEMINAR</h5>
-                                </div>
-                            
+                            </div>
+
                             <div class="close" id="headerClose" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true"><i class="fas fa-times "></i></span>
                             </div>
@@ -366,8 +365,10 @@
                                     <label for="supporting-documents" class="form-label fw-bold ">
                                         Upload Supporting Documents
                                         <div id="uploadNewSupportDocumentDiv">
-                                            <label for="uploadNewSupportDocument"><small>Click to Upload New File</small></label>
-                                            <input type="checkbox" name="uploadNewSupportDocument" id="uploadNewSupportDocument">
+                                            <label for="uploadNewSupportDocument"><small>Click to Upload New
+                                                    File</small></label>
+                                            <input type="checkbox" name="uploadNewSupportDocument"
+                                                id="uploadNewSupportDocument">
                                         </div>
                                     </label>
                                     <div class="d-flex">
@@ -382,7 +383,8 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" id="footerClose" class="btn btn-danger" data-dismiss="modal">Close</button>
+                            <button type="button" id="footerClose" class="btn btn-danger"
+                                data-dismiss="modal">Close</button>
                             <button type="button" class="btn btn-primary d-none" id="submit-btn">Submit</button>
                             <button type="button" class="btn btn-primary d-none " id="update-btn">Update</button>
                         </div>
@@ -590,7 +592,7 @@
                         document.querySelector('#uploadNewSupportDocumentDiv').classList.add('d-none');
                         document.querySelector('#journal-data-file-edit').classList.add('d-none')
                         document.querySelector('#uploadNewSupportDocument').checked = false;
-                        
+
                         removeErrorMsg();
 
                         $('#research-seminar-modal').modal({
@@ -691,6 +693,7 @@
                             console.log('data ===>>>', data);
 
                             if (data.status === 'Done') {
+
                                 //     const seminarDetails = data.seminarDetails;
                                 //     seminarId = data.seminarId;
                                 //     console.log('seminarId ==>', seminarId);
@@ -776,7 +779,7 @@
                 submitBtn.addEventListener('click', async () => {
                     const isValid = validateRequiredFormFields(submitBtn);
                     if (isValid) {
-                        await insertResearchSeminar('<%- BASE_URL %>research/research-seminar/insert');
+                        await insertResearchSeminar('<%- BASE_URL %>research/researchSeminar/insert');
                     }
                     else {
                         alert('validation Failed');
@@ -807,7 +810,7 @@
                             }).then((result) => {
                                 if (result.isConfirmed) {
                                     // Execute fetch request here after confirmation
-                                    fetch('<%- BASE_URL %>research/research-seminar/delete', {
+                                    fetch('<%- BASE_URL %>research/researchSeminar/delete', {
                                         method: 'POST',
                                         headers: {
                                             'content-type': 'application/json'
@@ -886,8 +889,7 @@
                     if (event.target.classList.contains('edit')) {
                         removeErrorMsg();
 
-                        let modalHeader = document.getElementById('modalHeader');
-                        modalHeader.classList.remove('d-none');
+                        let modalHeader = document.getElementById('research-seminar').innerText = 'RESEARCH SEMINAR Edit';
 
                         $('#research-seminar-modal').modal({
                             backdrop: 'static'
@@ -986,7 +988,7 @@
                         const viewTitle = document.getElementById('view-title-of-paper');
                         const viewPublisherCategory = document.getElementById('view-publisher-category');
 
-                        fetch('<%- BASE_URL %>research/research-seminar/view', {
+                        fetch('<%- BASE_URL %>research/researchSeminar/view', {
                             method: 'POST',
                             headers: {
                                 'content-type': 'application/json'
@@ -1181,7 +1183,7 @@
 
                     const isValid = validateRequiredFormFields(submitBtn);
                     if (isValid) {
-                        await updateResearchSeminar('<%- BASE_URL %>research/research-seminar/update');
+                        await updateResearchSeminar('<%- BASE_URL %>research/researchSeminar/update');
                     }
                     else {
                         Swal.fire({
@@ -1223,7 +1225,7 @@
 
                             const downloadPromises = fileArray.map(async (fileName) => {
                                 console.log('fileName ===>>>', fileName)
-                                const fileUrl = `<%- BASE_URL %>research/research-seminar/download/${fileName}`;
+                                const fileUrl = `<%- BASE_URL %>research/researchSeminar/download/${fileName}`;
                                 downloadFile(fileName, fileUrl)
                                 try {
                                     const response = await fetch(fileUrl);
@@ -1261,11 +1263,11 @@
 
                 };
 
-                document.getElementById('headerClose').addEventListener('click',() => {
+                document.getElementById('headerClose').addEventListener('click', () => {
                     document.location.reload();
                 })
 
-                document.getElementById('footerClose').addEventListener('click',() => {
+                document.getElementById('footerClose').addEventListener('click', () => {
                     document.location.reload();
                 })
 
@@ -1275,16 +1277,16 @@
                     "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
                 })
 
-document.querySelector('#uploadNewSupportDocument').addEventListener('click',function(e){
+                document.querySelector('#uploadNewSupportDocument').addEventListener('click', function (e) {
 
-    let is_checked = document.querySelector('#uploadNewSupportDocument').checked;
-    console.log("is_checked :",is_checked);
-    if(is_checked){
-        document.querySelector('#journal-article-documents').classList.remove('d-none');
-    }else{
-        document.querySelector('#journal-article-documents').classList.add('d-none');
-    }
-})
+                    let is_checked = document.querySelector('#uploadNewSupportDocument').checked;
+                    console.log("is_checked :", is_checked);
+                    if (is_checked) {
+                        document.querySelector('#journal-article-documents').classList.remove('d-none');
+                    } else {
+                        document.querySelector('#journal-article-documents').classList.add('d-none');
+                    }
+                })
 
             </script>
             <!-- footer and pagination -->

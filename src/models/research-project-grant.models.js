@@ -7,7 +7,7 @@ const researchDbW = dbPoolManager.get('researchDbW', research_write_db);
 
 module.exports.fetchResearchConsultancy = async(userName) => {
     let researchProjectSql = {
-        text : `SELECT * FROM research_project_grant ORDER BY id`,
+        text : `SELECT * FROM research_project_grant where active=true ORDER BY id`,
     }
 
     console.log('researchProjectSql ====>>>>', researchProjectSql);
@@ -41,40 +41,40 @@ module.exports.fetchResearchConsultancy = async(userName) => {
     LEFT JOIN 
         faculty_types AS ft ON f.faculty_type_id = ft.id
     WHERE
-       created_by = $1
+       created_by = $1 and r.active=true and rf.active=true and f.active=true and ft.active=true 
     ORDER BY  r.id desc
         `,
     values : [userName]
     }
 
     let internalFacultySql = {
-        text : `select *  FROM faculties WHERE faculty_type_id = 1`
+        text : `select *  FROM faculties WHERE faculty_type_id = 1 and active=true`
     }
 
     let researchGrantInternalsql = {
-        text : `SELECT rpgf.id AS research_project_grant_faculty_id, 
+      text: `SELECT rpgf.id AS research_project_grant_faculty_id, 
         rpgf.research_project_grant_id, 
         rpgf.faculty_id 
         FROM research_project_grant_faculty rpgf
         JOIN faculties f ON rpgf.faculty_id = f.id
         JOIN faculty_types ft ON f.faculty_type_id = ft.id
-        WHERE ft.name = 'Internal' 
-        ORDER BY rpgf.id`
-    }
+        WHERE ft.name = 'Internal' and rpgf.active=true and f.active=true and ft.active=true 
+        ORDER BY rpgf.id`,
+    };
 
     let researchGrantExternalsql = {
-        text : `SELECT rpgf.id AS research_project_grant_faculty_id, 
+      text: `SELECT rpgf.id AS research_project_grant_faculty_id, 
         rpgf.research_project_grant_id, 
         rpgf.faculty_id 
         FROM research_project_grant_faculty rpgf
         JOIN faculties f ON rpgf.faculty_id = f.id
         JOIN faculty_types ft ON f.faculty_type_id = ft.id
-        WHERE ft.name = 'External' 
-        ORDER BY rpgf.id`
-    }
+        WHERE ft.name = 'External' and rpgf.active=true and f.active=true and ft.active=true 
+        ORDER BY rpgf.id`,
+    };
 
     let researchGrantsql = {
-        text : `select id, research_project_grant_id, faculty_id from research_project_grant_faculty order by id`
+        text : `select id, research_project_grant_id, faculty_id from research_project_grant_faculty where active=true order by id`
     }
 
     
@@ -182,7 +182,7 @@ module.exports.updateResearchConsultantData = async(consultantId, updatedResearc
     // Iterate over each name and execute INSERT query
     const insertFacultyPromises = FacultydataArray.map(async faculty_id => {
         const existingRecord = await researchDbW.query({
-          text: `SELECT id FROM research_project_grant_faculty WHERE research_project_grant_id = $1 AND faculty_id = $2`,
+          text: `SELECT id FROM research_project_grant_faculty WHERE research_project_grant_id = $1 and active=true AND faculty_id = $2`,
           values: [consultantId, faculty_id]
         });
       
@@ -220,17 +220,21 @@ module.exports.deleteResearchConsultantData = async (consultantId) => {
     console.log('id in model ==>>', consultantId);
   
     const deleteFacultyAssignments = researchDbW.query({
-      text: 'DELETE FROM research_project_grant_faculty WHERE research_project_grant_id = $1',
-      values: [consultantId]
+      // text: 'DELETE FROM research_project_grant_faculty WHERE research_project_grant_id = $1',
+      text: "update research_project_grant_faculty set active=false WHERE research_project_grant_id = $1",
+      values: [consultantId],
     });
   
     const deleteResearchGrant = deleteFacultyAssignments
-      .then(() => researchDbW.query({
-        text: 'DELETE FROM research_project_grant WHERE id = $1',
-        values: [consultantId]
-      }))
-      .catch(error => {
-        throw error; 
+      .then(() =>
+        researchDbW.query({
+          // text: 'DELETE FROM research_project_grant WHERE id = $1',
+          text: "update research_project_grant set active=false WHERE id = $1",
+          values: [consultantId],
+        })
+      )
+      .catch((error) => {
+        throw error;
       });
   
     return Promise.all([deleteFacultyAssignments, deleteResearchGrant])
@@ -267,7 +271,7 @@ module.exports.viewResearchConsultancy = async(consultantId, userName) => {
         LEFT JOIN
             research_project_grant_faculty rgf ON rg.id = rgf.research_project_grant_id
         LEFT JOIN
-            faculties f ON rgf.faculty_id = f.id
+            faculties f ON rgf.faculty_id = f.id and rg.active=true and rgf.active=true and f.active=true
         WHERE
             rg.id = $1 AND created_by = $2
         `,
