@@ -141,11 +141,12 @@ module.exports.viewBrandingadvertising = async(req, res, next) => {
     console.log('id ==>>', req.body)
     const {advertisingId} = req.body;
     const brandingAndAdvertisingview = await brandingAndAdvertisingServices.viewBrandingadvertising(advertisingId, userName);
-    console.log('brandingAndAdvertisingview' , brandingAndAdvertisingview)
+    console.log('brandingAndAdvertisingview' , brandingAndAdvertisingview[0]);
+
     if(brandingAndAdvertisingview) {
         res.status(200).send({
             status : 'done',
-            brandingAndAdvertisingview : brandingAndAdvertisingview
+            brandingAndAdvertisingData : brandingAndAdvertisingview
         })
     }
 }
