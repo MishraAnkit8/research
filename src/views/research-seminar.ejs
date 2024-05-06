@@ -376,7 +376,7 @@
                                             id="journal-article-documents" class="col-md-12 form-control"
                                             data-validate="isEmpty,isExist,isFile" data-err-msg="File is required."
                                             required multiple>
-                                        <button class="download-btn download-file" id="journal-data-file-edit"><i
+                                        <button class="download-btn download-file" id="research-data-file-edit"><i
                                                 class="fas fa-download text-danger"></i>Download</button>
                                     </div>
                                 </div>
@@ -593,7 +593,7 @@
                         submitBtn.classList.remove('d-none');
                         updateBtn.classList.add('d-none');
                         document.querySelector('#uploadNewSupportDocumentDiv').classList.add('d-none');
-                        document.querySelector('#journal-data-file-edit').classList.add('d-none')
+                        document.querySelector('#research-data-file-edit').classList.add('d-none')
                         document.querySelector('#uploadNewSupportDocument').checked = false;
 
                         removeErrorMsg();
@@ -781,7 +781,7 @@
                 submitBtn.addEventListener('click', async () => {
                     const isValid = validateRequiredFormFields(submitBtn);
                     if (isValid) {
-                        await insertResearchSeminar('<%- BASE_URL %>research/research-seminar/insert');
+                        await insertResearchSeminar('<%- BASE_URL %>research/researchSeminar/insert');
                     }
                     else {
                         alert('validation Failed');
@@ -812,7 +812,7 @@
                             }).then((result) => {
                                 if (result.isConfirmed) {
                                     // Execute fetch request here after confirmation
-                                    fetch('<%- BASE_URL %>research/research-seminar/delete', {
+                                    fetch('<%- BASE_URL %>research/researchSeminar/delete', {
                                         method: 'POST',
                                         headers: {
                                             'content-type': 'application/json'
@@ -990,7 +990,7 @@
                         const viewTitle = document.getElementById('view-title-of-paper');
                         const viewPublisherCategory = document.getElementById('view-publisher-category');
 
-                        fetch('<%- BASE_URL %>research/research-seminar/view', {
+                        fetch('<%- BASE_URL %>research/researchSeminar/view', {
                             method: 'POST',
                             headers: {
                                 'content-type': 'application/json'
@@ -1185,7 +1185,7 @@
 
                     const isValid = validateRequiredFormFields(submitBtn);
                     if (isValid) {
-                        await updateResearchSeminar('<%- BASE_URL %>research/research-seminar/update');
+                        await updateResearchSeminar('<%- BASE_URL %>research/researchSeminar/update');
                     }
                     else {
                         Swal.fire({
@@ -1227,7 +1227,7 @@
 
                             const downloadPromises = fileArray.map(async (fileName) => {
                                 console.log('fileName ===>>>', fileName)
-                                const fileUrl = `<%- BASE_URL %>research/research-seminar/download/${fileName}`;
+                                const fileUrl = `<%- BASE_URL %>research/researchSeminar/download/${fileName}`;
                                 downloadFile(fileName, fileUrl)
                                 try {
                                     const response = await fetch(fileUrl);
@@ -1255,7 +1255,7 @@
                 // set string file value into button
                 function setFileNameAttributeToBeDownload(data) {
                     console.log('data row in side function ===>>', data);
-                    const articleDataFiles = document.getElementById('journal-data-file-edit');
+                    const articleDataFiles = document.getElementById('research-data-file-edit');
                     console.log('articleDataFiles ===>>>>>', articleDataFiles)
                     articleDataFiles.classList.remove('d-none');
                     const articleDataString = data.getAttribute('data-documents');
