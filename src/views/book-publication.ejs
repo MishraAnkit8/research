@@ -25,6 +25,7 @@
                                 <h5 class="pl-2">BOOK PUBLICATION LIST</h5>
                             </div>
                             <div>
+                                <span>ADD</span>
                                 <button type="button" id="book-publication-form" class="btn btn-primary add-modal"
                                     data-toggle="modal" data-target="#book-publication-modal">
                                     <i class="fas fa-plus plus"></i></button>
@@ -34,7 +35,7 @@
                         <div class="card-body table-responsive">
                             <div class="d-flex justify-content-between">
                                 <div>
-                                    <label>Show Entries</label>
+                                    <!-- <label>Show Entries</label>
                                     <select class="form-select" id="changeEntry">
                                         <option value="5">5</option>
                                         <option value="10">10</option>
@@ -50,17 +51,17 @@
                                         <option value="500">500</option>
                                         <option value="800">800</option>
                                         <option value="1000">1000</option>
-                                    </select>
+                                    </select> -->
                                 </div>
                                 <div>
-                                    <div class="table-searchbar-container">
+                                    <!-- <div class="table-searchbar-container">
                                         <button type="button" id="searchBtn"><i class="fas fa-search"></i></button>
                                         <input type="search" id="searchKeyword" placeholder="Enter keywords"
                                             class="table-searchbar">
-                                    </div>
+                                    </div> -->
                                 </div>
                             </div>
-                            <table class="table vertical-lines custom-table  research-pagination"
+                            <table class="table vertical-lines custom-table"
                                 id="book-Publication-list">
                                 <thead>
                                     <th class="col-lg-1">#</th>
@@ -69,11 +70,11 @@
                                     <th class="col-lg-1">Book title</th>
                                     <th class="col-lg-1">ISBN Number</th>
                                     <th class="col-lg-1">Publisher Name</th>
-                                    <th class="col-lg-1" colspan="3">Action</th>
+                                    <th class="col-lg-1" >Action</th>
                                 </thead>
                                 <tbody class="data-list">
                                 <% bookPublicationList.forEach(function(publication,index) { %>
-                                    <tr row="scope" data-publication-id="<%- publication.id %>"
+                                    <tr data-publication-id="<%- publication.id %>"
                                         data-volume-number="<%- publication.volume_number %>"
                                         data-edition="<%- publication.edition %>"
                                         data-publication-place="<%-publication.publication_place %>"
@@ -103,41 +104,43 @@
                                         class="fa-solid fa-trash delete text-danger"
                                         data-publication-id="<%- publication.id %>"></i></label>
                             </td> -->
-                                        <!-- <td colspan="3px" style="display: flex;justify-content: center;"> -->
-                                        <td title="View" class="view border-right-0" style="cursor: pointer;"
+                                        <td style="display:flex;justify-content:center;">
+                                        <b title="View" class="view border-right-0" style="cursor: pointer;"
                                             id="label-cals" data-publication-id="<%- publication.id %>">
                                             &#128065;
-                                        </td>
-                                        <td title="Edit" class="edit border-right-0" style="cursor: pointer;"
+                                        </b>&ensp;
+                                        <b title="Edit" class="edit border-right-0" style="cursor: pointer;"
                                             id="label-cals" data-publication-id="<%- publication.id %>">
                                             &#9998;
-                                        </td>
-                                        <td title="Delete" class="delete border-right-0" style="cursor: pointer;"
+                                        </b>&ensp;
+                                        <b title="Delete" class="delete border-right-0" style="cursor: pointer;"
                                             id="label-cals" data-publication-id="<%- publication.id %>">
                                             &#128465;
+                                        </b>
                                         </td>
 
                                     </tr>
                                     <% }); %>
+                                </tbody>
                                         <tr>
                                             <div id="no-records-message"
                                                 style="display: none; color: red; margin-top: 10px; padding-left: 40%;">
                                                 <b class="no-record">No records found.</b>
                                             </div>
                                         </tr>
-                                </tbody>
+                               
                             </table>
                         </div>
                     </div>
                     <div class="d-flex justify-content-between">
                         <div>
-                            <label id="total-row-count">Total entries : <%- rowCount %> </label>
-                            <label class="d-none" id="row-count"> <%- rowCount %></label>
+                            <label id="total-row-count"></label>
+                            <label class="d-none" id="row-count"></label>
                         </div>
                         <div>
-                            <button id="prevBtn" class="btn btn-primary">Previous</button>
+                            <!-- <button id="prevBtn" class="btn btn-primary">Previous</button>
                             <button id="nextBtn" class="btn btn-primary">Next</button>
-                            <p id="pagination" class="pagination-search"></p>
+                            <p id="pagination" class="pagination-search"></p> -->
                         </div>
                     </div>
                     <!--Import Modal -->
@@ -1128,10 +1131,16 @@
                     bookPublicationDataFiles.setAttribute('data-filename', bookPublicationDataString);
                 };
 
+                $("#book-Publication-list").DataTable({
+                    "pageLength": 5,
+                    "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+                    })
 
             </script>
+
+           
             <!-- for pagination -->
-            <%- include('./partials/pagination') %>
+            <!-- <%- include('./partials/pagination') %> -->
                 <!-- footer section -->
                 <%- include('./partials/footer') %>
                     <%- include('./partials/footer-end') %>

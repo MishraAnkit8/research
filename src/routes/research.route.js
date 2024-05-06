@@ -154,6 +154,15 @@ router.post('/nmims-seed-grant-non-pharmacy/delete', asyncErrorHandler(authMiddl
 // pharmacySeedGrantForm
 router.get('/pharmacy-seed-grant-form', asyncErrorHandler(authMiddleware), asyncErrorHandler(pharmacySeedGrantForm.renderPharmacySeedGrantform));
 router.post('/pharmacy-seed-grant-form/investigator-education/insert', asyncErrorHandler(authMiddleware), asyncErrorHandler(pharmacySeedGrantForm.insertInvestigationEducationalDetails));
+router.post('/pharmacy-seed-grant-form/investigator-experience/insert', asyncErrorHandler(authMiddleware), asyncErrorHandler(pharmacySeedGrantForm.investigatorExperience));
+router.post('/pharmacy-seed-grant-form/investigator-book-chapter/insert', asyncErrorHandler(authMiddleware), asyncErrorHandler(pharmacySeedGrantForm.investigatorBook));
+router.post('/pharmacy-seed-grant-form/investigator-book-chapter/insert', asyncErrorHandler(authMiddleware), asyncErrorHandler(pharmacySeedGrantForm.investigatorBookChapter));
+router.post('/pharmacy-seed-grant-form/investigator-patent/insert', asyncErrorHandler(authMiddleware), asyncErrorHandler(pharmacySeedGrantForm.investigatorPatent));
+router.post('/pharmacy-seed-grant-form/investigator-publication/insert', asyncErrorHandler(authMiddleware), asyncErrorHandler(pharmacySeedGrantForm.investigatorPublication));
+router.post('/pharmacy-seed-grant-form/investigator-research-implementation/insert', asyncErrorHandler(authMiddleware), asyncErrorHandler(pharmacySeedGrantForm.investigatorResearchImplementation));
+router.post('/pharmacy-seed-grant-form/investigator-research-completed/insert', asyncErrorHandler(authMiddleware), asyncErrorHandler(pharmacySeedGrantForm.investigatorResearchCompleted));
+
+
 
 //insert external faculty details controller
 

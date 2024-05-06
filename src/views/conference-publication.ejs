@@ -32,7 +32,7 @@
                         <div class="card-body table-responsive">
                             <div class="d-flex justify-content-between">
                                 <div>
-                                    <label>Show Entries</label>
+                                    <!-- <label>Show Entries</label>
                                     <select class="form-select" id="changeEntry">
                                         <option value="5">5</option>
                                         <option value="10">10</option>
@@ -48,14 +48,14 @@
                                         <option value="500">500</option>
                                         <option value="800">800</option>
                                         <option value="1000">1000</option>
-                                    </select>
+                                    </select> -->
                                 </div>
                                 <div>
-                                    <div class="table-searchbar-container">
+                                    <!-- <div class="table-searchbar-container">
                                         <button type="button" id="searchBtn"><i class="fas fa-search"></i></button>
                                         <input type="search" id="searchKeyword" placeholder="Enter keywords"
                                             class="table-searchbar">
-                                    </div>
+                                    </div> -->
                                 </div>
                             </div>
                             <table
@@ -69,7 +69,7 @@
                                     <th class="col-lg-1">Name of Conference</th>
                                     <th class="col-lg-1">Proceedings Details</th>
                                     <th class="col-lg-1">ISSN/ISNB No</th>
-                                    <th class="col-lg-1" colspan="3">Action</th>
+                                    <th class="col-lg-1" >Action</th>
                                 </thead>
                                 <tbody class="data-list">
                                     <% conferenceData.forEach(function(conference,index) { %>
@@ -118,27 +118,28 @@
                                     </p>
                                 </td> -->
 
-                                                <!-- <td colspan="3px" style="display: flex;justify-content: center;"> -->
-                                                <td title="View" data-conference-id="<%- conference.id %>"
+                                               <td style="display: flex;justify-content: center;"> 
+                                                <b title="View" data-conference-id="<%- conference.id %>"
                                                     class="view border-right-0" style="cursor: pointer;"
                                                     >
                                                     &#128065;
-                                                </td>
-                                                <td title="Edit" data-conference-id="<%- conference.id %>"
+                                                </b>&ensp;
+                                                <b title="Edit" data-conference-id="<%- conference.id %>"
                                                     class="edit border-right-0" style="cursor: pointer;"
                                                     >
                                                     &#9998;
-                                                </td>
-                                                <td title="Delete" data-conference-id="<%- conference.id %>"
+                                                </b>&ensp;
+                                                <b title="Delete" data-conference-id="<%- conference.id %>"
                                                     class="delete border-right-0" style="cursor: pointer;"
                                                     >
                                                     &#128465;
 
+                                                </b>
                                                 </td>
 
                                             </tr>
                                             <% }); %>
-
+</tbody>
                                                 <tr>
                                                     <div id="no-records-message"
                                                         style="display: none; color: red; margin-top: 10px; padding-left: 40%;">
@@ -152,13 +153,13 @@
                     </div>
                     <div class="d-flex justify-content-between">
                         <div>
-                            <label id="total-row-count">Total entries : <%- rowCount %> </label>
-                            <label class="d-none" id="row-count"> <%- rowCount %></label>
+                            <label id="total-row-count"></label>
+                            <label class="d-none" id="row-count"></label>
                         </div>
                         <div>
-                            <button id="prevBtn" class="btn btn-primary">Previous</button>
+                            <!-- <button id="prevBtn" class="btn btn-primary">Previous</button>
                             <button id="nextBtn" class="btn btn-primary">Next</button>
-                            <p id="pagination" class="pagination-search"></p>
+                            <p id="pagination" class="pagination-search"></p> -->
                         </div>
                     </div>
                     <!--Import Modal -->
@@ -215,7 +216,7 @@
                     <div class="modal-content modal-content-data validate-input">
                         <div class="modal-header">
                             <p id="conference-publication">Conference </p>
-                            <div class="close" data-dismiss="modal" aria-label="Close">
+                            <div class="close" id= "headerClose" data-dismiss="modal" aria-label="Close">
                                 <span type="button"><i class="fas fa-times "></i></span>
                             </div>
                         </div>
@@ -379,7 +380,7 @@
                                 <!-- Any award for presentation -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12  mb-4">
                                     <label for="award-for-presentation" class="form-label fw-bold mb-3">Any Award For
-                                        Presentation</label><br>
+                                        Presentation (Upload Proof,If Any)</label><br>
                                     <div class="form-check-inline">
                                         <label for="award-yes" class="form-check-label">
                                             <input type="radio" class="form-check-input" id="is-award-yes"
@@ -418,7 +419,7 @@
                                     <label for="doi-weblink" class="form-label  fw-bold">
                                         DOI/Weblink of paper ID
                                     </label>
-                                    <input type="number" name="web-link" id="doi-weblink-id" class="form-control" />
+                                    <input  data-validate="isEmpty,isExist,isValidHttpUrl" data-err-msg="Link is required." type="number" name="web-link" id="doi-weblink-id" class="form-control" required />
                                 </div>
 
                                 <!-- Sponsored By NMIMS/Other -->
@@ -471,8 +472,10 @@
                                 </div>
                                 <!-- upload proof -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+        
                                     <label for="upload" class="form-label fw-bold ">Upload
-                                        Proof</label>
+                                        Proof</label>&ensp;
+                                        <span style="color:red" id="proofError"></span>
                                     <div class="d-flex">
                                         <input type="file" id="conference-proofs" name="conferenceProof"
                                             class="col-md-12 form-control " multiple>
@@ -484,7 +487,7 @@
                         </div>
                         <!-- footer button -->
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                            <button type="button" id="footerClose" class="btn btn-danger" data-dismiss="modal">Close</button>
                             <button type="button" class="btn btn-primary " id="submit-btn">Submit</button>
                             <button type="button" class="btn btn-primary d-none" id="update-btn">update</button>
                         </div>
@@ -693,6 +696,10 @@
                 const updateBtn = document.getElementById('update-btn');
                 //modal for button visualization
                 conferenceAddModal.addEventListener('click', function (event) {
+
+                //    let proofError = document.getElementById('proofError');
+                //    proofError.innerText= '';
+
                     if (event.target.tagName === 'BUTTON' && event.target.classList.contains('add-modal') || event.target.classList.contains('plus')) {
                         updateBtn.classList.add('d-none');
                         submitBtn.classList.remove('d-none');
@@ -1397,7 +1404,7 @@
                  // ajax for search bar to search employee name 
                  const facultyOptions = employeesDataObj.map(faculty => ({
                             value: faculty.id,
-                            text: ` ${faculty.employee_id}  ${faculty.employee_name}`
+                            text: ` ${faculty.employee_name}`
                         }));
                 new TomSelect("#emp-name", {
                         options: facultyOptions,
@@ -1494,7 +1501,39 @@
                 //making d-none internal faculty
                 externalFacultyType.addEventListener('click', externalFacultyDetails)
 
+                $("#conference-publication-list").DataTable({
+                    "pageLength": 5,
+                    "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+                    })
+
+                    document.getElementById('is-award-yes').addEventListener('click',() => {
+                        let isAward = document.getElementById('is-award-yes');
+                        let proofError = document.getElementById('proofError');
+                        if(isAward.checked){
+                           proofError.innerText = '*Please Enter the documents'
+                        }
+                    })
+
+                    document.getElementById('is-award-no').addEventListener('click',() => {
+                        let isAward = document.getElementById('is-award-no');
+                        let proofError = document.getElementById('proofError');
+                        if(isAward.checked){
+                           proofError.innerText = ''
+                        }
+                    })
+
+                    document.getElementById('headerClose').addEventListener('click',() => {
+                        document.location.reload();
+                    })
+
+                    document.getElementById('footerClose').addEventListener('click',() => {
+                        document.location.reload();
+
+                    })
+
+
+                   
             </script>
-            <%- include('./partials/pagination') %>
+            <!-- <%- include('./partials/pagination') %> -->
                 <%- include('./partials/footer') %>
                     <%- include('./partials/footer-end') %>

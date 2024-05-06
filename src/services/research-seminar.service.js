@@ -52,7 +52,7 @@ module.exports.deleteResearchSeminar = async (seminarId, userName) => {
         return {
             status : 'done' ,
             massage : 'row is deleted successfully',
-            seminarFiles : seminarFiles
+            // seminarFiles : seminarFiles
         };
     }
     else{
