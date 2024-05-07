@@ -461,26 +461,35 @@
 
                                 <!-- Upload Files -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <label for="upload" class="form-label fw-bold ">Upload Files</label>
+                                    <label for="upload" class="form-label fw-bold ">Upload Files
+                                        <div id="uploadNewSupportDocumentDiv">
+                                            <label for="uploadNewSupportDocument"><small>Click to Upload New File</small></label>
+                                            <input type="checkbox" name="uploadNewSupportDocument" id="uploadNewSupportDocument">
+                                        </div>
+                                    </label>
                                     <div class="d-flex">
                                         <input type="file" id="conference-documnets"
                                             data-validate="isEmpty,isExist,isFile" data-err-msg="File is required"
                                             name="conferenceDocument" class="col-md-12 form-control " required multiple>
                                         <button id="conference-file-edit" class="download-btn download-file"><i
-                                                class="fas fa-download text-danger"></i></button>
+                                                class="fas fa-download text-danger"></i>Download</button>
                                     </div>
                                 </div>
                                 <!-- upload proof -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
         
-                                    <label for="upload" class="form-label fw-bold ">Upload
-                                        Proof</label>&ensp;
+                                    <label for="upload" class="form-label fw-bold ">Upload Proof
+                                        <div id="uploadNewSupportDocumentDivOne">
+                                            <label for="uploadNewSupportDocument"><small>Click to Upload New File</small></label>
+                                            <input type="checkbox" name="uploadNewSupportDocumentOne" id="uploadNewSupportDocumentOne">
+                                        </div>
+                                    </label>&ensp;
                                         <span style="color:red" id="proofError"></span>
                                     <div class="d-flex">
                                         <input type="file" id="conference-proofs" name="conferenceProof"
                                             class="col-md-12 form-control " multiple>
                                         <button class="download-btn download-file" id="conference-proof-edit"><i
-                                                class="fas fa-download text-danger"></i></button>
+                                                class="fas fa-download text-danger"></i>Download</button>
                                     </div>
                                 </div>
                             </div>
@@ -704,6 +713,12 @@
                         updateBtn.classList.add('d-none');
                         submitBtn.classList.remove('d-none');
                         document.querySelector('#conferenceHeader').innerHTML = 'Conference';
+                        document.querySelector('#uploadNewSupportDocumentDiv').classList.add('d-none');
+                        document.querySelector('#uploadNewSupportDocumentDivOne').classList.add('d-none');
+                        document.querySelector('#conference-documnets').classList.remove('d-none');
+                        document.querySelector('#conference-proofs').classList.remove('d-none');
+                        document.querySelector('#uploadNewSupportDocument').checked = false;
+                        document.querySelector('#uploadNewSupportDocumentOne').checked = false;
                         removeErrorMsg()
 
                         $('#conference-publication-modal').modal({
@@ -1079,6 +1094,12 @@
                         $('#conference-publication-modal').modal({
                             backdrop: 'static'
                         });
+
+                        document.querySelector('#uploadNewSupportDocumentDiv').classList.remove('d-none');
+                        document.querySelector('#uploadNewSupportDocumentDivOne').classList.remove('d-none');
+                        document.querySelector('#conference-documnets').classList.add('d-none');
+                        document.querySelector('#conference-proofs').classList.add('d-none');
+
                         removeErrorMsg();
                         InternalAuthorValue = '';
                         externalAuthorValue = '';
@@ -1533,7 +1554,25 @@
 
                     })
 
+document.querySelector('#uploadNewSupportDocument').addEventListener('click',function(e){
+    let is_checked = document.querySelector('#uploadNewSupportDocument').checked;
+    console.log("is_checked :",is_checked);
+    if(is_checked){
+        document.querySelector('#conference-documnets').classList.remove('d-none');
+    }else{
+        document.querySelector('#conference-documnets').classList.add('d-none');
+    }
+});
 
+document.querySelector('#uploadNewSupportDocumentOne').addEventListener('click',function(e){
+    let is_checked = document.querySelector('#uploadNewSupportDocumentOne').checked;
+    console.log("is_checked :",is_checked);
+    if(is_checked){
+        document.querySelector('#conference-proofs').classList.remove('d-none');
+    }else{
+        document.querySelector('#conference-proofs').classList.add('d-none');
+    }
+});
                    
             </script>
             <!-- <%- include('./partials/pagination') %> -->

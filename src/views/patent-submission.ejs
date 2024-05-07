@@ -285,13 +285,17 @@
                                     <div class="col-lg-6 col-md-8 col-sm-12">
                                         <label for="supporting-documents" class="form-label fw-bold ">
                                             Upload Supporting Documents
+                                            <div id="uploadNewSupportDocumentDiv">
+                                                <label for="uploadNewSupportDocument"><small>Click to Upload New File</small></label>
+                                                <input type="checkbox" name="uploadNewSupportDocument" id="uploadNewSupportDocument">
+                                            </div>
                                         </label>
                                         <div class="d-flex">
                                             <input type="file" name="patentFile" id="patent-file"
                                                 class="col-md-12 form-control" data-validate="isEmpty,isExist,isFile"
                                                 data-err-msg="File is required." required multiple>
                                             <button class="download-btn download-file" id="patent-file-edit"><i
-                                                    class="fas fa-download text-danger"></i></button>
+                                                    class="fas fa-download text-danger"></i>Download</button>
                                         </div>
                                     </div>
                                 </div><br>
@@ -529,6 +533,9 @@
                                 submitBtn.classList.remove('d-none');
                                 updateBtn.classList.add('d-none');
                                 document.querySelector('#patent-study').innerHTML = 'Patent Submission And Grant';
+                                document.querySelector('#uploadNewSupportDocumentDiv').classList.add('d-none');
+                                document.querySelector('#patent-file').classList.remove('d-none');
+                                document.querySelector('#uploadNewSupportDocument').checked = false;
                                 // fileView.classList.add('d-none');
                                 // modalImage.classList.add('d-none'); 
                                 //d-none download button
@@ -735,6 +742,9 @@
                                 selectItems.forEach(item => {
                                     item.classList.add('d-none');
                                 });
+
+                                document.querySelector('#uploadNewSupportDocumentDiv').classList.remove('d-none');
+                                document.querySelector('#patent-file').classList.add('d-none');
 
                                 updateBtn.classList.remove('d-none');
                                 employeeList.classList.add('d-none');
@@ -1477,6 +1487,18 @@
                             "pageLength": 5,
                             "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
                             })
+
+
+document.querySelector('#uploadNewSupportDocument').addEventListener('click',function(e){
+
+    let is_checked = document.querySelector('#uploadNewSupportDocument').checked;
+    console.log("is_checked :",is_checked);
+    if(is_checked){
+        document.querySelector('#patent-file').classList.remove('d-none');
+    }else{
+        document.querySelector('#patent-file').classList.add('d-none');
+    }
+});
 
                     </script>
                     <!-- footer section -->
