@@ -224,14 +224,15 @@
                                 <!-- Campus -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="application-no" class="form-label fw-bold"> NMIMS Campus </label>
-                                    <input type="text" id="nmims-campus" data-validate="isEmpty,isExist,isAlphaNumeric"
-                                        data data-err-msg="Provide Valid Input" class="form-control number" required>
+                                    <input type="text" id="nmims-campus" data-validate="isEmpty,isExist,isAlphabeticWords
+                                        data data-err-msg=" Provide Valid Input" class="form-control number" required>
                                 </div>
                                 <!-- school -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="application-no" class="form-label fw-bold"> NMIMS School </label>
-                                    <input type="text" id="nmims-school" data-validate="isEmpty,isExist,isAlphaNumeric"
-                                        data data-err-msg="Provide Valid Input" class="form-control number" required>
+                                    <input type="text" id="nmims-school"
+                                        data-validate="isEmpty,isExist,isAlphabeticWords" data
+                                        data-err-msg="Provide Valid Input" class="form-control number" required>
                                 </div>
                                 <!--  Title of the Paper -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
@@ -245,7 +246,7 @@
                                     <label for="conference-name" class="form-label  fw-bold"> Name of Conference
                                     </label>
                                     <input type="text" name="conference-name" id="conference-name"
-                                        data-validate="isEmpty,isNotNumber,isExist,isLength:2:255"
+                                        data-validate="isEmpty,isAlphabeticWords,isExist,isLength:2:255"
                                         data-err-msg="Provide Valid Input" class="form-control" required />
                                 </div>
 
@@ -254,7 +255,7 @@
                                     <label for="conference-name" class="form-label  fw-bold"> Place of Conference
                                     </label>
                                     <input type="text" name="conference-name" id="conference-place"
-                                        data-validate="isEmpty,isNotNumber,isExist,isLength:2:255"
+                                        data-validate="isEmpty,isAlphaNumeric,isExist,isLength:2:255"
                                         data-err-msg="Provide Valid Input" class="form-control" required />
                                 </div>
 
@@ -451,9 +452,9 @@
                                     <label for="doi-weblink" class="form-label  fw-bold">
                                         DOI/Weblink of paper ID
                                     </label>
-                                    <input data-validate="isEmpty,isExist" data-err-msg="Link is required."
-                                        type="number" name="web-link" id="doi-weblink-id" class="form-control"
-                                        required />
+                                    <input data-validate="isEmpty,isValidHttpUrl,isExist"
+                                        data-err-msg="Link is required." type="text" name="web-link" id="doi-weblink-id"
+                                        class="form-control" required />
                                 </div>
 
                                 <!-- Sponsored By NMIMS/Other -->
@@ -497,8 +498,10 @@
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="upload" class="form-label fw-bold ">Upload Files
                                         <div id="uploadNewSupportDocumentDiv">
-                                            <label for="uploadNewSupportDocument"><small>Click to Upload New File</small></label>
-                                            <input type="checkbox" name="uploadNewSupportDocument" id="uploadNewSupportDocument">
+                                            <label for="uploadNewSupportDocument"><small>Click to Upload New
+                                                    File</small></label>
+                                            <input type="checkbox" name="uploadNewSupportDocument"
+                                                id="uploadNewSupportDocument">
                                         </div>
                                     </label>
                                     <div class="d-flex">
@@ -511,17 +514,19 @@
                                 </div>
                                 <!-- upload proof -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-        
+
                                     <label for="upload" class="form-label fw-bold ">Upload Proof
                                         <div id="uploadNewSupportDocumentDivOne">
-                                            <label for="uploadNewSupportDocument"><small>Click to Upload New File</small></label>
-                                            <input type="checkbox" name="uploadNewSupportDocumentOne" id="uploadNewSupportDocumentOne">
+                                            <label for="uploadNewSupportDocument"><small>Click to Upload New
+                                                    File</small></label>
+                                            <input type="checkbox" name="uploadNewSupportDocumentOne"
+                                                id="uploadNewSupportDocumentOne">
                                         </div>
                                     </label>&ensp;
-                                        <span style="color:red" id="proofError"></span>
+                                    <span style="color:red" id="proofError"></span>
                                     <div class="d-flex">
                                         <input type="file" id="conference-proofs" name="conferenceProof"
-                                            class="col-md-12 form-control " multiple>
+                                            class="col-md-12 form-control " required multiple>
                                         <button class="download-btn download-file" id="conference-proof-edit"><i
                                                 class="fas fa-download text-danger"></i>Download</button>
                                     </div>
@@ -764,6 +769,11 @@
 
                         document.getElementById('conference-publication').innerText = 'CONFERENCE';
 
+                        document.querySelector('#uploadNewSupportDocumentOne').classList.add('d-none');
+                        document.querySelector('#conference-proof-edit').classList.add('d-none');
+                        document.querySelector('#uploadNewSupportDocument').classList.add('d-none');
+                        document.querySelector('#conference-file-edit').classList.add('d-none');
+
 
                         updateBtn.classList.add('d-none');
                         submitBtn.classList.remove('d-none');
@@ -823,7 +833,7 @@
                     const volAndIssueNo = document.getElementById('vol-and-issue-no').value;
                     const issnIsbnNo = document.getElementById('issn-isbn-no').value;
                     const doiWebLinkId = document.getElementById('doi-weblink-id').value;
-                    const isPresenter = document.querySelector('input[name="is-presenter"]:checked').value;
+                    const isPresenter = 'Yes';
                     const authorType = document.querySelector('input[name="author-type"]:checked');
                     const nmimsCampus = document.getElementById('nmims-campus').value;
                     const nmimsSchool = document.getElementById('nmims-school').value;
@@ -836,6 +846,7 @@
                     const sponsored = document.querySelector('input[name="sponsored"]:checked').value;
                     const procedingDetail = document.querySelector('input[name="Proceedings-details"]:checked').value;
                     const conferenceType = document.querySelector('input[name="conference-type"]:checked').value;
+
                     const presentationAward = document.querySelector('input[name="award-for-presentation"]:checked').value;
                     // function call 
                     await insertFacultyNameString(authorType, conferenceData);
@@ -1176,7 +1187,8 @@
                         $('#conference-publication-modal').modal('show');
                         updateBtn.classList.remove('d-none');
                         document.querySelector('#conferenceHeader').innerHTML = 'Conference Edit';
-                        submitBtn.classList.add('d-none');
+                        submitBtn.classList.add('d-none'
+                        );
                         employeeList.classList.add('d-none');
                         authorDetails.classList.add('d-none');
                         setFileNameAttributeToBeDownload(conferenceRowToBeUpdated);
@@ -1619,26 +1631,26 @@
 
                 })
 
-document.querySelector('#uploadNewSupportDocument').addEventListener('click',function(e){
-    let is_checked = document.querySelector('#uploadNewSupportDocument').checked;
-    console.log("is_checked :",is_checked);
-    if(is_checked){
-        document.querySelector('#conference-documnets').classList.remove('d-none');
-    }else{
-        document.querySelector('#conference-documnets').classList.add('d-none');
-    }
-});
+                document.querySelector('#uploadNewSupportDocument').addEventListener('click', function (e) {
+                    let is_checked = document.querySelector('#uploadNewSupportDocument').checked;
+                    console.log("is_checked :", is_checked);
+                    if (is_checked) {
+                        document.querySelector('#conference-documnets').classList.remove('d-none');
+                    } else {
+                        document.querySelector('#conference-documnets').classList.add('d-none');
+                    }
+                });
 
-document.querySelector('#uploadNewSupportDocumentOne').addEventListener('click',function(e){
-    let is_checked = document.querySelector('#uploadNewSupportDocumentOne').checked;
-    console.log("is_checked :",is_checked);
-    if(is_checked){
-        document.querySelector('#conference-proofs').classList.remove('d-none');
-    }else{
-        document.querySelector('#conference-proofs').classList.add('d-none');
-    }
-});
-                   
+                document.querySelector('#uploadNewSupportDocumentOne').addEventListener('click', function (e) {
+                    let is_checked = document.querySelector('#uploadNewSupportDocumentOne').checked;
+                    console.log("is_checked :", is_checked);
+                    if (is_checked) {
+                        document.querySelector('#conference-proofs').classList.remove('d-none');
+                    } else {
+                        document.querySelector('#conference-proofs').classList.add('d-none');
+                    }
+                });
+
             </script>
             <!-- <%- include('./partials/pagination') %> -->
             <%- include('./partials/footer') %>
