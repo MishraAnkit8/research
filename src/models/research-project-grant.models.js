@@ -271,9 +271,9 @@ module.exports.viewResearchConsultancy = async(consultantId, userName) => {
         LEFT JOIN
             research_project_grant_faculty rgf ON rg.id = rgf.research_project_grant_id
         LEFT JOIN
-            faculties f ON rgf.faculty_id = f.id and rg.active=true and rgf.active=true and f.active=true
+            faculties f ON rgf.faculty_id = f.id 
         WHERE
-            rg.id = $1 AND created_by = $2
+            rg.id = $1 AND created_by = $2 and rg.active=true and rgf.active=true and f.active=true
         `,
         values : [consultantId, userName]
     }

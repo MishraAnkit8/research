@@ -21,7 +21,7 @@
                     <div>
                         <div class="table-card-header text-uppercase d-flex align-items-center justify-content-between">
                             <div>
-                                <h5 class="pl-2">RESEARCH PROJECT/GRANT</h5>
+                                <h5 class="pl-2">RESEARCH PROJECT/GRANT LIST</h5>
                             </div>
                             <div>
                                 <button id="add-research-project-grant" type="button" class="btn btn-primary add-modal"
@@ -340,7 +340,7 @@
                                 <!-- Submission/Grant date-->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="submission-grant-date" class="form-label fw-bold">
-                                        Date of sanction of project
+                                        Submission/Grant Date
                                     </label>
                                     <input type="date" name="submission-grant-date" id="submission-grant-date"
                                         data-validate="isEmpty,isExist" data-err-msg="Date is required"
@@ -404,21 +404,21 @@
                                 </div>
                                 <table id="faculty-table-list">
                                     <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none" id="name-class">
-                                        <label for="faculty-name" class="form-label fw-bold">Faculty Name</lable>
-                                            <input type="text" class="form-control" id="faculty-name">
+                                        <label for="faculty-name" class="form-label fw-bold">Faculty Name</label>
+                                            <input  type="text" class="form-control"  id="faculty-name" required>
                                     </div>
                                     <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none" id="dsg-class">
-                                        <label for="" class="form-label fw-bold">Faculty Designation :</lable>
-                                            <input type="text" class="form-control" id="faculty-designation">
+                                        <label for="" class="form-label fw-bold">Faculty Designation :</label>
+                                            <input  type="text" class="form-control" id="faculty-designation" required>
                                     </div>
                                     <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none" id="id-class">
-                                        <label for="faculty-emp-id" class="form-label fw-bold">Faculty Id (Optional)
-                                            </lable>
-                                            <input type="text" class="form-control" id="faculty-emp-id">
+                                        <label for="faculty-emp-id"  class="form-label fw-bold">Faculty Id (Optional)
+                                            </label>
+                                            <input  type="text"  class="form-control" id="faculty-emp-id" >
                                     </div>
                                     <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none" id="address-class">
-                                        <label for="faculty-address" class="form-label fw-bold">Faculty Addres</lable>
-                                            <input type="text" class="form-control" id="faculty-address">
+                                        <label for="faculty-address" class="form-label fw-bold">Faculty Addres</label>
+                                            <input  type="text"  class="form-control" id="faculty-address" required>
                                     </div>
 
                                     <div class="form-group col-lg-6 col-md-6 col-sm-12 mb-4 d-none" id="add-btn">
@@ -675,6 +675,16 @@
                 const addResearchConsultancyModal = document.getElementById('add-research-project-grant');
 
                 addResearchConsultancyModal.addEventListener('click', function (event) {
+
+                    const facultyName= document.getElementById('faculty-name');
+                        const facultyDes = document.getElementById('faculty-designation');
+                        const facultyAddr = document.getElementById('faculty-address');
+                        const facultyId = document.getElementById('faculty-emp-id');
+                        facultyName.value ='';
+                        facultyDes.value = '';
+                        facultyAddr.value = '';
+                        facultyId.value = '';
+
                     if (event.target.tagName === 'BUTTON' && event.target.classList.contains('add-modal') || event.target.classList.contains('plus')) {
                         submitBtn.classList.remove('d-none');
                         updateBtn.classList.add('d-none');
@@ -721,6 +731,8 @@
                         supportingDocument.value = '';
                         isInternalFaculty.checked = false;
                         isExternalFaculty.checked = false;
+                      
+
                     }
                 });
 
@@ -1698,6 +1710,41 @@ document.querySelector('#uploadNewSupportDocument').addEventListener('click',fun
         document.querySelector('#supporting-documents').classList.add('d-none');
     }
 });
+
+     
+document.getElementById('is-external').addEventListener('click',() => {
+    let is_checked = document.getElementById('is-external');
+    if(is_checked.checked){
+     let facultyName = document.getElementById('faculty-name');
+     facultyName.setAttribute('data-err-msg','Provide Valid Input');
+     facultyName.setAttribute('data-validate','isEmpty,isExist,isAlphabeticWords');
+     facultyName.setAttribute('required',true);
+
+
+     let facultyDesc = document.getElementById('faculty-designation');
+     facultyDesc.setAttribute('data-err-msg','Provide Valid Input');
+     facultyDesc.setAttribute('data-validate','isEmpty,isExist,isAlphabeticWords');
+     facultyDesc.setAttribute('required',true);
+
+
+     let facultyId = document.getElementById('faculty-emp-id');
+     facultyDesc.setAttribute('data-err-msg','Provide Valid Input');
+     facultyDesc.setAttribute('data-validate','isEmpty,isExist,isNumber');
+
+     let facultyAddr= document.getElementById('faculty-address');
+     facultyAddr.setAttribute('data-err-msg','Provide Valid Input');
+     facultyAddr.setAttribute('data-validate','isEmpty,isExist');
+     facultyDesc.setAttribute('required',true);
+
+    }
+})
+
+
+
+
+
+
+
 
             </script>
             <!-- inline javascript -->
