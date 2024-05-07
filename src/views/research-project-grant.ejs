@@ -350,13 +350,17 @@
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="supporting-documents" class="form-label fw-bold">
                                         Upload Supporting Documents
+                                        <div id="uploadNewSupportDocumentDiv">
+                                            <label for="uploadNewSupportDocument"><small>Click to Upload New File</small></label>
+                                            <input type="checkbox" name="uploadNewSupportDocument" id="uploadNewSupportDocument">
+                                        </div>
                                     </label>
                                     <div class="d-flex">
                                         <input type="file" name="researchSupportingDocument" id="supporting-documents"
                                             data-validate="isEmpty,isExist,isFile" data-err-msg="File is required."
                                             class="col-md-12 form-control" required multiple>
                                         <button class="download-btn download-file" id="consultancy-file-edit"><i
-                                                class="fas fa-download text-danger"></i></button>
+                                                class="fas fa-download text-danger"></i>Download</button>
                                     </div>
                                 </div>
                                 <!-- if faculty choose internal Authors then show search bar -->
@@ -676,7 +680,9 @@
                         updateBtn.classList.add('d-none');
                         document.getElementById('researchProjectConsultancy').innerHTML = 'RESEARCH PROJECT CONSULTANCY';
                         removeErrorMsg()
-
+                        document.querySelector('#uploadNewSupportDocumentDiv').classList.add('d-none');
+                        document.querySelector('#supporting-documents').classList.remove('d-none');
+                        document.querySelector('#uploadNewSupportDocument').checked = false;
                         $('#consultancy-modal').modal({
                             backdrop: 'static'
                         });
@@ -916,6 +922,8 @@
                         removeErrorMsg();
                         submitBtn.classList.add('d-none');
                         updateBtn.classList.remove('d-none');
+                        document.querySelector('#uploadNewSupportDocumentDiv').classList.remove('d-none');
+                        document.querySelector('#supporting-documents').classList.add('d-none');
                         document.getElementById('researchProjectConsultancy').innerHTML = 'RESEARCH PROJECT CONSULTANCY EDIT';
                         $('#consultancy-modal').modal('show');
                         consultantRowToBeUpdated = event.target.closest('tr');
@@ -1678,6 +1686,18 @@
                     "pageLength": 5,
                     "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
                 })
+
+
+document.querySelector('#uploadNewSupportDocument').addEventListener('click',function(e){
+
+    let is_checked = document.querySelector('#uploadNewSupportDocument').checked;
+    console.log("is_checked :",is_checked);
+    if(is_checked){
+        document.querySelector('#supporting-documents').classList.remove('d-none');
+    }else{
+        document.querySelector('#supporting-documents').classList.add('d-none');
+    }
+});
 
             </script>
             <!-- inline javascript -->

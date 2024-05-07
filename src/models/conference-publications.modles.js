@@ -12,7 +12,7 @@ module.exports.fetchConferencePublication = async(userName) => {
     }
 
     let internalEmpSql = {
-        text: `SELECT * FROM employee_table where active=true ORDER BY id`
+      text: `SELECT * FROM faculties where active=true AND faculty_type_id=1  ORDER BY id`,
     };
     
     let externalEmpSql = {
