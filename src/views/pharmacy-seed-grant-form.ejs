@@ -61,7 +61,7 @@
                 </div>
                 <table class="table vertical-lines custom-table table-responsive research-pagination" id="pharmacy-seed-grant-form-list">
                     <thead>
-                        <th class="col-lg-1">#</th>
+                        <th class="col-lg-1">Serial no</th>
                         <th class="col-lg-1">Faculty Name </th>
                         <th class="col-lg-1">Title</th>
                         <th class="col-lg-1">Year</th>
@@ -576,8 +576,10 @@
                              <tr>
                                  <td><input style="border: 0;" type="text" id="investigator-patent-applicant-name" class="form-control"></td>
                                  <td><input style="border: 0;" type="text" id="investigator-patent-title" class="form-control"></td>
-                                 <td><input style="border: 0;" type="text" id="investigator-patent-staus" class="form-control"></td>
+                                 <td><input style="border: 0;" type="text" id="investigator-patent-status" class="form-control"></td>
                                  <td><input style="border: 0;" type="text" id="investigator-patent-number" class="form-control"></td>
+                                 <td><input style="border: 0;" type="text" id="investigator-month-year" class="form-control"></td>
+
                              </tr>
                              <tr>
                              </tr>
@@ -757,6 +759,7 @@
                     document.getElementById('investigator-patent-title').classList.add('d-none');
                     document.getElementById('investigator-patent-status').classList.add('d-none');
                     document.getElementById('investigator-patent-year-month').classList.add('d-none');
+                    document.getElementById('investigator-patent-number').classList.add('d-none');
                    }
 
                    if(data.implementationId){
@@ -864,8 +867,9 @@
             investigatorPatentDetails.investigatorApplicantName = document.getElementById('investigator-patent-applicant-name').value;
             investigatorPatentDetails.investigatorPatentTitle = document.getElementById('investigator-patent-title').value;
             investigatorPatentDetails.investigatorPatentStatus = document.getElementById('investigator-patent-status').value;
-            investigatorPatentDetails.investigatorPatentYear = document.getElementById('investigator-patent-year-month').value;
-            
+            investigatorPatentDetails.investigatorPatentYear = document.getElementById('investigator-month-year').value
+            investigatorPatentDetails.investigatorPatentNumber = document.getElementById('investigator-patent-number').value;
+
             const payload = { investigatorPatentDetails };
             const submitBtn = document.getElementById('submit-patent');
             const AddBtn = document.getElementById('add-patent');
@@ -1233,19 +1237,19 @@
                 }
             })
             .then((data) => {
-                if(data){
+                if(data.status === "Done"){
                     console.log('data ====>>>>>>>>', data);
-                $('pharmacy-seed-grant-modal').modal('hide');
-                Swal.fire({
-                    position: "top-center",
-                    icon: "success",
-                    title: `${data.message}`,
-                    showConfirmButton: true,
-                    confirmButtonText: "OK",
-                    confirmButtonColor: "#DD6B55"
-                }).then(data => {
-                    document.location.reload();
-                });
+                    // $('pharmacy-seed-grant-modal').modal('hide');
+                    Swal.fire({
+                        position: "top-center",
+                        icon: "success",
+                        title: `${data.message}`,
+                        showConfirmButton: true,
+                        confirmButtonText: "OK",
+                        confirmButtonColor: "#DD6B55"
+                    }).then(data => {
+                        document.location.reload();
+                    });
                 }
                 else {
                     console.log('data ====>>>>>', data);
