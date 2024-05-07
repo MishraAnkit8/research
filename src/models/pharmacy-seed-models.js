@@ -250,6 +250,50 @@ module.exports.insertInvestigatorResearchCompletedDetails = async(researchProjec
 
 module.exports.insertPharmacyDetails = async (pharmacySeedGrantDetails, userName) => {
     console.log('pharmacySeedGrantDetails in models  ===>>>>', pharmacySeedGrantDetails);
+
+    const {
+        summaryTitle, summaryProjectTitle, principalInvestigator, coInvestigator, projectDuration, totalCost,
+        consumablesAmount, analysisAmount, otherAmount, projectTitle, researchStatus, scientificImportance, projectObjectives,
+        detailedMethodology, timeLines, budgetConsumableAmount, consumablesJustification, solventsAmount, solventsJustification,
+        chemicalsAmount, chemicalsJustification, biomarkersReferenceAmount, biomarkersReferenceJustifications, hplcAmount,
+        hplcJustification, experimentalAnimalsAmount, experimentalAnimalsJustification, cellLinesAmount, cellLinesJustifications,
+        kitsAnalysisAmount, kitsAnalysisJustifications, evaluationAnalysisAmount, evaluationAnalysisJustification, proposedOutCome,
+        previousProjectExplaination, references, projectBackGround, hypothesis
+        
+      } = pharmacySeedGrantDetails;
+      
+      
+      let sql = {
+        text: `INSERT INTO pharmacy_seed (
+                  summary_title, summary_project_title, principle_investigator, co_investigator,
+                  project_duration, total_cost, consumables_amount, analysis_amount, other_amount,
+                  project_title, project_status, scientific_importance, project_objectives,
+                  detailed_methodology, time_lines, budget_consumable_amount, consumables_justification,
+                  solvents_amount, solvents_justification, chemicals_amount, chemicals_justification,
+                  biomarkers_reference_amount, biomarkers_reference_justifications, hplc_amount,
+                  hplc_justification, experimental_animals_amount, experimental_animals_justification,
+                  cell_lines_amount, cell_lines_justifications, kits_analysis_amount, kits_analysis_justifications,
+                  evaluation_analysis_amount, evaluation_analysis_justification, proposed_out_come,
+                  previous_project_explaination, pharmacy_references, project_background, hypothesis, created_by, active
+              ) VALUES (
+                  $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18,
+                  $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33, $34, $35, $36, $37, $38, $39, $40
+              ) RETURNING id`,
+        values: [ 
+          summaryTitle, summaryProjectTitle, principalInvestigator, coInvestigator, projectDuration, totalCost,
+          consumablesAmount, analysisAmount, otherAmount, projectTitle, researchStatus, scientificImportance, projectObjectives,
+          detailedMethodology, timeLines, budgetConsumableAmount, consumablesJustification, 
+          solventsAmount, solventsJustification, chemicalsAmount, chemicalsJustification, 
+          biomarkersReferenceAmount, biomarkersReferenceJustifications, hplcAmount, 
+          hplcJustification, experimentalAnimalsAmount, experimentalAnimalsJustification, 
+          cellLinesAmount, cellLinesJustifications, kitsAnalysisAmount, kitsAnalysisJustifications, 
+          evaluationAnalysisAmount, evaluationAnalysisJustification, proposedOutCome, 
+          previousProjectExplaination, references, projectBackGround, hypothesis, userName, true
+        ]
+      };
+    console.log('sql =====>>>>>>', sql);
+
+    const pharmacyPromise = await researchDbW.query(sql);
     
 
 }
