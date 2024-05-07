@@ -57,7 +57,7 @@ module.exports.fetchIPRData = async (userName) => {
                 nmims_campus nc ON inc.campus_id = nc.id
             WHERE
                 ipr.created_by = $1 and ipr.active=true and iit.active=true and it.active=true and 
-                ist.active=true and ps.active=true and isd.active=true and sd.active=true ins.active=true and ns.active=true
+                ist.active=true and ps.active=true and isd.active=true and sd.active=true and ins.active=true and ns.active=true
                 and inc.active=true and nc.active=true 
             GROUP BY
                 ipr.id,
