@@ -293,23 +293,24 @@
                                     </div>
                                 </div>
                                 <!-- Are you the Presenter? -->
-                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <label for="is-presenter" class="form-label fw-bold mb-3"> Are You The Presenter ?
+                                <!-- <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="is-presenter" class="form-label fw-bold mb-3 d-none"> Are You The
+                                        Presenter ?
                                     </label><br>
                                     <div class="form-check-inline">
-                                        <label for="Yes" class="form-check-label">
-                                            <input type="radio" class="form-check-input" id="is-presenter-yes"
+                                        <label for="Yes" class="form-check-label d-none">
+                                            <input type="radio" class="form-check-input d-none" id="is-presenter-yes"
                                                 name="is-presenter" value="Yes">
                                             Yes
                                         </label>
                                     </div>
                                     <div class="form-check-inline">
-                                        <label for="no" class="form-check-label">
-                                            <input type="radio" class="form-check-input" id="is-presenter-no"
+                                        <label for="no" class="form-check-label d-none">
+                                            <input type="radio" class="form-check-input d-none" id="is-presenter-no"
                                                 name="is-presenter" value="No" checked> No
                                         </label>
                                     </div>
-                                </div>
+                                </div> -->
 
                                 <!-- Inventor -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
@@ -395,7 +396,7 @@
                                         Presenting Author
                                     </label>
                                     <input type="text" name="presenting-author" id="presenting-author"
-                                        data-validate="isEmpty,isNotNumber,isExist,isLength:2:255"
+                                        data-validate="isEmpty,isAlphabeticWords,isExist,isLength:2:255"
                                         data-err-msg="Provide Valid Input" class="form-control" required>
                                 </div>
 
@@ -450,9 +451,9 @@
                                     <label for="doi-weblink" class="form-label  fw-bold">
                                         DOI/Weblink of paper ID
                                     </label>
-                                    <input data-validate="isEmpty,isExist,isValidHttpUrl"
-                                        data-err-msg="Link is required." type="number" name="web-link"
-                                        id="doi-weblink-id" class="form-control" required />
+                                    <input data-validate="isEmpty,isExist" data-err-msg="Link is required."
+                                        type="number" name="web-link" id="doi-weblink-id" class="form-control"
+                                        required />
                                 </div>
 
                                 <!-- Sponsored By NMIMS/Other -->
@@ -743,7 +744,7 @@
                 const conferenceAddModal = document.getElementById('confrence-modal-form');
                 const submitBtn = document.getElementById('submit-btn');
                 const updateBtn = document.getElementById('update-btn');
-                
+
                 //modal for button visualization
                 conferenceAddModal.addEventListener('click', function (event) {
 
@@ -1114,6 +1115,9 @@
                                     viewConferenceType.innerText = data.viewConferenceData[0].conference_type;
                                     viewIsPresenter.innerText = data.viewConferenceData[0].is_presenter;
                                     viewAuthortype.innerText = data.viewConferenceData[0].author_type.replace(/,/g, ' ');
+
+
+
                                     viewAward.innerText = data.viewConferenceData[0].award_for_presentation;
                                     viewPresentingAuthor.innerText = data.viewConferenceData[0].presenting_authors;
                                     viewOrganizationBoy.innerText = data.viewConferenceData[0].organizing_body;
@@ -1125,7 +1129,11 @@
                             .catch((error) => {
                                 console.log('error ==>>', error);
                             })
+
+
                         $('#conference-publication-view-modal').modal('show');
+
+
                     }
                     // for update
                     if (event.target.classList.contains('edit')) {
@@ -1463,7 +1471,7 @@
                 // ajax for search bar to search employee name 
                 const facultyOptions = employeesDataObj.map(faculty => ({
                     value: faculty.id,
-                    text: ` ${faculty.employee_name}`
+                    text: ` ${faculty.faculty_name}`
                 }));
                 new TomSelect("#emp-name", {
                     options: facultyOptions,
@@ -1591,97 +1599,97 @@
                 })
 
 
-                    function externalFacultyDetails() {
-                            employeeList.classList.add('d-none');
-                            addMoreDetailsButton.classList.add('d-none');
-                            document.getElementById('name-class').classList.remove('d-none')
-                            document.getElementById('dsg-class').classList.remove('d-none')
-                            document.getElementById('id-class').classList.remove('d-none')
-                            document.getElementById('address-class').classList.remove('d-none');
-                            document.getElementById('add-btn').classList.remove('d-none')
-                        }
+                function externalFacultyDetails() {
+                    employeeList.classList.add('d-none');
+                    addMoreDetailsButton.classList.add('d-none');
+                    document.getElementById('name-class').classList.remove('d-none')
+                    document.getElementById('dsg-class').classList.remove('d-none')
+                    document.getElementById('id-class').classList.remove('d-none')
+                    document.getElementById('address-class').classList.remove('d-none');
+                    document.getElementById('add-btn').classList.remove('d-none')
+                }
 
-                        externalFacultyType.addEventListener('click', externalFacultyDetails)
+                externalFacultyType.addEventListener('click', externalFacultyDetails)
 
-                        const insertExternalDetails = (url) => {
-                            // Define externalFacultyArray and externalFacultyData outside the function
-                            const externalFacultyDetails = {};
-                            externalFacultyDetails.facultyName = document.getElementById('faculty-name').value;
-                            externalFacultyDetails.facultyDsg = document.getElementById('faculty-designation').value;
-                            externalFacultyDetails.facultyAddr = document.getElementById('faculty-address').value;
-                            externalFacultyDetails.facultyEmpId = document.getElementById('faculty-emp-id').value;
+                const insertExternalDetails = (url) => {
+                    // Define externalFacultyArray and externalFacultyData outside the function
+                    const externalFacultyDetails = {};
+                    externalFacultyDetails.facultyName = document.getElementById('faculty-name').value;
+                    externalFacultyDetails.facultyDsg = document.getElementById('faculty-designation').value;
+                    externalFacultyDetails.facultyAddr = document.getElementById('faculty-address').value;
+                    externalFacultyDetails.facultyEmpId = document.getElementById('faculty-emp-id').value;
 
-                            const payload = {
-                                externalFacultyDetails: externalFacultyDetails
-                            }
+                    const payload = {
+                        externalFacultyDetails: externalFacultyDetails
+                    }
 
-                            console.log('payload ====>>>>>>', payload);
+                    console.log('payload ====>>>>>>', payload);
 
-                            fetch(url, {
-                                method: 'POST',
-                                headers: {
-                                    'content-type': 'application/json'
-                                },
-                                body: JSON.stringify(payload)
-                            })
-                                .then((result) => {
-                                    return result.json()
-                                })
-                                .then((data) => {
-                                    if (data.status === 'Done') {
-                                        console.log('data ===>>>>>', data);
-                                        let rowCountInteger = parseInt(data.rowCount, 10);
-                                        let indexCount = rowCountInteger;
-                                        rowCountInteger = indexCount + rowCountInteger;
-                                        console.log('rowCountInteger ===>>>>>>', rowCountInteger);
-                                        externalFacultyIdArray.push(data.externalFacultyId);
-                                        document.getElementById('name-class').classList.add('d-none');
-                                        document.getElementById('dsg-class').classList.add('d-none');
-                                        document.getElementById('id-class').classList.add('d-none');
-                                        document.getElementById('address-class').classList.add('d-none');
-                                        document.getElementById('insert-details').classList.add('d-none');
-                                        document.getElementById('add-more-details').classList.remove('d-none');
-                                        const newFacultyDataRow = document.createElement('tr');
-                                        newFacultyDataRow.innerHTML = `
+                    fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'content-type': 'application/json'
+                        },
+                        body: JSON.stringify(payload)
+                    })
+                        .then((result) => {
+                            return result.json()
+                        })
+                        .then((data) => {
+                            if (data.status === 'Done') {
+                                console.log('data ===>>>>>', data);
+                                let rowCountInteger = parseInt(data.rowCount, 10);
+                                let indexCount = rowCountInteger;
+                                rowCountInteger = indexCount + rowCountInteger;
+                                console.log('rowCountInteger ===>>>>>>', rowCountInteger);
+                                externalFacultyIdArray.push(data.externalFacultyId);
+                                document.getElementById('name-class').classList.add('d-none');
+                                document.getElementById('dsg-class').classList.add('d-none');
+                                document.getElementById('id-class').classList.add('d-none');
+                                document.getElementById('address-class').classList.add('d-none');
+                                document.getElementById('insert-details').classList.add('d-none');
+                                document.getElementById('add-more-details').classList.remove('d-none');
+                                const newFacultyDataRow = document.createElement('tr');
+                                newFacultyDataRow.innerHTML = `
                     <td class="name-class"> ${data.facultyData.facultyName} </td>
                     <td class="dsg-class"> ${data.facultyData.facultyDsg} </td>
                     <td class="id-class"> ${data.facultyData.facultyEmpId} </td>
                     <td class="address-class"> ${data.facultyData.facultyAddr} </td>
                     `
-                                        facultyTableList.appendChild(newFacultyDataRow);
-                                        Swal.fire({
-                                            position: "top-center",
-                                            icon: "success",
-                                            title: `${data.message}`,
-                                            showConfirmButton: true,
-                                            confirmButtonText: "OK",
-                                            confirmButtonColor: "#DD6B55"
-                                        });
-                                    }
-                                }).catch((error) => {
-                                    console.error("ERROR:", error);
-                                })
+                                facultyTableList.appendChild(newFacultyDataRow);
+                                Swal.fire({
+                                    position: "top-center",
+                                    icon: "success",
+                                    title: `${data.message}`,
+                                    showConfirmButton: true,
+                                    confirmButtonText: "OK",
+                                    confirmButtonColor: "#DD6B55"
+                                });
+                            }
+                        }).catch((error) => {
+                            console.error("ERROR:", error);
+                        })
 
-                            // event listner for insert exetrnal faculty details details
-                            document.getElementById('add-more-details').addEventListener('click', () => {
+                    // event listner for insert exetrnal faculty details details
+                    document.getElementById('add-more-details').addEventListener('click', () => {
 
-                                console.log('clicked add more button');
-                                // making input field empty
-                                document.getElementById('faculty-name').value = '';
-                                document.getElementById('faculty-designation').value = '';
-                                document.getElementById('faculty-address').value = '';
-                                document.getElementById('faculty-emp-id').value = '';
-                                document.getElementById('name-class').classList.remove('d-none');
-                                document.getElementById('dsg-class').classList.remove('d-none');
-                                document.getElementById('id-class').classList.remove('d-none');
-                                document.getElementById('address-class').classList.remove('d-none');
-                                document.getElementById('insert-details').classList.remove('d-none');
-                                document.getElementById('add-more-details').classList.add('d-none');
+                        console.log('clicked add more button');
+                        // making input field empty
+                        document.getElementById('faculty-name').value = '';
+                        document.getElementById('faculty-designation').value = '';
+                        document.getElementById('faculty-address').value = '';
+                        document.getElementById('faculty-emp-id').value = '';
+                        document.getElementById('name-class').classList.remove('d-none');
+                        document.getElementById('dsg-class').classList.remove('d-none');
+                        document.getElementById('id-class').classList.remove('d-none');
+                        document.getElementById('address-class').classList.remove('d-none');
+                        document.getElementById('insert-details').classList.remove('d-none');
+                        document.getElementById('add-more-details').classList.add('d-none');
 
-                            })
-                        }
+                    })
+                }
 
-                        InsertDetails.addEventListener('click', async () => {
+                InsertDetails.addEventListener('click', async () => {
                     console.log('clickedd insert details buttons')
                     await insertExternalDetails('<%- BASE_URL %>research/external/faculty-insert');
 
