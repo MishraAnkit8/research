@@ -494,26 +494,35 @@
 
                                 <!-- Upload Files -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <label for="upload" class="form-label fw-bold ">Upload Files</label>
+                                    <label for="upload" class="form-label fw-bold ">Upload Files
+                                        <div id="uploadNewSupportDocumentDiv">
+                                            <label for="uploadNewSupportDocument"><small>Click to Upload New File</small></label>
+                                            <input type="checkbox" name="uploadNewSupportDocument" id="uploadNewSupportDocument">
+                                        </div>
+                                    </label>
                                     <div class="d-flex">
                                         <input type="file" id="conference-documnets"
                                             data-validate="isEmpty,isExist,isFile" data-err-msg="File is required"
                                             name="conferenceDocument" class="col-md-12 form-control " required multiple>
                                         <button id="conference-file-edit" class="download-btn download-file"><i
-                                                class="fas fa-download text-danger"></i></button>
+                                                class="fas fa-download text-danger"></i>Download</button>
                                     </div>
                                 </div>
                                 <!-- upload proof -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-
-                                    <label for="upload" class="form-label fw-bold ">Upload
-                                        Proof</label>&ensp;
-                                    <span style="color:red" id="proofError"></span>
+        
+                                    <label for="upload" class="form-label fw-bold ">Upload Proof
+                                        <div id="uploadNewSupportDocumentDivOne">
+                                            <label for="uploadNewSupportDocument"><small>Click to Upload New File</small></label>
+                                            <input type="checkbox" name="uploadNewSupportDocumentOne" id="uploadNewSupportDocumentOne">
+                                        </div>
+                                    </label>&ensp;
+                                        <span style="color:red" id="proofError"></span>
                                     <div class="d-flex">
                                         <input type="file" id="conference-proofs" name="conferenceProof"
                                             class="col-md-12 form-control " multiple>
                                         <button class="download-btn download-file" id="conference-proof-edit"><i
-                                                class="fas fa-download text-danger"></i></button>
+                                                class="fas fa-download text-danger"></i>Download</button>
                                     </div>
                                 </div>
 
@@ -758,6 +767,12 @@
                         updateBtn.classList.add('d-none');
                         submitBtn.classList.remove('d-none');
                         document.querySelector('#conferenceHeader').innerHTML = 'Conference';
+                        document.querySelector('#uploadNewSupportDocumentDiv').classList.add('d-none');
+                        document.querySelector('#uploadNewSupportDocumentDivOne').classList.add('d-none');
+                        document.querySelector('#conference-documnets').classList.remove('d-none');
+                        document.querySelector('#conference-proofs').classList.remove('d-none');
+                        document.querySelector('#uploadNewSupportDocument').checked = false;
+                        document.querySelector('#uploadNewSupportDocumentOne').checked = false;
                         removeErrorMsg()
 
                         $('#conference-publication-modal').modal({
@@ -1136,6 +1151,12 @@
                         $('#conference-publication-modal').modal({
                             backdrop: 'static'
                         });
+
+                        document.querySelector('#uploadNewSupportDocumentDiv').classList.remove('d-none');
+                        document.querySelector('#uploadNewSupportDocumentDivOne').classList.remove('d-none');
+                        document.querySelector('#conference-documnets').classList.add('d-none');
+                        document.querySelector('#conference-proofs').classList.add('d-none');
+
                         removeErrorMsg();
                         InternalAuthorValue = '';
                         externalAuthorValue = '';
@@ -1590,104 +1611,26 @@
 
                 })
 
+document.querySelector('#uploadNewSupportDocument').addEventListener('click',function(e){
+    let is_checked = document.querySelector('#uploadNewSupportDocument').checked;
+    console.log("is_checked :",is_checked);
+    if(is_checked){
+        document.querySelector('#conference-documnets').classList.remove('d-none');
+    }else{
+        document.querySelector('#conference-documnets').classList.add('d-none');
+    }
+});
 
-                    function externalFacultyDetails() {
-                            employeeList.classList.add('d-none');
-                            addMoreDetailsButton.classList.add('d-none');
-                            document.getElementById('name-class').classList.remove('d-none')
-                            document.getElementById('dsg-class').classList.remove('d-none')
-                            document.getElementById('id-class').classList.remove('d-none')
-                            document.getElementById('address-class').classList.remove('d-none');
-                            document.getElementById('add-btn').classList.remove('d-none')
-                        }
-
-                        externalFacultyType.addEventListener('click', externalFacultyDetails)
-
-                        const insertExternalDetails = (url) => {
-                            // Define externalFacultyArray and externalFacultyData outside the function
-                            const externalFacultyDetails = {};
-                            externalFacultyDetails.facultyName = document.getElementById('faculty-name').value;
-                            externalFacultyDetails.facultyDsg = document.getElementById('faculty-designation').value;
-                            externalFacultyDetails.facultyAddr = document.getElementById('faculty-address').value;
-                            externalFacultyDetails.facultyEmpId = document.getElementById('faculty-emp-id').value;
-
-                            const payload = {
-                                externalFacultyDetails: externalFacultyDetails
-                            }
-
-                            console.log('payload ====>>>>>>', payload);
-
-                            fetch(url, {
-                                method: 'POST',
-                                headers: {
-                                    'content-type': 'application/json'
-                                },
-                                body: JSON.stringify(payload)
-                            })
-                                .then((result) => {
-                                    return result.json()
-                                })
-                                .then((data) => {
-                                    if (data.status === 'Done') {
-                                        console.log('data ===>>>>>', data);
-                                        let rowCountInteger = parseInt(data.rowCount, 10);
-                                        let indexCount = rowCountInteger;
-                                        rowCountInteger = indexCount + rowCountInteger;
-                                        console.log('rowCountInteger ===>>>>>>', rowCountInteger);
-                                        externalFacultyIdArray.push(data.externalFacultyId);
-                                        document.getElementById('name-class').classList.add('d-none');
-                                        document.getElementById('dsg-class').classList.add('d-none');
-                                        document.getElementById('id-class').classList.add('d-none');
-                                        document.getElementById('address-class').classList.add('d-none');
-                                        document.getElementById('insert-details').classList.add('d-none');
-                                        document.getElementById('add-more-details').classList.remove('d-none');
-                                        const newFacultyDataRow = document.createElement('tr');
-                                        newFacultyDataRow.innerHTML = `
-                    <td class="name-class"> ${data.facultyData.facultyName} </td>
-                    <td class="dsg-class"> ${data.facultyData.facultyDsg} </td>
-                    <td class="id-class"> ${data.facultyData.facultyEmpId} </td>
-                    <td class="address-class"> ${data.facultyData.facultyAddr} </td>
-                    `
-                                        facultyTableList.appendChild(newFacultyDataRow);
-                                        Swal.fire({
-                                            position: "top-center",
-                                            icon: "success",
-                                            title: `${data.message}`,
-                                            showConfirmButton: true,
-                                            confirmButtonText: "OK",
-                                            confirmButtonColor: "#DD6B55"
-                                        });
-                                    }
-                                }).catch((error) => {
-                                    console.error("ERROR:", error);
-                                })
-
-                            // event listner for insert exetrnal faculty details details
-                            document.getElementById('add-more-details').addEventListener('click', () => {
-
-                                console.log('clicked add more button');
-                                // making input field empty
-                                document.getElementById('faculty-name').value = '';
-                                document.getElementById('faculty-designation').value = '';
-                                document.getElementById('faculty-address').value = '';
-                                document.getElementById('faculty-emp-id').value = '';
-                                document.getElementById('name-class').classList.remove('d-none');
-                                document.getElementById('dsg-class').classList.remove('d-none');
-                                document.getElementById('id-class').classList.remove('d-none');
-                                document.getElementById('address-class').classList.remove('d-none');
-                                document.getElementById('insert-details').classList.remove('d-none');
-                                document.getElementById('add-more-details').classList.add('d-none');
-
-                            })
-                        }
-
-                        InsertDetails.addEventListener('click', async () => {
-                    console.log('clickedd insert details buttons')
-                    await insertExternalDetails('<%- BASE_URL %>research/external/faculty-insert');
-
-                });
-
-
+document.querySelector('#uploadNewSupportDocumentOne').addEventListener('click',function(e){
+    let is_checked = document.querySelector('#uploadNewSupportDocumentOne').checked;
+    console.log("is_checked :",is_checked);
+    if(is_checked){
+        document.querySelector('#conference-proofs').classList.remove('d-none');
+    }else{
+        document.querySelector('#conference-proofs').classList.add('d-none');
+    }
+});
+                   
             </script>
             <!-- <%- include('./partials/pagination') %> -->
             <%- include('./partials/footer') %>
