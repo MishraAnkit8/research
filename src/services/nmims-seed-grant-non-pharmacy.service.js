@@ -6,6 +6,7 @@ const seedGrantModels = require('../models/nmims-seed-grant-non-pharmacy.models'
 module.exports.fetchNoFormacyForm = async(userName) => {
     const seedGrantFormData = await seedGrantModels.renderSeedGrantNonFormacy(userName);
 
+    console.log("facultyData ====>>>>>", seedGrantFormData.facultyData);
     console.log('seedGrantFormData ===>>>>', JSON.stringify(seedGrantFormData.seedGrantFormDataRows));
     const paymentDataArray = seedGrantFormData.seedGrantFormDataRows;
     console.log("paymentDataArray ====>>>>", paymentDataArray);

@@ -188,10 +188,11 @@
                     <div class="modal-content modal-content-data validate-input">
                         <div class="modal-header">
                             <div style="width:80%;" class="d-flex justify-content-center">
-                                <h2 style="position: absolute;left: 20px;"  id="modalHeader" class="d-none">Edit</h2>
-                                <h5 class="modal-title ml-4" id="grantSeedData-study">NMIMS Seed Grant [Non Pharmacy] APPROVAL
-                                    Form </h5>                            
-                                </div>
+                                <h2 style="position: absolute;left: 20px;" id="modalHeader" class="d-none">Edit</h2>
+                                <h5 class="modal-title ml-4" id="grantSeedData-study">NMIMS Seed Grant [Non Pharmacy]
+                                    APPROVAL
+                                    Form </h5>
+                            </div>
                             <!-- <h5 class="modal-title" id="grantSeedData-study">NMIMS Seed Grant [Non Pharmacy] APPROVAL
                                 Form </h5> -->
                             <div type="button" class="close" id="headerClose" data-dismiss="modal" aria-label="Close">
@@ -219,7 +220,7 @@
                                     <label for="faculty-id" class="form-label fw-bold ">Name of Faculty</label>
                                     <select id="faculty-id" class="select-option facultiesId"
                                         data-validate="isEmpty,isExist" data-err-msg="This  field  is required."
-                                        required multiple>
+                                        multiple required>
                                     </select>
                                 </div>
                                 <!--Date of Commencement-->
@@ -605,7 +606,7 @@
                     </div>
                 </div>
             </div>
-            <div id="faculty-list-data" data-faculty-list='<%- JSON.stringify(facultyData) %>' style="display: none;">
+            <div id="faculty-list-data" data-faculty='<%- JSON.stringify(facultyData) %>' style="display: none;">
             </div>
 
 
@@ -645,7 +646,7 @@
 
                 addnonFormacyFormData.addEventListener('click', (event) => {
 
-                   
+
 
                     if (event.target.tagName === 'BUTTON' && event.target.classList.contains('add-modal') || event.target.classList.contains('plus')) {
                         submitBtn.classList.remove('d-none');
@@ -654,6 +655,39 @@
 
                         $('#consultancy-modal-form').modal({
                             backdrop: 'static'
+                        });
+
+                          const facultyDropDownList = document.getElementById("faculty-id");
+                        // Parse the JSON data
+                        const facultyListData = JSON.parse(document.getElementById('faculty-list-data').dataset.faculty);
+                        let facultyOptions = facultyListData.map(faculty => ({
+                            value: faculty.id,
+                            text: `${faculty.faculty_name} ${faculty.designation}`
+                        }));;
+
+                        let selectList;
+
+                        selectList = facultyListData.filter(faculty => facultyId == faculty.id).map(fd => fd.id)
+
+                        //  Initialize TomSelect dropdown with options containing id and faculty_name
+                        new TomSelect("#faculty-id", {
+                            options: facultyOptions,
+                            items: selectList,
+                            hidePlaceholder: true,
+                            create: true,
+                            plugins: ['remove_button'],
+                            onItemAdd: function () {
+                                this.setTextboxValue('');
+                                this.refreshOptions();
+                            },
+                            render: {
+                                option: function (data, escape) {
+                                    return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                                },
+                                item: function (data, escape) {
+                                    return '<div>' + escape(data.text) + '</div>';
+                                }
+                            }
                         });
 
                         facultyIdContainerArray = [];
@@ -975,7 +1009,7 @@
 
                         let editHead = document.getElementById('modalHeader');
                         editHead.classList.remove('d-none')
-                        
+
                         console.log('yes edit clickeddd ===');
                         submitBtn.classList.add('d-none');
                         removeErrorMsg()
@@ -995,10 +1029,10 @@
                         facultyId = approvalFormRecordToBeUpdated.getAttribute('data-faculty-id');
                         console.log('facultyId ====>>>>>', facultyId);
 
-                        //let facultydata = document.getElementById('faculty-list-data');
+                        let facultydata = document.getElementById('faculty-list-data');
                         const facultyDropDownList = document.getElementById("faculty-id");
                         // Parse the JSON data
-                        const facultyListData = JSON.parse(document.getElementById('faculty-list-data').dataset.facultyList);
+                        const facultyListData = JSON.parse(document.getElementById('faculty-list-data').dataset.faculty);
                         let facultyOptions = facultyListData.map(faculty => ({
                             value: faculty.id,
                             text: `${faculty.faculty_name} ${faculty.designation}`
