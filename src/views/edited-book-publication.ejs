@@ -65,7 +65,7 @@
                             <table class="table vertical-lines custom-table  research-pagination"
                                 id="edited-book-list">
                                 <thead>
-                                    <th class="col-lg-1">#</th>
+                                    <th class="col-lg-1">Serial no</th>
                                     <th class="col-lg-1">Author's name</th>
                                     <th class="col-lg-1">Publication year</th>
                                     <th class="col-lg-1">Book title</th>
@@ -343,6 +343,10 @@
                                     <div class="col-lg-6 col-md-8 col-sm-12">
                                         <label for="supporting-documents" class="form-label fw-bold ">
                                             Upload Supporting Documents
+                                            <div id="uploadNewSupportDocumentDiv">
+                                                <label for="uploadNewSupportDocument"><small>Click to Upload New File</small></label>
+                                                <input type="checkbox" name="uploadNewSupportDocument" id="uploadNewSupportDocument">
+                                            </div>
                                         </label>
                                         <div class="d-flex">
                                             <input type="file" name="researchSupportingDocument"
@@ -350,7 +354,7 @@
                                                 data-err-msg="File is required." class="col-md-12 form-control "
                                                 required multiple>
                                             <button class="download-btn download-file" id="edited-book-edit"><i
-                                                    class="fas fa-download text-danger"></i></button>
+                                                    class="fas fa-download text-danger"></i>Download</button>
                                         </div>
                                     </div>
                                 </div>
@@ -546,6 +550,9 @@
                         updateBtn.classList.add('d-none');
                         submitBtn.classList.remove('d-none');
                         document.querySelector('#case-study').innerHTML = `Edited Book`;
+                        document.querySelector('#uploadNewSupportDocumentDiv').classList.add('d-none');
+                        document.querySelector('#supporting-documents').classList.remove('d-none');
+                        document.querySelector('#uploadNewSupportDocument').checked = false;
                         removeErrorMsg()
 
                         // fileView.classList.add('d-none');
@@ -782,6 +789,8 @@
                         updateBtn.classList.remove('d-none');
                         document.querySelector('#case-study').innerHTML = `Edited Book Edit`;
                         submitBtn.classList.add('d-none');
+                        document.querySelector('#uploadNewSupportDocumentDiv').classList.remove('d-none');
+                        document.querySelector('#supporting-documents').classList.add('d-none');
                         // fileView.classList.remove('d-none');
                         // modalImage.classList.remove('d-none');
                         const authorName = document.getElementById('author-first-name');
@@ -1203,6 +1212,17 @@
                     "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
                     })
 
+document.querySelector('#uploadNewSupportDocument').addEventListener('click',function(e){
+
+    let is_checked = document.querySelector('#uploadNewSupportDocument').checked;
+    console.log("is_checked :",is_checked);
+    if(is_checked){
+        document.querySelector('#supporting-documents').classList.remove('d-none');
+    }else{
+        document.querySelector('#supporting-documents').classList.add('d-none');
+    }
+});
+                
             </script>
             <!-- footer section -->
             <!-- <%- include('./partials/pagination') %> -->

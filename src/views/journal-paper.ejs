@@ -24,9 +24,8 @@
                                 <h5 class="pl-2">Journal Article Published List</h5>
                             </div>
                             <div>
-                                <span class="text"> Add</span>
                                 <button id="journal-paper-add-modal" type="button"
-                                    class="btn btn-danger border border-primary add-modal" data-toggle="modal"
+                                    class="btn btn-primary border border-primary add-modal" data-toggle="modal"
                                     data-target="#journal-paper-modal">ADD
                                     <i class="fas fa-plus plus"></i></button>
                                 </button>
@@ -446,14 +445,18 @@
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="supporting-documents" class="form-label fw-bold ">
                                         Upload Supporting Documents
+                                        <div id="uploadNewSupportDocumentDiv">
+                                            <label for="uploadNewSupportDocument"><small>Click to Upload New File</small></label>
+                                            <input type="checkbox" name="uploadNewSupportDocument" id="uploadNewSupportDocument">
+                                        </div>
                                     </label>
                                     <div class="d-flex">
                                         <input type="file" name="journal-article-documents"
                                             id="journal-article-documents" class="col-md-12 form-control"
                                             data-validate="isEmpty,isExist,isFile" data-err-msg="File is required."
                                             required multiple>
-                                        <button class="download-btn download-file" id="journal-data-file-edit"><i
-                                                class="fas fa-download text-danger"></i></button>
+                                        <button class="download-btn download-file d-none" id="journal-data-file-edit"><i
+                                                class="fas fa-download text-danger"></i>Download</button>
                                     </div>
                                 </div>
                                 <!-- GS Indexed -->
@@ -850,6 +853,9 @@
                         submitBtn.classList.remove('d-none');
                         updateBtn.classList.add('d-none');
                         document.querySelector('#journal-paper-title').innerHTML = `Journal Article Published`;
+                        document.querySelector('#uploadNewSupportDocumentDiv').classList.add('d-none');
+                        document.querySelector('#journal-data-file-edit').classList.add('d-none');
+                        document.querySelector('#uploadNewSupportDocument').checked = false;
                         removeErrorMsg()
 
 
@@ -1170,12 +1176,17 @@
                             item.classList.add('d-none');
                         });
                      
+                       
 
                         $('#journal-paper-modal').modal('show');
                         rowToBeUpdated = event.target.closest('tr');
                         console.log('rowToBeUpdated ==>>', rowToBeUpdated)
                         journalPaperId = event.target.getAttribute('data-journal-article-id');
                         console.log('journalPaperId ==>>', journalPaperId);
+
+                        document.querySelector('#journal-article-documents').classList.add('d-none');
+                        document.querySelector('#uploadNewSupportDocumentDiv').classList.remove('d-none');
+                        document.querySelector('#journal-data-file-edit').classList.remove('d-none');
 
                         const schoolDataIdsStored = rowToBeUpdated.getAttribute('data-school-ids');
                         console.log('schoolDataIdsStored ===>>>>>', schoolDataIdsStored);
@@ -1244,6 +1255,7 @@
                         const campusIdsArray = rowToBeUpdated.getAttribute('data-campus-ids').split(',').map(str => parseInt(str.trim(), 10));
 
                         const schoolIdsArray = rowToBeUpdated.getAttribute('data-school-ids').split(',').map(str => parseInt(str.trim(), 10));
+                        
                         const nmimsAuthorsIdsArray = rowToBeUpdated.getAttribute('data-nmims-faculty-ids').split(',').map(str => parseInt(str.trim(), 10));
                         const allArticleAuthorsIdsArray = rowToBeUpdated.getAttribute('data-article-faculties-ids').split(',').map(str => parseInt(str.trim(), 10));
                         const policyCadreIdsArray = rowToBeUpdated.getAttribute('data-policy-cadre-ids').split(',').map(str => parseInt(str.trim(), 10));
@@ -2160,6 +2172,17 @@
                     "pageLength": 5,
                     "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
                 })
+
+document.querySelector('#uploadNewSupportDocument').addEventListener('click',function(e){
+
+    let is_checked = document.querySelector('#uploadNewSupportDocument').checked;
+    console.log("is_checked :",is_checked);
+    if(is_checked){
+        document.querySelector('#journal-article-documents').classList.remove('d-none');
+    }else{
+        document.querySelector('#journal-article-documents').classList.add('d-none');
+    }
+});
 
             </script>
             <!-- for pagination -->

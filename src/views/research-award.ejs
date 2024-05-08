@@ -62,7 +62,7 @@
                             <table class="table vertical-lines custom-table table-responsive research-pagination"
                                 id="research-award-list">
                                 <thead>
-                                    <th class="col-lg-1">#</th>
+                                    <th class="col-lg-1">Serial no</th>
                                     <th class="col-lg-1">Campus</th>
                                     <th class="col-lg-1">School</th>
                                     <th class="col-lg-1">Name Of Faculty</th>
@@ -233,7 +233,7 @@
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="application-no" class="form-label fw-bold">Date </label>
                                     <input type="date" id="award-date" data-validate="isEmpty,isExist" data
-                                        data-err-msg="Date is required." class="form-control number" required>
+                                        data-err-msg="Date is required" class="form-control number" required>
                                 </div>
                                 <!-- place -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
@@ -264,6 +264,10 @@
                                     <div class="col-lg-6 col-md-8 col-sm-12">
                                         <label for="supporting-documents" class="form-label fw-bold ">
                                             Upload Supporting Documents
+                                            <div id="uploadNewSupportDocumentDiv">
+                                                <label for="uploadNewSupportDocument"><small>Click to Upload New File</small></label>
+                                                <input type="checkbox" name="uploadNewSupportDocument" id="uploadNewSupportDocument">
+                                            </div>
                                         </label>
                                         <div class="d-flex">
                                             <input type="file" name="supporting-documents" id="supporting-documents"
@@ -271,7 +275,7 @@
                                                 data-err-msg="File is required." required multiple>
                                             <button class="download-btn download-file"
                                                 id="research-award-file-btn-edit"><i
-                                                    class="fas fa-download text-danger"></i></button>
+                                                    class="fas fa-download text-danger"></i>Download</button>
                                         </div>
                                     </div>
                                 </div>
@@ -406,6 +410,9 @@
                         submitBtn.classList.remove('d-none');
                         updateBtn.classList.add('d-none');
                         document.querySelector('#patent-study').innerHTML = 'RESEARCH AWARD FORM';
+                        document.querySelector('#supporting-documents').classList.remove('d-none');
+                        document.querySelector('#uploadNewSupportDocumentDiv').classList.add('d-none');
+                        document.querySelector('#uploadNewSupportDocument').checked = false;
                         removeErrorMsg()
 
                         document.getElementById('supporting-documents');
@@ -574,6 +581,9 @@
                         });
                         submitBtn.classList.add('d-none');
                         updateBtn.classList.remove('d-none');
+                        document.querySelector('#supporting-documents').classList.add('d-none');
+                        document.querySelector('#uploadNewSupportDocumentDiv').classList.remove('d-none');
+
                         document.querySelector('#patent-study').innerHTML = 'RESEARCH AWARD FORM EDIT';
                         researchAwardRow = event.target.closest('tr');
                         console.log('researchAwardRow ===>>>>', researchAwardRow);
@@ -954,6 +964,15 @@
                 })
 
 
+document.querySelector('#uploadNewSupportDocument').addEventListener('click',function(e){
+    let is_checked = document.querySelector('#uploadNewSupportDocument').checked;
+    console.log("is_checked :",is_checked);
+    if(is_checked){
+        document.querySelector('#supporting-documents').classList.remove('d-none');
+    }else{
+        document.querySelector('#supporting-documents').classList.add('d-none');
+    }
+})
             </script>
             <!-- footer section -->
             <%- include('./partials/pagination') %>

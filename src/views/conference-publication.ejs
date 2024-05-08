@@ -58,25 +58,23 @@
                                     </div> -->
                                 </div>
                             </div>
-                            <table
-                                class="table vertical-lines custom-table table-responsive research-pagination"
+                            <table class="table vertical-lines custom-table table-responsive research-pagination"
                                 id="conference-publication-list">
                                 <thead>
-                                    <th class="col-lg-1">#</th>
+                                    <th class="col-lg-1">Serial no</th>
                                     <th class="col-lg-1 campus">Campus</th>
                                     <th class="col-lg-1 school">School</th>
                                     <th class="col-lg-1">Title of the Paper</th>
                                     <th class="col-lg-1">Name of Conference</th>
                                     <th class="col-lg-1">Proceedings Details</th>
                                     <th class="col-lg-1">ISSN/ISNB No</th>
-                                    <th class="col-lg-1" >Action</th>
+                                    <th class="col-lg-1">Action</th>
                                 </thead>
                                 <tbody class="data-list">
                                     <% conferenceData.forEach(function(conference,index) { %>
                                         <% const externalEmp=externalEmpList[index]; %>
                                             <tr data-conference-id="<%- conference.id %>"
                                                 data-is-presenter="<%- conference.is_presenter %>"
-                                                data-author-type="<%- conference.author_type.authorName %>"
                                                 data-presenting-author="<%- conference.presenting_authors %>"
                                                 data-organizing-body="<%- conference.organizing_body %>"
                                                 data-vol-and-issue-no="<%- conference.vol_and_issue_no %>"
@@ -85,9 +83,7 @@
                                                 data-sponsored="<%- conference.sponsored %>"
                                                 data-award-for-presentation="<%- conference.award_for_presentation %>"
                                                 data-spent-amount="<%- conference.spent_amount %>"
-                                                data-external-id="<%- externalEmp ? externalEmp.id : '' %>"
-                                                data-external-emp="<%- externalEmp ? externalEmp.external_emp_name : '' %>"
-                                                data-author-table="<%- conference.author_type.table %>"
+                                                
                                                 data-conference-place="<%- conference.conference_place%>"
                                                 data-conference-type="<%- conference.conference_type %>"
                                                 data-publication-date="<%- conference.publication_date %>"
@@ -118,37 +114,34 @@
                                     </p>
                                 </td> -->
 
-                                               <td style="display: flex;justify-content: center;"> 
-                                                <b title="View" data-conference-id="<%- conference.id %>"
-                                                    class="view border-right-0" style="cursor: pointer;"
-                                                    >
-                                                    &#128065;
-                                                </b>&ensp;
-                                                <b title="Edit" data-conference-id="<%- conference.id %>"
-                                                    class="edit border-right-0" style="cursor: pointer;"
-                                                    >
-                                                    &#9998;
-                                                </b>&ensp;
-                                                <b title="Delete" data-conference-id="<%- conference.id %>"
-                                                    class="delete border-right-0" style="cursor: pointer;"
-                                                    >
-                                                    &#128465;
+                                                <td style="display: flex;justify-content: center;">
+                                                    <b title="View" data-conference-id="<%- conference.id %>"
+                                                        class="view border-right-0" style="cursor: pointer;">
+                                                        &#128065;
+                                                    </b>&ensp;
+                                                    <b title="Edit" data-conference-id="<%- conference.id %>"
+                                                        class="edit border-right-0" style="cursor: pointer;">
+                                                        &#9998;
+                                                    </b>&ensp;
+                                                    <b title="Delete" data-conference-id="<%- conference.id %>"
+                                                        class="delete border-right-0" style="cursor: pointer;">
+                                                        &#128465;
 
-                                                </b>
+                                                    </b>
                                                 </td>
 
                                             </tr>
                                             <% }); %>
-</tbody>
-                                                <tr>
-                                                    <div id="no-records-message"
-                                                        style="display: none; color: red; margin-top: 10px; padding-left: 40%;">
-                                                        <b class="no-record">No records found.</b>
-                                                    </div>
-                                                </tr>
+                                </tbody>
+                                <tr>
+                                    <div id="no-records-message"
+                                        style="display: none; color: red; margin-top: 10px; padding-left: 40%;">
+                                        <b class="no-record">No records found.</b>
+                                    </div>
+                                </tr>
                                 </tbody>
                             </table>
-                         
+
                         </div>
                     </div>
                     <div class="d-flex justify-content-between">
@@ -215,8 +208,11 @@
                 <div class="modal-dialog modal-dialog-scrollable modal-lg modal-fullscreen p-5" role="document">
                     <div class="modal-content modal-content-data validate-input">
                         <div class="modal-header">
-                            <p id="conference-publication"><h3 id="conferenceHeader">Conference </h3></p>
-                            <div class="close" id= "headerClose" data-dismiss="modal" aria-label="Close">
+                            <div style="width:80%;" class="d-flex justify-content-center">
+                                <h5 class="modal-title ml-4" id="conference-publication">CONFERENCE</h5>
+                            </div>
+
+                            <div class="close" id="headerClose" data-dismiss="modal" aria-label="Close">
                                 <span type="button"><i class="fas fa-times "></i></span>
                             </div>
                         </div>
@@ -225,16 +221,15 @@
                                 <!-- Campus -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="application-no" class="form-label fw-bold"> NMIMS Campus </label>
-                                    <input type="text" id="nmims-campus" data-validate="isEmpty,isExist" data
-                                        data-err-msg="Provide Valid Input"
-                                        class="form-control number" required>
+                                    <input type="text" id="nmims-campus" data-validate="isEmpty,isExist,isAlphabeticWords
+                                        data data-err-msg=" Provide Valid Input" class="form-control number" required>
                                 </div>
                                 <!-- school -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="application-no" class="form-label fw-bold"> NMIMS School </label>
-                                    <input type="text" id="nmims-school" data-validate="isEmpty,isExist" data
-                                        data-err-msg="Provide Valid Input"
-                                        class="form-control number" required>
+                                    <input type="text" id="nmims-school"
+                                        data-validate="isEmpty,isExist,isAlphabeticWords" data
+                                        data-err-msg="Provide Valid Input" class="form-control number" required>
                                 </div>
                                 <!--  Title of the Paper -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
@@ -248,9 +243,8 @@
                                     <label for="conference-name" class="form-label  fw-bold"> Name of Conference
                                     </label>
                                     <input type="text" name="conference-name" id="conference-name"
-                                        data-validate="isEmpty,isNotNumber,isExist,isLength:2:255"
-                                        data-err-msg="Provide Valid Input" class="form-control"
-                                        required />
+                                        data-validate="isEmpty,isAlphabeticWords,isExist,isLength:2:255"
+                                        data-err-msg="Provide Valid Input" class="form-control" required />
                                 </div>
 
                                 <!-- Place of Conferencend  -->
@@ -258,15 +252,14 @@
                                     <label for="conference-name" class="form-label  fw-bold"> Place of Conference
                                     </label>
                                     <input type="text" name="conference-name" id="conference-place"
-                                        data-validate="isEmpty,isNotNumber,isExist,isLength:2:255"
-                                        data-err-msg="Provide Valid Input" class="form-control"
-                                        required />
+                                        data-validate="isEmpty,isAlphaNumeric,isExist,isLength:2:255"
+                                        data-err-msg="Provide Valid Input" class="form-control" required />
                                 </div>
 
                                 <!--  Proceedings published Yes/No -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="proceedings-detail" class="form-label fw-bold"> Proceedings published
-                                        Yes/No </label>
+                                        Yes/No </label></br>
                                     <div class="form-check-inline">
                                         <label for="is-published-yes" class="form-check-label">
                                             <input type="radio" class="form-check-input" id="is-published-yes"
@@ -298,73 +291,34 @@
                                     </div>
                                 </div>
                                 <!-- Are you the Presenter? -->
-                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <label for="is-presenter" class="form-label fw-bold mb-3"> Are You The Presenter ?
+                                <!-- <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="is-presenter" class="form-label fw-bold mb-3 d-none"> Are You The
+                                        Presenter ?
                                     </label><br>
                                     <div class="form-check-inline">
-                                        <label for="Yes" class="form-check-label">
-                                            <input type="radio" class="form-check-input" id="is-presenter-yes"
+                                        <label for="Yes" class="form-check-label d-none">
+                                            <input type="radio" class="form-check-input d-none" id="is-presenter-yes"
                                                 name="is-presenter" value="Yes">
                                             Yes
                                         </label>
                                     </div>
                                     <div class="form-check-inline">
-                                        <label for="no" class="form-check-label">
-                                            <input type="radio" class="form-check-input" id="is-presenter-no"
+                                        <label for="no" class="form-check-label d-none">
+                                            <input type="radio" class="form-check-input d-none" id="is-presenter-no"
                                                 name="is-presenter" value="No" checked> No
                                         </label>
                                     </div>
-                                </div>
+                                </div> -->
 
-                                <!-- Inventor -->
-                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <label for="investor-details" class="form-label fw-bold mb-3">Author Details
-                                        ?</label><br>
-                                    <div class="form-check-inline">
-                                        <label for="is-internal" class="form-check-label enter-faculty-type">
-                                            <input type="radio" class="form-check-input enternal-type"
-                                                name="author-type" id="is-internal" value="Internal">
-                                            <span id="enternal-text">Internal</span>
-                                        </label>
-                                        <div class="col-lg-1 p-6 w-100 d-none" id="employee-list">
-                                            <select id="emp-name" style="width: 200px;" multiple>
-                                                <option value="">select employee name</option>
-                                                <% internalEmpList.forEach(function(employee) { %>
-                                                    <option value="<%= employee.employee_name %>">
-                                                        <%= employee.employee_name %>
-                                                    </option>
-                                                    <% }); %>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="form-check-inline">
-                                        <label for="is-external" class="form-check-label external-faculty">
-                                            <input type="radio" class="form-check-input" id="is-external"
-                                                name="author-type" value="External">
-                                            <span id="external-text">External</span>
-                                        </label>
-
-                                    </div>
-                                </div>
-                                <div id="author-details" class="form-group col-lg-6 col-md-8 col-sm-12 mb-4 d-none">
-                                    <div class="author-details-section col-lg-6 col-md-8 col-sm-12">
-                                        <label for="author-name " class="form-label fw-bold">Author Name:</label>
-                                        <input type="text" id="author-name" class="col-md-12 form-control"
-                                            placeholder="Enter author name">
-                                        <button id="add-more-details"
-                                            class="btn col-md-12 btn-md btn-primary submit-btn update-btn"
-                                            type="button">Add More Details</button>
-                                    </div>
-                                </div>
+                             
                                 <!-- Presenting Author-->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="presenting-author" class="form-label fw-bold">
                                         Presenting Author
                                     </label>
                                     <input type="text" name="presenting-author" id="presenting-author"
-                                        data-validate="isEmpty,isNotNumber,isExist,isLength:2:255"
-                                        data-err-msg="Provide Valid Input" class="form-control"
-                                        required>
+                                        data-validate="isEmpty,isAlphabeticWords,isExist,isLength:2:255"
+                                        data-err-msg="Provide Valid Input" class="form-control" required>
                                 </div>
 
                                 <!-- Organizing Body -->
@@ -374,8 +328,7 @@
                                     </label>
                                     <input type="text" name="publicaton-detail" id="organizing-body"
                                         data-validate="isEmpty,isNotNumber,isExist,isLength:2:255"
-                                        data-err-msg="Provide Valid Input" class="form-control"
-                                        required>
+                                        data-err-msg="Provide Valid Input" class="form-control" required>
                                 </div>
                                 <!-- Any award for presentation -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12  mb-4">
@@ -419,7 +372,9 @@
                                     <label for="doi-weblink" class="form-label  fw-bold">
                                         DOI/Weblink of paper ID
                                     </label>
-                                    <input  data-validate="isEmpty,isExist,isValidHttpUrl" data-err-msg="Link is required." type="number" name="web-link" id="doi-weblink-id" class="form-control" required />
+                                    <input data-validate="isEmpty,isExist,isNumber"
+                                        data-err-msg="Link is required." type="text" name="web-link" id="doi-weblink-id"
+                                        class="form-control" required />
                                 </div>
 
                                 <!-- Sponsored By NMIMS/Other -->
@@ -455,39 +410,140 @@
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="conference-place" class="form-label  fw-bold"> Publication Date </label>
                                     <input type="Date" name="conference-place" id="publication-date"
-                                        data-validate="isEmpty,isExist" data-err-msg="Date is required."
+                                        data-validate="isEmpty,isExist" data-err-msg="Date is required"
                                         class="form-control" required />
                                 </div>
 
                                 <!-- Upload Files -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <label for="upload" class="form-label fw-bold ">Upload Files</label>
+                                    <label for="upload" class="form-label fw-bold ">Upload Files
+                                        <div id="uploadNewSupportDocumentDiv">
+                                            <label for="uploadNewSupportDocument"><small>Click to Upload New
+                                                    File</small></label>
+                                            <input type="checkbox" name="uploadNewSupportDocument"
+                                                id="uploadNewSupportDocument">
+                                        </div>
+                                    </label>
                                     <div class="d-flex">
                                         <input type="file" id="conference-documnets"
                                             data-validate="isEmpty,isExist,isFile" data-err-msg="File is required"
                                             name="conferenceDocument" class="col-md-12 form-control " required multiple>
                                         <button id="conference-file-edit" class="download-btn download-file"><i
-                                                class="fas fa-download text-danger"></i></button>
+                                                class="fas fa-download text-danger"></i>Download</button>
                                     </div>
                                 </div>
                                 <!-- upload proof -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-        
-                                    <label for="upload" class="form-label fw-bold ">Upload
-                                        Proof</label>&ensp;
-                                        <span style="color:red" id="proofError"></span>
+
+                                    <label for="upload" class="form-label fw-bold ">Upload Proof
+                                        <div id="uploadNewSupportDocumentDivOne">
+                                            <label for="uploadNewSupportDocument"><small>Click to Upload New
+                                                    File</small></label>
+                                            <input type="checkbox" name="uploadNewSupportDocumentOne"
+                                                id="uploadNewSupportDocumentOne">
+                                        </div>
+                                    </label>&ensp;
+                                    <span style="color:red" id="proofError"></span>
                                     <div class="d-flex">
                                         <input type="file" id="conference-proofs" name="conferenceProof"
-                                            class="col-md-12 form-control " multiple>
+                                            class="col-md-12 form-control " required multiple>
                                         <button class="download-btn download-file" id="conference-proof-edit"><i
-                                                class="fas fa-download text-danger"></i></button>
+                                                class="fas fa-download text-danger"></i>Download</button>
+                                    </div>
+                                </div>
+
+                                <!-- Faculty Type -->
+                                <div class="col-lg-12 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="task-sub-title sub-title-text fw-bold"> Faculty Details Id And Name:
+                                        </div>
+                                        <label class="view-content" id="faculty-details-container"></label>
+                                    </div>
+                                </div>
+                                   <!-- Inventor -->
+                                   <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="investor-details" class="form-label fw-bold mb-3">Author Details
+                                        ?</label><br>
+                                    <div class="form-check-inline">
+                                        <label for="is-internal" class="form-check-label enter-faculty-type">
+                                            <input type="radio" class="form-check-input enternal-type"
+                                                name="author-type" id="is-internal" value="Internal">
+                                            <span id="enternal-text">Internal</span>
+                                        </label>
+                                        <div class="col-lg-1 p-6 w-100 d-none" id="employee-list">
+                                            <select id="emp-name" style="width: 200px;" multiple>
+                                                <option value="">select employee name</option>
+                                                <% internalEmpList.forEach(function(employee) { %>
+                                                    <option value="<%= employee.id %>">
+                                                        <%= employee.faculty_name %>
+                                                    </option>
+                                                    <% }); %>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-check-inline">
+                                        <label for="is-external" class="form-check-label external-faculty">
+                                            <input type="radio" class="form-check-input" id="is-external"
+                                                name="author-type" value="External">
+                                            <span id="external-text">External</span>
+                                        </label>
+
+                                    </div>
+                                </div>
+                                <div id="author-details" class="form-group col-md-12 col-sm-12 mb-4 d-none">
+                                    <div class="author-details-section col-lg-12 col-md-8 col-sm-12">
+                                        <label for="author-name " class="form-label fw-bold col-lg-12"> External Authors
+                                            Details:</label>
+                                        <div id="dynamic-rows" class="col-lg-12 col-md-8 col-sm-12 mb-4">
+                                        </div>
+                                    </div>
+                                </div>
+                                <table class="table custom-table table-responsive research-pagination"
+                                    id="faculty-table-list">
+                                    <div class="form-group col-lg-2 col-md-6 col-sm-12 mb-4 d-none" id="name-class">
+                                        <label for="faculty-name" class="form-label fw-bold">Faculty Name</lable>
+                                            <input type="text" class="form-control" id="faculty-name">
+                                    </div>
+                                    <div class="form-group col-lg-2 col-md-6 col-sm-12 mb-4 d-none" id="dsg-class">
+                                        <label for="" class="form-label fw-bold">Faculty Designation :</lable>
+                                            <input type="text" class="form-control" id="faculty-designation">
+                                    </div>
+                                    <div class="form-group col-lg-2 col-md-6 col-sm-12 mb-4 d-none" id="id-class">
+                                        <label for="faculty-emp-id" class="form-label fw-bold">Faculty Id (Optional)
+                                            </lable>
+                                            <input type="text" class="form-control" id="faculty-emp-id">
+                                    </div>
+                                    <div class="form-group col-lg-2 col-md-6 col-sm-12 mb-4 d-none" id="address-class">
+                                        <label for="faculty-address" class="form-label fw-bold">Faculty Addres</lable>
+                                            <input type="text" class="form-control" id="faculty-address">
+                                    </div>
+
+                                    <div class="form-group col-lg- col-md-6 col-sm-12 mb-4 d-none" id="add-btn">
+                                        <button id="insert-details" data-bs-target="#"
+                                            class="btn col-lg-4 col-md-6 col-sm-12 btn-primary" type="button">Insert
+                                            Faculty Details</button>
+                                        <button id="add-more-details" data-bs-target="#"
+                                            class="btn col-lg-4 col-md-6 col-sm-12 btn-primary" type="button">Add More
+                                            Details</button>
+
+                                    </div>
+                                </table>
+                                <div id="author-details" class="form-group col-lg-6 col-md-8 col-sm-12 mb-4 d-none">
+                                    <div class="author-details-section col-lg-6 col-md-8 col-sm-12">
+                                        <label for="author-name " class="form-label fw-bold">Author Name:</label>
+                                        <input type="text" id="author-name" class="col-md-12 form-control"
+                                            placeholder="Enter author name">
+                                        <button id="add-more-details"
+                                            class="btn col-md-12 btn-md btn-primary submit-btn update-btn"
+                                            type="button">Add More Details</button>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <!-- footer button -->
                         <div class="modal-footer">
-                            <button type="button" id="footerClose" class="btn btn-danger" data-dismiss="modal">Close</button>
+                            <button type="button" id="footerClose" class="btn btn-danger"
+                                data-dismiss="modal">Close</button>
                             <button type="button" class="btn btn-primary " id="submit-btn">Submit</button>
                             <button type="button" class="btn btn-primary d-none" id="update-btn">update</button>
                         </div>
@@ -500,7 +556,10 @@
                 <div class="modal-dialog modal-dialog-scrollable modal-lg modal-fullscreen p-5" role="document">
                     <div class="modal-content modal-content-data">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="conference-publication">Conference View</h5>
+
+                            <div style="width:80%;" class="d-flex justify-content-center">
+                                <h5 class="modal-title ml-4" id="conference-publication">CONFERENCE View</h5>
+                            </div>
                             <div class="close" data-dismiss="modal" aria-label="Close">
                                 <span type="button"><i class="fas fa-times "></i></span>
                             </div>
@@ -684,8 +743,12 @@
             <script>
                 //   for index icrement
                 const rowCount = document.getElementById('row-count');
+                const InsertDetails = document.getElementById('insert-details');
+                let externalFacultyIdArray = [];
+                let facultycontainer = []
                 let rowIndex = rowCount.innerText;
                 let indexValue = parseInt(rowIndex, 10);
+                const facultyTableList = document.getElementById('faculty-table-list')
                 console.log('indexValue ==>', indexValue)
                 const conferencePublicationList = document.getElementById('conference-publication-list');
                 const employeeDropdown = document.getElementById("emp-name");
@@ -694,16 +757,33 @@
                 const conferenceAddModal = document.getElementById('confrence-modal-form');
                 const submitBtn = document.getElementById('submit-btn');
                 const updateBtn = document.getElementById('update-btn');
+                
+
                 //modal for button visualization
                 conferenceAddModal.addEventListener('click', function (event) {
 
-                //    let proofError = document.getElementById('proofError');
-                //    proofError.innerText= '';
+                    //    let proofError = document.getElementById('proofError');
+                    //    proofError.innerText= '';
 
                     if (event.target.tagName === 'BUTTON' && event.target.classList.contains('add-modal') || event.target.classList.contains('plus')) {
+
+                        document.getElementById('conference-publication').innerText = 'CONFERENCE';
+
+                        document.querySelector('#uploadNewSupportDocumentOne').classList.add('d-none');
+                        document.querySelector('#conference-proof-edit').classList.add('d-none');
+                        document.querySelector('#uploadNewSupportDocument').classList.add('d-none');
+                        document.querySelector('#conference-file-edit').classList.add('d-none');
+
+
                         updateBtn.classList.add('d-none');
                         submitBtn.classList.remove('d-none');
-                        document.querySelector('#conferenceHeader').innerHTML = 'Conference';
+                        // document.querySelector('#conferenceHeader').innerHTML = 'Conference';
+                        document.querySelector('#uploadNewSupportDocumentDiv').classList.add('d-none');
+                        document.querySelector('#uploadNewSupportDocumentDivOne').classList.add('d-none');
+                        document.querySelector('#conference-documnets').classList.remove('d-none');
+                        document.querySelector('#conference-proofs').classList.remove('d-none');
+                        document.querySelector('#uploadNewSupportDocument').checked = false;
+                        document.querySelector('#uploadNewSupportDocumentOne').checked = false;
                         removeErrorMsg()
 
                         $('#conference-publication-modal').modal({
@@ -753,7 +833,7 @@
                     const volAndIssueNo = document.getElementById('vol-and-issue-no').value;
                     const issnIsbnNo = document.getElementById('issn-isbn-no').value;
                     const doiWebLinkId = document.getElementById('doi-weblink-id').value;
-                    const isPresenter = document.querySelector('input[name="is-presenter"]:checked').value;
+                    const isPresenter = 'Yes';
                     const authorType = document.querySelector('input[name="author-type"]:checked');
                     const nmimsCampus = document.getElementById('nmims-campus').value;
                     const nmimsSchool = document.getElementById('nmims-school').value;
@@ -766,6 +846,7 @@
                     const sponsored = document.querySelector('input[name="sponsored"]:checked').value;
                     const procedingDetail = document.querySelector('input[name="Proceedings-details"]:checked').value;
                     const conferenceType = document.querySelector('input[name="conference-type"]:checked').value;
+
                     const presentationAward = document.querySelector('input[name="award-for-presentation"]:checked').value;
                     // function call 
                     await insertFacultyNameString(authorType, conferenceData);
@@ -796,6 +877,8 @@
 
                     // for setup of key value paire to send form data
 
+                    conferenceData.append('facultycontainer', JSON.stringify(facultycontainer))
+
                     conferenceData.append('titleOfPaper', titleOfPaper);
                     conferenceData.append('conferenceName', conferenceName);
                     conferenceData.append('procedingDetail', procedingDetail);
@@ -823,56 +906,56 @@
                         })
                         .then((data) => {
                             if (data.status == 'Done') {
-                //                 console.log('data ==>>', data);
-                //                 const rowCountInteger = parseInt(data.rowCount, 10);
-                //                 const IndexEntry = rowCountInteger + indexValue
-                //                 console.log('IndexEntry ===>>>', IndexEntry);
-                //                 const newConferenceFormData = document.createElement('tr');
-                //                 newConferenceFormData.setAttribute('data-is-presenter', data.conferenceData.isPresenter);
-                //                 newConferenceFormData.setAttribute('data-author-type', data.conferenceData.authorType);
-                //                 newConferenceFormData.setAttribute('data-presenting-author', data.conferenceData.presentingAuthor);
-                //                 newConferenceFormData.setAttribute('data-vol-and-issue-no', data.conferenceData.volAndIssueNo);
-                //                 newConferenceFormData.setAttribute('data-doi-weblink', data.conferenceData.doiWebLinkId);
-                //                 newConferenceFormData.setAttribute('data-upload-files', data.conferenceDocument);
-                //                 newConferenceFormData.setAttribute('data-award-for-presentation', data.conferenceData.isPresenter);
-                //                 newConferenceFormData.setAttribute('data-upload-proof', data.conferenceProofFile);
-                //                 newConferenceFormData.setAttribute('data-organizing-body', data.conferenceData.organizingBody);
-                //                 newConferenceFormData.setAttribute('data-spent-amount', data.conferenceData.spentAmount);
-                //                 newConferenceFormData.setAttribute('data-conference-place', data.conferenceData.conferencePlace);
-                //                 newConferenceFormData.setAttribute('data-conference-type', data.conferenceData.conferenceType);
-                //                 newConferenceFormData.setAttribute('data-publication-date', data.conferenceData.publicationDate);
-                //                 newConferenceFormData.innerHTML = `
-                //     <td>${IndexEntry}</td>
-                //     <td class="campus">${data.conferenceData.nmimsCampus}</td>
-                //     <td class="school">${data.conferenceData.nmimsSchool}</td>
-                //     <td class="title-of-paper">${data.conferenceData.titleOfPaper}</td>
-                //     <td class="conference-name">${data.conferenceData.conferenceName}</td>
-                //     <td class="proceedings-detail">${data.conferenceData.procedingDetail}</td>
-                //     <td class="issn-isbn-no">${data.conferenceData.issnIsbnNo}</td>
-                //     <td>
-                //         // <label class="view" data-conference-id="${data.conferenceId}"><i class="fa-solid fa-eye view text-danger"
-                //         // data-conference-id="${data.conferenceId}"></i></label>
-                //         // <label class="edit"data-conference-id="${data.conferenceId}"><i class="fa fa-edit edit text-danger"
-                //         // data-conference-id="${data.conferenceId}"></i></label>
-                //         // <label class="delete"data-conference-id="${data.conferenceId}"><i class="fa-solid fa-trash delete text-danger"
-                //         // data-conference-id="${data.conferenceId}"></i></label>
+                                //                 console.log('data ==>>', data);
+                                //                 const rowCountInteger = parseInt(data.rowCount, 10);
+                                //                 const IndexEntry = rowCountInteger + indexValue
+                                //                 console.log('IndexEntry ===>>>', IndexEntry);
+                                //                 const newConferenceFormData = document.createElement('tr');
+                                //                 newConferenceFormData.setAttribute('data-is-presenter', data.conferenceData.isPresenter);
+                                //                 newConferenceFormData.setAttribute('data-author-type', data.conferenceData.authorType);
+                                //                 newConferenceFormData.setAttribute('data-presenting-author', data.conferenceData.presentingAuthor);
+                                //                 newConferenceFormData.setAttribute('data-vol-and-issue-no', data.conferenceData.volAndIssueNo);
+                                //                 newConferenceFormData.setAttribute('data-doi-weblink', data.conferenceData.doiWebLinkId);
+                                //                 newConferenceFormData.setAttribute('data-upload-files', data.conferenceDocument);
+                                //                 newConferenceFormData.setAttribute('data-award-for-presentation', data.conferenceData.isPresenter);
+                                //                 newConferenceFormData.setAttribute('data-upload-proof', data.conferenceProofFile);
+                                //                 newConferenceFormData.setAttribute('data-organizing-body', data.conferenceData.organizingBody);
+                                //                 newConferenceFormData.setAttribute('data-spent-amount', data.conferenceData.spentAmount);
+                                //                 newConferenceFormData.setAttribute('data-conference-place', data.conferenceData.conferencePlace);
+                                //                 newConferenceFormData.setAttribute('data-conference-type', data.conferenceData.conferenceType);
+                                //                 newConferenceFormData.setAttribute('data-publication-date', data.conferenceData.publicationDate);
+                                //                 newConferenceFormData.innerHTML = `
+                                //     <td>${IndexEntry}</td>
+                                //     <td class="campus">${data.conferenceData.nmimsCampus}</td>
+                                //     <td class="school">${data.conferenceData.nmimsSchool}</td>
+                                //     <td class="title-of-paper">${data.conferenceData.titleOfPaper}</td>
+                                //     <td class="conference-name">${data.conferenceData.conferenceName}</td>
+                                //     <td class="proceedings-detail">${data.conferenceData.procedingDetail}</td>
+                                //     <td class="issn-isbn-no">${data.conferenceData.issnIsbnNo}</td>
+                                //     <td>
+                                //         // <label class="view" data-conference-id="${data.conferenceId}"><i class="fa-solid fa-eye view text-danger"
+                                //         // data-conference-id="${data.conferenceId}"></i></label>
+                                //         // <label class="edit"data-conference-id="${data.conferenceId}"><i class="fa fa-edit edit text-danger"
+                                //         // data-conference-id="${data.conferenceId}"></i></label>
+                                //         // <label class="delete"data-conference-id="${data.conferenceId}"><i class="fa-solid fa-trash delete text-danger"
+                                //         // data-conference-id="${data.conferenceId}"></i></label>
 
-                //          <td title="View" data-conference-id="${data.conferenceId}"
-                //                                     class="view border-right-0" style="cursor: pointer;" id="label-cals">
-                //                                     &#128065;
-                //                                 </td>
-                //                                 <td title="Edit" data-conference-id="${data.conferenceId}"
-                //                                     class="edit border-right-0" style="cursor: pointer;" id="label-cals">
-                //                                     &#9998;
-                //                                 </td>
-                //                                 <td title="Delete" data-conference-id="${data.conferenceId}"
-                //                                     class="delete border-right-0" style="cursor: pointer;" id="label-cals">
-                //                                     &#128465;
+                                //          <td title="View" data-conference-id="${data.conferenceId}"
+                                //                                     class="view border-right-0" style="cursor: pointer;" id="label-cals">
+                                //                                     &#128065;
+                                //                                 </td>
+                                //                                 <td title="Edit" data-conference-id="${data.conferenceId}"
+                                //                                     class="edit border-right-0" style="cursor: pointer;" id="label-cals">
+                                //                                     &#9998;
+                                //                                 </td>
+                                //                                 <td title="Delete" data-conference-id="${data.conferenceId}"
+                                //                                     class="delete border-right-0" style="cursor: pointer;" id="label-cals">
+                                //                                     &#128465;
 
-                //                                 </td>
-                //          </td>
-                // `;
-                //                 conferencePublicationList.append(newConferenceFormData)
+                                //                                 </td>
+                                //          </td>
+                                // `;
+                                //                 conferencePublicationList.append(newConferenceFormData)
                                 $('#conference-publication-modal').modal('hide');
                                 Swal.fire({
                                     position: "top-center",
@@ -1060,6 +1143,9 @@
                                     viewConferenceType.innerText = data.viewConferenceData[0].conference_type;
                                     viewIsPresenter.innerText = data.viewConferenceData[0].is_presenter;
                                     viewAuthortype.innerText = data.viewConferenceData[0].author_type.replace(/,/g, ' ');
+
+
+
                                     viewAward.innerText = data.viewConferenceData[0].award_for_presentation;
                                     viewPresentingAuthor.innerText = data.viewConferenceData[0].presenting_authors;
                                     viewOrganizationBoy.innerText = data.viewConferenceData[0].organizing_body;
@@ -1071,15 +1157,27 @@
                             .catch((error) => {
                                 console.log('error ==>>', error);
                             })
+
+
                         $('#conference-publication-view-modal').modal('show');
+
+
                     }
                     // for update
                     if (event.target.classList.contains('edit')) {
+
+
+                        document.getElementById('conference-publication').innerText = 'CONFERENCE Edit';
                         console.log('clickedddd');
                         $('#conference-publication-modal').modal({
                             backdrop: 'static'
                         });
-                        removeErrorMsg();
+
+                        document.querySelector('#uploadNewSupportDocumentDiv').classList.remove('d-none');
+                        document.querySelector('#uploadNewSupportDocumentDivOne').classList.remove('d-none');
+                        document.querySelector('#conference-documnets').classList.add('d-none');
+                        document.querySelector('#conference-proofs').classList.add('d-none');
+
                         InternalAuthorValue = '';
                         externalAuthorValue = '';
                         storedFacultyValue = '';
@@ -1089,7 +1187,7 @@
                         console.log('ID ==>>', conferenceId);
                         $('#conference-publication-modal').modal('show');
                         updateBtn.classList.remove('d-none');
-                        document.querySelector('#conferenceHeader').innerHTML = 'Conference Edit';
+                        // document.querySelector('#conferenceHeader').innerHTML = 'Conference Edit';
                         submitBtn.classList.add('d-none');
                         employeeList.classList.add('d-none');
                         authorDetails.classList.add('d-none');
@@ -1172,7 +1270,7 @@
                     const volAndIssueNo = document.getElementById('vol-and-issue-no').value;
                     const issnIsbnNo = document.getElementById('issn-isbn-no').value;
                     const doiWebLinkId = document.getElementById('doi-weblink-id').value;
-                    const isPresenter = document.querySelector('input[name="is-presenter"]:checked').value;
+                    // const isPresenter = document.querySelector('input[name="is-presenter"]:checked').value;
                     const authorType = document.querySelector('input[name="author-type"]:checked');
                     const nmimsCampus = document.getElementById('nmims-campus').value;
                     const nmimsSchool = document.getElementById('nmims-school').value;
@@ -1207,7 +1305,7 @@
                     updatedConferenceData.append('issnIsbnNo', issnIsbnNo);
                     updatedConferenceData.append('doiWebLinkId', doiWebLinkId);
                     updatedConferenceData.append('conferenceType', conferenceType);
-                    updatedConferenceData.append('isPresenter', isPresenter);
+                    // updatedConferenceData.append('isPresenter', isPresenter);
                     updatedConferenceData.append('publicationDate', publicationDate);
                     updatedConferenceData.append('spentAmount', spentAmount);
                     updatedConferenceData.append('presentationAward', presentationAward);
@@ -1403,30 +1501,30 @@
                 let employeeListArray = [];
 
 
-                 // ajax for search bar to search employee name 
-                 const facultyOptions = employeesDataObj.map(faculty => ({
-                            value: faculty.id,
-                            text: ` ${faculty.employee_name}`
-                        }));
+                // ajax for search bar to search employee name 
+                const facultyOptions = employeesDataObj.map(faculty => ({
+                    value: faculty.id,
+                    text: ` ${faculty.faculty_name}`
+                }));
                 new TomSelect("#emp-name", {
-                        options: facultyOptions,
-                        placeholder: "Select Employee Name",
-                        hidePlaceholder: true,
-                        create: true,
-                        plugins: ['remove_button'],
-                        onItemAdd: function () {
-                            this.setTextboxValue('');
-                            this.refreshOptions();
+                    options: facultyOptions,
+                    placeholder: "Select Employee Name",
+                    hidePlaceholder: true,
+                    create: true,
+                    plugins: ['remove_button'],
+                    onItemAdd: function () {
+                        this.setTextboxValue('');
+                        this.refreshOptions();
+                    },
+                    render: {
+                        option: function (data, escape) {
+                            return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
                         },
-                        render: {
-                            option: function (data, escape) {
-                                return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
-                            },
-                            item: function (data, escape) {
-                                return '<div>' + escape(data.text) + '</div>';
-                            }
+                        item: function (data, escape) {
+                            return '<div>' + escape(data.text) + '</div>';
                         }
-                    });
+                    }
+                });
                 const authorNamesArray = [];
                 // function for select author name from drop down list
                 function handleEmployeeDropdownChange() {
@@ -1435,6 +1533,7 @@
                         .map(option => option.value);
                     InternalAuthorValue = selectedValues.length === 0 ? "" : selectedValues;
                     authorNamesArray.push({ 'internalEmpList': InternalAuthorValue })
+                    facultycontainer.push(InternalAuthorValue)
                     console.log("Selected employee values:", InternalAuthorValue);
 
                 }
@@ -1495,7 +1594,13 @@
 
                 function externalFacultyDetails() {
                     employeeList.classList.add('d-none');
-                    authorDetails.classList.remove('d-none');
+                    addMoreDetailsButton.classList.add('d-none');
+                    document.getElementById('insert-details').classList.remove('d-none');
+                    document.getElementById('name-class').classList.remove('d-none')
+                    document.getElementById('dsg-class').classList.remove('d-none')
+                    document.getElementById('id-class').classList.remove('d-none')
+                    document.getElementById('address-class').classList.remove('d-none');
+                    document.getElementById('add-btn').classList.remove('d-none')
                 }
 
                 // making d-none external faculty
@@ -1506,36 +1611,161 @@
                 $("#conference-publication-list").DataTable({
                     "pageLength": 5,
                     "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+                })
+
+                document.getElementById('is-award-yes').addEventListener('click', () => {
+                    let isAward = document.getElementById('is-award-yes');
+                    let proofError = document.getElementById('proofError');
+                    if (isAward.checked) {
+                        proofError.innerText = '*Please Enter the documents'
+                    }
+                })
+
+                document.getElementById('is-award-no').addEventListener('click', () => {
+                    let isAward = document.getElementById('is-award-no');
+                    let proofError = document.getElementById('proofError');
+                    if (isAward.checked) {
+                        proofError.innerText = ''
+                    }
+                })
+
+                document.getElementById('headerClose').addEventListener('click', () => {
+                    document.location.reload();
+                })
+
+                document.getElementById('footerClose').addEventListener('click', () => {
+                    document.location.reload();
+
+                })
+
+                document.querySelector('#uploadNewSupportDocument').addEventListener('click', function (e) {
+                    let is_checked = document.querySelector('#uploadNewSupportDocument').checked;
+                    console.log("is_checked :", is_checked);
+                    if (is_checked) {
+                        document.querySelector('#conference-documnets').classList.remove('d-none');
+                    } else {
+                        document.querySelector('#conference-documnets').classList.add('d-none');
+                    }
+                });
+
+                const insertExternalDetails = (url) => {
+                    // Define externalFacultyArray and externalFacultyData outside the function
+                    const externalFacultyDetails = {};
+                    externalFacultyDetails.facultyName = document.getElementById('faculty-name').value;
+                    externalFacultyDetails.facultyDsg = document.getElementById('faculty-designation').value;
+                    externalFacultyDetails.facultyAddr = document.getElementById('faculty-address').value;
+                    externalFacultyDetails.facultyEmpId = document.getElementById('faculty-emp-id').value;
+
+                    const payload = {
+                        externalFacultyDetails: externalFacultyDetails
+                    }
+
+                    console.log('payload ====>>>>>>', payload);
+
+                    fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'content-type': 'application/json'
+                        },
+                        body: JSON.stringify(payload)
                     })
+                        .then((result) => {
+                            return result.json()
+                        })
+                        .then((data) => {
+                            if (data.status === 'Done') {
+                                facultyContainer.push(data.externalFacultyId)
+                                console.log('data ===>>>>>', data);
+                                let rowCountInteger = parseInt(data.rowCount, 10);
+                                let indexCount = rowCountInteger;
+                                rowCountInteger = indexCount + rowCountInteger;
+                                console.log('rowCountInteger ===>>>>>>', rowCountInteger);
+                                externalFacultyIdArray.push(data.externalFacultyId);
+                                document.getElementById('name-class').classList.add('d-none');
+                                document.getElementById('dsg-class').classList.add('d-none');
+                                document.getElementById('id-class').classList.add('d-none');
+                                document.getElementById('address-class').classList.add('d-none');
+                                document.getElementById('insert-details').classList.add('d-none');
+                                document.getElementById('add-more-details').classList.remove('d-none');
+                                const newFacultyDataRow = document.createElement('tr');
+                                newFacultyDataRow.innerHTML = `
+                                <td class="name-class"> ${data.facultyData.facultyName} </td>
+                                <td class="dsg-class"> ${data.facultyData.facultyDsg} </td>
+                                <td class="id-class"> ${data.facultyData.facultyEmpId} </td>
+                                <td class="address-class"> ${data.facultyData.facultyAddr} </td>
+                    `
+                                facultyTableList.classList.remove('d-none')
+                                facultyTableList.appendChild(newFacultyDataRow);
+                                Swal.fire({
+                                    position: "top-center",
+                                    icon: "success",
+                                    title: `${data.message}`,
+                                    showConfirmButton: true,
+                                    confirmButtonText: "OK",
+                                    confirmButtonColor: "#DD6B55"
+                                });
+                            }
+                            else {
+                            Swal.fire({
+                            position: "top-center",
+                            icon: "error",
+                            title: "Failed to insert",
+                            color: "red",
+                            showConfirmButton: true,
+                            confirmButtonText: "OK",
+                            confirmButtonColor: "#DD6B55"
+                        });
+                    }
+                        }).catch((error) => {
+                            Swal.fire({
+                            position: "top-center",
+                            icon: "error",
+                            title: "Failed to insert",
+                            color: "red",
+                            showConfirmButton: true,
+                            confirmButtonText: "OK",
+                            confirmButtonColor: "#DD6B55"
+                        });
+                        })
 
-                    document.getElementById('is-award-yes').addEventListener('click',() => {
-                        let isAward = document.getElementById('is-award-yes');
-                        let proofError = document.getElementById('proofError');
-                        if(isAward.checked){
-                           proofError.innerText = '*Please Enter the documents'
-                        }
+                    // event listner for insert exetrnal faculty details details
+                    document.getElementById('add-more-details').addEventListener('click', () => {
+
+                        console.log('clicked add more button');
+                        // making input field empty
+                        document.getElementById('faculty-name').value = '';
+                        document.getElementById('faculty-designation').value = '';
+                        document.getElementById('faculty-address').value = '';
+                        document.getElementById('faculty-emp-id').value = '';
+                        document.getElementById('name-class').classList.remove('d-none');
+                        document.getElementById('dsg-class').classList.remove('d-none');
+                        document.getElementById('id-class').classList.remove('d-none');
+                        document.getElementById('address-class').classList.remove('d-none');
+                        document.getElementById('insert-details').classList.remove('d-none');
+                        document.getElementById('add-more-details').classList.add('d-none');
+
                     })
+                }
 
-                    document.getElementById('is-award-no').addEventListener('click',() => {
-                        let isAward = document.getElementById('is-award-no');
-                        let proofError = document.getElementById('proofError');
-                        if(isAward.checked){
-                           proofError.innerText = ''
-                        }
-                    })
+                //  addEventListener   for insert external details
+                InsertDetails.addEventListener('click', async () => {
+                    console.log('clickedd insert details buttons')
+                    await insertExternalDetails('<%- BASE_URL %>research/external/faculty-insert');
 
-                    document.getElementById('headerClose').addEventListener('click',() => {
-                        document.location.reload();
-                    })
-
-                    document.getElementById('footerClose').addEventListener('click',() => {
-                        document.location.reload();
-
-                    })
+                });
 
 
+document.querySelector('#uploadNewSupportDocumentOne').addEventListener('click',function(e){
+    let is_checked = document.querySelector('#uploadNewSupportDocumentOne').checked;
+    console.log("is_checked :",is_checked);
+    if(is_checked){
+        document.querySelector('#conference-proofs').classList.remove('d-none');
+    }else{
+        document.querySelector('#conference-proofs').classList.add('d-none');
+    }
+});
                    
             </script>
             <!-- <%- include('./partials/pagination') %> -->
-                <%- include('./partials/footer') %>
-                    <%- include('./partials/footer-end') %>
+            <%- include('./partials/footer') %>
+                <%- include('./partials/footer-end') %>

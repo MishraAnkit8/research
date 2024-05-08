@@ -26,9 +26,8 @@
                                 <h5 class="pl-2">BOOK CHAPTER PUBLICATION LIST</h5>
                             </div>
                             <div>
-                                <span>ADD</span>
                                 <button id="book-chapter-add-modal" type="button" class="btn btn-primary add-modal"
-                                    data-toggle="modal" data-target="#book-chapter-modal">
+                                    data-toggle="modal" data-target="#book-chapter-modal">ADD
                                     <i class="fas fa-plus plus"></i></button>
                                 </button>
                             </div>
@@ -64,7 +63,7 @@
                             </div>
                             <table class="table vertical-lines custom-table " id="book-chapter-list">
                                 <thead>
-                                    <th class="col-lg-1">#</th>
+                                    <th class="col-lg-1">Serial no</th>
                                     <th class="col-lg-1">Author's name</th>
                                     <th class="col-lg-1">Publication year</th>
                                     <th class="col-lg-1">Book title</th>
@@ -347,6 +346,10 @@
                                     <div class="col-lg-6 col-md-8 col-sm-12">
                                         <label for="supporting-documents" class="form-label fw-bold ">
                                             Upload Supporting Documents
+                                            <div id="uploadNewSupportDocumentDiv">
+                                                <label for="uploadNewSupportDocument"><small>Click to Upload New File</small></label>
+                                                <input type="checkbox" name="uploadNewSupportDocument" id="uploadNewSupportDocument">
+                                            </div>
                                         </label>
                                         <div class="d-flex">
                                             <input type="file" name="researchSupportingDocument"
@@ -552,6 +555,9 @@
                         updateBtn.classList.add('d-none');
                         submitBtn.classList.remove('d-none');
                         document.querySelector('#book-chapter').innerHTML = 'BOOK CHAPTER PUBLICATION';
+                        document.querySelector('#uploadNewSupportDocumentDiv').classList.add('d-none');
+                        document.querySelector('#supporting-documents').classList.remove('d-none');
+                        document.querySelector('#uploadNewSupportDocument').checked = false;
                         removeErrorMsg()
                         // fileView.classList.add('d-none');
                         // modalImage.classList.add('d-none');
@@ -787,6 +793,8 @@
                         $('#book-chapter-modal').modal('show');
                         updateBtn.classList.remove('d-none');
                         submitBtn.classList.add('d-none');
+                        document.querySelector('#uploadNewSupportDocumentDiv').classList.remove('d-none');
+                        document.querySelector('#supporting-documents').classList.add('d-none');
                         document.querySelector('#book-chapter').innerHTML = 'BOOK CHAPTER PUBLICATION EDIT';
                         // fileView.classList.remove('d-none');
                         // modalImage.classList.remove('d-none');
@@ -1209,6 +1217,17 @@
                     "pageLength": 5,
                     "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
                 })
+
+document.querySelector('#uploadNewSupportDocument').addEventListener('click',function(e){
+
+    let is_checked = document.querySelector('#uploadNewSupportDocument').checked;
+    console.log("is_checked :",is_checked);
+    if(is_checked){
+        document.querySelector('#supporting-documents').classList.remove('d-none');
+    }else{
+        document.querySelector('#supporting-documents').classList.add('d-none');
+    }
+});
 
             </script>
             <!-- pagination -->
