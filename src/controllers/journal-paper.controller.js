@@ -89,12 +89,12 @@ module.exports.delJournalPaper = async (req, res, next) => {
 
 module.exports.updateJournalPaper = async (req, res, next) => {
     const  userName = req.body.username;
-    console.log('data is comming from template ==>>>>>', req.body);
+    console.log('data is comming from template ==>>>>>', JSON.stringify(req.body));
     console.log('files in conteroller ===>>>>', req.files)
     
     const updatePaper = await journalPaperService.updateJournalPaper(req.body, req.files, userName);
 
-    console.log('updatePaper updation in controller', updatePaper);
+    console.log('updatePaper updation in controller', JSON.stringify(updatePaper));
     const statusCode = updatePaper.status === "Done" ? 200 : (updatePaper.errorCode ? 400 : 500);
     console.log('statusCode ==>>>>', statusCode);
 
@@ -135,7 +135,7 @@ module.exports.viewJournalPaper = async(req, res, next) => {
     console.log('journalPaperId for View' , journalPaperId);
 
 
-    const viewJournalDetails = await journalPaperService.viewJournalPaper({journalPaperId}, userName);
+    const viewJournalDetails = await journalPaperService.viewJournalPaper(journalPaperId, userName);
 
     console.log('viewJournalDetails in controller ====>>>>>>', viewJournalDetails);
 

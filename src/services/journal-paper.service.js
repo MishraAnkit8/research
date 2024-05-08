@@ -219,10 +219,10 @@ module.exports.updateJournalPaper = async (body, files, userName) => {
 }
 
 // service for view
-module.exports.viewJournalPaper = async ({journalPaperId}, userName) => {
+module.exports.viewJournalPaper = async (journalPaperId, userName) => {
     console.log('journalPaperId inservice ====>>>>>>>', journalPaperId);
 
-    const viewJournalPaperData = await journalPaperModel.viewJournalPaperData({journalPaperId}, userName);
+    const viewJournalPaperData = await journalPaperModel.viewJournalPaperData(journalPaperId, userName);
 
     console.log('viewJournalPaperData ===>>>>>', viewJournalPaperData);
     return viewJournalPaperData.status === "Done" ? {
