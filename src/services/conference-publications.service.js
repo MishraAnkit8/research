@@ -44,37 +44,47 @@ module.exports.insertConferenceData = async(body , files, userName) => {
     console.log('data in service' , body);
     console.log('files in service ==>' , files);
     const conferencePublications = body;
-    const authorNameArray = JSON.parse(body.authorName);
-    const internalNames = [];
-    const externalNames = [];
-    authorNameArray.forEach(item => {
-      item.internalEmpList ? internalNames.push(item.internalEmpList) : null;
-      item.externalEmpList ? externalNames.push(item.externalEmpList) : null;
+    // const authorNameArray = JSON.parse(body.authorName);
+    // const internalNames = [];
+    // const externalNames = [];
+    // authorNameArray.forEach(item => {
+    //   item.internalEmpList ? internalNames.push(item.internalEmpList) : null;
+    //   item.externalEmpList ? externalNames.push(item.externalEmpList) : null;
       
-    });
-    // convert array into string
-    const internalNamesString = internalNames.join(", ");
-    const externalNamesString = externalNames.join(", ");
-    const authorNameString = internalNamesString + externalNamesString;
+    // });
+    // // convert array into string
+    // const internalNamesString = internalNames.join(", ");
+    // const externalNamesString = externalNames.join(", ");
+    // const authorNameString = internalNamesString + externalNamesString;
+    const facultycontainer = JSON.parse(body.facultycontainer);
+
+    // Step 2: Flatten the nested array
+    const facultyIds = facultycontainer.flat();
+
+    // Step 3: Convert each element to an integer and subtract 2
+    const facultyIdscontainer = facultyIds.map(element => parseInt(element) - 2);
+    console.log('facultyIdscontainer ===>>>>>', facultyIdscontainer);
+
     const conferenceDocument = files.conferenceDocument?.map(file => file.filename).join(',');
     const conferenceProofFile = files.conferenceProof?.map(file => file.filename).join(',');
-    console.log('authorNameString ===>>>', authorNameString)
+    // console.log('authorNameString ===>>>', authorNameString)
     console.log('conferenceDocumentData string in service ===>>>', conferenceDocument)
     console.log('conferenceProofData string in service  ==>>>', conferenceProofFile)
-    const insertConferencePublication = await conferencePublicationModels.insertConferencePublication(conferencePublications, conferenceDocument, conferenceProofFile, internalNamesString, externalNamesString, userName);
+    const insertConferencePublication = await conferencePublicationModels.insertConferencePublication(conferencePublications, conferenceDocument, conferenceProofFile, facultyIdscontainer, userName);
     console.log('insertConferencePublication in service ===>>>>', insertConferencePublication);
     return insertConferencePublication.status === "Done" ? {
       status : "Done",
       message : insertConferencePublication.message,
       conferenceId : insertConferencePublication.conferenceId,
-      externalEmpId : insertConferencePublication.externalEmpId ? insertConferencePublication.externalEmpId : null,
+      conferenceFacultiesIds : insertConferencePublication.conferenceFacultiesIds,
+      // externalEmpId : insertConferencePublication.externalEmpId ? insertConferencePublication.externalEmpId : null,
       conferenceDocument : conferenceDocument,
       conferenceProofFile : conferenceProofFile,
       rowCount : insertConferencePublication.rowCount,
       conferencePublications : conferencePublications,
-      authorNameString : authorNameString, 
-      internalNamesString : internalNamesString,
-      externalNamesString : externalNamesString
+      // authorNameString : authorNameString, 
+      // internalNamesString : internalNamesString,
+      // externalNamesString : externalNamesString
 
     } : {
       status : insertConferencePublication.status,

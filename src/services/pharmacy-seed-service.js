@@ -4,7 +4,7 @@ module.exports.renderPharmacySeed = async(userName) => {
 
     const renderPharmacyData = await pharmacySeedModels.renderPharmacyData(userName);
 
-    console.log('renderPharmacyData =====>>>>>', renderPharmacyData.educationalDetails)
+    console.log('renderPharmacyData =====>>>>>', renderPharmacyData)
 
 }
 

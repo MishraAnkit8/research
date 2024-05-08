@@ -73,14 +73,7 @@ module.exports.insertConferencePublicationSData = async (req, res, next) => {
       insertConferenceDataForm.status === "Done"
         ? insertConferenceDataForm.authorNameString
         : null,
-    internalNamesString:
-      insertConferenceDataForm.status === "Done"
-        ? insertConferenceDataForm.internalNamesString
-        : null,
-    externalNamesString:
-      insertConferenceDataForm.status === "Done"
-        ? insertConferenceDataForm.externalNamesString
-        : null,
+        conferenceFacultiesIds : insertConferenceDataForm.conferenceFacultiesIds,
     errorCode: insertConferenceDataForm.errorCode
       ? insertConferenceDataForm.errorCode
       : null,
