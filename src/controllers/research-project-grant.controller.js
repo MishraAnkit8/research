@@ -105,7 +105,7 @@ module.exports.viewResearchProjectConsultancy = async(req, res, next) => {
     console.log('consultantId  in controller ==>>', consultantId);
     const viewResearchConsultantData = await researchConsultancyService.viewReseachProjectData(consultantId, userName);
 
-    console.log('viewResearchConsultantData in controller ===>>', viewResearchConsultantData)
+    console.log('viewResearchConsultantData in controller ===>>', JSON.stringify(viewResearchConsultantData.rows))
     const submissionGrantDate = formatDate(viewResearchConsultantData.researchData.submission_date);
     console.log('submissionGrantDate ===>>>>>', submissionGrantDate);
 
