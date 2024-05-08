@@ -12,8 +12,6 @@ module.exports.renderPharmacyData = async(userName) => {
         ps.id AS pharmacy_seed_id,
         ps.summary_title,
         ps.summary_project_title,
-        ps.principle_investigator,
-        ps.co_investigator,
         ps.project_duration,
         ps.total_cost,
         ps.consumables_amount,
@@ -53,15 +51,38 @@ module.exports.renderPharmacyData = async(userName) => {
         ps.created_at AS pharmacy_seed_created_at,
         ps.updated_at AS pharmacy_seed_updated_at,
         ps.active AS pharmacy_seed_active,
+
         pi.id AS pharmacy_investigator_id,
         pi.active AS pharmacy_investigator_active,
+
+        ppi.id AS pharmacy_principal_investigator_id,
+        ppi.active AS pharmacy_principal_investigator_active,
+
+        pco.id AS pharmacy_co_investigator_id,
+        pco.active AS pharmacy_co_investigator_active,
+        
         inv.id AS investigator_id,
         inv.investigator_name,
         inv.investigator_dsg,
-        inv.investigator_emial,
+        inv.investigator_email,
         inv.investigator_mobile,
         inv.investigator_dob,
         inv.investigator_address,
+
+        piv.id AS principal_investigator_id,
+        piv.principal_name,
+        piv.principal_dsg,
+        piv.principal_org,
+        piv.principal_email,
+        piv.principal_mobile,
+
+        cid.id AS co_investigator_details_id,
+        cid.co_investigator_name,
+        cid.co_investigator_dsg,
+        cid.co_investigator_org,
+        cid.co_investigator_email,
+        cid.co_investigator_mobile,
+        
         pie.id AS pharmacy_investigator_education_id,
         pie.active AS pharmacy_investigator_education_active,
         piex.id AS pharmacy_investigator_experience_id,
@@ -79,34 +100,42 @@ module.exports.renderPharmacyData = async(userName) => {
         pirc.id AS pharmacy_investigator_research_complete_id,
         pirc.active AS pharmacy_investigator_research_complete_active
     FROM
-        pharmacy_seed AS ps
-    LEFT JOIN
-        pharmacy_investigator AS pi ON ps.id = pi.pharmacy_seed_id
-    LEFT JOIN
-        investigator AS inv ON pi.investigator_id = inv.id
-    LEFT JOIN
-        pharmacy_investigator_education AS pie ON ps.id = pie.pharmacy_seed_id
-    LEFT JOIN
-        pharmacy_investigator_experience AS piex ON ps.id = piex.pharmacy_seed_id
-    LEFT JOIN
-        pharmacy_investigator_book AS pib ON ps.id = pib.pharmacy_seed_id
-    LEFT JOIN
-        pharmacy_investigator_book_chapter AS pibc ON ps.id = pibc.pharmacy_seed_id
-    LEFT JOIN
-        pharmacy_investigator_patent AS pip ON ps.id = pip.pharmacy_seed_id
-    LEFT JOIN
-        pharmacy_investigator_publication AS pipu ON ps.id = pipu.pharmacy_seed_id
-    LEFT JOIN
-        pharmacy_investigator_research_implementation AS pir ON ps.id = pir.pharmacy_seed_id
-    LEFT JOIN
-        pharmacy_investigator_research_complete AS pirc ON ps.id = pirc.pharmacy_seed_id
-    WHERE
-        ps.created_by = $1 and ps.active=true 
-    ORDER BY
-        ps.id desc
-    `,
+    pharmacy_seed AS ps
+    LEFT JOIN 
+      pharmacy_investigator AS pi ON ps.id = pi.pharmacy_seed_id
+    LEFT JOIN 
+      investigator AS inv ON pi.investigator_id = inv.id
+    LEFT JOIN 
+      pharmacy_principal_investigator AS ppi ON ps.id = ppi.pharmacy_seed_id
+    LEFT JOIN 
+      principal_investigator AS piv ON ppi.principal_investigator_id = piv.id
+    LEFT JOIN 
+      pharmacy_co_investigator AS pco ON ps.id = pco.pharmacy_seed_id
+    LEFT JOIN 
+            co_investigator_details AS cid ON pco.co_investigator_details_id = cid.id
+    LEFT JOIN 
+      pharmacy_investigator_education AS pie ON ps.id = pie.pharmacy_seed_id
+    LEFT JOIN 
+      pharmacy_investigator_experience AS piex ON ps.id = piex.pharmacy_seed_id
+    LEFT JOIN 
+      pharmacy_investigator_book AS pib ON ps.id = pib.pharmacy_seed_id
+    LEFT JOIN 
+      pharmacy_investigator_book_chapter AS pibc ON ps.id = pibc.pharmacy_seed_id
+    LEFT JOIN 
+      pharmacy_investigator_patent AS pip ON ps.id = pip.pharmacy_seed_id
+    LEFT JOIN 
+      pharmacy_investigator_publication AS pipu ON ps.id = pipu.pharmacy_seed_id
+    LEFT JOIN 
+      pharmacy_investigator_research_implementation AS pir ON ps.id = pir.pharmacy_seed_id
+    LEFT JOIN 
+      pharmacy_investigator_research_complete AS pirc ON ps.id = pirc.pharmacy_seed_id
+    WHERE 
+      ps.created_by = $1 AND ps.active = true AND pi.active = true AND inv.active = true AND pie.active = true AND 
+      piex.active = true AND pipu.active = true AND pir.active = true AND pirc.active = true
+    ORDER BY 
+      ps.id DESC`,
     values : [userName]
-    }
+}
 
     let publicationDetails = {
         text : `SELECT
@@ -126,7 +155,7 @@ module.exports.renderPharmacyData = async(userName) => {
         pip,
         pip,
         pip,
-        
+
         pip.created_by AS pharmacy_investigator_publication_created_by,
         pip.updated_by AS pharmacy_investigator_publication_updated_by,
         pip.created_at AS pharmacy_investigator_publication_created_at,
@@ -177,12 +206,13 @@ module.exports.renderPharmacyData = async(userName) => {
             status: 'Done',
             message: 'Data fetched successfully',
             pharmacyData: pharmacyDataPromise.rows,
+            rowCount : pharmacyDataPromise.rowCount,
             publicationDetails : investigatorPublication.rows,
             // educationalDetails : investigatorEducation.rows
         };
     }).catch((error) => {
         console.error('Error fetching pharmacy data:', error);
-        throw {
+        return {
             status : "Failed",
             message : "Failed to fecth data",
             errorCode : error.message
@@ -431,14 +461,20 @@ module.exports.insertInvestigatorResearchCompletedDetails = async(researchProjec
 
 
 module.exports.insertPharmacyDetails = async (pharmacySeedGrantDetails, userName, educationIdsArray, experienceIdsArray,
-    bookIdsArray, bookChapterIdsArray, publicationIdsArray, patentIdsArray, researchImplementationIdsArray, researchCompletedIdsArray, investorDetails) => {
+    bookIdsArray, bookChapterIdsArray, publicationIdsArray, patentIdsArray, researchImplementationIdsArray, researchCompletedIdsArray, investorDetails, 
+    principalInvestigatorDetails, coInvestigatorDetails) => {
     console.log('pharmacySeedGrantDetails in models  ===>>>>', pharmacySeedGrantDetails);
     console.log('investorDetails ===>>', investorDetails)
 
-    const {invatigatorName, investigatorDesignation, investigatorAddress, invatigatorMobile, invastigatorDateOfBirth} = investorDetails
+    const {invatigatorName, investigatorDesignation, investigatorAddress, invatigatorMobile, invastigatorDateOfBirth} = investorDetails;
+
+    const {principalName, principalDsg, principalOrg, principalMob, principalEmail} = principalInvestigatorDetails;
+
+    const {coIvestigatorName, coIvestigatorDsg, coIvestigatorOrg, coIvestigatorMob, coIvestigatorEmail} = coInvestigatorDetails;
+
 
     const {
-        summaryTitle, summaryProjectTitle, principalInvestigator, coInvestigator, projectDuration, totalCost,
+        summaryTitle, summaryProjectTitle, projectDuration, totalCost,
         consumablesAmount, analysisAmount, otherAmount, projectTitle, researchStatus, scientificImportance, projectObjectives,
         detailedMethodology, timeLines, budgetConsumableAmount, consumablesJustification, solventsAmount, solventsJustification,
         chemicalsAmount, chemicalsJustification, biomarkersReferenceAmount, biomarkersReferenceJustifications, hplcAmount,
@@ -451,7 +487,7 @@ module.exports.insertPharmacyDetails = async (pharmacySeedGrantDetails, userName
       
       let sql = {
         text: `INSERT INTO pharmacy_seed (
-                  summary_title, summary_project_title, principle_investigator, co_investigator,
+                  summary_title, summary_project_title,
                   project_duration, total_cost, consumables_amount, analysis_amount, other_amount,
                   project_title, project_status, scientific_importance, project_objectives,
                   detailed_methodology, time_lines, budget_consumable_amount, consumables_justification,
@@ -463,10 +499,10 @@ module.exports.insertPharmacyDetails = async (pharmacySeedGrantDetails, userName
                   previous_project_explaination, pharmacy_references, project_background, hypothesis, created_by, active
               ) VALUES (
                   $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18,
-                  $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33, $34, $35, $36, $37, $38, $39, $40
+                  $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33, $34, $35, $36, $37, $38
               ) RETURNING id`,
         values: [ 
-          summaryTitle, summaryProjectTitle, principalInvestigator, coInvestigator, projectDuration, totalCost,
+          summaryTitle, summaryProjectTitle, projectDuration, totalCost,
           consumablesAmount, analysisAmount, otherAmount, projectTitle, researchStatus, scientificImportance, projectObjectives,
           detailedMethodology, timeLines, budgetConsumableAmount, consumablesJustification, 
           solventsAmount, solventsJustification, chemicalsAmount, chemicalsJustification, 
@@ -482,14 +518,31 @@ module.exports.insertPharmacyDetails = async (pharmacySeedGrantDetails, userName
     const investigatorSql = {
         text: `INSERT INTO investigator (investigator_name, investigator_dsg, investigator_address, investigator_mobile, 
             investigator_dob, active, created_by) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id`,
-        values: [investorDetails.invatigatorName, investorDetails.investigatorDesignation, investorDetails.investigatorAddress, investorDetails.invatigatorMobile, investorDetails.invastigatorDateOfBirth, true, userName]
+        values: [invatigatorName, investigatorDesignation, investigatorAddress, invatigatorMobile, invastigatorDateOfBirth, true, userName]
+    };
+
+    const principalSql = {
+        text: `INSERT INTO principal_investigator (investigator_name, investigator_dsg, investigator_address, investigator_mobile, 
+            investigator_dob, active, created_by) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id`,
+        values: [principalName, principalDsg, principalOrg, principalMob, principalEmail, true, userName]
+    };
+
+    const coInvestigatorSql = {
+        text: `INSERT INTO co_investigator_details (co_investigator_name, co_investigator_dsg, co_investigator_org, co_investigator_email, co_investigator_mobile, created_by, active
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id`,
+        values: [coIvestigatorName, coIvestigatorDsg, coIvestigatorOrg, coIvestigatorMob, coIvestigatorEmail, true, userName]
     };
     
     const pharmacyResult = await researchDbW.query(sql);
     const result = await researchDbW.query(investigatorSql);
     const investigatorId = result.rows[0].id;
     const pharmacyIds = pharmacyResult.rows[0].id;
-    const rowCount = pharmacyResult.rowCount
+    const rowCount = pharmacyResult.rowCount;
+    const principalSummary = await researchDbW.query(principalSql);
+    const coInvestigatorSummary = await researchDbW.query(coInvestigatorSql);
+    const principalInvSummaryId = principalSummary.rows[0].id;
+    const coInvSummaryId = coInvestigatorSummary.rows[0].id;
+
     console.log("investigatorId ====>>>>", investigatorId);
     let pharmacyInvestigatorId
     if(pharmacyIds , investigatorId){
@@ -500,6 +553,25 @@ module.exports.insertPharmacyDetails = async (pharmacySeedGrantDetails, userName
         let pharmacyInvestigator = await researchDbW.query(pharmacyInvestigatorSql)
         pharmacyInvestigatorId = pharmacyInvestigator.rows[0].id;
         console.log('pharmacyInvestigatorId inside function ===>>>', pharmacyInvestigatorId)
+    }
+    if(pharmacyIds , principalInvSummaryId){
+        let pharmacyPrinciplaSql = {
+            text: `INSERT INTO pharmacy_principal_investigator (pharmacy_seed_id, principal_investigator_id, created_by, active) VALUES ($1, $2, $3, $4) RETURNING id`,
+            values: [pharmacyIds, principalInvSummaryId, userName, true]
+        }
+        let pharmacyPrincipal = await researchDbW.query(pharmacyPrinciplaSql)
+        let principalId = pharmacyPrincipal.rows[0].id;
+        console.log('pharmacyInvestigatorId inside function ===>>>', pharmacyInvestigatorId)
+    }
+
+    if(pharmacyIds , coInvSummaryId){
+        let pharmacyCoSql = {
+            text: `INSERT INTO pharmacy_co_investigator (pharmacy_seed_id, co_investigator_details_id, created_by, active) VALUES ($1, $2, $3, $4) RETURNING id`,
+            values: [pharmacyIds, coInvSummaryId, userName, true]
+        }
+        let pharmacyCoInvestigator = await researchDbW.query(pharmacyCoSql)
+        let pharmacyCoInvestigatorId = pharmacyCoInvestigator.rows[0].id;
+        console.log('pharmacyCoInvestigatorId inside function ===>>>', pharmacyCoInvestigatorId)
     }
 
     console.log('pharmacyInvestigatorId inside function ===>>>', pharmacyInvestigatorId)

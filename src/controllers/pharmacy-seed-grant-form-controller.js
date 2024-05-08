@@ -11,6 +11,11 @@ module.exports.renderPharmacySeedGrantform = async(req, res, next) => {
     console.log('pharmacySeedDetails in cotroller ===>>>>', pharmacySeedDetails)
 
     res.render('pharmacy-seed-grant-form', {
+        status : pharmacySeedDetails.status,
+        message : pharmacySeedDetails.message,
+        rowCount : pharmacySeedDetails.rowCount,
+        pharmacyData : pharmacySeedDetails.pharmacyData,
+        errorCode : pharmacySeedDetails.errorCode
 
     })
 }

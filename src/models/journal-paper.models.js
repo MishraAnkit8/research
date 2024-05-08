@@ -265,7 +265,7 @@ module.exports.insertJournalArticle = async (journalDetails, articleFilesNameArr
 
     const selectSchoolDataPromises = schoolIdsArray.map(async (schoolId) => {
         const schoolSql = {
-            text: `SELECT * FROM nmims_school WHERE id = $1 and  `,
+            text: `SELECT * FROM nmims_school WHERE id = $1 and active = true`,
             values: [schoolId]
         };
         const schoolResult = await researchDbR.query(schoolSql);
@@ -274,7 +274,7 @@ module.exports.insertJournalArticle = async (journalDetails, articleFilesNameArr
     
     const selectCampusDataPromises = campusIdsArray.map(async (campusId) => {
         const campusSql = {
-            text: `SELECT * FROM nmims_campus WHERE id = $1 and  `,
+            text: `SELECT * FROM nmims_campus WHERE id = $1 and active = true`,
             values: [campusId]
         };
         const campusResult = await researchDbR.query(campusSql);
@@ -283,7 +283,7 @@ module.exports.insertJournalArticle = async (journalDetails, articleFilesNameArr
 
     const selectImpactFactorData = impactFactorArray.map(async (impactFactorId) => {
         const impactSql = {
-            text: `SELECT * FROM impact_factor WHERE id = $1 and  `,
+            text: `SELECT * FROM impact_factor WHERE id = $1 and active = true`,
             values: [impactFactorId]
         };
         const impactData = await researchDbR.query(impactSql);
@@ -292,7 +292,7 @@ module.exports.insertJournalArticle = async (journalDetails, articleFilesNameArr
     
     const selectPolicyCadreData = policyCadreArray.map(async (policyId) => {
         const policySql = {
-            text: `SELECT * FROM policy_cadre WHERE id = $1 and `,
+            text: `SELECT * FROM policy_cadre WHERE id = $1 and active = true`,
             values: [policyId]
         };
         const policyData = await researchDbR.query(policySql);
@@ -499,20 +499,24 @@ module.exports.updateJournalPaperData = async (journalPaperId, updateJournalDeta
     } = updateJournalDetails;
 
     let sql = {
-        text: `UPDATE journal_paper_article SET
-                year = $2, publisher = $3, total_authors= $4, journal_name= $5, count_other_faculty= $6, pages= $7, issn_no= $8, scs_cite_score= $9, wos_indexed= $10,
-                abdc_indexed= $11, ugc_indexed= $12, web_link_doi_number= $13, uid= $14, date_of_publishing= $15, title_of_paper= $16, jorunal_article_type_id= $17, nmims_authors_count= $18, gs_index= $19, updated_by= $20
-                WHERE id = $1`,
+        text: `UPDATE journal_paper_article 
+                SET year = $2, publisher = $3, total_authors = $4,journal_name = $5,count_other_faculty = $6,
+                    pages = $7,issn_no = $8,scs_cite_score = $9,wos_indexed = $10,abdc_indexed = $11,
+                    ugc_indexed = $12,web_link_doi_number = $13,uid = $14,date_of_publishing = $15,
+                    title_of_paper = $16,jorunal_article_type_id = $17,nmims_authors_count = $18,gs_index = $19,
+                    updated_by = $20
+                WHERE
+                    id = $1;`,
         values: [journalPaperId, year, publisher, totalAuthors, journalName, countOtherFaculty, pages, issnNo, scsCiteScore, wosIndexedCategory,
                 abdcIndexedCategory, ugcIndexedCategory, webLinkNumber, uid, dateOfPublishing, titleOfPaper, journalCategory, nmimsAuthorsCount, gsIndex, userName
         ]
     };
     console.log('sql ====>>>', sql);
     const updateJournalarticles = await researchDbW.query(sql);
-
+    console.log("AFTER UPDATE>>>>>>>>>>>>");
     const insertDocumentPromises = updatedArticleFilesNameArray ? updatedArticleFilesNameArray.map(async (fileName) => {
         const documentInsertSql = {
-            text: `INSERT INTO supporting_documents (documents_name, created_at, updated_at) VALUES ($1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP) RETURNING id`,
+            text: `INSERT INTO supporting_documents (documents_name, created_at, updated_at) VALUES ($1, NOW(), NOW()) RETURNING id`,
             values: [fileName]
         };
         const result = await researchDbW.query(documentInsertSql);
@@ -527,14 +531,14 @@ module.exports.updateJournalPaperData = async (journalPaperId, updateJournalDeta
             text: `INSERT INTO journal_article_documents (journal_article_id, supporting_documents_id) VALUES ($1, $2) RETURNING id`,
             values: [journalPaperId, element]
         };
-        // console.log('articleDocumentSql ===>>>>>', articleDocumentSql);
+        console.log('articleDocumentSql ===>>>>>', articleDocumentSql);
         return researchDbW.query(articleDocumentSql);
     });
 
 
     const insertArticleFactor = updateImpactFactorArray ?  updateImpactFactorArray.map( async (factorId) => {
         const existingRecord = await researchDbW.query({
-            text: `SELECT id FROM journal_article_impact_factor WHERE journal_article_id = $1 AND impact_factor_id = $2 and `,
+            text: `SELECT id FROM journal_article_impact_factor WHERE journal_article_id = $1 AND impact_factor_id = $2 and active = true`,
             values: [journalPaperId, factorId]
           });
 
@@ -548,9 +552,11 @@ module.exports.updateJournalPaperData = async (journalPaperId, updateJournalDeta
           );
     }) : [];
 
+    console.log('insertArticleFactor ====>>>>>>', insertArticleFactor);
+
     const insertJournalPolicy = updatePolicyCadreArray ? updatePolicyCadreArray.map(async(policyId) => {
         const existingRecord = await researchDbW.query({
-            text: `SELECT id FROM journal_article_policy_cadre WHERE journal_article_id = $1 AND policy_cadre_id = $2 and  `,
+            text: `SELECT id FROM journal_article_policy_cadre WHERE journal_article_id = $1 AND policy_cadre_id = $2 and active = true`,
             values: [journalPaperId, policyId]
         });
 
@@ -564,7 +570,7 @@ module.exports.updateJournalPaperData = async (journalPaperId, updateJournalDeta
 
     const insertJournalSchool = updateSchoolIdsArray ? updateSchoolIdsArray.map(async(schoolId) => {
         const existingRecord = await researchDbW.query({
-            text: `SELECT id FROM journal_article_school WHERE journal_article_id = $1 AND school_id = $2 and `,
+            text: `SELECT id FROM journal_article_school WHERE journal_article_id = $1 AND school_id = $2 and active = true`,
             values: [journalPaperId, schoolId]
         });
 
@@ -578,7 +584,7 @@ module.exports.updateJournalPaperData = async (journalPaperId, updateJournalDeta
 
     const insertJournalCampus = updateCampusIdsArray ? updateCampusIdsArray.map(async(campusId) => {
         const existingRecord = await researchDbW.query({
-            text: `SELECT id FROM journal_article_campus WHERE journal_article_id = $1 AND campus_id = $2 and  `,
+            text: `SELECT id FROM journal_article_campus WHERE journal_article_id = $1 AND campus_id = $2 and active = true`,
             values: [journalPaperId, campusId]
         });
 
@@ -592,7 +598,7 @@ module.exports.updateJournalPaperData = async (journalPaperId, updateJournalDeta
 
     const insertAllarticlAuthors = updateAllAuthorsArray ? updateAllAuthorsArray.map(async(facultyId) => {
         const existingRecord = await researchDbW.query({
-          text: `SELECT id FROM all_article_authors WHERE journal_article_id = $1 AND faculty_id = $2 and `,
+          text: `SELECT id FROM all_article_authors WHERE journal_article_id = $1 AND faculty_id = $2 and active = true`,
           values: [journalPaperId, facultyId],
         });
 
@@ -606,7 +612,7 @@ module.exports.updateJournalPaperData = async (journalPaperId, updateJournalDeta
 
     const insertNmimsAuthors = updateNmimsAuthorsArray ? updateNmimsAuthorsArray.map(async(facultyId) => {
         const existingRecord = await researchDbW.query({
-          text: `SELECT id FROM nmims_faculties WHERE journal_article_id = $1 AND faculty_id = $2 and `,
+          text: `SELECT id FROM nmims_faculties WHERE journal_article_id = $1 AND faculty_id = $2 and active = true`,
           values: [journalPaperId, facultyId],
         });
 
@@ -620,7 +626,7 @@ module.exports.updateJournalPaperData = async (journalPaperId, updateJournalDeta
 
     const selectSchoolDataPromises = updateSchoolIdsArray ? updateSchoolIdsArray.map(async (schoolId) => {
         const schoolSql = {
-          text: `SELECT * FROM nmims_school WHERE id = $1 and `,
+          text: `SELECT * FROM nmims_school WHERE id = $1 and active = true`,
           values: [schoolId],
         };
         const schoolResult = await researchDbR.query(schoolSql);
@@ -629,7 +635,7 @@ module.exports.updateJournalPaperData = async (journalPaperId, updateJournalDeta
     
     const selectCampusDataPromises = updateCampusIdsArray ? updateCampusIdsArray.map(async (campusId) => {
         const campusSql = {
-          text: `SELECT * FROM nmims_campus WHERE id = $1 and `,
+          text: `SELECT * FROM nmims_campus WHERE id = $1 and active = true`,
           values: [campusId],
         };
         const campusResult = await researchDbR.query(campusSql);
@@ -638,7 +644,7 @@ module.exports.updateJournalPaperData = async (journalPaperId, updateJournalDeta
 
     const selectImpactFactorData = updateImpactFactorArray ? updateImpactFactorArray.map(async (impactFactorId) => {
         const impactSql = {
-          text: `SELECT * FROM impact_factor WHERE id = $1 and `,
+          text: `SELECT * FROM impact_factor WHERE id = $1 and active = true`,
           values: [impactFactorId],
         };
         const impactData = await researchDbR.query(impactSql);
@@ -647,7 +653,7 @@ module.exports.updateJournalPaperData = async (journalPaperId, updateJournalDeta
     
     const selectPolicyCadreData = updatePolicyCadreArray ? updatePolicyCadreArray.map(async (policyId) => {
         const policySql = {
-          text: `SELECT * FROM policy_cadre WHERE id = $1 and `,
+          text: `SELECT * FROM policy_cadre WHERE id = $1 and active = true`,
           values: [policyId],
         };
         const policyData = await researchDbR.query(policySql);
@@ -676,7 +682,7 @@ module.exports.updateJournalPaperData = async (journalPaperId, updateJournalDeta
         ...selectPolicyCadreData
     ])
     .then((results) => {
-        // console.log("result ===>>>>>", results);
+        console.log("result ===>>>>>", results);
     
         const extractIds = (startIndex, length) => {
             return results
@@ -714,10 +720,10 @@ module.exports.updateJournalPaperData = async (journalPaperId, updateJournalDeta
             }
         });
 
-        // console.log("School Names:", schoolNames);
-        // console.log("Campus Names:", campusNames);
-        // console.log("Impact Factors:", impactFactorNames);
-        // console.log("policy Cadre:", impactFactorNames);
+        console.log("School Names:", schoolNames);
+        console.log("Campus Names:", campusNames);
+        console.log("Impact Factors:", impactFactorNames);
+        console.log("policy Cadre:", impactFactorNames);
 
         return {
             status: "Done",
@@ -748,13 +754,12 @@ module.exports.updateJournalPaperData = async (journalPaperId, updateJournalDeta
 };
 
 // for viewing 
-module.exports.viewJournalPaperData = async ({journalPaperId}, userName) => {
+module.exports.viewJournalPaperData = async (journalPaperId, userName) => {
     const sql = {
         text : `SELECT
                     jpa.id AS article_id,
                     jpa.title_of_paper,
                     jpa.created_by AS created_by,
-                    
                     jpa.total_authors,
                     jpa.count_other_faculty,
                     jpa.nmims_authors_count,
@@ -819,9 +824,9 @@ module.exports.viewJournalPaperData = async ({journalPaperId}, userName) => {
                     policy_cadre pc ON japc.policy_cadre_id = pc.id
                 WHERE 
                          jpa.id = $1 AND created_by = $2 
-                         and pc. and japc. and sd. and jad. and a. 
-                         and f. and nf. and jaf. and jaif. and nc. 
-                         and jac. and ns. and jas. and jpa.
+                         and pc.active = true and japc.active = true and sd.active = true and jad.active = true and a.active = true 
+                         and f.active = true and nf.active = true and jaf.active = true and jaif.active = true and nc.active = true 
+                         and jac.active = true and ns.active = true and jas.active = true and jpa.active = true
                 GROUP BY
                     jpa.id,
                     jpa.title_of_paper,
@@ -854,7 +859,7 @@ module.exports.viewJournalPaperData = async ({journalPaperId}, userName) => {
                 JOIN
                     faculties f ON nf.faculty_id = f.id
                 WHERE
-                    nf.journal_article_id = $1 and nf. and f. `,
+                    nf.journal_article_id = $1 and nf.active = true and f.active = true`,
 
     values  : [journalPaperId]
     }
@@ -873,7 +878,7 @@ module.exports.viewJournalPaperData = async ({journalPaperId}, userName) => {
                 JOIN
                     faculty_types ft ON f.faculty_type_id = ft.id
                 WHERE
-                    aaa.journal_article_id = $1 and aaa. and df. and  ft. `,
+                    aaa.journal_article_id = $1 and aaa.active = true and  ft.active = true `,
         values  : [journalPaperId]
     }
 
@@ -886,7 +891,7 @@ module.exports.viewJournalPaperData = async ({journalPaperId}, userName) => {
                 JOIN 
                 impact_factor imf ON aimf.impact_factor_id =  imf.id
                 WHERE 
-                aimf.journal_article_id = $1 and aimf. and imf. `,
+                aimf.journal_article_id = $1 and aimf.active = true and imf.active = true `,
         values  : [journalPaperId]
     };
 
@@ -899,7 +904,7 @@ module.exports.viewJournalPaperData = async ({journalPaperId}, userName) => {
                 JOIN 
                 impact_factor pc ON japc.policy_cadre_id =  pc.id
                 WHERE 
-                japc.journal_article_id = $1 and japc. and pc. `,
+                japc.journal_article_id = $1 and japc.active = true and pc.active = true `,
         values  : [journalPaperId]
     };
 
@@ -925,7 +930,7 @@ module.exports.viewJournalPaperData = async ({journalPaperId}, userName) => {
                 JOIN 
                     nmims_campus nc ON jac.campus_id = nc.id
                 WHERE
-                    jac.journal_article_id = $1 jac. and nc. `,
+                    jac.journal_article_id = $1 and jac.active = true and nc.active = true `,
         values : [journalPaperId]
     };
 
@@ -938,7 +943,7 @@ module.exports.viewJournalPaperData = async ({journalPaperId}, userName) => {
                 JOIN 
                     supporting_documents sd ON jad.supporting_documents_id = sd.id
                 WHERE
-                    jad.journal_article_id = $1 and jad. and sd.`,
+                    jad.journal_article_id = $1 and jad.active = true and sd.active = true`,
         values : [journalPaperId]
     }
 
