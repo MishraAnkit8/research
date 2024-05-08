@@ -6,6 +6,7 @@ module.exports.renderResearchProjectConsultancy = async (req, res, next) => {
 
   const researchcConsultancyData =
     await researchConsultancyService.fetchResearConsultacyData(userName);
+    console.log('external json ',JSON.stringify(researchcConsultancyData.externalDetails))
 
   // console.log('researchcConsultancyData in controller ===>>>>>', researchcConsultancyData);
 

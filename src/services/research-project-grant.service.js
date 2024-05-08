@@ -9,25 +9,25 @@ module.exports.fetchResearConsultacyData = async(userName) => {
     // console.log('researchGrantExternalIds ===>>>>', researchConsultancyData.researchGrantExternalIds);
     // console.log('researchInternalIds ===>>>>>>', researchConsultancyData.researchInternalIds)
     console.log("externalDataDetails ======>>>>>>",researchConsultancyData.externalDataDetails);
-    const groupedData = researchConsultancyData.externalDataDetails.reduce(
-      (acc, obj) => {
-        const { research_project_grant_id, id, ...rest } = obj;
-        if (!acc[research_project_grant_id]) {
-          acc[research_project_grant_id] = [];
-        }
-        acc[research_project_grant_id].push([id, { ...rest }]);
-        return acc;
-      },
-      {}
-    );
+    // const groupedData = researchConsultancyData.externalDataDetails.reduce(
+    //   (acc, obj) => {
+    //     const { research_project_grant_id, id, ...rest } = obj;
+    //     if (!acc[research_project_grant_id]) {
+    //       acc[research_project_grant_id] = [];
+    //     }
+    //     acc[research_project_grant_id].push([id, { ...rest }]);
+    //     return acc;
+    //   },
+    //   {}
+    // );
 
     // Converting the grouped data object into an array
-    const externalDetails = Object.keys(groupedData).map((key) => {
-      const details = groupedData[key];
-      return details.map(([id, rest]) => [id, { ...rest }]);
-    });
+    // const externalDetails = Object.keys(groupedData).map((key) => {
+    //   const details = groupedData[key];
+    //   return details.map(([id, rest]) => [id, { ...rest }]);
+    // });
 
-    console.log(externalDetails);
+    // console.log(externalDetails);
 
 
 
@@ -64,7 +64,7 @@ module.exports.fetchResearConsultacyData = async(userName) => {
           reseachProjectIds: reseachProjectIds,
           message: researchConsultancyData.message,
           rowCount: researchConsultancyData.rowCount,
-          externalDetails: externalDetails,
+          externalDetails: researchConsultancyData.externalDataDetails,
         }
       : {
           status: researchConsultancyData.status,

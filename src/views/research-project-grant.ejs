@@ -76,8 +76,7 @@
                                 <tbody class="data-list">
                                     <% researchProjectData.forEach(function(consultancy, index) { %>
 
-                                        <tr scope="row" data-consultancy-id="<%- consultancy.id %>"
-                                            data-externalDetails="<%- consultancy.externalDetails %>"
+                                        <tr id="nearTd" scope="row" data-consultancy-id="<%- consultancy.id %>"
                                             data-submission-date="<%- consultancy.submission_date.toISOString().split('T')[0] %>"
                                             data-supporting-documents="<%- consultancy.supporting_documents %>">
                                             <td><%- index + 1 %></td>
@@ -439,7 +438,25 @@
                                     </div>
                                 </table>
 
+                                <div>
+                                <table style="width:100%;" class="table  table-responsive d-none " id="externalfacultyTable">
+                                 <thead>
+                                    <th>Sr.No</th>
+                                    <th>Faculty Name</th>
+                                    <th>Faculty Address</th>
+                                    <th>Faculty Designation</th>
+                                    <th>Employee Id</th>
+                                    <th colspan>Action</th>
+                                 </thead>
+                                 <tbody id="appendFaculty">
 
+
+
+                                 </tbody>
+
+                                </table>
+
+                                </div>
                                 <!-- Total Grant Sanctioned in Rupees
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="total-grant-sanction-rupees" class="form-label fw-bold">Total Grant Sanctioned in Rupees</label>
@@ -928,6 +945,9 @@
                     console.log('clikedddd')
                     if (event.target.classList.contains('edit')) {
 
+                        let externalFacultyDetails  = JSON.parse('<%- JSON.stringify(externalDetails) %>') ;
+
+
                         $('#consultancy-modal').modal({
                             backdrop: 'static'
                         });
@@ -947,8 +967,7 @@
                         $('#consultancy-modal').modal('show');
                         consultantRowToBeUpdated = event.target.closest('tr');
                         console.log('consultantRowToBeUpdated ==>>', consultantRowToBeUpdated);
-                        const myData = consultantRowToBeUpdated.getAttribute('data-externalDetails');
-                        console.log('myData ====>>>>>>', myData);
+                       
 
                         // function call for download button
                         setFileNameAttributeToBeDownload(consultantRowToBeUpdated);
@@ -969,6 +988,39 @@
                         const internalAuthor = document.getElementById('is-internal');
                         const externalAuthor = document.getElementById('is-external');
                         const supportingDocument = consultantRowToBeUpdated.getAttribute('data-supporting-documents');
+                       
+                        let externalFaculty = externalFacultyDetails.filter(fdata => consultantId == fdata.research_project_grant_id).map(facultyData => facultyData );
+                        console.log('new external faculty ',JSON.stringify(externalFaculty))
+                       
+                       let appendFaculty = document.getElementById('appendFaculty');
+
+                       externalFaculty.forEach((ef,index) => {
+                        let htmlData = `<tr data-facultyId = ${ef.id}>
+                        <td>${index + 1}</td>
+                        <td>${ef.faculty_name}</td>
+                        <td>${ef.address}</td>
+                        <td>${ef.designation}</td>
+                        <td>${ef.employee_id}</td>
+                        <td><button  class="btn btn-primary updateFaculty">Update</button></td>
+                        </tr>`
+
+                        appendFaculty.insertAdjacentHTML('beforeEnd',htmlData);
+                       })
+                      
+                       let isExternal = document.getElementById('is-external');
+                       console.log('external ',isExternal)
+
+                       //let externalfacultyTable =document.getElementById(externalfacultyTable)
+
+                    //    if(isExternal.checked){
+                    //     document.getElementById('externalfacultyTable').classList.remove('d-none')
+                    //    }
+                    //    else{
+                    //     document.getElementById('externalfacultyTable').classList.add('d-none')
+
+                    //    }
+                       
+                       
                         // const facultyDept = consultantRowToBeUpdated.getAttribute('data-faculty-dept');
                         // console.log('facultyDept ====>>>>>', facultyDept)
                         // const projectDuration = consultantRowToBeUpdated.getAttribute('data-project-duration');
@@ -1127,6 +1179,10 @@
                         else {
                             return
                         }
+                    }
+
+                    if(event.target.classList.contains('updateFaculty')){
+                      console.log('button clicked')
                     }
                     //for view data the form data
                     if (event.target.classList.contains('view')) {
@@ -1743,32 +1799,14 @@
                 });
 
 
-                // document.getElementById('is-external').addEventListener('click', () => {
-                //     let is_checked = document.getElementById('is-external');
-                //     if (is_checked.checked) {
-                //         let facultyName = document.getElementById('faculty-name');
-                //         facultyName.setAttribute('data-err-msg', 'Provide Valid Input');
-                //         facultyName.setAttribute('data-validate', 'isEmpty,isExist,isAlphabeticWords');
-                //         facultyName.setAttribute('required', true);
-
-
-                //         let facultyDesc = document.getElementById('faculty-designation');
-                //         facultyDesc.setAttribute('data-err-msg', 'Provide Valid Input');
-                //         facultyDesc.setAttribute('data-validate', 'isEmpty,isExist,isAlphabeticWords');
-                //         facultyDesc.setAttribute('required', true);
-
-
-                //         let facultyId = document.getElementById('faculty-emp-id');
-                //         facultyDesc.setAttribute('data-err-msg', 'Provide Valid Input');
-                //         facultyDesc.setAttribute('data-validate', 'isEmpty,isExist,isNumber');
-
-                //         let facultyAddr = document.getElementById('faculty-address');
-                //         facultyAddr.setAttribute('data-err-msg', 'Provide Valid Input');
-                //         facultyAddr.setAttribute('data-validate', 'isEmpty,isExist');
-                //         facultyDesc.setAttribute('required', true);
-
-                //     }
-                // })
+                document.getElementById('is-external').addEventListener('click', () => {
+                 let is_checked = document.getElementById('is-external');
+                if (is_checked.checked) {
+                    document.getElementById('externalfacultyTable').classList.remove('d-none')  
+                 }else{
+                    document.getElementById('externalfacultyTable').classList.add('d-none')
+                 }
+                })
 
 
                 function checkAlphabets(facultyName, idName) {
@@ -1835,7 +1873,6 @@
                     }
 
                 }
-
 
 
 
