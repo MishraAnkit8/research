@@ -2,12 +2,34 @@ const researchCunsultancyModel = require('../models/research-project-grant.model
 
 module.exports.fetchResearConsultacyData = async(userName) => {
     const researchConsultancyData = await researchCunsultancyModel.fetchResearchConsultancy(userName);
-    console.log('researchConsultancyData in services ===>>>>>',researchConsultancyData.researchData);
-    console.log('facultTableData in services :::::===>>>>>',researchConsultancyData.facultTableData);
-    console.log('research_project_grant_faculty Data In Service ::: ==>>>>', researchConsultancyData.researchPojectGrantFacultyData)
-    console.log('facultTableData in services :::::===>>>>>',researchConsultancyData.extrnalFacultyData);
-    console.log('researchGrantExternalIds ===>>>>', researchConsultancyData.researchGrantExternalIds);
-    console.log('researchInternalIds ===>>>>>>', researchConsultancyData.researchInternalIds)
+    // console.log('researchConsultancyData in services ===>>>>>',researchConsultancyData.researchData);
+    // console.log('facultTableData in services :::::===>>>>>',researchConsultancyData.facultTableData);
+    // console.log('research_project_grant_faculty Data In Service ::: ==>>>>', researchConsultancyData.researchPojectGrantFacultyData)
+    // console.log('facultTableData in services :::::===>>>>>',researchConsultancyData.extrnalFacultyData);
+    // console.log('researchGrantExternalIds ===>>>>', researchConsultancyData.researchGrantExternalIds);
+    // console.log('researchInternalIds ===>>>>>>', researchConsultancyData.researchInternalIds)
+    console.log("externalDataDetails ======>>>>>>",researchConsultancyData.externalDataDetails);
+    const groupedData = researchConsultancyData.externalDataDetails.reduce(
+      (acc, obj) => {
+        const { research_project_grant_id, id, ...rest } = obj;
+        if (!acc[research_project_grant_id]) {
+          acc[research_project_grant_id] = [];
+        }
+        acc[research_project_grant_id].push([id, { ...rest }]);
+        return acc;
+      },
+      {}
+    );
+
+    // Converting the grouped data object into an array
+    const externalDetails = Object.keys(groupedData).map((key) => {
+      const details = groupedData[key];
+      return details.map(([id, rest]) => [id, { ...rest }]);
+    });
+
+    console.log(externalDetails);
+
+
 
     // console.log('reseachGrantIdsContainer ::: >>>>>', researchConsultancyData.reseachGrantIdsContainer)
    const reseachGrantIdsContainer = researchConsultancyData.reseachGrantIdsContainer;
@@ -29,23 +51,26 @@ module.exports.fetchResearConsultacyData = async(userName) => {
     }
 
     const reseachProjectIds = Object.values(idContainerArray);
-    console.log('idContainerArray ===>>>>', idContainerArray);
-    console.log('reseachProjectIds ====>>>>', reseachProjectIds);
+    // console.log('idContainerArray ===>>>>', idContainerArray);
+    // console.log('reseachProjectIds ====>>>>', reseachProjectIds);
 
-    return researchConsultancyData.status === "Done" ? {
-        status : researchConsultancyData.status,
-        researchData : researchConsultancyData.researchData,
-        InternalFaculty : researchConsultancyData.facultTableData,
-        researchPojectGrantFacultyData : researchConsultancyData.researchPojectGrantFacultyData,
-        reseachProjectIds : reseachProjectIds,
-        message : researchConsultancyData.message,
-        rowCount : researchConsultancyData.rowCount,
-        errorCode : researchConsultancyData.errorCode
-    } : {
-        status : researchConsultancyData.status,
-        message : researchConsultancyData.message,
-        errorCode : researchConsultancyData.errorCode
-    }
+    return researchConsultancyData.status === "Done"
+      ? {
+          status: researchConsultancyData.status,
+          researchData: researchConsultancyData.researchData,
+          InternalFaculty: researchConsultancyData.facultTableData,
+          researchPojectGrantFacultyData:
+            researchConsultancyData.researchPojectGrantFacultyData,
+          reseachProjectIds: reseachProjectIds,
+          message: researchConsultancyData.message,
+          rowCount: researchConsultancyData.rowCount,
+          externalDetails: externalDetails,
+        }
+      : {
+          status: researchConsultancyData.status,
+          message: researchConsultancyData.message,
+          errorCode: researchConsultancyData.errorCode,
+        };
 
 }
 
