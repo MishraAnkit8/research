@@ -179,10 +179,10 @@ module.exports.updateJournalPaper = async (body, files, userName) => {
     console.log('data is service ==>>>', updatedJournalData);
     const documentIds = updatedJournalData.documentIds;
     const documentIdsString = documentIds ? documentIds.join(',') : null;
-    const schoolList = updatedJournalData.schoolList.join(',');
-    const campusList = updatedJournalData.campusList.join(',');
-    const impactFactorList = updatedJournalData.impactFactorList.join(',');
-    const policyCadreList = updatedJournalData.policyCadreList.join(',');
+    const schoolList = updatedJournalData?.schoolList;
+    const campusList = updatedJournalData.campusList;
+    const impactFactorList = updatedJournalData.impactFactorList;
+    const policyCadreList = updatedJournalData.policyCadreList;
 
     return updatedJournalData.status === "Done" ? {
         status : updatedJournalData.status,
@@ -219,10 +219,10 @@ module.exports.updateJournalPaper = async (body, files, userName) => {
 }
 
 // service for view
-module.exports.viewJournalPaper = async ({journalPaperId}, userName) => {
+module.exports.viewJournalPaper = async (journalPaperId, userName) => {
     console.log('journalPaperId inservice ====>>>>>>>', journalPaperId);
 
-    const viewJournalPaperData = await journalPaperModel.viewJournalPaperData({journalPaperId}, userName);
+    const viewJournalPaperData = await journalPaperModel.viewJournalPaperData(journalPaperId, userName);
 
     console.log('viewJournalPaperData ===>>>>>', viewJournalPaperData);
     return viewJournalPaperData.status === "Done" ? {
