@@ -179,10 +179,10 @@ module.exports.updateJournalPaper = async (body, files, userName) => {
     console.log('data is service ==>>>', updatedJournalData);
     const documentIds = updatedJournalData.documentIds;
     const documentIdsString = documentIds ? documentIds.join(',') : null;
-    const schoolList = updatedJournalData?.schoolList;
-    const campusList = updatedJournalData.campusList;
-    const impactFactorList = updatedJournalData.impactFactorList;
-    const policyCadreList = updatedJournalData.policyCadreList;
+    const schoolList = updatedJournalData.schoolList ? updatedJournalData.schoolList.join(',') : null;
+    const campusList = updatedJournalData.campusList ? updatedJournalData.campusList.join(',') : null;
+    const impactFactorList = updatedJournalData.impactFactorList ?  updatedJournalData.impactFactorList.join(',') : null;
+    const policyCadreList = updatedJournalData.policyCadreList ?updatedJournalData.policyCadreList.join(','): null;
 
     return updatedJournalData.status === "Done" ? {
         status : updatedJournalData.status,

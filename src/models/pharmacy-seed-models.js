@@ -122,6 +122,11 @@ module.exports.renderPharmacyData = async(userName) => {
         inv_pub.publication_artcile_number,
         inv_pub.publication_impact_factor,
         pip.active AS pharmacy_investigator_publication_active,
+        pip,
+        pip,
+        pip,
+        pip,
+        
         pip.created_by AS pharmacy_investigator_publication_created_by,
         pip.updated_by AS pharmacy_investigator_publication_updated_by,
         pip.created_at AS pharmacy_investigator_publication_created_at,
@@ -139,41 +144,41 @@ module.exports.renderPharmacyData = async(userName) => {
     values : [userName]
     }
 
-    let investorEducationalDetails = {
-        text : `SELECT
-        pie.id AS pharmacy_investigator_education_id,
-        ps.id AS pharmacy_seed_id,
-        inv_edu.id AS investigator_education_id,
-        inv_edu.course_name,
-        inv_edu.university_name,
-        inv_edu.passout_year,
-        inv_edu.active,
-    FROM
-        pharmacy_investigator_education AS pie
-    JOIN
-        pharmacy_seed AS ps ON pie.pharmacy_seed_id = ps.id
-    JOIN
-        investigator_education AS inv_edu ON pie.investigator_education_id = inv_edu.id
-    WHERE
-        pie.active = true and  pip.created_by = $1;
+    // let investorEducationalDetails = {
+    //     text : `SELECT
+    //     pie.id AS pharmacy_investigator_education_id,
+    //     ps.id AS pharmacy_seed_id,
+    //     inv_edu.id AS investigator_education_id,
+    //     inv_edu.course_name,
+    //     inv_edu.university_name,
+    //     inv_edu.passout_year,
+    //     inv_edu.active,
+    // FROM
+    //     pharmacy_investigator_education AS pie
+    // JOIN
+    //     pharmacy_seed AS ps ON pie.pharmacy_seed_id = ps.id
+    // JOIN
+    //     investigator_education AS inv_edu ON pie.investigator_education_id = inv_edu.id
+    // WHERE
+    //     pie.active = true and  pip.created_by = $1;
     
-    `,
-    values : [userName]
-    }
+    // `,
+    // values : [userName]
+    // }
 
     console.log('sql ====>>>>>', sql);
     const pharmacyDataPromise = await researchDbR.query(sql);
     const investigatorPublication = await researchDbR.query(publicationDetails);
-    const investigatorEducation = await researchDbR.query(investorEducationalDetails);
-    const promises = [pharmacyDataPromise, investigatorPublication, investigatorEducation]
+    // const investigatorEducation = await researchDbR.query(investorEducationalDetails);
+    const promises = [pharmacyDataPromise, investigatorPublication]
 
-    return Promise.all(promises).then(([pharmacyDataPromise, investigatorPublication, investigatorEducation]) => {
+    return Promise.all(promises).then(([pharmacyDataPromise, investigatorPublication]) => {
         return {
             status: 'Done',
             message: 'Data fetched successfully',
             pharmacyData: pharmacyDataPromise.rows,
             publicationDetails : investigatorPublication.rows,
-            educationalDetails : investigatorEducation.rows
+            // educationalDetails : investigatorEducation.rows
         };
     }).catch((error) => {
         console.error('Error fetching pharmacy data:', error);
