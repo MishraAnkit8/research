@@ -89,3 +89,26 @@ module.exports.updateFaculyDetails = async (body) => {
         errorCode: upsertExternalData.errorCode,
       };
 };
+
+
+module.exports.fetchFacultyDetails = async (req,res) => {
+  const fetchFacultyData = await facultyModels.fetchFaculty(
+  );
+
+
+  return fetchFacultyData.status === "Done"
+    ? {
+        status: fetchFacultyData.status,
+
+        message: fetchFacultyData.message,
+        facultyData: fetchFacultyData.facultyData,
+        rowCount: fetchFacultyData.rowCount,
+      }
+    : {
+        status: insertExternalData.status,
+        message: insertExternalData.message,
+        errorCode: insertExternalData.errorCode,
+      };
+
+
+};
