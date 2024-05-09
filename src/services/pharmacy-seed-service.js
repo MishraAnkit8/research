@@ -224,3 +224,30 @@ module.exports.insertPharmacySeedDetials = async(body, userName) => {
         errorCode : pharmacyData.errorCode
     }
 }
+
+module.exports.viewPharmacyData = async(pharmacyId, userName) => {
+    
+    const pharamcySeedView = await pharmacySeedModels.viewPharmacyGrantData(pharmacyId, userName);
+
+    console.log('pharamcySeedView ===>>>>', pharamcySeedView);
+
+    return pharamcySeedView.status === "Done" ? {
+        status : pharamcySeedView.status,
+        message : pharamcySeedView.message,
+        pharmacyData : pharamcySeedView.pharmacyData,
+        principalInvestigator : pharamcySeedView.principalInvestigator,
+        educaltionalDetails : pharamcySeedView.educaltionalDetails,
+        experienceDetails : pharamcySeedView.experienceDetails,
+        bookDetails : pharamcySeedView.bookDetails,
+        bookChapterDetails : pharamcySeedView.bookChapterDetails,
+        PublicationDetails : pharamcySeedView.PublicationDetails,
+        patentDetails : pharamcySeedView.patentDetails,
+        researchImplementationDetails : pharamcySeedView.researchImplementationDetails,
+        completedResearchDetails : pharamcySeedView.completedResearchDetails
+
+    } : {
+        status : pharamcySeedView.status,
+        message : pharamcySeedView.message,
+        errorCode : pharamcySeedView.errorCode
+    }
+}
