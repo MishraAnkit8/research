@@ -6,7 +6,7 @@ const researchDbR = dbPoolManager.get('researchDbR', research_read_db);
 const researchDbW = dbPoolManager.get('researchDbW', research_write_db);
 
 
-
+// reomove for testinging and psg.active=true 
 
 module.exports.fetchPatentSubMissionForms = async (userName) => {
 
@@ -50,7 +50,7 @@ module.exports.fetchPatentSubMissionForms = async (userName) => {
                     faculties f ON psf.faculty_id = f.id
                 WHERE
                     created_by = $1 and f.active=true and psf.active=true and pss.active=true and psss.active=true
-                    and it.active=true and psit.active=true and sg.active=true and pssg.active=true and psg.active=true 
+                    and it.active=true and psit.active=true and sg.active=true and pssg.active=true
                 ORDER BY psg.id desc`,
             values : [userName]
     };
@@ -471,7 +471,7 @@ module.exports.viewPatentSubmission = async(patentId, userName) => {
         LEFT JOIN 
             faculties f ON psf.faculty_id = f.id 
         where  psg.id = $1 AND created_by = $2 and psf.active=true and pss.active=true and psss.active=true and
-        it.active=true and psit.active=true and sg.active=true and pssg.active=true and psg.active=true`,
+        it.active=true and psit.active=true and sg.active=true and pssg.active=true`,
 
      values : [patentId, userName]
     };
