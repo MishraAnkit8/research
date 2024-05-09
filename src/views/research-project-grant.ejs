@@ -75,7 +75,8 @@
                                 </thead>
                                 <tbody class="data-list">
                                     <% researchProjectData.forEach(function(consultancy, index) { %>
-                                        <tr scope="row" data-consultancy-id="<%- consultancy.id %>"
+
+                                        <tr id="nearTd" scope="row" data-consultancy-id="<%- consultancy.id %>"
                                             data-submission-date="<%- consultancy.submission_date.toISOString().split('T')[0] %>"
                                             data-supporting-documents="<%- consultancy.supporting_documents %>">
                                             <td><%- index + 1 %></td>
@@ -89,7 +90,8 @@
                                             </td>
                                             <td class="funding-agency col-lg-1"><%- consultancy.name_of_funding_agency
                                                     %></td>
-                                            <td class="funding-amount col-lg-1"><%- consultancy.funding_amount %></td>
+                                            <td class="funding-amount col-lg-1"><%- consultancy.funding_amount %>
+                                            </td>
                                             <td class="research-project-status col-lg-1"><%-
                                                     consultancy.status_of_research_project %></td>
                                             <!-- <td class="col-lg-1">
@@ -118,6 +120,7 @@
                                             </td>
                                         </tr>
                                         <% }); %>
+
                                 </tbody>
                                 <tr>
                                     <div id="no-records-message"
@@ -266,7 +269,7 @@
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="thurst-area" class="form-label fw-bold">Thrust area of Research</label>
                                     <input type="text" name="thurst-area" id="thurst-area"
-                                        data-validate="isEmpty,isNotNumber,isExist,isLength:2:255"
+                                        data-validate="isEmpty,isAlphabeticWords,isExist,isLength:2:255"
                                         data-err-msg="Provide Valid Input" class="form-control" required>
                                 </div>
                                 <!-- Name of Funding Agency -->
@@ -404,19 +407,24 @@
                                     <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none" id="name-class">
                                         <label for="faculty-name" class="form-label fw-bold">Faculty Name</label>
                                         <input type="text" class="form-control" id="faculty-name" required>
+                                        <span style="color:red;" id="facultyError"></span>
                                     </div>
                                     <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none" id="dsg-class">
                                         <label for="" class="form-label fw-bold">Faculty Designation :</label>
                                         <input type="text" class="form-control" id="faculty-designation" required>
+                                        <span style="color:red;" id="desError"></span>
                                     </div>
                                     <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none" id="id-class">
                                         <label for="faculty-emp-id" class="form-label fw-bold">Faculty Id (Optional)
                                         </label>
                                         <input type="text" class="form-control" id="faculty-emp-id">
+                                        <span style="color:red;" id="empError"></span>
+
                                     </div>
                                     <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none" id="address-class">
                                         <label for="faculty-address" class="form-label fw-bold">Faculty Addres</label>
                                         <input type="text" class="form-control" id="faculty-address" required>
+                                        <span id="addrError"></span>
                                     </div>
 
                                     <div class="form-group col-lg-6 col-md-6 col-sm-12 mb-4 d-none" id="add-btn">
@@ -430,7 +438,25 @@
                                     </div>
                                 </table>
 
+                                <div>
+                                <table style="width:100%;" class="table  table-responsive d-none " id="externalfacultyTable">
+                                 <thead>
+                                    <th>Sr.No</th>
+                                    <th>Faculty Name</th>
+                                    <th>Faculty Address</th>
+                                    <th>Faculty Designation</th>
+                                    <th>Employee Id</th>
+                                    <th colspan>Action</th>
+                                 </thead>
+                                 <tbody id="appendFaculty">
 
+
+
+                                 </tbody>
+
+                                </table>
+
+                                </div>
                                 <!-- Total Grant Sanctioned in Rupees
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="total-grant-sanction-rupees" class="form-label fw-bold">Total Grant Sanctioned in Rupees</label>
@@ -919,6 +945,9 @@
                     console.log('clikedddd')
                     if (event.target.classList.contains('edit')) {
 
+                        let externalFacultyDetails  = JSON.parse('<%- JSON.stringify(externalDetails) %>') ;
+
+
                         $('#consultancy-modal').modal({
                             backdrop: 'static'
                         });
@@ -938,6 +967,7 @@
                         $('#consultancy-modal').modal('show');
                         consultantRowToBeUpdated = event.target.closest('tr');
                         console.log('consultantRowToBeUpdated ==>>', consultantRowToBeUpdated);
+                       
 
                         // function call for download button
                         setFileNameAttributeToBeDownload(consultantRowToBeUpdated);
@@ -958,6 +988,39 @@
                         const internalAuthor = document.getElementById('is-internal');
                         const externalAuthor = document.getElementById('is-external');
                         const supportingDocument = consultantRowToBeUpdated.getAttribute('data-supporting-documents');
+                       
+                        let externalFaculty = externalFacultyDetails.filter(fdata => consultantId == fdata.research_project_grant_id).map(facultyData => facultyData );
+                        console.log('new external faculty ',JSON.stringify(externalFaculty))
+                       
+                       let appendFaculty = document.getElementById('appendFaculty');
+
+                       externalFaculty.forEach((ef,index) => {
+                        let htmlData = `<tr data-facultyId = ${ef.id}>
+                        <td>${index + 1}</td>
+                        <td>${ef.faculty_name}</td>
+                        <td>${ef.address}</td>
+                        <td>${ef.designation}</td>
+                        <td>${ef.employee_id}</td>
+                        <td><button  class="btn btn-primary updateFaculty">Update</button></td>
+                        </tr>`
+
+                        appendFaculty.insertAdjacentHTML('beforeEnd',htmlData);
+                       })
+                      
+                       let isExternal = document.getElementById('is-external');
+                       console.log('external ',isExternal)
+
+                       //let externalfacultyTable =document.getElementById(externalfacultyTable)
+
+                    //    if(isExternal.checked){
+                    //     document.getElementById('externalfacultyTable').classList.remove('d-none')
+                    //    }
+                    //    else{
+                    //     document.getElementById('externalfacultyTable').classList.add('d-none')
+
+                    //    }
+                       
+                       
                         // const facultyDept = consultantRowToBeUpdated.getAttribute('data-faculty-dept');
                         // console.log('facultyDept ====>>>>>', facultyDept)
                         // const projectDuration = consultantRowToBeUpdated.getAttribute('data-project-duration');
@@ -970,6 +1033,7 @@
                         // const recievedAmountDate = consultantRowToBeUpdated.getAttribute('data-recieved-amount-date')
                         // assigning value with actuall value
                         const GrantProposalCategory = consultantRowToBeUpdated.getAttribute('data-grant-proposal');
+                        console.log('GrantProposalCategory ', GrantProposalCategory)
                         if (GrantProposalCategory === 'Goverment') {
                             isGrantProposalCategoryGoverement.checked = true;
                         }
@@ -1116,6 +1180,10 @@
                             return
                         }
                     }
+
+                    if(event.target.classList.contains('updateFaculty')){
+                      console.log('button clicked')
+                    }
                     //for view data the form data
                     if (event.target.classList.contains('view')) {
                         console.log('clickeddddd');
@@ -1174,6 +1242,8 @@
                                     // viewSubmissionGrantDate.innerText = data.consultantData.submission_grant_date.split('T')[0];
                                     // viewFacultyType.innerText = data.consultantData.faculty_type.replace(/,/g, ' ');
                                     // viewSupportingDocument.innerText = data.researchData.supporting_documents;
+
+                                    console.log('submission date ', data.submissionGrantDate)
                                     document.getElementById('view-submission-date').innerText = data.submissionGrantDate;
                                     let facultyDetailsHTML = `
                             <table class="table" border='1px'>
@@ -1294,7 +1364,7 @@
                         })
                         .then((data) => {
                             if (data.status === 'Done') {
-                                console.log('data ==>', data);
+                                console.log('data captured ==>', JSON.stringify(data));
                                 consultantRowToBeUpdated.setAttribute('data-grant-type', data.updatedConsultant.typeOfGrant);
                                 consultantRowToBeUpdated.setAttribute('data-grant-proposal', data.updatedConsultant.grantProposalCategory)
                                 consultantRowToBeUpdated.setAttribute('data-submission-date', data.updatedConsultant.submissionGrantDate);
@@ -1632,9 +1702,26 @@
                 //  addEventListener   for insert external details
                 InsertDetails.addEventListener('click', async () => {
 
+                    const facultyName = document.getElementById('faculty-name').value;
+                    const facultyDsg = document.getElementById('faculty-designation').value;
+                    const facultyAddr = document.getElementById('faculty-address').value;
+                    const facultyEmpId = document.getElementById('faculty-emp-id').value;
 
-                    console.log('clickedd insert details buttons')
-                    await insertExternalDetails('<%- BASE_URL %>research/external/faculty-insert');
+                    let addrError = (facultyAddr != '') ? true : false;
+                    if (addrError) {
+                        document.getElementById('addrError').innerText = '';
+                    } else {
+                        document.getElementById('addrError').innerText = 'Address is Required';
+                    }
+
+                    let facultyError = checkAlphabets(facultyName, 'facultyError');
+                    let designationError = checkAlphabets(facultyDsg, 'desError');
+                    let empError = checkEmpError(facultyEmpId);
+
+                    if (facultyError && designationError && addrError && empError) {
+                        console.log('clickedd insert details buttons')
+                        await insertExternalDetails('<%- BASE_URL %>research/external/faculty-insert');
+                    }
 
                 });
 
@@ -1713,34 +1800,79 @@
 
 
                 document.getElementById('is-external').addEventListener('click', () => {
-                    let is_checked = document.getElementById('is-external');
-                    if (is_checked.checked) {
-                        let facultyName = document.getElementById('faculty-name');
-                        facultyName.setAttribute('data-err-msg', 'Provide Valid Input');
-                        facultyName.setAttribute('data-validate', 'isEmpty,isExist,isAlphabeticWords');
-                        facultyName.setAttribute('required', true);
-
-
-                        let facultyDesc = document.getElementById('faculty-designation');
-                        facultyDesc.setAttribute('data-err-msg', 'Provide Valid Input');
-                        facultyDesc.setAttribute('data-validate', 'isEmpty,isExist,isAlphabeticWords');
-                        facultyDesc.setAttribute('required', true);
-
-
-                        let facultyId = document.getElementById('faculty-emp-id');
-                        facultyDesc.setAttribute('data-err-msg', 'Provide Valid Input');
-                        facultyDesc.setAttribute('data-validate', 'isEmpty,isExist,isNumber');
-
-                        let facultyAddr = document.getElementById('faculty-address');
-                        facultyAddr.setAttribute('data-err-msg', 'Provide Valid Input');
-                        facultyAddr.setAttribute('data-validate', 'isEmpty,isExist');
-                        facultyDesc.setAttribute('required', true);
-
-                    }
+                 let is_checked = document.getElementById('is-external');
+                if (is_checked.checked) {
+                    document.getElementById('externalfacultyTable').classList.remove('d-none')  
+                 }else{
+                    document.getElementById('externalfacultyTable').classList.add('d-none')
+                 }
                 })
 
 
+                function checkAlphabets(facultyName, idName) {
 
+                    let facultyError = document.getElementById(idName);
+
+                    if (facultyName.length == 0 && idName === 'facultyError') {
+                        facultyError.innerText = "Name is Required";
+                        return false;
+                    }
+
+                    if (facultyName.length == 0 && idName === 'desError') {
+                        facultyError.innerText = "Designation is Required";
+                        return false;
+                    }
+
+                    if (!facultyName || facultyName.trim() === "") {
+                        facultyError.innerText = "Provide Valid Input";
+                        return false;
+                    }
+
+                    const words = facultyName.split(" ");
+
+                    for (const word of words) {
+                        for (let i = 0; i < word.length; i++) {
+                            const charCode = word.charCodeAt(i);
+                            if (
+                                (charCode < 65 || charCode > 90) &&
+                                (charCode < 97 || charCode > 122)
+                            ) {
+                                facultyError.innerText = "Provide Valid Input";
+                                return false;
+                            }
+                        }
+                    }
+
+                    facultyError.innerText = "";
+                    return true;
+                }
+
+                function checkEmpError(facultyEmpId) {
+
+                    let empError = document.getElementById('empError');
+                    let bool;
+
+
+                    for (let i = 0; i < facultyEmpId.length; i++) {
+                        const charCode = facultyEmpId.charAt(i);
+                        if (
+                            (charCode > 0 && charCode < 9)
+                        ) {
+                            bool = true;
+                        } else {
+                            bool = false
+                        }
+                    }
+
+                    if (bool) {
+                        empError.innerText = ''
+                        return true;
+                    } else {
+                        empError.innerText = 'Provide Valid Input'
+                        return false;
+                    }
+
+                }
 
 
 

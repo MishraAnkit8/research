@@ -78,6 +78,12 @@ module.exports.fetchResearchConsultancy = async(userName) => {
     }
 
     
+    let grantSql = {
+      text : `select r.research_project_grant_id,f.id,f.faculty_name,f.designation,f.employee_id,f.address from research_project_grant_faculty r inner join faculties f on r.faculty_id = f.id
+            where 
+            r.active=true and f.active=true and f.faculty_type_id = 2`,
+    }
+    console.log("grantSql ===>>>>", grantSql);
 
     console.log('researchGrantsql ====>>>>>', researchGrantsql);
 
@@ -87,11 +93,30 @@ module.exports.fetchResearchConsultancy = async(userName) => {
     const researchInternalIds = await researchDbR.query(researchGrantInternalsql);
     const researchGrantExternalIds = await researchDbR.query(researchGrantExternalsql);
     const facultTableData = await researchDbR.query(internalFacultySql);
+    const externalDataDetails = await researchDbR.query(grantSql);
     
-    const promises = [researchData, researchPojectGrantFacultyData, facultTableData, reseachGrantIdsContainer, researchInternalIds, researchGrantExternalIds];
+    const promises = [
+      researchData,
+      researchPojectGrantFacultyData,
+      facultTableData,
+      reseachGrantIdsContainer,
+      researchInternalIds,
+      researchGrantExternalIds,
+      externalDataDetails,
+    ];
     return Promise.all(promises).then(([researchData]) => {
-      return  { status : "Done" , message : "Record Fetched Successfully" ,  rowCount : researchData.rowCount, researchData : researchData.rows, facultTableData : facultTableData.rows, researchPojectGrantFacultyData : researchPojectGrantFacultyData.rows
-      , reseachGrantIdsContainer : reseachGrantIdsContainer.rows, researchInternalIds : researchInternalIds.rows, researchGrantExternalIds : researchGrantExternalIds.rows};
+      return {
+        status: "Done",
+        message: "Record Fetched Successfully",
+        rowCount: researchData.rowCount,
+        researchData: researchData.rows,
+        facultTableData: facultTableData.rows,
+        researchPojectGrantFacultyData: researchPojectGrantFacultyData.rows,
+        reseachGrantIdsContainer: reseachGrantIdsContainer.rows,
+        researchInternalIds: researchInternalIds.rows,
+        researchGrantExternalIds: researchGrantExternalIds.rows,
+        externalDataDetails: externalDataDetails.rows,
+      };
   })
   .catch((error) => {
       return{status : "Failed" , message : error.message , errorCode : error.code}
@@ -195,6 +220,7 @@ module.exports.updateResearchConsultantData = async(consultantId, updatedResearc
           Promise.resolve({ rows: [{ id: existingRecord.rows[0].id }] })
         );
       });
+      
 
 
     const researchProjectTable = await researchDbW.query(sql);
