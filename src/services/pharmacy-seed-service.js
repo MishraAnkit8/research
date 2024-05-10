@@ -41,11 +41,12 @@ module.exports.insertInvestorEduCation = async(body, userName) => {
       
 
     const insertInvestigatiorEducation = await pharmacySeedModels.insertInvestigatorEducationDetails(educaltionalDataArray, userName)
+    console.log('insertInvestigatiorEducation =====>>>>>>.', insertInvestigatiorEducation);
 
     return insertInvestigatiorEducation.status === "Done" ? {
         status : insertInvestigatiorEducation.status,
         message : insertInvestigatiorEducation.message,
-        investorEduId : insertInvestigatiorEducation.investorEduId,
+        educatoinIds : insertInvestigatiorEducation.educatoinIds,
         rowCount : insertInvestigatiorEducation.rowCount
     } : {
         status : insertInvestigatiorEducation.status,

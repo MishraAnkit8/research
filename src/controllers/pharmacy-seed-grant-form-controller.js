@@ -34,7 +34,7 @@ module.exports.insertInvestigationEducationalDetails = async(req, res, next) => 
     res.status(statusCode).send({
         status : insertPharmacyInvestigatorEdu.status,
         message : insertPharmacyInvestigatorEdu.message,
-        investorEduId : insertPharmacyInvestigatorEdu.investorEduId,
+        educatoinIds : insertPharmacyInvestigatorEdu.educatoinIds,
         rowCount : insertPharmacyInvestigatorEdu.rowCount,
         errorCode : insertPharmacyInvestigatorEdu.errorCode
     })
