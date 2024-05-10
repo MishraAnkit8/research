@@ -86,6 +86,7 @@ module.exports.userLogoutSession= async(req, res, next) => {
         const cookies = req.cookies;
         console.log('cookies ==>>>>>', cookies);
         const key = cookies.session;
+        // cookies.clearCookie('')
         const userSession = await getRedisData(`${key}:session`);
         console.log('userSession ====>>>>>>>', userSession);
 
@@ -109,10 +110,12 @@ module.exports.userLogoutSession= async(req, res, next) => {
         // const statusCode =  userLogOutSession.status === "Done" ? 200 : 500;
     
         if(userLogOutSession.status === "Done") {
+            console.log('ankit ')
             res.clearCookie('session');
+
             res.redirect(`${process.env.BASE_URL}user`);
     
-        }
+       }
         
     } catch (error) {
         console.log("error logout : ",error);

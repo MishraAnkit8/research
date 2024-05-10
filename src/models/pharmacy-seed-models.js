@@ -222,34 +222,44 @@ module.exports.renderPharmacyData = async(userName) => {
     
 }
 
-module.exports.insertInvestigatorEducationDetails = async(educationalDetails, userName) => {
-    console.log('data in service ====>>>>>', educationalDetails);
+module.exports.insertInvestigatorEducationDetails = (educationalDataArray, userName) => {
+    console.log('Data in models:', educationalDataArray);
+        
+    const educatoinIds = [];
 
-    const {education, university, passoutYear} = educationalDetails;
+    const insertPromises = educationalDataArray.map((educationDetails) => {
+      const [courseName, universityName, passoutYear] = educationDetails;
 
-    let sql = {
-        text : `INSERT INTO investigator_education (course_name, university_name, passout_year, created_by, active) values ($1, $2, $3, $4, $5) returning id`,
-        values : [education, university, passoutYear, userName, true]
-    }
-    console.log('sql ===>>>>', sql);
+      const sql = {
+        text: `INSERT INTO investigator_education (course_name, university_name, passout_year, created_by, active)
+                       VALUES ($1, $2, $3, $4, $5)
+                       RETURNING id`,
+        values: [courseName, universityName, passoutYear, userName, true],
+      };
 
-    const result = await researchDbW.query(sql);
-    const response = result.rowCount > 0 
-        ? {
-            status: "Done",
-            message: "Record Inserted Successfully",
-            investorEduId: result.rows[0].id,
-            rowCount: result.rowCount
-        }
-        : {
+      console.log("SQL:", sql);
+
+      return researchDbW.query(sql)
+      .then((result) => {
+          if (result.rowCount > 0 && result.rows[0].id) {
+            educatoinIds.push(result.rows[0].id);
+          }
+        })
+        .catch((error) => {
+          ({
             status: "Failed",
-            message: error?.message ?? "An error occurred during record insertion.",
-            errorCode: error?.code
-        };
-    
-    return response;
+            message: error.message ?? "An error occurred.",
+            errorCode: error.code,
+          });
+        });
+    });
 
-}
+    const promises = [insertPromises];
+        
+
+    
+};
+
 
 module.exports.insertInvestigatorExperienceDetails = async(workExperienceDetails, userName) => {
     console.log('data in service ====>>>>>', workExperienceDetails);
