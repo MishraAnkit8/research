@@ -19,10 +19,28 @@ module.exports.renderPharmacySeed = async(userName) => {
 }
 
 module.exports.insertInvestorEduCation = async(body, userName) => {
-    const educationalDetails = body.educationalDetails;
-    console.log('data in service === >>>>>>', educationalDetails);
 
-    const insertInvestigatiorEducation = await pharmacySeedModels.insertInvestigatorEducationDetails(educationalDetails, userName)
+    const educationalDetails = body.educaltionalDetails;
+    console.log('data in service === >>>>>>', educationalDetails);
+    const education = educationalDetails[educationalDetails.length - 1];
+
+    if (education.length > 0) {
+        education.splice(0, 1);
+      }
+    console.log('education =====>>>>>', education);
+    function splitArrayIntoChunks(arr, chunkSize) {
+        const result = [];
+        for (let i = 0; i < arr.length; i += chunkSize) {
+          result.push(arr.slice(i, i + chunkSize));
+        }
+        return result;
+      }
+      
+      const educaltionalDataArray = splitArrayIntoChunks(education, 3);
+      console.log('educaltionalDataArray =>>>>>>>>', educaltionalDataArray);
+      
+
+    const insertInvestigatiorEducation = await pharmacySeedModels.insertInvestigatorEducationDetails(educaltionalDataArray, userName)
 
     return insertInvestigatiorEducation.status === "Done" ? {
         status : insertInvestigatiorEducation.status,

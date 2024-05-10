@@ -46,8 +46,12 @@ module.exports.upsertFacultyDetails = async (
   const { facultyName, facultyDsg, facultyAddr, facultyEmpId, grantId } =
     externalFacultyDetails;
   console.log(
-    "externalFacultyDetails in faculty models ",JSON.stringify(externalFacultyDetails),
-    facultyName, facultyDsg, facultyAddr, facultyEmpId
+    "externalFacultyDetails in faculty models ",
+    JSON.stringify(externalFacultyDetails),
+    facultyName,
+    facultyDsg,
+    facultyAddr,
+    facultyEmpId
   );
 
   let facultysql = {
@@ -92,7 +96,7 @@ module.exports.updateFaculyDetails = async (externalFacultyDetails) => {
   const { facultyName, facultyDesignation, facultyAddr, empId, facultyId } =
     externalFacultyDetails;
 
-    console.log('json faculty ',JSON.stringify(externalFacultyDetails))
+  console.log("json faculty ", JSON.stringify(externalFacultyDetails));
 
   let sql = {
     text: `update faculties set employee_id=$1, faculty_name=$2, designation=$3, address=$4  where id=$5`,
@@ -120,12 +124,11 @@ module.exports.updateFaculyDetails = async (externalFacultyDetails) => {
 };
 
 module.exports.fetchFaculty = async () => {
-
   let sql = {
-    text : `select r.research_project_grant_id,f.id,f.faculty_name,f.designation,f.employee_id,f.address from research_project_grant_faculty r inner join faculties f on r.faculty_id = f.id
+    text: `select r.research_project_grant_id,f.id,f.faculty_name,f.designation,f.employee_id,f.address from research_project_grant_faculty r inner join faculties f on r.faculty_id = f.id
     where 
-    r.active=true and f.active=true and f.faculty_type_id = 2`,
-  }
+    r.active=true and f.active=true and f.faculty_type_id = 2 order by f.id`,
+  };
 
   const facultyDetails = await researchDbW.query(sql);
   const promises = [facultyDetails];
@@ -135,7 +138,7 @@ module.exports.fetchFaculty = async () => {
         status: "Done",
         message: "Faculty Record Updated Successfully",
         rowCount: facultyDetails.rowCount,
-        facultyData : facultyDetails.rows
+        facultyData: facultyDetails.rows,
       };
     })
     .catch((error) => {
@@ -145,11 +148,84 @@ module.exports.fetchFaculty = async () => {
         errorCode: error.code,
       };
     });
+};
 
+module.exports.facultyDataForPatent = async () => {
+  let sql = {
+    text: `	select p.patent_submission_grant_id,f.id,f.faculty_name,f.designation,f.employee_id,f.address from patent_submission_faculty p 
+	inner join faculties f on p.faculty_id = f.id where  p.active=true and f.active=true and f.faculty_type_id = 2 order by f.id`,
+  };
 
+  const facultyDetails = await researchDbW.query(sql);
+  const promises = [facultyDetails];
+  return Promise.all(promises)
+    .then(([facultyDetails]) => {
+      return {
+        status: "Done",
+        message: "Faculty Record Updated Successfully",
+        rowCount: facultyDetails.rowCount,
+        facultyData: facultyDetails.rows,
+      };
+    })
+    .catch((error) => {
+      return {
+        status: "Failed",
+        message: error.message,
+        errorCode: error.code,
+      };
+    });
+};
 
-  
-}
+module.exports.insertFacultyPatent = async (
+  externalFacultyDetails,
+  patentId
+) => {
+  const { facultyName, facultyDsg, facultyAddr, facultyEmpId, grantId } =
+    externalFacultyDetails;
+  console.log(
+    "externalFacultyDetails in faculty models ",
+    JSON.stringify(externalFacultyDetails),
+    facultyName,
+    facultyDsg,
+    facultyAddr,
+    facultyEmpId
+  );
+
+  let facultysql = {
+    text: `INSERT INTO faculties (faculty_type_id, employee_id, faculty_name, designation, address) VALUES ($1, $2, $3, $4, $5) RETURNING id`,
+    values: [2, facultyEmpId, facultyName, facultyDsg, facultyAddr],
+  };
+
+  const facultyPromise = await researchDbW.query(facultysql);
+  const facultyId = facultyPromise.rows[0].id;
+  console.log("facultyId =====>>>>>>>", facultyId);
+
+  let sql = {
+    text: `INSERT INTO patent_submission_faculty (patent_submission_grant_id, faculty_id) VALUES ($1, $2) returning id`,
+    values: [patentId, facultyId],
+  };
+
+  const researchgrant = await researchDbW.query(sql);
+
+  const promises = [researchgrant];
+
+  return Promise.all(promises)
+    .then(([researchgrant]) => {
+      return {
+        status: "Done",
+        message: "Faculty Record Inserted Successfully",
+        externalFacultyId: facultyId,
+        researchGrantId: researchgrant.rows[0].id,
+      };
+    })
+    .catch((error) => {
+      return {
+        status: "Failed",
+        message: error.message,
+        errorCode: error.code,
+      };
+    });
+};
 
 // module.exports.insertGrantFaculty = async (grantId) => {
 

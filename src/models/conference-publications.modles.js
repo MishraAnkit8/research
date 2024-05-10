@@ -50,7 +50,7 @@ module.exports.fetchConferencePublication = async(userName) => {
 
 module.exports.insertConferencePublication = async (conferencePublications, conferenceDocument, conferenceProofFile, facultyIdscontainer, userName) => {
     const { nmimsCampus, nmimsSchool, titleOfPaper, conferenceName, conferencePlace, procedingDetail, conferenceType, isPresenter, organizingBody,
-        presentationAward, volAndIssueNo, issnIsbnNo, doiWebLinkId, sponsored, spentAmount, publicationDate, presentingAuthor } = conferencePublications;
+        presentationAward, volAndIssueNo, issnIsbnNo, doiWebLinkId, sponsored, spentAmount, publicationDate, presentingAuthor, authorsName } = conferencePublications;
     console.log('conferencePublications data in models', conferencePublications);
     const doiBookIdParsed = doiWebLinkId === "" ? null : parseInt(doiWebLinkId, 10);
     const conferenceProofFilesString = conferenceProofFile === "" ? null : conferenceProofFile;
@@ -58,10 +58,10 @@ module.exports.insertConferencePublication = async (conferencePublications, conf
     let conferenceSql = {
         text: `INSERT INTO conference_presentation(nmims_campus, nmims_school, title_of_paper, conference_name, conference_place, proceedings_detail, conference_type,
                         is_presenter, organizing_body, award_for_presentation, vol_and_issue_no, issn_isbn_no, doi_id,
-                        sponsored, spent_amount, publication_date, presenting_authors, upload_proof, upload_files, created_by)
-                       VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20) RETURNING id `,
+                        sponsored, spent_amount, publication_date, presenting_authors, authors_name, upload_proof, upload_files, created_by)
+                       VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21) RETURNING id `,
         values: [nmimsCampus, nmimsSchool, titleOfPaper, conferenceName, conferencePlace, procedingDetail, conferenceType, isPresenter, organizingBody,
-            presentationAward, volAndIssueNo, issnIsbnNo, doiBookIdParsed, sponsored, spentAmount, publicationDate, presentingAuthor, conferenceDocument, conferenceProofFilesString, userName]
+            presentationAward, volAndIssueNo, issnIsbnNo, doiBookIdParsed, sponsored, spentAmount, publicationDate, presentingAuthor, authorsName, conferenceDocument, conferenceProofFilesString, userName]
     };
 
     console.log('conferenceSql ==>', conferenceSql);
@@ -118,7 +118,7 @@ module.exports.updateConferencePublication = async( upadtedConferenceData, confe
     const authorNameString = internalNamesString + externalNamesString + existingNameString;
 
     const {nmimsCampus, nmimsSchool, titleOfPaper, conferenceName, conferencePlace, procedingDetail, conferenceType, isPresenter, organizingBody,
-        presentationAward, volAndIssueNo, issnIsbnNo, doiWebLinkId, sponsored, spentAmount, publicationDate, presentingAuthor} = upadtedConferenceData;
+        presentationAward, volAndIssueNo, issnIsbnNo, doiWebLinkId, sponsored, spentAmount, publicationDate, presentingAuthor, authorsName} = upadtedConferenceData;
     const conferenceFilesarray = {confernceDocString , conferenceProofString}
     console.log('conferenceFiles  =>>', conferenceFilesarray);
 
@@ -128,9 +128,9 @@ module.exports.updateConferencePublication = async( upadtedConferenceData, confe
     let sql  =  { 
         text :`UPDATE conference_presentation SET nmims_campus = $2, nmims_school = $3, title_of_paper = $4, conference_name = $5, conference_place = $6, proceedings_detail = $7, conference_type = $8,
             is_presenter = $9, organizing_body = $10, award_for_presentation = $11, vol_and_issue_no = $12, issn_isbn_no = $13, doi_id = $14,
-            sponsored = $15, spent_amount = $16, publication_date = $17, presenting_authors = $18, author_type = $19, upload_proof = $20, upload_files = $21,  updated_by = $22 WHERE id = $1`,
+            sponsored = $15, spent_amount = $16, publication_date = $17, presenting_authors = $18, author_type = $19, authors_name = $20, upload_proof = $21, upload_files = $22,  updated_by = $23 WHERE id = $1`,
         values : [conferenceId, nmimsCampus, nmimsSchool, titleOfPaper, conferenceName, conferencePlace, procedingDetail, conferenceType, isPresenter, organizingBody,
-            presentationAward, volAndIssueNo, issnIsbnNo, doiBookIdParsed, sponsored, spentAmount, publicationDate, presentingAuthor, authorNameString, conferenceProofe, conferenceDocument, userName]
+            presentationAward, volAndIssueNo, issnIsbnNo, doiBookIdParsed, sponsored, spentAmount, publicationDate, presentingAuthor, authorNameString, authorsName, conferenceProofe, conferenceDocument, userName]
     }
 
     // const conferenceFieldToBeUpdate = [
@@ -253,7 +253,7 @@ module.exports.viewConferencePublication = async(conferenceId, userName) => {
     let sql = {
         text : `SELECT nmims_campus, nmims_school, title_of_paper, conference_name, conference_place, proceedings_detail, conference_type,
         is_presenter, organizing_body, award_for_presentation, vol_and_issue_no, issn_isbn_no, doi_id,
-        sponsored, spent_amount, publication_date, presenting_authors, author_type, upload_proof, upload_files FROM  conference_presentation WHERE  id = $1 and active=true AND created_by = $2`,
+        sponsored, spent_amount, publication_date, presenting_authors, author_type, authors_name, upload_proof, upload_files FROM  conference_presentation WHERE  id = $1 and active=true AND created_by = $2`,
         values : [conferenceId, userName]
     }
     // return researchDbR.query(sql);
