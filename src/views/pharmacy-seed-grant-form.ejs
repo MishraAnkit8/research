@@ -594,14 +594,17 @@
                     </div>
                      <!-- investigator Educational Qualifications -->
                      
-                   
-                    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label class="form-label text-center fw-bold">Educational Qualifications Details</label>
-                        <button  type="button" class="btn btn-primary" type="submit" data-toggle="modal" data-target="#educationModal">
-                            Add Education Details
-                          </button>
+                     <label class="form-label text-center fw-bold">investigator Educational Qualifications</label>
+                     <div class="container">
+                        <div id="educationDetails">
+                            <!-- No fields displayed initially -->
+                        </div>
+                        <button type="submit" id="insert-education" class="btn btn-primary">Add Education Details</button>
+                        <!-- Button to trigger adding fields -->
+                        <button type="button" class="btn btn-primary" id="submit-education-details">Save</button>
                     </div>
-                   
+                    
+                    
                     <!-- <table class="table vertical-lines custom-table table-responsiv">
                         <thead>
                             <th class="col-lg-3">Degree</th>
@@ -1273,72 +1276,78 @@
 
 
 
-<div class="modal fade" id="educationModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Education Details</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <!-- Form for education details -->
-          <form id="educationForm">
-            <div id="educationDetails">
-              <div class="education-section">
-                <div class="form-group">
-                  <label for="degree">Qualification</label>
-                  <input type="text" class="form-control" name="qualification[]" required>
-                </div>
-                <div class="form-group">
-                  <label for="institute">Institution</label>
-                  <input type="text" class="form-control" name="institution[]" required>
-                </div>
-                <div class="form-group">
-                  <label for="year">Year</label>
-                  <input type="text" class="form-control" name="year[]" required>
-                </div>
-              </div>
-            </div>
-            <button type="button" class="btn btn-primary" id="addEducation">Add</button>
-            <button type="submit" id="submit-education" class="btn btn-primary">Save</button>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script>
+        const educationContainer = document.getElementById('educationDetails');
+        const insertDetails = document.getElementById('insert-education');
+        const educationBtn = document.getElementById('submit-education-details')
 
-  let addEducationButton = document.getElementById('addEducation');
-  let educationForm = document.getElementById('educationForm');
-  const educationDetails = document.getElementById('submit-education');
-  
-  addEducationButton.addEventListener('click', function() {
-    let educationSections = document.querySelectorAll('.education-section');
-    let newEducationSection = educationSections[0].cloneNode(true);
-    document.getElementById('educationDetails').appendChild(newEducationSection);
-  });
-  
-  educationForm.addEventListener('submit', function(event) {
+ // Define an array to hold the education details
+let educationArray = [];
+let educaltionalDetails = []
+
+function addInputField(label) {
+    let inputField = document.createElement('div');
+    inputField.classList.add('education-section');
+
+    let html = `
+        <div class="form-group">
+            <label for="${label.toLowerCase()}">${label}</label>
+            <input type="text" class="form-control" name="${label.toLowerCase()}[]" required>
+        </div>
+    `;
+    inputField.innerHTML = html;
+
+    educationContainer.appendChild(inputField);
+}
+
+insertDetails.addEventListener('click', function(event) {
     event.preventDefault();
+    addInputField('Qualification');
+    addInputField('Institution');
+    addInputField('Year');
+});
+
+const educaltionalData = async(url) => {
+    let inputFields = document.querySelectorAll('.form-control');
     
-    let educationArray = [];
-    let educationSections = document.querySelectorAll('.education-section');
+    let currentValues = [];
     
-    educationSections.forEach(function(section) {
-      let qualification = section.querySelector('[name="qualification[]"]').value;
-      let institution = section.querySelector('[name="institution[]"]').value;
-      let year = section.querySelector('[name="year[]"]').value;
-      
-      educationArray.push([qualification, institution, year]);
+    inputFields.forEach(field => {
+        if(field.value !== ''){
+            currentValues.push(field.value);
+        }
     });
     
-    console.log(educationArray);
-  });
+    educaltionalDetails.push(currentValues);
+    payload = {
+        educaltionalDetails : educaltionalDetails
+    }
 
-  
+    fetch(url, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+    })
+    .then((Response) => {
+        return Response.ok ? Response.json()  : 'Network issue'
+    })
+    .then((data) => {
+        console.log('data ====>>>>>', data )
+    })
+    .catch((error) => {
+        console.log('errrorr ====>>>>>>>', error);
+    })
+
+}
+
+educationBtn.addEventListener('click', async() => {
+
+    await educaltionalData('<%- BASE_URL %>research/pharmacy-seed-grant-form/investigator-education/insert')
+});
+
 
 
     const submitBtn = document.getElementById('submit-btn');
@@ -1492,17 +1501,17 @@
         };
 
         // Example usage:
-        const investigatorEducation = async (url) => {
-            const educationalDetails = {};
-            educationalDetails.education =  document.getElementById('investigator-education').value,
-            educationalDetails.university =  document.getElementById('investigator-university').value,
-            educationalDetails.passoutYear =  document.getElementById('investigator-passout-year').value
+        // const investigatorEducation = async (url) => {
+        //     const educationalDetails = {};
+        //     educationalDetails.education =  document.getElementById('investigator-education').value,
+        //     educationalDetails.university =  document.getElementById('investigator-university').value,
+        //     educationalDetails.passoutYear =  document.getElementById('investigator-passout-year').value
             
-            const payload = { educationalDetails };
-            const submitBtn = document.getElementById('submit-investor-education');
-            const AddBtn = document.getElementById('add-investor-education-more-details');
-            await submitData(url, payload, submitBtn, AddBtn);
-        };
+        //     const payload = { educationalDetails };
+        //     const submitBtn = document.getElementById('submit-investor-education');
+        //     const AddBtn = document.getElementById('add-investor-education-more-details');
+        //     await submitData(url, payload, submitBtn, AddBtn);
+        // };
 
         const investigatorWorkExperience = async (url) => {
             const workExperienceDetails = {};
@@ -1656,10 +1665,10 @@
             };
 
         // education details
-        document.getElementById('submit-investor-education').addEventListener('click', async () => {
-            console.log('clickeddddddd')
-            await submitForm('<%- BASE_URL %>research/pharmacy-seed-grant-form/investigator-education/insert', 'investigator-education');
-        });
+        // document.getElementById('submit-investor-education').addEventListener('click', async () => {
+        //     console.log('clickeddddddd')
+        //     await submitForm('<%- BASE_URL %>research/pharmacy-seed-grant-form/investigator-education/insert', 'investigator-education');
+        // });
 
         // experience details
         document.getElementById('submit-investor-experience').addEventListener('click', async () => {

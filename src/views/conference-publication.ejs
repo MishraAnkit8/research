@@ -83,6 +83,7 @@
                                                 data-sponsored="<%- conference.sponsored %>"
                                                 data-award-for-presentation="<%- conference.award_for_presentation %>"
                                                 data-spent-amount="<%- conference.spent_amount %>"
+                                                data-authors-name="<%- conference.authors_name %>"
                                                 
                                                 data-conference-place="<%- conference.conference_place%>"
                                                 data-conference-type="<%- conference.conference_type %>"
@@ -243,6 +244,15 @@
                                     <label for="conference-name" class="form-label  fw-bold"> Name of Conference
                                     </label>
                                     <input type="text" name="conference-name" id="conference-name"
+                                        data-validate="isEmpty,isAlphabeticWords,isExist,isLength:2:255"
+                                        data-err-msg="Provide Valid Input" class="form-control" required />
+                                </div>
+
+                                 <!-- Author's Name  -->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="conference-name" class="form-label  fw-bold">Author's Name
+                                    </label>
+                                    <input type="text" name="conference-name" id="author-name"
                                         data-validate="isEmpty,isAlphabeticWords,isExist,isLength:2:255"
                                         data-err-msg="Provide Valid Input" class="form-control" required />
                                 </div>
@@ -596,6 +606,15 @@
                                     </div>
                                 </div>
 
+                                    <!-- Name  Authors-->
+                                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                        <div class="box">
+                                            <div class="task-sub-title sub-title-text">Author's Name:</div>
+                                            <label class="view-content" id="view-author-name"></label>
+                                        </div>
+                                    </div>
+    
+
                                 <!-- Place of Conference -->
                                 <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                                     <div class="box">
@@ -816,6 +835,7 @@
                         document.getElementById('organizing-body').value = '';
                         document.getElementById('spent-amount').value = '';
                         document.getElementById('doi-weblink-id').value = '';
+                        document.getElementById('author-name').value = '';
                         employeeList.classList.add('d-none');
                         authorDetails.classList.add('d-none');
                         titleOfPaper.value = '';
@@ -843,6 +863,7 @@
                     const presentingAuthor = document.getElementById('presenting-author').value;
                     const organizingBody = document.getElementById('organizing-body').value;
                     const spentAmount = document.getElementById('spent-amount').value;
+                    const authorsName = document.getElementById('author-name').value
                     const sponsored = document.querySelector('input[name="sponsored"]:checked').value;
                     const procedingDetail = document.querySelector('input[name="Proceedings-details"]:checked').value;
                     const conferenceType = document.querySelector('input[name="conference-type"]:checked').value;
@@ -896,6 +917,7 @@
                     conferenceData.append('presentingAuthor', presentingAuthor);
                     conferenceData.append('nmimsCampus', nmimsCampus);
                     conferenceData.append('nmimsSchool', nmimsSchool);
+                    conferenceData.append('authorsName', authorsName)
 
                     fetch(url, {
                         method: 'POST',
@@ -1142,6 +1164,7 @@
                                     viewDoiWebLinkId.innerText = data.viewConferenceData[0].doi_id;
                                     viewConferenceType.innerText = data.viewConferenceData[0].conference_type;
                                     viewIsPresenter.innerText = data.viewConferenceData[0].is_presenter;
+                                    document.getElementById('view-author-name').innerText = data.viewConferenceData[0].authors_name;
                                     viewAuthortype.innerText = data.viewConferenceData[0].author_type.replace(/,/g, ' ');
 
 
@@ -1216,7 +1239,9 @@
                         const proceedingCategoryNo = document.getElementById('is-published-no');
                         const externalAuthor = document.getElementById('external-text');
                         const internalAuthor = document.getElementById('enternal-text');
-
+                        const authorName = document.getElementById('author-name')
+                        authorName.value = conferenceRowToBeUpdated.getAttribute('data-authors-name');
+                        console.log('authorName ===>>>>>', authorName)
                         // assigning value which already stored
                         titleOfPaper.value = conferenceRowToBeUpdated.querySelector('.title-of-paper').innerText;
                         conferenceName.value = conferenceRowToBeUpdated.querySelector('.conference-name').innerText;
@@ -1237,7 +1262,8 @@
                         const conferenceType = conferenceRowToBeUpdated.getAttribute('data-conference-type');
                         conferenceType === 'National' ? isNationalConference.checked = true : isInternationalConference.checked = true;
                         const isPresenter = conferenceRowToBeUpdated.getAttribute('data-is-presenter');
-                        isPresenter === 'Yes' ? isPresenterYes.checked = true : isPresenterNo.checked = true;
+                        // isPresenter === 'Yes' ? isPresenterYes.checked = true : isPresenterNo.checked = true;
+
                         const presentationAward = conferenceRowToBeUpdated.getAttribute('data-award-for-presentation');
                         presentationAward === 'Yes' ? isAwardYes.checked = true : isAwardno.checked = true;
                         const sponsored = conferenceRowToBeUpdated.getAttribute('data-sponsored');
@@ -1284,6 +1310,8 @@
                     const procedingDetail = document.querySelector('input[name="Proceedings-details"]:checked').value;
                     const conferenceType = document.querySelector('input[name="conference-type"]:checked').value;
                     const presentationAward = document.querySelector('input[name="award-for-presentation"]:checked').value;
+                    const authorsName = document.getElementById('author-name').value;
+    
                     console.log('storedFacultyValue ===>>>>', storedFacultyValue)
                     //function call 
                     await updateFacultyNameString(updatedAuthorType, updatedConferenceData, storedFacultyValue);
@@ -1308,6 +1336,7 @@
                     // updatedConferenceData.append('isPresenter', isPresenter);
                     updatedConferenceData.append('publicationDate', publicationDate);
                     updatedConferenceData.append('spentAmount', spentAmount);
+                    updatedConferenceData.append('authorsName', authorsName);
                     updatedConferenceData.append('presentationAward', presentationAward);
                     updatedConferenceData.append('sponsored', sponsored);
                     updatedConferenceData.append('organizingBody', organizingBody);
