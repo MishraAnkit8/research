@@ -75,7 +75,8 @@
                                 </thead>
                                 <tbody class="data-list">
                                     <% researchProjectData.forEach(function(consultancy, index) { %>
-                                        <tr scope="row" data-consultancy-id="<%- consultancy.id %>"
+
+                                        <tr id="nearTd" scope="row" data-consultancy-id="<%- consultancy.id %>"
                                             data-submission-date="<%- consultancy.submission_date.toISOString().split('T')[0] %>"
                                             data-supporting-documents="<%- consultancy.supporting_documents %>">
                                             <td><%- index + 1 %></td>
@@ -89,7 +90,8 @@
                                             </td>
                                             <td class="funding-agency col-lg-1"><%- consultancy.name_of_funding_agency
                                                     %></td>
-                                            <td class="funding-amount col-lg-1"><%- consultancy.funding_amount %></td>
+                                            <td class="funding-amount col-lg-1"><%- consultancy.funding_amount %>
+                                            </td>
                                             <td class="research-project-status col-lg-1"><%-
                                                     consultancy.status_of_research_project %></td>
                                             <!-- <td class="col-lg-1">
@@ -118,6 +120,7 @@
                                             </td>
                                         </tr>
                                         <% }); %>
+
                                 </tbody>
                                 <tr>
                                     <div id="no-records-message"
@@ -193,7 +196,7 @@
                     <div class="modal-content modal-content-data validate-input">
                         <div class="modal-header">
                             <h4 class="modal-title" id="researchProjectConsultancy">RESEARCH PROJECT CONSULTANCY </h4>
-                            <div class="close" data-dismiss="modal" aria-label="Close">
+                            <div class="close" id="headerClose" data-dismiss="modal" aria-label="Close">
                                 <span type="button" aria-hidden="true"><i class="fas fa-times"></i></span>
                             </div>
                         </div>
@@ -266,7 +269,7 @@
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="thurst-area" class="form-label fw-bold">Thrust area of Research</label>
                                     <input type="text" name="thurst-area" id="thurst-area"
-                                        data-validate="isEmpty,isNotNumber,isExist,isLength:2:255"
+                                        data-validate="isEmpty,isAlphabeticWords,isExist,isLength:2:255"
                                         data-err-msg="Provide Valid Input" class="form-control" required>
                                 </div>
                                 <!-- Name of Funding Agency -->
@@ -389,9 +392,22 @@
                                             <span id="external-text">External</span>
                                         </label>
 
+
+                                    </div>
+
+
+                                    <div class="form-check-inline">
+
+                                        <label for="is-external" class="form-check-label external-faculty">
+                                            <input type="radio" class="form-check-input d-none" id="is-external-update"
+                                                name="author-type" value="External">
+                                            <span id="external-text-upd" class="d-none">External</span>
+                                        </label>
+
                                     </div>
                                 </div>
                                 <br>
+
                                 <div id="author-details" class="form-group col-md-12 col-sm-12 mb-4 d-none">
                                     <div class="author-details-section col-lg-12 col-md-8 col-sm-12">
                                         <label for="author-name " class="form-label fw-bold col-lg-12"> External Authors
@@ -404,19 +420,24 @@
                                     <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none" id="name-class">
                                         <label for="faculty-name" class="form-label fw-bold">Faculty Name</label>
                                         <input type="text" class="form-control" id="faculty-name" required>
+                                        <span style="color:red;" id="facultyError"></span>
                                     </div>
                                     <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none" id="dsg-class">
                                         <label for="" class="form-label fw-bold">Faculty Designation :</label>
                                         <input type="text" class="form-control" id="faculty-designation" required>
+                                        <span style="color:red;" id="desError"></span>
                                     </div>
                                     <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none" id="id-class">
-                                        <label for="faculty-emp-id" class="form-label fw-bold">Faculty Id (Optional)
+                                        <label for="faculty-emp-id" class="form-label fw-bold">Faculty Id
                                         </label>
                                         <input type="text" class="form-control" id="faculty-emp-id">
+                                        <span style="color:red;" id="empError"></span>
+
                                     </div>
                                     <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none" id="address-class">
                                         <label for="faculty-address" class="form-label fw-bold">Faculty Addres</label>
                                         <input type="text" class="form-control" id="faculty-address" required>
+                                        <span style="color:red;" id="addrError"></span>
                                     </div>
 
                                     <div class="form-group col-lg-6 col-md-6 col-sm-12 mb-4 d-none" id="add-btn">
@@ -427,6 +448,68 @@
                                             class="btn col-lg-4 col-md-6 col-sm-12 btn-primary" type="button">Add More
                                             Details</button>
 
+                                    </div>
+                                </table>
+
+
+
+
+                                <div>
+                                    <table style="width:100%;" class="table  table-responsive d-none "
+                                        id="externalfacultyTable">
+                                        <thead>
+                                            <th>Sr.No</th>
+                                            <th>Faculty Name</th>
+                                            <th>Faculty Address</th>
+                                            <th>Faculty Designation</th>
+                                            <th>Employee Id</th>
+                                            <th colspan>Action</th>
+                                        </thead>
+                                        <tbody id="appendFaculty">
+
+
+
+                                        </tbody>
+
+                                    </table>
+                                    <!-- <button id="addFaculty"
+                                        class="btn btn-primary d-none">Insert Faculty Details</button> -->
+
+
+                                </div>
+                                <div></div>
+                                <div></div>
+                                <table id="faculty-table-list-upd">
+                                    <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none" id="name-class-upd">
+                                        <label for="faculty-name-upd" class="form-label fw-bold">Faculty
+                                            Name</label>
+                                        <input type="text" class="form-control" id="faculty-name-upd" required>
+                                        <span style="color:red;" id="facultyInsertError"></span>
+                                    </div>
+                                    <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none" id="dsg-class-upd">
+                                        <label for="" class="form-label fw-bold">Faculty Designation :</label>
+                                        <input type="text" class="form-control" id="faculty-designation-upd" required>
+                                        <span style="color:red;" id="desInsertError"></span>
+                                    </div>
+                                    <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none" id="id-class-upd">
+                                        <label for="faculty-emp-id-upd" class="form-label fw-bold">Faculty Id
+                                        </label>
+                                        <input type="text" class="form-control" id="faculty-emp-id-upd">
+                                        <span style="color:red;" id="empInsertError"></span>
+
+                                    </div>
+                                    <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none"
+                                        id="address-class-upd">
+                                        <label for="faculty-address" class="form-label fw-bold">Faculty
+                                            Addres</label>
+                                        <input type="text" class="form-control" id="faculty-address-upd" required>
+                                        <span style="color:red;" id="addrInsertError"></span>
+                                    </div>
+
+                                    <div class="form-group col-lg-6 col-md-6 col-sm-12 mb-4 d-none" id="add-btn-upd">
+                                        <button id="insert-details-upd" data-bs-target="#"
+                                            class="btn col-lg-4 col-md-6 col-sm-12 btn-primary" type="button">Insert
+                                            Faculty Details</button>
                                     </div>
                                 </table>
 
@@ -454,13 +537,15 @@
                         </div>
                         <!--  footer buttons if needed -->
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                            <button type="button" id="footerClose" class="btn btn-danger" data-dismiss="modal">Close</button>
                             <button class="btn btn-md btn-primary d-none" id="submit-btn">Submit</button>
                             <button class="btn btn-md btn-primary d-none" id="update-btn">Update</button>
                         </div>
                     </div>
                 </div>
             </div>
+
+
             <!-- research consultancy modal for view -->
             <div class="modal fade " id="research-consultancy-view" tabindex="-1" role="dialog"
                 aria-labelledby="consultancy-modal" aria-hidden="true">
@@ -648,6 +733,7 @@
             <!-- inline javascript -->
             <script>
                 //   for index icrement
+                let projectGrantId;
                 let rowCount = document.getElementById('row-count');
                 const totalRowCount = document.getElementById('total-row-count');
                 let rowIndex = rowCount.innerText;
@@ -915,9 +1001,34 @@
                     }
                 });
 
-                researchProjectConsultancyList.addEventListener('click', function (event) {
+                researchProjectConsultancyList.addEventListener('click', async function (event) {
                     console.log('clikedddd')
                     if (event.target.classList.contains('edit')) {
+
+                        let isExternalUpd = document.getElementById('is-external')
+                        let isExternalUpdNew = document.getElementById('is-external-update')
+
+                        let text = document.getElementById('external-text');
+                        let textnew = document.getElementById('external-text-upd');
+
+                        isExternalUpd.classList.add('d-none');
+                        isExternalUpdNew.classList.remove('d-none');
+
+                        text.classList.add('d-none');
+                        textnew.classList.remove('d-none');
+
+                        document.getElementById('name-class').classList.add('d-none');
+                        document.getElementById('dsg-class').classList.add('d-none');
+                        document.getElementById('id-class').classList.add('d-none');
+                        document.getElementById('address-class').classList.add('d-none');
+                        document.getElementById('add-btn').classList.add('d-none');
+
+
+
+                        //let externalFacultyDetails = JSON.parse('<%- JSON.stringify(externalDetails) %>');
+                         let externalFacultyDetails = await fetchFacultyData('<%- BASE_URL %>research/external/facultyDataForEdit');
+                         console.log('faculty JSON',JSON.stringify(externalFacultyDetails.facultyData))
+
 
                         $('#consultancy-modal').modal({
                             backdrop: 'static'
@@ -939,6 +1050,7 @@
                         consultantRowToBeUpdated = event.target.closest('tr');
                         console.log('consultantRowToBeUpdated ==>>', consultantRowToBeUpdated);
 
+
                         // function call for download button
                         setFileNameAttributeToBeDownload(consultantRowToBeUpdated);
                         consultantId = event.target.getAttribute('data-consultancy-id');
@@ -958,6 +1070,45 @@
                         const internalAuthor = document.getElementById('is-internal');
                         const externalAuthor = document.getElementById('is-external');
                         const supportingDocument = consultantRowToBeUpdated.getAttribute('data-supporting-documents');
+
+
+
+                        let externalFaculty = externalFacultyDetails.facultyData.filter(fdata => consultantId == fdata.research_project_grant_id).map(facultyData => facultyData);
+                        console.log('new external faculty ', JSON.stringify(externalFaculty))
+
+                        let appendFaculty = document.getElementById('appendFaculty');
+                        appendFaculty.innerHTML = ''
+
+                        projectGrantId = externalFaculty[0].id;
+
+                        externalFaculty.forEach((ef, index) => {
+                            let htmlData = `<tr data-facultyId = ${ef.id}>
+                            
+                        <td>${index + 1}</td>
+                        <td><input id="updateFacultyName" type="text" value="${ef.faculty_name}" /></br><span style="color:red;" id='facultyUpdError'></span></td>
+                        <td ><input id="updateFacultyAddr" type="text" value="${ef.address}" /></br><span style="color:red;" id='addrUpdError'></span></td>
+                        <td ><input id="updateFacultyDes" type="text" value="${ef.designation}" /></br><span style="color:red;" id='desUpdError'></span></td>
+                        <td ><input id="updateFacultyId" type="text" value="${ef.employee_id}" /></br><span style="color:red;" id='empUpdError'></span></td>
+                        <td><button class="btn btn-primary updateFaculty">Update</button></td>
+                        </tr>`
+
+                            appendFaculty.insertAdjacentHTML('beforeEnd', htmlData);
+                        })
+
+                        let isExternal = document.getElementById('is-external');
+                        console.log('external ', isExternal)
+
+                        //let externalfacultyTable =document.getElementById(externalfacultyTable)
+
+                        //    if(isExternal.checked){
+                        //     document.getElementById('externalfacultyTable').classList.remove('d-none')
+                        //    }
+                        //    else{
+                        //     document.getElementById('externalfacultyTable').classList.add('d-none')
+
+                        //    }
+
+
                         // const facultyDept = consultantRowToBeUpdated.getAttribute('data-faculty-dept');
                         // console.log('facultyDept ====>>>>>', facultyDept)
                         // const projectDuration = consultantRowToBeUpdated.getAttribute('data-project-duration');
@@ -970,6 +1121,7 @@
                         // const recievedAmountDate = consultantRowToBeUpdated.getAttribute('data-recieved-amount-date')
                         // assigning value with actuall value
                         const GrantProposalCategory = consultantRowToBeUpdated.getAttribute('data-grant-proposal');
+                        console.log('GrantProposalCategory ', GrantProposalCategory)
                         if (GrantProposalCategory === 'Goverment') {
                             isGrantProposalCategoryGoverement.checked = true;
                         }
@@ -1051,6 +1203,27 @@
                         const supportingDocuments = consultantRowToBeUpdated.getAttribute('data-supporting-documents');
                         console.log('supportingDocuments ==>>', supportingDocuments)
                     }
+
+                    async function fetchFacultyData(url){
+                        let requestDetails = {
+                            method:'GET',
+                            headers : {
+                                'Accept':'application/json'
+                            }
+                        }
+
+                        let data;
+                        let response = await fetch(url,requestDetails);
+                        if(response.ok){
+                          data = await response.json();
+                          return data;
+                        }else{
+                           throw new Error('Error in fetching data') 
+                        }
+                    }
+
+
+
                     //for delete
                     if (event.target.classList.contains('delete')) {
                         console.log('clekeddddd');
@@ -1116,6 +1289,8 @@
                             return
                         }
                     }
+
+
                     //for view data the form data
                     if (event.target.classList.contains('view')) {
                         console.log('clickeddddd');
@@ -1174,6 +1349,8 @@
                                     // viewSubmissionGrantDate.innerText = data.consultantData.submission_grant_date.split('T')[0];
                                     // viewFacultyType.innerText = data.consultantData.faculty_type.replace(/,/g, ' ');
                                     // viewSupportingDocument.innerText = data.researchData.supporting_documents;
+
+                                    console.log('submission date ', data.submissionGrantDate)
                                     document.getElementById('view-submission-date').innerText = data.submissionGrantDate;
                                     let facultyDetailsHTML = `
                             <table class="table" border='1px'>
@@ -1294,7 +1471,7 @@
                         })
                         .then((data) => {
                             if (data.status === 'Done') {
-                                console.log('data ==>', data);
+                                console.log('data captured ==>', JSON.stringify(data));
                                 consultantRowToBeUpdated.setAttribute('data-grant-type', data.updatedConsultant.typeOfGrant);
                                 consultantRowToBeUpdated.setAttribute('data-grant-proposal', data.updatedConsultant.grantProposalCategory)
                                 consultantRowToBeUpdated.setAttribute('data-submission-date', data.updatedConsultant.submissionGrantDate);
@@ -1632,9 +1809,26 @@
                 //  addEventListener   for insert external details
                 InsertDetails.addEventListener('click', async () => {
 
+                    const facultyName = document.getElementById('faculty-name').value;
+                    const facultyDsg = document.getElementById('faculty-designation').value;
+                    const facultyAddr = document.getElementById('faculty-address').value;
+                    const facultyEmpId = document.getElementById('faculty-emp-id').value;
 
-                    console.log('clickedd insert details buttons')
-                    await insertExternalDetails('<%- BASE_URL %>research/external/faculty-insert');
+                    let addrError = (facultyAddr != '') ? true : false;
+                    if (addrError) {
+                        document.getElementById('addrError').innerText = '';
+                    } else {
+                        document.getElementById('addrError').innerText = 'Address is Required';
+                    }
+
+                    let facultyError = checkAlphabets(facultyName, 'facultyError');
+                    let designationError = checkAlphabets(facultyDsg, 'desError');
+                    let empError = checkEmpError(facultyEmpId, 'empError');
+
+                    if (facultyError && designationError && addrError && empError) {
+                        console.log('clickedd insert details buttons')
+                        await insertExternalDetails('<%- BASE_URL %>research/external/faculty-insert');
+                    }
 
                 });
 
@@ -1712,34 +1906,288 @@
                 });
 
 
-                document.getElementById('is-external').addEventListener('click', () => {
-                    let is_checked = document.getElementById('is-external');
+                // document.getElementById('is-external').addEventListener('click', () => {
+                //     let is_checked = document.getElementById('is-external');
+                //     if (is_checked.checked) {
+                //         document.getElementById('externalfacultyTable').classList.remove('d-none')
+                //     } else {
+                //         document.getElementById('externalfacultyTable').classList.add('d-none')
+                //     }
+                // })
+
+                document.getElementById('is-external-update').addEventListener('click', () => {
+                    let is_checked = document.getElementById('is-external-update');
+                    console.log('check box checked')
+
                     if (is_checked.checked) {
-                        let facultyName = document.getElementById('faculty-name');
-                        facultyName.setAttribute('data-err-msg', 'Provide Valid Input');
-                        facultyName.setAttribute('data-validate', 'isEmpty,isExist,isAlphabeticWords');
-                        facultyName.setAttribute('required', true);
-
-
-                        let facultyDesc = document.getElementById('faculty-designation');
-                        facultyDesc.setAttribute('data-err-msg', 'Provide Valid Input');
-                        facultyDesc.setAttribute('data-validate', 'isEmpty,isExist,isAlphabeticWords');
-                        facultyDesc.setAttribute('required', true);
-
-
-                        let facultyId = document.getElementById('faculty-emp-id');
-                        facultyDesc.setAttribute('data-err-msg', 'Provide Valid Input');
-                        facultyDesc.setAttribute('data-validate', 'isEmpty,isExist,isNumber');
-
-                        let facultyAddr = document.getElementById('faculty-address');
-                        facultyAddr.setAttribute('data-err-msg', 'Provide Valid Input');
-                        facultyAddr.setAttribute('data-validate', 'isEmpty,isExist');
-                        facultyDesc.setAttribute('required', true);
+                        document.getElementById('externalfacultyTable').classList.remove('d-none')
+                        document.getElementById('name-class-upd').classList.remove('d-none');
+                        document.getElementById('dsg-class-upd').classList.remove('d-none');
+                        document.getElementById('id-class-upd').classList.remove('d-none');
+                        document.getElementById('address-class-upd').classList.remove('d-none');
+                        document.getElementById('add-btn-upd').classList.remove('d-none');
+                    } else {
+                        document.getElementById('externalfacultyTable').classList.add('d-none')
+                        document.getElementById('faculty-table-list-upd').classList.add('d-none');
 
                     }
                 })
 
 
+
+
+                function checkAlphabets(facultyName, idName) {
+
+                    let facultyError = document.getElementById(idName);
+
+                    // if (facultyName.length == 0 && idName === 'facultyError' || ) {
+                    //     facultyError.innerText = "Name is Required";
+                    //     return false;
+                    // }
+
+                    // if (facultyName.length == 0 && idName === 'desError') {
+                    //     facultyError.innerText = "Designation is Required";
+                    //     return false;
+                    // }
+
+                    if (!facultyName || facultyName.trim() === "") {
+                        facultyError.innerText = "Provide Valid Input";
+                        return false;
+                    }
+
+                    const words = facultyName.split(" ");
+
+                    for (const word of words) {
+                        for (let i = 0; i < word.length; i++) {
+                            const charCode = word.charCodeAt(i);
+                            if (
+                                (charCode < 65 || charCode > 90) &&
+                                (charCode < 97 || charCode > 122)
+                            ) {
+                                facultyError.innerText = "Provide Valid Input";
+                                return false;
+                            }
+                        }
+                    }
+
+                    facultyError.innerText = "";
+                    return true;
+                }
+
+                function checkEmpError(facultyEmpId, errid) {
+                    let empError = document.getElementById(errid);
+                    let bool = true;
+
+                    if (facultyEmpId.length === 0) {
+                        empError.innerText = 'Provide Valid Input';
+                        return false;
+                    }
+
+                    for (let i = 0; i < facultyEmpId.length; i++) {
+                        const charCode = facultyEmpId.charAt(i);
+                        if (!(charCode >= '0' && charCode <= '9')) {
+                            empError.innerText = 'Provide Valid Input';
+                            bool = false;
+                            break;
+                        }
+                    }
+
+                    if (bool) {
+                        empError.innerText = '';
+                    }
+
+                    return bool;
+                }
+
+                document.addEventListener('click', (event) => {
+
+                    if (event.target.classList.contains('updateFaculty')) {
+                        let facultyId = event.target.closest('tr').getAttribute('data-facultyId')
+                        console.log('button clicked with id ',facultyId)
+                        let tr = event.target.closest('tr');
+                        let facultyName = tr.querySelector('#updateFacultyName').value
+                        let facultyDesignation = tr.querySelector('#updateFacultyDes').value
+                        let facultyAddr = tr.querySelector('#updateFacultyAddr').value
+                        let empId = tr.querySelector('#updateFacultyId').value
+
+                        let addrError = (facultyAddr != '') ? true : false;
+                        if (addrError) {
+                            document.getElementById('addrUpdError').innerText = '';
+                        } else {
+                            document.getElementById('addrUpdError').innerText = 'Address is Required';
+                        }
+
+                        let facultyError = checkAlphabets(facultyName, 'facultyUpdError');
+                        let designationError = checkAlphabets(facultyDesignation, 'desUpdError');
+                        let empError = checkEmpError(empId, 'empUpdError');
+                        let externalFacultyDetails;
+
+                        if (addrError && facultyError && designationError && empError) {
+
+                            externalFacultyDetails = {
+                                facultyId: facultyId, facultyName: facultyName,
+                                facultyDesignation: facultyDesignation, facultyAddr: facultyAddr, empId: empId
+                            }
+
+                            let obj = externalFacultyDetails
+                            upsertFacultyData('<%- BASE_URL %>research/external/faculty-updateData', obj,tr)
+                        }
+
+                    }
+                })
+
+
+                function upsertFacultyData(url, obj,tr) {
+                    fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'content-type': 'application/json'
+                        },
+                        body: JSON.stringify(obj)
+                    })
+                        .then((result) => {
+                            return result.json()
+                        })
+                        .then((data) => {
+                            if (data.status === 'Done') {
+
+                                console.log('response >> ', data)
+
+                                Swal.fire({
+                                    position: "top-center",
+                                    icon: "success",
+                                    title: `${data.message}`,
+                                    showConfirmButton: true,
+                                    confirmButtonText: "OK",
+                                    confirmButtonColor: "#DD6B55"
+                                }).then(() => {
+                                    console.log('object ',JSON.stringify(obj))
+                                    tr.querySelector('#updateFacultyName').value = obj.facultyName
+                                    tr.querySelector('#updateFacultyDes').value = obj.facultyDesignation
+                                    tr.querySelector('#updateFacultyAddr').value = obj.facultyAddr
+                                    tr.querySelector('#updateFacultyId').value = obj.empId
+                                })
+                            }
+                        })
+                }
+
+
+
+
+                const upsertExternalDetails = (url) => {
+                    let facultyNameUpd = document.getElementById('faculty-name-upd');
+                    let facultyDesignationUpd = document.getElementById('faculty-designation-upd');
+                    let facultyAddrUpd = document.getElementById('faculty-address-upd');
+                    let facultyEmpUpd = document.getElementById('faculty-emp-id-upd');
+
+                    let facultyName = facultyNameUpd.value;
+                    let facultyDesignation = facultyDesignationUpd.value;
+                    let facultyAddr = facultyAddrUpd.value;
+                    let facultyEmp = facultyEmpUpd.value;
+
+
+                    let externalFacultyDetails = {
+                        facultyEmpId: facultyEmp,
+                        facultyName: facultyName,
+                        facultyDsg: facultyDesignation,
+                        facultyAddr: facultyAddr,
+                        grantId: projectGrantId
+                    }
+
+                    console.log('json string ', JSON.stringify(externalFacultyDetails))
+
+                    let payload = { externalFacultyDetails, consultantId };
+
+                    fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'content-type': 'application/json'
+                        },
+                        body: JSON.stringify(payload)
+                    })
+                        .then((result) => {
+                            return result.json()
+                        })
+                        .then((data) => {
+                            if (data.status === 'Done') {
+
+                                console.log('response >> ', data)
+
+                                Swal.fire({
+                                    position: "top-center",
+                                    icon: "success",
+                                    title: `${data.message}`,
+                                    showConfirmButton: true,
+                                    confirmButtonText: "OK",
+                                    confirmButtonColor: "#DD6B55"
+                                }).then(() => {
+
+                                    let appendFaculty = document.getElementById('appendFaculty');
+                                    let allTds = appendFaculty.querySelectorAll('tr');
+
+                                    let htmlData = `<tr data-facultyId = ${data.researchGrantId}>
+
+                        <td>${allTds.length + 1}</td>
+                        <td><input id="updateFacultyName" type="text" value=${facultyName} /></br><span style="color:red;" id='facultyUpdError'></span></td>
+                        <td ><input id="updateFacultyAddr" type="text" value=${facultyAddr} /></br><span style="color:red;" id='addrUpdError'></span></td>
+                        <td ><input id="updateFacultyDes" type="text" value=${facultyDesignation} /></br><span style="color:red;" id='desUpdError'></span></td>
+                        <td ><input id="updateFacultyId" type="text" value=${facultyEmp} /></br><span style="color:red;" id='empUpdError'></span></td>
+                        <td><button class="btn btn-primary updateFaculty">Update</button></td>
+                        </tr>`
+
+                                    appendFaculty.insertAdjacentHTML('beforeEnd', htmlData);
+
+
+
+                                });
+                            }
+                        }).catch((error) => {
+                            console.error("ERROR:", error);
+                        })
+                }
+
+
+
+                document.getElementById('insert-details-upd').addEventListener('click', () => {
+
+                    console.log('button hitted ', projectGrantId)
+
+                    let facultyNameUpd = document.getElementById('faculty-name-upd');
+                    let facultyDesignationUpd = document.getElementById('faculty-designation-upd');
+                    let facultyAddrUpd = document.getElementById('faculty-address-upd');
+                    let facultyEmpUpd = document.getElementById('faculty-emp-id-upd');
+
+                    let facultyName = facultyNameUpd.value;
+                    let facultyDesignation = facultyDesignationUpd.value;
+                    let facultyAddr = facultyAddrUpd.value;
+                    let facultyEmp = facultyEmpUpd.value;
+
+                    let addrError = (facultyAddr != '') ? true : false;
+                    if (addrError) {
+                        document.getElementById('addrInsertError').innerText = '';
+                    } else {
+                        document.getElementById('addrInsertError').innerText = 'Address is Required';
+                    }
+
+                    let facultyError = checkAlphabets(facultyName, 'facultyInsertError');
+                    let designationError = checkAlphabets(facultyDesignation, 'desInsertError');
+                    let empError = checkEmpError(facultyEmp, 'empInsertError');
+
+                    if (addrError && facultyError && designationError && empError) {
+
+                        console.log('clickedd insert details buttons')
+                        upsertExternalDetails('<%- BASE_URL %>research/external/faculty-update');
+                    }
+                });
+
+
+                document.getElementById('headerClose').addEventListener('click',() => {
+                    document.location.reload();
+                })
+
+                document.getElementById('footerClose').addEventListener('click',() => {
+                    document.location.reload();
+                })
 
 
 

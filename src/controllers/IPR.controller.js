@@ -1,3 +1,4 @@
+const { getRedisData } = require('../../utils/redis.utils');
 const iprServices = require('../services/IPR.services')
 module.exports.renderIPR = async(req, res, next) => {
     const  userName = req.body.username;
@@ -109,7 +110,9 @@ module.exports.updateIPRRowData = async(req, res, next) => {
 
 
 module.exports.viewIprRecordData = async(req, res, next) => {
-    const  userName = req.body.username;
+    const sessionid = req.cookies.session;
+    let sessionData = await getRedisData(`${sessionid}:session`)
+    const  userName = sessionData.username;
     console.log('userName in controller  ===>>>>>>', userName);
 
     console.log('Data In Controller :::>>>>>', req.body);
@@ -117,7 +120,7 @@ module.exports.viewIprRecordData = async(req, res, next) => {
 
     const iprRowToBeViewed = await iprServices.viewIprRecordDataRecord(iprId, userName);
 
-    console.log('iprRowToBeViewed ===>>>>>', iprRowToBeViewed.IPRData);
+    console.log('iprRowToBeViewed ===>>>>>', iprRowToBeViewed);
     const statusCode = iprRowToBeViewed.status === "Done" ? 200 : (iprRowToBeViewed.errorCode ? 400 : 500);
     res.status(statusCode).send({
         status : iprRowToBeViewed.status,

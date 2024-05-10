@@ -11,6 +11,11 @@ module.exports.renderPharmacySeedGrantform = async(req, res, next) => {
     console.log('pharmacySeedDetails in cotroller ===>>>>', pharmacySeedDetails)
 
     res.render('pharmacy-seed-grant-form', {
+        status : pharmacySeedDetails.status,
+        message : pharmacySeedDetails.message,
+        rowCount : pharmacySeedDetails.rowCount,
+        pharmacyData : pharmacySeedDetails.pharmacyData,
+        errorCode : pharmacySeedDetails.errorCode
 
     })
 }
@@ -196,4 +201,34 @@ module.exports.insertPharmacySeedForms = async(req, res, next) => {
         errorCode : pharmacyDataDetails.errorCode
     })
 
+}
+
+
+module.exports.viewPharmacySeedGrantData = async(req, res, next) => {
+    const  userName = req.body.username;
+    console.log('userName in controller  ===>>>>>>', userName);
+    const pharmacyId = req.body.pharmacyId;
+    console.log('data is comming from frontend ====>>>>', req.body.pharmacyId);
+
+    const viewPharmacySeed = await pharmacyService.viewPharmacyData(pharmacyId, userName);
+
+    console.log('viewPharmacySeed ===>>>>>>>', viewPharmacySeed);
+
+    const statusCode = viewPharmacySeed.status === 'Done' ? 200 : (viewPharmacySeed.errorCode ? 400 : 500);
+
+    res.status(statusCode).send({
+        status : viewPharmacySeed.status,
+        message : viewPharmacySeed.message,
+        pharmacyData : viewPharmacySeed.pharmacyData,
+        principalInvestigator : viewPharmacySeed.principalInvestigator,
+        educaltionalDetails : viewPharmacySeed.educaltionalDetails,
+        experienceDetails : viewPharmacySeed.experienceDetails,
+        bookDetails : viewPharmacySeed.bookDetails,
+        bookChapterDetails : viewPharmacySeed.bookChapterDetails,
+        PublicationDetails : viewPharmacySeed.PublicationDetails,
+        patentDetails : viewPharmacySeed.patentDetails,
+        researchImplementationDetails : viewPharmacySeed.researchImplementationDetails,
+        completedResearchDetails : viewPharmacySeed.completedResearchDetails,
+        errorCode : viewPharmacySeed.errorCode ? viewPharmacySeed.errorCode : null
+    })
 }

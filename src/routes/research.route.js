@@ -154,6 +154,8 @@ router.post('/nmims-seed-grant-non-pharmacy/delete', asyncErrorHandler(authMiddl
 // pharmacySeedGrantForm
 router.get('/pharmacy-seed-grant-form', asyncErrorHandler(authMiddleware), asyncErrorHandler(pharmacySeedGrantForm.renderPharmacySeedGrantform));
 router.post('/pharmacy-seed-grant-form/insert', asyncErrorHandler(authMiddleware), asyncErrorHandler(pharmacySeedGrantForm.insertPharmacySeedForms));
+router.post('/pharmacy-seed-grant-form/view', asyncErrorHandler(authMiddleware), asyncErrorHandler(pharmacySeedGrantForm.viewPharmacySeedGrantData));
+
 
 router.post('/pharmacy-seed-grant-form/investigator-education/insert', asyncErrorHandler(authMiddleware), asyncErrorHandler(pharmacySeedGrantForm.insertInvestigationEducationalDetails));
 router.post('/pharmacy-seed-grant-form/investigator-experience/insert', asyncErrorHandler(authMiddleware), asyncErrorHandler(pharmacySeedGrantForm.investigatorExperience));
@@ -169,6 +171,18 @@ router.post('/pharmacy-seed-grant-form/investigator-research-completed/insert', 
 //insert external faculty details controller
 
 router.post('/external/faculty-insert', asyncErrorHandler(authMiddleware), asyncErrorHandler(facultyController.insertExternalFacultyDetails));
+router.post(
+  "/external/faculty-update",
+  asyncErrorHandler(authMiddleware),
+  asyncErrorHandler(facultyController.updateExternalFacultyDetails)
+);
+router.post(
+  "/external/faculty-updateData",
+  asyncErrorHandler(authMiddleware),
+  asyncErrorHandler(facultyController.updateFaculyDetails)
+);
+
+router.get("/external/facultyDataForEdit",asyncErrorHandler(facultyController.facultyDataForEdit))
 
 // userController
 

@@ -1,6 +1,26 @@
 <%- include('./partials/head') %>
 <!-- inline css -->
+<style>
+    .modal-title-head{
+        position: relative;
+        text-align: center;
+        padding-left: 30%; 
+        font-size: 20px;
+    }
 
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+    th, td {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+    }
+    th {
+        background-color: #f2f2f2;
+    }
+</style>
 <!-- Navbar section -->
 <%- include('./partials/header') %>
 <!-- This is left sidebar  -->
@@ -62,20 +82,95 @@
                 <table class="table vertical-lines custom-table table-responsive research-pagination" id="pharmacy-seed-grant-form-list">
                     <thead>
                         <th class="col-lg-1">Serial no</th>
-                        <th class="col-lg-1">Faculty Name </th>
-                        <th class="col-lg-1">Title</th>
-                        <th class="col-lg-1">Year</th>
-                        <th class="col-lg-1">Total Fees</th>
+                        <th class="col-lg-1">Summary Title </th>
+                        <th class="col-lg-1">Project <Title></Title></th>
+                        <th class="col-lg-1">Principal Investigator</th>
+                        <th class="col-lg-1">Co Investigator</th>
+                        <th class="col-lg-1">Project Status</th>
                         <th class="col-lg-1">Action</th>
                     </thead>
+                    <% pharmacyData.forEach(function(pharmacy,index) {%>
+                        <tr data-pharmacy-id="<%-pharmacy.pharmacy_seed_id %>" data-summary-project-title="<%-pharmacy.summary_project_title %>" data="<%-pharmacy %>"
+                            data-summary-project-title="<%-pharmacy.summary_project_title %>" 
+                            data-project-duration="<%-pharmacy.project_duration %>" 
+                            data-total-cost="<%-pharmacy.total_cost %>" 
+                            data-consumables-amount="<%-pharmacy.consumables_amount %>" 
+                            data-analysis-amount="<%-pharmacy.analysis_amount %>" 
+                            data-other-amount="<%-pharmacy.other_amount %>" 
+                            data-scientific-importance="<%-pharmacy.scientific_importance %>" 
+                            data-project-objectives="<%-pharmacy.project_objectives %>" 
+                            data-detailed-methodology="<%-pharmacy.detailed_methodology %>" 
+                            data-time-lines="<%-pharmacy.time_lines %>" 
+                            data-budget-consumable-amount="<%-pharmacy.budget_consumable_amount %>" 
+                            data-consumables-justification="<%-pharmacy.consumables_justification %>" 
+                            data-solvents-amount="<%-pharmacy.solvents_amount %>" 
+                            data-solvents-justification="<%-pharmacy.solvents_justification %>" 
+                            data-chemicals-amount="<%-pharmacy.chemicals_amount %>" 
+                            data-chemicals-justification="<%-pharmacy.chemicals_justification %>" 
+                            data-biomarkers-reference-amount="<%-pharmacy.biomarkers_reference_amount %>" 
+                            data-biomarkers-reference-justifications="<%-pharmacy.biomarkers_reference_justifications %>" 
+                            data-hplc-amount="<%-pharmacy.hplc_amount %>" 
+                            data-hplc-justification="<%-pharmacy.hplc_justification %>" 
+                            data-experimental-animals-amount="<%-pharmacy.experimental_animals_amount %>" 
+                            data-experimental-animals-justification="<%-pharmacy.experimental_animals_justification %>" 
+                            data-cell-lines-amount="<%-pharmacy.cell_lines_amount %>" 
+                            data-cell-lines-justifications="<%-pharmacy.cell_lines_justifications %>" 
+                            data-kits-analysis-amount="<%-pharmacy.kits_analysis_amount %>" 
+                            data-kits-analysis-justifications="<%-pharmacy.kits_analysis_justifications %>" 
+                            data-evaluation-analysis-amount="<%-pharmacy.evaluation_analysis_amount %>" 
+                            data-evaluation-analysis-justification="<%-pharmacy.evaluation_analysis_justification %>" 
+                            data-proposed-out-come="<%-pharmacy.proposed_out_come %>" 
+                            data-previous-project-explaination="<%-pharmacy.previous_project_explaination %>" 
+                            data-pharmacy-references="<%-pharmacy.pharmacy_references %>" 
+                            data-project-background="<%-pharmacy.project_background %>" 
+                            data-hypothesis="<%-pharmacy.hypothesis %>"
+                            data-investigator-name="<%-pharmacy.investigator_name %>"
+                            data-investigator-dsg="<%-pharmacy.investigator_dsg %>"
+                            data-investigator-email="<%-pharmacy.investigator_email %>"
+                            data-investigator-mobile="<%-pharmacy.investigator_mobile %>"
+                            data-investigator-dob="<%-pharmacy.investigator_dob %>"
+                            data-investigator-address="<%-pharmacy.investigator_address %>"
+                            data-principal-name="<%-pharmacy.principal_name %>"
+                            data-principal-dsg="<%-pharmacy.principal_dsg %>"
+                            data-principal-org="<%-pharmacy.principal_org %>"
+                            data-principal-email="<%-pharmacy.principal_email %>"
+                            data-principal-mobile="<%-pharmacy.principal_mobile %>"
+                            data-co-investigator-name="<%-pharmacy.co_investigator_name %>"
+                            data-co-investigator-dsg="<%-pharmacy.co_investigator_dsg %>"
+                            data-co-investigator-org="<%-pharmacy.co_investigator_org %>"
+                            data-co-investigator-email="<%-pharmacy.co_investigator_email %>"
+                            data-co-investigator-mobile="<%-pharmacy.co_investigator_mobile %>">>
+                            <td><%- index + 1 %></td>
+                            <td><%- pharmacy.summary_title %></td>
+                            <td><%- pharmacy.project_title %></td>
+                            <td><%- pharmacy.principle_investigator  %></td>
+                            <td><%- pharmacy.co_investigator %></td>
+                            <td><%- pharmacy.project_status %></td>
+                            <td colspan="3px" style="display:flex;justify-content: center;">
+                                <b title="View" class="view border-right-0" style="cursor: pointer;"
+                                    data-pharmacy-id="<%-pharmacy.pharmacy_seed_id %>">
+                                    &#128065;
+                                </b>
+                                <b title="Edit" class="edit border-right-0" style="cursor: pointer;"
+                                    data-pharmacy-id="<%-pharmacy.pharmacy_seed_id %>">
+                                    &#9998;
+                                </b>
+                                <b title="Delete" class="delete border-right-0"
+                                    style="cursor: pointer;"
+                                    data-pharmacy-id="<%-pharmacy.pharmacy_seed_id %>">
+                                    &#128465;
+                                </b>
+                                </td>
+                        </tr>
+                        <% }); %>
 
                 </table>
-                <div class="d-flex justify-content-between">
+                <!-- <div class="d-flex justify-content-between">
                     <div>
                         <label id="total-row-count">Total entries : </label>
                         <label class="d-none" id="row-count"></label>
                     </div>
-                    <div>
+                    <div> -->
                         <!-- <button id="prevBtn" class="btn btn-primary">Previous</button>
                         <button id="nextBtn" class="btn btn-primary">Next</button>
                         <p id="pagination" class="pagination-search"></p> -->
@@ -91,7 +186,7 @@
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="editModalLabel">Update Program</h5>
+                                <h5 class="modal-title-head" id="editModalLabel">Update Program</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                     aria-label="Close"></button>
                             </div>
@@ -131,7 +226,7 @@
     <div class="modal-dialog modal-dialog-scrollable modal-lg modal-fullscreen p-5" role="document">
         <div class="modal-content modal-content-data validate-input">
             <div class="modal-header">
-                <h4 class="modal-title" id="journal-paper-title">Pharmacy Seed Grant</h4>
+                <h4 class="modal-title-head" id="journal-paper-title">Pharmacy Seed Grant</h4>
                 <div class="close" data-dismiss="modal" aria-label="Close">
                     <span type="button" aria-hidden="true"><i class="fas fa-times "></i></span>
                 </div>
@@ -140,7 +235,7 @@
                 <div class="row">
                     <hr class="bg-dark">
                     <div class="form-group col-lg-12 col-md-6 col-sm-12 mb-4">
-                        <label for="" class="form-label fw-bold modal-title">SECTION I Summary Sheet</label>
+                        <label for="" class="form-label fw-bold modal-title-head">SECTION I Summary Sheet</label>
                     </div>
                     <hr>
                     <!-- Title of the project -->
@@ -155,18 +250,84 @@
                              required/>
                     </div>
                     <!-- 3.	Details of Principal Investigator  -->
+                    <hr class="bg-dark">
+                    <div class="form-group col-lg-12 col-md-6 col-sm-12 mb-4">
+                        <label for="" class="form-label fw-bold modal-title-head">Details of Principal Investigator ID </label>
+                    </div>
+                    <hr>
+                 <!-- name -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="principal-investigator-id" class="form-label fw-bold">	Details of Principal Investigator ID  </label>
+                        <label for="principal-investigator-id" class="form-label fw-bold">	i.	Name </label>
                         <input type="text" name="principal-investigator-id" id="principal-investigator-id" data-validate="isEmpty,isNotNumber,isExist,isNotSpecialChar" data-err-msg="Provide Valid Input" class="form-control"
                              required/>
                     </div>
-                    <!--4.	Details of Co- Investigator (If any) -->
+                 <!-- designation -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="co-investigator" class="form-label fw-bold"> Details of Co- Investigator (If any) </label>
-                        <input type="text" name="co-investigator" id="co-investigator" data-validate="isEmpty,isExist" data-err-msg="Provide Valid Input" class="form-control"
-                             required />
+                        <label for="principal-investigator-name" class="form-label fw-bold">ii.	Designation </label>
+                        <input type="text" name="principal-investigator-name" id="principal-investigator-name" data-validate="isEmpty,isNotNumber,isExist,isNotSpecialChar" data-err-msg="Provide Valid Input" class="form-control"
+                             required/>
                     </div>
-                    <!-- 5.	Duration of the project months -->
+                <!-- institution -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="principal-investigator-id" class="form-label fw-bold">	iii.	Name of Institution  </label>
+                        <input type="text" name="principal-investigator-name" id="principal-investigator-dsg" data-validate="isEmpty,isNotNumber,isExist,isNotSpecialChar" data-err-msg="Provide Valid Input" class="form-control"
+                             required/>
+                    </div>
+                 <!-- mobile -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="principal-investigator-org" class="form-label fw-bold">	iv.	Mobile	 </label>
+                        <input type="text" name="principal-investigator-org" id="principal-investigator-org" data-validate="isEmpty,isNotNumber,isExist,isNotSpecialChar" data-err-msg="Provide Valid Input" class="form-control"
+                             required/>
+                    </div>
+                 <!-- email -->
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="principal-investigator-mob" class="form-label fw-bold">	v.	Email	 </label>
+                        <input type="number" name="principal-investigator-mob" id="principal-investigator-mob" data-validate="isEmpty,isNotNumber,isExist,isNotSpecialChar" data-err-msg="Provide Valid Input" class="form-control"
+                             required/>
+                    </div>
+
+                   
+                    <!--4.	Details of Co- Investigator (If any) -->
+                    
+    <!-- 3.	Details of Co Investigator  -->
+    <hr class="bg-dark">
+    <div class="form-group col-lg-12 col-md-6 col-sm-12 mb-4">
+        <label for="" class="form-label fw-bold modal-title-head">Details of CO Investigator ID </label>
+    </div>
+    <hr>
+ <!-- name -->
+    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+        <label for="co-investigator-id" class="form-label fw-bold">	i.	Name </label>
+        <input type="text" name="co-investigator-id" id="co-investigator-id" data-validate="isEmpty,isNotNumber,isExist,isNotSpecialChar" data-err-msg="Provide Valid Input" class="form-control"
+             required/>
+    </div>
+ <!-- designation -->
+    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+        <label for="co-investigator-name" class="form-label fw-bold">ii.	Designation </label>
+        <input type="text" name="co-investigator-name" id="co-investigator-name" data-validate="isEmpty,isNotNumber,isExist,isNotSpecialChar" data-err-msg="Provide Valid Input" class="form-control"
+             required/>
+    </div>
+<!-- institution -->
+    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+        <label for="co-investigator-id" class="form-label fw-bold">	iii.	Name of Institution  </label>
+        <input type="text" name="co-investigator-name" id="co-investigator-dsg" data-validate="isEmpty,isNotNumber,isExist,isNotSpecialChar" data-err-msg="Provide Valid Input" class="form-control"
+             required/>
+    </div>
+ <!-- mobile -->
+    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+        <label for="co-investigator-org" class="form-label fw-bold">	iv.	Mobile	 </label>
+        <input type="text" name="co-investigator-org" id="co-investigator-org" data-validate="isEmpty,isNotNumber,isExist,isNotSpecialChar" data-err-msg="Provide Valid Input" class="form-control"
+             required/>
+    </div>
+ <!-- email -->
+    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+        <label for="co-investigator-mob" class="form-label fw-bold">	v.	Email	 </label>
+        <input type="number" name="co-investigator-mob" id="co-investigator-mob" data-validate="isEmpty,isNotNumber,isExist,isNotSpecialChar" data-err-msg="Provide Valid Input" class="form-control"
+             required/>
+    </div>
+    <hr>
+    <br>
+    <!-- 5.	Duration of the project months -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="project-duration" class="form-label fw-bold">Duration of the project months</label>
                         <input type="date" name="project-duration" id="project-duration" data-validate="isEmpty,isExist,isDate" data-err-msg="Numeric value is requird." class="form-control" required>
@@ -198,7 +359,7 @@
                     <!--SECTION II PROJECT DETAILS -->
                     <hr class="bg-dark">
                     <div class="form-group col-lg-12 col-md-6 col-sm-12 mb-4">
-                        <label for="" class="form-label fw-bold modal-title">SECTION II PROJECT DETAILS </label>
+                        <label for="" class="form-label fw-bold modal-title-head">SECTION II PROJECT DETAILS </label>
                     </div>
                     <hr>
                     <!-- 1.	2.	project title -->
@@ -394,46 +555,54 @@
                                              <!--SECTION III PROJECT DETAILS -->
                     <hr class="bg-dark">
                     <div class="form-group col-lg-12 col-md-6 col-sm-12 mb-4">
-                        <label for="foreign-authors" class="form-label fw-bold modal-title">SECTION III<br>
+                        <label for="foreign-authors" class="form-label fw-bold modal-title-head">SECTION III<br>
                             <label for="" class="form-label fw-bold sub-title-text"> BIO-DATA OF THE INVESTIGATOR (PI/Co-PI)   </label>
                     </div>
                     <hr>
                     <!-- 8.	Professional Experience (Total):  ____ years_____months-->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="no-nmims-student-author" class="form-label fw-bold">Name  </label>
+                        <label class="form-label fw-bold">Name  </label>
                         <input type="text"  id="investigator-name" class="form-control" data-validate="isEmpty,isLength:2:255"  data-err-msg="Provide Valid Input" required>
                     </div>
 
                     <!-- investigator designation -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="no-nmims-student-author" class="form-label fw-bold">Designation </label>
+                        <label class="form-label fw-bold">Designation </label>
                         <input type="text"  id="investigator-designation" class="form-control" data-validate="isEmpty,isLength:2:255"  data-err-msg="Provide Valid Input" required>
                     </div>
 
                     <!-- investor address -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="no-nmims-student-author" class="form-label fw-bold">Adress </label>
+                        <label class="form-label fw-bold">Adress </label>
                         <input type="text"  id="investigator-adress" class="form-control" data-validate="isEmpty,isLength:2:255"  data-err-msg="Provide Valid Input" required>
                     </div>
 
                     <!-- investigator email -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="no-nmims-student-author" class="form-label fw-bold">Email </label>
+                        <label class="form-label fw-bold">Email </label>
                         <input type="text"  id="investigator-email" class="form-control" data-validate="isEmpty,isLength:2:255"  data-err-msg="Provide Valid Input" required>
                     </div>
                      <!-- investigator Mobile -->
                      <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="no-nmims-student-author" class="form-label fw-bold">Mobile </label>
+                        <label class="form-label fw-bold">Mobile </label>
                         <input type="number"  id="investigator-mobile" class="form-control" data-validate="isEmpty,isExist,isNumber"  data-err-msg="Mobile number is required" required>
                     </div>
                     <!-- investigator Date of Birth -->
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <label for="no-nmims-student-author" class="form-label fw-bold">Date of Birth  </label>
+                        <label class="form-label fw-bold">Date of Birth  </label>
                         <input type="date"  id="investigator-date-of-birth" class="form-control" data-validate="isEmpty,isExist"  data-err-msg="Date of birth is required." required>
                     </div>
                      <!-- investigator Educational Qualifications -->
-                    <label for="no-nmims-student-author" class="form-label text-center fw-bold">Educational Qualifications Details</label>
-                    <table class="table vertical-lines custom-table table-responsiv">
+                     
+                   
+                    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label class="form-label text-center fw-bold">Educational Qualifications Details</label>
+                        <button  type="button" class="btn btn-primary" type="submit" data-toggle="modal" data-target="#educationModal">
+                            Add Education Details
+                          </button>
+                    </div>
+                   
+                    <!-- <table class="table vertical-lines custom-table table-responsiv">
                         <thead>
                             <th class="col-lg-3">Degree</th>
                             <th class="col-lg-3">Institution, University</th>
@@ -450,9 +619,9 @@
                         <button class="btn btn-primary" id="submit-investor-education">Insert Investigator Education</button>
                         <button class="btn btn-primary d-none" id="update-investor-education">Update Investigator Education</button>
                         <button class="btn btn-primary d-none" id="add-investor-education-more-details">Add More Details</button>
-                    </div>
+                    </div> -->
                      <!-- investigator Experience Details -->
-                     <label for="no-nmims-student-author" class="form-label text-center fw-bold">Add Investigator Work Experience </label>
+                     <label class="form-label text-center fw-bold">Add Investigator Work Experience </label>
                      <table class="table vertical-lines custom-table table-responsiv">
                         <thead>
                             <th class="col-lg-3">Possition</th>
@@ -473,7 +642,7 @@
                         <button class="btn btn-primary d-none" id="add-investor-experience-details">Add More Details</button>
                     </div>
                      <!-- investigator Publication -->
-                     <label for="no-nmims-student-author" class="form-label text-center fw-bold"> Publication </label>
+                     <label class="form-label text-center fw-bold"> Publication </label>
                      <table class="table vertical-lines custom-table table-responsiv">
                         <thead>
                             <th class="">Authors</th>
@@ -506,7 +675,7 @@
                         <button class="btn btn-primary d-none" id="add-investor-publication">Add More Details</button>
                     </div>
                     <!-- investigator Book -->
-                    <label for="no-nmims-student-author" class="form-label text-center fw-bold"> Book </label>
+                    <label class="form-label text-center fw-bold"> Book </label>
                     <table class="table vertical-lines custom-table table-responsiv">
                          <thead>
                              <th class="">Authors</th>
@@ -564,7 +733,7 @@
                           <button class="btn btn-primary d-none" id="add-book-chapter">Add More Details</button>
                      </div>
                       <!-- investigator Publication -->
-                    <label for="no-nmims-student-author" class="form-label text-center fw-bold">Patent </label>
+                    <label class="form-label text-center fw-bold">Patent </label>
                     <table class="table vertical-lines custom-table table-responsiv">
                          <thead>
                              <th class="">Name of Applicant/s</th>
@@ -574,10 +743,10 @@
                              <th class=""> Month & Year</th>
                          </thead>
                              <tr>
-                                 <td><input style="border: 0;" type="text" id="investigator-patent-applicant-name" class="form-control"></td>
-                                 <td><input style="border: 0;" type="text" id="investigator-patent-title" class="form-control"></td>
-                                 <td><input style="border: 0;" type="text" id="investigator-patent-status" class="form-control"></td>
-                                 <td><input style="border: 0;" type="text" id="investigator-patent-number" class="form-control"></td>
+                                 <td><input style="border: 0;" type="text" id="investigator-pharmacy-applicant-name" class="form-control"></td>
+                                 <td><input style="border: 0;" type="text" id="investigator-pharmacy-title" class="form-control"></td>
+                                 <td><input style="border: 0;" type="text" id="investigator-pharmacy-status" class="form-control"></td>
+                                 <td><input style="border: 0;" type="text" id="investigator-pharmacy-number" class="form-control"></td>
                                  <td><input style="border: 0;" type="text" id="investigator-month-year" class="form-control"></td>
 
                              </tr>
@@ -585,12 +754,12 @@
                              </tr>
                     </table>
                     <div class="modal-footer">                        
-                         <button class="btn btn-primary" id="submit-patent">Insert Investigator Patent Details</button>
-                         <button class="btn btn-primary d-none" id="update-patent">Update Investigator Patent Details</button>
-                         <button class="btn btn-primary d-none" id="add-patent">Add More Details</button>
+                         <button class="btn btn-primary" id="submit-pharmacy">Insert Investigator Patent Details</button>
+                         <button class="btn btn-primary d-none" id="update-pharmacy">Update Investigator Patent Details</button>
+                         <button class="btn btn-primary d-none" id="add-pharmacy">Add More Details</button>
                     </div>
                     <!-- investigator Publication -->
-                    <label for="no-nmims-student-author" class="form-label text-center fw-bold">Research Project Under Implementation </label>
+                    <label class="form-label text-center fw-bold">Research Project Under Implementation </label>
                     <table class="table vertical-lines custom-table table-responsiv">
                           <thead>
                               <th class="">Title</th>
@@ -616,7 +785,7 @@
                      </div>
 
                       <!-- investigator Publication -->
-                      <label for="no-nmims-student-author" class="form-label text-center fw-bold"> Research projects completed</label>
+                      <label class="form-label text-center fw-bold"> Research projects completed</label>
                       <table class="table vertical-lines custom-table table-responsiv">
                             <thead>
                                 <th class="">Title</th>
@@ -645,7 +814,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal" id="close-btn">Close</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-primary d-none" id="submit-btn">Submit</button>
                 <button type="button" class="btn btn-primary d-none " id="update-btn">Update</button>
             </div>
@@ -653,18 +822,510 @@
     </div>
 </div>
 
-<script>
+<!-- pharmacy seed grant modal for view  -->
+<div class="modal fade " id="pharmacy-seed-grant-modal-view" tabindex="-1" role="dialog"
+    aria-labelledby="pharmacy-seed-grant-modal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg modal-fullscreen p-5" role="document">
+        <div class="modal-content modal-content-data validate-input">
+            <div class="modal-header">
+                <h4 class="modal-title-head" id="journal-paper-title">Pharmacy Seed Grant</h4>
+                <div class="close" data-dismiss="modal" aria-label="Close">
+                    <span type="button" aria-hidden="true"><i class="fas fa-times "></i></span>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <hr class="bg-dark">
+                    <div class="form-group col-lg-12 col-md-6 col-sm-12 mb-4">
+                        <label for="" class="form-label fw-bold modal-title-head">SECTION I Summary Sheet</label>
+                    </div>
+                    <hr>
+                    <!-- Title of the project -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="sub-title-text sub-title">Title of the project:</div>
+                            <label class="view-content" id="view-summary-project-title"></label>
+                        </div>
+                    </div>
+
+                    <!-- 2.	Main objectives of project  -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="sub-title-text sub-title"> Main objectives of project:</div>
+                            <label class="view-content" id="view-summary-project-objectives"></label>
+                        </div>
+                    </div>
+
+                    <!-- 3.	Details of Principal Investigator  -->
+                    <hr class="bg-dark">
+                    <div class="form-group col-lg-12 col-md-6 col-sm-12 mb-4">
+                        <label for="" class="form-label fw-bold modal-title-head">Details of Principal Investigator ID
+                        </label>
+                    </div>
+                    <hr>
+                    <!-- name -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="sub-title-text sub-title">i.Name:</div>
+                            <label class="view-content" id="view-principal-investigator-name"></label>
+                        </div>
+                    </div>
+                    <!-- designation -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="sub-title-text sub-title"> ii. Designation:</div>
+                            <label class="view-content" id="view-principal-investigator-dsg"></label>
+                        </div>
+                    </div>
+                    <!-- institution -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="sub-title-text sub-title"> iii. Name of Institution:</div>
+                            <label class="view-content" id="view-principal-investigator-org"></label>
+                        </div>
+                    </div>
+
+                    <!-- mobile -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="sub-title-text sub-title"> iv. Mobile:</div>
+                            <label class="view-content" id="view-principal-investigator-mob"></label>
+                        </div>
+                    </div>
+                    <!-- email -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="sub-title-text sub-title"> v. Email :</div>
+                            <label class="view-content" id="view-principal-investigator-email"></label>
+                        </div>
+                    </div>
+
+                    <!-- 3.	Details of Co Investigator  -->
+                    <hr class="bg-dark">
+                    <div class="form-group col-lg-12 col-md-6 col-sm-12 mb-4">
+                        <label for="" class="form-label fw-bold modal-title-head">Details of CO Investigator ID </label>
+                    </div>
+                    <hr>
+                    <!-- name -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="sub-title-text sub-title">i.Name:</div>
+                            <label class="view-content" id="view-co-investigator-name"></label>
+                        </div>
+                    </div>
+                    <!-- designation -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="sub-title-text sub-title"> ii. Designation:</div>
+                            <label class="view-content" id="view-co-investigator-dsg"></label>
+                        </div>
+                    </div>
+                    <!-- institution -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="sub-title-text sub-title"> iii. Name of Institution:</div>
+                            <label class="view-content" id="view-co-investigator-org"></label>
+                        </div>
+                    </div>
+
+                    <!-- mobile -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="sub-title-text sub-title"> iv. Mobile:</div>
+                            <label class="view-content" id="view-co-investigator-mob"></label>
+                        </div>
+                    </div>
+                    <!-- email -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="sub-title-text sub-title"> v. Email :</div>
+                            <label class="view-content" id="view-co-investigator-email"></label>
+                        </div>
+                    </div>
+                    <hr>
+                    <br>
+                    <!-- 5.	Duration of the project months -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="sub-title-text sub-title"> Duration of the project months :</div>
+                            <label class="view-content" id="view-project-duration"></label>
+                        </div>
+                    </div>
+                    
+                    <!-- 6.	Total Cost of the project: Rs. -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="sub-title-text sub-title"> Total Cost of the project Rs :</div>
+                            <label class="view-content" id="view-total-cost"></label>
+                        </div>
+                    </div>
+                    <!-- Consumables Amount -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="sub-title-text sub-title"> Consumables Amount :</div>
+                            <label class="view-content" id="view-consumables-amount"></label>
+                        </div>
+                    </div>
+                 
+                    <!-- Evaluation and analysis  -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="sub-title-text sub-title"> Evaluation and analysis Amount :</div>
+                            <label class="view-content" id="view-evaluation-and-analysis-amount"></label>
+                        </div>
+                    </div>
+                   
+                    <!-- Any other -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="sub-title-text sub-title"> Any other :</div>
+                            <label class="view-content" id="view-other-amount"></label>
+                        </div>
+                    </div>
+                    <!--SECTION II PROJECT DETAILS -->
+                    <hr class="bg-dark">
+                    <div class="form-group col-lg-12 col-md-6 col-sm-12 mb-4">
+                        <label for="" class="form-label fw-bold modal-title-head">SECTION II PROJECT DETAILS </label>
+                    </div>
+                    <hr>
+                    <!-- 1.	2.	project title -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="sub-title-text sub-title"> Title:</div>
+                            <label class="view-content" id="view-project-title"></label>
+                        </div>
+                    </div>
+                  
+                    <!-- 1.	2.	Background -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="sub-title-text sub-title"> Background:</div>
+                            <label class="view-content" id="view-background"></label>
+                        </div>
+                    </div>
+                   
+                    <!-- 3.	Review of status of research in the field (National & International): -->
+                 
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="sub-title-text sub-title"> Review of status of
+                                research in the field (National & International):</div>
+                            <label class="view-content" id="view-project-status"></label>
+                        </div>
+                    </div>
+                    <!-- Scientific importance of the project -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="sub-title-text sub-title"> Scientific importance of the project:</div>
+                            <label class="view-content" id="view-scientific-importance"></label>
+                        </div>
+                    </div>
+
+                    <!-- 5.	Hypothesis/Rationale -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="sub-title-text sub-title"> Hypothesis/Rationale:</div>
+                            <label class="view-content" id="view-hypothesis-rationale"></label>
+                        </div>
+                    </div>
+                    
+                    <!-- 6.	Objective/s:-->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="sub-title-text sub-title"> Objective/s:</div>
+                            <label class="view-content" id="view-objectives"></label>
+                        </div>
+                    </div>
+                 
+                    <!-- 7.	Detailed Methodology -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="sub-title-text sub-title"> Detailed Methodology:</div>
+                            <label class="view-content" id="view-detailed-methodology"></label>
+                        </div>
+                    </div>
+                    <!-- 8.	Timelines (Activity Chart including
+                            Milestones) -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="sub-title-text sub-title"> Timelines (Activity Chart including
+                                Milestones):</div>
+                            <label class="view-content" id="view-timelines"></label>
+                        </div>
+                    </div>
+                    
+                    <!-- 9.	Budget -->
+                    <div class="form-group col-lg-12 col-md-6 col-sm-12 mb-4 text-center fw-bold">BUDGET</div>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Srno</th>
+                                <th>Head</th>
+                                <th>Amount</th>
+                                <th>Justification</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Consumables -->
+                            <tr>
+                                <td>1</td>
+                                <td>Consumables</td>
+                                <td><label class="view-content" id="view-budget-consumables-amount"></label></td>
+                                <td><label class="view-content" id="view-consumables-justification"></label></td>
+                            </tr>
+                            <!-- Solvents -->
+                            <tr>
+                                <td>2</td>
+                                <td>Solvents</td>
+                                <td><label class="view-content" id="view-solvents-amount"></label></td>
+                                <td><label class="view-content" id="view-solvents-justification"></label></td>
+                            </tr>
+                            <!-- Chemicals/ API -->
+                            <tr>
+                                <td>3</td>
+                                <td>Chemicals/ API</td>
+                                <td><label class="view-content" id="view-chemicals-amount"></label></td>
+                                <td><label class="view-content" id="view-chemicals-justification"></label></td>
+                            </tr>
+                            <!-- Biomarkers and reference standards -->
+                            <tr>
+                                <td>4</td>
+                                <td>Biomarkers and reference standards</td>
+                                <td><label class="view-content" id="view-biomarkers-reference-amount"></label></td>
+                                <td><label class="view-content" id="view-biomarkers-reference-justification"></label></td>
+                            </tr>
+                            <!-- HPLC column -->
+                            <tr>
+                                <td>5</td>
+                                <td>HPLC column</td>
+                                <td><label class="view-content" id="view-HPLC-amount"></label></td>
+                                <td><label class="view-content" id="view-HPLC-justification"></label></td>
+                            </tr>
+                            <!-- Experimental Animals -->
+                            <tr>
+                                <td>6</td>
+                                <td>Experimental Animals</td>
+                                <td><label class="view-content" id="view-experimental-animals-amount"></label></td>
+                                <td><label class="view-content" id="view-experimental-animals-justification"></label></td>
+                            </tr>
+                            <!-- Cell lines -->
+                            <tr>
+                                <td>7</td>
+                                <td>Cell lines</td>
+                                <td><label class="view-content" id="view-cell-lines-amount"></label></td>
+                                <td><label class="view-content" id="view-cell-lines-justification"></label></td>
+                            </tr>
+                            <!-- Kits for analysis -->
+                            <tr>
+                                <td>8</td>
+                                <td>Kits for analysis</td>
+                                <td><label class="view-content" id="view-kits-analysis-amount"></label></td>
+                                <td><label class="view-content" id="view-kits-analysis-justification"></label></td>
+                            </tr>
+                            <!-- Evaluation and analysis (outsourcing) -->
+                            <tr>
+                                <td>9</td>
+                                <td>Evaluation and analysis (outsourcing)</td>
+                                <td><label class="view-content" id="view-evaluation-analysis-amount"></label></td>
+                                <td><label class="view-content" id="view-evaluation-analysis-justification"></label></td>
+                            </tr>
+                            <!-- Any Other -->
+                            <tr>
+                                <td>10</td>
+                                <td>Any Other</td>
+                                <td><label class="view-content" id="view-any-other-data"></label></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                   <!-- 10.	Proposed Outcome  -->
+                   <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                    <div class="box">
+                        <div class="sub-title-text sub-title">Proposed Outcome:</div>
+                        <label class="view-content" id="view-proposed-outcome"></label>
+                    </div>
+                </div>
+
+                 <!-- 11.	Previous work done in this field  -->
+                 <div class="col-lg-12 col-md-6 text-center">
+                    <div class="box">
+                        <div class="sub-title-text sub-title">Previous work done in this
+                            field:</div>
+                        <label class="view-content" id="view-previous-work"></label>
+                    </div>
+                </div>
+                
+                <!--12.	References:-->
+                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                    <div class="box">
+                        <div class="sub-title-text sub-title">References:</div>
+                        <label class="view-content" id="view-references"></label>
+                    </div>
+                </div>
+
+                    <!--SECTION III PROJECT DETAILS -->
+                    <hr class="bg-dark">
+                    <div class="form-group col-lg-12 col-md-6 col-sm-12 mb-4">
+                        <label for="foreign-authors" class="form-label fw-bold modal-title-head">SECTION III<br>
+                            <label for="" class="form-label fw-bold sub-title-text"> BIO-DATA OF THE INVESTIGATOR
+                                (PI/Co-PI) </label>
+                    </div>
+                    <hr>
+                   
+                    <!-- 8.	Professional Experience (Total):  ____ years_____months-->
+                 
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="sub-title-text sub-title">1. Name:</div>
+                            <label class="view-content" id="view-investigator-name"></label>
+                        </div>
+                    </div>
+                    <!-- investigator designation -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="sub-title-text sub-title">2.Designation:</div>
+                            <label class="view-content" id="view-investigator-designation"></label>
+                        </div>
+                    </div>
+
+                    <!-- investor address -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="sub-title-text sub-title">3. Address:</div>
+                            <label class="view-content" id="view-investigator-adress"></label>
+                        </div>
+                    </div>
+
+                    <!-- investigator email -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="sub-title-text sub-title">4. Email:</div>
+                            <label class="view-content" id="view-investigator-email"></label>
+                        </div>
+                    </div>
+                 
+                    <!-- investigator Mobile -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="sub-title-text sub-title">5. Mobile:</div>
+                            <label class="view-content" id="view-investigator-mobile"></label>
+                        </div>
+                    </div>
+                    <!-- investigator Date of Birth -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="sub-title-text sub-title">5. Date of Birth:</div>
+                            <label class="view-content" id="view-investigator-date-of-birth"></label>
+                        </div>
+                    </div>
+                  
+                    <!-- investigator Educational Qualifications -->
+                    
+                    <label class="form-label text-center fw-bold">Educational
+                        Qualifications Details</label>
+                    <div id="educational-details-table-container"></div>
+                    <!-- investigator Experience Details -->
+                    <label class="form-label text-center fw-bold">Add Investigator Work
+                        Experience </label>
+                        <div id="experience-details-table-container"></div>
+                   
+                    <!-- investigator Publication -->
+                    <label class="form-label text-center fw-bold"> Publication </label>
+                    <div id="publication-details-table-container"></div>
+                   
+                    <!-- investigator Book -->
+                    <label class="form-label text-center fw-bold"> Book </label>
+                    <div id="book-details-table-container"></div>
+                    <!-- investigator Book Chapter -->
+                    <label for="book-chapter" class="form-label text-center fw-bold">Book Chapter</label>
+                   
+                    <div id="book-chapter-details-table-container"></div>
+                    <!-- investigator Publication -->
+                    <label class="form-label text-center fw-bold">Patent </label>
+                    <div id="patent-details-table-container"></div>
+                    <!-- investigator Publication -->
+                    <label class="form-label text-center fw-bold">Research Project Under
+                        Implementation </label>
+                        <div id="research-implementation-table-container"></div>
+                  
+                    <!-- investigator Publication -->
+                    <label class="form-label text-center fw-bold"> Research projects
+                        completed</label>
+                    <div id="research-completed-table-container"></div>
+
+                    <!-- any other -->
+                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="sub-title-text sub-title"> Any Other:</div>
+                            <label class="view-content" id="view-any-other"></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="educationModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Education Details</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <!-- Form for education details -->
+          <form id="educationForm">
+            <div id="educationDetails">
+              <div class="education-section">
+                <div class="form-group">
+                  <label for="degree">Qualification</label>
+                  <input type="text" class="form-control" name="qualification[]" required>
+                </div>
+                <div class="form-group">
+                  <label for="institute">Institution</label>
+                  <input type="text" class="form-control" name="institution[]" required>
+                </div>
+                <div class="form-group">
+                  <label for="year">Year</label>
+                  <input type="text" class="form-control" name="year[]" required>
+                </div>
+              </div>
+            </div>
+            <button type="button" class="btn btn-primary" id="addEducation">Add</button>
+            <button type="submit" id="submit-investor-education" class="btn btn-primary">Save</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+  $(document).ready(function() {
+    // Add more education fields when the "Add" button is clicked
+    $('#addEducation').click(function() {
+      var newEducationSection = $('.education-section').first().clone(); // Clone the first education section
+      $('#educationDetails').append(newEducationSection); // Append the cloned section to the container
+    });
+  });
     const submitBtn = document.getElementById('submit-btn');
     const updateBtn = document.getElementById('update-btn');
     const pharmacyList = document.getElementById('pharmacy-seed-grant-form-list');
     const addPharmacyForm = document.getElementById('consultancy-add-new-form');
-
+    let pharmacyId
     let educationIdsArray = [];
     let eperienceIdsArray = [];
     let bookIdsArray = [];
     let bookChapterIdsArray = [];
     let publicationIdsArray = [];
-    let patentIdsArray = [];
+    let pharmacyIdsArray = [];
     let researchImplementationIdsArray = [];
     let researchCompletedIdsArray = [];
 
@@ -674,9 +1335,14 @@
             console.log('clcikedd plus')
             submitBtn.classList.remove('d-none');
             updateBtn.classList.add('d-none');
+
+            $('#pharmacy-seed-grant-modal').modal({
+                backdrop: 'static'
+            });
         }
     })
   
+    
 
     const fetchData = async (url, payload) => {
             try {
@@ -707,7 +1373,7 @@
                     data.bookId ? bookIdsArray.push(data.bookId) : null;
                     data.bookChapterId ? bookChapterIdsArray.push(data.bookChapterId) : null
                     data.publicationId ? publicationIdsArray.push(data.publicationId) : null
-                    data.patentId ? patentIdsArray.push(data.patentId) : null
+                    data.pharmacyId ? pharmacyIdsArray.push(data.pharmacyId) : null
                     data.implementationId ? researchImplementationIdsArray.push(data.implementationId) : null
                     data.CompletedId ? researchCompletedIdsArray.push(data.CompletedId) : null;
 
@@ -754,12 +1420,12 @@
                     document.getElementById('investigator-publication-article-number').classList.add('d-none')
                    }
 
-                   if(data.patentId){
-                    document.getElementById('investigator-patent-applicant-name').classList.add('d-none');
-                    document.getElementById('investigator-patent-title').classList.add('d-none');
-                    document.getElementById('investigator-patent-status').classList.add('d-none');
-                    document.getElementById('investigator-patent-year-month').classList.add('d-none');
-                    document.getElementById('investigator-patent-number').classList.add('d-none');
+                   if(data.pharmacyId){
+                    document.getElementById('investigator-pharmacy-applicant-name').classList.add('d-none');
+                    document.getElementById('investigator-pharmacy-title').classList.add('d-none');
+                    document.getElementById('investigator-pharmacy-status').classList.add('d-none');
+                    document.getElementById('investigator-pharmacy-year-month').classList.add('d-none');
+                    document.getElementById('investigator-pharmacy-number').classList.add('d-none');
                    }
 
                    if(data.implementationId){
@@ -864,15 +1530,15 @@
         const investigatorPatent = async (url) => {
             const investigatorPatentDetails = {};
     
-            investigatorPatentDetails.investigatorApplicantName = document.getElementById('investigator-patent-applicant-name').value;
-            investigatorPatentDetails.investigatorPatentTitle = document.getElementById('investigator-patent-title').value;
-            investigatorPatentDetails.investigatorPatentStatus = document.getElementById('investigator-patent-status').value;
+            investigatorPatentDetails.investigatorApplicantName = document.getElementById('investigator-pharmacy-applicant-name').value;
+            investigatorPatentDetails.investigatorPatentTitle = document.getElementById('investigator-pharmacy-title').value;
+            investigatorPatentDetails.investigatorPatentStatus = document.getElementById('investigator-pharmacy-status').value;
             investigatorPatentDetails.investigatorPatentYear = document.getElementById('investigator-month-year').value
-            investigatorPatentDetails.investigatorPatentNumber = document.getElementById('investigator-patent-number').value;
+            investigatorPatentDetails.investigatorPatentNumber = document.getElementById('investigator-pharmacy-number').value;
 
             const payload = { investigatorPatentDetails };
-            const submitBtn = document.getElementById('submit-patent');
-            const AddBtn = document.getElementById('add-patent');
+            const submitBtn = document.getElementById('submit-pharmacy');
+            const AddBtn = document.getElementById('add-pharmacy');
 
             await submitData(url, payload, submitBtn, AddBtn);
         };
@@ -952,7 +1618,7 @@
             else if(formId === 'investigator-publication') {
                 await investigatorPublication(url);
             }
-            else if(formId === 'investigator-patent') {
+            else if(formId === 'investigator-pharmacy') {
                 await investigatorPatent(url);
             }
             else if(formId === 'research-implementation') {
@@ -987,9 +1653,9 @@
         });
 
         // Patent details
-        document.getElementById('submit-patent').addEventListener('click', async () => {
+        document.getElementById('submit-pharmacy').addEventListener('click', async () => {
             console.log('clickeddddddd')
-            await submitForm('<%- BASE_URL %>research/pharmacy-seed-grant-form/investigator-patent/insert', 'investigator-patent');
+            await submitForm('<%- BASE_URL %>research/pharmacy-seed-grant-form/investigator-pharmacy/insert', 'investigator-pharmacy');
         });
 
         // Publicaation details
@@ -1080,17 +1746,17 @@
         });
 
         // Patent details
-        document.getElementById('add-patent').addEventListener('click', async () => {
-            document.getElementById('submit-patent').classList.remove('d-none');
-            document.getElementById('investigator-patent-applicant-name').classList.remove('d-none');
-            document.getElementById('investigator-patent-title').classList.remove('d-none');
-            document.getElementById('investigator-patent-status').classList.remove('d-none');
-            document.getElementById('investigator-patent-year-month').classList.remove('d-none');
+        document.getElementById('add-pharmacy').addEventListener('click', async () => {
+            document.getElementById('submit-pharmacy').classList.remove('d-none');
+            document.getElementById('investigator-pharmacy-applicant-name').classList.remove('d-none');
+            document.getElementById('investigator-pharmacy-title').classList.remove('d-none');
+            document.getElementById('investigator-pharmacy-status').classList.remove('d-none');
+            document.getElementById('investigator-pharmacy-year-month').classList.remove('d-none');
 
-            document.getElementById('investigator-patent-applicant-name').value = '';
-            document.getElementById('investigator-patent-title').value = '';
-            document.getElementById('investigator-patent-status').value = '';
-            document.getElementById('investigator-patent-year-month').value = '';
+            document.getElementById('investigator-pharmacy-applicant-name').value = '';
+            document.getElementById('investigator-pharmacy-title').value = '';
+            document.getElementById('investigator-pharmacy-status').value = '';
+            document.getElementById('investigator-pharmacy-year-month').value = '';
         });
 
         // Publicaation details
@@ -1160,8 +1826,8 @@
             const pharmacySeedGrantDetails = {}
             pharmacySeedGrantDetails.summaryTitle = document.getElementById('summary-project-title').value;
             pharmacySeedGrantDetails.summaryProjectTitle = document.getElementById('summary-project-objectives').value;
-            pharmacySeedGrantDetails.principalInvestigator = document.getElementById('principal-investigator-id').value;
-            pharmacySeedGrantDetails.coInvestigator = document.getElementById('co-investigator').value;
+            // pharmacySeedGrantDetails.principalInvestigator = document.getElementById('principal-investigator-id').value;
+            // pharmacySeedGrantDetails.coInvestigator = document.getElementById('co-investigator').value;
 
             pharmacySeedGrantDetails.projectDuration = document.getElementById('project-duration').value;
             pharmacySeedGrantDetails.totalCost = document.getElementById('total-cost').value;
@@ -1215,9 +1881,25 @@
             pharmacySeedGrantDetails.bookIdsArray = bookIdsArray;
             pharmacySeedGrantDetails.bookChapterIdsArray = bookChapterIdsArray;
             pharmacySeedGrantDetails.publicationIdsArray = publicationIdsArray;
-            pharmacySeedGrantDetails.patentIdsArray = patentIdsArray;
+            pharmacySeedGrantDetails.pharmacyIdsArray = pharmacyIdsArray;
             pharmacySeedGrantDetails.researchImplementationIdsArray = researchImplementationIdsArray;
             pharmacySeedGrantDetails.researchCompletedIdsArray = researchCompletedIdsArray;
+
+            pharmacySeedGrantDetails.principalName = document.getElementById('principal-investigator-name').value;
+
+            pharmacySeedGrantDetails.principalDsg = document.getElementById('principal-investigator-dsg').value;
+            pharmacySeedGrantDetails.principalOrg = document.getElementById('principal-investigator-org').value;
+
+            pharmacySeedGrantDetails.principalMob = document.getElementById('principal-investigator-mob').value;
+            pharmacySeedGrantDetails.principalEmail = document.getElementById('principal-investigator-email').value
+
+            pharmacySeedGrantDetails.coIvestigatorName = document.getElementById('co-investigator-name').value;
+
+            pharmacySeedGrantDetails.coIvestigatorDsg = document.getElementById('co-investigator-dsg').value;
+            pharmacySeedGrantDetails.coIvestigatorOrg = document.getElementById('co-investigator-org').value;
+
+            pharmacySeedGrantDetails.coIvestigatorMob = document.getElementById('co-investigator-mob').value;
+            pharmacySeedGrantDetails.coIvestigatorEmail = document.getElementById('co-investigator-email').value;
 
             const payload = {
                 pharmacySeedGrantDetails : pharmacySeedGrantDetails
@@ -1239,7 +1921,7 @@
             .then((data) => {
                 if(data.status === "Done"){
                     console.log('data ====>>>>>>>>', data);
-                    // $('pharmacy-seed-grant-modal').modal('hide');
+                    // $('#pharmacy-seed-grant-modal').modal('hide');
                     Swal.fire({
                         position: "top-center",
                         icon: "success",
@@ -1268,7 +1950,6 @@
               
             })
             .catch((error) => {
-                    // This will catch network errors and errors thrown from the .then block above
                     console.error('Error:', error);
                     const message = error;
                     Swal.fire({
@@ -1302,6 +1983,185 @@
                     });
                 }
             });
+
+
+    pharmacyList.addEventListener('click', () => {
+        if(event.target.classList.contains('view')){
+            console.log('clickeddd view button');
+            const pharamacyRowToBeView = event.target.closest('tr');
+            console.log('pharamacyRowToBeView ====>>>>>>>', pharamacyRowToBeView);
+            pharmacyId = pharamacyRowToBeView.getAttribute('data-pharmacy-id');
+            console.log('pharmacyId ===>>>>>', pharmacyId);
+            $('#pharmacy-seed-grant-modal-view').modal('show');
+
+            fetch('<%- BASE_URL %>research/pharmacy-seed-grant-form/view', {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({pharmacyId})
+
+            })
+            .then((Response) => {
+                return Response.ok ? Response.json() : "Network issue"
+            })
+            .then((data) => {
+                if(data.status === 'Done'){
+                    console.log('data ====>>>>>', data);
+                    document.getElementById('view-summary-project-title').innerText = data.pharmacyData[0].summary_title
+                    document.getElementById('view-summary-project-objectives').innerText = data.pharmacyData[0].summary_objectives;
+                    document.getElementById('view-principal-investigator-name').innerText = data.pharmacyData[0].principal_name;
+                    document.getElementById('view-principal-investigator-dsg').innerText = data.pharmacyData[0].principal_dsg;
+                    document.getElementById('view-principal-investigator-org').innerText = data.pharmacyData[0].principal_org;
+                    document.getElementById('view-principal-investigator-mob').innerText = data.pharmacyData[0].principal_mobile;
+                    document.getElementById('view-principal-investigator-email').innerText = data.pharmacyData[0].principal_email;
+
+                    document.getElementById('view-co-investigator-name').innerText = data.pharmacyData[0].co_investigator_name;
+                    document.getElementById('view-co-investigator-dsg').innerText = data.pharmacyData[0].co_investigator_dsg;
+                    document.getElementById('view-co-investigator-org').innerText = data.pharmacyData[0].co_investigator_org;
+                    document.getElementById('view-co-investigator-mob').innerText = data.pharmacyData[0].co_investigator_mobile;
+                    document.getElementById('view-co-investigator-email').innerText = data.pharmacyData[0].co_investigator_email;
+
+                    document.getElementById('view-project-duration').innerText = data.pharmacyData[0].project_duration;
+                    document.getElementById('view-total-cost').innerText = data.pharmacyData[0].total_cost;
+                    document.getElementById('view-consumables-amount').innerText = data.pharmacyData[0].consumables_amount;
+                    document.getElementById('view-evaluation-and-analysis-amount').innerText = data.pharmacyData[0].analysis_amount;
+                    document.getElementById('view-evaluation-analysis-amount').innerText = data.pharmacyData[0].evaluation_analysis_amount;
+                    document.getElementById('view-other-amount').innerText = data.pharmacyData[0].other_amount;
+                    document.getElementById('view-project-title').innerText = data.pharmacyData[0].project_title;
+                    document.getElementById('view-background').innerText = data.pharmacyData[0].project_background;
+                    document.getElementById('view-project-status').innerText = data.pharmacyData[0].project_status;
+                    document.getElementById('view-scientific-importance').innerText = data.pharmacyData[0].scientific_importance;
+                    document.getElementById('view-hypothesis-rationale').innerText = data.pharmacyData[0].hypothesis;
+                    document.getElementById('view-objectives').innerText = data.pharmacyData[0].project_objectives;
+                    document.getElementById('view-detailed-methodology').innerText = data.pharmacyData[0].detailed_methodology;
+                    document.getElementById('view-timelines').innerText = data.pharmacyData[0].time_lines;
+
+                    document.getElementById('view-budget-consumables-amount').innerText = data.pharmacyData[0].budget_consumable_amount;
+                    document.getElementById('view-consumables-justification').innerText = data.pharmacyData[0].consumables_justification;
+                    document.getElementById('view-solvents-amount').innerText = data.pharmacyData[0].solvents_amount;
+                    document.getElementById('view-solvents-justification').innerText = data.pharmacyData[0].solvents_justification;
+                    document.getElementById('view-chemicals-amount').innerText = data.pharmacyData[0].chemicals_amount;
+                    document.getElementById('view-chemicals-justification').innerText = data.pharmacyData[0].chemicals_justification;
+                    // ankit mishra
+                    document.getElementById('view-biomarkers-reference-amount').innerText = data.pharmacyData[0].biomarkers_reference_amount;
+                    document.getElementById('view-biomarkers-reference-justification').innerText = data.pharmacyData[0].biomarkers_reference_justifications;
+                    document.getElementById('view-HPLC-amount').innerText = data.pharmacyData[0].hplc_amount;
+                    document.getElementById('view-HPLC-justification').innerText = data.pharmacyData[0].hplc_justification;
+                    document.getElementById('view-experimental-animals-amount').innerText = data.pharmacyData[0].experimental_animals_amount;
+                    document.getElementById('view-experimental-animals-justification').innerText = data.pharmacyData[0].experimental_animals_justification;
+                    document.getElementById('view-cell-lines-amount').innerText = data.pharmacyData[0].cell_lines_amount;
+                    document.getElementById('view-cell-lines-justification').innerText = data.pharmacyData[0].cell_lines_justifications;
+                    document.getElementById('view-kits-analysis-amount').innerText = data.pharmacyData[0].kits_analysis_amount;
+                    document.getElementById('view-kits-analysis-justification').innerText = data.pharmacyData[0].kits_analysis_justifications;
+
+                    document.getElementById('view-evaluation-analysis-justification').innerText = data.pharmacyData[0].evaluation_analysis_amount;
+                    document.getElementById('view-evaluation-analysis-amount').innerText = data.pharmacyData[0].evaluation_analysis_justification;
+                    document.getElementById('view-any-other-data').innerText = data.pharmacyData[0].other_amount;
+
+                    document.getElementById('view-proposed-outcome').innerText = data.pharmacyData[0].proposed_out_come;
+                    document.getElementById('view-previous-work').innerText = data.pharmacyData[0].previous_project_explaination;
+
+                    document.getElementById('view-investigator-name').innerText = data.pharmacyData[0].investigator_name;
+                    document.getElementById('view-investigator-designation').innerText = data.pharmacyData[0].investigator_dsg;
+                    document.getElementById('view-investigator-adress').innerText = data.pharmacyData[0].investigator_address;
+                    document.getElementById('view-investigator-email').innerText = data.pharmacyData[0].investigator_email;
+                    document.getElementById('view-investigator-mobile').innerText = data.pharmacyData[0].investigator_mobile;
+                    document.getElementById('view-investigator-date-of-birth').innerText = data.pharmacyData[0].investigator_dob;
+
+                    let educationalContainer = document.getElementById('educational-details-table-container');
+                    const educationHeader = [ 'Degree', 'Institution, University', 'Year of Passing'];
+                    const educationDetails = data.educaltionalDetails;
+                    generateTable(educationHeader, educationDetails, educationalContainer);
+
+                    const experienceContainer = document.getElementById('experience-details-table-container');
+                    const experienceDetails = data.educaltionalDetails;
+                    const experienceHeader = [ 'Position', 'University/Institution', 'Period'];
+                    generateTable(experienceHeader, experienceDetails, experienceContainer);
+
+                    const publicationcontainer = document.getElementById('publication-details-table-container');
+                    const publicationHeader = [ 'Authors', 'Title', 'Name of Journal', 'Year', 'Volume', 'Issue', 'Page numbers/article number', 'Impact factor  (by Clarivate analytics)'];
+                    const publicationDetails = data.PublicationDetails;
+                    generateTable(publicationHeader, publicationDetails, publicationcontainer);
+
+                    const bookContainer = document.getElementById('book-details-table-container');
+                    const bookDetails = data.bookDetails;
+                    const bookDetailsHeader = [ 'Authors', 'Name of the book', 'Year', 'Volume', 'Publisher', 'ISBN'];
+                    generateTable(bookDetailsHeader, bookDetails, bookContainer)
+
+                    const patentDetaisContainer = document.getElementById('patent-details-table-container');
+                    const patentHeader = [ 'Name of Applicant/s', 'Title', 'Status (Filed/ Published/Granted)', 'Number', 'Month & Year'];
+                    const patentDetails = data.patentDetails;
+                    generateTable(patentHeader, patentDetails, patentDetaisContainer);
+
+                    const bookChapterContainer = document.getElementById('book-chapter-details-table-container');
+                    const bookChapterHeader = [ 'Authors', 'Title of chapter', 'Name of the book', 'Year', 'Volume', 'Page numbers', 'Publisher', 'ISBN'];
+                    const bookChapterDetails = data.bookChapterDetails;
+                    generateTable(bookChapterHeader, bookChapterDetails, bookChapterContainer);
+
+                    const researchImpContainer = document.getElementById('research-implementation-table-container');
+                    const implementaionHeader = [ 'Title', 'Agency', 'Role  (PI/ Co-PI)', 'Duration', 'Cost in Rs.'];
+                    const researchImplementationDetails = data.researchImplementationDetails;
+                    generateTable(implementaionHeader, researchImplementationDetails, researchImpContainer);
+                    
+                    const researchComContainer = document.getElementById('research-completed-table-container');
+                    const completedHeader = [ 'Title', 'Agency', 'Role  (PI/ Co-PI)', 'Duration', 'Cost in Rs.'];
+                    const completedResearchDetails = data.researchImplementationDetails;
+                    generateTable(completedHeader, completedResearchDetails, researchComContainer);
+
+                }
+            })
+            .catch((error) => {
+                console.log('error ===>>>>', error)
+            })
+            
+        }
+
+        if(event.target.classList.contains('edit')){
+            console.log('edit button clickeddd')
+             $('#pharmacy-seed-grant-modal').modal('show');
+        }
+    })
+
+  
+    function generateTable(header, data, tableContainer) {
+            let table = document.createElement('table');
+            table.classList.add('table');
+            table.border = '1px';
+
+            let thead = document.createElement('thead');
+            let headerRow = document.createElement('tr');
+            let srNoHeader = document.createElement('th');
+            srNoHeader.textContent = 'Sr No';
+            headerRow.appendChild(srNoHeader);
+            header.forEach(headerItem => {
+                let th = document.createElement('th');
+                // th.classList.add('col-lg-3');
+                th.textContent = headerItem;
+                headerRow.appendChild(th);
+            });
+            thead.appendChild(headerRow);
+            table.appendChild(thead);
+
+            let tbody = document.createElement('tbody');
+            data.forEach((dataItem, index) => {
+                let row = document.createElement('tr');
+                let indexCell = document.createElement('td');
+                indexCell.textContent = index + 1;
+                row.appendChild(indexCell);
+                for (let key in dataItem) {
+                    let td = document.createElement('td');
+                    td.classList.add('view-content');
+                    td.textContent = dataItem[key];
+                    row.appendChild(td);
+                }
+                tbody.appendChild(row);
+            });
+            table.appendChild(tbody);
+
+            tableContainer.appendChild(table);
+        }
+
 
         
 </script>

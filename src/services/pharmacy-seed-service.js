@@ -5,6 +5,16 @@ module.exports.renderPharmacySeed = async(userName) => {
     const renderPharmacyData = await pharmacySeedModels.renderPharmacyData(userName);
 
     console.log('renderPharmacyData =====>>>>>', renderPharmacyData)
+    return renderPharmacyData.status === "Done" ? {
+        status : renderPharmacyData.status,
+        message : renderPharmacyData.message,
+        rowCount : renderPharmacyData.rowCount,
+        pharmacyData : renderPharmacyData.pharmacyData
+    } : {
+        status : renderPharmacyData.status,
+        message : renderPharmacyData.message,
+        errorCode : renderPharmacyData.errorCode
+    }
 
 }
 
@@ -178,12 +188,28 @@ module.exports.insertPharmacySeedDetials = async(body, userName) => {
         invatigatorMobile: pharmacySeedGrantDetails.invatigatorMobile,
         invastigatorDateOfBirth: pharmacySeedGrantDetails.invastigatorDateOfBirth
       };
+    const principalInvestigatorDetails = {
+        principalName : pharmacySeedGrantDetails.principalName,
+        principalDsg : pharmacySeedGrantDetails.principalDsg,
+        principalOrg :  pharmacySeedGrantDetails.principalOrg,
+        principalMob : pharmacySeedGrantDetails.principalMob,
+        principalEmail : pharmacySeedGrantDetails.principalEmail
+    }
+
+    const coInvestigatorDetails = {
+        coIvestigatorName : pharmacySeedGrantDetails.coIvestigatorName,
+        coIvestigatorDsg : pharmacySeedGrantDetails.coIvestigatorDsg,
+        coIvestigatorOrg :  pharmacySeedGrantDetails.coIvestigatorOrg,
+        coIvestigatorMob : pharmacySeedGrantDetails.coIvestigatorMob,
+        coIvestigatorEmail : pharmacySeedGrantDetails.coIvestigatorEmail
+    }
       
       console.log(investorDetails);
       
 
     const pharmacyData = await pharmacySeedModels.insertPharmacyDetails(pharmacySeedGrantDetails, userName, educationIdsArray, experienceIdsArray,
-        bookIdsArray, bookChapterIdsArray, publicationIdsArray, patentIdsArray, researchImplementationIdsArray, researchCompletedIdsArray, investorDetails);
+        bookIdsArray, bookChapterIdsArray, publicationIdsArray, patentIdsArray, researchImplementationIdsArray, researchCompletedIdsArray, investorDetails,
+        principalInvestigatorDetails, coInvestigatorDetails);
 
     console.log('pharmacyData ====>>>>>>', pharmacyData);
 
@@ -196,5 +222,32 @@ module.exports.insertPharmacySeedDetials = async(body, userName) => {
         status : pharmacyData.status,
         message : pharmacyData.message,
         errorCode : pharmacyData.errorCode
+    }
+}
+
+module.exports.viewPharmacyData = async(pharmacyId, userName) => {
+    
+    const pharamcySeedView = await pharmacySeedModels.viewPharmacyGrantData(pharmacyId, userName);
+
+    console.log('pharamcySeedView ===>>>>', pharamcySeedView);
+
+    return pharamcySeedView.status === "Done" ? {
+        status : pharamcySeedView.status,
+        message : pharamcySeedView.message,
+        pharmacyData : pharamcySeedView.pharmacyData,
+        principalInvestigator : pharamcySeedView.principalInvestigator,
+        educaltionalDetails : pharamcySeedView.educaltionalDetails,
+        experienceDetails : pharamcySeedView.experienceDetails,
+        bookDetails : pharamcySeedView.bookDetails,
+        bookChapterDetails : pharamcySeedView.bookChapterDetails,
+        PublicationDetails : pharamcySeedView.PublicationDetails,
+        patentDetails : pharamcySeedView.patentDetails,
+        researchImplementationDetails : pharamcySeedView.researchImplementationDetails,
+        completedResearchDetails : pharamcySeedView.completedResearchDetails
+
+    } : {
+        status : pharamcySeedView.status,
+        message : pharamcySeedView.message,
+        errorCode : pharamcySeedView.errorCode
     }
 }
