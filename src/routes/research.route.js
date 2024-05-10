@@ -171,6 +171,18 @@ router.post('/pharmacy-seed-grant-form/investigator-research-completed/insert', 
 //insert external faculty details controller
 
 router.post('/external/faculty-insert', asyncErrorHandler(authMiddleware), asyncErrorHandler(facultyController.insertExternalFacultyDetails));
+router.post(
+  "/external/faculty-update",
+  asyncErrorHandler(authMiddleware),
+  asyncErrorHandler(facultyController.updateExternalFacultyDetails)
+);
+router.post(
+  "/external/faculty-updateData",
+  asyncErrorHandler(authMiddleware),
+  asyncErrorHandler(facultyController.updateFaculyDetails)
+);
+
+router.get("/external/facultyDataForEdit",asyncErrorHandler(facultyController.facultyDataForEdit))
 
 // userController
 
