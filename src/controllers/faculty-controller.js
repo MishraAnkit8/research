@@ -71,3 +71,23 @@ module.exports.updateFaculyDetails = async (req, res, next) => {
       : null,
   });
 };
+
+module.exports.facultyDataForEdit = async (req,res,next) => {
+  const upsertFacultyDetails = await facultyServices.fetchFacultyDetails(
+  );
+  const statusCode =
+    upsertFacultyDetails.status === "Done"
+      ? 200
+      : upsertFacultyDetails.errorCode
+      ? 400
+      : 500;
+
+  res.status(statusCode).send({
+    status: upsertFacultyDetails.status,
+    message: upsertFacultyDetails.message,
+    facultyData: upsertFacultyDetails.facultyData,
+    errorCode: upsertFacultyDetails.errorCode
+      ? upsertFacultyDetails.errorCode
+      : null,
+  });
+}

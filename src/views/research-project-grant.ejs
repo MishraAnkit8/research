@@ -196,7 +196,7 @@
                     <div class="modal-content modal-content-data validate-input">
                         <div class="modal-header">
                             <h4 class="modal-title" id="researchProjectConsultancy">RESEARCH PROJECT CONSULTANCY </h4>
-                            <div class="close" data-dismiss="modal" aria-label="Close">
+                            <div class="close" id="headerClose" data-dismiss="modal" aria-label="Close">
                                 <span type="button" aria-hidden="true"><i class="fas fa-times"></i></span>
                             </div>
                         </div>
@@ -428,7 +428,7 @@
                                         <span style="color:red;" id="desError"></span>
                                     </div>
                                     <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none" id="id-class">
-                                        <label for="faculty-emp-id" class="form-label fw-bold">Faculty Id (Optional)
+                                        <label for="faculty-emp-id" class="form-label fw-bold">Faculty Id
                                         </label>
                                         <input type="text" class="form-control" id="faculty-emp-id">
                                         <span style="color:red;" id="empError"></span>
@@ -493,7 +493,6 @@
                                     </div>
                                     <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none" id="id-class-upd">
                                         <label for="faculty-emp-id-upd" class="form-label fw-bold">Faculty Id
-                                            (Optional)
                                         </label>
                                         <input type="text" class="form-control" id="faculty-emp-id-upd">
                                         <span style="color:red;" id="empInsertError"></span>
@@ -538,7 +537,7 @@
                         </div>
                         <!--  footer buttons if needed -->
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                            <button type="button" id="footerClose" class="btn btn-danger" data-dismiss="modal">Close</button>
                             <button class="btn btn-md btn-primary d-none" id="submit-btn">Submit</button>
                             <button class="btn btn-md btn-primary d-none" id="update-btn">Update</button>
                         </div>
@@ -1002,7 +1001,7 @@
                     }
                 });
 
-                researchProjectConsultancyList.addEventListener('click', function (event) {
+                researchProjectConsultancyList.addEventListener('click', async function (event) {
                     console.log('clikedddd')
                     if (event.target.classList.contains('edit')) {
 
@@ -1026,7 +1025,9 @@
 
 
 
-                        let externalFacultyDetails = JSON.parse('<%- JSON.stringify(externalDetails) %>');
+                        //let externalFacultyDetails = JSON.parse('<%- JSON.stringify(externalDetails) %>');
+                         let externalFacultyDetails = await fetchFacultyData('<%- BASE_URL %>research/external/facultyDataForEdit');
+                         console.log('faculty JSON',JSON.stringify(externalFacultyDetails.facultyData))
 
 
                         $('#consultancy-modal').modal({
@@ -1072,7 +1073,7 @@
 
 
 
-                        let externalFaculty = externalFacultyDetails.filter(fdata => consultantId == fdata.research_project_grant_id).map(facultyData => facultyData);
+                        let externalFaculty = externalFacultyDetails.facultyData.filter(fdata => consultantId == fdata.research_project_grant_id).map(facultyData => facultyData);
                         console.log('new external faculty ', JSON.stringify(externalFaculty))
 
                         let appendFaculty = document.getElementById('appendFaculty');
@@ -1082,12 +1083,12 @@
 
                         externalFaculty.forEach((ef, index) => {
                             let htmlData = `<tr data-facultyId = ${ef.id}>
-
+                            
                         <td>${index + 1}</td>
-                        <td><input id="updateFacultyName" type="text" value=${ef.faculty_name} /></br><span style="color:red;" id='facultyUpdError'></span></td>
-                        <td ><input id="updateFacultyAddr" type="text" value=${ef.address} /></br><span style="color:red;" id='addrUpdError'></span></td>
-                        <td ><input id="updateFacultyDes" type="text" value=${ef.designation} /></br><span style="color:red;" id='desUpdError'></span></td>
-                        <td ><input id="updateFacultyId" type="text" value=${ef.employee_id} /></br><span style="color:red;" id='empUpdError'></span></td>
+                        <td><input id="updateFacultyName" type="text" value="${ef.faculty_name}" /></br><span style="color:red;" id='facultyUpdError'></span></td>
+                        <td ><input id="updateFacultyAddr" type="text" value="${ef.address}" /></br><span style="color:red;" id='addrUpdError'></span></td>
+                        <td ><input id="updateFacultyDes" type="text" value="${ef.designation}" /></br><span style="color:red;" id='desUpdError'></span></td>
+                        <td ><input id="updateFacultyId" type="text" value="${ef.employee_id}" /></br><span style="color:red;" id='empUpdError'></span></td>
                         <td><button class="btn btn-primary updateFaculty">Update</button></td>
                         </tr>`
 
@@ -1202,6 +1203,27 @@
                         const supportingDocuments = consultantRowToBeUpdated.getAttribute('data-supporting-documents');
                         console.log('supportingDocuments ==>>', supportingDocuments)
                     }
+
+                    async function fetchFacultyData(url){
+                        let requestDetails = {
+                            method:'GET',
+                            headers : {
+                                'Accept':'application/json'
+                            }
+                        }
+
+                        let data;
+                        let response = await fetch(url,requestDetails);
+                        if(response.ok){
+                          data = await response.json();
+                          return data;
+                        }else{
+                           throw new Error('Error in fetching data') 
+                        }
+                    }
+
+
+
                     //for delete
                     if (event.target.classList.contains('delete')) {
                         console.log('clekeddddd');
@@ -1981,7 +2003,7 @@
 
                     if (event.target.classList.contains('updateFaculty')) {
                         let facultyId = event.target.closest('tr').getAttribute('data-facultyId')
-
+                        console.log('button clicked with id ',facultyId)
                         let tr = event.target.closest('tr');
                         let facultyName = tr.querySelector('#updateFacultyName').value
                         let facultyDesignation = tr.querySelector('#updateFacultyDes').value
@@ -2008,14 +2030,14 @@
                             }
 
                             let obj = externalFacultyDetails
-                            upsertFacultyData('<%- BASE_URL %>research/external/faculty-updateData', obj)
+                            upsertFacultyData('<%- BASE_URL %>research/external/faculty-updateData', obj,tr)
                         }
 
                     }
                 })
 
 
-                function upsertFacultyData(url, obj) {
+                function upsertFacultyData(url, obj,tr) {
                     fetch(url, {
                         method: 'POST',
                         headers: {
@@ -2038,6 +2060,12 @@
                                     showConfirmButton: true,
                                     confirmButtonText: "OK",
                                     confirmButtonColor: "#DD6B55"
+                                }).then(() => {
+                                    console.log('object ',JSON.stringify(obj))
+                                    tr.querySelector('#updateFacultyName').value = obj.facultyName
+                                    tr.querySelector('#updateFacultyDes').value = obj.facultyDesignation
+                                    tr.querySelector('#updateFacultyAddr').value = obj.facultyAddr
+                                    tr.querySelector('#updateFacultyId').value = obj.empId
                                 })
                             }
                         })
@@ -2153,6 +2181,13 @@
                 });
 
 
+                document.getElementById('headerClose').addEventListener('click',() => {
+                    document.location.reload();
+                })
+
+                document.getElementById('footerClose').addEventListener('click',() => {
+                    document.location.reload();
+                })
 
 
 

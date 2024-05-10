@@ -182,6 +182,8 @@ router.post(
   asyncErrorHandler(facultyController.updateFaculyDetails)
 );
 
+router.get("/external/facultyDataForEdit",asyncErrorHandler(facultyController.facultyDataForEdit))
+
 // userController
 
 
