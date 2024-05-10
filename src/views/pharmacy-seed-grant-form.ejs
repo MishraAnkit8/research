@@ -1271,6 +1271,8 @@
     </div>
 </div>
 
+
+
 <div class="modal fade" id="educationModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -1300,7 +1302,7 @@
               </div>
             </div>
             <button type="button" class="btn btn-primary" id="addEducation">Add</button>
-            <button type="submit" id="submit-investor-education" class="btn btn-primary">Save</button>
+            <button type="submit" id="submit-education" class="btn btn-primary">Save</button>
           </form>
         </div>
       </div>
@@ -1308,13 +1310,37 @@
   </div>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script>
-  $(document).ready(function() {
-    // Add more education fields when the "Add" button is clicked
-    $('#addEducation').click(function() {
-      var newEducationSection = $('.education-section').first().clone(); // Clone the first education section
-      $('#educationDetails').append(newEducationSection); // Append the cloned section to the container
-    });
+
+  let addEducationButton = document.getElementById('addEducation');
+  let educationForm = document.getElementById('educationForm');
+  const educationDetails = document.getElementById('submit-education');
+  
+  addEducationButton.addEventListener('click', function() {
+    let educationSections = document.querySelectorAll('.education-section');
+    let newEducationSection = educationSections[0].cloneNode(true);
+    document.getElementById('educationDetails').appendChild(newEducationSection);
   });
+  
+  educationForm.addEventListener('submit', function(event) {
+    event.preventDefault();
+    
+    let educationArray = [];
+    let educationSections = document.querySelectorAll('.education-section');
+    
+    educationSections.forEach(function(section) {
+      let qualification = section.querySelector('[name="qualification[]"]').value;
+      let institution = section.querySelector('[name="institution[]"]').value;
+      let year = section.querySelector('[name="year[]"]').value;
+      
+      educationArray.push([qualification, institution, year]);
+    });
+    
+    console.log(educationArray);
+  });
+
+  
+
+
     const submitBtn = document.getElementById('submit-btn');
     const updateBtn = document.getElementById('update-btn');
     const pharmacyList = document.getElementById('pharmacy-seed-grant-form-list');
