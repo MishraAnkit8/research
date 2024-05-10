@@ -7,7 +7,7 @@ module.exports.insertExternalFacultyDetails = async (req, res, next) => {
     req.body
   );
 
-  console.log("insertFacultyDetails ====>>>>>>", insertFacultyDetails);
+  console.log("insertFacultyDetails in fauclty container ====>>>>>>", insertFacultyDetails);
   const statusCode =
     insertFacultyDetails.status === "Done"
       ? 200
@@ -72,9 +72,8 @@ module.exports.updateFaculyDetails = async (req, res, next) => {
   });
 };
 
-module.exports.facultyDataForEdit = async (req,res,next) => {
-  const upsertFacultyDetails = await facultyServices.fetchFacultyDetails(
-  );
+module.exports.facultyDataForEdit = async (req, res, next) => {
+  const upsertFacultyDetails = await facultyServices.fetchFacultyDetails();
   const statusCode =
     upsertFacultyDetails.status === "Done"
       ? 200
@@ -90,4 +89,46 @@ module.exports.facultyDataForEdit = async (req,res,next) => {
       ? upsertFacultyDetails.errorCode
       : null,
   });
-}
+};
+
+module.exports.facultyDataForPatent = async (req, res, next) => {
+  const upsertFacultyDetails = await facultyServices.facultyDataForPatent();
+  const statusCode =
+    upsertFacultyDetails.status === "Done"
+      ? 200
+      : upsertFacultyDetails.errorCode
+      ? 400
+      : 500;
+
+  res.status(statusCode).send({
+    status: upsertFacultyDetails.status,
+    message: upsertFacultyDetails.message,
+    facultyData: upsertFacultyDetails.facultyData,
+    errorCode: upsertFacultyDetails.errorCode
+      ? upsertFacultyDetails.errorCode
+      : null,
+  });
+};
+
+module.exports.facultyPatentInsert = async (req, res, next) => {
+  const upsertFacultyDetails = await facultyServices.insertFacultyPatent(
+    req.body
+  );
+  const statusCode =
+    upsertFacultyDetails.status === "Done"
+      ? 200
+      : upsertFacultyDetails.errorCode
+      ? 400
+      : 500;
+
+  res.status(statusCode).send({
+    status: upsertFacultyDetails.status,
+    message: upsertFacultyDetails.message,
+    facultyData: upsertFacultyDetails.facultyData,
+    externalFacultyId: upsertFacultyDetails.externalFacultyId,
+    researchGrantId: upsertFacultyDetails.researchGrantId,
+    errorCode: upsertFacultyDetails.errorCode
+      ? upsertFacultyDetails.errorCode
+      : null,
+  });
+};
