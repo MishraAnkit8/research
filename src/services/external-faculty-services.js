@@ -90,11 +90,8 @@ module.exports.updateFaculyDetails = async (body) => {
       };
 };
 
-
-module.exports.fetchFacultyDetails = async (req,res) => {
-  const fetchFacultyData = await facultyModels.fetchFaculty(
-  );
-
+module.exports.fetchFacultyDetails = async (req, res) => {
+  const fetchFacultyData = await facultyModels.fetchFaculty();
 
   return fetchFacultyData.status === "Done"
     ? {
@@ -109,6 +106,47 @@ module.exports.fetchFacultyDetails = async (req,res) => {
         message: insertExternalData.message,
         errorCode: insertExternalData.errorCode,
       };
+};
 
+module.exports.facultyDataForPatent = async (req, res) => {
+  const fetchFacultyData = await facultyModels.facultyDataForPatent();
 
+  return fetchFacultyData.status === "Done"
+    ? {
+        status: fetchFacultyData.status,
+
+        message: fetchFacultyData.message,
+        facultyData: fetchFacultyData.facultyData,
+        rowCount: fetchFacultyData.rowCount,
+      }
+    : {
+        status: insertExternalData.status,
+        message: insertExternalData.message,
+        errorCode: insertExternalData.errorCode,
+      };
+};
+
+module.exports.insertFacultyPatent = async (body) => {
+  const externalFacultyDetails = body.externalFacultyDetails;
+  const patentId = body.patentId;
+
+  const upsertExternalData = await facultyModels.insertFacultyPatent(
+    externalFacultyDetails,
+    patentId
+  );
+
+  return upsertExternalData.status === "Done" &&
+    upsertExternalData.status === "Done"
+    ? {
+        status: upsertExternalData.status,
+        message: upsertExternalData.message,
+        externalFacultyId: upsertExternalData.externalFacultyId,
+        researchGrantId: upsertExternalData.researchGrantId,
+        facultyData: externalFacultyDetails,
+      }
+    : {
+        status: upsertExternalData.status,
+        message: upsertExternalData.message,
+        errorCode: upsertExternalData.errorCode,
+      };
 };

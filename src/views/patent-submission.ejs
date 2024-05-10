@@ -76,8 +76,7 @@
                                     </div> -->
                                 </div>
                             </div>
-                            <table
-                                class="table vertical-lines custom-table  table-responsive research-pagination"
+                            <table class="table vertical-lines custom-table  table-responsive research-pagination"
                                 id="patent-submisson-list">
                                 <thead>
                                     <th class="col-lg-1">Serial no</th>
@@ -85,7 +84,7 @@
                                     <th class="col-lg-1">Title of Invention</th>
                                     <th class="col-lg-1">Supporting Documents</th>
                                     <th class="col-lg-1">Application Number</th>
-                                    <th class="col-lg-1" >Action</th>
+                                    <th class="col-lg-1">Action</th>
                                 </thead>
                                 <tbody class="data-list">
                                     <% if (patentSubmissionsData) { %>
@@ -110,20 +109,20 @@
                                     data-patent-id="<%- patent.patent_submission_grant_id %>"></i></label>
                             </td> -->
 
-                             <td colspan="3px" style="display:flex;justify-content: center;">
-                                                <b title="View" class="view border-right-0" style="cursor: pointer;"
-                                                    data-patent-id="<%- patent.patent_submission_grant_id %>">
-                                                    &#128065;
-                                                </b>
-                                                <b title="Edit" class="edit border-right-0" style="cursor: pointer;"
-                                                    data-patent-id="<%- patent.patent_submission_grant_id %>">
-                                                    &#9998;
-                                                </b>
-                                                <b title="Delete" class="delete border-right-0"
-                                                    style="cursor: pointer;"
-                                                    data-patent-id="<%- patent.patent_submission_grant_id %>">
-                                                    &#128465;
-                                                </b>
+                                                <td colspan="3px" style="display:flex;justify-content: center;">
+                                                    <b title="View" class="view border-right-0" style="cursor: pointer;"
+                                                        data-patent-id="<%- patent.patent_submission_grant_id %>">
+                                                        &#128065;
+                                                    </b>
+                                                    <b title="Edit" class="edit border-right-0" style="cursor: pointer;"
+                                                        data-patent-id="<%- patent.patent_submission_grant_id %>">
+                                                        &#9998;
+                                                    </b>
+                                                    <b title="Delete" class="delete border-right-0"
+                                                        style="cursor: pointer;"
+                                                        data-patent-id="<%- patent.patent_submission_grant_id %>">
+                                                        &#128465;
+                                                    </b>
                                                 </td>
                                             </tr>
                                             <% }); %>
@@ -207,7 +206,7 @@
                     <div class="modal-content modal-content-data validate-input">
                         <div class="modal-header">
                             <h5 class="modal-title" id="patent-study">Patent Submission And Grant </h5>
-                            <div type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <div type="button" class="close" id="headerClose" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true"><i class="fas fa-times "></i></span>
                             </div>
                         </div>
@@ -232,8 +231,8 @@
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="title" class="form-label fw-bold">Title of Invention</label>
                                     <input type="text" name="titleInvention" id="title-of-invention" data
-                                        data-err-msg="Provide Valid Input"
-                                        class="form-control fname" data-validate="isEmpty,isExist" required>
+                                        data-err-msg="Provide Valid Input" class="form-control fname"
+                                        data-validate="isEmpty,isExist" required>
                                 </div>
                                 <!-- Patent Stage -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
@@ -286,8 +285,10 @@
                                         <label for="supporting-documents" class="form-label fw-bold ">
                                             Upload Supporting Documents
                                             <div id="uploadNewSupportDocumentDiv">
-                                                <label for="uploadNewSupportDocument"><small>Click to Upload New File</small></label>
-                                                <input type="checkbox" name="uploadNewSupportDocument" id="uploadNewSupportDocument">
+                                                <label for="uploadNewSupportDocument"><small>Click to Upload New
+                                                        File</small></label>
+                                                <input type="checkbox" name="uploadNewSupportDocument"
+                                                    id="uploadNewSupportDocument">
                                             </div>
                                         </label>
                                         <div class="d-flex">
@@ -322,15 +323,13 @@
                                             </select>
                                         </div>
                                     </div>
+
                                     <div class="form-check-inline">
                                         <label for="is-external" class="form-check-label external-faculty">
                                             <input type="radio" class="form-check-input" id="is-external"
                                                 name="author-type" value="External">
                                             <span id="external-text">External</span>
                                         </label>
-
-        
-
                                     </div>
 
 
@@ -384,11 +383,74 @@
                                     </div>
                                 </table>
 
+
+                                <div>
+                                    <table style="width:100%;" class="table  table-responsive d-none "
+                                        id="externalfacultyTable">
+                                        <thead>
+                                            <th>Sr.No</th>
+                                            <th>Faculty Name</th>
+                                            <th>Faculty Address</th>
+                                            <th>Faculty Designation</th>
+                                            <th>Employee Id</th>
+                                            <th colspan>Action</th>
+                                        </thead>
+                                        <tbody id="appendFaculty">
+
+
+
+                                        </tbody>
+
+                                    </table>
+                                </div>
+
+
+                                <div></div>
+                                <div></div>
+                                <table id="faculty-table-list-upd">
+                                    <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none" id="name-class-upd">
+                                        <label for="faculty-name-upd" class="form-label fw-bold">Faculty
+                                            Name</label>
+                                        <input type="text" class="form-control" id="faculty-name-upd" required>
+                                        <span style="color:red;" id="facultyInsertError"></span>
+                                    </div>
+                                    <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none" id="dsg-class-upd">
+                                        <label for="" class="form-label fw-bold">Faculty Designation :</label>
+                                        <input type="text" class="form-control" id="faculty-designation-upd" required>
+                                        <span style="color:red;" id="desInsertError"></span>
+                                    </div>
+                                    <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none" id="id-class-upd">
+                                        <label for="faculty-emp-id-upd" class="form-label fw-bold">Faculty Id
+                                        </label>
+                                        <input type="text" class="form-control" id="faculty-emp-id-upd">
+                                        <span style="color:red;" id="empInsertError"></span>
+
+                                    </div>
+                                    <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none"
+                                        id="address-class-upd">
+                                        <label for="faculty-address" class="form-label fw-bold">Faculty
+                                            Addres</label>
+                                        <input type="text" class="form-control" id="faculty-address-upd" required>
+                                        <span style="color:red;" id="addrInsertError"></span>
+                                    </div>
+
+                                    <div class="form-group col-lg-6 col-md-6 col-sm-12 mb-4 d-none" id="add-btn-upd">
+                                        <button id="insert-details-upd" data-bs-target="#"
+                                            class="btn col-lg-4 col-md-6 col-sm-12 btn-primary" type="button">Insert
+                                            Faculty Details</button>
+                                    </div>
+                                </table>
+
+
+
+
+
                             </div>
                         </div>
                         <!-- Add your modal footer buttons if needed -->
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                            <button type="button" id="footerClose" class="btn btn-danger"
+                                data-dismiss="modal">Close</button>
                             <button type="button" class="btn btn-md btn-primary submit-btn d-none"
                                 id="submit-btn">Submit</button>
                             <button class="btn btn-md btn-primary update-btn d-none" id="update-btn">Update</button>
@@ -645,37 +707,37 @@
                                 })
                                 .then((data) => {
                                     if (data.status === 'Done') {
-                        //                 console.log('data >>>', data);
-                        //                 patentId = data.patentId;
-                        //                 const rowCountInteger = parseInt(data.rowCount, 10);
-                        //                 const IndexEntry = rowCountInteger + indexValue;
-                        //                 indexValue = IndexEntry;
-                        //                 console.log('IndexEntry ===>>>', IndexEntry);
-                        //                 // const patentList = document.getElementById('patent-submisson-list');
-                        //                 // patentList.classList.add('research-pagination');
+                                        //                 console.log('data >>>', data);
+                                        //                 patentId = data.patentId;
+                                        //                 const rowCountInteger = parseInt(data.rowCount, 10);
+                                        //                 const IndexEntry = rowCountInteger + indexValue;
+                                        //                 indexValue = IndexEntry;
+                                        //                 console.log('IndexEntry ===>>>', IndexEntry);
+                                        //                 // const patentList = document.getElementById('patent-submisson-list');
+                                        //                 // patentList.classList.add('research-pagination');
 
-                        //                 const newPatentRow = document.createElement('tr');
-                        //                 newPatentRow.setAttribute('data-invention-type-id', data.InventionTypeIds);
-                        //                 newPatentRow.setAttribute('data-patent-stage-id', data.patentStatusId);
-                        //                 newPatentRow.innerHTML = `
-                        //     <td>${IndexEntry}</td>
-                        //     <td class="title-of-invention">${data.patentData.titleOfInvention}</td>
-                        //     <td class="submission-date">${data.patentData.subMissionDate}</td>
-                        //     <td class="supporting-documents">${data.patentDataFilesString}</td>
-                        //     <td class="application-no">${data.patentData.applicationNum}</td>
-                          
-                        //    <td title="View" class="border-right-0 view" style="cursor: pointer;" data-patent-id="${patentId}">
-                        //         &#128065;
-                        //     </td>
-                        //     <td title="Edit" class="border-right-0 edit" style="cursor: pointer;" data-patent-id="${patentId}">
-                        //         &#9998;
-                        //     </td>
-                        //     <td title="Delete" class="border-right-0 delete" style="cursor: pointer;"  data-patent-id="${patentId}">
-                        //         &#128465;
-                        //     </td>
-                        //     `;
+                                        //                 const newPatentRow = document.createElement('tr');
+                                        //                 newPatentRow.setAttribute('data-invention-type-id', data.InventionTypeIds);
+                                        //                 newPatentRow.setAttribute('data-patent-stage-id', data.patentStatusId);
+                                        //                 newPatentRow.innerHTML = `
+                                        //     <td>${IndexEntry}</td>
+                                        //     <td class="title-of-invention">${data.patentData.titleOfInvention}</td>
+                                        //     <td class="submission-date">${data.patentData.subMissionDate}</td>
+                                        //     <td class="supporting-documents">${data.patentDataFilesString}</td>
+                                        //     <td class="application-no">${data.patentData.applicationNum}</td>
 
-                        //                 patenetSubMissionList.appendChild(newPatentRow);
+                                        //    <td title="View" class="border-right-0 view" style="cursor: pointer;" data-patent-id="${patentId}">
+                                        //         &#128065;
+                                        //     </td>
+                                        //     <td title="Edit" class="border-right-0 edit" style="cursor: pointer;" data-patent-id="${patentId}">
+                                        //         &#9998;
+                                        //     </td>
+                                        //     <td title="Delete" class="border-right-0 delete" style="cursor: pointer;"  data-patent-id="${patentId}">
+                                        //         &#128465;
+                                        //     </td>
+                                        //     `;
+
+                                        //                 patenetSubMissionList.appendChild(newPatentRow);
                                         $('#patent-submission-modal').modal('hide');
                                         Swal.fire({
                                             position: "top-center",
@@ -742,10 +804,56 @@
                             }
                         });
 
-                        patenetSubMissionList.addEventListener('click', function (event) {
+                        patenetSubMissionList.addEventListener('click', async function (event) {
 
                             if (event.target.classList.contains('edit')) {
+                                patentId = event.target.getAttribute('data-patent-id');
+
                                 submitBtn.classList.add('d-none');
+
+                                let isExternalUpd = document.getElementById('is-external')
+                                let isExternalUpdNew = document.getElementById('is-external-update')
+
+                                let text = document.getElementById('external-text');
+                                let textnew = document.getElementById('external-text-upd');
+
+                                isExternalUpd.classList.add('d-none');
+                                isExternalUpdNew.classList.remove('d-none');
+
+                                text.classList.add('d-none');
+                                textnew.classList.remove('d-none');
+
+                                document.getElementById('name-class').classList.add('d-none');
+                                document.getElementById('dsg-class').classList.add('d-none');
+                                document.getElementById('id-class').classList.add('d-none');
+                                document.getElementById('address-class').classList.add('d-none');
+                                document.getElementById('add-btn').classList.add('d-none');
+
+                                let externalFacultyDetails = await fetchFacultyData('<%- BASE_URL %>research/external/facultyDataForPatent');
+                                console.log('faculty JSON', JSON.stringify(externalFacultyDetails.facultyData))
+
+                                console.log('patentId ankit ====>>>>>', patentId)
+                                let externalFaculty = externalFacultyDetails.facultyData.filter(fdata => patentId == fdata.patent_submission_grant_id).map(facultyData => facultyData);
+                                console.log('new external faculty ', JSON.stringify(externalFaculty))
+
+                                let appendFaculty = document.getElementById('appendFaculty');
+                                appendFaculty.innerHTML = ''
+
+
+                                externalFaculty.forEach((ef, index) => {
+                                    let htmlData = `<tr data-facultyId = ${ef.id}>
+                            
+                        <td>${index + 1}</td>
+                        <td><input id="updateFacultyName" type="text" value="${ef.faculty_name}" /></br><span style="color:red;" id='facultyUpdError'></span></td>
+                        <td ><input id="updateFacultyAddr" type="text" value="${ef.address}" /></br><span style="color:red;" id='addrUpdError'></span></td>
+                        <td ><input id="updateFacultyDes" type="text" value="${ef.designation}" /></br><span style="color:red;" id='desUpdError'></span></td>
+                        <td ><input id="updateFacultyId" type="text" value="${ef.employee_id}" /></br><span style="color:red;" id='empUpdError'></span></td>
+                        <td><button class="btn btn-primary updateFaculty">Update</button></td>
+                        </tr>`
+
+                                    appendFaculty.insertAdjacentHTML('beforeEnd', htmlData);
+                                })
+
 
                                 $('#patent-submission-modal').modal({
                                     backdrop: 'static'
@@ -771,7 +879,7 @@
                                 console.log('rowToBeUpdated in siode edit ====>>>', rowToBeUpdated)
                                 // function call for download button
                                 setFileNameAttributeToBeDownload(rowToBeUpdated);
-                                patentId = event.target.getAttribute('data-patent-id');
+                                // patentId = event.target.getAttribute('data-patent-id');
                                 console.log('Id For Updation', patentId);
                                 const typeOfInventionData = rowToBeUpdated.getAttribute('data-invention-type-id');
                                 const typeOfInvention = document.getElementById('type-of-invention');
@@ -826,7 +934,7 @@
                             if (event.target.classList.contains('delete')) {
                                 const patentSubMissionDataToBeDelete = event.target.closest('tr');
                                 patentId = event.target.getAttribute('data-patent-id');
-                                let confirmDelete = "Do you want to delete the Book  Publication?";
+                                let confirmDelete = "Do you want to delete the Book Publication?";
                                 if (confirmDelete) {
                                     Swal.fire({
                                         title: "Are you sure?",
@@ -986,6 +1094,272 @@
                             }
 
                         })
+
+
+                        async function fetchFacultyData(url) {
+                            let requestDetails = {
+                                method: 'GET',
+                                headers: {
+                                    'Accept': 'application/json'
+                                }
+                            }
+
+                            let data;
+                            let response = await fetch(url, requestDetails);
+                            if (response.ok) {
+                                data = await response.json();
+                                return data;
+                            } else {
+                                throw new Error('Error in fetching data')
+                            }
+                        }
+
+
+                        document.addEventListener('click', (event) => {
+
+                            if (event.target.classList.contains('updateFaculty')) {
+                                let facultyId = event.target.closest('tr').getAttribute('data-facultyId')
+                                console.log('button clicked with id ', facultyId)
+                                let tr = event.target.closest('tr');
+                                let facultyName = tr.querySelector('#updateFacultyName').value
+                                let facultyDesignation = tr.querySelector('#updateFacultyDes').value
+                                let facultyAddr = tr.querySelector('#updateFacultyAddr').value
+                                let empId = tr.querySelector('#updateFacultyId').value
+
+                                let addrError = (facultyAddr != '') ? true : false;
+                                if (addrError) {
+                                    document.getElementById('addrUpdError').innerText = '';
+                                } else {
+                                    document.getElementById('addrUpdError').innerText = 'Address is Required';
+                                }
+
+                                let facultyError = checkAlphabets(facultyName, 'facultyUpdError');
+                                let designationError = checkAlphabets(facultyDesignation, 'desUpdError');
+                                let empError = checkEmpError(empId, 'empUpdError');
+                                let externalFacultyDetails;
+
+                                if (addrError && facultyError && designationError && empError) {
+
+                                    externalFacultyDetails = {
+                                        facultyId: facultyId, facultyName: facultyName,
+                                        facultyDesignation: facultyDesignation, facultyAddr: facultyAddr, empId: empId
+                                    }
+
+                                    let obj = externalFacultyDetails
+                                    upsertFacultyData('<%- BASE_URL %>research/external/faculty-updateData', obj, tr)
+                                }
+
+                            }
+                        })
+
+
+                        function upsertFacultyData(url, obj, tr) {
+                            fetch(url, {
+                                method: 'POST',
+                                headers: {
+                                    'content-type': 'application/json'
+                                },
+                                body: JSON.stringify(obj)
+                            })
+                                .then((result) => {
+                                    return result.json()
+                                })
+                                .then((data) => {
+                                    if (data.status === 'Done') {
+
+                                        console.log('response >> ', data)
+
+                                        Swal.fire({
+                                            position: "top-center",
+                                            icon: "success",
+                                            title: `${data.message}`,
+                                            showConfirmButton: true,
+                                            confirmButtonText: "OK",
+                                            confirmButtonColor: "#DD6B55"
+                                        }).then(() => {
+                                            console.log('object ', JSON.stringify(obj))
+                                            tr.querySelector('#updateFacultyName').value = obj.facultyName
+                                            tr.querySelector('#updateFacultyDes').value = obj.facultyDesignation
+                                            tr.querySelector('#updateFacultyAddr').value = obj.facultyAddr
+                                            tr.querySelector('#updateFacultyId').value = obj.empId
+                                        })
+                                    }
+                                })
+                        }
+
+
+
+                        function checkAlphabets(facultyName, idName) {
+
+                            let facultyError = document.getElementById(idName);
+
+                            // if (facultyName.length == 0 && idName === 'facultyError' || ) {
+                            //     facultyError.innerText = "Name is Required";
+                            //     return false;
+                            // }
+
+                            // if (facultyName.length == 0 && idName === 'desError') {
+                            //     facultyError.innerText = "Designation is Required";
+                            //     return false;
+                            // }
+
+                            if (!facultyName || facultyName.trim() === "") {
+                                facultyError.innerText = "Provide Valid Input";
+                                return false;
+                            }
+
+                            const words = facultyName.split(" ");
+
+                            for (const word of words) {
+                                for (let i = 0; i < word.length; i++) {
+                                    const charCode = word.charCodeAt(i);
+                                    if (
+                                        (charCode < 65 || charCode > 90) &&
+                                        (charCode < 97 || charCode > 122)
+                                    ) {
+                                        facultyError.innerText = "Provide Valid Input";
+                                        return false;
+                                    }
+                                }
+                            }
+
+                            facultyError.innerText = "";
+                            return true;
+                        }
+
+
+                        document.getElementById('insert-details-upd').addEventListener('click', () => {
+
+
+                            let facultyNameUpd = document.getElementById('faculty-name-upd');
+                            let facultyDesignationUpd = document.getElementById('faculty-designation-upd');
+                            let facultyAddrUpd = document.getElementById('faculty-address-upd');
+                            let facultyEmpUpd = document.getElementById('faculty-emp-id-upd');
+
+                            let facultyName = facultyNameUpd.value;
+                            let facultyDesignation = facultyDesignationUpd.value;
+                            let facultyAddr = facultyAddrUpd.value;
+                            let facultyEmp = facultyEmpUpd.value;
+
+                            let addrError = (facultyAddr != '') ? true : false;
+                            if (addrError) {
+                                document.getElementById('addrInsertError').innerText = '';
+                            } else {
+                                document.getElementById('addrInsertError').innerText = 'Address is Required';
+                            }
+
+                            let facultyError = checkAlphabets(facultyName, 'facultyInsertError');
+                            let designationError = checkAlphabets(facultyDesignation, 'desInsertError');
+                            let empError = checkEmpError(facultyEmp, 'empInsertError');
+
+                            if (addrError && facultyError && designationError && empError) {
+
+                                console.log('clickedd insert details buttons')
+                                upsertExternalDetails('<%- BASE_URL %>research/external/faculty-patentInsert');
+                            }
+                        });
+
+
+                        const upsertExternalDetails = (url) => {
+                            let facultyNameUpd = document.getElementById('faculty-name-upd');
+                            let facultyDesignationUpd = document.getElementById('faculty-designation-upd');
+                            let facultyAddrUpd = document.getElementById('faculty-address-upd');
+                            let facultyEmpUpd = document.getElementById('faculty-emp-id-upd');
+
+                            let facultyName = facultyNameUpd.value;
+                            let facultyDesignation = facultyDesignationUpd.value;
+                            let facultyAddr = facultyAddrUpd.value;
+                            let facultyEmp = facultyEmpUpd.value;
+
+
+                            let externalFacultyDetails = {
+                                facultyEmpId: facultyEmp,
+                                facultyName: facultyName,
+                                facultyDsg: facultyDesignation,
+                                facultyAddr: facultyAddr,
+                            }
+
+                            console.log('json string ', JSON.stringify(externalFacultyDetails))
+
+                            let payload = { externalFacultyDetails, patentId };
+
+                            fetch(url, {
+                                method: 'POST',
+                                headers: {
+                                    'content-type': 'application/json'
+                                },
+                                body: JSON.stringify(payload)
+                            })
+                                .then((result) => {
+                                    return result.json()
+                                })
+                                .then((data) => {
+                                    if (data.status === 'Done') {
+
+                                        console.log('response >> ', data)
+
+                                        Swal.fire({
+                                            position: "top-center",
+                                            icon: "success",
+                                            title: `${data.message}`,
+                                            showConfirmButton: true,
+                                            confirmButtonText: "OK",
+                                            confirmButtonColor: "#DD6B55"
+                                        }).then(() => {
+
+                                            let appendFaculty = document.getElementById('appendFaculty');
+                                            let allTds = appendFaculty.querySelectorAll('tr');
+
+                                            let htmlData = `<tr data-facultyId = ${data.researchGrantId}>
+
+                                                                        <td>${allTds.length + 1}</td>
+                                                                        <td><input id="updateFacultyName" type="text" value=${facultyName} /></br><span style="color:red;" id='facultyUpdError'></span></td>
+                                                                        <td ><input id="updateFacultyAddr" type="text" value=${facultyAddr} /></br><span style="color:red;" id='addrUpdError'></span></td>
+                                                                        <td ><input id="updateFacultyDes" type="text" value=${facultyDesignation} /></br><span style="color:red;" id='desUpdError'></span></td>
+                                                                        <td ><input id="updateFacultyId" type="text" value=${facultyEmp} /></br><span style="color:red;" id='empUpdError'></span></td>
+                                                                        <td><button class="btn btn-primary updateFaculty">Update</button></td>
+                                                                        </tr>`
+
+                                            appendFaculty.insertAdjacentHTML('beforeEnd', htmlData);
+
+
+
+                                        });
+                                    }
+                                }).catch((error) => {
+                                    console.error("ERROR:", error);
+                                })
+                        }
+
+                        function checkEmpError(facultyEmpId, errid) {
+                            let empError = document.getElementById(errid);
+                            let bool = true;
+
+                            if (facultyEmpId.length === 0) {
+                                empError.innerText = 'Provide Valid Input';
+                                return false;
+                            }
+
+                            for (let i = 0; i < facultyEmpId.length; i++) {
+                                const charCode = facultyEmpId.charAt(i);
+                                if (!(charCode >= '0' && charCode <= '9')) {
+                                    empError.innerText = 'Provide Valid Input';
+                                    bool = false;
+                                    break;
+                                }
+                            }
+
+                            if (bool) {
+                                empError.innerText = '';
+                            }
+
+                            return bool;
+                        }
+
+
+
+
+
                         // update function for update the record
                         const updatePatentSubmissiom = async (url) => {
                             console.log('clickedd');
@@ -1228,19 +1602,19 @@
                         // Initialize TomSelect dropdown with options containing id and faculty_name
                         new TomSelect("#emp-name", {
                             options: facultyOptions,
-                            placeholder : "Select Employee Name",
-                            hidePlaceholder : true,
+                            placeholder: "Select Employee Name",
+                            hidePlaceholder: true,
                             create: true,
                             plugins: ['remove_button'],
-                            onItemAdd:function(){
+                            onItemAdd: function () {
                                 this.setTextboxValue('');
                                 this.refreshOptions();
                             },
-                            render:{
-                                option:function(data,escape){
+                            render: {
+                                option: function (data, escape) {
                                     return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
                                 },
-                                item:function(data,escape){
+                                item: function (data, escape) {
                                     return '<div>' + escape(data.text) + '</div>';
                                 }
                             }
@@ -1249,19 +1623,19 @@
                         // Initialize TomSelect dropdown with options containing id and faculty_name
                         new TomSelect("#sdg-goals-data", {
                             options: sdgOptions,
-                            placeholder : "Select SDG Goals",
-                            hidePlaceholder : true,
+                            placeholder: "Select SDG Goals",
+                            hidePlaceholder: true,
                             create: true,
                             plugins: ['remove_button'],
-                            onItemAdd:function(){
+                            onItemAdd: function () {
                                 this.setTextboxValue('');
                                 this.refreshOptions();
                             },
-                            render:{
-                                option:function(data,escape){
+                            render: {
+                                option: function (data, escape) {
                                     return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
                                 },
-                                item:function(data,escape){
+                                item: function (data, escape) {
                                     return '<div>' + escape(data.text) + '</div>';
                                 }
                             }
@@ -1269,19 +1643,19 @@
 
                         new TomSelect("#patent-stage", {
                             options: statusOptions,
-                            placeholder : "Select patent status",
-                            hidePlaceholder : true,
+                            placeholder: "Select patent status",
+                            hidePlaceholder: true,
                             create: true,
                             plugins: ['remove_button'],
-                            onItemAdd:function(){
+                            onItemAdd: function () {
                                 this.setTextboxValue('');
                                 this.refreshOptions();
                             },
-                            render:{
-                                option:function(data,escape){
+                            render: {
+                                option: function (data, escape) {
                                     return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
                                 },
-                                item:function(data,escape){
+                                item: function (data, escape) {
                                     return '<div>' + escape(data.text) + '</div>';
                                 }
                             }
@@ -1289,19 +1663,19 @@
 
                         new TomSelect("#type-of-invention", {
                             options: inventionTypeValue,
-                            placeholder : "Select Options",
-                            hidePlaceholder : true,
+                            placeholder: "Select Options",
+                            hidePlaceholder: true,
                             create: true,
                             plugins: ['remove_button'],
-                            onItemAdd:function(){
+                            onItemAdd: function () {
                                 this.setTextboxValue('');
                                 this.refreshOptions();
                             },
-                            render:{
-                                option:function(data,escape){
+                            render: {
+                                option: function (data, escape) {
                                     return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
                                 },
-                                item:function(data,escape){
+                                item: function (data, escape) {
                                     return '<div>' + escape(data.text) + '</div>';
                                 }
                             }
@@ -1498,40 +1872,50 @@
 
                             "pageLength": 5,
                             "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
-                            })
+                        })
 
 
-document.querySelector('#uploadNewSupportDocument').addEventListener('click',function(e){
+                        document.querySelector('#uploadNewSupportDocument').addEventListener('click', function (e) {
 
-    let is_checked = document.querySelector('#uploadNewSupportDocument').checked;
-    console.log("is_checked :",is_checked);
-    if(is_checked){
-        document.querySelector('#patent-file').classList.remove('d-none');
-    }else{
-        document.querySelector('#patent-file').classList.add('d-none');
-    }
-});
+                            let is_checked = document.querySelector('#uploadNewSupportDocument').checked;
+                            console.log("is_checked :", is_checked);
+                            if (is_checked) {
+                                document.querySelector('#patent-file').classList.remove('d-none');
+                            } else {
+                                document.querySelector('#patent-file').classList.add('d-none');
+                            }
+                        });
 
 
-// document.getElementById('is-external-update').addEventListener('click', () => {
-//                     let is_checked = document.getElementById('is-external-update');
-//                     console.log('check box checked')
+                        document.getElementById('is-external-update').addEventListener('click', () => {
+                            let is_checked = document.getElementById('is-external-update');
+                            console.log('check box checked')
 
-//                     if (is_checked.checked) {
-//                         document.getElementById('externalfacultyTable').classList.remove('d-none')
-//                         document.getElementById('name-class-upd').classList.remove('d-none');
-//                         document.getElementById('dsg-class-upd').classList.remove('d-none');
-//                         document.getElementById('id-class-upd').classList.remove('d-none');
-//                         document.getElementById('address-class-upd').classList.remove('d-none');
-//                         document.getElementById('add-btn-upd').classList.remove('d-none');
-//                     } else {
-//                         document.getElementById('externalfacultyTable').classList.add('d-none')
-//                         document.getElementById('faculty-table-list-upd').classList.add('d-none');
+                            if (is_checked.checked) {
+                                document.getElementById('externalfacultyTable').classList.remove('d-none')
+                                document.getElementById('name-class-upd').classList.remove('d-none');
+                                document.getElementById('dsg-class-upd').classList.remove('d-none');
+                                document.getElementById('id-class-upd').classList.remove('d-none');
+                                document.getElementById('address-class-upd').classList.remove('d-none');
+                                document.getElementById('add-btn-upd').classList.remove('d-none');
+                            } else {
+                                document.getElementById('externalfacultyTable').classList.add('d-none')
+                                document.getElementById('faculty-table-list-upd').classList.add('d-none');
 
-//                     }
-//                 })
+                            }
+                        })
+
+
+                        document.getElementById('headerClose').addEventListener('click', () => {
+                            document.location.reload();
+                        })
+
+                        document.getElementById('footerClose').addEventListener('click', () => {
+                            document.location.reload();
+                        })
+
                     </script>
                     <!-- footer section -->
-                    <script src="<%- BASE_URL %>js/pagination.js"></script>
+                    <!-- <script src="<%- BASE_URL %>js/pagination.js"></script> -->
                     <%- include('./partials/footer') %>
                         <%- include('./partials/footer-end') %>

@@ -181,8 +181,18 @@ router.post(
   asyncErrorHandler(authMiddleware),
   asyncErrorHandler(facultyController.updateFaculyDetails)
 );
+router.post(
+  "/external/faculty-patentInsert",
+  asyncErrorHandler(authMiddleware),
+  asyncErrorHandler(facultyController.facultyPatentInsert)
+);
 
 router.get("/external/facultyDataForEdit",asyncErrorHandler(facultyController.facultyDataForEdit))
+router.get(
+  "/external/facultyDataForPatent",
+  asyncErrorHandler(facultyController.facultyDataForPatent)
+);
+
 
 // userController
 
