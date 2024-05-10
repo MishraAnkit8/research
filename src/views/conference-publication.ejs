@@ -84,7 +84,6 @@
                                                 data-award-for-presentation="<%- conference.award_for_presentation %>"
                                                 data-spent-amount="<%- conference.spent_amount %>"
                                                 data-authors-name="<%- conference.authors_name %>"
-                                                
                                                 data-conference-place="<%- conference.conference_place%>"
                                                 data-conference-type="<%- conference.conference_type %>"
                                                 data-publication-date="<%- conference.publication_date %>"
@@ -248,7 +247,7 @@
                                         data-err-msg="Provide Valid Input" class="form-control" required />
                                 </div>
 
-                                 <!-- Author's Name  -->
+                                <!-- Author's Name  -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="conference-name" class="form-label  fw-bold">Author's Name
                                     </label>
@@ -490,7 +489,9 @@
                                             </select>
                                         </div>
                                     </div>
+
                                     <div class="form-check-inline">
+
                                         <label for="is-external" class="form-check-label external-faculty">
                                             <input type="radio" class="form-check-input" id="is-external"
                                                 name="author-type" value="External">
@@ -498,7 +499,41 @@
                                         </label>
 
                                     </div>
+
+
+                                    <div class="form-check-inline">
+
+                                        <label for="is-external" class="form-check-label external-faculty">
+                                            <input type="radio" class="form-check-input d-none" id="is-external-update"
+                                                name="author-type" value="External">
+                                            <span id="external-text-upd" class="d-none">External</span>
+                                        </label>
+
+                                    </div>
+
+                                    <div>
+                                        <table style="width:100%;" class="table  table-responsive d-none "
+                                            id="externalfacultyTable">
+                                            <thead>
+                                                <th>Sr.No</th>
+                                                <th>Faculty Name</th>
+                                                <th>Faculty Address</th>
+                                                <th>Faculty Designation</th>
+                                                <th>Employee Id</th>
+                                                <th colspan>Action</th>
+                                            </thead>
+                                            <tbody id="appendFaculty">
+
+
+
+                                            </tbody>
+
+                                        </table>
+                                    </div>
+
                                 </div>
+
+
                                 <div id="author-details" class="form-group col-md-12 col-sm-12 mb-4 d-none">
                                     <div class="author-details-section col-lg-12 col-md-8 col-sm-12">
                                         <label for="author-name " class="form-label fw-bold col-lg-12"> External Authors
@@ -544,7 +579,8 @@
                                             placeholder="Enter author name">
                                         <button id="add-more-details"
                                             class="btn col-md-12 btn-md btn-primary submit-btn update-btn"
-                                            type="button">Add More Details</button>
+                                            type="button">Add
+                                            More Details</button>
                                     </div>
                                 </div>
                             </div>
@@ -605,14 +641,14 @@
                                     </div>
                                 </div>
 
-                                    <!-- Name  Authors-->
-                                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                                        <div class="box">
-                                            <div class="task-sub-title sub-title-text">Author's Name:</div>
-                                            <label class="view-content" id="view-author-name"></label>
-                                        </div>
+                                <!-- Name  Authors-->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="task-sub-title sub-title-text">Author's Name:</div>
+                                        <label class="view-content" id="view-author-name"></label>
                                     </div>
-    
+                                </div>
+
 
                                 <!-- Place of Conference -->
                                 <div class="col-lg-4 col-md-6  col-sm-12 p-3">
@@ -1041,7 +1077,7 @@
                 });
 
                 // for delete
-                conferencePublicationList.addEventListener('click', (event) => {
+                conferencePublicationList.addEventListener('click', async (event) => {
                     if (event.target.classList.contains('delete')) {
                         conferenceId = event.target.getAttribute('data-conference-id');
                         console.log('id for deletion ==>', conferenceId);
@@ -1187,6 +1223,68 @@
                     }
                     // for update
                     if (event.target.classList.contains('edit')) {
+                        conferenceId = event.target.getAttribute('data-conference-id');
+
+                        let isExternalUpd = document.getElementById('is-external')
+                        let isExternalUpdNew = document.getElementById('is-external-update')
+
+                        let text = document.getElementById('external-text');
+                        let textnew = document.getElementById('external-text-upd');
+
+                        isExternalUpd.classList.add('d-none');
+                        isExternalUpdNew.classList.remove('d-none');
+
+                        text.classList.add('d-none');
+                        textnew.classList.remove('d-none');
+
+                        document.getElementById('name-class').classList.add('d-none');
+                        document.getElementById('dsg-class').classList.add('d-none');
+                        document.getElementById('id-class').classList.add('d-none');
+                        document.getElementById('address-class').classList.add('d-none');
+                        document.getElementById('add-btn').classList.add('d-none');
+
+                        let externalFacultyDetails = await fetchFacultyData('<%- BASE_URL %>research/external/facultyDataForConference');
+                        console.log('faculty JSON', JSON.stringify(externalFacultyDetails.facultyData))
+
+                        console.log('patentId ankit ====>>>>>', conferenceId)
+                        let externalFaculty = externalFacultyDetails.facultyData.filter(fdata => conferenceId == fdata.patent_submission_grant_id).map(facultyData => facultyData);
+                        console.log('new external faculty ', JSON.stringify(externalFaculty))
+
+                        let appendFaculty = document.getElementById('appendFaculty');
+                        appendFaculty.innerHTML = ''
+
+
+                        externalFaculty.forEach((ef, index) => {
+                            let htmlData = `<tr data-facultyId = ${ef.id}>
+                            
+                        <td>${index + 1}</td>
+                        <td><input id="updateFacultyName" type="text" value="${ef.faculty_name}" /></br><span style="color:red;" id='facultyUpdError'></span></td>
+                        <td ><input id="updateFacultyAddr" type="text" value="${ef.address}" /></br><span style="color:red;" id='addrUpdError'></span></td>
+                        <td ><input id="updateFacultyDes" type="text" value="${ef.designation}" /></br><span style="color:red;" id='desUpdError'></span></td>
+                        <td ><input id="updateFacultyId" type="text" value="${ef.employee_id}" /></br><span style="color:red;" id='empUpdError'></span></td>
+                        <td><button class="btn btn-primary updateFaculty">Update</button></td>
+                        </tr>`
+
+                            appendFaculty.insertAdjacentHTML('beforeEnd', htmlData);
+                        })
+
+                        async function fetchFacultyData(url) {
+                            let requestDetails = {
+                                method: 'GET',
+                                headers: {
+                                    'Accept': 'application/json'
+                                }
+                            }
+
+                            let data;
+                            let response = await fetch(url, requestDetails);
+                            if (response.ok) {
+                                data = await response.json();
+                                return data;
+                            } else {
+                                throw new Error('Error in fetching data')
+                            }
+                        }
 
 
                         document.getElementById('conference-publication').innerText = 'CONFERENCE Edit';
@@ -1203,7 +1301,6 @@
                         InternalAuthorValue = '';
                         externalAuthorValue = '';
                         storedFacultyValue = '';
-                        conferenceId = event.target.getAttribute('data-conference-id');
                         conferenceRowToBeUpdated = event.target.closest('tr');
                         console.log('conferenceRowToBeUpdated ====>>>>>', conferenceRowToBeUpdated)
                         console.log('ID ==>>', conferenceId);
@@ -1310,7 +1407,7 @@
                     const conferenceType = document.querySelector('input[name="conference-type"]:checked').value;
                     const presentationAward = document.querySelector('input[name="award-for-presentation"]:checked').value;
                     const authorsName = document.getElementById('author-name').value;
-    
+
                     console.log('storedFacultyValue ===>>>>', storedFacultyValue)
                     //function call 
                     await updateFacultyNameString(updatedAuthorType, updatedConferenceData, storedFacultyValue);
@@ -1701,7 +1798,7 @@
                             return result.json()
                         })
                         .then((data) => {
-                        
+
                             if (data.status == 'Done') {
                                 console.log('data ===>>>>> ankit ', data);
                                 facultycontainer.push(data.externalFacultyId)
@@ -1726,7 +1823,7 @@
                     `
                                 facultyTableList.classList.remove('d-none')
                                 facultyTableList.appendChild(newFacultyDataRow);
-                                 Swal.fire({
+                                Swal.fire({
                                     position: "top-center",
                                     icon: "success",
                                     title: `${data.message}`,
@@ -1786,6 +1883,25 @@
                         document.querySelector('#conference-proofs').classList.add('d-none');
                     }
                 });
+
+                document.getElementById('is-external-update').addEventListener('click', () => {
+                    let is_checked = document.getElementById('is-external-update');
+                    console.log('check box checked')
+
+                    if (is_checked.checked) {
+                        document.getElementById('externalfacultyTable').classList.remove('d-none')
+                        document.getElementById('name-class-upd').classList.remove('d-none');
+                        document.getElementById('dsg-class-upd').classList.remove('d-none');
+                        document.getElementById('id-class-upd').classList.remove('d-none');
+                        document.getElementById('address-class-upd').classList.remove('d-none');
+                        document.getElementById('add-btn-upd').classList.remove('d-none');
+                    } else {
+                        document.getElementById('externalfacultyTable').classList.add('d-none')
+                        document.getElementById('faculty-table-list-upd').classList.add('d-none');
+
+                    }
+                })
+
 
             </script>
             <!-- <%- include('./partials/pagination') %> -->

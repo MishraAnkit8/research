@@ -192,6 +192,10 @@ router.get(
   "/external/facultyDataForPatent",
   asyncErrorHandler(facultyController.facultyDataForPatent)
 );
+router.get(
+  "/external/facultyDataForConference",
+  asyncErrorHandler(facultyController.facultyDataForConference)
+);
 
 
 // userController

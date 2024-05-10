@@ -108,6 +108,24 @@ module.exports.fetchFacultyDetails = async (req, res) => {
       };
 };
 
+module.exports.facultyDataForConference = async (req, res) => {
+  const fetchFacultyData = await facultyModels.fetchFacultyConference();
+
+  return fetchFacultyData.status === "Done"
+    ? {
+        status: fetchFacultyData.status,
+
+        message: fetchFacultyData.message,
+        facultyData: fetchFacultyData.facultyData,
+        rowCount: fetchFacultyData.rowCount,
+      }
+    : {
+        status: insertExternalData.status,
+        message: insertExternalData.message,
+        errorCode: insertExternalData.errorCode,
+      };
+};
+
 module.exports.facultyDataForPatent = async (req, res) => {
   const fetchFacultyData = await facultyModels.facultyDataForPatent();
 

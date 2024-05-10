@@ -110,6 +110,25 @@ module.exports.facultyDataForPatent = async (req, res, next) => {
   });
 };
 
+module.exports.facultyDataForConference = async (req, res, next) => {
+  const upsertFacultyDetails = await facultyServices.facultyDataForConference();
+  const statusCode =
+    upsertFacultyDetails.status === "Done"
+      ? 200
+      : upsertFacultyDetails.errorCode
+      ? 400
+      : 500;
+
+  res.status(statusCode).send({
+    status: upsertFacultyDetails.status,
+    message: upsertFacultyDetails.message,
+    facultyData: upsertFacultyDetails.facultyData,
+    errorCode: upsertFacultyDetails.errorCode
+      ? upsertFacultyDetails.errorCode
+      : null,
+  });
+};
+
 module.exports.facultyPatentInsert = async (req, res, next) => {
   const upsertFacultyDetails = await facultyServices.insertFacultyPatent(
     req.body

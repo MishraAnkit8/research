@@ -176,6 +176,47 @@ module.exports.facultyDataForPatent = async () => {
     });
 };
 
+module.exports.fetchFacultyConference = async () => {
+  let sql = {
+    text: `select 
+    cf.id,
+    f.id,
+    f.faculty_name,
+    f.designation,
+    f.employee_id,
+    f.address 
+from 
+    conference_faculty cf 
+left join 
+    faculties f on cf.faculty_id = f.id 
+where  
+    cf.active = true 
+    and f.active = true 
+    and f.faculty_type_id = 2 
+order by 
+    f.id;`,
+  };
+
+  const facultyDetails = await researchDbW.query(sql);
+  const promises = [facultyDetails];
+  return Promise.all(promises)
+    .then(([facultyDetails]) => {
+      return {
+        status: "Done",
+        message: "Faculty Record Updated Successfully",
+        rowCount: facultyDetails.rowCount,
+        facultyData: facultyDetails.rows,
+      };
+    })
+    .catch((error) => {
+      return {
+        status: "Failed",
+        message: error.message,
+        errorCode: error.code,
+      };
+    });
+};
+
 module.exports.insertFacultyPatent = async (
   externalFacultyDetails,
   patentId
