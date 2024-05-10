@@ -222,42 +222,54 @@ module.exports.renderPharmacyData = async(userName) => {
     
 }
 
-module.exports.insertInvestigatorEducationDetails = (educationalDataArray, userName) => {
-    console.log('Data in models:', educationalDataArray);
+module.exports.insertInvestigatorEducationDetails = async(educationalDataArray, userName) => {
+    return new Promise((resolve, reject) => {
+        console.log('Data in models:', educationalDataArray);
         
-    const educatoinIds = [];
+        const educatoinIds = [];
+        let rowCount
 
-    const insertPromises = educationalDataArray.map((educationDetails) => {
-      const [courseName, universityName, passoutYear] = educationDetails;
+        const insertPromises = educationalDataArray.map(async educationDetails => {
+            const [courseName, universityName, passoutYear] = educationDetails;
 
-      const sql = {
-        text: `INSERT INTO investigator_education (course_name, university_name, passout_year, created_by, active)
+            const sql = {
+                text: `INSERT INTO investigator_education (course_name, university_name, passout_year, created_by, active)
                        VALUES ($1, $2, $3, $4, $5)
                        RETURNING id`,
-        values: [courseName, universityName, passoutYear, userName, true],
-      };
+                values: [courseName, universityName, passoutYear, userName, true]
+            };
 
-      console.log("SQL:", sql);
+            console.log('SQL:', sql);
 
-      return researchDbW.query(sql)
-      .then((result) => {
-          if (result.rowCount > 0 && result.rows[0].id) {
-            educatoinIds.push(result.rows[0].id);
-          }
-        })
-        .catch((error) => {
-          ({
-            status: "Failed",
-            message: error.message ?? "An error occurred.",
-            errorCode: error.code,
-          });
+            return await researchDbW.query(sql)
+                .then(result => {
+                    if (result.rowCount > 0 && result.rows[0].id) {
+                        rowCount += 1
+                        educatoinIds.push(result.rows[0].id)
+                    }
+                })
+                .catch(error => {
+                    reject({
+                        status: "Failed",
+                        message: error.message ?? "An error occurred.",
+                        errorCode: error.code
+                    });
+                });
         });
+
+        Promise.all(insertPromises)
+            .then(() => resolve({
+                status : "Done",
+                message : 'Education Details inserted',
+                educatoinIds : educatoinIds,
+                rowCount : rowCount
+            }))
+            .catch(error => reject({
+                status : "Done",
+                message : 'Failed ton insert',
+                errorcode : error.code
+            }));
     });
-
-    const promises = [insertPromises];
-        
-
-    
 };
 
 
