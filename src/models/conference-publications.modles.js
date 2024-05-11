@@ -384,9 +384,34 @@ module.exports.viewConferencePublication = async (conferenceId, userName) => {
         sponsored, spent_amount, publication_date, presenting_authors, author_type, authors_name, upload_proof, upload_files FROM  conference_presentation WHERE  id = $1 and active=true AND created_by = $2`,
     values: [conferenceId, userName],
   };
+
+  let facultySql = {
+    text :  `select 
+    cf.id,
+    cf.conference_id,
+    f.id,
+    f.faculty_name,
+    f.designation,
+    f.employee_id,
+    f.address 
+from 
+    conference_faculty cf 
+left join 
+    faculties f on cf.faculty_id = f.id 
+where  
+    cf.active = true 
+    and f.active = true and cf.conference_id = $1
+order by 
+    f.id;
+`,
+values  : [conferenceId]
+  }
+
+
   // return researchDbR.query(sql);
   console.log("sql ===>>>", sql);
   const conferencePresentation = await researchDbW.query(sql);
+  const facultyDetails = await researchDbW.query(facultySql);
   const response =
     conferencePresentation.rowCount > 0
       ? {
@@ -394,6 +419,7 @@ module.exports.viewConferencePublication = async (conferenceId, userName) => {
           message: "Record Fetched Successfully",
           rowCount: conferencePresentation.rowCount,
           conferencePresentation: conferencePresentation.rows,
+          facultyDetails : facultyDetails.rows
         }
       : {
           status: "Failed",

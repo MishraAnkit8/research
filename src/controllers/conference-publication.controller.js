@@ -186,6 +186,7 @@ module.exports.viewConferencePublication = async (req, res, next) => {
     status: viewConferencePublicationData.status,
     message: viewConferencePublicationData.message,
     viewConferenceData: viewConferencePublicationData.viewConferenceData,
+    facultyDetails : viewConferencePublicationData.facultyDetails,
     errorCode: viewConferencePublicationData.errorCode
       ? viewConferencePublicationData.errorCode
       : null,

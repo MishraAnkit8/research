@@ -171,7 +171,8 @@ module.exports.viewConferencePublication = async(conferenceId, userName) => {
     return viewConferenceData.status === "Done" ? {
       status : viewConferenceData.status,
       message : viewConferenceData.message,
-      viewConferenceData : viewConferenceData.conferencePresentation
+      viewConferenceData : viewConferenceData.conferencePresentation,
+      facultyDetails : viewConferenceData.facultyDetails
     } : {
       status : viewConferenceData.status,
       message : viewConferenceData.message,

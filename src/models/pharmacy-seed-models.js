@@ -1,7 +1,7 @@
 const { research_read_db, research_write_db } = require('../../config/db-configs');
 const dbPoolManager = require('../../config/db-pool-manager');
 const moment = require('moment');
-const { investigatorPublication } = require('../controllers/pharmacy-seed-grant-form-controller');
+// const { investigatorPublication } = require('../controllers/pharmacy-seed-grant-form-controller');
 
 const researchDbR = dbPoolManager.get('researchDbR', research_read_db);
 const researchDbW = dbPoolManager.get('researchDbW', research_write_db);
