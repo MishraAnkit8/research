@@ -110,6 +110,25 @@ module.exports.facultyDataForPatent = async (req, res, next) => {
   });
 };
 
+module.exports.facultyDataForIPR = async (req, res, next) => {
+  const upsertFacultyDetails = await facultyServices.facultyDataForIPR();
+  const statusCode =
+    upsertFacultyDetails.status === "Done"
+      ? 200
+      : upsertFacultyDetails.errorCode
+      ? 400
+      : 500;
+
+  res.status(statusCode).send({
+    status: upsertFacultyDetails.status,
+    message: upsertFacultyDetails.message,
+    facultyData: upsertFacultyDetails.facultyData,
+    errorCode: upsertFacultyDetails.errorCode
+      ? upsertFacultyDetails.errorCode
+      : null,
+  });
+};
+
 module.exports.facultyDataForConference = async (req, res, next) => {
   const upsertFacultyDetails = await facultyServices.facultyDataForConference();
   const statusCode =
@@ -131,6 +150,52 @@ module.exports.facultyDataForConference = async (req, res, next) => {
 
 module.exports.facultyPatentInsert = async (req, res, next) => {
   const upsertFacultyDetails = await facultyServices.insertFacultyPatent(
+    req.body
+  );
+  const statusCode =
+    upsertFacultyDetails.status === "Done"
+      ? 200
+      : upsertFacultyDetails.errorCode
+      ? 400
+      : 500;
+
+  res.status(statusCode).send({
+    status: upsertFacultyDetails.status,
+    message: upsertFacultyDetails.message,
+    facultyData: upsertFacultyDetails.facultyData,
+    externalFacultyId: upsertFacultyDetails.externalFacultyId,
+    researchGrantId: upsertFacultyDetails.researchGrantId,
+    errorCode: upsertFacultyDetails.errorCode
+      ? upsertFacultyDetails.errorCode
+      : null,
+  });
+};
+
+module.exports.facultyConferenceInsert = async (req, res, next) => {
+  const upsertFacultyDetails = await facultyServices.insertFacultyConference(
+    req.body
+  );
+  const statusCode =
+    upsertFacultyDetails.status === "Done"
+      ? 200
+      : upsertFacultyDetails.errorCode
+      ? 400
+      : 500;
+
+  res.status(statusCode).send({
+    status: upsertFacultyDetails.status,
+    message: upsertFacultyDetails.message,
+    facultyData: upsertFacultyDetails.facultyData,
+    externalFacultyId: upsertFacultyDetails.externalFacultyId,
+    researchGrantId: upsertFacultyDetails.researchGrantId,
+    errorCode: upsertFacultyDetails.errorCode
+      ? upsertFacultyDetails.errorCode
+      : null,
+  });
+};
+
+module.exports.facultyIprInsert = async (req, res, next) => {
+  const upsertFacultyDetails = await facultyServices.insertFacultyIpr(
     req.body
   );
   const statusCode =

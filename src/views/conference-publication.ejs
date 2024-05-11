@@ -381,8 +381,8 @@
                                     <label for="doi-weblink" class="form-label  fw-bold">
                                         DOI/Weblink of paper ID
                                     </label>
-                                    <input data-validate="isEmpty,isExist,isNumber" data-err-msg="Link is required."
-                                        type="text" name="web-link" id="doi-weblink-id" class="form-control" required />
+                                    <input data-validate="isEmpty,isExist" data-err-msg="Link is required." type="text"
+                                        name="web-link" id="doi-weblink-id" class="form-control" required />
                                 </div>
 
                                 <!-- Sponsored By NMIMS/Other -->
@@ -512,7 +512,7 @@
                                     </div>
 
                                     <div>
-                                        <table style="width:100%;" class="table  table-responsive d-none "
+                                        <table style="width:100%;" class="table table-responsive-lg d-none "
                                             id="externalfacultyTable">
                                             <thead>
                                                 <th>Sr.No</th>
@@ -530,9 +530,44 @@
 
                                         </table>
                                     </div>
-
                                 </div>
 
+                                <div></div>
+                                <div></div>
+
+                                <table id="faculty-table-list-upd">
+                                    <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none" id="name-class-upd">
+                                        <label for="faculty-name-upd" class="form-label fw-bold">Faculty
+                                            Name</label>
+                                        <input type="text" class="form-control" id="faculty-name-upd" required>
+                                        <span style="color:red;" id="facultyInsertError"></span>
+                                    </div>
+                                    <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none" id="dsg-class-upd">
+                                        <label for="" class="form-label fw-bold">Faculty Designation :</label>
+                                        <input type="text" class="form-control" id="faculty-designation-upd" required>
+                                        <span style="color:red;" id="desInsertError"></span>
+                                    </div>
+                                    <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none" id="id-class-upd">
+                                        <label for="faculty-emp-id-upd" class="form-label fw-bold">Faculty Id
+                                        </label>
+                                        <input type="text" class="form-control" id="faculty-emp-id-upd">
+                                        <span style="color:red;" id="empInsertError"></span>
+
+                                    </div>
+                                    <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none"
+                                        id="address-class-upd">
+                                        <label for="faculty-address" class="form-label fw-bold">Faculty
+                                            Addres</label>
+                                        <input type="text" class="form-control" id="faculty-address-upd" required>
+                                        <span style="color:red;" id="addrInsertError"></span>
+                                    </div>
+
+                                    <div class="form-group col-lg-6 col-md-6 col-sm-12 mb-4 d-none" id="add-btn-upd">
+                                        <button id="insert-details-upd" data-bs-target="#"
+                                            class="btn col-lg-4 col-md-6 col-sm-12 btn-primary" type="button">Insert
+                                            Faculty Details</button>
+                                    </div>
+                                </table>
 
                                 <div id="author-details" class="form-group col-md-12 col-sm-12 mb-4 d-none">
                                     <div class="author-details-section col-lg-12 col-md-8 col-sm-12">
@@ -1247,7 +1282,7 @@
                         console.log('faculty JSON', JSON.stringify(externalFacultyDetails.facultyData))
 
                         console.log('patentId ankit ====>>>>>', conferenceId)
-                        let externalFaculty = externalFacultyDetails.facultyData.filter(fdata => conferenceId == fdata.patent_submission_grant_id).map(facultyData => facultyData);
+                        let externalFaculty = externalFacultyDetails.facultyData.filter(fdata => conferenceId == fdata.conference_id).map(facultyData => facultyData);
                         console.log('new external faculty ', JSON.stringify(externalFaculty))
 
                         let appendFaculty = document.getElementById('appendFaculty');
@@ -1268,23 +1303,7 @@
                             appendFaculty.insertAdjacentHTML('beforeEnd', htmlData);
                         })
 
-                        async function fetchFacultyData(url) {
-                            let requestDetails = {
-                                method: 'GET',
-                                headers: {
-                                    'Accept': 'application/json'
-                                }
-                            }
-
-                            let data;
-                            let response = await fetch(url, requestDetails);
-                            if (response.ok) {
-                                data = await response.json();
-                                return data;
-                            } else {
-                                throw new Error('Error in fetching data')
-                            }
-                        }
+                     
 
 
                         document.getElementById('conference-publication').innerText = 'CONFERENCE Edit';
@@ -1383,6 +1402,8 @@
                         }
                     }
                 });
+
+                
 
                 const updateConferencePublication = async (url) => {
                     console.log('clickedddd')
@@ -1903,8 +1924,268 @@
                     }
                 })
 
+                document.addEventListener('click', (event) => {
 
+                    if (event.target.classList.contains('updateFaculty')) {
+                        let facultyId = event.target.closest('tr').getAttribute('data-facultyId')
+                        console.log('button clicked with id ', facultyId)
+                        let tr = event.target.closest('tr');
+                        let facultyName = tr.querySelector('#updateFacultyName').value
+                        let facultyDesignation = tr.querySelector('#updateFacultyDes').value
+                        let facultyAddr = tr.querySelector('#updateFacultyAddr').value
+                        let empId = tr.querySelector('#updateFacultyId').value
+
+                        let addrError = (facultyAddr != '') ? true : false;
+                        if (addrError) {
+                            document.getElementById('addrUpdError').innerText = '';
+                        } else {
+                            document.getElementById('addrUpdError').innerText = 'Address is Required';
+                        }
+
+                        let facultyError = checkAlphabets(facultyName, 'facultyUpdError');
+                        let designationError = checkAlphabets(facultyDesignation, 'desUpdError');
+                        let empError = checkEmpError(empId, 'empUpdError');
+                        let externalFacultyDetails;
+
+                        if (addrError && facultyError && designationError && empError) {
+
+                            externalFacultyDetails = {
+                                facultyId: facultyId, facultyName: facultyName,
+                                facultyDesignation: facultyDesignation, facultyAddr: facultyAddr, empId: empId
+                            }
+
+                            let obj = externalFacultyDetails
+                            upsertFacultyData('<%- BASE_URL %>research/external/faculty-updateData', obj, tr)
+                        }
+
+                    }
+                })
+
+
+                function upsertFacultyData(url, obj, tr) {
+                    fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'content-type': 'application/json'
+                        },
+                        body: JSON.stringify(obj)
+                    })
+                        .then((result) => {
+                            return result.json()
+                        })
+                        .then((data) => {
+                            if (data.status === 'Done') {
+
+                                console.log('response >> ', data)
+
+                                Swal.fire({
+                                    position: "top-center",
+                                    icon: "success",
+                                    title: `${data.message}`,
+                                    showConfirmButton: true,
+                                    confirmButtonText: "OK",
+                                    confirmButtonColor: "#DD6B55"
+                                }).then(() => {
+                                    console.log('object ', JSON.stringify(obj))
+                                    tr.querySelector('#updateFacultyName').value = obj.facultyName
+                                    tr.querySelector('#updateFacultyDes').value = obj.facultyDesignation
+                                    tr.querySelector('#updateFacultyAddr').value = obj.facultyAddr
+                                    tr.querySelector('#updateFacultyId').value = obj.empId
+                                })
+                            }
+                        })
+                }
+
+                function checkAlphabets(facultyName, idName) {
+
+                    let facultyError = document.getElementById(idName);
+
+                    // if (facultyName.length == 0 && idName === 'facultyError' || ) {
+                    //     facultyError.innerText = "Name is Required";
+                    //     return false;
+                    // }
+
+                    // if (facultyName.length == 0 && idName === 'desError') {
+                    //     facultyError.innerText = "Designation is Required";
+                    //     return false;
+                    // }
+
+                    if (!facultyName || facultyName.trim() === "") {
+                        facultyError.innerText = "Provide Valid Input";
+                        return false;
+                    }
+
+                    const words = facultyName.split(" ");
+
+                    for (const word of words) {
+                        for (let i = 0; i < word.length; i++) {
+                            const charCode = word.charCodeAt(i);
+                            if (
+                                (charCode < 65 || charCode > 90) &&
+                                (charCode < 97 || charCode > 122)
+                            ) {
+                                facultyError.innerText = "Provide Valid Input";
+                                return false;
+                            }
+                        }
+                    }
+
+                    facultyError.innerText = "";
+                    return true;
+                }
+
+                function checkEmpError(facultyEmpId, errid) {
+                    let empError = document.getElementById(errid);
+                    let bool = true;
+
+                    if (facultyEmpId.length === 0) {
+                        empError.innerText = 'Provide Valid Input';
+                        return false;
+                    }
+
+                    for (let i = 0; i < facultyEmpId.length; i++) {
+                        const charCode = facultyEmpId.charAt(i);
+                        if (!(charCode >= '0' && charCode <= '9')) {
+                            empError.innerText = 'Provide Valid Input';
+                            bool = false;
+                            break;
+                        }
+                    }
+
+                    if (bool) {
+                        empError.innerText = '';
+                    }
+
+                    return bool;
+                }
+
+
+                document.getElementById('insert-details-upd').addEventListener('click', () => {
+
+
+                    let facultyNameUpd = document.getElementById('faculty-name-upd');
+                    let facultyDesignationUpd = document.getElementById('faculty-designation-upd');
+                    let facultyAddrUpd = document.getElementById('faculty-address-upd');
+                    let facultyEmpUpd = document.getElementById('faculty-emp-id-upd');
+
+                    let facultyName = facultyNameUpd.value;
+                    let facultyDesignation = facultyDesignationUpd.value;
+                    let facultyAddr = facultyAddrUpd.value;
+                    let facultyEmp = facultyEmpUpd.value;
+
+                    let addrError = (facultyAddr != '') ? true : false;
+                    if (addrError) {
+                        document.getElementById('addrInsertError').innerText = '';
+                    } else {
+                        document.getElementById('addrInsertError').innerText = 'Address is Required';
+                    }
+
+                    let facultyError = checkAlphabets(facultyName, 'facultyInsertError');
+                    let designationError = checkAlphabets(facultyDesignation, 'desInsertError');
+                    let empError = checkEmpError(facultyEmp, 'empInsertError');
+
+                    if (addrError && facultyError && designationError && empError) {
+
+                        console.log('clickedd insert details buttons')
+                        upsertExternalDetails('<%- BASE_URL %>research/external/faculty-conferenceInsert');
+                    }
+                });
+
+
+                const upsertExternalDetails = (url) => {
+                    let facultyNameUpd = document.getElementById('faculty-name-upd');
+                    let facultyDesignationUpd = document.getElementById('faculty-designation-upd');
+                    let facultyAddrUpd = document.getElementById('faculty-address-upd');
+                    let facultyEmpUpd = document.getElementById('faculty-emp-id-upd');
+
+                    let facultyName = facultyNameUpd.value;
+                    let facultyDesignation = facultyDesignationUpd.value;
+                    let facultyAddr = facultyAddrUpd.value;
+                    let facultyEmp = facultyEmpUpd.value;
+
+
+                    let externalFacultyDetails = {
+                        facultyEmpId: facultyEmp,
+                        facultyName: facultyName,
+                        facultyDsg: facultyDesignation,
+                        facultyAddr: facultyAddr,
+                    }
+
+                    console.log('json string ', JSON.stringify(externalFacultyDetails))
+
+                    let payload = { externalFacultyDetails, conferenceId };
+
+                    fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'content-type': 'application/json'
+                        },
+                        body: JSON.stringify(payload)
+                    })
+                        .then((result) => {
+                            return result.json()
+                        })
+                        .then((data) => {
+                            if (data.status === 'Done') {
+
+                                console.log('response >> ', data)
+
+                                Swal.fire({
+                                    position: "top-center",
+                                    icon: "success",
+                                    title: `${data.message}`,
+                                    showConfirmButton: true,
+                                    confirmButtonText: "OK",
+                                    confirmButtonColor: "#DD6B55"
+                                }).then(() => {
+
+                                    let appendFaculty = document.getElementById('appendFaculty');
+                                    let allTds = appendFaculty.querySelectorAll('tr');
+
+                                    let htmlData = `<tr data-facultyId = ${data.conferenceId}>
+
+                                                                        <td>${allTds.length + 1}</td>
+                                                                        <td><input id="updateFacultyName" type="text" value=${facultyName} /></br><span style="color:red;" id='facultyUpdError'></span></td>
+                                                                        <td ><input id="updateFacultyAddr" type="text" value=${facultyAddr} /></br><span style="color:red;" id='addrUpdError'></span></td>
+                                                                        <td ><input id="updateFacultyDes" type="text" value=${facultyDesignation} /></br><span style="color:red;" id='desUpdError'></span></td>
+                                                                        <td ><input id="updateFacultyId" type="text" value=${facultyEmp} /></br><span style="color:red;" id='empUpdError'></span></td>
+                                                                        <td><button class="btn btn-primary updateFaculty">Update</button></td>
+                                                                        </tr>`
+
+                                    appendFaculty.insertAdjacentHTML('beforeEnd', htmlData);
+
+
+
+                                });
+                            }
+                        }).catch((error) => {
+                            console.error("ERROR:", error);
+                        })
+                }
+
+
+    async function fetchFacultyData(url) {
+        let requestDetails = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json'
+            }
+        }
+
+        let data;
+        let response = await fetch(url, requestDetails);
+        if (response.ok) {
+            data = await response.json();
+            return data;
+        } else {
+            throw new Error('Error in fetching data')
+        }
+    }
+
+
+    
+       
             </script>
             <!-- <%- include('./partials/pagination') %> -->
             <%- include('./partials/footer') %>
-                <%- include('./partials/footer-end') %>
+                <%- include('./partials/footer-end') %>s

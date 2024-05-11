@@ -186,6 +186,19 @@ router.post(
   asyncErrorHandler(authMiddleware),
   asyncErrorHandler(facultyController.facultyPatentInsert)
 );
+router.post(
+  "/external/faculty-conferenceInsert",
+  asyncErrorHandler(authMiddleware),
+  asyncErrorHandler(facultyController.facultyConferenceInsert)
+);
+router.post(
+  "/external/faculty-IprInsert",
+  asyncErrorHandler(authMiddleware),
+  asyncErrorHandler(facultyController.facultyIprInsert)
+);
+
+
+
 
 router.get("/external/facultyDataForEdit",asyncErrorHandler(facultyController.facultyDataForEdit))
 router.get(
@@ -195,6 +208,10 @@ router.get(
 router.get(
   "/external/facultyDataForConference",
   asyncErrorHandler(facultyController.facultyDataForConference)
+);
+router.get(
+  "/external/facultyDataForIPR",
+  asyncErrorHandler(facultyController.facultyDataForIPR)
 );
 
 

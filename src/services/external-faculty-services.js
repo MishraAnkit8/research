@@ -108,8 +108,28 @@ module.exports.fetchFacultyDetails = async (req, res) => {
       };
 };
 
+
+
 module.exports.facultyDataForConference = async (req, res) => {
   const fetchFacultyData = await facultyModels.fetchFacultyConference();
+
+  return fetchFacultyData.status === "Done"
+    ? {
+        status: fetchFacultyData.status,
+
+        message: fetchFacultyData.message,
+        facultyData: fetchFacultyData.facultyData,
+        rowCount: fetchFacultyData.rowCount,
+      }
+    : {
+        status: insertExternalData.status,
+        message: insertExternalData.message,
+        errorCode: insertExternalData.errorCode,
+      };
+};
+
+module.exports.facultyDataForIPR = async (req, res) => {
+  const fetchFacultyData = await facultyModels.facultyDataForIPR();
 
   return fetchFacultyData.status === "Done"
     ? {
@@ -151,6 +171,56 @@ module.exports.insertFacultyPatent = async (body) => {
   const upsertExternalData = await facultyModels.insertFacultyPatent(
     externalFacultyDetails,
     patentId
+  );
+
+  return upsertExternalData.status === "Done" &&
+    upsertExternalData.status === "Done"
+    ? {
+        status: upsertExternalData.status,
+        message: upsertExternalData.message,
+        externalFacultyId: upsertExternalData.externalFacultyId,
+        researchGrantId: upsertExternalData.researchGrantId,
+        facultyData: externalFacultyDetails,
+      }
+    : {
+        status: upsertExternalData.status,
+        message: upsertExternalData.message,
+        errorCode: upsertExternalData.errorCode,
+      };
+};
+
+module.exports.insertFacultyConference = async (body) => {
+  const externalFacultyDetails = body.externalFacultyDetails;
+  const conferenceId = body.conferenceId;
+
+  const upsertExternalData = await facultyModels.insertFacultyConference(
+    externalFacultyDetails,
+    conferenceId
+  );
+
+  return upsertExternalData.status === "Done" &&
+    upsertExternalData.status === "Done"
+    ? {
+        status: upsertExternalData.status,
+        message: upsertExternalData.message,
+        externalFacultyId: upsertExternalData.externalFacultyId,
+        researchGrantId: upsertExternalData.researchGrantId,
+        facultyData: externalFacultyDetails,
+      }
+    : {
+        status: upsertExternalData.status,
+        message: upsertExternalData.message,
+        errorCode: upsertExternalData.errorCode,
+      };
+};
+
+module.exports.insertFacultyIpr = async (body) => {
+  const externalFacultyDetails = body.externalFacultyDetails;
+  const iprId = body.iprId;
+
+  const upsertExternalData = await facultyModels.insertFacultyIpr(
+    externalFacultyDetails,
+    iprId
   );
 
   return upsertExternalData.status === "Done" &&
