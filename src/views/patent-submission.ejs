@@ -93,14 +93,18 @@
                                                 data-patent-stage-id="<%- patent.patent_stage_status_id %>"
                                                 data-invention-type-id="<%- patent.invention_type_id %>">
                                                 <td class="col-lg-1"><%- index+1 %></td>
-                                                <td class="grant-date col-lg-1"><%- patent.grant_date %></td>
-                                                <td class="title-of-invention col-lg-1"><%- patent.innovation_title %>
-                                                </td>
-                                                <td class="support-documents col-lg-1"><%- patent.supporting_documents
-                                                        %></td>
-                                                <td class="application-no col-lg-1"><%- patent.application_number %>
-                                                </td>
-                                                <!-- <td class="col-lg-1">
+                                                <% let edate=patent.grant_date; %>
+                                                    <% const dates=edate.toISOString().slice(0, 10); %>
+                                                        <td class="grant-date col-lg-1"><%- dates %></td>
+                                                        <td class="title-of-invention col-lg-1"><%-
+                                                                patent.innovation_title %>
+                                                        </td>
+                                                        <td class="support-documents col-lg-1"><%-
+                                                                patent.supporting_documents %></td>
+                                                        <td class="application-no col-lg-1"><%-
+                                                                patent.application_number %>
+                                                        </td>
+                                                        <!-- <td class="col-lg-1">
                                 <label class="view" data-patent-id="<%- patent.patent_submission_grant_id %>"><i class="fa-solid fa-eye view text-danger"
                                     data-patent-id="<%- patent.patent_submission_grant_id %>"></i></label>
                                 <label class="edit" data-patent-id="<%- patent.patent_submission_grant_id %>"><i class="fa fa-edit edit text-danger"
@@ -109,21 +113,23 @@
                                     data-patent-id="<%- patent.patent_submission_grant_id %>"></i></label>
                             </td> -->
 
-                                                <td colspan="3px" style="display:flex;justify-content: center;">
-                                                    <b title="View" class="view border-right-0" style="cursor: pointer;"
-                                                        data-patent-id="<%- patent.patent_submission_grant_id %>">
-                                                        &#128065;
-                                                    </b>
-                                                    <b title="Edit" class="edit border-right-0" style="cursor: pointer;"
-                                                        data-patent-id="<%- patent.patent_submission_grant_id %>">
-                                                        &#9998;
-                                                    </b>
-                                                    <b title="Delete" class="delete border-right-0"
-                                                        style="cursor: pointer;"
-                                                        data-patent-id="<%- patent.patent_submission_grant_id %>">
-                                                        &#128465;
-                                                    </b>
-                                                </td>
+                                                        <td colspan="3px" style="display:flex;justify-content: center;">
+                                                            <b title="View" class="view border-right-0"
+                                                                style="cursor: pointer;"
+                                                                data-patent-id="<%- patent.patent_submission_grant_id %>">
+                                                                &#128065;
+                                                            </b>
+                                                            <b title="Edit" class="edit border-right-0"
+                                                                style="cursor: pointer;"
+                                                                data-patent-id="<%- patent.patent_submission_grant_id %>">
+                                                                &#9998;
+                                                            </b>
+                                                            <b title="Delete" class="delete border-right-0"
+                                                                style="cursor: pointer;"
+                                                                data-patent-id="<%- patent.patent_submission_grant_id %>">
+                                                                &#128465;
+                                                            </b>
+                                                        </td>
                                             </tr>
                                             <% }); %>
                                                 <% } else { %>
@@ -232,7 +238,7 @@
                                     <label for="title" class="form-label fw-bold">Title of Invention</label>
                                     <input type="text" name="titleInvention" id="title-of-invention" data
                                         data-err-msg="Provide Valid Input" class="form-control fname"
-                                        data-validate="isEmpty,isExist" required>
+                                        data-validate="isEmpty,isAllNumeric,isExist" required>
                                 </div>
                                 <!-- Patent Stage -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
@@ -273,7 +279,7 @@
                                 <!-- Date of Filing/Grant/Published -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="date" class="form-label fw-bold">
-                                        Date of Filing/Grant/Published?DDDD
+                                        Date of Filing/Grant/Published
                                     </label>
                                     <input type="date" name="GrantDate" id="date" data-validate="isEmpty,isExist"
                                         data-err-msg="Date is required" class="form-control" required>
@@ -302,7 +308,7 @@
                                 </div><br>
 
                                 <!-- Details of Other Inventors -->
-                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4 mt-2">
                                     <label for="is-internal" class="form-label fw-bold mb-3">Details of Inventors Id And
                                         Name</label><br>
                                     <div class="form-check-inline">
@@ -1851,6 +1857,19 @@
                         function enternalFacultyDropDownList() {
                             employeeList.classList.remove('d-none');
                             authorDetails.classList.add('d-none');
+                            document.getElementById('name-class').classList.add('d-none');
+                            document.getElementById('dsg-class').classList.add('d-none');
+                            document.getElementById('id-class').classList.add('d-none');
+                            document.getElementById('address-class').classList.add('d-none');
+                            document.getElementById('add-btn').classList.add('d-none');
+
+                            document.getElementById('name-class-upd').classList.add('d-none');
+                            document.getElementById('dsg-class-upd').classList.add('d-none');
+                            document.getElementById('id-class-upd').classList.add('d-none');
+                            document.getElementById('address-class-upd').classList.add('d-none');
+                            document.getElementById('add-btn-upd').classList.add('d-none');
+
+                            document.getElementById('externalfacultyTable').classList.add('d-none')
                         }
 
                         function externalFacultyDetails() {
