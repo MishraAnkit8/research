@@ -8,12 +8,14 @@ module.exports.renderPatentSubMissionAndGrant = async (req, res, next) => {
   const patentSubmissionList = await patentSubmissionservice.fetchPatentForm(
     userName
   );
+
   console.log(
     "patentSubmissionList ===>>>>",
-    JSON.stringify(patentSubmissionList)
+    JSON.stringify(patentSubmissionList.internalPatentFacultyId)
   );
 
-  res.render("patent-submission", {
+ // console.log('patent sdg goal data ',JSON.stringify(patentSubmissionList.selectSdgGoals))
+    res.render("patent-submission", {
     status: patentSubmissionList.status,
     message: patentSubmissionList.rowCount,
     patentData: patentSubmissionList.patentData,
@@ -31,6 +33,8 @@ module.exports.renderPatentSubMissionAndGrant = async (req, res, next) => {
       patentSubmissionList.patentGrantFacultyIdContainer,
     patentGrantFacultyIds: patentSubmissionList.patentGrantFacultyIds,
     errorCode: patentSubmissionList.errorCode,
+    selectSdgGoals : patentSubmissionList.selectSdgGoals,
+    selectedPatentFaculty : patentSubmissionList.selectedPatentFaculty
   });
 };
 

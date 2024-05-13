@@ -22,7 +22,9 @@ module.exports.insertConferencePublicationSData = async (req, res, next) => {
 
   console.log("conference json ", JSON.stringify(req.body));
 
-  console.log("Data comming From Template", req.body);
+  console.log("Data comming From Template", JSON.stringify(req.body));
+
+
   console.log("files in controller ==>>>", req.files);
   const insertConferenceDataForm =
     await conferencePublicationServices.insertConferenceData(

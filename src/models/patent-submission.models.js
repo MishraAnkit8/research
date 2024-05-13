@@ -30,6 +30,7 @@ module.exports.fetchPatentSubMissionForms = async (userName) => {
                     f.designation,
                     f.address,
                     f.employee_id,
+                    sg.id,
                     psf.id AS patent_submission_faculty_id
                 FROM 
                     patent_submission_grant psg
@@ -102,6 +103,12 @@ module.exports.fetchPatentSubMissionForms = async (userName) => {
     text: `select id, patent_submission_grant_id, faculty_id from patent_submission_faculty where active=true order by id`,
   };
 
+  let selectedPatentSdg = {
+    text : `
+    select psdg.patent_submission_grant_id,pg.innovation_title,s.name  from patent_submission_sdg_goals psdg inner join patent_submission_grant pg on psdg.patent_submission_grant_id = pg.id
+    inner join sdg_goals s on psdg.sdg_goals_id = s.id where psdg.active=true and s.active=true and pg.active=true`
+  }
+
   console.log("patentSubmissionSql ===>>>", patentSubmissionSql);
   console.log("internalEmpSql ===>>>", internalEmpSql);
   console.log("patentGrantsubmission ===>>>>", patentGrantsubmission);
@@ -125,6 +132,7 @@ module.exports.fetchPatentSubMissionForms = async (userName) => {
     patentGrantExternalsql
   );
   const patentGrantFacultyIds = await researchDbR.query(patentGrantSql);
+  const selectedPatentSdgGoals = await researchDbR.query(selectedPatentSdg);
 
   const promises = [
     patentData,
@@ -137,6 +145,7 @@ module.exports.fetchPatentSubMissionForms = async (userName) => {
     internalPatentFacultyId,
     externalPatentFacultyId,
     patentGrantFacultyIds,
+    selectedPatentSdgGoals
   ];
   return Promise.all(promises)
     .then(
@@ -150,7 +159,10 @@ module.exports.fetchPatentSubMissionForms = async (userName) => {
         internalPatentFacultyId,
         externalPatentFacultyId,
         patentGrantFacultyIds,
+        selectedPatentSdgGoals
       ]) => {
+
+     //   console.log('new sdg goals ',JSON.stringify(selectedPatentSdgGoals.rows))
         return {
           status: "Done",
           message: "Record Fetched Successfully",
@@ -165,6 +177,7 @@ module.exports.fetchPatentSubMissionForms = async (userName) => {
           internalPatentFacultyId: internalPatentFacultyId.rows,
           externalPatentFacultyId: externalPatentFacultyId.rows,
           patentGrantFacultyIds: patentGrantFacultyIds.rows,
+          selectSdgGoals : selectedPatentSdgGoals.rows
         };
       }
     )
@@ -176,6 +189,89 @@ module.exports.fetchPatentSubMissionForms = async (userName) => {
       };
     });
 };
+
+
+module.exports.fetchSdgGoals = async () => {
+
+  let selectedPatentSdg = {
+    text : `
+    select psdg.sdg_goals_id as id,psdg.patent_submission_grant_id,pg.innovation_title,s.name  from patent_submission_sdg_goals psdg inner join patent_submission_grant pg on psdg.patent_submission_grant_id = pg.id
+    inner join sdg_goals s on psdg.sdg_goals_id = s.id where psdg.active=true and s.active=true and pg.active=true`
+  }
+
+  const selectedPatentSdgGoals = await researchDbR.query(selectedPatentSdg);
+
+  const promises = [
+    selectedPatentSdgGoals
+  ];
+  return Promise.all(promises)
+    .then(
+      ([
+        selectedPatentSdgGoals
+      ]) => {
+
+        console.log('formatted goals ',JSON.stringify(selectedPatentSdgGoals.rows))
+        return {
+          status: "Done",
+          message: "Record Fetched Successfully",
+          rowCount: selectedPatentSdgGoals.rowCount,
+          selectSdgGoals : selectedPatentSdgGoals.rows
+
+        };
+      }
+    )
+    .catch((error) => {
+      return {
+        status: "Failed",
+        message: error.message,
+        errorCode: error.code,
+      };
+    });
+}
+
+module.exports.fetchFaculty = async () => {
+
+  let selectedFaculty = {
+    text: `SELECT psf.id AS patent_submission_faculty_id, 
+    psf.patent_submission_grant_id, 
+    psf.faculty_id 
+    FROM patent_submission_faculty psf
+    JOIN faculties f ON psf.faculty_id = f.id
+    JOIN faculty_types ft ON f.faculty_type_id = ft.id
+    WHERE ft.name = 'Internal' and psf.active=true and f.active=true and ft.active=true 
+    ORDER BY psf.id`,
+  }
+
+  const selectedPatentFaculty = await researchDbR.query(selectedFaculty);
+
+  const promises = [
+    selectedPatentFaculty
+  ];
+  return Promise.all(promises)
+    .then(
+      ([
+        selectedPatentFaculty
+      ]) => {
+
+        // console.log('formatted goals ',JSON.stringify(selectedPatentFaculty.rows))
+        return {
+          status: "Done",
+          message: "Record Fetched Successfully",
+          rowCount: selectedPatentFaculty.rowCount,
+          selectedPatentFaculty : selectedPatentFaculty.rows
+
+        };
+      }
+    )
+    .catch((error) => {
+      return {
+        status: "Failed",
+        message: error.message,
+        errorCode: error.code,
+      };
+    });
+
+}
 
 module.exports.insertPatentData = async (
   patentData,
