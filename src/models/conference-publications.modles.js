@@ -48,6 +48,36 @@ module.exports.fetchConferencePublication = async (userName) => {
     });
 };
 
+module.exports.fetchConferenceFaculty = async () => {
+  let sql = {
+    text: `   SELECT psf.id AS conference_faculty_id, 
+    psf.conference_id, 
+    psf.faculty_id 
+    FROM conference_faculty psf INNER 
+    JOIN faculties f ON psf.faculty_id = f.id INNER
+    JOIN faculty_types ft ON f.faculty_type_id = ft.id
+    WHERE ft.name = 'Internal' and psf.active=true and f.active=true and ft.active=true 
+    ORDER BY psf.id`,
+  };
+
+  const internalEmpPromise = await researchDbR.query(sql);
+  const promises = [internalEmpPromise];
+
+  return Promise.all(promises)
+    .then(([internalEmpPromise]) => {
+      return {
+        internalFaculty: internalEmpPromise.rows,
+      };
+    })
+    .catch((error) => {
+      return {
+        status: "Failed",
+        message: error.message,
+        errorCode: error.code,
+      };
+    });
+};
+
 // module.exports.viewConferenceData = async(conferenceId, userName) => {
 //     let sql = {
 //         text : `SELECT * FROM conference_presentation WHERE  id = $1 AND created_by = $2`,
@@ -386,7 +416,7 @@ module.exports.viewConferencePublication = async (conferenceId, userName) => {
   };
 
   let facultySql = {
-    text :  `select 
+    text: `select 
     cf.id,
     cf.conference_id,
     f.id,
@@ -404,9 +434,8 @@ where
 order by 
     f.id;
 `,
-values  : [conferenceId]
-  }
-
+    values: [conferenceId],
+  };
 
   // return researchDbR.query(sql);
   console.log("sql ===>>>", sql);
@@ -419,7 +448,7 @@ values  : [conferenceId]
           message: "Record Fetched Successfully",
           rowCount: conferencePresentation.rowCount,
           conferencePresentation: conferencePresentation.rows,
-          facultyDetails : facultyDetails.rows
+          facultyDetails: facultyDetails.rows,
         }
       : {
           status: "Failed",

@@ -73,7 +73,10 @@ module.exports.fetchJournalPaper = async (userName) => {
                     journal_article_policy_cadre japc ON jpa.id = japc.journal_article_id
                 LEFT JOIN
                     policy_cadre pc ON japc.policy_cadre_id = pc.id
-                where created_by = $1
+                where created_by = $1 and pc.active=true and japc.active=true and sd.active=true 
+                and jad.active=true and a.active=true and aa.active=true and f.active=true and nf.active=true 
+                and jaf.active=true and jaif.active=true and nc.active=true and jac.active=true and ns.active=true 
+                and jas.active=true and jpa.active=true
                    
                 GROUP BY
                     jpa.id,
@@ -100,36 +103,36 @@ module.exports.fetchJournalPaper = async (userName) => {
     }
 
     let internalEmpSql = {
-        text: `select *  FROM faculties WHERE faculty_type_id = 1 `
+        text: `select *  FROM faculties WHERE faculty_type_id = 1 and active=true`
     };
 
      
     let journalPaperSql = {
-        text: `select *  FROM journal_paper_article   ORDER BY id`
+        text: `select *  FROM journal_paper_article where active=true  ORDER BY id`
     };
 
     let supportingoDcumentsSql = {
-      text: `select *  FROM supporting_documents   ORDER BY id`,
+      text: `select *  FROM supporting_documents where active=true  ORDER BY id`,
     };
 
     let allAuthorsSql = {
-      text: `select *  FROM faculties   ORDER BY id`,
+      text: `select *  FROM faculties where active=true  ORDER BY id`,
     };
 
     let nmimsSchoolSql = {
-      text: `select *  FROM nmims_school   ORDER BY id`,
+      text: `select *  FROM nmims_school where active=true  ORDER BY id`,
     };
 
     let nmimsCampusSql = {
-      text: `select *  FROM nmims_campus   ORDER BY id`,
+      text: `select *  FROM nmims_campus where active=true   ORDER BY id`,
     };
 
     let policyCadreSql = {
-      text: `select *  FROM policy_cadre   ORDER BY id`,
+      text: `select *  FROM policy_cadre where active=true  ORDER BY id`,
     };
 
     let impactFactorSql = {
-      text: `select *  FROM impact_factor   ORDER BY id`,
+      text: `select *  FROM impact_factor where active=true  ORDER BY id`,
     };
 
     console.log('sql ==>>', sql)
