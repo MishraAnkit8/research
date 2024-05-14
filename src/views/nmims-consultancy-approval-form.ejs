@@ -58,8 +58,7 @@
                                     </div> -->
                                 </div>
                             </div>
-                            <table
-                                class="table vertical-lines custom-table table-responsive research-pagination"
+                            <table class="table vertical-lines custom-table table-responsive research-pagination"
                                 id="approved-consultancy-form-data-list">
                                 <thead>
                                     <th class="col-lg-1">Serial no</th>
@@ -71,7 +70,7 @@
                                 </thead>
                                 <tbody class="data-list">
                                     <% consultancyFormData.forEach(function(consultancyData , index) { %>
-                                        <tr data-consultancy-id="<%- consultancyData.consultancy_id %>"
+                                        <tr id="tableRow" data-consultancy-id="<%- consultancyData.consultancy_id %>"
                                             data-faculty-id="<%- consultancyData.faculty_id %>"
                                             data-commencement-date="<%- consultancyData.commencement_date %>"
                                             data-completion-date="<%- consultancyData.completion_date %>"
@@ -105,19 +104,19 @@
                                         class="fa-solid fa-trash delete text-danger"
                                         data-consultancy-id="<%- consultancyData.consultancy_id %>"></i></label>
                             </td> -->
-                                        <td colspan="3px" style="display:flex;justify-content: center;">
-                                            <b title="View" class="view border-right-0" style="cursor: pointer;"
-                                                data-consultancy-id="<%- consultancyData.consultancy_id %>">
-                                                &#128065;
-                                            </b>
-                                            <b title="Edit" class="edit border-right-0" style="cursor: pointer;"
-                                                data-consultancy-id="<%- consultancyData.consultancy_id %>">
-                                                &#9998;
-                                            </b>
-                                            <b title="Delete" class="delete border-right-0" style="cursor: pointer;"
-                                                data-consultancy-id="<%- consultancyData.consultancy_id %>">
-                                                &#128465;
-                                            </b>
+                                            <td colspan="3px" style="display:flex;justify-content: center;">
+                                                <b title="View" class="view border-right-0" style="cursor: pointer;"
+                                                    data-consultancy-id="<%- consultancyData.consultancy_id %>">
+                                                    &#128065;
+                                                </b>
+                                                <b title="Edit" class="edit border-right-0" style="cursor: pointer;"
+                                                    data-consultancy-id="<%- consultancyData.consultancy_id %>">
+                                                    &#9998;
+                                                </b>
+                                                <b title="Delete" class="delete border-right-0" style="cursor: pointer;"
+                                                    data-consultancy-id="<%- consultancyData.consultancy_id %>">
+                                                    &#128465;
+                                                </b>
                                             </td>
                                         </tr>
                                         <%}) %>
@@ -194,7 +193,7 @@
                     <div class="modal-content modal-content-data validate-input">
                         <div class="modal-header">
                             <h5 class="modal-title" id="consultancyData-study">Consultancy Approval Form </h5>
-                            <div type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <div type="button" id="headerClose" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true"><i class="fas fa-times "></i></span>
                             </div>
                         </div>
@@ -212,8 +211,7 @@
                                     <label for="campus" class=" sub-title fw-bold"> Title(Brief) </label>
                                     <input type="text" name="SchoolName" id="title"
                                         data-validate="isEmpty,isNotNumber,isExist,isNotSpecialChar"
-                                        data-err-msg="Provide Valid Input" class="form-control"
-                                        required />
+                                        data-err-msg="Provide Valid Input" class="form-control" required />
                                 </div>
                                 <!-- Faculty ID -->
 
@@ -257,15 +255,9 @@
                                     <label for="total-fees" class=" sub-title fw-bold">Total Fees</label>
                                     <input type="number" name="total-fees" id="total-fees"
                                         data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required."
-                                        class="form-control" required>
+                                        class="form-control" required disabled>
                                 </div>
-                                <!-- Gross Fees -->
-                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <label for="gross-fees" class=" sub-title fw-bold">(a) Gross Fees</label>
-                                    <input type="number" name="gross-fees" id="gross-fees"
-                                        data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required."
-                                        class="form-control" required>
-                                </div>
+
 
                                 <!-- Faculty Share -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
@@ -291,6 +283,38 @@
                          <button id="add-row-button">Add More Details</button> -
                     </div> -->
 
+                                <!-- Advance Payment. -->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="advance-payment" class=" sub-title fw-bold">Advance Payment.</label>
+                                    <input type="number" name="advance-payment" id="advance-payment"
+                                        class="form-control" data-validate="isEmpty,isNumber"
+                                        data-err-msg="Numeric value is required." required>
+                                </div>
+
+
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="final-payment" class=" sub-title fw-bold">Final Payment </label>
+                                    <input type="number" name="final-payment" id="final-payment" class="form-control"
+                                        data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required"
+                                        required>
+                                </div>
+
+                                <!-- <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="total-amount" class=" sub-title fw-bold">Total Payment </label>
+                                    <input type="number" name="total-amount" id="total-amount" class="form-control"
+                                        data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required"
+                                        required disabled>
+                                </div> -->
+
+                                <!-- Gross Fees -->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="gross-fees" class=" sub-title fw-bold">(a) Gross Fees</label>
+                                    <input type="number" name="gross-fees" id="gross-fees"
+                                        data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required."
+                                        class="form-control" required>
+                                </div>
+
+
                                 <!-- Research Staff Expenses -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="research-staff-expenses" class=" sub-title fw-bold">(b) Research Staff
@@ -310,9 +334,8 @@
                                     <label for="computer-charges" class=" sub-title fw-bold"> (d) Computer
                                         Charges/Printing/publication/Editing/Communication/Consumables </label>
                                     <input type="number" name="computer-charges" id="computer-charges"
-                                        data-validate="isEmpty,isNumber"
-                                        data-err-msg="Provide Valid Input" class="form-control"
-                                        required />
+                                        data-validate="isEmpty,isNumber" data-err-msg="Provide Valid Input"
+                                        class="form-control" required />
                                 </div>
                                 <!-- (e) Charges for NMIMS Facilities (Class-room, Conference room), if applicable: -->
                                 <div class="form-group">
@@ -331,26 +354,21 @@
                                         data-err-msg="Numeric value is required." required>
                                 </div>
                                 <!-- Final Payment -->
-                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <label for="final-payment" class=" sub-title fw-bold">Final Payment </label>
-                                    <input type="number" name="final-payment" id="final-payment" class="form-control"
-                                        data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required"
-                                        required>
-                                </div>
-                                <!-- Advance Payment. -->
-                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <label for="advance-payment" class=" sub-title fw-bold">Advance Payment.</label>
-                                    <input type="number" name="advance-payment" id="advance-payment"
-                                        class="form-control" data-validate="isEmpty,isNumber"
-                                        data-err-msg="Numeric value is required." required>
-                                </div>
+
+                                <!-- <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="grand-total" class=" sub-title fw-bold">Grand Total</label>
+                                    <input type="number" name="grand-total" id="grand-total" class="form-control"
+                                        disabled>
+                                </div> -->
+
 
                             </div>
                         </div>
 
                         <!-- Add your modal footer buttons if needed -->
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                            <button type="button" id="footerClose" class="btn btn-danger"
+                                data-dismiss="modal">Close</button>
                             <button type="button" class="btn btn-md btn-primary submit-btn d-none"
                                 id="submit-btn">Submit</button>
                             <button class="btn btn-md btn-primary update-btn d-none" id="update-btn">Update</button>
@@ -656,6 +674,8 @@
                     consultancyObject.finalPayment = document.getElementById('final-payment').value;
                     consultancyObject.grossFees = document.getElementById('gross-fees').value;
                     consultancyObject.facultyId = document.getElementById('faculty-id').value;
+                    // consultancyObject.totalAmount = document.getElementById('total-amount').value;
+                    // consultancyObject.grandTotal = document.getElementById('grand-total').value;
 
                     const payload = {
                         consultancyObject: consultancyObject
@@ -908,6 +928,9 @@
                     }
                     // for update the data 
                     if (event.target.classList.contains('edit')) {
+
+                        removeErrorMsg()
+
                         console.log('yes edit clickeddd ===');
                         submitBtn.classList.add('d-none');
                         updateBtn.classList.remove('d-none');
@@ -1112,8 +1135,82 @@
                     "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
                 })
 
+
+                // document.getElementById('final-payment').addEventListener('input', () => {
+                //     let advancePayment = document.getElementById('advance-payment').value;
+                //     let finalPayment = document.getElementById('final-payment').value;
+                //     let totalAmount = document.getElementById('total-amount');
+
+                //     let advance = Number.parseInt(advancePayment)
+                //     let final = Number.parseInt(finalPayment);
+
+                //     let total = advance + final
+                //     totalAmount.value = total
+
+
+                //     console.log('advance and final ', finalPayment, advancePayment)
+                // })
+
+
+                // document.getElementById('miscellaneous-contingency').addEventListener('input', () => {
+
+                //     let grossFees = Number.parseInt(document.getElementById('gross-fees').value);
+                //     let researchStaffExpenses = Number.parseInt(document.getElementById('research-staff-expenses').value);
+                //     let travel = Number.parseInt(document.getElementById('travel').value);
+                //     let miscellaneous = Number.parseInt(document.getElementById('miscellaneous-contingency').value);
+                //     let computerCharges = Number.parseInt(document.getElementById('computer-charges').value);
+                //     let facultyCharges = Number.parseInt(document.getElementById('facility-charges').value);
+
+                //     let finalPayment = document.getElementById('final-payment').value;
+                //     let advancePayment = document.getElementById('advance-payment').value;
+
+
+                //     let advance = Number.parseInt(advancePayment)
+                //     let final = Number.parseInt(finalPayment);
+
+                //     console.log('advance and final ', advance, final)
+
+                //     let grandTotal = document.getElementById('grand-total')
+
+                //     let total = grossFees + computerCharges + miscellaneous + computerCharges + travel + researchStaffExpenses
+                //     let totalpayment = advance + final;
+
+                //     const gstCharges = totalpayment * 18 / 100;
+                //     console.log('gstCharges ====>>>>', gstCharges);
+
+                //     let totalFees = parseInt(document.getElementById('no-of-session').value) * parseInt(document.getElementById('sessions-fees').value);
+
+                //     const grandTotalAmount = total + gstCharges + totalFees;
+                //     console.log('grandTotalAmount ====>>>>', grandTotalAmount);
+                //     grandTotal.value = grandTotalAmount;
+                //     // let tr = document.getElementById('tableRow')
+                //     // console.log('tr ====>>>>', tr);
+
+                //     console.log('ggggggggggggggggggg ', grandTotalAmount)
+                //     document.querySelector('#tableRow').setAttribute('data-grand-total-amount', grandTotalAmount);
+
+                // })
+
+
+
+                document.getElementById('sessions-fees').addEventListener('input', () => {
+                    let totalFees = parseInt(document.getElementById('no-of-session').value) * parseInt(document.getElementById('sessions-fees').value);
+                    document.getElementById('total-fees').value = totalFees
+                })
+
+                document.getElementById('headerClose').addEventListener('click', () => {
+
+                    document.location.reload();
+                });
+
+                document.getElementById('footerClose').addEventListener('click', () => {
+                    console.log('close button clicked')
+                    document.location.reload();
+                });
+
+
             </script>
 
             <!-- <%- include('./partials/pagination') %> -->
-                <%- include('./partials/footer') %>
-                    <%- include('./partials/footer-end') %>
+            <%- include('./partials/footer') %>
+                <%- include('./partials/footer-end') %>
