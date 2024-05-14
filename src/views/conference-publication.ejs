@@ -84,7 +84,6 @@
                                                 data-award-for-presentation="<%- conference.award_for_presentation %>"
                                                 data-spent-amount="<%- conference.spent_amount %>"
                                                 data-authors-name="<%- conference.authors_name %>"
-                                                
                                                 data-conference-place="<%- conference.conference_place%>"
                                                 data-conference-type="<%- conference.conference_type %>"
                                                 data-publication-date="<%- conference.publication_date %>"
@@ -236,7 +235,7 @@
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="title-of-paper" class="form-label  fw-bold">Title Of The Paper</label>
                                     <input type="text" name="title-project" id="title-of-paper" class="form-control"
-                                        data-validate="isEmpty,isNotNumber,isExist,isLength:2:255"
+                                        data-validate="isEmpty,isAllNumeric,isExist,isLength:2:255"
                                         data-err-msg="Provide Valid Input" required />
                                 </div>
                                 <!-- Name of Conferencend  -->
@@ -248,7 +247,7 @@
                                         data-err-msg="Provide Valid Input" class="form-control" required />
                                 </div>
 
-                                 <!-- Author's Name  -->
+                                <!-- Author's Name  -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="conference-name" class="form-label  fw-bold">Author's Name
                                     </label>
@@ -382,8 +381,8 @@
                                     <label for="doi-weblink" class="form-label  fw-bold">
                                         DOI/Weblink of paper ID
                                     </label>
-                                    <input data-validate="isEmpty,isExist,isNumber" data-err-msg="Link is required."
-                                        type="text" name="web-link" id="doi-weblink-id" class="form-control" required />
+                                    <input data-validate="isEmpty,isExist" data-err-msg="Link is required." type="text"
+                                        name="web-link" id="doi-weblink-id" class="form-control" required />
                                 </div>
 
                                 <!-- Sponsored By NMIMS/Other -->
@@ -462,13 +461,7 @@
                                 </div>
 
                                 <!-- Faculty Type -->
-                                <div class="col-lg-12 col-md-6  col-sm-12 p-3">
-                                    <div class="box">
-                                        <div class="task-sub-title sub-title-text fw-bold"> Faculty Details Id And Name:
-                                        </div>
-                                        <label class="view-content" id="faculty-details-container"></label>
-                                    </div>
-                                </div>
+                                
                                 <!-- Inventor -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="investor-details" class="form-label fw-bold mb-3">Author Details
@@ -490,7 +483,9 @@
                                             </select>
                                         </div>
                                     </div>
+
                                     <div class="form-check-inline">
+
                                         <label for="is-external" class="form-check-label external-faculty">
                                             <input type="radio" class="form-check-input" id="is-external"
                                                 name="author-type" value="External">
@@ -498,7 +493,76 @@
                                         </label>
 
                                     </div>
+
+
+                                    <div class="form-check-inline">
+
+                                        <label for="is-external" class="form-check-label external-faculty">
+                                            <input type="radio" class="form-check-input d-none" id="is-external-update"
+                                                name="author-type" value="External">
+                                            <span id="external-text-upd" class="d-none">External</span>
+                                        </label>
+
+                                    </div>
+
+                                    <div>
+                                        <table style="width:100%;" class="table table-responsive-lg d-none "
+                                            id="externalfacultyTable">
+                                            <thead>
+                                                <th>Sr.No</th>
+                                                <th>Faculty Name</th>
+                                                <th>Faculty Address</th>
+                                                <th>Faculty Designation</th>
+                                                <th>Employee Id</th>
+                                                <th colspan>Action</th>
+                                            </thead>
+                                            <tbody id="appendFaculty">
+
+
+
+                                            </tbody>
+
+                                        </table>
+                                    </div>
                                 </div>
+
+                                <div></div>
+                                <div></div>
+
+                                <table id="faculty-table-list-upd">
+                                    <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none" id="name-class-upd">
+                                        <label for="faculty-name-upd" class="form-label fw-bold">Faculty
+                                            Name</label>
+                                        <input type="text" class="form-control" id="faculty-name-upd" required>
+                                        <span style="color:red;" id="facultyInsertError"></span>
+                                    </div>
+                                    <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none" id="dsg-class-upd">
+                                        <label for="" class="form-label fw-bold">Faculty Designation :</label>
+                                        <input type="text" class="form-control" id="faculty-designation-upd" required>
+                                        <span style="color:red;" id="desInsertError"></span>
+                                    </div>
+                                    <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none" id="id-class-upd">
+                                        <label for="faculty-emp-id-upd" class="form-label fw-bold">Faculty Id
+                                        </label>
+                                        <input type="text" class="form-control" id="faculty-emp-id-upd">
+                                        <span style="color:red;" id="empInsertError"></span>
+
+                                    </div>
+                                    <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none"
+                                        id="address-class-upd">
+                                        <label for="faculty-address" class="form-label fw-bold">Faculty
+                                            Addres</label>
+                                        <input type="text" class="form-control" id="faculty-address-upd" required>
+                                        <span style="color:red;" id="addrInsertError"></span>
+                                    </div>
+
+                                    <div class="form-group col-lg-6 col-md-6 col-sm-12 mb-4 d-none" id="add-btn-upd">
+                                        <button id="insert-details-upd" data-bs-target="#"
+                                            class="btn col-lg-4 col-md-6 col-sm-12 btn-primary" type="button">Insert
+                                            Faculty Details</button>
+                                    </div>
+                                </table>
+
                                 <div id="author-details" class="form-group col-md-12 col-sm-12 mb-4 d-none">
                                     <div class="author-details-section col-lg-12 col-md-8 col-sm-12">
                                         <label for="author-name " class="form-label fw-bold col-lg-12"> External Authors
@@ -544,7 +608,8 @@
                                             placeholder="Enter author name">
                                         <button id="add-more-details"
                                             class="btn col-md-12 btn-md btn-primary submit-btn update-btn"
-                                            type="button">Add More Details</button>
+                                            type="button">Add
+                                            More Details</button>
                                     </div>
                                 </div>
                             </div>
@@ -605,14 +670,14 @@
                                     </div>
                                 </div>
 
-                                    <!-- Name  Authors-->
-                                    <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                                        <div class="box">
-                                            <div class="task-sub-title sub-title-text">Author's Name:</div>
-                                            <label class="view-content" id="view-author-name"></label>
-                                        </div>
+                                <!-- Name  Authors-->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="task-sub-title sub-title-text">Author's Name:</div>
+                                        <label class="view-content" id="view-author-name"></label>
                                     </div>
-    
+                                </div>
+
 
                                 <!-- Place of Conference -->
                                 <div class="col-lg-4 col-md-6  col-sm-12 p-3">
@@ -644,10 +709,12 @@
                                 </div>
 
                                 <!-- Author Details  ? -->
-                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                <!-- Faculty Type -->
+                                <div class="col-lg-12 col-md-6  col-sm-12 p-3">
                                     <div class="box">
-                                        <div class="task-sub-title sub-title-text">Author Details ?:</div>
-                                        <label class="view-content" id="view-author-type"></label>
+                                        <div class="task-sub-title sub-title-text fw-bold"> Faculty Details Id And Name:
+                                        </div>
+                                        <label class="view-content" id="faculty-details-container"></label>
                                     </div>
                                 </div>
 
@@ -843,6 +910,37 @@
                         issnIsbnNo.value = '';
                         conferenceDocument.value = '';
                         conferenceProof.value = '';
+
+
+                        const employeesListData = document.getElementById('employees-list-data').dataset.employees;
+                const employeesDataObj = JSON.parse(employeesListData);
+                let employeeListArray = [];
+
+
+                // ajax for search bar to search employee name 
+                const facultyOptions = employeesDataObj.map(faculty => ({
+                    value: faculty.id,
+                    text: ` ${faculty.faculty_name}`
+                }));
+                new TomSelect("#emp-name", {
+                    options: facultyOptions,
+                    placeholder: "Select Employee Name",
+                    hidePlaceholder: true,
+                    create: true,
+                    plugins: ['remove_button'],
+                    onItemAdd: function () {
+                        this.setTextboxValue('');
+                        this.refreshOptions();
+                    },
+                    render: {
+                        option: function (data, escape) {
+                            return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                        },
+                        item: function (data, escape) {
+                            return '<div>' + escape(data.text) + '</div>';
+                        }
+                    }
+                });
                     }
                 })
 
@@ -1041,7 +1139,7 @@
                 });
 
                 // for delete
-                conferencePublicationList.addEventListener('click', (event) => {
+                conferencePublicationList.addEventListener('click', async (event) => {
                     if (event.target.classList.contains('delete')) {
                         conferenceId = event.target.getAttribute('data-conference-id');
                         console.log('id for deletion ==>', conferenceId);
@@ -1164,7 +1262,7 @@
                                     viewConferenceType.innerText = data.viewConferenceData[0].conference_type;
                                     viewIsPresenter.innerText = data.viewConferenceData[0].is_presenter;
                                     document.getElementById('view-author-name').innerText = data.viewConferenceData[0].authors_name;
-                                    viewAuthortype.innerText = data.viewConferenceData[0].author_type.replace(/,/g, ' ');
+                                    // viewAuthortype.innerText = data.viewConferenceData[0].author_type.replace(/,/g, ' ');
 
 
 
@@ -1173,6 +1271,36 @@
                                     viewOrganizationBoy.innerText = data.viewConferenceData[0].organizing_body;
                                     viewSpentAmount.innerText = data.viewConferenceData[0].spent_amount;
                                     viewPublicationDate.innerText = formatDateToYYYYMMDD(data.viewConferenceData[0].publication_date);
+
+                                    let facultyDetailsHTML = `
+                                        <table class="table" border='1px'>
+                                            <thead>
+                                                <th>#</th>
+                                                <th>Faculty Name</th>
+                                                <th>Designation</th>
+                                                <th>Address</th>
+                                                <th>Employee ID</th>
+                                            </thead>
+                                            <tbody>`;
+                                    
+                                    data.facultyDetails.forEach((faculty, index) => {
+                                        facultyDetailsHTML += `
+                            <tr>
+                                <td class="view-content">${index + 1}</td>
+                                <td class="view-content">${faculty.faculty_name}</td>
+                                <td class="view-content">${faculty.designation}</td>
+                                <td class="view-content">${faculty.address}</td>
+                                <td class="view-content">${faculty.employee_id}</td>
+                            </tr>`;
+                                    });
+
+                                    facultyDetailsHTML += `
+                            </tbody>
+                        </table>`;
+
+                                    // Set the generated faculty details HTML
+                                    document.getElementById('faculty-details-container').innerHTML = facultyDetailsHTML;
+
 
                                 }
                             })
@@ -1187,6 +1315,86 @@
                     }
                     // for update
                     if (event.target.classList.contains('edit')) {
+                        conferenceId = event.target.getAttribute('data-conference-id');
+
+                        let isExternalUpd = document.getElementById('is-external')
+                        let isExternalUpdNew = document.getElementById('is-external-update')
+
+                        let text = document.getElementById('external-text');
+                        let textnew = document.getElementById('external-text-upd');
+
+                        isExternalUpd.classList.add('d-none');
+                        isExternalUpdNew.classList.remove('d-none');
+
+                        text.classList.add('d-none');
+                        textnew.classList.remove('d-none');
+
+                        document.getElementById('name-class').classList.add('d-none');
+                        document.getElementById('dsg-class').classList.add('d-none');
+                        document.getElementById('id-class').classList.add('d-none');
+                        document.getElementById('address-class').classList.add('d-none');
+                        document.getElementById('add-btn').classList.add('d-none');
+
+                        let externalFacultyDetails = await fetchFacultyData('<%- BASE_URL %>research/external/facultyDataForConference');
+                        console.log('faculty JSON', JSON.stringify(externalFacultyDetails.facultyData))
+
+                        console.log('patentId ankit ====>>>>>', conferenceId)
+                        let externalFaculty = externalFacultyDetails.facultyData.filter(fdata => conferenceId == fdata.conference_id).map(facultyData => facultyData);
+                        console.log('new external faculty ', JSON.stringify(externalFaculty))
+
+                        let appendFaculty = document.getElementById('appendFaculty');
+                        appendFaculty.innerHTML = ''
+
+
+                        externalFaculty.forEach((ef, index) => {
+                            let htmlData = `<tr data-facultyId = ${ef.id}>
+                            
+                        <td>${index + 1}</td>
+                        <td><input id="updateFacultyName" type="text" value="${ef.faculty_name}" /></br><span style="color:red;" id='facultyUpdError'></span></td>
+                        <td ><input id="updateFacultyAddr" type="text" value="${ef.address}" /></br><span style="color:red;" id='addrUpdError'></span></td>
+                        <td ><input id="updateFacultyDes" type="text" value="${ef.designation}" /></br><span style="color:red;" id='desUpdError'></span></td>
+                        <td ><input id="updateFacultyId" type="text" value="${ef.employee_id}" /></br><span style="color:red;" id='empUpdError'></span></td>
+                        <td><button class="btn btn-primary updateFaculty">Update</button></td>
+                        </tr>`
+
+                            appendFaculty.insertAdjacentHTML('beforeEnd', htmlData);
+                        })
+
+                 
+                        
+
+
+                const employeesListData = document.getElementById('employees-list-data').dataset.employees;
+                const employeesDataObj = JSON.parse(employeesListData);
+                let employeeListArray = [];
+
+
+                // ajax for search bar to search employee name 
+                const facultyOptions = employeesDataObj.map(faculty => ({
+                    value: faculty.id,
+                    text: ` ${faculty.faculty_name}`
+                }));
+                new TomSelect("#emp-name", {
+                    options: facultyOptions,
+                    placeholder: "Select Employee Name",
+                    hidePlaceholder: true,
+                    create: true,
+                    plugins: ['remove_button'],
+                    onItemAdd: function () {
+                        this.setTextboxValue('');
+                        this.refreshOptions();
+                    },
+                    render: {
+                        option: function (data, escape) {
+                            return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                        },
+                        item: function (data, escape) {
+                            return '<div>' + escape(data.text) + '</div>';
+                        }
+                    }
+                });
+
+                     
 
 
                         document.getElementById('conference-publication').innerText = 'CONFERENCE Edit';
@@ -1203,7 +1411,6 @@
                         InternalAuthorValue = '';
                         externalAuthorValue = '';
                         storedFacultyValue = '';
-                        conferenceId = event.target.getAttribute('data-conference-id');
                         conferenceRowToBeUpdated = event.target.closest('tr');
                         console.log('conferenceRowToBeUpdated ====>>>>>', conferenceRowToBeUpdated)
                         console.log('ID ==>>', conferenceId);
@@ -1287,6 +1494,8 @@
                     }
                 });
 
+                
+
                 const updateConferencePublication = async (url) => {
                     console.log('clickedddd')
                     const updatedConferenceData = new FormData();
@@ -1310,7 +1519,7 @@
                     const conferenceType = document.querySelector('input[name="conference-type"]:checked').value;
                     const presentationAward = document.querySelector('input[name="award-for-presentation"]:checked').value;
                     const authorsName = document.getElementById('author-name').value;
-    
+
                     console.log('storedFacultyValue ===>>>>', storedFacultyValue)
                     //function call 
                     await updateFacultyNameString(updatedAuthorType, updatedConferenceData, storedFacultyValue);
@@ -1524,35 +1733,35 @@
                 const enternalText = document.getElementById('enternal-text');
 
                 // employeesListData data came from backend
-                const employeesListData = document.getElementById('employees-list-data').dataset.employees;
-                const employeesDataObj = JSON.parse(employeesListData);
-                let employeeListArray = [];
+                // const employeesListData = document.getElementById('employees-list-data').dataset.employees;
+                // const employeesDataObj = JSON.parse(employeesListData);
+                // let employeeListArray = [];
 
 
-                // ajax for search bar to search employee name 
-                const facultyOptions = employeesDataObj.map(faculty => ({
-                    value: faculty.id,
-                    text: ` ${faculty.faculty_name}`
-                }));
-                new TomSelect("#emp-name", {
-                    options: facultyOptions,
-                    placeholder: "Select Employee Name",
-                    hidePlaceholder: true,
-                    create: true,
-                    plugins: ['remove_button'],
-                    onItemAdd: function () {
-                        this.setTextboxValue('');
-                        this.refreshOptions();
-                    },
-                    render: {
-                        option: function (data, escape) {
-                            return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
-                        },
-                        item: function (data, escape) {
-                            return '<div>' + escape(data.text) + '</div>';
-                        }
-                    }
-                });
+                // // ajax for search bar to search employee name 
+                // const facultyOptions = employeesDataObj.map(faculty => ({
+                //     value: faculty.id,
+                //     text: ` ${faculty.faculty_name}`
+                // }));
+                // new TomSelect("#emp-name", {
+                //     options: facultyOptions,
+                //     placeholder: "Select Employee Name",
+                //     hidePlaceholder: true,
+                //     create: true,
+                //     plugins: ['remove_button'],
+                //     onItemAdd: function () {
+                //         this.setTextboxValue('');
+                //         this.refreshOptions();
+                //     },
+                //     render: {
+                //         option: function (data, escape) {
+                //             return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                //         },
+                //         item: function (data, escape) {
+                //             return '<div>' + escape(data.text) + '</div>';
+                //         }
+                //     }
+                // });
                 const authorNamesArray = [];
                 // function for select author name from drop down list
                 function handleEmployeeDropdownChange() {
@@ -1629,6 +1838,14 @@
                     document.getElementById('id-class').classList.remove('d-none')
                     document.getElementById('address-class').classList.remove('d-none');
                     document.getElementById('add-btn').classList.remove('d-none')
+
+                    document.getElementById('name-class-upd').classList.add('d-none');
+                    document.getElementById('dsg-class-upd').classList.add('d-none');
+                    document.getElementById('id-class-upd').classList.add('d-none');
+                    document.getElementById('address-class-upd').classList.add('d-none');
+                    document.getElementById('add-btn-upd').classList.add('d-none');
+
+                    document.getElementById('externalfacultyTable').classList.add('d-none')
                 }
 
                 // making d-none external faculty
@@ -1701,8 +1918,9 @@
                             return result.json()
                         })
                         .then((data) => {
-                        
-                            if (data.status == 'Done') {
+                            console.log('data ===>>>>> ankit ', data);
+
+                            if (data.status === 'Done') {
                                 console.log('data ===>>>>> ankit ', data);
                                 facultycontainer.push(data.externalFacultyId)
                                 // let rowCountInteger = parseInt(data.rowCount, 10);
@@ -1726,7 +1944,7 @@
                     `
                                 facultyTableList.classList.remove('d-none')
                                 facultyTableList.appendChild(newFacultyDataRow);
-                                 Swal.fire({
+                                Swal.fire({
                                     position: "top-center",
                                     icon: "success",
                                     title: `${data.message}`,
@@ -1787,7 +2005,286 @@
                     }
                 });
 
+                document.getElementById('is-external-update').addEventListener('click', () => {
+                    let is_checked = document.getElementById('is-external-update');
+                    console.log('check box checked')
+
+                    if (is_checked.checked) {
+                        document.getElementById('externalfacultyTable').classList.remove('d-none')
+                        document.getElementById('name-class-upd').classList.remove('d-none');
+                        document.getElementById('dsg-class-upd').classList.remove('d-none');
+                        document.getElementById('id-class-upd').classList.remove('d-none');
+                        document.getElementById('address-class-upd').classList.remove('d-none');
+                        document.getElementById('add-btn-upd').classList.remove('d-none');
+                    } else {
+                        document.getElementById('externalfacultyTable').classList.add('d-none')
+                        document.getElementById('faculty-table-list-upd').classList.add('d-none');
+
+                    }
+                })
+
+                document.addEventListener('click', (event) => {
+
+                    if (event.target.classList.contains('updateFaculty')) {
+                        let facultyId = event.target.closest('tr').getAttribute('data-facultyId')
+                        console.log('button clicked with id ', facultyId)
+                        let tr = event.target.closest('tr');
+                        let facultyName = tr.querySelector('#updateFacultyName').value
+                        let facultyDesignation = tr.querySelector('#updateFacultyDes').value
+                        let facultyAddr = tr.querySelector('#updateFacultyAddr').value
+                        let empId = tr.querySelector('#updateFacultyId').value
+
+                        let addrError = (facultyAddr != '') ? true : false;
+                        if (addrError) {
+                            document.getElementById('addrUpdError').innerText = '';
+                        } else {
+                            document.getElementById('addrUpdError').innerText = 'Address is Required';
+                        }
+
+                        let facultyError = checkAlphabets(facultyName, 'facultyUpdError');
+                        let designationError = checkAlphabets(facultyDesignation, 'desUpdError');
+                        let empError = checkEmpError(empId, 'empUpdError');
+                        let externalFacultyDetails;
+
+                        if (addrError && facultyError && designationError && empError) {
+
+                            externalFacultyDetails = {
+                                facultyId: facultyId, facultyName: facultyName,
+                                facultyDesignation: facultyDesignation, facultyAddr: facultyAddr, empId: empId
+                            }
+
+                            let obj = externalFacultyDetails
+                            upsertFacultyData('<%- BASE_URL %>research/external/faculty-updateData', obj, tr)
+                        }
+
+                    }
+                })
+
+
+                function upsertFacultyData(url, obj, tr) {
+                    fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'content-type': 'application/json'
+                        },
+                        body: JSON.stringify(obj)
+                    })
+                        .then((result) => {
+                            return result.json()
+                        })
+                        .then((data) => {
+                            if (data.status === 'Done') {
+
+                                console.log('response >> ', data)
+
+                                Swal.fire({
+                                    position: "top-center",
+                                    icon: "success",
+                                    title: `${data.message}`,
+                                    showConfirmButton: true,
+                                    confirmButtonText: "OK",
+                                    confirmButtonColor: "#DD6B55"
+                                }).then(() => {
+                                    console.log('object ', JSON.stringify(obj))
+                                    tr.querySelector('#updateFacultyName').value = obj.facultyName
+                                    tr.querySelector('#updateFacultyDes').value = obj.facultyDesignation
+                                    tr.querySelector('#updateFacultyAddr').value = obj.facultyAddr
+                                    tr.querySelector('#updateFacultyId').value = obj.empId
+                                })
+                            }
+                        })
+                }
+
+                function checkAlphabets(facultyName, idName) {
+
+                    let facultyError = document.getElementById(idName);
+
+                    // if (facultyName.length == 0 && idName === 'facultyError' || ) {
+                    //     facultyError.innerText = "Name is Required";
+                    //     return false;
+                    // }
+
+                    // if (facultyName.length == 0 && idName === 'desError') {
+                    //     facultyError.innerText = "Designation is Required";
+                    //     return false;
+                    // }
+
+                    if (!facultyName || facultyName.trim() === "") {
+                        facultyError.innerText = "Provide Valid Input";
+                        return false;
+                    }
+
+                    const words = facultyName.split(" ");
+
+                    for (const word of words) {
+                        for (let i = 0; i < word.length; i++) {
+                            const charCode = word.charCodeAt(i);
+                            if (
+                                (charCode < 65 || charCode > 90) &&
+                                (charCode < 97 || charCode > 122)
+                            ) {
+                                facultyError.innerText = "Provide Valid Input";
+                                return false;
+                            }
+                        }
+                    }
+
+                    facultyError.innerText = "";
+                    return true;
+                }
+
+                function checkEmpError(facultyEmpId, errid) {
+                    let empError = document.getElementById(errid);
+                    let bool = true;
+
+                    if (facultyEmpId.length === 0) {
+                        empError.innerText = 'Provide Valid Input';
+                        return false;
+                    }
+
+                    for (let i = 0; i < facultyEmpId.length; i++) {
+                        const charCode = facultyEmpId.charAt(i);
+                        if (!(charCode >= '0' && charCode <= '9')) {
+                            empError.innerText = 'Provide Valid Input';
+                            bool = false;
+                            break;
+                        }
+                    }
+
+                    if (bool) {
+                        empError.innerText = '';
+                    }
+
+                    return bool;
+                }
+
+
+                document.getElementById('insert-details-upd').addEventListener('click', () => {
+
+
+                    let facultyNameUpd = document.getElementById('faculty-name-upd');
+                    let facultyDesignationUpd = document.getElementById('faculty-designation-upd');
+                    let facultyAddrUpd = document.getElementById('faculty-address-upd');
+                    let facultyEmpUpd = document.getElementById('faculty-emp-id-upd');
+
+                    let facultyName = facultyNameUpd.value;
+                    let facultyDesignation = facultyDesignationUpd.value;
+                    let facultyAddr = facultyAddrUpd.value;
+                    let facultyEmp = facultyEmpUpd.value;
+
+                    let addrError = (facultyAddr != '') ? true : false;
+                    if (addrError) {
+                        document.getElementById('addrInsertError').innerText = '';
+                    } else {
+                        document.getElementById('addrInsertError').innerText = 'Address is Required';
+                    }
+
+                    let facultyError = checkAlphabets(facultyName, 'facultyInsertError');
+                    let designationError = checkAlphabets(facultyDesignation, 'desInsertError');
+                    let empError = checkEmpError(facultyEmp, 'empInsertError');
+
+                    if (addrError && facultyError && designationError && empError) {
+
+                        console.log('clickedd insert details buttons')
+                        upsertExternalDetails('<%- BASE_URL %>research/external/faculty-conferenceInsert');
+                    }
+                });
+
+
+                const upsertExternalDetails = (url) => {
+                    let facultyNameUpd = document.getElementById('faculty-name-upd');
+                    let facultyDesignationUpd = document.getElementById('faculty-designation-upd');
+                    let facultyAddrUpd = document.getElementById('faculty-address-upd');
+                    let facultyEmpUpd = document.getElementById('faculty-emp-id-upd');
+
+                    let facultyName = facultyNameUpd.value;
+                    let facultyDesignation = facultyDesignationUpd.value;
+                    let facultyAddr = facultyAddrUpd.value;
+                    let facultyEmp = facultyEmpUpd.value;
+
+
+                    let externalFacultyDetails = {
+                        facultyEmpId: facultyEmp,
+                        facultyName: facultyName,
+                        facultyDsg: facultyDesignation,
+                        facultyAddr: facultyAddr,
+                    }
+
+                    console.log('json string ', JSON.stringify(externalFacultyDetails))
+
+                    let payload = { externalFacultyDetails, conferenceId };
+
+                    fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'content-type': 'application/json'
+                        },
+                        body: JSON.stringify(payload)
+                    })
+                        .then((result) => {
+                            return result.json()
+                        })
+                        .then((data) => {
+                            if (data.status === 'Done') {
+
+                                console.log('response >> ', data)
+
+                                Swal.fire({
+                                    position: "top-center",
+                                    icon: "success",
+                                    title: `${data.message}`,
+                                    showConfirmButton: true,
+                                    confirmButtonText: "OK",
+                                    confirmButtonColor: "#DD6B55"
+                                }).then(() => {
+
+                                    let appendFaculty = document.getElementById('appendFaculty');
+                                    let allTds = appendFaculty.querySelectorAll('tr');
+
+                                    let htmlData = `<tr data-facultyId = ${data.conferenceId}>
+
+                                                                        <td>${allTds.length + 1}</td>
+                                                                        <td><input id="updateFacultyName" type="text" value=${facultyName} /></br><span style="color:red;" id='facultyUpdError'></span></td>
+                                                                        <td ><input id="updateFacultyAddr" type="text" value=${facultyAddr} /></br><span style="color:red;" id='addrUpdError'></span></td>
+                                                                        <td ><input id="updateFacultyDes" type="text" value=${facultyDesignation} /></br><span style="color:red;" id='desUpdError'></span></td>
+                                                                        <td ><input id="updateFacultyId" type="text" value=${facultyEmp} /></br><span style="color:red;" id='empUpdError'></span></td>
+                                                                        <td><button class="btn btn-primary updateFaculty">Update</button></td>
+                                                                        </tr>`
+
+                                    appendFaculty.insertAdjacentHTML('beforeEnd', htmlData);
+
+
+
+                                });
+                            }
+                        }).catch((error) => {
+                            console.error("ERROR:", error);
+                        })
+                }
+
+
+    async function fetchFacultyData(url) {
+        let requestDetails = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json'
+            }
+        }
+
+        let data;
+        let response = await fetch(url, requestDetails);
+        if (response.ok) {
+            data = await response.json();
+            return data;
+        } else {
+            throw new Error('Error in fetching data')
+        }
+    }
+
+
+    
+       
             </script>
             <!-- <%- include('./partials/pagination') %> -->
             <%- include('./partials/footer') %>
-                <%- include('./partials/footer-end') %>
+                <%- include('./partials/footer-end') %>s

@@ -221,7 +221,7 @@
                     <div class="modal-content modal-content-data validate-input">
                         <div class="modal-header">
                             <h4 class="modal-title" id="journal-paper-title">Journal Article Published</h4>
-                            <div class="close" data-dismiss="modal" aria-label="Close">
+                            <div class="close" id="headerClose" data-dismiss="modal" aria-label="Close">
                                 <span type="button" aria-hidden="true"><i class="fas fa-times "></i></span>
                             </div>
                         </div>
@@ -340,7 +340,7 @@
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="journalName" class="form-label fw-bold">Journal Name</label>
                                     <input type="text" name="journal-name" id="journal-name"
-                                        data-validate="isEmpty,isLength:2:255"
+                                        data-validate="isEmpty,isExist,isAllNumeric,isLength:2:255"
                                         data-err-msg="This field is required and min length > 1." class="form-control"
                                         required>
                                 </div>
@@ -451,11 +451,11 @@
                                             <input type="checkbox" name="uploadNewSupportDocument" id="uploadNewSupportDocument">
                                         </div>
                                     </label>
-                                    <div class="d-flex">
+                                    <div class="d-flex ">
                                         <input type="file" name="journal-article-documents"
-                                            id="journal-article-documents" class="col-md-12 form-control"
+                                            id="journal-article-documents" class="col-md-8 form-control"
                                             data-validate="isEmpty,isExist,isFile" data-err-msg="File is required."
-                                            required multiple>
+                                            required multiple >
                                         <button class="download-btn download-file d-none" id="journal-data-file-edit"><i
                                                 class="fas fa-download text-danger"></i>Download</button>
                                     </div>
@@ -555,7 +555,7 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" id="footerClose" class="btn btn-secondary" data-dismiss="modal">Close</button>
                             <button type="button" class="btn btn-primary d-none" id="submit-btn">Submit</button>
                             <button type="button" class="btn btn-primary d-none " id="update-btn">Update</button>
                         </div>
@@ -899,6 +899,196 @@
                         });
                         // 
                         document.getElementById('nmims-authors-count').value = '';
+
+                        
+                        const nmimsSchoolList = document.getElementById('school-data-list').dataset.school;
+
+                        const schoolDataList = JSON.parse(nmimsSchoolList);
+
+                        const selectedSchool = schoolDataList.map(school => ({
+                            value: school.id,
+                            text: `${school.school_name}`
+                        }));
+
+                        new TomSelect("#nmims-school-list", {
+                            options: selectedSchool,
+                            placeholder : "Select Options",
+                            hidePlaceholder : true,
+                            hidePlaceholder : true,
+                            create: true,
+                            plugins: ['remove_button'],
+                            onItemAdd:function(){
+                                this.setTextboxValue('');
+                                this.refreshOptions();
+                            },
+                            render:{
+                                option:function(data,escape){
+                                    return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                                },
+                                item:function(data,escape){
+                                    return '<div>' + escape(data.text) + '</div>';
+                                }
+                            }
+                        });
+
+
+                        const nmimsCampusList = document.getElementById('campus-data-list').dataset.campus;
+            
+            const campusDataList = JSON.parse(nmimsCampusList);
+
+             const selectedCampus = campusDataList.map(campus => ({
+                 value: campus.id,
+                 text: `${campus.campus_name}`
+             }));
+
+             new TomSelect("#nmims-campus-list", {
+         options: selectedCampus,
+         placeholder : "Select Options",
+         hidePlaceholder : true,
+         hidePlaceholder : true,
+         create: true,
+         plugins: ['remove_button'],
+         onItemAdd:function(){
+             this.setTextboxValue('');
+             this.refreshOptions();
+         },
+         render:{
+             option:function(data,escape){
+                 return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+             },
+             item:function(data,escape){
+                 return '<div>' + escape(data.text) + '</div>';
+             }
+         }
+     });
+
+
+             const policyCadreList = document.getElementById('policy-cadre-data-list').dataset.policy;
+             
+             const policyCadreDataList = JSON.parse(policyCadreList);
+
+             const selectPolicyCadre = policyCadreDataList.map(cadre => ({
+                 value: cadre.id,
+                 text: `${cadre.cadre_name}`
+             }));
+
+             new TomSelect("#policy-cadre-list", {
+                 options: selectPolicyCadre,
+                 placeholder : "Select Options",
+                 hidePlaceholder : true,
+                 hidePlaceholder : true,
+                 create: true,
+                 plugins: ['remove_button'],
+                 onItemAdd:function(){
+                     this.setTextboxValue('');
+                     this.refreshOptions();
+                 },
+                 render:{
+                     option:function(data,escape){
+                         return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                     },
+                     item:function(data,escape){
+                         return '<div>' + escape(data.text) + '</div>';
+                     }
+                 }
+             });
+                
+
+              const allAuthorsList = document.getElementById('all-author-data-list').dataset.author;
+
+              const allAuthorDataList = JSON.parse(allAuthorsList);
+
+             const selectedAuthors = allAuthorDataList.map(author => ({
+                 value: author.id,
+                 text: ` ${author.employee_id}  ${author.faculty_name}`
+             }));
+
+             new TomSelect("#all-author-list", {
+                 options: selectedAuthors,
+                 placeholder : "Select Options",
+                 hidePlaceholder : true,
+                 hidePlaceholder : true,
+                 create: true,
+                 plugins: ['remove_button'],
+                 onItemAdd:function(){
+                     this.setTextboxValue('');
+                     this.refreshOptions();
+                 },
+                 render:{
+                     option:function(data,escape){
+                         return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                     },
+                     item:function(data,escape){
+                         return '<div>' + escape(data.text) + '</div>';
+                     }
+                 }
+             });
+           
+
+             const impactFactorList = document.getElementById('impact-factor-data-list').dataset.factor;
+        
+                const impactFactorDataList = JSON.parse(impactFactorList);
+
+                const selectImpcatFactor = impactFactorDataList.map(factor => ({
+                                    value: factor.id,
+                                    text: `${factor.impact_factor}`
+                                }));
+
+              
+                new TomSelect("#impact-factor-list", {
+                    options: selectImpcatFactor,
+                    placeholder : "Select Options",
+                    hidePlaceholder : true,
+                    hidePlaceholder : true,
+                    create: true,
+                    plugins: ['remove_button'],
+                    onItemAdd:function(){
+                        this.setTextboxValue('');
+                        this.refreshOptions();
+                    },
+                    render:{
+                        option:function(data,escape){
+                            return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                        },
+                        item:function(data,escape){
+                            return '<div>' + escape(data.text) + '</div>';
+                        }
+                    }
+                });
+
+                
+                const inetrnalnmimsFaculty = document.getElementById('employees-list-data').dataset.employees;
+           
+                const nmimsFacultyDataList = JSON.parse(inetrnalnmimsFaculty);
+
+                const selectInternalNmimsFaculty = nmimsFacultyDataList.map(faculty => ({
+                    value: faculty.id,
+                    text: ` ${faculty.employee_id}  ${faculty.faculty_name}`
+                }));
+
+
+
+                new TomSelect("#internal-faculty-list", {
+                    options: selectInternalNmimsFaculty,
+                    placeholder : "Select Options",
+                    hidePlaceholder : true,
+                    hidePlaceholder : true,
+                    create: true,
+                    plugins: ['remove_button'],
+                    onItemAdd:function(){
+                        this.setTextboxValue('');
+                        this.refreshOptions();
+                    },
+                    render:{
+                        option:function(data,escape){
+                            return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                        },
+                        item:function(data,escape){
+                            return '<div>' + escape(data.text) + '</div>';
+                        }
+                    }
+                });
+
 
                     }
                 })
@@ -1274,8 +1464,10 @@
                         console.log('journalCategory ===>>>>>>', journalCategory);
 
             
-                        // For journal category
-                        journalCategory === '1' ? journalCategoryNational.checked = true : journalCategoryInternational.checked = true;
+                        // // For journal category
+                          journalCategory === '1' ? journalCategoryNational.checked = true : journalCategoryInternational.checked = true;
+
+                        // journalCategory === '1' ? journalcampusIdsArrayCategoryNational.checked = true : journalCategoryInternational.checked = true;
 
                         // For SCS indexed category
                         scsIndexedYes.checked = scsIndexedCategory === 'Yes';
@@ -1294,210 +1486,258 @@
                         ugcIndexedNo.checked = ugcIndexedCategory !== 'Yes';
 
 
-                // const nmimsSchoolList = document.getElementById('school-data-list').dataset.school;
-                // const nmimsCampusList = document.getElementById('campus-data-list').dataset.campus;
-                // const policyCadreList = document.getElementById('policy-cadre-data-list').dataset.policy;
-                // const impactFactorList = document.getElementById('impact-factor-data-list').dataset.factor;
-                // const inetrnalnmimsFaculty = document.getElementById('employees-list-data').dataset.employees;
-                // const allAuthorsList = document.getElementById('all-author-data-list').dataset.author;
+                        const nmimsSchoolList = document.getElementById('school-data-list').dataset.school;
+
+                        const schoolDataList = JSON.parse(nmimsSchoolList);
+
+                        let schoolArr = [];
+
+                        Array.from(schoolDataList).forEach(data => {
+                            Array.from(schoolIdsArray).forEach(sd => {
+                                if(data.id == sd){
+                                schoolArr.push(data.id)
+                                }
+                            })
+                        })
+
+                        const selectedSchool = schoolDataList.map(school => ({
+                            value: school.id,
+                            text: `${school.school_name}`
+                        }));
+
+                        new TomSelect("#nmims-school-list", {
+                            options: selectedSchool,
+                            items : schoolArr,
+                            // placeholder : "Select Options",
+                            hidePlaceholder : true,
+                            hidePlaceholder : true,
+                            create: true,
+                            plugins: ['remove_button'],
+                            onItemAdd:function(){
+                                this.setTextboxValue('');
+                                this.refreshOptions();
+                            },
+                            render:{
+                                option:function(data,escape){
+                                    return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                                },
+                                item:function(data,escape){
+                                    return '<div>' + escape(data.text) + '</div>';
+                                }
+                            }
+                        });
+
+                        const nmimsCampusList = document.getElementById('campus-data-list').dataset.campus;
+            
+                       const campusDataList = JSON.parse(nmimsCampusList);
+
+                       let cmpArray = [];
+
+                       Array.from(campusDataList).forEach(data => {
+                        Array.from(campusIdsArray).forEach(cmp => {
+                            if(data.id == cmp){
+                                cmpArray.push(data.id)
+                            }
+                        })
+                       })
+
+                        const selectedCampus = campusDataList.map(campus => ({
+                            value: campus.id,
+                            text: `${campus.campus_name}`
+                        }));
+
+                        new TomSelect("#nmims-campus-list", {
+                    options: selectedCampus,
+                    items:cmpArray,
+                    // placeholder : "Select Options",
+                    hidePlaceholder : true,
+                    hidePlaceholder : true,
+                    create: true,
+                    plugins: ['remove_button'],
+                    onItemAdd:function(){
+                        this.setTextboxValue('');
+                        this.refreshOptions();
+                    },
+                    render:{
+                        option:function(data,escape){
+                            return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                        },
+                        item:function(data,escape){
+                            return '<div>' + escape(data.text) + '</div>';
+                        }
+                    }
+                });
+
+
+                const policyCadreList = document.getElementById('policy-cadre-data-list').dataset.policy;
+             
+                const policyCadreDataList = JSON.parse(policyCadreList);
+
+                let policyArr = []
+
+                Array.from(policyCadreDataList).forEach(data => {
+                    Array.from(policyCadreIdsArray).forEach(pr => {
+                        if(data.id == pr){
+                            policyArr.push(data.id)
+                        }
+                    })
+                })
+
+                const selectPolicyCadre = policyCadreDataList.map(cadre => ({
+                    value: cadre.id,
+                    text: `${cadre.cadre_name}`
+                }));
+
+                new TomSelect("#policy-cadre-list", {
+                    options: selectPolicyCadre,
+                    items: policyArr,
+                    // placeholder : "Select Options",
+                    hidePlaceholder : true,
+                    hidePlaceholder : true,
+                    create: true,
+                    plugins: ['remove_button'],
+                    onItemAdd:function(){
+                        this.setTextboxValue('');
+                        this.refreshOptions();
+                    },
+                    render:{
+                        option:function(data,escape){
+                            return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                        },
+                        item:function(data,escape){
+                            return '<div>' + escape(data.text) + '</div>';
+                        }
+                    }
+                });
+                   
+
+                 const allAuthorsList = document.getElementById('all-author-data-list').dataset.author;
+
+                 const allAuthorDataList = JSON.parse(allAuthorsList);
+
+                 let authArr = []
+
+                 Array.from(allAuthorDataList).forEach(data => {
+                    Array.from(allArticleAuthorsIdsArray).forEach(author => {
+                       if(data.id == author){
+                        authArr.push(data.id)
+                       }
+                    })
+                 })
+
+                const selectedAuthors = allAuthorDataList.map(author => ({
+                    value: author.id,
+                    text: ` ${author.employee_id}  ${author.faculty_name}`
+                }));
+
+                new TomSelect("#all-author-list", {
+                    options: selectedAuthors,
+                    items : authArr,
+                   // placeholder : "Select Options",
+                    hidePlaceholder : true,
+                    hidePlaceholder : true,
+                    create: true,
+                    plugins: ['remove_button'],
+                    onItemAdd:function(){
+                        this.setTextboxValue('');
+                        this.refreshOptions();
+                    },
+                    render:{
+                        option:function(data,escape){
+                            return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                        },
+                        item:function(data,escape){
+                            return '<div>' + escape(data.text) + '</div>';
+                        }
+                    }
+                });
+
+
+                const impactFactorList = document.getElementById('impact-factor-data-list').dataset.factor;
+        
+                const impactFactorDataList = JSON.parse(impactFactorList);
+
+                let selectedImpArr = [];
+
+                Array.from(impactFactorDataList).forEach(data => {
+                    Array.from(impactFactorIdsArray).forEach(imp => {
+                        if(data.id == imp){
+                            selectedImpArr.push(data.id);
+                        }
+                    })
+                })
+
+                const selectImpcatFactor = impactFactorDataList.map(factor => ({
+                                    value: factor.id,
+                                    text: `${factor.impact_factor}`
+                                }));
+
+              
+                new TomSelect("#impact-factor-list", {
+                    options: selectImpcatFactor,
+                    items: selectedImpArr,
+                    // placeholder : "Select Options",
+                    hidePlaceholder : true,
+                    hidePlaceholder : true,
+                    create: true,
+                    plugins: ['remove_button'],
+                    onItemAdd:function(){
+                        this.setTextboxValue('');
+                        this.refreshOptions();
+                    },
+                    render:{
+                        option:function(data,escape){
+                            return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                        },
+                        item:function(data,escape){
+                            return '<div>' + escape(data.text) + '</div>';
+                        }
+                    }
+                });
+
+
+                const inetrnalnmimsFaculty = document.getElementById('employees-list-data').dataset.employees;
+           
+                const nmimsFacultyDataList = JSON.parse(inetrnalnmimsFaculty);
+
+                let facultyArr = []
+
+                Array.from(nmimsFacultyDataList).forEach(data => {
+                    Array.from(nmimsAuthorsIdsArray).forEach(emp => {
+                        if(data.id == emp ){
+                            facultyArr.push(data.id)
+                        }
+                    })
+                })
+
+                const selectInternalNmimsFaculty = nmimsFacultyDataList.map(faculty => ({
+                    value: faculty.id,
+                    text: ` ${faculty.employee_id}  ${faculty.faculty_name}`
+                }));
 
 
 
-                // const schoolDataList = JSON.parse(nmimsSchoolList);
-                // const campusDataList = JSON.parse(nmimsCampusList);
-                // const policyCadreDataList = JSON.parse(policyCadreList);
-                // const impactFactorDataList = JSON.parse(impactFactorList);
-                // const nmimsFacultyDataList = JSON.parse(inetrnalnmimsFaculty);
-                // const allAuthorDataList = JSON.parse(allAuthorsList);
-
-                // let selectedFacultySchool = [];
-
-                // schoolDataList.forEach(data => {
-                //     campusIdsArray.forEach(cmp => {
-                //         if(cmp.id == data.id){
-                //             selectedFacultySchool.push(cmp.id)
-                //         }
-                //     })
-                // })
-                
-
-
-
-
-                // ajax for search bar to search status
-                // const selectedSchool = schoolDataList.map(school => ({
-                //     value: school.id,
-                //     text: `${school.school_name}`
-                // }));
-
-                // ajax for search bar to search status
-                // const selectedCampus = campusDataList.map(campus => ({
-                //     value: campus.id,
-                //     text: `${campus.campus_name}`
-                // }));
-
-                // ajax for search bar to search policy cadre
-                // const selectPolicyCadre = policyCadreDataList.map(cadre => ({
-                //     value: cadre.id,
-                //     text: `${cadre.cadre_name}`
-                // }));
-
-                // ajax for search bar to search impcat factor
-                // const selectImpcatFactor = impactFactorDataList.map(factor => ({
-                //     value: factor.id,
-                //     text: `${factor.impact_factor}`
-                // }));
-
-                // ajax for search bar to search impcat factor
-                // const selectInternalNmimsFaculty = nmimsFacultyDataList.map(faculty => ({
-                //     value: faculty.id,
-                //     text: ` ${faculty.employee_id}  ${faculty.faculty_name}`
-                // }));
-
-                // ajax for search bar to search all authors
-                // const selectedAuthors = allAuthorDataList.map(author => ({
-                //     value: author.id,
-                //     text: ` ${author.employee_id}  ${author.faculty_name}`
-                // }));
-
-                // new TomSelect("#nmims-campus-list", {
-                //     options: selectedCampus,
-                //     placeholder : "Select Options",
-                //     hidePlaceholder : true,
-                //     hidePlaceholder : true,
-                //     create: true,
-                //     plugins: ['remove_button'],
-                //     onItemAdd:function(){
-                //         this.setTextboxValue('');
-                //         this.refreshOptions();
-                //     },
-                //     render:{
-                //         option:function(data,escape){
-                //             return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
-                //         },
-                //         item:function(data,escape){
-                //             return '<div>' + escape(data.text) + '</div>';
-                //         }
-                //     }
-                // });
-
-            //     if(tomSelectInstance){
-
-            //     tomSelectInstance.destroy();    
-            //     new TomSelect("#nmims-school-list", {
-            //         options: selectedSchool,
-            //         items : selectedFacultySchool,
-            //         placeholder : "Select Options",
-            //         hidePlaceholder : true,
-            //         hidePlaceholder : true,
-            //         create: true,
-            //         plugins: ['remove_button'],
-            //         onItemAdd:function(){
-            //             this.setTextboxValue('');
-            //             this.refreshOptions();
-            //         },
-            //         render:{
-            //             option:function(data,escape){
-            //                 return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
-            //             },
-            //             item:function(data,escape){
-            //                 return '<div>' + escape(data.text) + '</div>';
-            //             }
-            //         }
-            //     });
-            // }
-
-                // new TomSelect("#policy-cadre-list", {
-                //     options: selectPolicyCadre,
-                //     placeholder : "Select Options",
-                //     hidePlaceholder : true,
-                //     hidePlaceholder : true,
-                //     create: true,
-                //     plugins: ['remove_button'],
-                //     onItemAdd:function(){
-                //         this.setTextboxValue('');
-                //         this.refreshOptions();
-                //     },
-                //     render:{
-                //         option:function(data,escape){
-                //             return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
-                //         },
-                //         item:function(data,escape){
-                //             return '<div>' + escape(data.text) + '</div>';
-                //         }
-                //     }
-                // });
-
-                // new TomSelect("#impact-factor-list", {
-                //     options: selectImpcatFactor,
-                //     placeholder : "Select Options",
-                //     hidePlaceholder : true,
-                //     hidePlaceholder : true,
-                //     create: true,
-                //     plugins: ['remove_button'],
-                //     onItemAdd:function(){
-                //         this.setTextboxValue('');
-                //         this.refreshOptions();
-                //     },
-                //     render:{
-                //         option:function(data,escape){
-                //             return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
-                //         },
-                //         item:function(data,escape){
-                //             return '<div>' + escape(data.text) + '</div>';
-                //         }
-                //     }
-                // });
-
-                // new TomSelect("#internal-faculty-list", {
-                //     options: selectInternalNmimsFaculty,
-                //     placeholder : "Select Options",
-                //     hidePlaceholder : true,
-                //     hidePlaceholder : true,
-                //     create: true,
-                //     plugins: ['remove_button'],
-                //     onItemAdd:function(){
-                //         this.setTextboxValue('');
-                //         this.refreshOptions();
-                //     },
-                //     render:{
-                //         option:function(data,escape){
-                //             return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
-                //         },
-                //         item:function(data,escape){
-                //             return '<div>' + escape(data.text) + '</div>';
-                //         }
-                //     }
-                // });
-
-                // new TomSelect("#all-author-list", {
-                //     options: selectedAuthors,
-                //     placeholder : "Select Options",
-                //     hidePlaceholder : true,
-                //     hidePlaceholder : true,
-                //     create: true,
-                //     plugins: ['remove_button'],
-                //     onItemAdd:function(){
-                //         this.setTextboxValue('');
-                //         this.refreshOptions();
-                //     },
-                //     render:{
-                //         option:function(data,escape){
-                //             return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
-                //         },
-                //         item:function(data,escape){
-                //             return '<div>' + escape(data.text) + '</div>';
-                //         }
-                //     }
-                // });
-
-               
-
-
-
-
-
-
+                new TomSelect("#internal-faculty-list", {
+                    options: selectInternalNmimsFaculty,
+                    items : facultyArr,
+                    // placeholder : "Select Options",
+                    hidePlaceholder : true,
+                    hidePlaceholder : true,
+                    create: true,
+                    plugins: ['remove_button'],
+                    onItemAdd:function(){
+                        this.setTextboxValue('');
+                        this.refreshOptions();
+                    },
+                    render:{
+                        option:function(data,escape){
+                            return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                        },
+                        item:function(data,escape){
+                            return '<div>' + escape(data.text) + '</div>';
+                        }
+                    }
+                });
 
 
 
@@ -1840,183 +2080,183 @@
                 });
 
 
-                const nmimsSchoolList = document.getElementById('school-data-list').dataset.school;
-                const nmimsCampusList = document.getElementById('campus-data-list').dataset.campus;
-                const policyCadreList = document.getElementById('policy-cadre-data-list').dataset.policy;
-                const impactFactorList = document.getElementById('impact-factor-data-list').dataset.factor;
+            //    const nmimsSchoolList = document.getElementById('school-data-list').dataset.school;
+             //   const nmimsCampusList = document.getElementById('campus-data-list').dataset.campus;
+             //   const policyCadreList = document.getElementById('policy-cadre-data-list').dataset.policy;
+             //   const impactFactorList = document.getElementById('impact-factor-data-list').dataset.factor;
                 const inetrnalnmimsFaculty = document.getElementById('employees-list-data').dataset.employees;
-                const allAuthorsList = document.getElementById('all-author-data-list').dataset.author;
+            //    const allAuthorsList = document.getElementById('all-author-data-list').dataset.author;
 
 
 
-                const schoolDataList = JSON.parse(nmimsSchoolList);
-                const campusDataList = JSON.parse(nmimsCampusList);
-                const policyCadreDataList = JSON.parse(policyCadreList);
-                const impactFactorDataList = JSON.parse(impactFactorList);
+             //   const schoolDataList = JSON.parse(nmimsSchoolList);
+               // const campusDataList = JSON.parse(nmimsCampusList);
+             //   const policyCadreDataList = JSON.parse(policyCadreList);
+               // const impactFactorDataList = JSON.parse(impactFactorList);
                 const nmimsFacultyDataList = JSON.parse(inetrnalnmimsFaculty);
-                const allAuthorDataList = JSON.parse(allAuthorsList);
+             //   const allAuthorDataList = JSON.parse(allAuthorsList);
 
                 // ajax for search bar to search status
-                const selectedSchool = schoolDataList.map(school => ({
-                    value: school.id,
-                    text: `${school.school_name}`
-                }));
+                // const selectedSchool = schoolDataList.map(school => ({
+                //     value: school.id,
+                //     text: `${school.school_name}`
+                // }));
 
                 // ajax for search bar to search status
-                const selectedCampus = campusDataList.map(campus => ({
-                    value: campus.id,
-                    text: `${campus.campus_name}`
-                }));
+                // const selectedCampus = campusDataList.map(campus => ({
+                //     value: campus.id,
+                //     text: `${campus.campus_name}`
+                // }));
 
                 // ajax for search bar to search policy cadre
-                const selectPolicyCadre = policyCadreDataList.map(cadre => ({
-                    value: cadre.id,
-                    text: `${cadre.cadre_name}`
-                }));
+                // const selectPolicyCadre = policyCadreDataList.map(cadre => ({
+                //     value: cadre.id,
+                //     text: `${cadre.cadre_name}`
+                // }));
 
                 // ajax for search bar to search impcat factor
-                const selectImpcatFactor = impactFactorDataList.map(factor => ({
-                    value: factor.id,
-                    text: `${factor.impact_factor}`
-                }));
+                // const selectImpcatFactor = impactFactorDataList.map(factor => ({
+                //     value: factor.id,
+                //     text: `${factor.impact_factor}`
+                // }));
 
                 // ajax for search bar to search impcat factor
-                const selectInternalNmimsFaculty = nmimsFacultyDataList.map(faculty => ({
-                    value: faculty.id,
-                    text: ` ${faculty.employee_id}  ${faculty.faculty_name}`
-                }));
+                // const selectInternalNmimsFaculty = nmimsFacultyDataList.map(faculty => ({
+                //     value: faculty.id,
+                //     text: ` ${faculty.employee_id}  ${faculty.faculty_name}`
+                // }));
 
                 // ajax for search bar to search all authors
-                const selectedAuthors = allAuthorDataList.map(author => ({
-                    value: author.id,
-                    text: ` ${author.employee_id}  ${author.faculty_name}`
-                }));
+                // const selectedAuthors = allAuthorDataList.map(author => ({
+                //     value: author.id,
+                //     text: ` ${author.employee_id}  ${author.faculty_name}`
+                // }));
 
-                new TomSelect("#nmims-campus-list", {
-                    options: selectedCampus,
-                    placeholder : "Select Options",
-                    hidePlaceholder : true,
-                    hidePlaceholder : true,
-                    create: true,
-                    plugins: ['remove_button'],
-                    onItemAdd:function(){
-                        this.setTextboxValue('');
-                        this.refreshOptions();
-                    },
-                    render:{
-                        option:function(data,escape){
-                            return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
-                        },
-                        item:function(data,escape){
-                            return '<div>' + escape(data.text) + '</div>';
-                        }
-                    }
-                });
+                // new TomSelect("#nmims-campus-list", {
+                //     options: selectedCampus,
+                //     placeholder : "Select Options",
+                //     hidePlaceholder : true,
+                //     hidePlaceholder : true,
+                //     create: true,
+                //     plugins: ['remove_button'],
+                //     onItemAdd:function(){
+                //         this.setTextboxValue('');
+                //         this.refreshOptions();
+                //     },
+                //     render:{
+                //         option:function(data,escape){
+                //             return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                //         },
+                //         item:function(data,escape){
+                //             return '<div>' + escape(data.text) + '</div>';
+                //         }
+                //     }
+                // });
 
-                new TomSelect("#nmims-school-list", {
-                    options: selectedSchool,
-                    placeholder : "Select Options",
-                    hidePlaceholder : true,
-                    hidePlaceholder : true,
-                    create: true,
-                    plugins: ['remove_button'],
-                    onItemAdd:function(){
-                        this.setTextboxValue('');
-                        this.refreshOptions();
-                    },
-                    render:{
-                        option:function(data,escape){
-                            return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
-                        },
-                        item:function(data,escape){
-                            return '<div>' + escape(data.text) + '</div>';
-                        }
-                    }
-                });
+                // new TomSelect("#nmims-school-list", {
+                //     options: selectedSchool,
+                //     placeholder : "Select Options",
+                //     hidePlaceholder : true,
+                //     hidePlaceholder : true,
+                //     create: true,
+                //     plugins: ['remove_button'],
+                //     onItemAdd:function(){
+                //         this.setTextboxValue('');
+                //         this.refreshOptions();
+                //     },
+                //     render:{
+                //         option:function(data,escape){
+                //             return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                //         },
+                //         item:function(data,escape){
+                //             return '<div>' + escape(data.text) + '</div>';
+                //         }
+                //     }
+                // });
 
-                new TomSelect("#policy-cadre-list", {
-                    options: selectPolicyCadre,
-                    placeholder : "Select Options",
-                    hidePlaceholder : true,
-                    hidePlaceholder : true,
-                    create: true,
-                    plugins: ['remove_button'],
-                    onItemAdd:function(){
-                        this.setTextboxValue('');
-                        this.refreshOptions();
-                    },
-                    render:{
-                        option:function(data,escape){
-                            return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
-                        },
-                        item:function(data,escape){
-                            return '<div>' + escape(data.text) + '</div>';
-                        }
-                    }
-                });
+                // new TomSelect("#policy-cadre-list", {
+                //     options: selectPolicyCadre,
+                //     placeholder : "Select Options",
+                //     hidePlaceholder : true,
+                //     hidePlaceholder : true,
+                //     create: true,
+                //     plugins: ['remove_button'],
+                //     onItemAdd:function(){
+                //         this.setTextboxValue('');
+                //         this.refreshOptions();
+                //     },
+                //     render:{
+                //         option:function(data,escape){
+                //             return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                //         },
+                //         item:function(data,escape){
+                //             return '<div>' + escape(data.text) + '</div>';
+                //         }
+                //     }
+                // });
 
-                new TomSelect("#impact-factor-list", {
-                    options: selectImpcatFactor,
-                    placeholder : "Select Options",
-                    hidePlaceholder : true,
-                    hidePlaceholder : true,
-                    create: true,
-                    plugins: ['remove_button'],
-                    onItemAdd:function(){
-                        this.setTextboxValue('');
-                        this.refreshOptions();
-                    },
-                    render:{
-                        option:function(data,escape){
-                            return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
-                        },
-                        item:function(data,escape){
-                            return '<div>' + escape(data.text) + '</div>';
-                        }
-                    }
-                });
+                // new TomSelect("#impact-factor-list", {
+                //     options: selectImpcatFactor,
+                //     placeholder : "Select Options",
+                //     hidePlaceholder : true,
+                //     hidePlaceholder : true,
+                //     create: true,
+                //     plugins: ['remove_button'],
+                //     onItemAdd:function(){
+                //         this.setTextboxValue('');
+                //         this.refreshOptions();
+                //     },
+                //     render:{
+                //         option:function(data,escape){
+                //             return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                //         },
+                //         item:function(data,escape){
+                //             return '<div>' + escape(data.text) + '</div>';
+                //         }
+                //     }
+                // });
 
-                new TomSelect("#internal-faculty-list", {
-                    options: selectInternalNmimsFaculty,
-                    placeholder : "Select Options",
-                    hidePlaceholder : true,
-                    hidePlaceholder : true,
-                    create: true,
-                    plugins: ['remove_button'],
-                    onItemAdd:function(){
-                        this.setTextboxValue('');
-                        this.refreshOptions();
-                    },
-                    render:{
-                        option:function(data,escape){
-                            return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
-                        },
-                        item:function(data,escape){
-                            return '<div>' + escape(data.text) + '</div>';
-                        }
-                    }
-                });
+                // new TomSelect("#internal-faculty-list", {
+                //     options: selectInternalNmimsFaculty,
+                //     placeholder : "Select Options",
+                //     hidePlaceholder : true,
+                //     hidePlaceholder : true,
+                //     create: true,
+                //     plugins: ['remove_button'],
+                //     onItemAdd:function(){
+                //         this.setTextboxValue('');
+                //         this.refreshOptions();
+                //     },
+                //     render:{
+                //         option:function(data,escape){
+                //             return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                //         },
+                //         item:function(data,escape){
+                //             return '<div>' + escape(data.text) + '</div>';
+                //         }
+                //     }
+                // });
 
-                new TomSelect("#all-author-list", {
-                    options: selectedAuthors,
-                    placeholder : "Select Options",
-                    hidePlaceholder : true,
-                    hidePlaceholder : true,
-                    create: true,
-                    plugins: ['remove_button'],
-                    onItemAdd:function(){
-                        this.setTextboxValue('');
-                        this.refreshOptions();
-                    },
-                    render:{
-                        option:function(data,escape){
-                            return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
-                        },
-                        item:function(data,escape){
-                            return '<div>' + escape(data.text) + '</div>';
-                        }
-                    }
-                });
+                // new TomSelect("#all-author-list", {
+                //     options: selectedAuthors,
+                //     placeholder : "Select Options",
+                //     hidePlaceholder : true,
+                //     hidePlaceholder : true,
+                //     create: true,
+                //     plugins: ['remove_button'],
+                //     onItemAdd:function(){
+                //         this.setTextboxValue('');
+                //         this.refreshOptions();
+                //     },
+                //     render:{
+                //         option:function(data,escape){
+                //             return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                //         },
+                //         item:function(data,escape){
+                //             return '<div>' + escape(data.text) + '</div>';
+                //         }
+                //     }
+                // });
 
                 // function for invention type drop down list selectedTypeOfInvention
                 function handleCampusDropDownList() {
@@ -2188,6 +2428,15 @@ document.querySelector('#uploadNewSupportDocument').addEventListener('click',fun
         document.querySelector('#journal-article-documents').classList.add('d-none');
     }
 });
+
+                document.getElementById('headerClose').addEventListener('click', () => {
+                    document.location.reload();
+                })
+
+                document.getElementById('footerClose').addEventListener('click', () => {
+                    document.location.reload();
+                }) 
+ 
 
             </script>
             <!-- for pagination -->

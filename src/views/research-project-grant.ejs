@@ -816,6 +816,39 @@
                         isInternalFaculty.checked = false;
                         isExternalFaculty.checked = false;
 
+                        const employeesListData = document.getElementById('employees-list-data').dataset.employees;
+                const employeesDataObj = JSON.parse(employeesListData);
+                let employeeListArray = [];
+
+
+                // ajax for search bar to search employee name 
+                const facultyOptions = employeesDataObj.map(faculty => ({
+                    value: faculty.id,
+                    text: ` ${faculty.employee_id}  ${faculty.faculty_name}`
+                }));
+
+
+                // Initialize TomSelect dropdown with options containing id and faculty_name
+
+                new TomSelect("#emp-name", {
+                    options: facultyOptions,
+                    placeholder: "Select Employee Name",
+                    hidePlaceholder: true,
+                    create: true,
+                    plugins: ['remove_button'],
+                    onItemAdd: function () {
+                        this.setTextboxValue('');
+                        this.refreshOptions();
+                    },
+                    render: {
+                        option: function (data, escape) {
+                            return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                        },
+                        item: function (data, escape) {
+                            return '<div>' + escape(data.text) + '</div>';
+                        }
+                    }
+                });
 
                     }
                 });
@@ -1023,6 +1056,61 @@
                         document.getElementById('address-class').classList.add('d-none');
                         document.getElementById('add-btn').classList.add('d-none');
 
+                        consultantRowToBeUpdated = event.target.closest('tr');
+                        consultantId = event.target.getAttribute('data-consultancy-id');
+
+
+
+                const employeesListData = document.getElementById('employees-list-data').dataset.employees;
+                const employeesDataObj = JSON.parse(employeesListData);
+                let employeeListArray = [];
+
+                let internalEmp = JSON.parse('<%- JSON.stringify(internalFaculty) %>')
+
+
+
+                let employeesList = internalEmp.filter(data => consultantId == data.research_project_grant_id).filter(consultant => consultant)
+                console.log('employee json ',JSON.stringify(internalEmp))
+
+                Array.from(employeesDataObj).forEach(data => {
+                    Array.from(employeesList).forEach(emp => {
+                        if (data.id == emp.faculty_id) {
+                            employeeListArray.push(data.id)
+                        }
+                    })
+                })
+
+
+                // ajax for search bar to search employee name 
+                const facultyOptions = employeesDataObj.map(faculty => ({
+                    value: faculty.id,
+                    text: ` ${faculty.employee_id}  ${faculty.faculty_name}`
+                }));
+
+
+                // Initialize TomSelect dropdown with options containing id and faculty_name
+
+                new TomSelect("#emp-name", {
+                    options: facultyOptions,
+                    items : employeeListArray,
+                    // placeholder: "Select Employee Name",
+                    hidePlaceholder: true,
+                    create: true,
+                    plugins: ['remove_button'],
+                    onItemAdd: function () {
+                        this.setTextboxValue('');
+                        this.refreshOptions();
+                    },
+                    render: {
+                        option: function (data, escape) {
+                            return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                        },
+                        item: function (data, escape) {
+                            return '<div>' + escape(data.text) + '</div>';
+                        }
+                    }
+                });
+
 
 
                         //let externalFacultyDetails = JSON.parse('<%- JSON.stringify(externalDetails) %>');
@@ -1047,7 +1135,7 @@
                         document.querySelector('#supporting-documents').classList.add('d-none');
                         document.getElementById('researchProjectConsultancy').innerHTML = 'RESEARCH PROJECT CONSULTANCY EDIT';
                         $('#consultancy-modal').modal('show');
-                        consultantRowToBeUpdated = event.target.closest('tr');
+                     //   consultantRowToBeUpdated = event.target.closest('tr');
                         console.log('consultantRowToBeUpdated ==>>', consultantRowToBeUpdated);
 
 
@@ -1079,7 +1167,7 @@
                         let appendFaculty = document.getElementById('appendFaculty');
                         appendFaculty.innerHTML = ''
 
-                        projectGrantId = externalFaculty[0].id;
+                        // projectGrantId = externalFaculty[0].id;
 
                         externalFaculty.forEach((ef, index) => {
                             let htmlData = `<tr data-facultyId = ${ef.id}>
@@ -1630,39 +1718,39 @@
                 const enternalText = document.getElementById('enternal-text');
 
                 // employeesListData data came from backend
-                const employeesListData = document.getElementById('employees-list-data').dataset.employees;
-                const employeesDataObj = JSON.parse(employeesListData);
-                let employeeListArray = [];
+                // const employeesListData = document.getElementById('employees-list-data').dataset.employees;
+                // const employeesDataObj = JSON.parse(employeesListData);
+                // let employeeListArray = [];
 
 
-                // ajax for search bar to search employee name 
-                const facultyOptions = employeesDataObj.map(faculty => ({
-                    value: faculty.id,
-                    text: ` ${faculty.employee_id}  ${faculty.faculty_name}`
-                }));
+                // // ajax for search bar to search employee name 
+                // const facultyOptions = employeesDataObj.map(faculty => ({
+                //     value: faculty.id,
+                //     text: ` ${faculty.employee_id}  ${faculty.faculty_name}`
+                // }));
 
 
-                // Initialize TomSelect dropdown with options containing id and faculty_name
+                // // Initialize TomSelect dropdown with options containing id and faculty_name
 
-                new TomSelect("#emp-name", {
-                    options: facultyOptions,
-                    placeholder: "Select Employee Name",
-                    hidePlaceholder: true,
-                    create: true,
-                    plugins: ['remove_button'],
-                    onItemAdd: function () {
-                        this.setTextboxValue('');
-                        this.refreshOptions();
-                    },
-                    render: {
-                        option: function (data, escape) {
-                            return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
-                        },
-                        item: function (data, escape) {
-                            return '<div>' + escape(data.text) + '</div>';
-                        }
-                    }
-                });
+                // new TomSelect("#emp-name", {
+                //     options: facultyOptions,
+                //     placeholder: "Select Employee Name",
+                //     hidePlaceholder: true,
+                //     create: true,
+                //     plugins: ['remove_button'],
+                //     onItemAdd: function () {
+                //         this.setTextboxValue('');
+                //         this.refreshOptions();
+                //     },
+                //     render: {
+                //         option: function (data, escape) {
+                //             return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                //         },
+                //         item: function (data, escape) {
+                //             return '<div>' + escape(data.text) + '</div>';
+                //         }
+                //     }
+                // });
                 // function for select author name from drop down list
 
                 function handleEmployeeDropdownChange() {
@@ -1869,6 +1957,14 @@
                     document.getElementById('id-class').classList.add('d-none');
                     document.getElementById('address-class').classList.add('d-none');
                     document.getElementById('add-btn').classList.add('d-none');
+
+                    document.getElementById('name-class-upd').classList.add('d-none');
+                    document.getElementById('dsg-class-upd').classList.add('d-none');
+                    document.getElementById('id-class-upd').classList.add('d-none');
+                    document.getElementById('address-class-upd').classList.add('d-none');
+                    document.getElementById('add-btn-upd').classList.add('d-none');
+
+                    document.getElementById('externalfacultyTable').classList.add('d-none')
                 }
 
 

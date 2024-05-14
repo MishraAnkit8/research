@@ -176,6 +176,74 @@ module.exports.facultyDataForPatent = async () => {
     });
 };
 
+module.exports.facultyDataForIPR = async () => {
+  let sql = {
+    text: `	select cf.ipr_id,f.id,f.faculty_name,f.designation,f.employee_id,f.address from ipr_faculty cf 
+inner join faculties f on cf.faculty_id = f.id where  cf.active=true and f.active=true and f.faculty_type_id = 2 order by f.id`,
+  };
+
+  const facultyDetails = await researchDbW.query(sql);
+  const promises = [facultyDetails];
+  return Promise.all(promises)
+    .then(([facultyDetails]) => {
+      return {
+        status: "Done",
+        message: "Faculty Record Updated Successfully",
+        rowCount: facultyDetails.rowCount,
+        facultyData: facultyDetails.rows,
+      };
+    })
+    .catch((error) => {
+      return {
+        status: "Failed",
+        message: error.message,
+        errorCode: error.code,
+      };
+    });
+};
+
+module.exports.fetchFacultyConference = async () => {
+  let sql = {
+    text: `select 
+    cf.id,
+    cf.conference_id,
+    f.id,
+    f.faculty_name,
+    f.designation,
+    f.employee_id,
+    f.address 
+from 
+    conference_faculty cf 
+left join 
+    faculties f on cf.faculty_id = f.id 
+where  
+    cf.active = true 
+    and f.active = true 
+    and f.faculty_type_id = 2 
+order by 
+    f.id;`,
+  };
+
+  const facultyDetails = await researchDbW.query(sql);
+  const promises = [facultyDetails];
+  return Promise.all(promises)
+    .then(([facultyDetails]) => {
+      return {
+        status: "Done",
+        message: "Faculty Record Updated Successfully",
+        rowCount: facultyDetails.rowCount,
+        facultyData: facultyDetails.rows,
+      };
+    })
+    .catch((error) => {
+      return {
+        status: "Failed",
+        message: error.message,
+        errorCode: error.code,
+      };
+    });
+};
+
 module.exports.insertFacultyPatent = async (
   externalFacultyDetails,
   patentId
@@ -203,6 +271,105 @@ module.exports.insertFacultyPatent = async (
   let sql = {
     text: `INSERT INTO patent_submission_faculty (patent_submission_grant_id, faculty_id) VALUES ($1, $2) returning id`,
     values: [patentId, facultyId],
+  };
+
+  const researchgrant = await researchDbW.query(sql);
+
+  const promises = [researchgrant];
+
+  return Promise.all(promises)
+    .then(([researchgrant]) => {
+      return {
+        status: "Done",
+        message: "Faculty Record Inserted Successfully",
+        externalFacultyId: facultyId,
+        researchGrantId: researchgrant.rows[0].id,
+      };
+    })
+    .catch((error) => {
+      return {
+        status: "Failed",
+        message: error.message,
+        errorCode: error.code,
+      };
+    });
+};
+
+module.exports.insertFacultyConference = async (
+  externalFacultyDetails,
+  conferenceId
+) => {
+  const { facultyName, facultyDsg, facultyAddr, facultyEmpId } =
+    externalFacultyDetails;
+  console.log(
+    "externalFacultyDetails in faculty models ",
+    JSON.stringify(externalFacultyDetails),
+    facultyName,
+    facultyDsg,
+    facultyAddr,
+    facultyEmpId
+  );
+
+  let facultysql = {
+    text: `INSERT INTO faculties (faculty_type_id, employee_id, faculty_name, designation, address) VALUES ($1, $2, $3, $4, $5) RETURNING id`,
+    values: [2, facultyEmpId, facultyName, facultyDsg, facultyAddr],
+  };
+
+  const facultyPromise = await researchDbW.query(facultysql);
+  const facultyId = facultyPromise.rows[0].id;
+  console.log("facultyId =====>>>>>>>", facultyId);
+
+  let sql = {
+    text: `INSERT INTO conference_faculty (conference_id, faculty_id) VALUES ($1, $2) returning id`,
+    values: [conferenceId, facultyId],
+  };
+
+  const researchgrant = await researchDbW.query(sql);
+
+  const promises = [researchgrant];
+
+  return Promise.all(promises)
+    .then(([researchgrant]) => {
+      return {
+        status: "Done",
+        message: "Faculty Record Inserted Successfully",
+        externalFacultyId: facultyId,
+        researchGrantId: researchgrant.rows[0].id,
+      };
+    })
+    .catch((error) => {
+      return {
+        status: "Failed",
+        message: error.message,
+        errorCode: error.code,
+      };
+    });
+};
+
+module.exports.insertFacultyIpr = async (externalFacultyDetails, iprId) => {
+  const { facultyName, facultyDsg, facultyAddr, facultyEmpId } =
+    externalFacultyDetails;
+  console.log(
+    "externalFacultyDetails in faculty models ",
+    JSON.stringify(externalFacultyDetails),
+    facultyName,
+    facultyDsg,
+    facultyAddr,
+    facultyEmpId
+  );
+
+  let facultysql = {
+    text: `INSERT INTO faculties (faculty_type_id, employee_id, faculty_name, designation, address) VALUES ($1, $2, $3, $4, $5) RETURNING id`,
+    values: [2, facultyEmpId, facultyName, facultyDsg, facultyAddr],
+  };
+
+  const facultyPromise = await researchDbW.query(facultysql);
+  const facultyId = facultyPromise.rows[0].id;
+  console.log("facultyId =====>>>>>>>", facultyId);
+
+  let sql = {
+    text: `INSERT INTO ipr_faculty (ipr_id, faculty_id) VALUES ($1, $2) returning id`,
+    values: [iprId, facultyId],
   };
 
   const researchgrant = await researchDbW.query(sql);

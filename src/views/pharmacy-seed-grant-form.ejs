@@ -593,16 +593,18 @@
                         <input type="date"  id="investigator-date-of-birth" class="form-control" data-validate="isEmpty,isExist"  data-err-msg="Date of birth is required." required>
                     </div>
                      <!-- investigator Educational Qualifications -->
-                     
                      <label class="form-label text-center fw-bold">investigator Educational Qualifications</label>
-                     <div class="container">
-                        <div id="educationDetails">
-                            <!-- No fields displayed initially -->
+                     <div class="text-center">
+                        <div class="container">
+                            <div id="educationDetails">
+                                <!-- No fields displayed initially -->
+                            </div>
+                            <button type="submit" id="insert-education" class="btn btn-primary">Add Education Details</button>
+                            <!-- Button to trigger adding fields -->
+                            <button type="button" class="btn btn-primary" id="submit-education-details">Save</button>
                         </div>
-                        <button type="submit" id="insert-education" class="btn btn-primary">Add Education Details</button>
-                        <!-- Button to trigger adding fields -->
-                        <button type="button" class="btn btn-primary" id="submit-education-details">Save</button>
-                    </div>
+                     </div>
+                   
                     
                     
                     <!-- <table class="table vertical-lines custom-table table-responsiv">
@@ -625,25 +627,17 @@
                     </div> -->
                      <!-- investigator Experience Details -->
                      <label class="form-label text-center fw-bold">Add Investigator Work Experience </label>
-                     <table class="table vertical-lines custom-table table-responsiv">
-                        <thead>
-                            <th class="col-lg-3">Possition</th>
-                            <th class="col-lg-3"> University/Institution</th>
-                            <th class="col-lg-3">Period</th>
-                        </thead>
-                            <tr>
-                                <td><input style="border: 0;" type="text" id="investigator-postion" class="form-control"></td>
-                                <td><input style="border: 0;" type="text" id="investigator-organigation" class="form-control"></td>
-                                <td><input style="border: 0;" type="text" id="investigator-period" class="form-control"></td>
-                            </tr>
-                            <tr>
-                            </tr>
-                     </table>
-                     <div class="modal-footer">                        
-                        <button class="btn btn-primary" id="submit-investor-experience">Insert Investigator Work Experience</button>
-                        <button class="btn btn-primary d-none" id="update-investor-experience">Updated Investigator Work Experience</button>
-                        <button class="btn btn-primary d-none" id="add-investor-experience-details">Add More Details</button>
-                    </div>
+                     <div class="text-center">
+                        <div class="container">
+                            <div id="experience-details">
+                                <!-- No fields displayed initially -->
+                            </div>
+                            <button type="submit" id="insert-experience" class="btn btn-primary">Add Experience Details</button>
+                            <!-- Button to trigger adding fields -->
+                            <button type="button" class="btn btn-primary" id="submit-experience-details">Save</button>
+                        </div>
+                     </div>
+                     
                      <!-- investigator Publication -->
                      <label class="form-label text-center fw-bold"> Publication </label>
                      <table class="table vertical-lines custom-table table-responsiv">
@@ -818,7 +812,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary d-none" id="submit-btn">Submit</button>
+                <button type="button" class="btn btn-primary d-none" id="submit-pharmacy-btn">Submit</button>
                 <button type="button" class="btn btn-primary d-none " id="update-btn">Update</button>
             </div>
         </div>
@@ -1276,81 +1270,106 @@
 
 
 
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script>
-        const educationContainer = document.getElementById('educationDetails');
-        const insertDetails = document.getElementById('insert-education');
-        const educationBtn = document.getElementById('submit-education-details')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tom-select/2.3.1/js/tom-select.complete.min.js"
+integrity="sha512-zdXqksVc9s0d2eoJGdQ2cEhS4mb62qJueasTG4HjCT9J8f9x5gXCQGSdeilD+C7RqvUi1b4DdD5XaGjJZSlP9Q=="
+crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+    const educationContainer = document.getElementById('educationDetails');
+    const insertDetails = document.getElementById('insert-education');
+    const educationBtn = document.getElementById('submit-education-details');
+    
+    const experienceContainer = document.getElementById('experience-details');
+    const insertExperience = document.getElementById('insert-experience');
+    const experienceBtn = document.getElementById('submit-experience-details');
 
- // Define an array to hold the education details
-let educationArray = [];
-let educaltionalDetails = []
 
-function addInputField(label) {
-    let inputField = document.createElement('div');
-    inputField.classList.add('education-section');
+    // Define an array to hold the education details
+    let educationArray = [];
+    let educaltionalDetails = []
+    let educationalIdsContainer = []
 
-    let html = `
+    function addInputField(label, className) {
+        let inputField = document.createElement('div');
+        inputField.classList.add(className);
+
+        let html = `
         <div class="form-group">
             <label for="${label.toLowerCase()}">${label}</label>
             <input type="text" class="form-control" name="${label.toLowerCase()}[]" required>
         </div>
     `;
-    inputField.innerHTML = html;
+        inputField.innerHTML = html;
 
-    educationContainer.appendChild(inputField);
-}
-
-insertDetails.addEventListener('click', function(event) {
-    event.preventDefault();
-    addInputField('Qualification');
-    addInputField('Institution');
-    addInputField('Year');
-});
-
-const educaltionalData = async(url) => {
-    let inputFields = document.querySelectorAll('.form-control');
-    
-    let currentValues = [];
-    
-    inputFields.forEach(field => {
-        if(field.value !== ''){
-            currentValues.push(field.value);
-        }
-    });
-    
-    educaltionalDetails.push(currentValues);
-    payload = {
-        educaltionalDetails : educaltionalDetails
+        educationContainer.appendChild(inputField);
     }
 
-    fetch(url, {
-        method: "POST",
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload)
-    })
-    .then((Response) => {
-        return Response.ok ? Response.json()  : 'Network issue'
-    })
-    .then((data) => {
-        console.log('data ====>>>>>', data )
-    })
-    .catch((error) => {
-        console.log('errrorr ====>>>>>>>', error);
+    insertDetails.addEventListener('click', function (event) {
+        event.preventDefault();
+        addInputField('Qualification', 'education-section');
+        addInputField('Institution', 'education-section');
+        addInputField('Year', 'education-section');
+    });
+
+    insertExperience.addEventListener('click', function(event) {
+        event.preventDefault();
+        addInputField('Possition', 'experience-section');
+        addInputField('Organization', 'experience-section');
+        addInputField('Period', 'experience-section');
     })
 
-}
+    const educaltionalData = async (url) => {
+        let inputFields = document.querySelectorAll('.form-control');
 
-educationBtn.addEventListener('click', async() => {
+        let currentValues = [];
 
-    await educaltionalData('<%- BASE_URL %>research/pharmacy-seed-grant-form/investigator-education/insert')
-});
+        inputFields.forEach(field => {
+            if (field.value !== '') {
+                currentValues.push(field.value);
+            }
+        });
+
+        educaltionalDetails.push(currentValues);
+        payload = {
+            educaltionalDetails: educaltionalDetails
+        }
+
+        fetchApiFunction(url, payload, educationalIdsContainer);
+
+    }
+
+    function fetchApiFunction(url, payload, arrayIdcontainer){
+        fetch(url, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        })
+            .then((Response) => {
+                return Response.ok ? Response.json() : 'Network issue'
+            })
+            .then((data) => {
+                console.log('data ====>>>>>', data)
+                arrayIdcontainer.push(data.detailsIds)
+
+            })
+            .catch((error) => {
+                console.log('errrorr ====>>>>>>>', error);
+            })
+    }
+
+    educationBtn.addEventListener('click', async () => {
+
+        await educaltionalData('<%- BASE_URL %>research/pharmacy-seed-grant-form/investigator-education/insert')
+    });
+
+    experienceBtn.addEventListener('click', async () => {
+
+    })
 
 
 
-    const submitBtn = document.getElementById('submit-btn');
+    // const submitBtn = document.getElementById('submit-pharmacy-btn');
     const updateBtn = document.getElementById('update-btn');
     const pharmacyList = document.getElementById('pharmacy-seed-grant-form-list');
     const addPharmacyForm = document.getElementById('consultancy-add-new-form');
@@ -1364,11 +1383,11 @@ educationBtn.addEventListener('click', async() => {
     let researchImplementationIdsArray = [];
     let researchCompletedIdsArray = [];
 
-    
-    addPharmacyForm.addEventListener('click' , (event) => {
-        if(event.target.tagName === 'BUTTON' && event.target.classList.contains('add-modal') || event.target.classList.contains('plus')){
+
+    addPharmacyForm.addEventListener('click', (event) => {
+        if (event.target.tagName === 'BUTTON' && event.target.classList.contains('add-modal') || event.target.classList.contains('plus')) {
             console.log('clcikedd plus')
-            submitBtn.classList.remove('d-none');
+            document.getElementById('submit-pharmacy-btn').classList.remove('d-none');
             updateBtn.classList.add('d-none');
 
             $('#pharmacy-seed-grant-modal').modal({
@@ -1376,64 +1395,64 @@ educationBtn.addEventListener('click', async() => {
             });
         }
     })
-  
-    
+
+
 
     const fetchData = async (url, payload) => {
-            try {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(payload)
-                });
-                const data = await response.json();
-                return data;
-            } catch (error) {
-                console.error('Error:', error);
-                throw error;
-            }
-        };
-        const submitData = async (url, payload, submitBtn, AddBtn) => {
-            console.log('payload ====>>>>>>', payload);
-            console.log('url ===>>>>>', url)
-            try {
-                const data = await fetchData(url, payload);
-                if (data.status === "Done") {
-                    console.log('Data ====>>>>>>', data);
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            });
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error('Error:', error);
+            throw error;
+        }
+    };
+    const submitData = async (url, payload, submitBtn, AddBtn) => {
+        console.log('payload ====>>>>>>', payload);
+        console.log('url ===>>>>>', url)
+        try {
+            const data = await fetchData(url, payload);
+            if (data.status === "Done") {
+                console.log('Data ====>>>>>>', data);
 
-                    data.investorEduId ? educationIdsArray.push(data.investorEduId) : null;
-                    data.invastigatorExperienceId ? eperienceIdsArray.push(data.invastigatorExperienceId) : null
-                    data.bookId ? bookIdsArray.push(data.bookId) : null;
-                    data.bookChapterId ? bookChapterIdsArray.push(data.bookChapterId) : null
-                    data.publicationId ? publicationIdsArray.push(data.publicationId) : null
-                    data.pharmacyId ? pharmacyIdsArray.push(data.pharmacyId) : null
-                    data.implementationId ? researchImplementationIdsArray.push(data.implementationId) : null
-                    data.CompletedId ? researchCompletedIdsArray.push(data.CompletedId) : null;
+                data.investorEduId ? educationIdsArray.push(data.investorEduId) : null;
+                data.invastigatorExperienceId ? eperienceIdsArray.push(data.invastigatorExperienceId) : null
+                data.bookId ? bookIdsArray.push(data.bookId) : null;
+                data.bookChapterId ? bookChapterIdsArray.push(data.bookChapterId) : null
+                data.publicationId ? publicationIdsArray.push(data.publicationId) : null
+                data.pharmacyId ? pharmacyIdsArray.push(data.pharmacyId) : null
+                data.implementationId ? researchImplementationIdsArray.push(data.implementationId) : null
+                data.CompletedId ? researchCompletedIdsArray.push(data.CompletedId) : null;
 
-                   if(data.investorEduId){
+                if (data.investorEduId) {
                     document.getElementById('investigator-education').classList.add('d-none')
                     document.getElementById('investigator-university').classList.add('d-none')
                     document.getElementById('investigator-passout-year').classList.add('d-none')
-                   }
+                }
 
-                   if(data.invastigatorExperienceId ){
+                if (data.invastigatorExperienceId) {
                     document.getElementById('investigator-postion').classList.add('d-none');
                     document.getElementById('investigator-organigation').classList.add('d-none');
                     document.getElementById('investigator-period').classList.add('d-none');
-                   }
+                }
 
-                   if(data.bookId){
+                if (data.bookId) {
                     document.getElementById('investigator-book-author').classList.add('d-none')
                     document.getElementById('investigator-book-names').classList.add('d-none')
                     document.getElementById('investigator-book-year').classList.add('d-none')
                     document.getElementById('investigator-book-volume').classList.add('d-none')
                     document.getElementById('investigator-book-publisher').classList.add('d-none')
                     document.getElementById('investigator-book-isbn').classList.add('d-none');
-                   }
+                }
 
-                   if(data.bookChapterId){
+                if (data.bookChapterId) {
                     document.getElementById('investigator-book-chapter-author').classList.add('d-none')
                     document.getElementById('investigator-book-chapter-title').classList.add('d-none')
                     document.getElementById('investigator-book-chapter-book-name').classList.add('d-none')
@@ -1442,9 +1461,9 @@ educationBtn.addEventListener('click', async() => {
                     document.getElementById('investigator-book-chapter-page-number').classList.add('d-none')
                     document.getElementById('investigator-book-chapter-publisher').classList.add('d-none')
                     document.getElementById('investigator-book-chapter-isbn').classList.add('d-none');
-                   }
+                }
 
-                   if(data.publicationId){
+                if (data.publicationId) {
                     document.getElementById('investigator-publication-author').classList.add('d-none')
                     document.getElementById('investigator-publication-title').classList.add('d-none')
                     document.getElementById('investigator-publication-journal-name').classList.add('d-none')
@@ -1453,508 +1472,503 @@ educationBtn.addEventListener('click', async() => {
                     document.getElementById('investigator-publication-impact-factor').classList.add('d-none')
                     document.getElementById('investigator-publication-issue').classList.add('d-none')
                     document.getElementById('investigator-publication-article-number').classList.add('d-none')
-                   }
+                }
 
-                   if(data.pharmacyId){
+                if (data.pharmacyId) {
                     document.getElementById('investigator-pharmacy-applicant-name').classList.add('d-none');
                     document.getElementById('investigator-pharmacy-title').classList.add('d-none');
                     document.getElementById('investigator-pharmacy-status').classList.add('d-none');
                     document.getElementById('investigator-pharmacy-year-month').classList.add('d-none');
                     document.getElementById('investigator-pharmacy-number').classList.add('d-none');
-                   }
+                }
 
-                   if(data.implementationId){
+                if (data.implementationId) {
                     document.getElementById('research-project-title').classList.add('d-none');
                     document.getElementById('research-project-agency').classList.add('d-none');
                     document.getElementById('research-project-role').classList.add('d-none');
                     document.getElementById('research-project-duration').classList.add('d-none');
                     document.getElementById('research-project-cost').classList.add('d-none');
-                   }
+                }
 
-                   if(data.CompletedId){
+                if (data.CompletedId) {
                     document.getElementById('research-project-completed-title').classList.add('d-none');
                     document.getElementById('research-project-completed-agency').classList.add('d-none');
                     document.getElementById('research-project-completed-role').classList.add('d-none');
                     document.getElementById('research-project-completed-duration').classList.add('d-none');
                     document.getElementById('research-project-completed-cost').classList.add('d-none');
-                   }
-                    
-
-    
-                   
-
-                    submitBtn.classList.add('d-none');
-                    AddBtn.classList.remove('d-none');
-
-                    Swal.fire({
-                        position: "top-center",
-                        icon: "success",
-                        title: `${data.message}`,
-                        showConfirmButton: true,
-                        confirmButtonText: "OK",
-                        confirmButtonColor: "#DD6B55"
-                    });
                 }
-            } catch (error) {
-                console.error('Error:', error);
+
+
+
+
+
+                submitBtn.classList.add('d-none');
+                AddBtn.classList.remove('d-none');
+
+                Swal.fire({
+                    position: "top-center",
+                    icon: "success",
+                    title: `${data.message}`,
+                    showConfirmButton: true,
+                    confirmButtonText: "OK",
+                    confirmButtonColor: "#DD6B55"
+                });
             }
-        };
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
 
-        // Example usage:
-        // const investigatorEducation = async (url) => {
-        //     const educationalDetails = {};
-        //     educationalDetails.education =  document.getElementById('investigator-education').value,
-        //     educationalDetails.university =  document.getElementById('investigator-university').value,
-        //     educationalDetails.passoutYear =  document.getElementById('investigator-passout-year').value
-            
-        //     const payload = { educationalDetails };
-        //     const submitBtn = document.getElementById('submit-investor-education');
-        //     const AddBtn = document.getElementById('add-investor-education-more-details');
-        //     await submitData(url, payload, submitBtn, AddBtn);
-        // };
+    // Example usage:
+    // const investigatorEducation = async (url) => {
+    //     const educationalDetails = {};
+    //     educationalDetails.education =  document.getElementById('investigator-education').value,
+    //     educationalDetails.university =  document.getElementById('investigator-university').value,
+    //     educationalDetails.passoutYear =  document.getElementById('investigator-passout-year').value
 
-        const investigatorWorkExperience = async (url) => {
-            const workExperienceDetails = {};
+    //     const payload = { educationalDetails };
+    //     const submitBtn = document.getElementById('submit-investor-education');
+    //     const AddBtn = document.getElementById('add-investor-education-more-details');
+    //     await submitData(url, payload, submitBtn, AddBtn);
+    // };
 
-            workExperienceDetails.investigatorPossition = document.getElementById('investigator-postion').value;
-            workExperienceDetails.investigatorOrganization = document.getElementById('investigator-organigation').value;
-            workExperienceDetails.investigatorExperience = document.getElementById('investigator-period').value;
-            const payload = { workExperienceDetails };
-            const submitBtn = document.getElementById('submit-investor-experience');
-            const AddBtn = document.getElementById('add-investor-experience-details')
-;
+    const investigatorWorkExperience = async (url) => {
+        const workExperienceDetails = {};
 
-            await  submitData(url, payload, submitBtn, AddBtn);
-        };
+        workExperienceDetails.investigatorPossition = document.getElementById('investigator-postion').value;
+        workExperienceDetails.investigatorOrganization = document.getElementById('investigator-organigation').value;
+        workExperienceDetails.investigatorExperience = document.getElementById('investigator-period').value;
+        const payload = { workExperienceDetails };
+        const submitBtn = document.getElementById('submit-investor-experience');
+        const AddBtn = document.getElementById('add-investor-experience-details')
+            ;
 
-        const investigatorBook = async (url) => {
-            const investigatorBookDetails = {};
-            investigatorBookDetails.investigatorbookAuthor = document.getElementById('investigator-book-author').value;
-            investigatorBookDetails.investigatorBookNames = document.getElementById('investigator-book-names').value;
-            investigatorBookDetails.investigatorBookYear = document.getElementById('investigator-book-year').value;
-            investigatorBookDetails.investigatorBookVolumne = document.getElementById('investigator-book-volume').value;
-            investigatorBookDetails.investigatorBookPublisher = document.getElementById('investigator-book-publisher').value;
-            investigatorBookDetails.investigatorBookIsbn = document.getElementById('investigator-book-isbn').value;
-            const payload = { investigatorBookDetails };
-            const submitBtn = document.getElementById('submit-investor-book');
-            const AddBtn = document.getElementById('add-investor-book')
+        await submitData(url, payload, submitBtn, AddBtn);
+    };
+
+    const investigatorBook = async (url) => {
+        const investigatorBookDetails = {};
+        investigatorBookDetails.investigatorbookAuthor = document.getElementById('investigator-book-author').value;
+        investigatorBookDetails.investigatorBookNames = document.getElementById('investigator-book-names').value;
+        investigatorBookDetails.investigatorBookYear = document.getElementById('investigator-book-year').value;
+        investigatorBookDetails.investigatorBookVolumne = document.getElementById('investigator-book-volume').value;
+        investigatorBookDetails.investigatorBookPublisher = document.getElementById('investigator-book-publisher').value;
+        investigatorBookDetails.investigatorBookIsbn = document.getElementById('investigator-book-isbn').value;
+        const payload = { investigatorBookDetails };
+        const submitBtn = document.getElementById('submit-investor-book');
+        const AddBtn = document.getElementById('add-investor-book')
 
 
-            await submitData(url, payload, submitBtn, AddBtn);
-        };
+        await submitData(url, payload, submitBtn, AddBtn);
+    };
 
-        const investigatorBookChapter = async (url) => {
-            const investigatorBookChapterDetails = {};
+    const investigatorBookChapter = async (url) => {
+        const investigatorBookChapterDetails = {};
 
-            investigatorBookChapterDetails.investigatorbookChapterAuthor = document.getElementById('investigator-book-chapter-author').value;
-            investigatorBookChapterDetails.investigatorBookChapterTitle = document.getElementById('investigator-book-chapter-title').value;
-            investigatorBookChapterDetails.investigatorBookChapterNames = document.getElementById('investigator-book-chapter-book-name').value;
-            investigatorBookChapterDetails.bookChapterYear = document.getElementById('investigator-book-chapter-year').value;
-            investigatorBookChapterDetails.investigatorBookChapterVolume = document.getElementById('investigator-book-chapter-volume').value;
-            investigatorBookChapterDetails.investigatorBookChapterPageNumber = document.getElementById('investigator-book-chapter-page-number').value;
-            investigatorBookChapterDetails.investigatorBookChapterPublisher = document.getElementById('investigator-book-chapter-publisher').value;
-            investigatorBookChapterDetails.investigatorBookChapterIsbn = document.getElementById('investigator-book-chapter-isbn').value;
+        investigatorBookChapterDetails.investigatorbookChapterAuthor = document.getElementById('investigator-book-chapter-author').value;
+        investigatorBookChapterDetails.investigatorBookChapterTitle = document.getElementById('investigator-book-chapter-title').value;
+        investigatorBookChapterDetails.investigatorBookChapterNames = document.getElementById('investigator-book-chapter-book-name').value;
+        investigatorBookChapterDetails.bookChapterYear = document.getElementById('investigator-book-chapter-year').value;
+        investigatorBookChapterDetails.investigatorBookChapterVolume = document.getElementById('investigator-book-chapter-volume').value;
+        investigatorBookChapterDetails.investigatorBookChapterPageNumber = document.getElementById('investigator-book-chapter-page-number').value;
+        investigatorBookChapterDetails.investigatorBookChapterPublisher = document.getElementById('investigator-book-chapter-publisher').value;
+        investigatorBookChapterDetails.investigatorBookChapterIsbn = document.getElementById('investigator-book-chapter-isbn').value;
 
-            const payload = { investigatorBookChapterDetails };
-            const submitBtn = document.getElementById('submit-book-chapter');
-            const AddBtn = document.getElementById('add-book-chapter')
+        const payload = { investigatorBookChapterDetails };
+        const submitBtn = document.getElementById('submit-book-chapter');
+        const AddBtn = document.getElementById('add-book-chapter')
 
-            await submitData(url, payload, submitBtn, AddBtn);
-        };
+        await submitData(url, payload, submitBtn, AddBtn);
+    };
 
-        const investigatorPatent = async (url) => {
-            const investigatorPatentDetails = {};
-    
-            investigatorPatentDetails.investigatorApplicantName = document.getElementById('investigator-pharmacy-applicant-name').value;
-            investigatorPatentDetails.investigatorPatentTitle = document.getElementById('investigator-pharmacy-title').value;
-            investigatorPatentDetails.investigatorPatentStatus = document.getElementById('investigator-pharmacy-status').value;
-            investigatorPatentDetails.investigatorPatentYear = document.getElementById('investigator-month-year').value
-            investigatorPatentDetails.investigatorPatentNumber = document.getElementById('investigator-pharmacy-number').value;
+    const investigatorPatent = async (url) => {
+        const investigatorPatentDetails = {};
 
-            const payload = { investigatorPatentDetails };
-            const submitBtn = document.getElementById('submit-pharmacy');
-            const AddBtn = document.getElementById('add-pharmacy');
+        investigatorPatentDetails.investigatorApplicantName = document.getElementById('investigator-pharmacy-applicant-name').value;
+        investigatorPatentDetails.investigatorPatentTitle = document.getElementById('investigator-pharmacy-title').value;
+        investigatorPatentDetails.investigatorPatentStatus = document.getElementById('investigator-pharmacy-status').value;
+        investigatorPatentDetails.investigatorPatentYear = document.getElementById('investigator-month-year').value
+        investigatorPatentDetails.investigatorPatentNumber = document.getElementById('investigator-pharmacy-number').value;
 
-            await submitData(url, payload, submitBtn, AddBtn);
-        };
+        const payload = { investigatorPatentDetails };
+        const submitBtn = document.getElementById('submit-pharmacy');
+        const AddBtn = document.getElementById('add-pharmacy');
 
-        const investigatorPublication = async (url) => {
-            const investigatorPublicationDetails = {};
-    
-            investigatorPublicationDetails.publicationAuthor = document.getElementById('investigator-publication-author').value;
-            investigatorPublicationDetails.publicationTitle = document.getElementById('investigator-publication-title').value;
-            investigatorPublicationDetails.publicationjournalName = document.getElementById('investigator-publication-journal-name').value;
-            investigatorPublicationDetails.publicationYear = document.getElementById('investigator-publication-year').value;
-            investigatorPublicationDetails.publicationVolume = document.getElementById('investigator-publication-volume').value;
-            investigatorPublicationDetails.publicationIssue = document.getElementById('investigator-publication-issue').value;
-            investigatorPublicationDetails.publicationArtcicleNumber = document.getElementById('investigator-publication-article-number').value;
-            investigatorPublicationDetails.impactFactor = document.getElementById('investigator-publication-impact-factor').value;
+        await submitData(url, payload, submitBtn, AddBtn);
+    };
 
-            
-            
-            const payload = { investigatorPublicationDetails };
-            const submitBtn = document.getElementById('submit-investor-publication');
-            const AddBtn = document.getElementById('add-investor-publication')
+    const investigatorPublication = async (url) => {
+        const investigatorPublicationDetails = {};
 
-            await  submitData(url, payload, submitBtn, AddBtn);
-        };
-
-        const researchProjectImplemention = async (url) => {
-            const researchProjectDetails = {};
-
-            researchProjectDetails.researchTitle = document.getElementById('research-project-title').value;
-            researchProjectDetails.researchAgency = document.getElementById('research-project-agency').value;
-            researchProjectDetails.researchRole = document.getElementById('research-project-role').value;
-            researchProjectDetails.projectDuration = document.getElementById('research-project-duration').value;
-            researchProjectDetails.projectCost = document.getElementById('research-project-cost').value;
-
-            
-            const payload = { researchProjectDetails };
-            const submitBtn = document.getElementById('submit-research-implementation');
-            const AddBtn = document.getElementById('add-research-implementation');
-
-            await submitData(url, payload, submitBtn, AddBtn);
-        };
-
-        const completedResearchProjectDetails = async (url) => {
-            const researchProjectCompleteDetails = {};
-
-            researchProjectCompleteDetails.compltedProjecTitle = document.getElementById('research-project-completed-title').value;
-            researchProjectCompleteDetails.completedProjectAgency = document.getElementById('research-project-completed-agency').value;
-            researchProjectCompleteDetails.completedProjectRole = document.getElementById('research-project-completed-role').value;
-            researchProjectCompleteDetails.completedProjectDuration = document.getElementById('research-project-completed-duration').value;
-            researchProjectCompleteDetails.completedProjectCost = document.getElementById('research-project-completed-cost').value;
-
-            
-            const payload = { researchProjectCompleteDetails };
-
-            const submitBtn = document.getElementById('submit-research-completed')
-            const AddBtn = document.getElementById('add-research-completed')
-            await  submitData(url, payload, submitBtn, AddBtn);
-        };
+        investigatorPublicationDetails.publicationAuthor = document.getElementById('investigator-publication-author').value;
+        investigatorPublicationDetails.publicationTitle = document.getElementById('investigator-publication-title').value;
+        investigatorPublicationDetails.publicationjournalName = document.getElementById('investigator-publication-journal-name').value;
+        investigatorPublicationDetails.publicationYear = document.getElementById('investigator-publication-year').value;
+        investigatorPublicationDetails.publicationVolume = document.getElementById('investigator-publication-volume').value;
+        investigatorPublicationDetails.publicationIssue = document.getElementById('investigator-publication-issue').value;
+        investigatorPublicationDetails.publicationArtcicleNumber = document.getElementById('investigator-publication-article-number').value;
+        investigatorPublicationDetails.impactFactor = document.getElementById('investigator-publication-impact-factor').value;
 
 
 
-        async function submitForm(url, formId) {
-            console.log('clicked');
+        const payload = { investigatorPublicationDetails };
+        const submitBtn = document.getElementById('submit-investor-publication');
+        const AddBtn = document.getElementById('add-investor-publication')
 
-            if (formId === 'investigator-education') {
-                await investigatorEducation(url);
-            } else if (formId === 'investigator-experience') {
-                await investigatorWorkExperience(url);
-            }
-            else if(formId === 'investigator-book') {
-                await investigatorBook(url);
+        await submitData(url, payload, submitBtn, AddBtn);
+    };
 
-            }
-            else if(formId === 'book-chapter') {
-                await investigatorBookChapter(url);
-            }
-            else if(formId === 'investigator-publication') {
-                await investigatorPublication(url);
-            }
-            else if(formId === 'investigator-pharmacy') {
-                await investigatorPatent(url);
-            }
-            else if(formId === 'research-implementation') {
-                await researchProjectImplemention(url);
-            }
-            else if(formId === 'research-completed') {
-                await completedResearchProjectDetails(url);
-            }
-            };
+    const researchProjectImplemention = async (url) => {
+        const researchProjectDetails = {};
 
-        // education details
-        // document.getElementById('submit-investor-education').addEventListener('click', async () => {
-        //     console.log('clickeddddddd')
-        //     await submitForm('<%- BASE_URL %>research/pharmacy-seed-grant-form/investigator-education/insert', 'investigator-education');
-        // });
+        researchProjectDetails.researchTitle = document.getElementById('research-project-title').value;
+        researchProjectDetails.researchAgency = document.getElementById('research-project-agency').value;
+        researchProjectDetails.researchRole = document.getElementById('research-project-role').value;
+        researchProjectDetails.projectDuration = document.getElementById('research-project-duration').value;
+        researchProjectDetails.projectCost = document.getElementById('research-project-cost').value;
 
-        // experience details
-        document.getElementById('submit-investor-experience').addEventListener('click', async () => {
-            console.log('clickeddddddd')
-            await submitForm('<%- BASE_URL %>research/pharmacy-seed-grant-form/investigator-experience/insert', 'investigator-experience');
-        });
 
-        //investigator book details
-        document.getElementById('submit-investor-book').addEventListener('click', async () => {
-            await submitForm('<%- BASE_URL %>research/pharmacy-seed-grant-form/investigator-book/insert', 'investigator-book');
-        });
+        const payload = { researchProjectDetails };
+        const submitBtn = document.getElementById('submit-research-implementation');
+        const AddBtn = document.getElementById('add-research-implementation');
 
-        // Book Chapter details
-        document.getElementById('submit-book-chapter').addEventListener('click', async () => {
-            console.log('clickeddddddd')
-            await submitForm('<%- BASE_URL %>research/pharmacy-seed-grant-form/investigator-book-chapter/insert', 'book-chapter');
-        });
+        await submitData(url, payload, submitBtn, AddBtn);
+    };
 
-        // Patent details
-        document.getElementById('submit-pharmacy').addEventListener('click', async () => {
-            console.log('clickeddddddd')
-            await submitForm('<%- BASE_URL %>research/pharmacy-seed-grant-form/investigator-pharmacy/insert', 'investigator-pharmacy');
-        });
+    const completedResearchProjectDetails = async (url) => {
+        const researchProjectCompleteDetails = {};
 
-        // Publicaation details
-        document.getElementById('submit-investor-publication').addEventListener('click', async () => {
-            console.log('clickeddddddd')
-            await submitForm('<%- BASE_URL %>research/pharmacy-seed-grant-form/investigator-publication/insert', 'investigator-publication');
-        });
+        researchProjectCompleteDetails.compltedProjecTitle = document.getElementById('research-project-completed-title').value;
+        researchProjectCompleteDetails.completedProjectAgency = document.getElementById('research-project-completed-agency').value;
+        researchProjectCompleteDetails.completedProjectRole = document.getElementById('research-project-completed-role').value;
+        researchProjectCompleteDetails.completedProjectDuration = document.getElementById('research-project-completed-duration').value;
+        researchProjectCompleteDetails.completedProjectCost = document.getElementById('research-project-completed-cost').value;
 
-        // research project under implementaion details details
-        document.getElementById('submit-research-implementation').addEventListener('click', async () => {
-            console.log('clickeddddddd')
-            await submitForm('<%- BASE_URL %>research/pharmacy-seed-grant-form/investigator-research-implementation/insert', 'research-implementation');
-        });
 
-        // research project  completed details details
-        document.getElementById('submit-research-completed').addEventListener('click', async () => {
-            console.log('clickeddddddd')
-            await submitForm('<%- BASE_URL %>research/pharmacy-seed-grant-form/investigator-research-completed/insert', 'research-completed');
-        });
+        const payload = { researchProjectCompleteDetails };
 
-        // for make input field empty when reseponse get done
+        const submitBtn = document.getElementById('submit-research-completed')
+        const AddBtn = document.getElementById('add-research-completed')
+        await submitData(url, payload, submitBtn, AddBtn);
+    };
 
-        document.getElementById('add-investor-education-more-details').addEventListener('click', async () => {
-            document.getElementById('submit-investor-education').classList.remove('d-none');
 
-            document.getElementById('investigator-education').classList.remove('d-none');
-            document.getElementById('investigator-university').classList.remove('d-none');
-            document.getElementById('investigator-passout-year').classList.remove('d-none');
 
-            document.getElementById('investigator-education').value = '';
-            document.getElementById('investigator-university').value = '';
-            document.getElementById('investigator-passout-year').value = '';
-        });
+    async function submitForm(url, formId) {
+        console.log('clicked');
 
-        // experience details
-        document.getElementById('add-investor-experience-details').addEventListener('click', async () => {
-            document.getElementById('submit-investor-experience').classList.remove('d-none');
+        if (formId === 'investigator-education') {
+            await investigatorEducation(url);
+        } else if (formId === 'investigator-experience') {
+            await investigatorWorkExperience(url);
+        }
+        else if (formId === 'investigator-book') {
+            await investigatorBook(url);
 
-            document.getElementById('investigator-postion').classList.remove('d-none');
-            document.getElementById('investigator-organigation').classList.remove('d-none');
-            document.getElementById('investigator-period').classList.remove('d-none');
+        }
+        else if (formId === 'book-chapter') {
+            await investigatorBookChapter(url);
+        }
+        else if (formId === 'investigator-publication') {
+            await investigatorPublication(url);
+        }
+        else if (formId === 'investigator-pharmacy') {
+            await investigatorPatent(url);
+        }
+        else if (formId === 'research-implementation') {
+            await researchProjectImplemention(url);
+        }
+        else if (formId === 'research-completed') {
+            await completedResearchProjectDetails(url);
+        }
+    };
 
-            document.getElementById('investigator-postion').value = '';
-            document.getElementById('investigator-organigation').value = '';
-            document.getElementById('investigator-period').value = '';
-        });
 
-        //investigator book details
-        document.getElementById('add-investor-book').addEventListener('click', async () => {
-            document.getElementById('submit-investor-book').classList.remove('d-none');
+    // // experience details
+    // document.getElementById('submit-investor-experience').addEventListener('click', async () => {
+    //     console.log('clickeddddddd')
+    //     await submitForm('<%- BASE_URL %>research/pharmacy-seed-grant-form/investigator-experience/insert', 'investigator-experience');
+    // });
 
-            document.getElementById('investigator-book-author').classList.remove('d-none')
-            document.getElementById('investigator-book-names').classList.remove('d-none')
-            document.getElementById('investigator-book-year').classList.remove('d-none')
-            document.getElementById('investigator-book-volume').classList.remove('d-none')
-            document.getElementById('investigator-book-publisher').classList.remove('d-none')
-            document.getElementById('investigator-book-isbn').classList.remove('d-none');
+    //investigator book details
+    document.getElementById('submit-investor-book').addEventListener('click', async () => {
+        await submitForm('<%- BASE_URL %>research/pharmacy-seed-grant-form/investigator-book/insert', 'investigator-book');
+    });
 
-            document.getElementById('investigator-book-author').value = '';
-            document.getElementById('investigator-book-names').value = '';
-            document.getElementById('investigator-book-year').value = '';
-            document.getElementById('investigator-book-volume').value = '';
-            document.getElementById('investigator-book-publisher').value = '';
-            document.getElementById('investigator-book-isbn').value = '';
-        });
+    // Book Chapter details
+    document.getElementById('submit-book-chapter').addEventListener('click', async () => {
+        console.log('clickeddddddd')
+        await submitForm('<%- BASE_URL %>research/pharmacy-seed-grant-form/investigator-book-chapter/insert', 'book-chapter');
+    });
 
-        // Book Chapter details
-        document.getElementById('add-book-chapter').addEventListener('click', async () => {
-            document.getElementById('submit-book-chapter').classList.remove('d-none');
+    // Patent details
+    document.getElementById('submit-pharmacy').addEventListener('click', async () => {
+        console.log('clickeddddddd')
+        await submitForm('<%- BASE_URL %>research/pharmacy-seed-grant-form/investigator-pharmacy/insert', 'investigator-pharmacy');
+    });
 
-            document.getElementById('investigator-book-chapter-author').classList.remove('d-none')
-            document.getElementById('investigator-book-chapter-title').classList.remove('d-none')
-            document.getElementById('investigator-book-chapter-book-name').classList.remove('d-none')
-            document.getElementById('investigator-book-chapter-year').classList.remove('d-none')
-            document.getElementById('investigator-book-chapter-volume').classList.remove('d-none')
-            document.getElementById('investigator-book-chapter-page-number').classList.remove('d-none')
-            document.getElementById('investigator-book-chapter-publisher').classList.remove('d-none')
-            document.getElementById('investigator-book-chapter-isbn').classList.remove('d-none');
+    // Publicaation details
+    document.getElementById('submit-investor-publication').addEventListener('click', async () => {
+        console.log('clickeddddddd')
+        await submitForm('<%- BASE_URL %>research/pharmacy-seed-grant-form/investigator-publication/insert', 'investigator-publication');
+    });
 
-            document.getElementById('investigator-book-chapter-author').value = '';
-            document.getElementById('investigator-book-chapter-title').value = '';
-            document.getElementById('investigator-book-chapter-book-name').value = '';
-            document.getElementById('investigator-book-chapter-year').value = '';
-            document.getElementById('investigator-book-chapter-volume').value = '';
-            document.getElementById('investigator-book-chapter-page-number').value = '';
-            document.getElementById('investigator-book-chapter-publisher').value = '';
-            document.getElementById('investigator-book-chapter-isbn').value = '';
-        });
+    // research project under implementaion details details
+    document.getElementById('submit-research-implementation').addEventListener('click', async () => {
+        console.log('clickeddddddd')
+        await submitForm('<%- BASE_URL %>research/pharmacy-seed-grant-form/investigator-research-implementation/insert', 'research-implementation');
+    });
 
-        // Patent details
-        document.getElementById('add-pharmacy').addEventListener('click', async () => {
-            document.getElementById('submit-pharmacy').classList.remove('d-none');
-            document.getElementById('investigator-pharmacy-applicant-name').classList.remove('d-none');
-            document.getElementById('investigator-pharmacy-title').classList.remove('d-none');
-            document.getElementById('investigator-pharmacy-status').classList.remove('d-none');
-            document.getElementById('investigator-pharmacy-year-month').classList.remove('d-none');
+    // research project  completed details details
+    document.getElementById('submit-research-completed').addEventListener('click', async () => {
+        console.log('clickeddddddd')
+        await submitForm('<%- BASE_URL %>research/pharmacy-seed-grant-form/investigator-research-completed/insert', 'research-completed');
+    });
 
-            document.getElementById('investigator-pharmacy-applicant-name').value = '';
-            document.getElementById('investigator-pharmacy-title').value = '';
-            document.getElementById('investigator-pharmacy-status').value = '';
-            document.getElementById('investigator-pharmacy-year-month').value = '';
-        });
+    // for make input field empty when reseponse get done
 
-        // Publicaation details
-        document.getElementById('add-investor-publication').addEventListener('click', async () => {
-            document.getElementById('submit-investor-publication').classList.remove('d-none');
+    // document.getElementById('add-investor-education-more-details').addEventListener('click', async () => {
+    //     document.getElementById('submit-investor-education').classList.remove('d-none');
 
-            document.getElementById('investigator-publication-author').classList.remove('d-none')
-            document.getElementById('investigator-publication-title').classList.remove('d-none')
-            document.getElementById('investigator-publication-journal-name').classList.remove('d-none')
-            document.getElementById('investigator-publication-year').classList.remove('d-none')
-            document.getElementById('investigator-publication-volume').classList.remove('d-none')
-            document.getElementById('investigator-publication-publisher').classList.remove('d-none')
-            document.getElementById('investigator-publication-isbn').classList.remove('d-none')
+    //     document.getElementById('investigator-education').classList.remove('d-none');
+    //     document.getElementById('investigator-university').classList.remove('d-none');
+    //     document.getElementById('investigator-passout-year').classList.remove('d-none');
 
-            document.getElementById('investigator-publication-author').value = ''
-            document.getElementById('investigator-publication-title').value = ''
-            document.getElementById('investigator-publication-journal-name').value = ''
-            document.getElementById('investigator-publication-year').value = ''
-            document.getElementById('investigator-publication-volume').value = ''
-            document.getElementById('investigator-publication-publisher').value = ''
-            document.getElementById('investigator-publication-isbn').value = ''
-        });
+    //     document.getElementById('investigator-education').value = '';
+    //     document.getElementById('investigator-university').value = '';
+    //     document.getElementById('investigator-passout-year').value = '';
+    // });
 
-        // research project under implementaion details details
-        document.getElementById('add-research-implementation').addEventListener('click', async () => {
-            document.getElementById('submit-research-implementation').classList.remove('d-none');
-            document.getElementById('research-project-title').classList.remove('d-none');
-            document.getElementById('research-project-agency').classList.remove('d-none');
-            document.getElementById('research-project-role').classList.remove('d-none');
-            document.getElementById('research-project-duration').classList.remove('d-none');
-            document.getElementById('research-project-cost').classList.remove('d-none');
+    // experience details
+    // document.getElementById('add-investor-experience-details').addEventListener('click', async () => {
+    //     document.getElementById('submit-investor-experience').classList.remove('d-none');
 
-            document.getElementById('research-project-title').value = '';
-            document.getElementById('research-project-agency').value = '';
-            document.getElementById('research-project-role').value = '';
-            document.getElementById('research-project-duration').value = '';
-            document.getElementById('research-project-cost').value = '';
-        });
+    //     document.getElementById('investigator-postion').classList.remove('d-none');
+    //     document.getElementById('investigator-organigation').classList.remove('d-none');
+    //     document.getElementById('investigator-period').classList.remove('d-none');
 
-        // research project  completed details details
-        document.getElementById('add-research-completed').addEventListener('click', async () => {
-            document.getElementById('submit-research-completed').classList.remove('d-none');
+    //     document.getElementById('investigator-postion').value = '';
+    //     document.getElementById('investigator-organigation').value = '';
+    //     document.getElementById('investigator-period').value = '';
+    // });
 
-            document.getElementById('research-project-completed-title').classList.remove('d-none');
-            document.getElementById('research-project-completed-agency').classList.remove('d-none');
-            document.getElementById('research-project-completed-role').classList.remove('d-none');
-            document.getElementById('research-project-completed-duration').classList.remove('d-none');
-            document.getElementById('research-project-completed-cost').classList.remove('d-none');
+    //investigator book details
+    document.getElementById('add-investor-book').addEventListener('click', async () => {
+        document.getElementById('submit-investor-book').classList.remove('d-none');
 
-            document.getElementById('research-project-completed-title').value = '';
-            document.getElementById('research-project-completed-agency').value = '';
-            document.getElementById('research-project-completed-role').value = '';
-            document.getElementById('research-project-completed-duration').value = '';
-            document.getElementById('research-project-completed-cost').value = '';
+        document.getElementById('investigator-book-author').classList.remove('d-none')
+        document.getElementById('investigator-book-names').classList.remove('d-none')
+        document.getElementById('investigator-book-year').classList.remove('d-none')
+        document.getElementById('investigator-book-volume').classList.remove('d-none')
+        document.getElementById('investigator-book-publisher').classList.remove('d-none')
+        document.getElementById('investigator-book-isbn').classList.remove('d-none');
 
-          
-        });
+        document.getElementById('investigator-book-author').value = '';
+        document.getElementById('investigator-book-names').value = '';
+        document.getElementById('investigator-book-year').value = '';
+        document.getElementById('investigator-book-volume').value = '';
+        document.getElementById('investigator-book-publisher').value = '';
+        document.getElementById('investigator-book-isbn').value = '';
+    });
 
-        $("#pharmacy-seed-grant-form-list").DataTable({
+    // Book Chapter details
+    document.getElementById('add-book-chapter').addEventListener('click', async () => {
+        document.getElementById('submit-book-chapter').classList.remove('d-none');
+
+        document.getElementById('investigator-book-chapter-author').classList.remove('d-none')
+        document.getElementById('investigator-book-chapter-title').classList.remove('d-none')
+        document.getElementById('investigator-book-chapter-book-name').classList.remove('d-none')
+        document.getElementById('investigator-book-chapter-year').classList.remove('d-none')
+        document.getElementById('investigator-book-chapter-volume').classList.remove('d-none')
+        document.getElementById('investigator-book-chapter-page-number').classList.remove('d-none')
+        document.getElementById('investigator-book-chapter-publisher').classList.remove('d-none')
+        document.getElementById('investigator-book-chapter-isbn').classList.remove('d-none');
+
+        document.getElementById('investigator-book-chapter-author').value = '';
+        document.getElementById('investigator-book-chapter-title').value = '';
+        document.getElementById('investigator-book-chapter-book-name').value = '';
+        document.getElementById('investigator-book-chapter-year').value = '';
+        document.getElementById('investigator-book-chapter-volume').value = '';
+        document.getElementById('investigator-book-chapter-page-number').value = '';
+        document.getElementById('investigator-book-chapter-publisher').value = '';
+        document.getElementById('investigator-book-chapter-isbn').value = '';
+    });
+
+    // Patent details
+    document.getElementById('add-pharmacy').addEventListener('click', async () => {
+        document.getElementById('submit-pharmacy').classList.remove('d-none');
+        document.getElementById('investigator-pharmacy-applicant-name').classList.remove('d-none');
+        document.getElementById('investigator-pharmacy-title').classList.remove('d-none');
+        document.getElementById('investigator-pharmacy-status').classList.remove('d-none');
+        document.getElementById('investigator-pharmacy-year-month').classList.remove('d-none');
+
+        document.getElementById('investigator-pharmacy-applicant-name').value = '';
+        document.getElementById('investigator-pharmacy-title').value = '';
+        document.getElementById('investigator-pharmacy-status').value = '';
+        document.getElementById('investigator-pharmacy-year-month').value = '';
+    });
+
+    // Publicaation details
+    document.getElementById('add-investor-publication').addEventListener('click', async () => {
+        document.getElementById('submit-investor-publication').classList.remove('d-none');
+
+        document.getElementById('investigator-publication-author').classList.remove('d-none')
+        document.getElementById('investigator-publication-title').classList.remove('d-none')
+        document.getElementById('investigator-publication-journal-name').classList.remove('d-none')
+        document.getElementById('investigator-publication-year').classList.remove('d-none')
+        document.getElementById('investigator-publication-volume').classList.remove('d-none')
+        document.getElementById('investigator-publication-publisher').classList.remove('d-none')
+        document.getElementById('investigator-publication-isbn').classList.remove('d-none')
+
+        document.getElementById('investigator-publication-author').value = ''
+        document.getElementById('investigator-publication-title').value = ''
+        document.getElementById('investigator-publication-journal-name').value = ''
+        document.getElementById('investigator-publication-year').value = ''
+        document.getElementById('investigator-publication-volume').value = ''
+        document.getElementById('investigator-publication-publisher').value = ''
+        document.getElementById('investigator-publication-isbn').value = ''
+    });
+
+    // research project under implementaion details details
+    document.getElementById('add-research-implementation').addEventListener('click', async () => {
+        document.getElementById('submit-research-implementation').classList.remove('d-none');
+        document.getElementById('research-project-title').classList.remove('d-none');
+        document.getElementById('research-project-agency').classList.remove('d-none');
+        document.getElementById('research-project-role').classList.remove('d-none');
+        document.getElementById('research-project-duration').classList.remove('d-none');
+        document.getElementById('research-project-cost').classList.remove('d-none');
+
+        document.getElementById('research-project-title').value = '';
+        document.getElementById('research-project-agency').value = '';
+        document.getElementById('research-project-role').value = '';
+        document.getElementById('research-project-duration').value = '';
+        document.getElementById('research-project-cost').value = '';
+    });
+
+    // research project  completed details details
+    document.getElementById('add-research-completed').addEventListener('click', async () => {
+        document.getElementById('submit-research-completed').classList.remove('d-none');
+
+        document.getElementById('research-project-completed-title').classList.remove('d-none');
+        document.getElementById('research-project-completed-agency').classList.remove('d-none');
+        document.getElementById('research-project-completed-role').classList.remove('d-none');
+        document.getElementById('research-project-completed-duration').classList.remove('d-none');
+        document.getElementById('research-project-completed-cost').classList.remove('d-none');
+
+        document.getElementById('research-project-completed-title').value = '';
+        document.getElementById('research-project-completed-agency').value = '';
+        document.getElementById('research-project-completed-role').value = '';
+        document.getElementById('research-project-completed-duration').value = '';
+        document.getElementById('research-project-completed-cost').value = '';
+
+
+    });
+
+    $("#pharmacy-seed-grant-form-list").DataTable({
 
         "pageLength": 5,
         "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
-        
+
+    })
+
+    const insertPharmacySeed = async (url) => {
+        const pharmacySeedGrantDetails = {}
+        pharmacySeedGrantDetails.summaryTitle = document.getElementById('summary-project-title').value;
+        pharmacySeedGrantDetails.summaryProjectTitle = document.getElementById('summary-project-objectives').value;
+        // pharmacySeedGrantDetails.principalInvestigator = document.getElementById('principal-investigator-id').value;
+        // pharmacySeedGrantDetails.coInvestigator = document.getElementById('co-investigator').value;
+
+        pharmacySeedGrantDetails.projectDuration = document.getElementById('project-duration').value;
+        pharmacySeedGrantDetails.totalCost = document.getElementById('total-cost').value;
+        pharmacySeedGrantDetails.consumablesAmount = document.getElementById('consumables-amount').value;
+        pharmacySeedGrantDetails.analysisAmount = document.getElementById('evaluation-analysis-amount').value;
+        pharmacySeedGrantDetails.otherAmount = document.getElementById('other-amount').value;
+
+        pharmacySeedGrantDetails.projectTitle = document.getElementById('project-title').value;
+
+        pharmacySeedGrantDetails.researchStatus = document.getElementById('research-status').value;
+        pharmacySeedGrantDetails.scientificImportance = document.getElementById('scientific-importance').value;
+
+        pharmacySeedGrantDetails.projectObjectives = document.getElementById('objective').value;
+        pharmacySeedGrantDetails.detailedMethodology = document.getElementById('detailed-methodology').value;
+        pharmacySeedGrantDetails.timeLines = document.getElementById('timelines').value;
+        pharmacySeedGrantDetails.budgetConsumableAmount = document.getElementById('budget-consumables-amount').value;
+        pharmacySeedGrantDetails.consumablesJustification = document.getElementById('consumables-justification').value;
+        pharmacySeedGrantDetails.solventsAmount = document.getElementById('solvents-amount').value;
+        pharmacySeedGrantDetails.solventsJustification = document.getElementById('solvents-justification').value;
+        pharmacySeedGrantDetails.chemicalsAmount = document.getElementById('chemicals-amount').value;
+        pharmacySeedGrantDetails.chemicalsJustification = document.getElementById('chemicals-justification').value;
+        pharmacySeedGrantDetails.biomarkersReferenceAmount = document.getElementById('biomarkers-reference-amount').value;
+        pharmacySeedGrantDetails.biomarkersReferenceJustifications = document.getElementById('biomarkers-reference-justification').value;
+        pharmacySeedGrantDetails.hplcAmount = document.getElementById('HPLC-amount').value;
+        pharmacySeedGrantDetails.hplcJustification = document.getElementById('HPLC-justification').value;
+        pharmacySeedGrantDetails.experimentalAnimalsAmount = document.getElementById('experimental-animals-amount').value;
+        pharmacySeedGrantDetails.experimentalAnimalsJustification = document.getElementById('experimental-animals-justification').value;
+        pharmacySeedGrantDetails.cellLinesAmount = document.getElementById('cell-lines-amount').value;
+        pharmacySeedGrantDetails.cellLinesJustifications = document.getElementById('cell-lines-justification').value;
+        pharmacySeedGrantDetails.kitsAnalysisAmount = document.getElementById('kits-analysis-amount').value;
+        pharmacySeedGrantDetails.kitsAnalysisJustifications = document.getElementById('HPLC-justification').value;
+        pharmacySeedGrantDetails.evaluationAnalysisAmount = document.getElementById('evaluation-analysis-amount').value;
+        pharmacySeedGrantDetails.evaluationAnalysisJustification = document.getElementById('evaluation-analysis-justification').value;
+        pharmacySeedGrantDetails.proposedOutCome = document.getElementById('proposed-outcome').value;
+
+        pharmacySeedGrantDetails.previousProjectExplaination = document.getElementById('previous-project-explaination').value;
+        pharmacySeedGrantDetails.references = document.getElementById('references').value;
+
+        pharmacySeedGrantDetails.invatigatorName = document.getElementById('investigator-name').value
+        pharmacySeedGrantDetails.investigatorDesignation = document.getElementById('investigator-designation').value
+        pharmacySeedGrantDetails.investigatorAddress = document.getElementById('investigator-adress').value
+        pharmacySeedGrantDetails.invatigatorEmail = document.getElementById('investigator-email').value
+        pharmacySeedGrantDetails.invatigatorMobile = document.getElementById('investigator-mobile').value
+        pharmacySeedGrantDetails.invastigatorDateOfBirth = document.getElementById('investigator-date-of-birth').value;
+        pharmacySeedGrantDetails.projectBackGround = document.getElementById('project-back-ground').value;
+        pharmacySeedGrantDetails.hypothesis = document.querySelector('input[name="hypothesis"]:checked').value;
+
+
+        pharmacySeedGrantDetails.educationIdsArray = educationalIdsContainer;
+        pharmacySeedGrantDetails.eperienceIdsArray = eperienceIdsArray;
+        pharmacySeedGrantDetails.bookIdsArray = bookIdsArray;
+        pharmacySeedGrantDetails.bookChapterIdsArray = bookChapterIdsArray;
+        pharmacySeedGrantDetails.publicationIdsArray = publicationIdsArray;
+        pharmacySeedGrantDetails.pharmacyIdsArray = pharmacyIdsArray;
+        pharmacySeedGrantDetails.researchImplementationIdsArray = researchImplementationIdsArray;
+        pharmacySeedGrantDetails.researchCompletedIdsArray = researchCompletedIdsArray;
+
+        pharmacySeedGrantDetails.principalName = document.getElementById('principal-investigator-name').value;
+
+        pharmacySeedGrantDetails.principalDsg = document.getElementById('principal-investigator-dsg').value;
+        pharmacySeedGrantDetails.principalOrg = document.getElementById('principal-investigator-org').value;
+
+        pharmacySeedGrantDetails.principalMob = document.getElementById('principal-investigator-mob').value;
+        pharmacySeedGrantDetails.principalEmail = document.getElementById('principal-investigator-email').value
+
+        pharmacySeedGrantDetails.coIvestigatorName = document.getElementById('co-investigator-name').value;
+
+        pharmacySeedGrantDetails.coIvestigatorDsg = document.getElementById('co-investigator-dsg').value;
+        pharmacySeedGrantDetails.coIvestigatorOrg = document.getElementById('co-investigator-org').value;
+
+        pharmacySeedGrantDetails.coIvestigatorMob = document.getElementById('co-investigator-mob').value;
+        pharmacySeedGrantDetails.coIvestigatorEmail = document.getElementById('co-investigator-email').value;
+
+        const payload = {
+            pharmacySeedGrantDetails: pharmacySeedGrantDetails
+        }
+
+
+
+        fetch(url, {
+            method: "POST", headers: {
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify(payload)
         })
-
-        const insertPharmacySeed = async(url) => {
-            const pharmacySeedGrantDetails = {}
-            pharmacySeedGrantDetails.summaryTitle = document.getElementById('summary-project-title').value;
-            pharmacySeedGrantDetails.summaryProjectTitle = document.getElementById('summary-project-objectives').value;
-            // pharmacySeedGrantDetails.principalInvestigator = document.getElementById('principal-investigator-id').value;
-            // pharmacySeedGrantDetails.coInvestigator = document.getElementById('co-investigator').value;
-
-            pharmacySeedGrantDetails.projectDuration = document.getElementById('project-duration').value;
-            pharmacySeedGrantDetails.totalCost = document.getElementById('total-cost').value;
-            pharmacySeedGrantDetails.consumablesAmount = document.getElementById('consumables-amount').value;
-            pharmacySeedGrantDetails.analysisAmount = document.getElementById('evaluation-analysis-amount').value;
-            pharmacySeedGrantDetails.otherAmount = document.getElementById('other-amount').value;
-
-            pharmacySeedGrantDetails.projectTitle = document.getElementById('project-title').value;
-
-            pharmacySeedGrantDetails.researchStatus = document.getElementById('research-status').value;
-            pharmacySeedGrantDetails.scientificImportance = document.getElementById('scientific-importance').value;
-
-            pharmacySeedGrantDetails.projectObjectives = document.getElementById('objective').value;
-            pharmacySeedGrantDetails.detailedMethodology = document.getElementById('detailed-methodology').value;
-            pharmacySeedGrantDetails.timeLines = document.getElementById('timelines').value;
-            pharmacySeedGrantDetails.budgetConsumableAmount = document.getElementById('budget-consumables-amount').value;
-            pharmacySeedGrantDetails.consumablesJustification= document.getElementById('consumables-justification').value;
-            pharmacySeedGrantDetails.solventsAmount = document.getElementById('solvents-amount').value;
-            pharmacySeedGrantDetails.solventsJustification = document.getElementById('solvents-justification').value;
-            pharmacySeedGrantDetails.chemicalsAmount = document.getElementById('chemicals-amount').value;
-            pharmacySeedGrantDetails.chemicalsJustification = document.getElementById('chemicals-justification').value;
-            pharmacySeedGrantDetails.biomarkersReferenceAmount = document.getElementById('biomarkers-reference-amount').value;
-            pharmacySeedGrantDetails.biomarkersReferenceJustifications = document.getElementById('biomarkers-reference-justification').value;
-            pharmacySeedGrantDetails.hplcAmount = document.getElementById('HPLC-amount').value;
-            pharmacySeedGrantDetails.hplcJustification = document.getElementById('HPLC-justification').value;
-            pharmacySeedGrantDetails.experimentalAnimalsAmount = document.getElementById('experimental-animals-amount').value;
-            pharmacySeedGrantDetails.experimentalAnimalsJustification = document.getElementById('experimental-animals-justification').value;
-            pharmacySeedGrantDetails.cellLinesAmount = document.getElementById('cell-lines-amount').value;
-            pharmacySeedGrantDetails.cellLinesJustifications = document.getElementById('cell-lines-justification').value;
-            pharmacySeedGrantDetails.kitsAnalysisAmount = document.getElementById('kits-analysis-amount').value;
-            pharmacySeedGrantDetails.kitsAnalysisJustifications = document.getElementById('HPLC-justification').value;
-            pharmacySeedGrantDetails.evaluationAnalysisAmount = document.getElementById('evaluation-analysis-amount').value;
-            pharmacySeedGrantDetails.evaluationAnalysisJustification = document.getElementById('evaluation-analysis-justification').value;
-            pharmacySeedGrantDetails.proposedOutCome = document.getElementById('proposed-outcome').value;
-
-            pharmacySeedGrantDetails.previousProjectExplaination = document.getElementById('previous-project-explaination').value;
-            pharmacySeedGrantDetails.references = document.getElementById('references').value;
-
-            pharmacySeedGrantDetails.invatigatorName =  document.getElementById('investigator-name').value
-            pharmacySeedGrantDetails.investigatorDesignation =  document.getElementById('investigator-designation').value
-            pharmacySeedGrantDetails.investigatorAddress =  document.getElementById('investigator-adress').value
-            pharmacySeedGrantDetails.invatigatorEmail = document.getElementById('investigator-email').value
-            pharmacySeedGrantDetails.invatigatorMobile =  document.getElementById('investigator-mobile').value
-            pharmacySeedGrantDetails.invastigatorDateOfBirth = document.getElementById('investigator-date-of-birth').value;
-            pharmacySeedGrantDetails.projectBackGround = document.getElementById('project-back-ground').value;
-            pharmacySeedGrantDetails.hypothesis = document.querySelector('input[name="hypothesis"]:checked').value;
-          
-       
-            pharmacySeedGrantDetails.educationIdsArray = educationIdsArray;
-            pharmacySeedGrantDetails.eperienceIdsArray = eperienceIdsArray;
-            pharmacySeedGrantDetails.bookIdsArray = bookIdsArray;
-            pharmacySeedGrantDetails.bookChapterIdsArray = bookChapterIdsArray;
-            pharmacySeedGrantDetails.publicationIdsArray = publicationIdsArray;
-            pharmacySeedGrantDetails.pharmacyIdsArray = pharmacyIdsArray;
-            pharmacySeedGrantDetails.researchImplementationIdsArray = researchImplementationIdsArray;
-            pharmacySeedGrantDetails.researchCompletedIdsArray = researchCompletedIdsArray;
-
-            pharmacySeedGrantDetails.principalName = document.getElementById('principal-investigator-name').value;
-
-            pharmacySeedGrantDetails.principalDsg = document.getElementById('principal-investigator-dsg').value;
-            pharmacySeedGrantDetails.principalOrg = document.getElementById('principal-investigator-org').value;
-
-            pharmacySeedGrantDetails.principalMob = document.getElementById('principal-investigator-mob').value;
-            pharmacySeedGrantDetails.principalEmail = document.getElementById('principal-investigator-email').value
-
-            pharmacySeedGrantDetails.coIvestigatorName = document.getElementById('co-investigator-name').value;
-
-            pharmacySeedGrantDetails.coIvestigatorDsg = document.getElementById('co-investigator-dsg').value;
-            pharmacySeedGrantDetails.coIvestigatorOrg = document.getElementById('co-investigator-org').value;
-
-            pharmacySeedGrantDetails.coIvestigatorMob = document.getElementById('co-investigator-mob').value;
-            pharmacySeedGrantDetails.coIvestigatorEmail = document.getElementById('co-investigator-email').value;
-
-            const payload = {
-                pharmacySeedGrantDetails : pharmacySeedGrantDetails
-            }
-            
-
-
-            fetch(url, {
-                method: "POST", headers: {
-                    'content-type': 'application/json'
-                },
-                body: JSON.stringify(payload)
-            })
             .then((result) => {
-                if(result.ok){
+                if (result.ok) {
                     return result.json()
                 }
             })
             .then((data) => {
-                if(data.status === "Done"){
+                if (data.status === "Done") {
                     console.log('data ====>>>>>>>>', data);
                     // $('#pharmacy-seed-grant-modal').modal('hide');
                     Swal.fire({
@@ -1982,46 +1996,47 @@ educationBtn.addEventListener('click', async() => {
                         confirmButtonColor: "#DD6B55"
                     });
                 }
-              
+
             })
             .catch((error) => {
-                    console.error('Error:', error);
-                    const message = error;
-                    Swal.fire({
-                        position: "top-center",
-                        icon: "error",
-                        title: "Data Insertion Failed",
-                        color: "red",
-                        with: "20PX",
-                        html: `<span style="color: red;">${message}</span>`,
-                        showConfirmButton: true,
-                        confirmButtonText: "OK",
-                        confirmButtonColor: "#DD6B55"
-                    });
-                });   
-        }
-
-        submitBtn.addEventListener('click', async () => {
-                const isValid = validateRequiredFormFields(submitBtn);
-                if (isValid) {
-                    await insertPharmacySeed('<%- BASE_URL %>research/pharmacy-seed-grant-form/insert');
-                }
-                else {
-                    Swal.fire({
-                        position: "top-center",
-                        icon: "error",
-                        title: "Validation Failed",
-                        color: "red",
-                        showConfirmButton: true,
-                        confirmButtonText: "OK",
-                        confirmButtonColor: "#DD6B55"
-                    });
-                }
+                console.error('Error:', error);
+                const message = error;
+                Swal.fire({
+                    position: "top-center",
+                    icon: "error",
+                    title: "Data Insertion Failed",
+                    color: "red",
+                    with: "20PX",
+                    html: `<span style="color: red;">${message}</span>`,
+                    showConfirmButton: true,
+                    confirmButtonText: "OK",
+                    confirmButtonColor: "#DD6B55"
+                });
             });
+    }
+
+    document.getElementById('submit-pharmacy-btn').addEventListener('click', async () => {
+        console.log('clicked submit button')
+        const isValid = validateRequiredFormFields(document.getElementById('submit-pharmacy-btn'));
+        if (isValid) {
+            await insertPharmacySeed('<%- BASE_URL %>research/pharmacy-seed-grant-form/insert');
+        }
+        else {
+            Swal.fire({
+                position: "top-center",
+                icon: "error",
+                title: "Validation Failed",
+                color: "red",
+                showConfirmButton: true,
+                confirmButtonText: "OK",
+                confirmButtonColor: "#DD6B55"
+            });
+        }
+    });
 
 
     pharmacyList.addEventListener('click', () => {
-        if(event.target.classList.contains('view')){
+        if (event.target.classList.contains('view')) {
             console.log('clickeddd view button');
             const pharamacyRowToBeView = event.target.closest('tr');
             console.log('pharamacyRowToBeView ====>>>>>>>', pharamacyRowToBeView);
@@ -2034,171 +2049,171 @@ educationBtn.addEventListener('click', async() => {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({pharmacyId})
+                body: JSON.stringify({ pharmacyId })
 
             })
-            .then((Response) => {
-                return Response.ok ? Response.json() : "Network issue"
-            })
-            .then((data) => {
-                if(data.status === 'Done'){
-                    console.log('data ====>>>>>', data);
-                    document.getElementById('view-summary-project-title').innerText = data.pharmacyData[0].summary_title
-                    document.getElementById('view-summary-project-objectives').innerText = data.pharmacyData[0].summary_objectives;
-                    document.getElementById('view-principal-investigator-name').innerText = data.pharmacyData[0].principal_name;
-                    document.getElementById('view-principal-investigator-dsg').innerText = data.pharmacyData[0].principal_dsg;
-                    document.getElementById('view-principal-investigator-org').innerText = data.pharmacyData[0].principal_org;
-                    document.getElementById('view-principal-investigator-mob').innerText = data.pharmacyData[0].principal_mobile;
-                    document.getElementById('view-principal-investigator-email').innerText = data.pharmacyData[0].principal_email;
+                .then((Response) => {
+                    return Response.ok ? Response.json() : "Network issue"
+                })
+                .then((data) => {
+                    if (data.status === 'Done') {
+                        console.log('data ====>>>>>', data);
+                        document.getElementById('view-summary-project-title').innerText = data.pharmacyData[0].summary_title
+                        document.getElementById('view-summary-project-objectives').innerText = data.pharmacyData[0].summary_objectives;
+                        document.getElementById('view-principal-investigator-name').innerText = data.pharmacyData[0].principal_name;
+                        document.getElementById('view-principal-investigator-dsg').innerText = data.pharmacyData[0].principal_dsg;
+                        document.getElementById('view-principal-investigator-org').innerText = data.pharmacyData[0].principal_org;
+                        document.getElementById('view-principal-investigator-mob').innerText = data.pharmacyData[0].principal_mobile;
+                        document.getElementById('view-principal-investigator-email').innerText = data.pharmacyData[0].principal_email;
 
-                    document.getElementById('view-co-investigator-name').innerText = data.pharmacyData[0].co_investigator_name;
-                    document.getElementById('view-co-investigator-dsg').innerText = data.pharmacyData[0].co_investigator_dsg;
-                    document.getElementById('view-co-investigator-org').innerText = data.pharmacyData[0].co_investigator_org;
-                    document.getElementById('view-co-investigator-mob').innerText = data.pharmacyData[0].co_investigator_mobile;
-                    document.getElementById('view-co-investigator-email').innerText = data.pharmacyData[0].co_investigator_email;
+                        document.getElementById('view-co-investigator-name').innerText = data.pharmacyData[0].co_investigator_name;
+                        document.getElementById('view-co-investigator-dsg').innerText = data.pharmacyData[0].co_investigator_dsg;
+                        document.getElementById('view-co-investigator-org').innerText = data.pharmacyData[0].co_investigator_org;
+                        document.getElementById('view-co-investigator-mob').innerText = data.pharmacyData[0].co_investigator_mobile;
+                        document.getElementById('view-co-investigator-email').innerText = data.pharmacyData[0].co_investigator_email;
 
-                    document.getElementById('view-project-duration').innerText = data.pharmacyData[0].project_duration;
-                    document.getElementById('view-total-cost').innerText = data.pharmacyData[0].total_cost;
-                    document.getElementById('view-consumables-amount').innerText = data.pharmacyData[0].consumables_amount;
-                    document.getElementById('view-evaluation-and-analysis-amount').innerText = data.pharmacyData[0].analysis_amount;
-                    document.getElementById('view-evaluation-analysis-amount').innerText = data.pharmacyData[0].evaluation_analysis_amount;
-                    document.getElementById('view-other-amount').innerText = data.pharmacyData[0].other_amount;
-                    document.getElementById('view-project-title').innerText = data.pharmacyData[0].project_title;
-                    document.getElementById('view-background').innerText = data.pharmacyData[0].project_background;
-                    document.getElementById('view-project-status').innerText = data.pharmacyData[0].project_status;
-                    document.getElementById('view-scientific-importance').innerText = data.pharmacyData[0].scientific_importance;
-                    document.getElementById('view-hypothesis-rationale').innerText = data.pharmacyData[0].hypothesis;
-                    document.getElementById('view-objectives').innerText = data.pharmacyData[0].project_objectives;
-                    document.getElementById('view-detailed-methodology').innerText = data.pharmacyData[0].detailed_methodology;
-                    document.getElementById('view-timelines').innerText = data.pharmacyData[0].time_lines;
+                        document.getElementById('view-project-duration').innerText = data.pharmacyData[0].project_duration;
+                        document.getElementById('view-total-cost').innerText = data.pharmacyData[0].total_cost;
+                        document.getElementById('view-consumables-amount').innerText = data.pharmacyData[0].consumables_amount;
+                        document.getElementById('view-evaluation-and-analysis-amount').innerText = data.pharmacyData[0].analysis_amount;
+                        document.getElementById('view-evaluation-analysis-amount').innerText = data.pharmacyData[0].evaluation_analysis_amount;
+                        document.getElementById('view-other-amount').innerText = data.pharmacyData[0].other_amount;
+                        document.getElementById('view-project-title').innerText = data.pharmacyData[0].project_title;
+                        document.getElementById('view-background').innerText = data.pharmacyData[0].project_background;
+                        document.getElementById('view-project-status').innerText = data.pharmacyData[0].project_status;
+                        document.getElementById('view-scientific-importance').innerText = data.pharmacyData[0].scientific_importance;
+                        document.getElementById('view-hypothesis-rationale').innerText = data.pharmacyData[0].hypothesis;
+                        document.getElementById('view-objectives').innerText = data.pharmacyData[0].project_objectives;
+                        document.getElementById('view-detailed-methodology').innerText = data.pharmacyData[0].detailed_methodology;
+                        document.getElementById('view-timelines').innerText = data.pharmacyData[0].time_lines;
 
-                    document.getElementById('view-budget-consumables-amount').innerText = data.pharmacyData[0].budget_consumable_amount;
-                    document.getElementById('view-consumables-justification').innerText = data.pharmacyData[0].consumables_justification;
-                    document.getElementById('view-solvents-amount').innerText = data.pharmacyData[0].solvents_amount;
-                    document.getElementById('view-solvents-justification').innerText = data.pharmacyData[0].solvents_justification;
-                    document.getElementById('view-chemicals-amount').innerText = data.pharmacyData[0].chemicals_amount;
-                    document.getElementById('view-chemicals-justification').innerText = data.pharmacyData[0].chemicals_justification;
-                    // ankit mishra
-                    document.getElementById('view-biomarkers-reference-amount').innerText = data.pharmacyData[0].biomarkers_reference_amount;
-                    document.getElementById('view-biomarkers-reference-justification').innerText = data.pharmacyData[0].biomarkers_reference_justifications;
-                    document.getElementById('view-HPLC-amount').innerText = data.pharmacyData[0].hplc_amount;
-                    document.getElementById('view-HPLC-justification').innerText = data.pharmacyData[0].hplc_justification;
-                    document.getElementById('view-experimental-animals-amount').innerText = data.pharmacyData[0].experimental_animals_amount;
-                    document.getElementById('view-experimental-animals-justification').innerText = data.pharmacyData[0].experimental_animals_justification;
-                    document.getElementById('view-cell-lines-amount').innerText = data.pharmacyData[0].cell_lines_amount;
-                    document.getElementById('view-cell-lines-justification').innerText = data.pharmacyData[0].cell_lines_justifications;
-                    document.getElementById('view-kits-analysis-amount').innerText = data.pharmacyData[0].kits_analysis_amount;
-                    document.getElementById('view-kits-analysis-justification').innerText = data.pharmacyData[0].kits_analysis_justifications;
+                        document.getElementById('view-budget-consumables-amount').innerText = data.pharmacyData[0].budget_consumable_amount;
+                        document.getElementById('view-consumables-justification').innerText = data.pharmacyData[0].consumables_justification;
+                        document.getElementById('view-solvents-amount').innerText = data.pharmacyData[0].solvents_amount;
+                        document.getElementById('view-solvents-justification').innerText = data.pharmacyData[0].solvents_justification;
+                        document.getElementById('view-chemicals-amount').innerText = data.pharmacyData[0].chemicals_amount;
+                        document.getElementById('view-chemicals-justification').innerText = data.pharmacyData[0].chemicals_justification;
+                        // ankit mishra
+                        document.getElementById('view-biomarkers-reference-amount').innerText = data.pharmacyData[0].biomarkers_reference_amount;
+                        document.getElementById('view-biomarkers-reference-justification').innerText = data.pharmacyData[0].biomarkers_reference_justifications;
+                        document.getElementById('view-HPLC-amount').innerText = data.pharmacyData[0].hplc_amount;
+                        document.getElementById('view-HPLC-justification').innerText = data.pharmacyData[0].hplc_justification;
+                        document.getElementById('view-experimental-animals-amount').innerText = data.pharmacyData[0].experimental_animals_amount;
+                        document.getElementById('view-experimental-animals-justification').innerText = data.pharmacyData[0].experimental_animals_justification;
+                        document.getElementById('view-cell-lines-amount').innerText = data.pharmacyData[0].cell_lines_amount;
+                        document.getElementById('view-cell-lines-justification').innerText = data.pharmacyData[0].cell_lines_justifications;
+                        document.getElementById('view-kits-analysis-amount').innerText = data.pharmacyData[0].kits_analysis_amount;
+                        document.getElementById('view-kits-analysis-justification').innerText = data.pharmacyData[0].kits_analysis_justifications;
 
-                    document.getElementById('view-evaluation-analysis-justification').innerText = data.pharmacyData[0].evaluation_analysis_amount;
-                    document.getElementById('view-evaluation-analysis-amount').innerText = data.pharmacyData[0].evaluation_analysis_justification;
-                    document.getElementById('view-any-other-data').innerText = data.pharmacyData[0].other_amount;
+                        document.getElementById('view-evaluation-analysis-justification').innerText = data.pharmacyData[0].evaluation_analysis_amount;
+                        document.getElementById('view-evaluation-analysis-amount').innerText = data.pharmacyData[0].evaluation_analysis_justification;
+                        document.getElementById('view-any-other-data').innerText = data.pharmacyData[0].other_amount;
 
-                    document.getElementById('view-proposed-outcome').innerText = data.pharmacyData[0].proposed_out_come;
-                    document.getElementById('view-previous-work').innerText = data.pharmacyData[0].previous_project_explaination;
+                        document.getElementById('view-proposed-outcome').innerText = data.pharmacyData[0].proposed_out_come;
+                        document.getElementById('view-previous-work').innerText = data.pharmacyData[0].previous_project_explaination;
 
-                    document.getElementById('view-investigator-name').innerText = data.pharmacyData[0].investigator_name;
-                    document.getElementById('view-investigator-designation').innerText = data.pharmacyData[0].investigator_dsg;
-                    document.getElementById('view-investigator-adress').innerText = data.pharmacyData[0].investigator_address;
-                    document.getElementById('view-investigator-email').innerText = data.pharmacyData[0].investigator_email;
-                    document.getElementById('view-investigator-mobile').innerText = data.pharmacyData[0].investigator_mobile;
-                    document.getElementById('view-investigator-date-of-birth').innerText = data.pharmacyData[0].investigator_dob;
+                        document.getElementById('view-investigator-name').innerText = data.pharmacyData[0].investigator_name;
+                        document.getElementById('view-investigator-designation').innerText = data.pharmacyData[0].investigator_dsg;
+                        document.getElementById('view-investigator-adress').innerText = data.pharmacyData[0].investigator_address;
+                        document.getElementById('view-investigator-email').innerText = data.pharmacyData[0].investigator_email;
+                        document.getElementById('view-investigator-mobile').innerText = data.pharmacyData[0].investigator_mobile;
+                        document.getElementById('view-investigator-date-of-birth').innerText = data.pharmacyData[0].investigator_dob;
 
-                    let educationalContainer = document.getElementById('educational-details-table-container');
-                    const educationHeader = [ 'Degree', 'Institution, University', 'Year of Passing'];
-                    const educationDetails = data.educaltionalDetails;
-                    generateTable(educationHeader, educationDetails, educationalContainer);
+                        let educationalContainer = document.getElementById('educational-details-table-container');
+                        const educationHeader = ['Degree', 'Institution, University', 'Year of Passing'];
+                        const educationDetails = data.educaltionalDetails;
+                        generateTable(educationHeader, educationDetails, educationalContainer);
 
-                    const experienceContainer = document.getElementById('experience-details-table-container');
-                    const experienceDetails = data.educaltionalDetails;
-                    const experienceHeader = [ 'Position', 'University/Institution', 'Period'];
-                    generateTable(experienceHeader, experienceDetails, experienceContainer);
+                        const experienceContainer = document.getElementById('experience-details-table-container');
+                        const experienceDetails = data.educaltionalDetails;
+                        const experienceHeader = ['Position', 'University/Institution', 'Period'];
+                        generateTable(experienceHeader, experienceDetails, experienceContainer);
 
-                    const publicationcontainer = document.getElementById('publication-details-table-container');
-                    const publicationHeader = [ 'Authors', 'Title', 'Name of Journal', 'Year', 'Volume', 'Issue', 'Page numbers/article number', 'Impact factor  (by Clarivate analytics)'];
-                    const publicationDetails = data.PublicationDetails;
-                    generateTable(publicationHeader, publicationDetails, publicationcontainer);
+                        const publicationcontainer = document.getElementById('publication-details-table-container');
+                        const publicationHeader = ['Authors', 'Title', 'Name of Journal', 'Year', 'Volume', 'Issue', 'Page numbers/article number', 'Impact factor  (by Clarivate analytics)'];
+                        const publicationDetails = data.PublicationDetails;
+                        generateTable(publicationHeader, publicationDetails, publicationcontainer);
 
-                    const bookContainer = document.getElementById('book-details-table-container');
-                    const bookDetails = data.bookDetails;
-                    const bookDetailsHeader = [ 'Authors', 'Name of the book', 'Year', 'Volume', 'Publisher', 'ISBN'];
-                    generateTable(bookDetailsHeader, bookDetails, bookContainer)
+                        const bookContainer = document.getElementById('book-details-table-container');
+                        const bookDetails = data.bookDetails;
+                        const bookDetailsHeader = ['Authors', 'Name of the book', 'Year', 'Volume', 'Publisher', 'ISBN'];
+                        generateTable(bookDetailsHeader, bookDetails, bookContainer)
 
-                    const patentDetaisContainer = document.getElementById('patent-details-table-container');
-                    const patentHeader = [ 'Name of Applicant/s', 'Title', 'Status (Filed/ Published/Granted)', 'Number', 'Month & Year'];
-                    const patentDetails = data.patentDetails;
-                    generateTable(patentHeader, patentDetails, patentDetaisContainer);
+                        const patentDetaisContainer = document.getElementById('patent-details-table-container');
+                        const patentHeader = ['Name of Applicant/s', 'Title', 'Status (Filed/ Published/Granted)', 'Number', 'Month & Year'];
+                        const patentDetails = data.patentDetails;
+                        generateTable(patentHeader, patentDetails, patentDetaisContainer);
 
-                    const bookChapterContainer = document.getElementById('book-chapter-details-table-container');
-                    const bookChapterHeader = [ 'Authors', 'Title of chapter', 'Name of the book', 'Year', 'Volume', 'Page numbers', 'Publisher', 'ISBN'];
-                    const bookChapterDetails = data.bookChapterDetails;
-                    generateTable(bookChapterHeader, bookChapterDetails, bookChapterContainer);
+                        const bookChapterContainer = document.getElementById('book-chapter-details-table-container');
+                        const bookChapterHeader = ['Authors', 'Title of chapter', 'Name of the book', 'Year', 'Volume', 'Page numbers', 'Publisher', 'ISBN'];
+                        const bookChapterDetails = data.bookChapterDetails;
+                        generateTable(bookChapterHeader, bookChapterDetails, bookChapterContainer);
 
-                    const researchImpContainer = document.getElementById('research-implementation-table-container');
-                    const implementaionHeader = [ 'Title', 'Agency', 'Role  (PI/ Co-PI)', 'Duration', 'Cost in Rs.'];
-                    const researchImplementationDetails = data.researchImplementationDetails;
-                    generateTable(implementaionHeader, researchImplementationDetails, researchImpContainer);
-                    
-                    const researchComContainer = document.getElementById('research-completed-table-container');
-                    const completedHeader = [ 'Title', 'Agency', 'Role  (PI/ Co-PI)', 'Duration', 'Cost in Rs.'];
-                    const completedResearchDetails = data.researchImplementationDetails;
-                    generateTable(completedHeader, completedResearchDetails, researchComContainer);
+                        const researchImpContainer = document.getElementById('research-implementation-table-container');
+                        const implementaionHeader = ['Title', 'Agency', 'Role  (PI/ Co-PI)', 'Duration', 'Cost in Rs.'];
+                        const researchImplementationDetails = data.researchImplementationDetails;
+                        generateTable(implementaionHeader, researchImplementationDetails, researchImpContainer);
 
-                }
-            })
-            .catch((error) => {
-                console.log('error ===>>>>', error)
-            })
-            
+                        const researchComContainer = document.getElementById('research-completed-table-container');
+                        const completedHeader = ['Title', 'Agency', 'Role  (PI/ Co-PI)', 'Duration', 'Cost in Rs.'];
+                        const completedResearchDetails = data.researchImplementationDetails;
+                        generateTable(completedHeader, completedResearchDetails, researchComContainer);
+
+                    }
+                })
+                .catch((error) => {
+                    console.log('error ===>>>>', error)
+                })
+
         }
 
-        if(event.target.classList.contains('edit')){
+        if (event.target.classList.contains('edit')) {
             console.log('edit button clickeddd')
-             $('#pharmacy-seed-grant-modal').modal('show');
+            $('#pharmacy-seed-grant-modal').modal('show');
         }
     })
 
-  
+
     function generateTable(header, data, tableContainer) {
-            let table = document.createElement('table');
-            table.classList.add('table');
-            table.border = '1px';
+        let table = document.createElement('table');
+        table.classList.add('table');
+        table.border = '1px';
 
-            let thead = document.createElement('thead');
-            let headerRow = document.createElement('tr');
-            let srNoHeader = document.createElement('th');
-            srNoHeader.textContent = 'Sr No';
-            headerRow.appendChild(srNoHeader);
-            header.forEach(headerItem => {
-                let th = document.createElement('th');
-                // th.classList.add('col-lg-3');
-                th.textContent = headerItem;
-                headerRow.appendChild(th);
-            });
-            thead.appendChild(headerRow);
-            table.appendChild(thead);
+        let thead = document.createElement('thead');
+        let headerRow = document.createElement('tr');
+        let srNoHeader = document.createElement('th');
+        srNoHeader.textContent = 'Sr No';
+        headerRow.appendChild(srNoHeader);
+        header.forEach(headerItem => {
+            let th = document.createElement('th');
+            // th.classList.add('col-lg-3');
+            th.textContent = headerItem;
+            headerRow.appendChild(th);
+        });
+        thead.appendChild(headerRow);
+        table.appendChild(thead);
 
-            let tbody = document.createElement('tbody');
-            data.forEach((dataItem, index) => {
-                let row = document.createElement('tr');
-                let indexCell = document.createElement('td');
-                indexCell.textContent = index + 1;
-                row.appendChild(indexCell);
-                for (let key in dataItem) {
-                    let td = document.createElement('td');
-                    td.classList.add('view-content');
-                    td.textContent = dataItem[key];
-                    row.appendChild(td);
-                }
-                tbody.appendChild(row);
-            });
-            table.appendChild(tbody);
+        let tbody = document.createElement('tbody');
+        data.forEach((dataItem, index) => {
+            let row = document.createElement('tr');
+            let indexCell = document.createElement('td');
+            indexCell.textContent = index + 1;
+            row.appendChild(indexCell);
+            for (let key in dataItem) {
+                let td = document.createElement('td');
+                td.classList.add('view-content');
+                td.textContent = dataItem[key];
+                row.appendChild(td);
+            }
+            tbody.appendChild(row);
+        });
+        table.appendChild(tbody);
 
-            tableContainer.appendChild(table);
-        }
+        tableContainer.appendChild(table);
+    }
 
 
-        
+
 </script>
 <%- include('./partials/footer') %>
 <%- include('./partials/footer-end') %>

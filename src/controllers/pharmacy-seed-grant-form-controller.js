@@ -34,7 +34,7 @@ module.exports.insertInvestigationEducationalDetails = async(req, res, next) => 
     res.status(statusCode).send({
         status : insertPharmacyInvestigatorEdu.status,
         message : insertPharmacyInvestigatorEdu.message,
-        educatoinIds : insertPharmacyInvestigatorEdu.educatoinIds,
+        detailsIds : insertPharmacyInvestigatorEdu.educatoinIds,
         rowCount : insertPharmacyInvestigatorEdu.rowCount,
         errorCode : insertPharmacyInvestigatorEdu.errorCode
     })
@@ -119,25 +119,25 @@ module.exports.investigatorPatent = async(req, res, next) => {
     })
 }
 
-module.exports.investigatorPublication = async(req, res, next) => {
-    console.log('publication data in controller ===>>>>>', req.body);
+// module.exports.investigatorPublication = async(req, res, next) => {
+//     console.log('publication data in controller ===>>>>>', req.body);
 
-    const  userName = req.body.username;
-    console.log('userName in controller  ===>>>>>>', userName);
+//     const  userName = req.body.username;
+//     console.log('userName in controller  ===>>>>>>', userName);
 
-    const insertInvestigatorPublication = await pharmacyService.insertInvestorPublication(req.body, userName);
+//     const insertInvestigatorPublication = await pharmacyService.insertInvestorPublication(req.body, userName);
 
-    const statusCode = insertInvestigatorPublication.status === "Done" ? 200 : (insertInvestigatorPublication.errorCode ? 400 : 500);
-    console.log('insertInvestigatorPublication ====>>>>>>', insertInvestigatorPublication);
+//     const statusCode = insertInvestigatorPublication.status === "Done" ? 200 : (insertInvestigatorPublication.errorCode ? 400 : 500);
+//     console.log('insertInvestigatorPublication ====>>>>>>', insertInvestigatorPublication);
     
-    res.status(statusCode).send({
-        status : insertInvestigatorPublication.status,
-        message : insertInvestigatorPublication.message,
-        publicationId : insertInvestigatorPublication.publicationId,
-        rowCount : insertInvestigatorPublication.rowCount,
-        errorCode : insertInvestigatorPublication.errorCode
-    })
-}
+//     res.status(statusCode).send({
+//         status : insertInvestigatorPublication.status,
+//         message : insertInvestigatorPublication.message,
+//         publicationId : insertInvestigatorPublication.publicationId,
+//         rowCount : insertInvestigatorPublication.rowCount,
+//         errorCode : insertInvestigatorPublication.errorCode
+//     })
+// }
 
 module.exports.investigatorResearchImplementation = async(req, res, next) => {
     console.log('implementation dat in controller ===>>>>>', req.body);

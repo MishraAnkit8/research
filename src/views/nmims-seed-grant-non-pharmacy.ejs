@@ -97,7 +97,7 @@
                                             <td class="col-lg-1 faculty-name"><%- grantSeedData.faculty_name %></td>
                                             <td class="col-lg-1 project-title"><%- grantSeedData.title %></td>
                                             <td class="col-lg-1 year"><%- grantSeedData.year %></td>
-                                            <td class="col-lg-1 total-fees"><%- grantSeedData.total_fees %></td>
+                                            <td class="col-lg-1 total-fees"><%- (grantSeedData.per_session_fees * grantSeedData.session_count_per_days) %></td>
                                             <td>
                                                 <b title="View" class="view" style="cursor: pointer;"
                                                     data-consultancy-id="<%- grantSeedData.consultancy_id %>">
@@ -212,7 +212,7 @@
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="campus" class=" sub-title fw-bold"> Title(Brief) </label>
                                     <input type="text" name="SchoolName" id="title"
-                                        data-validate="isEmpty,isNotNumber,isExist,isNotSpecialChar"
+                                        data-validate="isEmpty,isAllNumeric,isExist"
                                         data-err-msg="Provide Valid Input" class="form-control" required />
                                 </div>
                                 <!-- Faculty ID -->
@@ -230,6 +230,7 @@
                                     <input type="Date" name="policy-cadre" id="commencement-date"
                                         data-validate="isEmpty,isExist" data-err-msg="Date is required"
                                         class="form-control" required />
+                                        <span style="color:red;" id="commencementError"></span>
                                 </div>
                                 <!-- Date of Completion -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
@@ -237,6 +238,7 @@
                                     <input type="date" name="completion-date" id="completion-date"
                                         data-validate="isEmpty,isExist" data-err-msg="Date is required"
                                         class="form-control" required>
+                                        <span style="color:red;" id="completionError"></span>
                                 </div>
                                 <!-- Days -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
@@ -393,14 +395,14 @@
                 <div class="modal-dialog modal-dialog-scrollable modal-lg modal-fullscreen p-5" role="document">
                     <div class="modal-content modal-content-data">
                         <div class="modal-header">
-                            <h4 class="modal-title" id="sed-grant-title">Seed Grant [Non-Pharmacy] Approval Form</h4>
+                            <h4 class="modal-title" id="sed-grant-title">NMIMS Seed Grant [Non Pharmacy] APPROVAL Form View</h4>
                             <div class="close" id="headerEdit" data-dismiss="modal" aria-label="Close">
                                 <span type="button" aria-hidden="true"><i class="fas fa-times "></i></span>
                             </div>
                         </div>
                         <div class="modal-body">
                             <div class="">
-                                <label class="text-start fw-bold">Seed Grant [Non-Pharmacy]Approval Form</label>
+                                <label class="text-start fw-bold">NMIMS Seed Grant [Non Pharmacy] APPROVAL Form</label>
                             </div>
                             <div class=" d-flex justify-content-between">
                                 <div class=" sub-title d-flex justify-content-start">
@@ -665,14 +667,14 @@
                             text: `${faculty.faculty_name} ${faculty.designation}`
                         }));;
 
-                        let selectList;
+                        // let selectList;
 
-                        selectList = facultyListData.filter(faculty => facultyId == faculty.id).map(fd => fd.id)
+                        // selectList = facultyListData.filter(faculty => facultyId == faculty.id).map(fd => fd.id)
 
                         //  Initialize TomSelect dropdown with options containing id and faculty_name
                         new TomSelect("#faculty-id", {
                             options: facultyOptions,
-                            items: selectList,
+                            placeholder : 'Select Faculty',
                             hidePlaceholder: true,
                             create: true,
                             plugins: ['remove_button'],
@@ -738,6 +740,7 @@
                     seedGrantFormData.facultyId = document.getElementById('faculty-id').value;
                     seedGrantFormData.totalAmount = document.getElementById('total-amount').value;
                     seedGrantFormData.grandTotal = document.getElementById('grand-total').value;
+
 
 
                     const payload = {
@@ -846,8 +849,22 @@
                 }
 
                 submitBtn.addEventListener('click', async () => {
+
+
                     const isValid = validateRequiredFormFields(submitBtn);
-                    if (isValid) {
+                    let commencementDate = document.getElementById('commencement-date').value;
+                    let completionDate = document.getElementById('completion-date').value;
+
+                    console.log('user dates ',commencementDate,completionDate)
+
+                    let date1 = new Date(commencementDate);
+                    let date2 = new Date(completionDate);
+
+                    let dateValidate = date1 < date2 ? true : false;
+                    
+                    // let dateValidate = false
+                    
+                    if (isValid && dateValidate) {
                         await insertConsultancyFormApprovalData('<%- BASE_URL %>research/nmims-seed-grant-non-pharmacy/insert');
                     }
                     else {
@@ -860,6 +877,15 @@
                             confirmButtonText: "OK",
                             confirmButtonColor: "#DD6B55",
 
+                        }).then(() => {
+                              if(dateValidate){
+                                console.log('date true')   
+                                document.getElementById('completionError').innerText = ''
+                              }else{
+                                console.log('date false')   
+                                document.getElementById('completionError').innerText = 'Completion date should be greater than commencement date '
+
+                              }
                         });
 
                         //         $('body').keypress(function(e){ 
@@ -1007,8 +1033,10 @@
                     // for update the data 
                     if (event.target.classList.contains('edit')) {
 
-                        let editHead = document.getElementById('modalHeader');
-                        editHead.classList.remove('d-none')
+                        let editHead = document.getElementById('grantSeedData-study');
+                        editHead.innerText = 'NMIMS Seed Grant [Non Pharmacy] APPROVAL Form Edit'
+
+        
 
                         console.log('yes edit clickeddd ===');
                         submitBtn.classList.add('d-none');
@@ -1029,7 +1057,7 @@
                         facultyId = approvalFormRecordToBeUpdated.getAttribute('data-faculty-id');
                         console.log('facultyId ====>>>>>', facultyId);
 
-                        let facultydata = document.getElementById('faculty-list-data');
+
                         const facultyDropDownList = document.getElementById("faculty-id");
                         // Parse the JSON data
                         const facultyListData = JSON.parse(document.getElementById('faculty-list-data').dataset.faculty);
@@ -1045,7 +1073,8 @@
                         //  Initialize TomSelect dropdown with options containing id and faculty_name
                         new TomSelect("#faculty-id", {
                             options: facultyOptions,
-                            items: selectList,
+                            items:selectList,
+                            // placeholder : 'Select Faculty',
                             hidePlaceholder: true,
                             create: true,
                             plugins: ['remove_button'],
@@ -1062,6 +1091,41 @@
                                 }
                             }
                         });
+
+
+                        // let facultydata = document.getElementById('faculty-list-data');
+                        // const facultyDropDownList = document.getElementById("faculty-id");
+                        // // Parse the JSON data
+                        // const facultyListData = JSON.parse(document.getElementById('faculty-list-data').dataset.faculty);
+                        // let facultyOptions = facultyListData.map(faculty => ({
+                        //     value: faculty.id,
+                        //     text: `${faculty.faculty_name} ${faculty.designation}`
+                        // }));;
+
+                        // let selectList;
+
+                        // selectList = facultyListData.filter(faculty => facultyId == faculty.id).map(fd => fd.id)
+
+                        // //  Initialize TomSelect dropdown with options containing id and faculty_name
+                        // new TomSelect("#faculty-id", {
+                        //     options: facultyOptions,
+                        //     items: selectList,
+                        //     hidePlaceholder: true,
+                        //     create: true,
+                        //     plugins: ['remove_button'],
+                        //     onItemAdd: function () {
+                        //         this.setTextboxValue('');
+                        //         this.refreshOptions();
+                        //     },
+                        //     render: {
+                        //         option: function (data, escape) {
+                        //             return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                        //         },
+                        //         item: function (data, escape) {
+                        //             return '<div>' + escape(data.text) + '</div>';
+                        //         }
+                        //     }
+                        // });
 
 
 
@@ -1212,6 +1276,8 @@
                                     confirmButtonText: "OK",
                                     confirmButtonColor: "#DD6B55",
                                     timer: 1500
+                                }).then(() => {
+                                    document.location.reload()
                                 });
                                 $('#consultancy-modal-form').modal('hide');
                             }
@@ -1317,7 +1383,7 @@
                     const gstCharges = totalpayment * 18 / 100;
                     console.log('gstCharges ====>>>>', gstCharges);
 
-                    let totalFees = parseInt(document.getElementById('no-of-session').value) + parseInt(document.getElementById('sessions-fees').value);
+                    let totalFees = parseInt(document.getElementById('no-of-session').value) * parseInt(document.getElementById('sessions-fees').value);
 
                     const grandTotalAmount = total + gstCharges + totalFees;
                     console.log('grandTotalAmount ====>>>>', grandTotalAmount);

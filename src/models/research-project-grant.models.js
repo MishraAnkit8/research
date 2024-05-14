@@ -123,6 +123,37 @@ module.exports.fetchResearchConsultancy = async(userName) => {
   }) 
 }
 
+module.exports.fetchInternal = async () => {
+
+  let internalFacultySql = {
+    text: `SELECT rpgf.id AS research_project_grant_faculty_id, 
+    rpgf.research_project_grant_id, 
+    rpgf.faculty_id 
+    FROM research_project_grant_faculty rpgf
+    JOIN faculties f ON rpgf.faculty_id = f.id
+    JOIN faculty_types ft ON f.faculty_type_id = ft.id
+    WHERE ft.name = 'Internal' and rpgf.active=true and f.active=true and ft.active=true 
+    ORDER BY rpgf.id`,
+  }
+
+  const internalFaculty = await researchDbR.query(internalFacultySql);
+
+  const promises = [
+    internalFaculty,
+  ];
+  return Promise.all(promises).then(([researchData]) => {
+    return {
+      status: "Done",
+      message: "Record Fetched Successfully",
+      rowCount: researchData.rowCount,
+      internalFaculty: internalFaculty.rows,
+    };
+})
+.catch((error) => {
+    return{status : "Failed" , message : error.message , errorCode : error.code}
+}) 
+}
+
 
 module.exports.insertResearhcProjectConstancyData = async (researchCunsultancyData, consultancyDataFiles, FacultydataArray, userName) => {
     console.log('researchCunsultancyData inside models ===>>>', researchCunsultancyData);

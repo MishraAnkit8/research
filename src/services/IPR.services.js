@@ -3,6 +3,7 @@ const IPRModels = require('../models/IPR.models');
 
 module.exports.fetchPatentForm = async(userName) => {
     const IPRFormData = await IPRModels.fetchIPRData(userName);
+    const fetchIprFaculty = await IPRModels.fetchIPRFaculty(userName);
     console.log('IPRFormData ===>>>>>', IPRFormData);
 
     const iprData = IPRFormData.iprData;
@@ -18,6 +19,7 @@ module.exports.fetchPatentForm = async(userName) => {
         patentStatus : IPRFormData.patentStatus,
         schoolList : IPRFormData.nmimsSchoolList,
         campusList : IPRFormData.nmimsCampusList,
+        iprFaculty : fetchIprFaculty.iprFaculty,
         supportingDocumnets : IPRFormData.supportingdocumnets
 
     } : {}

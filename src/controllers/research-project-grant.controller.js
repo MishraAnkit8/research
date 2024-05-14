@@ -20,6 +20,7 @@ module.exports.renderResearchProjectConsultancy = async (req, res, next) => {
     rowCount: researchcConsultancyData.rowCount,
     InternalFaculty: researchcConsultancyData.InternalFaculty,
     externalDetails: researchcConsultancyData.externalDetails,
+    internalFaculty : researchcConsultancyData.internalFaculty,
     errorCode: researchcConsultancyData.errorCode
       ? researchcConsultancyData.errorCode
       : null,

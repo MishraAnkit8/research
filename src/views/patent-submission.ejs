@@ -93,14 +93,18 @@
                                                 data-patent-stage-id="<%- patent.patent_stage_status_id %>"
                                                 data-invention-type-id="<%- patent.invention_type_id %>">
                                                 <td class="col-lg-1"><%- index+1 %></td>
-                                                <td class="grant-date col-lg-1"><%- patent.grant_date %></td>
-                                                <td class="title-of-invention col-lg-1"><%- patent.innovation_title %>
-                                                </td>
-                                                <td class="support-documents col-lg-1"><%- patent.supporting_documents
-                                                        %></td>
-                                                <td class="application-no col-lg-1"><%- patent.application_number %>
-                                                </td>
-                                                <!-- <td class="col-lg-1">
+                                                <% let edate=patent.grant_date; %>
+                                                    <% const dates=edate.toISOString().slice(0, 10); %>
+                                                        <td class="grant-date col-lg-1"><%- dates %></td>
+                                                        <td class="title-of-invention col-lg-1"><%-
+                                                                patent.innovation_title %>
+                                                        </td>
+                                                        <td class="support-documents col-lg-1"><%-
+                                                                patent.supporting_documents %></td>
+                                                        <td class="application-no col-lg-1"><%-
+                                                                patent.application_number %>
+                                                        </td>
+                                                        <!-- <td class="col-lg-1">
                                 <label class="view" data-patent-id="<%- patent.patent_submission_grant_id %>"><i class="fa-solid fa-eye view text-danger"
                                     data-patent-id="<%- patent.patent_submission_grant_id %>"></i></label>
                                 <label class="edit" data-patent-id="<%- patent.patent_submission_grant_id %>"><i class="fa fa-edit edit text-danger"
@@ -109,21 +113,23 @@
                                     data-patent-id="<%- patent.patent_submission_grant_id %>"></i></label>
                             </td> -->
 
-                                                <td colspan="3px" style="display:flex;justify-content: center;">
-                                                    <b title="View" class="view border-right-0" style="cursor: pointer;"
-                                                        data-patent-id="<%- patent.patent_submission_grant_id %>">
-                                                        &#128065;
-                                                    </b>
-                                                    <b title="Edit" class="edit border-right-0" style="cursor: pointer;"
-                                                        data-patent-id="<%- patent.patent_submission_grant_id %>">
-                                                        &#9998;
-                                                    </b>
-                                                    <b title="Delete" class="delete border-right-0"
-                                                        style="cursor: pointer;"
-                                                        data-patent-id="<%- patent.patent_submission_grant_id %>">
-                                                        &#128465;
-                                                    </b>
-                                                </td>
+                                                        <td colspan="3px" style="display:flex;justify-content: center;">
+                                                            <b title="View" class="view border-right-0"
+                                                                style="cursor: pointer;"
+                                                                data-patent-id="<%- patent.patent_submission_grant_id %>">
+                                                                &#128065;
+                                                            </b>
+                                                            <b title="Edit" class="edit border-right-0"
+                                                                style="cursor: pointer;"
+                                                                data-patent-id="<%- patent.patent_submission_grant_id %>">
+                                                                &#9998;
+                                                            </b>
+                                                            <b title="Delete" class="delete border-right-0"
+                                                                style="cursor: pointer;"
+                                                                data-patent-id="<%- patent.patent_submission_grant_id %>">
+                                                                &#128465;
+                                                            </b>
+                                                        </td>
                                             </tr>
                                             <% }); %>
                                                 <% } else { %>
@@ -232,7 +238,7 @@
                                     <label for="title" class="form-label fw-bold">Title of Invention</label>
                                     <input type="text" name="titleInvention" id="title-of-invention" data
                                         data-err-msg="Provide Valid Input" class="form-control fname"
-                                        data-validate="isEmpty,isExist" required>
+                                        data-validate="isEmpty,isAllNumeric,isExist" required>
                                 </div>
                                 <!-- Patent Stage -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
@@ -273,7 +279,7 @@
                                 <!-- Date of Filing/Grant/Published -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="date" class="form-label fw-bold">
-                                        Date of Filing/Grant/Published?DDDD
+                                        Date of Filing/Grant/Published
                                     </label>
                                     <input type="date" name="GrantDate" id="date" data-validate="isEmpty,isExist"
                                         data-err-msg="Date is required" class="form-control" required>
@@ -302,7 +308,7 @@
                                 </div><br>
 
                                 <!-- Details of Other Inventors -->
-                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4 mt-2">
                                     <label for="is-internal" class="form-label fw-bold mb-3">Details of Inventors Id And
                                         Name</label><br>
                                     <div class="form-check-inline">
@@ -645,6 +651,102 @@
                                 isInternalFaculty.checked = false;
                                 isExternalFaculty.checked = false;
 
+
+                                const patentInventionType = document.getElementById('invention-types').dataset.invention;
+                                const inventionTypeData = JSON.parse(patentInventionType);
+
+
+                                // ajax for search bar to search status
+                                const inventionTypeValue = inventionTypeData.map(invention => ({
+                                    value: invention.id,
+                                    text: `  ${invention.name}`
+                                }));
+
+                         new TomSelect("#type-of-invention", {
+                            options: inventionTypeValue,
+                            placeholder: "Select Options",
+                            hidePlaceholder: true,
+                            create: true,
+                            plugins: ['remove_button'],
+                            onItemAdd: function () {
+                                this.setTextboxValue('');
+                                this.refreshOptions();
+                            },
+                            render: {
+                                option: function (data, escape) {
+                                    return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                                },
+                                item: function (data, escape) {
+                                    return '<div>' + escape(data.text) + '</div>';
+                                }
+                            }
+                        });
+
+
+                        const patentStatusList = document.getElementById('patent-status-list').dataset.status;
+                     
+                        const patentStatusData = JSON.parse(patentStatusList);
+
+                        // ajax for search bar to search status
+                        const statusOptions = patentStatusData.map(status => ({
+                            value: status.id,
+                            text: `${status.name}`
+                        }));
+
+                        new TomSelect("#patent-stage", {
+                            options: statusOptions,
+                            placeholder: "Select patent status",
+                            hidePlaceholder: true,
+                            create: true,
+                            plugins: ['remove_button'],
+                            onItemAdd: function () {
+                                this.setTextboxValue('');
+                                this.refreshOptions();
+                            },
+                            render: {
+                                option: function (data, escape) {
+                                    return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                                },
+                                item: function (data, escape) {
+                                    return '<div>' + escape(data.text) + '</div>';
+                                }
+                            }
+                        });
+
+
+                        const sdgGoalsList = document.getElementById('sdg-goals-list').dataset.goals;
+                  
+                        const sdgGoalsDataList = JSON.parse(sdgGoalsList);
+               
+                        // ajax for search bar to search employee name 
+                        const sdgOptions = sdgGoalsDataList.map(sdg => ({
+                            value: sdg.id,
+                            text: ` ${sdg.name}`
+                        }));
+
+                        new TomSelect("#sdg-goals-data", {
+                            options: sdgOptions,
+                            placeholder: "Select SDG Goals",
+                            hidePlaceholder: true,
+                            create: true,
+                            plugins: ['remove_button'],
+                            onItemAdd: function () {
+                                this.setTextboxValue('');
+                                this.refreshOptions();
+                            },
+                            render: {
+                                option: function (data, escape) {
+                                    return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                                },
+                                item: function (data, escape) {
+                                    return '<div>' + escape(data.text) + '</div>';
+                                }
+                            }
+                        });
+
+
+
+
                                 const selectItems = document.querySelectorAll('.item');
                                 selectItems.forEach(item => {
                                     item.classList.add('d-none');
@@ -883,18 +985,204 @@
                                 console.log('Id For Updation', patentId);
                                 const typeOfInventionData = rowToBeUpdated.getAttribute('data-invention-type-id');
                                 const typeOfInvention = document.getElementById('type-of-invention');
-                                if (typeOfInvention) {
-                                    const selectedOption = Array.from(typeOfInvention.options).find(option => option.value === String(typeOfInventionData));
-                                    if (selectedOption) {
-                                        console.log('selectedOption ==>>>>', selectedOption);
-                                        selectedOption.selected = true;
-                                        console.log('Selected value:', selectedOption.value);
-                                    } else {
-                                        console.log('Option not found for value:', typeOfInventionData);
-                                    }
-                                } else {
-                                    console.log('Select element not found');
+                                // if (typeOfInvention) {
+                                //     const selectedOption = Array.from(typeOfInvention.options).find(option => option.value === String(typeOfInventionData));
+                                //     if (selectedOption) {
+                                //         console.log('selectedOption ==>>>>', selectedOption);
+                                //         selectedOption.selected = true;
+                                //         console.log('Selected value:', selectedOption.value);
+                                //     } else {
+                                //         console.log('Option not found for value:', typeOfInventionData);
+                                //     }
+                                // } else {
+                                //     console.log('Select element not found');
+                                // }
+
+                               
+                                const patentInventionType = document.getElementById('invention-types').dataset.invention;
+                                const inventionTypeData = JSON.parse(patentInventionType);
+
+
+                                // ajax for search bar to search status
+                                const inventionTypeValue = inventionTypeData.map(invention => ({
+                                    value: invention.id,
+                                    text: `  ${invention.name}`
+                                }));
+
+                        console.log('type of invention ',typeOfInventionData,JSON.stringify(inventionTypeData))
+                            let selectedInvention = inventionTypeData.filter(data => typeOfInventionData == data.id).map(invention => 
+                                invention.id,
+                                );
+
+                                console.log('selected ipr id ',JSON.stringify(selectedInvention))
+
+                         new TomSelect("#type-of-invention", {
+                            options: inventionTypeValue,
+                            items: selectedInvention,
+                            // placeholder: "Select Options",
+                            hidePlaceholder: true,
+                            create: true,
+                            plugins: ['remove_button'],
+                            onItemAdd: function () {
+                                this.setTextboxValue('');
+                                this.refreshOptions();
+                            },
+                            render: {
+                                option: function (data, escape) {
+                                    return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                                },
+                                item: function (data, escape) {
+                                    return '<div>' + escape(data.text) + '</div>';
                                 }
+                            }
+                        });
+
+
+                     let patentStatusId = rowToBeUpdated.getAttribute('data-patent-stage-id');   
+                     const patentStatusList = document.getElementById('patent-status-list').dataset.status;
+                     
+                     const patentStatusData = JSON.parse(patentStatusList);
+
+                     // ajax for search bar to search status
+                     const statusOptions = patentStatusData.map(status => ({
+                         value: status.id,
+                         text: `${status.name}`
+                     }));
+
+                     let selectedPatent = patentStatusData.filter(data => patentStatusId == data.id).map(patent => patent.id);
+
+                     new TomSelect("#patent-stage", {
+                         options: statusOptions,
+                        //  placeholder: "Select patent status",
+                         items: selectedPatent,
+                         hidePlaceholder: true,
+                         create: true,
+                         plugins: ['remove_button'],
+                         onItemAdd: function () {
+                             this.setTextboxValue('');
+                             this.refreshOptions();
+                         },
+                         render: {
+                             option: function (data, escape) {
+                                 return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                             },
+                             item: function (data, escape) {
+                                 return '<div>' + escape(data.text) + '</div>';
+                             }
+                         }
+                     });
+
+
+
+
+                  const sdgGoalsList = document.getElementById('sdg-goals-list').dataset.goals;
+                  
+                  const sdgGoalsDataList = JSON.parse(sdgGoalsList);
+                  let sdgData = JSON.parse('<%- JSON.stringify(selectSdgGoals) %>')
+
+                  console.log('edit sdg goal data ',JSON.stringify(sdgData))
+
+                  let getPatentSdg = sdgData.filter(data => patentId == data.patent_submission_grant_id).map(patent => patent)
+                  console.log('particular patent ',JSON.stringify(getPatentSdg))
+
+
+                //  ajax for search bar to search employee name 
+                  const sdgOptions = sdgGoalsDataList.map(sdg => ({
+                      value: sdg.id,
+                      text: ` ${sdg.name}`
+                  }));
+
+                   let selectedSdg = [];
+
+                  console.log('sdg array ',JSON.stringify(sdgOptions))
+
+                   Array.from(sdgOptions).forEach(data => {
+                    Array.from(getPatentSdg).forEach(sg => {
+                        if(data.value == sg.id){
+                         selectedSdg.push(sg.id)
+                        }
+                    })
+                  });
+
+                console.log('sdg goals ',JSON.stringify(selectedSdg))
+
+                  new TomSelect("#sdg-goals-data", {
+                      options: sdgOptions,
+                      items : selectedSdg,
+                    //   placeholder: "Select SDG Goals",
+                      hidePlaceholder: true,
+                      create: true,
+                      plugins: ['remove_button'],
+                      onItemAdd: function () {
+                          this.setTextboxValue('');
+                          this.refreshOptions();
+                      },
+                      render: {
+                          option: function (data, escape) {
+                              return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                          },
+                          item: function (data, escape) {
+                              return '<div>' + escape(data.text) + '</div>';
+                          }
+                      }
+                  });
+
+
+
+                  let selectEmpList = JSON.parse('<%- JSON.stringify(selectedPatentFaculty) %>')
+
+                  let selectPatentEmp = selectEmpList.filter(data => patentId == data.patent_submission_grant_id).map(patent => patent)
+                  console.log('selected patent faculty ',JSON.stringify(selectPatentEmp))
+                  
+
+                  const employeesListData = document.getElementById('employees-list-data').dataset.employees;
+
+                  const employeesDataObj = JSON.parse(employeesListData);
+
+
+                    // ajax for search bar to search employee name 
+                    const facultyOptions = employeesDataObj.map(faculty => ({
+                                                value: faculty.id,
+                                                text: ` ${faculty.employee_id}  ${faculty.faculty_name}`
+                                            }));
+
+                        let selectEmp = [];
+
+                        facultyOptions.forEach(data => {
+                            selectPatentEmp.forEach(emp => {
+                                if(data.value == emp.faculty_id){
+                                    selectEmp.push(emp.faculty_id)
+                                }
+                            })
+                        })                    
+
+
+                        // Initialize TomSelect dropdown with options containing id and faculty_name
+                        new TomSelect("#emp-name", {
+                            options: facultyOptions,
+                            items: selectEmp,
+                            // placeholder: "Select Employee Name",
+                            hidePlaceholder: true,
+                            create: true,
+                            plugins: ['remove_button'],
+                            onItemAdd: function () {
+                                this.setTextboxValue('');
+                                this.refreshOptions();
+                            },
+                            render: {
+                                option: function (data, escape) {
+                                    return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                                },
+                                item: function (data, escape) {
+                                    return '<div>' + escape(data.text) + '</div>';
+                                }
+                            }
+                        });
+
+
+
+
+
                                 const titleOfInvention = document.getElementById('title-of-invention');
                                 const patentStage = document.getElementById('patent-stage');
                                 const sdgGoals = document.getElementById('sdg-goals-data');
@@ -912,8 +1200,12 @@
 
 
                                 titleOfInvention.value = rowToBeUpdated.querySelector('.title-of-invention').innerText;
-                                patentStage.value = rowToBeUpdated.getAttribute('data-patent-stage-id');
-                                console.log('patentStage.value ===>>>>>', patentStage.value);
+                               // patentStage.value = rowToBeUpdated.getAttribute('data-patent-stage-id');
+                                console.log('patentStage.value ===>>>>>', patentStage.value,);
+
+
+                                 
+
 
                                 const patentfile = rowToBeUpdated.querySelector('.support-documents');
                                 console.log('patentfile ===>>>>', patentfile)
@@ -1563,123 +1855,123 @@
                         const enternalText = document.getElementById('enternal-text');
 
                         // employeesListData data came from backend
-                        const employeesListData = document.getElementById('employees-list-data').dataset.employees;
-                        const sdgGoalsList = document.getElementById('sdg-goals-list').dataset.goals;
-                        const patentStatusList = document.getElementById('patent-status-list').dataset.status;
-                        const patentInventionType = document.getElementById('invention-types').dataset.invention;
+               //         const employeesListData = document.getElementById('employees-list-data').dataset.employees;
+                    //    const sdgGoalsList = document.getElementById('sdg-goals-list').dataset.goals;
+                      //  const patentStatusList = document.getElementById('patent-status-list').dataset.status;
+                       // const patentInventionType = document.getElementById('invention-types').dataset.invention;
 
 
-                        const employeesDataObj = JSON.parse(employeesListData);
-                        const sdgGoalsDataList = JSON.parse(sdgGoalsList);
-                        const patentStatusData = JSON.parse(patentStatusList);
-                        const inventionTypeData = JSON.parse(patentInventionType);
-
-                        // ajax for search bar to search employee name 
-                        const sdgOptions = sdgGoalsDataList.map(sdg => ({
-                            value: sdg.id,
-                            text: ` ${sdg.name}`
-                        }));
-
-                        // ajax for search bar to search status
-                        const statusOptions = patentStatusData.map(status => ({
-                            value: status.id,
-                            text: `${status.name}`
-                        }));
-
-                        // ajax for search bar to search status
-                        const inventionTypeValue = inventionTypeData.map(invention => ({
-                            value: invention.id,
-                            text: `  ${invention.name}`
-                        }));
+                   //     const employeesDataObj = JSON.parse(employeesListData);
+                      //  const sdgGoalsDataList = JSON.parse(sdgGoalsList);
+                    //    const patentStatusData = JSON.parse(patentStatusList);
+                        // const inventionTypeData = JSON.parse(patentInventionType);
 
                         // ajax for search bar to search employee name 
-                        const facultyOptions = employeesDataObj.map(faculty => ({
-                            value: faculty.id,
-                            text: ` ${faculty.employee_id}  ${faculty.faculty_name}`
-                        }));
+                        // const sdgOptions = sdgGoalsDataList.map(sdg => ({
+                        //     value: sdg.id,
+                        //     text: ` ${sdg.name}`
+                        // }));
+
+                        // ajax for search bar to search status
+                        // const statusOptions = patentStatusData.map(status => ({
+                        //     value: status.id,
+                        //     text: `${status.name}`
+                        // }));
+
+                        // ajax for search bar to search status
+                        // const inventionTypeValue = inventionTypeData.map(invention => ({
+                        //     value: invention.id,
+                        //     text: `  ${invention.name}`
+                        // }));
+
+                        // ajax for search bar to search employee name 
+                        // const facultyOptions = employeesDataObj.map(faculty => ({
+                        //     value: faculty.id,
+                        //     text: ` ${faculty.employee_id}  ${faculty.faculty_name}`
+                        // }));
 
 
                         // Initialize TomSelect dropdown with options containing id and faculty_name
-                        new TomSelect("#emp-name", {
-                            options: facultyOptions,
-                            placeholder: "Select Employee Name",
-                            hidePlaceholder: true,
-                            create: true,
-                            plugins: ['remove_button'],
-                            onItemAdd: function () {
-                                this.setTextboxValue('');
-                                this.refreshOptions();
-                            },
-                            render: {
-                                option: function (data, escape) {
-                                    return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
-                                },
-                                item: function (data, escape) {
-                                    return '<div>' + escape(data.text) + '</div>';
-                                }
-                            }
-                        });
+                        // new TomSelect("#emp-name", {
+                        //     options: facultyOptions,
+                        //     placeholder: "Select Employee Name",
+                        //     hidePlaceholder: true,
+                        //     create: true,
+                        //     plugins: ['remove_button'],
+                        //     onItemAdd: function () {
+                        //         this.setTextboxValue('');
+                        //         this.refreshOptions();
+                        //     },
+                        //     render: {
+                        //         option: function (data, escape) {
+                        //             return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                        //         },
+                        //         item: function (data, escape) {
+                        //             return '<div>' + escape(data.text) + '</div>';
+                        //         }
+                        //     }
+                        // });
 
                         // Initialize TomSelect dropdown with options containing id and faculty_name
-                        new TomSelect("#sdg-goals-data", {
-                            options: sdgOptions,
-                            placeholder: "Select SDG Goals",
-                            hidePlaceholder: true,
-                            create: true,
-                            plugins: ['remove_button'],
-                            onItemAdd: function () {
-                                this.setTextboxValue('');
-                                this.refreshOptions();
-                            },
-                            render: {
-                                option: function (data, escape) {
-                                    return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
-                                },
-                                item: function (data, escape) {
-                                    return '<div>' + escape(data.text) + '</div>';
-                                }
-                            }
-                        });
+                        // new TomSelect("#sdg-goals-data", {
+                        //     options: sdgOptions,
+                        //     placeholder: "Select SDG Goals",
+                        //     hidePlaceholder: true,
+                        //     create: true,
+                        //     plugins: ['remove_button'],
+                        //     onItemAdd: function () {
+                        //         this.setTextboxValue('');
+                        //         this.refreshOptions();
+                        //     },
+                        //     render: {
+                        //         option: function (data, escape) {
+                        //             return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                        //         },
+                        //         item: function (data, escape) {
+                        //             return '<div>' + escape(data.text) + '</div>';
+                        //         }
+                        //     }
+                        // });
 
-                        new TomSelect("#patent-stage", {
-                            options: statusOptions,
-                            placeholder: "Select patent status",
-                            hidePlaceholder: true,
-                            create: true,
-                            plugins: ['remove_button'],
-                            onItemAdd: function () {
-                                this.setTextboxValue('');
-                                this.refreshOptions();
-                            },
-                            render: {
-                                option: function (data, escape) {
-                                    return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
-                                },
-                                item: function (data, escape) {
-                                    return '<div>' + escape(data.text) + '</div>';
-                                }
-                            }
-                        });
+                        // new TomSelect("#patent-stage", {
+                        //     options: statusOptions,
+                        //     placeholder: "Select patent status",
+                        //     hidePlaceholder: true,
+                        //     create: true,
+                        //     plugins: ['remove_button'],
+                        //     onItemAdd: function () {
+                        //         this.setTextboxValue('');
+                        //         this.refreshOptions();
+                        //     },
+                        //     render: {
+                        //         option: function (data, escape) {
+                        //             return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                        //         },
+                        //         item: function (data, escape) {
+                        //             return '<div>' + escape(data.text) + '</div>';
+                        //         }
+                        //     }
+                        // });
 
-                        new TomSelect("#type-of-invention", {
-                            options: inventionTypeValue,
-                            placeholder: "Select Options",
-                            hidePlaceholder: true,
-                            create: true,
-                            plugins: ['remove_button'],
-                            onItemAdd: function () {
-                                this.setTextboxValue('');
-                                this.refreshOptions();
-                            },
-                            render: {
-                                option: function (data, escape) {
-                                    return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
-                                },
-                                item: function (data, escape) {
-                                    return '<div>' + escape(data.text) + '</div>';
-                                }
-                            }
-                        });
+                        // new TomSelect("#type-of-invention", {
+                        //     options: inventionTypeValue,
+                        //     placeholder: "Select Options",
+                        //     hidePlaceholder: true,
+                        //     create: true,
+                        //     plugins: ['remove_button'],
+                        //     onItemAdd: function () {
+                        //         this.setTextboxValue('');
+                        //         this.refreshOptions();
+                        //     },
+                        //     render: {
+                        //         option: function (data, escape) {
+                        //             return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                        //         },
+                        //         item: function (data, escape) {
+                        //             return '<div>' + escape(data.text) + '</div>';
+                        //         }
+                        //     }
+                        // });
 
                         // function for select author name from drop down list
                         function handleEmployeeDropdownChange() {
@@ -1851,6 +2143,19 @@
                         function enternalFacultyDropDownList() {
                             employeeList.classList.remove('d-none');
                             authorDetails.classList.add('d-none');
+                            document.getElementById('name-class').classList.add('d-none');
+                            document.getElementById('dsg-class').classList.add('d-none');
+                            document.getElementById('id-class').classList.add('d-none');
+                            document.getElementById('address-class').classList.add('d-none');
+                            document.getElementById('add-btn').classList.add('d-none');
+
+                            document.getElementById('name-class-upd').classList.add('d-none');
+                            document.getElementById('dsg-class-upd').classList.add('d-none');
+                            document.getElementById('id-class-upd').classList.add('d-none');
+                            document.getElementById('address-class-upd').classList.add('d-none');
+                            document.getElementById('add-btn-upd').classList.add('d-none');
+
+                            document.getElementById('externalfacultyTable').classList.add('d-none')
                         }
 
                         function externalFacultyDetails() {
