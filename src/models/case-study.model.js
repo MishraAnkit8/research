@@ -38,6 +38,9 @@ module.exports.insertDataIntoCaseStudies = async (
     nmimsSchoolAuthors,
     publisherCategory,
   } = caseStudyData;
+  // Convert empty strings to NULL for edition and volumeNumber
+const editionValue = edition !== '' ? edition : null;
+const volumeNumberValue = volumeNumber !== '' ? volumeNumber : null;
   let sql = {
     text: `INSERT INTO case_studies (author_first_name, author_last_name, title_of_case_study, edition, volume_number, publisher_name, publication_year, page_number, url_of_case_study,
                 number_of_nmims_authors, nmims_authors, nmims_campus_authors, nmims_school_authors, publisher_category, supporting_documents, created_by) VALUES ($1, $2 , $3 ,$4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16) RETURNING id `,
@@ -45,8 +48,8 @@ module.exports.insertDataIntoCaseStudies = async (
       authorsFirstName,
       authorLastName,
       titleOfCaseStudy,
-      edition,
-      volumeNumber,
+      editionValue,
+      volumeNumberValue,
       publisherName,
       publicationYear,
       pageNumber,
@@ -161,6 +164,8 @@ module.exports.updateCaseStudies = async (
     publisherCategory,
   } = updatedCaseStudies;
 
+  const editionValue = edition !== '' ? edition : null;
+const volumeNumberValue = volumeNumber !== '' ? volumeNumber : null;
   const DataFileString = caseStudyFiles ? caseStudyFiles : null;
   let baseSql = ` UPDATE case_studies SET 
                     author_first_name = $2, author_last_name = $3, title_of_case_study = $4, edition = $5, volume_number = $6, publisher_name = $7, publication_year = $8, page_number = $9, url_of_case_study = $10,
@@ -177,8 +182,8 @@ module.exports.updateCaseStudies = async (
     authorsFirstName,
     authorLastName,
     titleOfCaseStudy,
-    edition,
-    volumeNumber,
+    editionValue,
+    volumeNumberValue,
     publisherName,
     publicationYear,
     pageNumber,
