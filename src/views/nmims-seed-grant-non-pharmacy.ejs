@@ -97,7 +97,8 @@
                                             <td class="col-lg-1 faculty-name"><%- grantSeedData.faculty_name %></td>
                                             <td class="col-lg-1 project-title"><%- grantSeedData.title %></td>
                                             <td class="col-lg-1 year"><%- grantSeedData.year %></td>
-                                            <td class="col-lg-1 total-fees"><%- (grantSeedData.per_session_fees * grantSeedData.session_count_per_days) %></td>
+                                            <td class="col-lg-1 total-fees"><%- (grantSeedData.per_session_fees *
+                                                    grantSeedData.session_count_per_days) %></td>
                                             <td>
                                                 <b title="View" class="view" style="cursor: pointer;"
                                                     data-consultancy-id="<%- grantSeedData.consultancy_id %>">
@@ -212,8 +213,8 @@
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="campus" class=" sub-title fw-bold"> Title(Brief) </label>
                                     <input type="text" name="SchoolName" id="title"
-                                        data-validate="isEmpty,isAllNumeric,isExist"
-                                        data-err-msg="Provide Valid Input" class="form-control" required />
+                                        data-validate="isEmpty,isAllNumeric,isExist" data-err-msg="Provide Valid Input"
+                                        class="form-control" required />
                                 </div>
                                 <!-- Faculty ID -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
@@ -230,7 +231,7 @@
                                     <input type="Date" name="policy-cadre" id="commencement-date"
                                         data-validate="isEmpty,isExist" data-err-msg="Date is required"
                                         class="form-control" required />
-                                        <span style="color:red;" id="commencementError"></span>
+                                    <span style="color:red;" id="commencementError"></span>
                                 </div>
                                 <!-- Date of Completion -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
@@ -238,7 +239,7 @@
                                     <input type="date" name="completion-date" id="completion-date"
                                         data-validate="isEmpty,isExist" data-err-msg="Date is required"
                                         class="form-control" required>
-                                        <span style="color:red;" id="completionError"></span>
+                                    <span style="color:red;" id="completionError"></span>
                                 </div>
                                 <!-- Days -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
@@ -260,7 +261,7 @@
                                     <label for="total-fees" class=" sub-title fw-bold">Total Fees</label>
                                     <input type="number" name="total-fees" id="total-fees"
                                         data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required."
-                                        class="form-control" required>
+                                        class="form-control" required disabled>
                                 </div>
 
 
@@ -280,16 +281,16 @@
                                         data-err-msg="Value is required." class="form-control" required>
                                 </div>
                                 <!-- Details of Distribution of Faculty Share (if more than one faculty) -->
-                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                <!-- <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="journalName" class=" sub-title fw-bold">Details of Distribution of
                                         Faculty Share (if more than one faculty)</label>
                                     <table class="table">
                                         <tbody id="dynamic-rows">
-                                            <!-- Dynamic rows will be added here -->
-                                        </tbody>
-                                    </table>
-                                    <!-- <button id="add-row-button">Add More Details</button> -->
-                                </div>
+                                       Dynamic rows will be added here -->
+                                <!-- </tbody>
+                                    </table> -->
+                                <!-- <button id="add-row-button">Add More Details</button> -->
+                                <!-- </div>  -->
 
                                 <!-- Advance Payment. -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
@@ -395,7 +396,8 @@
                 <div class="modal-dialog modal-dialog-scrollable modal-lg modal-fullscreen p-5" role="document">
                     <div class="modal-content modal-content-data">
                         <div class="modal-header">
-                            <h4 class="modal-title" id="sed-grant-title">NMIMS Seed Grant [Non Pharmacy] APPROVAL Form View</h4>
+                            <h4 class="modal-title" id="sed-grant-title">NMIMS Seed Grant [Non Pharmacy] APPROVAL Form
+                                View</h4>
                             <div class="close" id="headerEdit" data-dismiss="modal" aria-label="Close">
                                 <span type="button" aria-hidden="true"><i class="fas fa-times "></i></span>
                             </div>
@@ -674,7 +676,7 @@
                         //  Initialize TomSelect dropdown with options containing id and faculty_name
                         new TomSelect("#faculty-id", {
                             options: facultyOptions,
-                            placeholder : 'Select Faculty',
+                            placeholder: 'Select Faculty',
                             hidePlaceholder: true,
                             create: true,
                             plugins: ['remove_button'],
@@ -855,15 +857,15 @@
                     let commencementDate = document.getElementById('commencement-date').value;
                     let completionDate = document.getElementById('completion-date').value;
 
-                    console.log('user dates ',commencementDate,completionDate)
+                    console.log('user dates ', commencementDate, completionDate)
 
                     let date1 = new Date(commencementDate);
                     let date2 = new Date(completionDate);
 
                     let dateValidate = date1 < date2 ? true : false;
-                    
+
                     // let dateValidate = false
-                    
+
                     if (isValid && dateValidate) {
                         await insertConsultancyFormApprovalData('<%- BASE_URL %>research/nmims-seed-grant-non-pharmacy/insert');
                     }
@@ -878,14 +880,14 @@
                             confirmButtonColor: "#DD6B55",
 
                         }).then(() => {
-                              if(dateValidate){
-                                console.log('date true')   
+                            if (dateValidate) {
+                                console.log('date true')
                                 document.getElementById('completionError').innerText = ''
-                              }else{
-                                console.log('date false')   
+                            } else {
+                                console.log('date false')
                                 document.getElementById('completionError').innerText = 'Completion date should be greater than commencement date '
 
-                              }
+                            }
                         });
 
                         //         $('body').keypress(function(e){ 
@@ -1036,7 +1038,7 @@
                         let editHead = document.getElementById('grantSeedData-study');
                         editHead.innerText = 'NMIMS Seed Grant [Non Pharmacy] APPROVAL Form Edit'
 
-        
+
 
                         console.log('yes edit clickeddd ===');
                         submitBtn.classList.add('d-none');
@@ -1073,7 +1075,7 @@
                         //  Initialize TomSelect dropdown with options containing id and faculty_name
                         new TomSelect("#faculty-id", {
                             options: facultyOptions,
-                            items:selectList,
+                            items: selectList,
                             // placeholder : 'Select Faculty',
                             hidePlaceholder: true,
                             create: true,
@@ -1417,11 +1419,14 @@
                 });
 
                 document.getElementById('insertClose').addEventListener('click', () => {
-
-
                     console.log('close button clicked')
                     document.location.reload();
                 });
+
+                document.getElementById('sessions-fees').addEventListener('input', () => {
+                    let totalFees = parseInt(document.getElementById('no-of-session').value) * parseInt(document.getElementById('sessions-fees').value);
+                    document.getElementById('total-fees').value = totalFees
+                })
 
 
 
