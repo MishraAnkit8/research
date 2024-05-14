@@ -73,6 +73,7 @@ module.exports.fetchJournalPaper = async (userName) => {
                     journal_article_policy_cadre japc ON jpa.id = japc.journal_article_id
                 LEFT JOIN
                     policy_cadre pc ON japc.policy_cadre_id = pc.id
+                where created_by = $1
                    
                 GROUP BY
                     jpa.id,
@@ -94,6 +95,7 @@ module.exports.fetchJournalPaper = async (userName) => {
                     jpa.web_link_doi_number
                 ORDER BY
                     jpa.id desc`,
+            values : [userName]
 
     }
 
