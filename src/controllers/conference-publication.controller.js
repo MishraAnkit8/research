@@ -13,6 +13,7 @@ module.exports.renderConferencePage = async (req, res, next) => {
     rowCount: conferenceData.rowCount,
     internalEmpList: conferenceData.internalEmpList,
     externalEmpList: conferenceData.externalEmpList,
+    internalFaculty: conferenceData.internalFaculty,
   });
 };
 
@@ -22,7 +23,8 @@ module.exports.insertConferencePublicationSData = async (req, res, next) => {
 
   console.log("conference json ", JSON.stringify(req.body));
 
-  console.log("Data comming From Template", req.body);
+  console.log("Data comming From Template", JSON.stringify(req.body));
+
   console.log("files in controller ==>>>", req.files);
   const insertConferenceDataForm =
     await conferencePublicationServices.insertConferenceData(
@@ -73,7 +75,7 @@ module.exports.insertConferencePublicationSData = async (req, res, next) => {
       insertConferenceDataForm.status === "Done"
         ? insertConferenceDataForm.authorNameString
         : null,
-        conferenceFacultiesIds : insertConferenceDataForm.conferenceFacultiesIds,
+    conferenceFacultiesIds: insertConferenceDataForm.conferenceFacultiesIds,
     errorCode: insertConferenceDataForm.errorCode
       ? insertConferenceDataForm.errorCode
       : null,
@@ -186,6 +188,7 @@ module.exports.viewConferencePublication = async (req, res, next) => {
     status: viewConferencePublicationData.status,
     message: viewConferencePublicationData.message,
     viewConferenceData: viewConferencePublicationData.viewConferenceData,
+    facultyDetails: viewConferencePublicationData.facultyDetails,
     errorCode: viewConferencePublicationData.errorCode
       ? viewConferencePublicationData.errorCode
       : null,

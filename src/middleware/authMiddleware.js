@@ -26,9 +26,11 @@ module.exports.authMiddleware = async (req, res, next) => {
         });
 
         if(status !== 200) {
-            res.status(401).json({
-                message: "Unauthorized Access!"
-            })
+            console.log('Unauthorized Access')
+            res.redirect('/user');
+            // res.status(401).json({
+            //     message: "Unauthorized Access!"
+            // })
         }
 
         const {accesstoken, refreshtoken} = headers;

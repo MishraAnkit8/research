@@ -11,13 +11,18 @@ module.exports.renderPharmacySeedGrantform = async(req, res, next) => {
     console.log('pharmacySeedDetails in cotroller ===>>>>', pharmacySeedDetails)
 
     res.render('pharmacy-seed-grant-form', {
+        status : pharmacySeedDetails.status,
+        message : pharmacySeedDetails.message,
+        rowCount : pharmacySeedDetails.rowCount,
+        pharmacyData : pharmacySeedDetails.pharmacyData,
+        errorCode : pharmacySeedDetails.errorCode
 
     })
 }
 
 
 module.exports.insertInvestigationEducationalDetails = async(req, res, next) => {
-    console.log('data commint from frontend ====>>>>', req.body);
+    console.log('data commint from frontend ====>>>>', req.body.detailsContainerArray);
     const  userName = req.body.username;
     console.log('userName in controller  ===>>>>>>', userName);
 
@@ -29,8 +34,10 @@ module.exports.insertInvestigationEducationalDetails = async(req, res, next) => 
     res.status(statusCode).send({
         status : insertPharmacyInvestigatorEdu.status,
         message : insertPharmacyInvestigatorEdu.message,
-        investorEduId : insertPharmacyInvestigatorEdu.investorEduId,
+        educatoinIds : insertPharmacyInvestigatorEdu.ids,
         rowCount : insertPharmacyInvestigatorEdu.rowCount,
+        educaltionalDetails : insertPharmacyInvestigatorEdu.detailsDataArray,
+
         errorCode : insertPharmacyInvestigatorEdu.errorCode
     })
 }
@@ -49,8 +56,9 @@ module.exports.investigatorExperience = async(req, res, next) => {
     res.status(statusCode).send({
         status : insertExperience.status,
         message : insertExperience.message,
-        invastigatorExperienceId : insertExperience.invastigatorExperienceId,
+        experienceId : insertExperience.ids,
         rowCount : insertExperience.rowCount,
+        experienceDetails : insertExperience.detailsDataArray,
         errorCode : insertExperience.errorCode
     })
 }
@@ -69,8 +77,10 @@ module.exports.investigatorBook = async(req, res, next) => {
     res.status(statusCode).send({
         status : insertInvestigatorBook.status,
         message : insertInvestigatorBook.message,
-        bookId : insertInvestigatorBook.bookId,
+        bookDetailsIds : insertInvestigatorBook.ids,
         rowCount : insertInvestigatorBook.rowCount,
+        bookDetails : insertInvestigatorBook.detailsDataArray,
+
         errorCode : insertInvestigatorBook.errorCode
     })
 }
@@ -88,8 +98,10 @@ module.exports.investigatorBookChapter = async(req, res, next) => {
     res.status(statusCode).send({
         status : insertInvestigatorBookChapter.status,
         message : insertInvestigatorBookChapter.message,
-        bookChapterId : insertInvestigatorBookChapter.bookChapterId,
+        bookChapterDetailsIds : insertInvestigatorBookChapter.ids,
         rowCount : insertInvestigatorBookChapter.rowCount,
+        bookChapterDetails : insertInvestigatorBookChapter.detailsDataArray,
+
         errorCode : insertInvestigatorBookChapter.errorCode
     })
 }
@@ -108,8 +120,10 @@ module.exports.investigatorPatent = async(req, res, next) => {
     res.status(statusCode).send({
         status : insertInvestigatorPatent.status,
         message : insertInvestigatorPatent.message,
-        patentId : insertInvestigatorPatent.patentId,
+        patentDetailsIds : insertInvestigatorPatent.ids,
         rowCount : insertInvestigatorPatent.rowCount,
+        patentDetails : insertInvestigatorPatent.detailsDataArray,
+
         errorCode : insertInvestigatorPatent.errorCode
     })
 }
@@ -128,8 +142,10 @@ module.exports.investigatorPublication = async(req, res, next) => {
     res.status(statusCode).send({
         status : insertInvestigatorPublication.status,
         message : insertInvestigatorPublication.message,
-        publicationId : insertInvestigatorPublication.publicationId,
+        publicationDetailsIds : insertInvestigatorPublication.ids,
         rowCount : insertInvestigatorPublication.rowCount,
+        PublicationDetails : insertInvestigatorPublication.detailsDataArray,
+
         errorCode : insertInvestigatorPublication.errorCode
     })
 }
@@ -148,8 +164,9 @@ module.exports.investigatorResearchImplementation = async(req, res, next) => {
     res.status(statusCode).send({
         status : insertInvestigatorResImple.status,
         message : insertInvestigatorResImple.message,
-        implementationId : insertInvestigatorResImple.implementationId,
+        implementationIds : insertInvestigatorResImple.ids,
         rowCount : insertInvestigatorResImple.rowCount,
+        researchImplementationDetails : insertInvestigatorResImple.detailsDataArray,
         errorCode : insertInvestigatorResImple.errorCode
     })
 }
@@ -169,8 +186,9 @@ module.exports.investigatorResearchCompleted = async(req, res, next) => {
     res.status(statusCode).send({
         status : insertInvestigatorResCompleted.status,
         message : insertInvestigatorResCompleted.message,
-        CompletedId : insertInvestigatorResCompleted.CompletedId,
+        CompletedIds : insertInvestigatorResCompleted.ids,
         rowCount : insertInvestigatorResCompleted.rowCount,
+        completedDetails : insertInvestigatorResCompleted.detailsDataArray,
         errorCode : insertInvestigatorResCompleted.errorCode
     })
 }
@@ -196,4 +214,34 @@ module.exports.insertPharmacySeedForms = async(req, res, next) => {
         errorCode : pharmacyDataDetails.errorCode
     })
 
+}
+
+
+module.exports.viewPharmacySeedGrantData = async(req, res, next) => {
+    const  userName = req.body.username;
+    console.log('userName in controller  ===>>>>>>', userName);
+    const pharmacyId = req.body.pharmacyId;
+    console.log('data is comming from frontend ====>>>>', req.body.pharmacyId);
+
+    const viewPharmacySeed = await pharmacyService.viewPharmacyData(pharmacyId, userName);
+
+    console.log('viewPharmacySeed ===>>>>>>>', viewPharmacySeed);
+
+    const statusCode = viewPharmacySeed.status === 'Done' ? 200 : (viewPharmacySeed.errorCode ? 400 : 500);
+
+    res.status(statusCode).send({
+        status : viewPharmacySeed.status,
+        message : viewPharmacySeed.message,
+        pharmacyData : viewPharmacySeed.pharmacyData,
+        principalInvestigator : viewPharmacySeed.principalInvestigator,
+        educaltionalDetails : viewPharmacySeed.educaltionalDetails,
+        experienceDetails : viewPharmacySeed.experienceDetails,
+        bookDetails : viewPharmacySeed.bookDetails,
+        bookChapterDetails : viewPharmacySeed.bookChapterDetails,
+        PublicationDetails : viewPharmacySeed.PublicationDetails,
+        patentDetails : viewPharmacySeed.patentDetails,
+        researchImplementationDetails : viewPharmacySeed.researchImplementationDetails,
+        completedResearchDetails : viewPharmacySeed.completedResearchDetails,
+        errorCode : viewPharmacySeed.errorCode ? viewPharmacySeed.errorCode : null
+    })
 }

@@ -154,6 +154,8 @@ router.post('/nmims-seed-grant-non-pharmacy/delete', asyncErrorHandler(authMiddl
 // pharmacySeedGrantForm
 router.get('/pharmacy-seed-grant-form', asyncErrorHandler(authMiddleware), asyncErrorHandler(pharmacySeedGrantForm.renderPharmacySeedGrantform));
 router.post('/pharmacy-seed-grant-form/insert', asyncErrorHandler(authMiddleware), asyncErrorHandler(pharmacySeedGrantForm.insertPharmacySeedForms));
+router.post('/pharmacy-seed-grant-form/view', asyncErrorHandler(authMiddleware), asyncErrorHandler(pharmacySeedGrantForm.viewPharmacySeedGrantData));
+
 
 router.post('/pharmacy-seed-grant-form/investigator-education/insert', asyncErrorHandler(authMiddleware), asyncErrorHandler(pharmacySeedGrantForm.insertInvestigationEducationalDetails));
 router.post('/pharmacy-seed-grant-form/investigator-experience/insert', asyncErrorHandler(authMiddleware), asyncErrorHandler(pharmacySeedGrantForm.investigatorExperience));
@@ -169,6 +171,49 @@ router.post('/pharmacy-seed-grant-form/investigator-research-completed/insert', 
 //insert external faculty details controller
 
 router.post('/external/faculty-insert', asyncErrorHandler(authMiddleware), asyncErrorHandler(facultyController.insertExternalFacultyDetails));
+router.post(
+  "/external/faculty-update",
+  asyncErrorHandler(authMiddleware),
+  asyncErrorHandler(facultyController.updateExternalFacultyDetails)
+);
+router.post(
+  "/external/faculty-updateData",
+  asyncErrorHandler(authMiddleware),
+  asyncErrorHandler(facultyController.updateFaculyDetails)
+);
+router.post(
+  "/external/faculty-patentInsert",
+  asyncErrorHandler(authMiddleware),
+  asyncErrorHandler(facultyController.facultyPatentInsert)
+);
+router.post(
+  "/external/faculty-conferenceInsert",
+  asyncErrorHandler(authMiddleware),
+  asyncErrorHandler(facultyController.facultyConferenceInsert)
+);
+router.post(
+  "/external/faculty-IprInsert",
+  asyncErrorHandler(authMiddleware),
+  asyncErrorHandler(facultyController.facultyIprInsert)
+);
+
+
+
+
+router.get("/external/facultyDataForEdit",asyncErrorHandler(facultyController.facultyDataForEdit))
+router.get(
+  "/external/facultyDataForPatent",
+  asyncErrorHandler(facultyController.facultyDataForPatent)
+);
+router.get(
+  "/external/facultyDataForConference",
+  asyncErrorHandler(facultyController.facultyDataForConference)
+);
+router.get(
+  "/external/facultyDataForIPR",
+  asyncErrorHandler(facultyController.facultyDataForIPR)
+);
+
 
 // userController
 

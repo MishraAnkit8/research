@@ -20,6 +20,9 @@ module.exports.fetchNoFormacyForm = async(userName) => {
              const Data = parseInt(payment.final_payment) + parseInt(payment.advanced_payment);
              let gstCharge = Data * 18/100;
 
+             console.log('gstCharge ===>>>>', gstCharge);
+             console.log('final_payment ===>>>>', parseInt(payment.final_payment));
+             console.log('final_payment ===>>>>',  parseInt(payment.final_payment));
              let totalCost = parseInt(payment.research_staff_expenses) + parseInt(payment.travel)
              + parseInt(payment.computer_charges) + parseInt(payment.nmims_facility_charges) + 
              parseInt(payment.gross_fees) + parseInt(payment.miscellaneous_including_contingency)
