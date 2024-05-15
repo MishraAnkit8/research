@@ -2,6 +2,7 @@ const researchCunsultancyModel = require('../models/research-project-grant.model
 
 module.exports.fetchResearConsultacyData = async(userName) => {
     const researchConsultancyData = await researchCunsultancyModel.fetchResearchConsultancy(userName);
+    const fetchInternalFaculty = await researchCunsultancyModel.fetchInternal();
     // console.log('researchConsultancyData in services ===>>>>>',researchConsultancyData.researchData);
     // console.log('facultTableData in services :::::===>>>>>',researchConsultancyData.facultTableData);
     // console.log('research_project_grant_faculty Data In Service ::: ==>>>>', researchConsultancyData.researchPojectGrantFacultyData)
@@ -65,6 +66,7 @@ module.exports.fetchResearConsultacyData = async(userName) => {
           message: researchConsultancyData.message,
           rowCount: researchConsultancyData.rowCount,
           externalDetails: researchConsultancyData.externalDataDetails,
+          internalFaculty : fetchInternalFaculty.internalFaculty
         }
       : {
           status: researchConsultancyData.status,

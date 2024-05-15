@@ -114,10 +114,12 @@ module.exports.insertConsultancyApprovalFormData = async (
     totalFees,
     grossFees,
     facultyId,
+   
   } = consultancyFormData;
   let sql = {
     text: `INSERT INTO consultancy_approval_form (year, title, commencement_date, completion_date, session_count_per_days,  per_session_fees,
-        faculty_shares, nmims_shares, research_staff_expenses, travel, computer_charges, nmims_facility_charges, miscellaneous_including_contingency, advanced_payment, final_payment, total_fees, gross_fees, faculty_table_id, created_by)
+        faculty_shares, nmims_shares, research_staff_expenses, travel, computer_charges, nmims_facility_charges, miscellaneous_including_contingency, advanced_payment, final_payment, total_fees, gross_fees, faculty_table_id, created_by,
+       )
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19) RETURNING id`,
 
     values: [
@@ -139,7 +141,8 @@ module.exports.insertConsultancyApprovalFormData = async (
       totalFees,
       grossFees,
       facultyId,
-      userName,
+      userName
+      
     ],
   };
 

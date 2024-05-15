@@ -235,7 +235,7 @@
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="title-of-paper" class="form-label  fw-bold">Title Of The Paper</label>
                                     <input type="text" name="title-project" id="title-of-paper" class="form-control"
-                                        data-validate="isEmpty,isNotNumber,isExist,isLength:2:255"
+                                        data-validate="isEmpty,isAllNumeric,isExist,isLength:2:255"
                                         data-err-msg="Provide Valid Input" required />
                                 </div>
                                 <!-- Name of Conferencend  -->
@@ -381,7 +381,8 @@
                                     <label for="doi-weblink" class="form-label  fw-bold">
                                         DOI/Weblink of paper ID
                                     </label>
-                                    <input data-validate="isEmpty,isExist" data-err-msg="Link is required." type="text"
+                                    <input data-validate="isEmpty,isExist"
+                                        data-err-msg="Link is required and provide valid input" type="text"
                                         name="web-link" id="doi-weblink-id" class="form-control" required />
                                 </div>
 
@@ -461,7 +462,7 @@
                                 </div>
 
                                 <!-- Faculty Type -->
-                                
+
                                 <!-- Inventor -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="investor-details" class="form-label fw-bold mb-3">Author Details
@@ -910,6 +911,37 @@
                         issnIsbnNo.value = '';
                         conferenceDocument.value = '';
                         conferenceProof.value = '';
+
+
+                        const employeesListData = document.getElementById('employees-list-data').dataset.employees;
+                        const employeesDataObj = JSON.parse(employeesListData);
+                        let employeeListArray = [];
+
+
+                        // ajax for search bar to search employee name 
+                        const facultyOptions = employeesDataObj.map(faculty => ({
+                            value: faculty.id,
+                            text: ` ${faculty.faculty_name}`
+                        }));
+                        new TomSelect("#emp-name", {
+                            options: facultyOptions,
+                            placeholder: "Select Employee Name",
+                            hidePlaceholder: true,
+                            create: true,
+                            plugins: ['remove_button'],
+                            onItemAdd: function () {
+                                this.setTextboxValue('');
+                                this.refreshOptions();
+                            },
+                            render: {
+                                option: function (data, escape) {
+                                    return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                                },
+                                item: function (data, escape) {
+                                    return '<div>' + escape(data.text) + '</div>';
+                                }
+                            }
+                        });
                     }
                 })
 
@@ -1251,7 +1283,7 @@
                                                 <th>Employee ID</th>
                                             </thead>
                                             <tbody>`;
-                                    
+
                                     data.facultyDetails.forEach((faculty, index) => {
                                         facultyDetailsHTML += `
                             <tr>
@@ -1329,7 +1361,52 @@
                             appendFaculty.insertAdjacentHTML('beforeEnd', htmlData);
                         })
 
-                     
+
+
+
+
+                        const employeesListData = document.getElementById('employees-list-data').dataset.employees;
+                        const employeesDataObj = JSON.parse(employeesListData);
+                        let employeeListArray = [];
+
+                        const internalFaculty = JSON.parse('<%- JSON.stringify(internalFaculty) %>')
+                        let confEmp = internalFaculty.filter(data => conferenceId == data.conference_id).map(emp => emp)
+
+                        Array.from(employeesDataObj).forEach(data => {
+                            Array.from(confEmp).forEach(emp => {
+                                if (data.id == emp.faculty_id) {
+                                    employeeListArray.push(data.id)
+                                }
+                            })
+                        })
+
+                        // ajax for search bar to search employee name 
+                        const facultyOptions = employeesDataObj.map(faculty => ({
+                            value: faculty.id,
+                            text: ` ${faculty.faculty_name}`
+                        }));
+                        new TomSelect("#emp-name", {
+                            options: facultyOptions,
+                            items: employeeListArray,
+                            // placeholder: "Select Employee Name",
+                            hidePlaceholder: true,
+                            create: true,
+                            plugins: ['remove_button'],
+                            onItemAdd: function () {
+                                this.setTextboxValue('');
+                                this.refreshOptions();
+                            },
+                            render: {
+                                option: function (data, escape) {
+                                    return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                                },
+                                item: function (data, escape) {
+                                    return '<div>' + escape(data.text) + '</div>';
+                                }
+                            }
+                        });
+
+
 
 
                         document.getElementById('conference-publication').innerText = 'CONFERENCE Edit';
@@ -1429,7 +1506,7 @@
                     }
                 });
 
-                
+
 
                 const updateConferencePublication = async (url) => {
                     console.log('clickedddd')
@@ -1668,35 +1745,35 @@
                 const enternalText = document.getElementById('enternal-text');
 
                 // employeesListData data came from backend
-                const employeesListData = document.getElementById('employees-list-data').dataset.employees;
-                const employeesDataObj = JSON.parse(employeesListData);
-                let employeeListArray = [];
+                // const employeesListData = document.getElementById('employees-list-data').dataset.employees;
+                // const employeesDataObj = JSON.parse(employeesListData);
+                // let employeeListArray = [];
 
 
-                // ajax for search bar to search employee name 
-                const facultyOptions = employeesDataObj.map(faculty => ({
-                    value: faculty.id,
-                    text: ` ${faculty.faculty_name}`
-                }));
-                new TomSelect("#emp-name", {
-                    options: facultyOptions,
-                    placeholder: "Select Employee Name",
-                    hidePlaceholder: true,
-                    create: true,
-                    plugins: ['remove_button'],
-                    onItemAdd: function () {
-                        this.setTextboxValue('');
-                        this.refreshOptions();
-                    },
-                    render: {
-                        option: function (data, escape) {
-                            return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
-                        },
-                        item: function (data, escape) {
-                            return '<div>' + escape(data.text) + '</div>';
-                        }
-                    }
-                });
+                // // ajax for search bar to search employee name 
+                // const facultyOptions = employeesDataObj.map(faculty => ({
+                //     value: faculty.id,
+                //     text: ` ${faculty.faculty_name}`
+                // }));
+                // new TomSelect("#emp-name", {
+                //     options: facultyOptions,
+                //     placeholder: "Select Employee Name",
+                //     hidePlaceholder: true,
+                //     create: true,
+                //     plugins: ['remove_button'],
+                //     onItemAdd: function () {
+                //         this.setTextboxValue('');
+                //         this.refreshOptions();
+                //     },
+                //     render: {
+                //         option: function (data, escape) {
+                //             return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                //         },
+                //         item: function (data, escape) {
+                //             return '<div>' + escape(data.text) + '</div>';
+                //         }
+                //     }
+                // });
                 const authorNamesArray = [];
                 // function for select author name from drop down list
                 function handleEmployeeDropdownChange() {
@@ -1773,6 +1850,14 @@
                     document.getElementById('id-class').classList.remove('d-none')
                     document.getElementById('address-class').classList.remove('d-none');
                     document.getElementById('add-btn').classList.remove('d-none')
+
+                    document.getElementById('name-class-upd').classList.add('d-none');
+                    document.getElementById('dsg-class-upd').classList.add('d-none');
+                    document.getElementById('id-class-upd').classList.add('d-none');
+                    document.getElementById('address-class-upd').classList.add('d-none');
+                    document.getElementById('add-btn-upd').classList.add('d-none');
+
+                    document.getElementById('externalfacultyTable').classList.add('d-none')
                 }
 
                 // making d-none external faculty
@@ -2190,27 +2275,27 @@
                 }
 
 
-    async function fetchFacultyData(url) {
-        let requestDetails = {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json'
-            }
-        }
+                async function fetchFacultyData(url) {
+                    let requestDetails = {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json'
+                        }
+                    }
 
-        let data;
-        let response = await fetch(url, requestDetails);
-        if (response.ok) {
-            data = await response.json();
-            return data;
-        } else {
-            throw new Error('Error in fetching data')
-        }
-    }
+                    let data;
+                    let response = await fetch(url, requestDetails);
+                    if (response.ok) {
+                        data = await response.json();
+                        return data;
+                    } else {
+                        throw new Error('Error in fetching data')
+                    }
+                }
 
 
-    
-       
+
+
             </script>
             <!-- <%- include('./partials/pagination') %> -->
             <%- include('./partials/footer') %>

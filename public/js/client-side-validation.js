@@ -45,6 +45,15 @@ function validateRequiredFormFields(actionBtn) {
         }
       }
 
+      if (validate === "isAllNumeric") {
+        const isValid = isAllNumeric(elemVal);
+        if (!isValid) {
+          isValidElem = false;
+          validationState = false;
+          break;
+        }
+      }
+
       if (validate === "isValidYear") {
         const isValid = isValidYear(elemVal);
         if (!isValid) {
@@ -144,7 +153,6 @@ function validateRequiredFormFields(actionBtn) {
         }
       }
 
-
       if (validate === "isValidHttpUrl") {
         const isValid = isValidHttpUrl(elemVal);
         if (!isValid) {
@@ -229,6 +237,30 @@ function toggleErrorState(formGroup, errorMsg, errorElem, isValidElem) {
 //     return true;
 // }
 
+function isAllNumeric(input) {
+  if (!input || input === "") {
+    return false;
+  }
+  let count = 0;
+
+  for (let i = 0; i < input.length; i++) {
+    const charCode = input.charAt(i);
+
+    // Ensure it's a digit (between char code 48 to 57)
+    if (charCode > 0 || charCode < 9) {
+      count++;
+    }
+  }
+
+  if (input.length === count) {
+    console.log("Validated Wrongly");
+    return false;
+  } else {
+    console.log("Validated ", count);
+    return true;
+  }
+}
+
 function isNumber(input) {
   if (!input || input === "") {
     return false;
@@ -303,20 +335,15 @@ function isValidHttpUrl(string) {
   try {
     const newUrl = new URL(string);
 
-    if(newUrl.protocol === 'http:' || newUrl.protocol === 'https:'){
+    if (newUrl.protocol === "http:" || newUrl.protocol === "https:") {
       return true;
-    }else{
+    } else {
       return false;
     }
   } catch (err) {
     return false;
   }
 }
-
-
-
-
-
 
 function isAlphabeticWords(input) {
   if (!input || input.trim() === "") {

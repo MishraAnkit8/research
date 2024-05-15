@@ -208,6 +208,48 @@ module.exports.fetchIPRData = async (userName) => {
     });
 };
 
+module.exports.fetchIPRFaculty = async () => {
+
+  let iprFacultySql = {
+    text :` SELECT psf.id AS ipr_faculty_id, 
+    psf.ipr_id, 
+    psf.faculty_id 
+    FROM ipr_faculty psf
+    JOIN faculties f ON psf.faculty_id = f.id
+    JOIN faculty_types ft ON f.faculty_type_id = ft.id
+    WHERE ft.name = 'Internal' and psf.active=true and f.active=true and ft.active=true 
+    ORDER BY psf.id	`
+  }
+
+  const iprFaculty = await researchDbR.query(iprFacultySql);
+
+  const promises = [
+    iprFaculty,
+  ];
+
+  return Promise.all(promises)
+    .then(
+      ([
+        iprFaculty,
+      ]) => {
+        return {
+          status: "Done",
+          message: "Record Fetched Successfully",
+          rowCount: iprFaculty.rowCount,
+          iprFaculty: iprFaculty.rows,
+        };
+      }
+    )
+    .catch((error) => {
+      return {
+        status: "Failed",
+        message: error.message,
+        errorCode: error.code,
+      };
+    });
+
+};
+
 module.exports.InsetIPRDataModels = async (
   IprData,
   iprFilesNamesArray,
