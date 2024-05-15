@@ -522,6 +522,8 @@ module.exports.updateResearchConsultantData = async (
       })
     : [];
 
+    
+
   const researchProjectTable = await researchDbW.query(sql);
   const results = await Promise.all([
     researchProjectTable,
