@@ -15,7 +15,7 @@ function validateRequiredFormFields(actionBtn) {
     const validateArr = elem.dataset.validate
       ? elem.dataset.validate.split(",")
       : [];
-    const errorMsg = elem.dataset.errMsg
+    let errorMsg = elem.dataset.errMsg
       ? elem.dataset.errMsg
       : "Please enter a valid value";
     const emptyErrorMsg = elem.dataset.errMsg
@@ -126,10 +126,23 @@ function validateRequiredFormFields(actionBtn) {
         const betweenArr = validate.split(":");
         const min = betweenArr[1];
         const max = betweenArr[2];
-        const isValid = between(elemVal, min, max);
+        const isValid = isBetween(elemVal, min, max);
         if (!isValid) {
           isValidElem = false;
           validationState = false;
+          break;
+        }
+      }
+
+      if (validate.includes("isFile")) {
+        const arr = ["pdf", "xlsx", "xlsm", "xls","docx"]
+        let ext = elemVal.substring(elemVal.lastIndexOf('.') + 1);
+        let isValid = arr.includes(ext?.toLowerCase())
+
+        if(!isValid) {
+          isValidElem = false;
+          validationState = false;
+          errorMsg = `Invalid File Type only ${arr.join(", ")} are allowed`;
           break;
         }
       }

@@ -12,6 +12,9 @@
                     <div class="breadcrumbs-container">
                         <ul class="breadcrumb">
                             <li class="breadcrumb-link">
+                                <a href="<%- BASE_URL %>dashboard-page"> Dashboard </a>
+                            </li>
+                            <li class="breadcrumb-link">
                                 <a href="<%- BASE_URL %>research"> Research </a>
                             </li>
                             <li class="breadcrumb-link">NMIMS Seed Grant Non Pharmacy</li>
@@ -94,7 +97,8 @@
                                             data-gross-fees="<%- grantSeedData.gross_fees %>"
                                             data-session-count-per-days="<%- grantSeedData.session_count_per_days %>"
                                             data-total-amount="<%- grantSeedData.totalamount %>"
-                                            data-grand-total-amount="<%- grantSeedData.grandtotal %>">
+                                            data-grand-total-amount="<%- grantSeedData.grandtotal %>"
+                                            data-faculty-designation="<%- grantSeedData.faculty_dsg %>">
                                             <td class="col-lg-1"><%- index + 1 %></td>
                                             <td class="col-lg-1 faculty-name"><%- grantSeedData.faculty_name %></td>
                                             <td class="col-lg-1 project-title"><%- grantSeedData.title %></td>
@@ -225,6 +229,13 @@
                                         data-validate="isEmpty,isExist" data-err-msg="This  field  is required."
                                         multiple required>
                                     </select>
+                                </div>
+                                  <!-- Designation and address of Contact Person for Client -->
+                                  <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="" class=" sub-title fw-bold"> Designation and address of Contact Person for Client </label>
+                                    <input type="text" name="" id="faculty-designation"
+                                        data-validate="isEmpty,isAlphabeticWords"
+                                        data-err-msg="Provide Valid Input" class="form-control" required />
                                 </div>
                                 <!--Date of Commencement-->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
@@ -510,7 +521,7 @@
                                         (if more than one faculty)</th>
                                     <th class=" sub-title col-lg-4">Fees(Rs.)</th>
                                 </tr>
-                                <tr>
+                                <!-- <tr>
                                     <td></td>
                                     <td></td>
                                 </tr>
@@ -521,7 +532,7 @@
                                 <tr>
                                     <td></td>
                                     <td></td>
-                                </tr>
+                                </tr> -->
                                 </tr>
 
                                 <tr>
@@ -744,6 +755,7 @@
                         document.getElementById('gross-fees').value = '';
                         document.getElementById('total-amount').value = '';
                         document.getElementById('grand-total').value = '';
+                        document.getElementById('faculty-designation').value = '';
                     }
                 });
 
@@ -989,7 +1001,7 @@
                                     document.getElementById('view-year').innerText = data.nonFormacyData.year;
                                     document.getElementById('view-title').innerText = data.nonFormacyData.title;
                                     document.getElementById('view-faculty-name').innerText = data.nonFormacyData.faculty_name;
-                                    document.getElementById('view-facult-designation').innerText = data.nonFormacyData.designation;
+                                    document.getElementById('view-facult-designation').innerText = data.nonFormacyData.faculty_dsg;
                                     document.getElementById('view-facult-address').innerText = data.nonFormacyData.address;
                                     document.getElementById('view-commencement-date').innerText = data.commencementDateFormate;
                                     document.getElementById('view-completion-date').innerText = data.completionDateFormate;
@@ -1202,9 +1214,7 @@
                         // }
 
 
-
-
-
+                        document.getElementById('faculty-designation').value = approvalFormRecordToBeUpdated.getAttribute('data-faculty-designation');
                         document.getElementById('year').value = approvalFormRecordToBeUpdated.querySelector('.year').innerText;
                         document.getElementById('title').value = approvalFormRecordToBeUpdated.querySelector('.project-title').innerText;
                         const commencementDate = approvalFormRecordToBeUpdated.getAttribute('data-commencement-date');
@@ -1288,6 +1298,8 @@
                     updatedSeedGrantData.finalPayment = document.getElementById('final-payment').value;
                     updatedSeedGrantData.grossFees = document.getElementById('gross-fees').value;
                     updatedSeedGrantData.facultyId = document.getElementById('faculty-id').value ? document.getElementById('faculty-id').value : facultyId;
+                    updatedSeedGrantData.faculityDsg = document.getElementById('faculty-designation').value;
+
                     console.log('facultu id in updation ===>>>>', facultyId);
 
                     const payload = {

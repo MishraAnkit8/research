@@ -14,7 +14,7 @@ module.exports.renderNmimsConsultancyApprovalForm = async (userName) => {
                         c.year, c.title, c.commencement_date, c.created_by AS created_by, c.updated_by AS updated_by, c.completion_date, c.research_staff_expenses,
                         c.travel, c.computer_charges, c.nmims_facility_charges, c.miscellaneous_including_contingency,
                         c.advanced_payment, c.final_payment, c.per_session_fees, c.session_count_per_days, c.total_fees,
-                        c.faculty_shares, c.nmims_shares, c.gross_fees 
+                        c.faculty_shares, c.nmims_shares, c.gross_fees , c.faculty_dsg
                       FROM 
                           faculty_table f
                       JOIN 
@@ -58,7 +58,7 @@ module.exports.viewConsultancyApprovalForm = async (
                 c.year, c.title, c.commencement_date, c.completion_date, c.research_staff_expenses,
                 c.travel, c.computer_charges, c.nmims_facility_charges, c.miscellaneous_including_contingency,
                 c.advanced_payment, c.final_payment, c.per_session_fees, c.session_count_per_days, c.total_fees,
-                c.faculty_shares, c.nmims_shares, c.gross_fees 
+                c.faculty_shares, c.nmims_shares, c.gross_fees , c.faculty_dsg
             FROM 
                 faculty_table f
             JOIN 
@@ -114,6 +114,7 @@ module.exports.insertConsultancyApprovalFormData = async (
     totalFees,
     grossFees,
     facultyId,
+    faculityDsg
    
   } = consultancyFormData;
   let sql = {
@@ -190,11 +191,12 @@ module.exports.updateApprovalFormData = async (
     totalFees,
     grossFees,
     facultyId,
+    faculityDsg
   } = updatedConsultancyApprovalRecord;
 
   let sql = {
     text: `UPDATE consultancy_approval_form  SET year = $2, title = $3, commencement_date = $4, completion_date = $5, session_count_per_days = $6,  per_session_fees = $7,
-    faculty_shares = $8, nmims_shares = $9, research_staff_expenses = $10, travel = $11, computer_charges = $12, nmims_facility_charges = $13, miscellaneous_including_contingency = $14, advanced_payment = $15, final_payment = $16, total_fees = $17, gross_fees = $18, faculty_table_id = $19, updated_by = $20 WHERE id = $1`,
+    faculty_shares = $8, nmims_shares = $9, research_staff_expenses = $10, travel = $11, computer_charges = $12, nmims_facility_charges = $13, miscellaneous_including_contingency = $14, advanced_payment = $15, final_payment = $16, total_fees = $17, gross_fees = $18, faculty_table_id = $19, faculty_dsg = $20, updated_by = $21 WHERE id = $1`,
     values: [
       nmimsConsultancyFormId,
       year,
@@ -215,6 +217,7 @@ module.exports.updateApprovalFormData = async (
       totalFees,
       grossFees,
       facultyId,
+      faculityDsg,
       userName,
     ],
   };

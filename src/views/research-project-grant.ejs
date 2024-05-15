@@ -13,6 +13,9 @@
                     <div class="breadcrumbs-container">
                         <ul class="breadcrumb">
                             <li class="breadcrumb-link">
+                                <a href="<%- BASE_URL %>dashboard-page"> Dashboard </a>
+                            </li>
+                            <li class="breadcrumb-link">
                                 <a href="<%- BASE_URL %>research"> Research </a>
                             </li>
                             <li class="breadcrumb-link">Research Project</li>
@@ -67,18 +70,26 @@
                                     <th class="col-lg-1">Grant Proposal</th>
                                     <th class="col-lg-1">Type of Grant</th>
                                     <th class="col-lg-1">Title of Project</th>
+                                    <th class="col-lg-1">School</th>
+                                    <th class="col-lg-1">Campus</th>
                                     <th class="col-lg-1">Thrust area of Research</th>
                                     <th class="col-lg-1">Name of Funding Agency</th>
                                     <th class="col-lg-1">Funding Amount</th>
-                                    <th class="col-lg-1"> Project Status</th>
+                                    <th class="col-lg-1">Project Status</th>
                                     <th class="col-lg-1">Action</th>
                                 </thead>
                                 <tbody class="data-list">
-                                    <% researchProjectData.forEach(function(consultancy, index) { %>
+                                    <% researchPojectGrantFacultyData.forEach(function(consultancy, index) { %>
 
-                                        <tr id="nearTd" scope="row" data-consultancy-id="<%- consultancy.id %>"
+                                        <tr id="nearTd" scope="row" data-consultancy-id="<%- consultancy.project_id %>"
                                             data-submission-date="<%- consultancy.submission_date.toISOString().split('T')[0] %>"
-                                            data-supporting-documents="<%- consultancy.supporting_documents %>">
+                                            data-supporting-documents="<%- consultancy.supporting_documents %>"
+                                            data-campus-ids="<%- consultancy.campus_id %>"
+                                            data-school-ids="<%- consultancy.school_id %>"
+                                            data-projectDuration="<%- consultancy.projectduration %>"
+                                            data-scheme="<%- consultancy.scheme %>"
+                                            data-paymentDate="<%- consultancy.paymentdate %>"
+                                            data-amountRecieved="<%- consultancy.amountrecieved %>">
                                             <td><%- index + 1 %></td>
                                             <td class="grant-proposal col-lg-1"><%- consultancy.grant_proposal_category
                                                     %></td>
@@ -86,6 +97,11 @@
                                             </td>
                                             <td class="title-of-project col-lg-1"><%- consultancy.title_of_project %>
                                             </td>
+                                            <td class="schools col-lg-1"><%- consultancy.associated_schools %>
+                                            </td>
+                                            <td class="campus col-lg-1"><%- consultancy.associated_campuses %> %>
+                                            </td>
+
                                             <td class="thurst-area col-lg-1"><%- consultancy.thrust_area_of_research %>
                                             </td>
                                             <td class="funding-agency col-lg-1"><%- consultancy.name_of_funding_agency
@@ -265,6 +281,38 @@
                                         data-validate="isEmpty,isNotNumber,isExist,isLength:2:255"
                                         data-err-msg="Provide Valid Input" class="form-control" required>
                                 </div>
+
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="nmims-school" class="form-label fw-bold">School</label>
+                                    <select class="select-option drop-list" id="nmims-school-list"
+                                        data-validate="isEmpty,isExist"
+                                        data-err-msg="This field is required and select value" required multiple>
+                                        <option class="select-option" id="school-option" value="">Select School
+                                        </option>
+                                        <% nmimsSchoolList.forEach(function(school) { %>
+
+                                            <option value="<%= school.id %>">
+                                                <%= school.name %>
+                                            </option>
+                                            <% }); %>
+                                    </select>
+                                </div>
+
+                                <!-- nmims campus -->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="nmims-campus" class="form-label fw-bold">Campus</label>
+                                    <select class="select-option" id="nmims-campus-list" data-validate="isEmpty,isExist"
+                                        data-err-msg="This field is required and select value" required multiple>
+                                        <option value="" id="campus-option">Select Campus</option>
+                                        <% nmimsCampusList.forEach(function(campus) { %>
+                                            <option value="<%= campus.id %>">
+                                                <%= campus.name %>
+                                            </option>
+                                            <% }); %>
+                                    </select>
+                                </div>
+
+
                                 <!-- Thrust area of Research -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="thurst-area" class="form-label fw-bold">Thrust area of Research</label>
@@ -364,6 +412,51 @@
                                                 class="fas fa-download text-danger"></i>Download</button>
                                     </div>
                                 </div>
+
+
+
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="duration-date" class="form-label fw-bold">
+                                        Duration Of Project In Months
+                                    </label>
+                                    <input type="number" name="duration-date" id="duration-date"
+                                        data-validate="isEmpty,isExist"
+                                        data-err-msg="Field is required and provide valid input" class="form-control"
+                                        required>
+                                </div>
+
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="scheme" class="form-label fw-bold">
+                                        Scheme
+                                    </label>
+                                    <input type="text" name="scheme" id="scheme"
+                                        data-validate="isEmpty,isAllNumeric,isExist"
+                                        data-err-msg="Field is required and provide valid input" class="form-control"
+                                        required>
+                                </div>
+
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="annual-payment-date" class="form-label fw-bold">
+                                        Annual Payment Date
+                                    </label>
+                                    <input type="date" name="annual-payment-date" id="annual-payment-date"
+                                        data-validate="isEmpty,isExist"
+                                        data-err-msg="Field is required and provide valid input" class="form-control"
+                                        required>
+                                </div>
+
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="amount-received" class="form-label fw-bold">
+                                        Amount Received
+                                    </label>
+                                    <input type="number" name="amount-received" id="amount-received"
+                                        data-validate="isEmpty,isExist"
+                                        data-err-msg="Field is required and provide valid input" class="form-control"
+                                        required>
+                                </div>
+
+
+
                                 <!-- if faculty choose internal Authors then show search bar -->
                                 <div class="form-group col-lg-12 col-md-6 col-sm-12 mb-4">
                                     <label for="is-internal" class="form-label fw-bold mb-3">Faculty Details Id And
@@ -537,7 +630,8 @@
                         </div>
                         <!--  footer buttons if needed -->
                         <div class="modal-footer">
-                            <button type="button" id="footerClose" class="btn btn-danger" data-dismiss="modal">Close</button>
+                            <button type="button" id="footerClose" class="btn btn-danger"
+                                data-dismiss="modal">Close</button>
                             <button class="btn btn-md btn-primary d-none" id="submit-btn">Submit</button>
                             <button class="btn btn-md btn-primary d-none" id="update-btn">Update</button>
                         </div>
@@ -726,6 +820,10 @@
 
             <div id="employees-list-data" data-employees='<%- JSON.stringify(InternalFaculty) %>'
                 style="display: none;"></div>
+            <div id="school-data-list" data-school='<%- JSON.stringify(nmimsSchoolList) %>' style="display: none;">
+            </div>
+            <div id="campus-data-list" data-campus='<%- JSON.stringify(nmimsCampusList) %>' style="display: none;">
+            </div>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/tom-select/2.3.1/js/tom-select.complete.min.js"
                 integrity="sha512-zdXqksVc9s0d2eoJGdQ2cEhS4mb62qJueasTG4HjCT9J8f9x5gXCQGSdeilD+C7RqvUi1b4DdD5XaGjJZSlP9Q=="
                 crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -743,11 +841,16 @@
                 const submitBtn = document.getElementById('submit-btn');
                 const updateBtn = document.getElementById('update-btn');
                 const InsertDetails = document.getElementById('insert-details')
+                const schoolDropDown = document.getElementById('nmims-school-list');
+                const campusDropDown = document.getElementById('nmims-campus-list');
+
                 let consultantId, consultantRowToBeUpdated;
-                let storedFacultyValue, InternalAuthorValue, externalAuthorValue;
+                let nmimsCampusStoredIds, nmimsSchoolStoredIds, storedFacultyValue, InternalAuthorValue, externalAuthorValue;
                 let facultyIdContainer = [];
                 let externalFacultyData = [];
                 let externalFacultyIdArray = [];
+                let nmimsSchoolIdsContainer = [];
+                let nmimsCampusIdsContainer = [];
                 const facultyTableList = document.getElementById('faculty-table-list');
 
                 const employeeDropdown = document.getElementById("emp-name");
@@ -817,38 +920,100 @@
                         isExternalFaculty.checked = false;
 
                         const employeesListData = document.getElementById('employees-list-data').dataset.employees;
-                const employeesDataObj = JSON.parse(employeesListData);
-                let employeeListArray = [];
+                        const employeesDataObj = JSON.parse(employeesListData);
+                        let employeeListArray = [];
 
 
-                // ajax for search bar to search employee name 
-                const facultyOptions = employeesDataObj.map(faculty => ({
-                    value: faculty.id,
-                    text: ` ${faculty.employee_id}  ${faculty.faculty_name}`
-                }));
+                        // ajax for search bar to search employee name 
+                        const facultyOptions = employeesDataObj.map(faculty => ({
+                            value: faculty.id,
+                            text: ` ${faculty.employee_id}  ${faculty.faculty_name}`
+                        }));
 
 
-                // Initialize TomSelect dropdown with options containing id and faculty_name
+                        // Initialize TomSelect dropdown with options containing id and faculty_name
 
-                new TomSelect("#emp-name", {
-                    options: facultyOptions,
-                    placeholder: "Select Employee Name",
-                    hidePlaceholder: true,
-                    create: true,
-                    plugins: ['remove_button'],
-                    onItemAdd: function () {
-                        this.setTextboxValue('');
-                        this.refreshOptions();
-                    },
-                    render: {
-                        option: function (data, escape) {
-                            return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
-                        },
-                        item: function (data, escape) {
-                            return '<div>' + escape(data.text) + '</div>';
-                        }
-                    }
-                });
+                        new TomSelect("#emp-name", {
+                            options: facultyOptions,
+                            placeholder: "Select Employee Name",
+                            hidePlaceholder: true,
+                            create: true,
+                            plugins: ['remove_button'],
+                            onItemAdd: function () {
+                                this.setTextboxValue('');
+                                this.refreshOptions();
+                            },
+                            render: {
+                                option: function (data, escape) {
+                                    return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                                },
+                                item: function (data, escape) {
+                                    return '<div>' + escape(data.text) + '</div>';
+                                }
+                            }
+                        });
+
+
+                        const nmimsSchoolList = document.getElementById('school-data-list').dataset.school;
+
+                        const schoolDataList = JSON.parse(nmimsSchoolList);
+
+                        const selectedSchool = schoolDataList.map(school => ({
+                            value: school.id,
+                            text: `${school.school_name}`
+                        }));
+
+                        new TomSelect("#nmims-school-list", {
+                            options: selectedSchool,
+                            placeholder: "Select Options",
+                            hidePlaceholder: true,
+                            hidePlaceholder: true,
+                            create: true,
+                            plugins: ['remove_button'],
+                            onItemAdd: function () {
+                                this.setTextboxValue('');
+                                this.refreshOptions();
+                            },
+                            render: {
+                                option: function (data, escape) {
+                                    return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                                },
+                                item: function (data, escape) {
+                                    return '<div>' + escape(data.text) + '</div>';
+                                }
+                            }
+                        });
+
+
+                        const nmimsCampusList = document.getElementById('campus-data-list').dataset.campus;
+
+                        const campusDataList = JSON.parse(nmimsCampusList);
+
+                        const selectedCampus = campusDataList.map(campus => ({
+                            value: campus.id,
+                            text: `${campus.campus_name}`
+                        }));
+
+                        new TomSelect("#nmims-campus-list", {
+                            options: selectedCampus,
+                            placeholder: "Select Options",
+                            hidePlaceholder: true,
+                            hidePlaceholder: true,
+                            create: true,
+                            plugins: ['remove_button'],
+                            onItemAdd: function () {
+                                this.setTextboxValue('');
+                                this.refreshOptions();
+                            },
+                            render: {
+                                option: function (data, escape) {
+                                    return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                                },
+                                item: function (data, escape) {
+                                    return '<div>' + escape(data.text) + '</div>';
+                                }
+                            }
+                        });
 
                     }
                 });
@@ -861,6 +1026,13 @@
                     const thurstAreaOfResearch = document.getElementById('thurst-area').value;
                     const fundingAgency = document.getElementById('funding-agency').value;
                     const fundingAmount = document.getElementById('funding-amount').value;
+                    const amountRecieved = document.getElementById('amount-received').value;
+                    const scheme = document.getElementById('scheme').value;
+                    const annualPaymentDate = document.getElementById('annual-payment-date').value;
+                    const durationDate = document.getElementById('duration-date').value;
+
+                    console.log('new created json ', durationDate)
+
                     // const school = document.getElementById('school').value;
                     // console.log('school ====>>>', school)
                     // const campus = document.getElementById('campus').value;
@@ -878,6 +1050,15 @@
                     console.log('authorType ====>>>>>>', authorType);
                     // const projectDuration = document.getElementById('duration-of-project').value
                     // console.log('authorType ===>>>>', authorType)
+
+
+                    const nmimsSchoolArrayObject = nmimsSchoolIdsContainer[nmimsSchoolIdsContainer.length - 1];
+                    const nmimsCampusArrayObject = nmimsCampusIdsContainer[nmimsCampusIdsContainer.length - 1];
+
+                    const nmimsSchoolIds = JSON.stringify(nmimsSchoolArrayObject);
+                    const nmimsCampusIds = JSON.stringify(nmimsCampusArrayObject);
+
+                    console.log('schools campus list ', JSON.stringify(nmimsSchoolIds), JSON.stringify(nmimsCampusIds))
 
                     await insertFacultyNameString(authorType, researchConsultancyData);
                     const supportingDocument = document.getElementById('supporting-documents');
@@ -901,6 +1082,14 @@
                     researchConsultancyData.append('fundingAmount', fundingAmount);
                     researchConsultancyData.append('statusOfResearchProject', statusOfResearchProject);
                     researchConsultancyData.append('submissionGrantDate', submissionGrantDate);
+                    researchConsultancyData.append('nmimsSchoolIds', nmimsSchoolIds);
+                    researchConsultancyData.append('nmimsCampusIds', nmimsCampusIds);
+                    researchConsultancyData.append('scheme', scheme);
+                    researchConsultancyData.append('durationDate', durationDate);
+                    researchConsultancyData.append('amountReceived', amountRecieved);
+                    researchConsultancyData.append('annualPaymentDate', annualPaymentDate);
+
+
                     // researchConsultancyData.append('school', school);
                     // researchConsultancyData.append('campus', campus);
                     // researchConsultancyData.append('facultyDept', facultyDept);
@@ -1057,65 +1246,157 @@
                         document.getElementById('add-btn').classList.add('d-none');
 
                         consultantRowToBeUpdated = event.target.closest('tr');
-                        consultantId = event.target.getAttribute('data-consultancy-id');
+                        consultantId = consultantRowToBeUpdated.getAttribute('data-consultancy-id');
+
+
+                        const campusIdsArray = consultantRowToBeUpdated.getAttribute('data-campus-ids').split(',').map(str => parseInt(str.trim(), 10));
+                        const schoolIdsArray = consultantRowToBeUpdated.getAttribute('data-school-ids').split(',').map(str => parseInt(str.trim(), 10));
+
+                        nmimsCampusStoredIds = { 'nmimsCampus': campusIdsArray }
+                        nmimsSchoolStoredIds = { 'nmimsSchool': schoolIdsArray };
+
+
+                        const nmimsSchoolList = document.getElementById('school-data-list').dataset.school;
+
+                        const schoolDataList = JSON.parse(nmimsSchoolList);
+
+                        let schoolArr = [];
+
+                        Array.from(schoolDataList).forEach(data => {
+                            Array.from(schoolIdsArray).forEach(sd => {
+                                if (data.id == sd) {
+                                    schoolArr.push(data.id)
+                                }
+                            })
+                        })
+
+                        const selectedSchool = schoolDataList.map(school => ({
+                            value: school.id,
+                            text: `${school.school_name}`
+                        }));
+
+                        new TomSelect("#nmims-school-list", {
+                            options: selectedSchool,
+                            items: schoolArr,
+                            // placeholder : "Select Options",
+                            hidePlaceholder: true,
+                            hidePlaceholder: true,
+                            create: true,
+                            plugins: ['remove_button'],
+                            onItemAdd: function () {
+                                this.setTextboxValue('');
+                                this.refreshOptions();
+                            },
+                            render: {
+                                option: function (data, escape) {
+                                    return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                                },
+                                item: function (data, escape) {
+                                    return '<div>' + escape(data.text) + '</div>';
+                                }
+                            }
+                        });
+
+                        const nmimsCampusList = document.getElementById('campus-data-list').dataset.campus;
+
+                        const campusDataList = JSON.parse(nmimsCampusList);
+
+                        let cmpArray = [];
+
+                        Array.from(campusDataList).forEach(data => {
+                            Array.from(campusIdsArray).forEach(cmp => {
+                                if (data.id == cmp) {
+                                    cmpArray.push(data.id)
+                                }
+                            })
+                        })
+
+                        const selectedCampus = campusDataList.map(campus => ({
+                            value: campus.id,
+                            text: `${campus.campus_name}`
+                        }));
+
+                        new TomSelect("#nmims-campus-list", {
+                            options: selectedCampus,
+                            items: cmpArray,
+                            // placeholder : "Select Options",
+                            hidePlaceholder: true,
+                            hidePlaceholder: true,
+                            create: true,
+                            plugins: ['remove_button'],
+                            onItemAdd: function () {
+                                this.setTextboxValue('');
+                                this.refreshOptions();
+                            },
+                            render: {
+                                option: function (data, escape) {
+                                    return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                                },
+                                item: function (data, escape) {
+                                    return '<div>' + escape(data.text) + '</div>';
+                                }
+                            }
+                        });
 
 
 
-                const employeesListData = document.getElementById('employees-list-data').dataset.employees;
-                const employeesDataObj = JSON.parse(employeesListData);
-                let employeeListArray = [];
+                        const employeesListData = document.getElementById('employees-list-data').dataset.employees;
+                        const employeesDataObj = JSON.parse(employeesListData);
+                        let employeeListArray = [];
 
-                let internalEmp = JSON.parse('<%- JSON.stringify(internalFaculty) %>')
-
-
-
-                let employeesList = internalEmp.filter(data => consultantId == data.research_project_grant_id).filter(consultant => consultant)
-                console.log('employee json ',JSON.stringify(internalEmp))
-
-                Array.from(employeesDataObj).forEach(data => {
-                    Array.from(employeesList).forEach(emp => {
-                        if (data.id == emp.faculty_id) {
-                            employeeListArray.push(data.id)
-                        }
-                    })
-                })
+                        let internalEmp = JSON.parse('<%- JSON.stringify(internalFaculty) %>')
 
 
-                // ajax for search bar to search employee name 
-                const facultyOptions = employeesDataObj.map(faculty => ({
-                    value: faculty.id,
-                    text: ` ${faculty.employee_id}  ${faculty.faculty_name}`
-                }));
+
+                        let employeesList = internalEmp.filter(data => consultantId == data.research_project_grant_id).filter(consultant => consultant)
+                        console.log('employee json ', JSON.stringify(internalEmp))
+
+                        Array.from(employeesDataObj).forEach(data => {
+                            Array.from(employeesList).forEach(emp => {
+                                if (data.id == emp.faculty_id) {
+                                    employeeListArray.push(data.id)
+                                }
+                            })
+                        })
 
 
-                // Initialize TomSelect dropdown with options containing id and faculty_name
+                        // ajax for search bar to search employee name 
+                        const facultyOptions = employeesDataObj.map(faculty => ({
+                            value: faculty.id,
+                            text: ` ${faculty.employee_id}  ${faculty.faculty_name}`
+                        }));
 
-                new TomSelect("#emp-name", {
-                    options: facultyOptions,
-                    items : employeeListArray,
-                    // placeholder: "Select Employee Name",
-                    hidePlaceholder: true,
-                    create: true,
-                    plugins: ['remove_button'],
-                    onItemAdd: function () {
-                        this.setTextboxValue('');
-                        this.refreshOptions();
-                    },
-                    render: {
-                        option: function (data, escape) {
-                            return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
-                        },
-                        item: function (data, escape) {
-                            return '<div>' + escape(data.text) + '</div>';
-                        }
-                    }
-                });
+                        console.log('emp array ', JSON.stringify(employeesList), consultantId)
+
+
+                        // Initialize TomSelect dropdown with options containing id and faculty_name
+
+                        new TomSelect("#emp-name", {
+                            options: facultyOptions,
+                            items: employeeListArray,
+                            // placeholder: "Select Employee Name",
+                            hidePlaceholder: true,
+                            create: true,
+                            plugins: ['remove_button'],
+                            onItemAdd: function () {
+                                this.setTextboxValue('');
+                                this.refreshOptions();
+                            },
+                            render: {
+                                option: function (data, escape) {
+                                    return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                                },
+                                item: function (data, escape) {
+                                    return '<div>' + escape(data.text) + '</div>';
+                                }
+                            }
+                        });
 
 
 
                         //let externalFacultyDetails = JSON.parse('<%- JSON.stringify(externalDetails) %>');
-                         let externalFacultyDetails = await fetchFacultyData('<%- BASE_URL %>research/external/facultyDataForEdit');
-                         console.log('faculty JSON',JSON.stringify(externalFacultyDetails.facultyData))
+                        let externalFacultyDetails = await fetchFacultyData('<%- BASE_URL %>research/external/facultyDataForEdit');
+                        console.log('faculty JSON', JSON.stringify(externalFacultyDetails.facultyData))
 
 
                         $('#consultancy-modal').modal({
@@ -1135,13 +1416,13 @@
                         document.querySelector('#supporting-documents').classList.add('d-none');
                         document.getElementById('researchProjectConsultancy').innerHTML = 'RESEARCH PROJECT CONSULTANCY EDIT';
                         $('#consultancy-modal').modal('show');
-                     //   consultantRowToBeUpdated = event.target.closest('tr');
+                        //   consultantRowToBeUpdated = event.target.closest('tr');
                         console.log('consultantRowToBeUpdated ==>>', consultantRowToBeUpdated);
 
 
                         // function call for download button
                         setFileNameAttributeToBeDownload(consultantRowToBeUpdated);
-                        consultantId = event.target.getAttribute('data-consultancy-id');
+                        consultantId = consultantRowToBeUpdated.getAttribute('data-consultancy-id');
                         console.log('consultantId ==>>', consultantId);
                         const isGrantProposalCategoryGoverement = document.getElementById('goverment');
                         const isGrantProposalCategoryIndustry = document.getElementById('industry');
@@ -1246,9 +1527,19 @@
                         // document.getElementById('co-investigators').value = coInvestigator;
                         // document.getElementById('total-grant-sanction-rupees').value = totalGrntSanctioRupee;
                         // document.getElementById('recieved-amount').value = recievedAmount;
-                        // const receivedAmountDateFormate = formatDateToYYYYMMDD(recievedAmountDate);
-                        // document.getElementById('duration-of-project').value = projectDuration;
-                        // document.getElementById('amount-recieved-date').value = receivedAmountDateFormate;
+                        //const receivedAmountDateFormate = formatDateToYYYYMMDD(recievedAmountDate);
+                        document.getElementById('duration-date').value = consultantRowToBeUpdated.getAttribute('data-projectduration');
+                        document.getElementById('scheme').value = consultantRowToBeUpdated.getAttribute('data-scheme');
+                        document.getElementById('amount-received').value = consultantRowToBeUpdated.getAttribute('data-amountRecieved');
+
+                        let paymentdate = consultantRowToBeUpdated.getAttribute('data-paymentDate');
+                        console.log('payment date ', paymentdate)
+                        const PaymentDate = formatDateToYYYYMMDD(paymentdate);
+                        document.getElementById('annual-payment-date').value = PaymentDate
+
+
+
+
                         document.getElementById('thurst-area').value = thurstAreaOfResearch.innerText.trim();
                         console.log('thurstAreaOfResearch ===>>>>', thurstAreaOfResearch)
                         document.getElementById('funding-agency').value = fundingAgency.innerText.trim();
@@ -1292,21 +1583,21 @@
                         console.log('supportingDocuments ==>>', supportingDocuments)
                     }
 
-                    async function fetchFacultyData(url){
+                    async function fetchFacultyData(url) {
                         let requestDetails = {
-                            method:'GET',
-                            headers : {
-                                'Accept':'application/json'
+                            method: 'GET',
+                            headers: {
+                                'Accept': 'application/json'
                             }
                         }
 
                         let data;
-                        let response = await fetch(url,requestDetails);
-                        if(response.ok){
-                          data = await response.json();
-                          return data;
-                        }else{
-                           throw new Error('Error in fetching data') 
+                        let response = await fetch(url, requestDetails);
+                        if (response.ok) {
+                            data = await response.json();
+                            return data;
+                        } else {
+                            throw new Error('Error in fetching data')
                         }
                     }
 
@@ -1503,6 +1794,12 @@
                     const updatedStatusOfResearchProject = document.querySelector('input[name="research-project-status"]:checked').value;
                     const updatedSubmissionGrantDate = document.getElementById('submission-grant-date').value;
                     const updatedAuthorType = document.querySelector('input[name="author-type"]:checked').value;
+                    const updatedPaymentDate = document.getElementById('annual-payment-date').value;
+                    const updatedScheme = document.getElementById('scheme').value;
+                    const updatedAmount = document.getElementById('amount-received').value;
+                    const updatedDuration = document.getElementById('duration-date').value;
+
+
                     console.log('updatedAuthorType ===>>>', updatedAuthorType)
                     // const updatedSchool = document.getElementById('school').value;
                     // const updatedCampus = document.getElementById('campus').value;
@@ -1529,6 +1826,13 @@
                         updatedConsultantFiles = null;
                         updatedConsultantData.append('researchSupportingDocument', updatedConsultantFiles);
                     }
+
+                    const nmimsSchoolArrayObject = nmimsSchoolIdsContainer[nmimsSchoolIdsContainer.length - 1];
+                    const nmimsCampusArrayObject = nmimsCampusIdsContainer[nmimsCampusIdsContainer.length - 1];
+
+                    const nmimsSchoolIds = nmimsSchoolArrayObject ? JSON.stringify(nmimsSchoolArrayObject) : JSON.stringify(nmimsSchoolStoredIds);
+                    const nmimsCampusIds = nmimsCampusArrayObject ? JSON.stringify(nmimsCampusArrayObject) : JSON.stringify(nmimsCampusStoredIds);
+
                     updatedConsultantData.append('consultantId', consultantId);
                     updatedConsultantData.append('grantProposalCategory', updatedGrantProposalCategory);
                     updatedConsultantData.append('typeOfGrant', updatedTypeOfGrant);
@@ -1538,6 +1842,13 @@
                     updatedConsultantData.append('fundingAmount', updatedFundingAmount);
                     updatedConsultantData.append('statusOfResearchProject', updatedStatusOfResearchProject);
                     updatedConsultantData.append('submissionGrantDate', updatedSubmissionGrantDate);
+                    updatedConsultantData.append('durationDate', updatedDuration);
+                    updatedConsultantData.append('amountRecieved', updatedAmount);
+                    updatedConsultantData.append('scheme', updatedScheme);
+                    updatedConsultantData.append('paymentDate', updatedPaymentDate);
+                    updatedConsultantData.append('nmimsSchoolIds', nmimsSchoolIds);
+                    updatedConsultantData.append('nmimsCampusIds', nmimsCampusIds);
+
                     // updatedConsultantData.append('school', updatedSchool);
                     // updatedConsultantData.append('projectDuration' , updateProjectDuration);
                     // updatedConsultantData.append('campus', updatedCampus);
@@ -1587,6 +1898,8 @@
                                     confirmButtonText: "OK",
                                     confirmButtonColor: "#DD6B55",
                                     timer: 1500
+                                }).then(() => {
+                                    document.location.reload();
                                 });
                                 $('#consultancy-modal').modal('hide');
                             }
@@ -2099,7 +2412,7 @@
 
                     if (event.target.classList.contains('updateFaculty')) {
                         let facultyId = event.target.closest('tr').getAttribute('data-facultyId')
-                        console.log('button clicked with id ',facultyId)
+                        console.log('button clicked with id ', facultyId)
                         let tr = event.target.closest('tr');
                         let facultyName = tr.querySelector('#updateFacultyName').value
                         let facultyDesignation = tr.querySelector('#updateFacultyDes').value
@@ -2126,14 +2439,14 @@
                             }
 
                             let obj = externalFacultyDetails
-                            upsertFacultyData('<%- BASE_URL %>research/external/faculty-updateData', obj,tr)
+                            upsertFacultyData('<%- BASE_URL %>research/external/faculty-updateData', obj, tr)
                         }
 
                     }
                 })
 
 
-                function upsertFacultyData(url, obj,tr) {
+                function upsertFacultyData(url, obj, tr) {
                     fetch(url, {
                         method: 'POST',
                         headers: {
@@ -2157,7 +2470,7 @@
                                     confirmButtonText: "OK",
                                     confirmButtonColor: "#DD6B55"
                                 }).then(() => {
-                                    console.log('object ',JSON.stringify(obj))
+                                    console.log('object ', JSON.stringify(obj))
                                     tr.querySelector('#updateFacultyName').value = obj.facultyName
                                     tr.querySelector('#updateFacultyDes').value = obj.facultyDesignation
                                     tr.querySelector('#updateFacultyAddr').value = obj.facultyAddr
@@ -2277,13 +2590,53 @@
                 });
 
 
-                document.getElementById('headerClose').addEventListener('click',() => {
+                document.getElementById('headerClose').addEventListener('click', () => {
                     document.location.reload();
                 })
 
-                document.getElementById('footerClose').addEventListener('click',() => {
+                document.getElementById('footerClose').addEventListener('click', () => {
                     document.location.reload();
                 })
+
+
+                campusDropDown.addEventListener("change", handleCampusDropDownList);
+                schoolDropDown.addEventListener("change", handleSchoolDropDownList);
+
+
+                // function for  drop down list school 
+                function handleSchoolDropDownList() {
+                    const schoolOption = document.getElementById('school-option');
+                    console.log('schoolOption ankit ===>>>>>>', schoolOption.innerText);
+                    schoolOption.classList.add('d-none')
+                    // // schoolOption.removeAttribute('placeholder');
+                    // schoolOption.removeAttribute("placeholder");
+                    const selectedValues = Array.from(schoolDropDown.options)
+                        .filter(option => option.selected)
+                        .map(option => option.value);
+
+                    const schoolIds = selectedValues.length === 0 ? "" : selectedValues;
+                    console.log('schoolIds ===>>>>>', schoolIds);
+                    if (!nmimsSchoolIdsContainer.some(school => school === schoolIds)) {
+                        nmimsSchoolIdsContainer.push({ 'nmimsSchool': schoolIds });
+                    }
+                    console.log("nmimsSchoolIdsContainer ids :", nmimsSchoolIdsContainer);
+                }
+
+
+
+                // function for invention type drop down list selectedTypeOfInvention
+                function handleCampusDropDownList() {
+                    const selectedValues = Array.from(campusDropDown.options)
+                        .filter(option => option.selected)
+                        .map(option => option.value);
+                    const campusIds = selectedValues.length === 0 ? "" : selectedValues;
+                    console.log('campusIds ===>>>>>', campusIds);
+                    if (!nmimsCampusIdsContainer.some(campus => campus === campusIds)) {
+                        nmimsCampusIdsContainer.push({ 'nmimsCampus': campusIds });
+                    }
+                    console.log(" nmimsCampusIdsContainer ids :", nmimsCampusIdsContainer);
+                }
+
 
 
 

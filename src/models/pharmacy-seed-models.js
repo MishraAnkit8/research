@@ -131,8 +131,8 @@ module.exports.renderPharmacyData = async(userName) => {
     LEFT JOIN 
       pharmacy_investigator_research_complete AS pirc ON ps.id = pirc.pharmacy_seed_id
     WHERE 
-      ps.created_by = $1 AND ps.active = true AND pi.active = true AND inv.active = true AND pie.active = true AND 
-      piex.active = true AND pipu.active = true AND pir.active = true AND pirc.active = true
+         ps.created_by = $1 AND ps.active = true AND pi.active = true AND inv.active = true AND pie.active = true AND 
+        piex.active = true AND pipu.active = true AND pir.active = true AND pirc.active = true
     ORDER BY 
       ps.id DESC`,
     values : [userName]
@@ -222,270 +222,110 @@ module.exports.renderPharmacyData = async(userName) => {
     
 }
 
-module.exports.insertInvestigatorEducationDetails = async(educationalDataArray, userName) => {
-    return new Promise((resolve, reject) => {
-        console.log('Data in models:', educationalDataArray);
-        
-        const educatoinIds = [];
-        let rowCount
-
-        const insertPromises = educationalDataArray.map(async educationDetails => {
-            const [courseName, universityName, passoutYear] = educationDetails;
-
-            const sql = {
-                text: `INSERT INTO investigator_education (course_name, university_name, passout_year, created_by, active)
-                       VALUES ($1, $2, $3, $4, $5)
-                       RETURNING id`,
-                values: [courseName, universityName, passoutYear, userName, true]
-            };
-
-            console.log('SQL:', sql);
-
-            return await researchDbW.query(sql)
-                .then(result => {
-                    if (result.rowCount > 0 && result.rows[0].id) {
-                        rowCount += 1
-                        educatoinIds.push(result.rows[0].id)
-                    }
-                })
-                .catch(error => {
-                    reject({
-                        status: "Failed",
-                        message: error.message ?? "An error occurred.",
-                        errorCode: error.code
-                    });
-                });
-        });
-
-        Promise.all(insertPromises)
-            .then(() => resolve({
-                status : "Done",
-                message : 'Education Details inserted',
-                educatoinIds : educatoinIds,
-                rowCount : rowCount
-            }))
-            .catch(error => reject({
-                status : "Done",
-                message : 'Failed ton insert',
-                errorcode : error.code
-            }));
-    });
+module.exports.insertInvestigatorEducationDetails = async(detailsDataArray, userName) => {
+  const columns = ['created_by', 'active', 'course_name', 'university_name', 'passout_year'];
+  return insertDetails('investigator_education', columns, detailsDataArray, userName);
+  
 };
 
 
-module.exports.insertInvestigatorExperienceDetails = async(workExperienceDetails, userName) => {
-    console.log('data in service ====>>>>>', workExperienceDetails);
+module.exports.insertInvestigatorExperienceDetails = async(detailsDataArray, userName) => {
+  const columns = ['created_by', 'active', 'possition', 'organization_name', 'experience'];
+  return insertDetails('investigator_experience', columns, detailsDataArray, userName);
+ 
+};
 
-    const {investigatorPossition, investigatorOrganization, investigatorExperience} = workExperienceDetails;
-
-
-    let sql = {
-        text : `INSERT INTO investigator_experience (possition, organization_name, experience, created_by, active) values ($1, $2, $3, $4, $5) returning id`,
-        values : [investigatorPossition, investigatorOrganization, investigatorExperience, userName, true]
-    }
-    console.log('sql ===>>>>', sql);
-
-    const result = await researchDbW.query(sql);
-    const response = result.rowCount > 0 
-        ? {
-            status: "Done",
-            message: "Record Inserted Successfully",
-            invastigatorExperienceId: result.rows[0].id,
-            rowCount: result.rowCount
-        }
-        : {
-            status: "Failed",
-            message: error?.message ?? "An error occurred during record insertion.",
-            errorCode: error?.code
-        };
-    
-    return response;
+module.exports.insertInvestigatorBookDetails = async(detailsDataArray, userName) => {
+  const columns = ['created_by', 'active', 'book_author', 'book_names', 'book_year', 'book_volume', 'book_publisher', 'book_isbn'];
+  return insertDetails('investigator_book', columns, detailsDataArray, userName);
 
 }
 
-module.exports.insertInvestigatorBookDetails = async(investigatorBookDetails, userName) => {
-    console.log('data in service ====>>>>>', investigatorBookDetails);
-
-    const {investigatorbookAuthor, investigatorBookNames, investigatorBookYear, investigatorBookVolumne, investigatorBookPublisher, investigatorBookIsbn} = investigatorBookDetails;
-
-    let sql = {
-        text : `INSERT INTO investigator_book (book_author, book_names, book_year, book_volume, book_publisher, book_isbn, created_by, active) values ($1, $2, $3, $4, $5, $6, $7, $8) returning id`,
-        values : [investigatorbookAuthor, investigatorBookNames, investigatorBookYear, investigatorBookVolumne, investigatorBookPublisher, investigatorBookIsbn, userName, true]
-    }
-    console.log('sql ===>>>>', sql);
-
-    const result = await researchDbW.query(sql);
-    const response = result.rowCount > 0 
-        ? {
-            status: "Done",
-            message: "Record Inserted Successfully",
-            bookId: result.rows[0].id,
-            rowCount: result.rowCount
-        }
-        : {
-            status: "Failed",
-            message: error?.message ?? "An error occurred during record insertion.",
-            errorCode: error?.code
-        };
-    
-    return response;
+module.exports.insertInvestigatorBookChapterDetails = async(detailsDataArray, userName) => {
+  const columns = ['created_by', 'active', 'book_chapter_author', 'book_chapter_title', 'book_chapter_names', 'book_chapter_year', 'book_chapter_volume', 'book_chapter_page_number', 'book_chapter_publisher', 'book_chapter_isbn'];
+  return insertDetails('investigator_book_chapter', columns, detailsDataArray, userName);
+ 
 
 }
 
-module.exports.insertInvestigatorBookChapterDetails = async(investigatorBookChapterDetails, userName) => {
-    console.log('data in model ====>>>>>', investigatorBookChapterDetails);
+module.exports.insertInvestigatorPatentDetails = async(detailsDataArray, userName) => {
 
-    const {investigatorbookChapterAuthor, investigatorBookChapterTitle, investigatorBookChapterNames, bookChapterYear, investigatorBookVolumne,
-        investigatorBookChapterPageNumber, investigatorBookChapterPublisher, investigatorBookChapterIsbn} = investigatorBookChapterDetails;
-
-    let sql = {
-        text : `INSERT INTO investigator_book_chapter (book_chapter_author, book_chapter_title, book_chapter_names, book_chapter_year, book_chapter_volume, book_chapter_page_number, book_chapter_publisher, book_chapter_isbn, created_by, active) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) returning id`,
-        values : [investigatorbookChapterAuthor, investigatorBookChapterTitle, investigatorBookChapterNames,bookChapterYear,  investigatorBookVolumne,
-                    investigatorBookChapterPageNumber, investigatorBookChapterPublisher, investigatorBookChapterIsbn, userName, true]
-    }
-    console.log('sql ===>>>>', sql);
-
-    const result = await researchDbW.query(sql);
-    const response = result.rowCount > 0 
-        ? {
-            status: "Done",
-            message: "Record Inserted Successfully",
-            bookChapterId: result.rows[0].id,
-            rowCount: result.rowCount
-        }
-        : {
-            status: "Failed",
-            message: error?.message ?? "An error occurred during record insertion.",
-            errorCode: error?.code
-        };
-    
-    return response;
+  const columns = ['created_by', 'active', 'applicant_name', 'patent_title', 'patent_status', 'patent_number', 'patent_year'];
+  return insertDetails('investigator_patent', columns, detailsDataArray, userName);
 
 }
 
-module.exports.insertInvestigatorPatentDetails = async(investigatorPatentDetails, userName) => {
-    console.log('data in models ====>>>>>', investigatorPatentDetails);
+module.exports.insertInvestigatorPublicationDetails = async(detailsDataArray, userName) => {
 
-    const {investigatorApplicantName, investigatorPatentTitle, investigatorPatentStatus, investigatorPatentYear, investigatorPatentNumber} = investigatorPatentDetails;
-
-    let sql = {
-        text : `INSERT INTO investigator_patent (applicant_name, patent_title, patent_status, patent_year, patent_number ,created_by, active) values ($1, $2, $3, $4, $5, $6, $7) returning id`,
-        values : [investigatorApplicantName, investigatorPatentTitle, investigatorPatentStatus, investigatorPatentYear, investigatorPatentNumber, userName, true]
-    }
-    console.log('sql ===>>>>', sql);
-
-    const result = await researchDbW.query(sql);
-    const response = result.rowCount > 0 
-        ? {
-            status: "Done",
-            message: "Record Inserted Successfully",
-            patentId: result.rows[0].id,
-            rowCount: result.rowCount
-        }
-        : {
-            status: "Failed",
-            message: error?.message ?? "An error occurred during record insertion.",
-            errorCode: error?.code
-        };
-    
-    return response;
+  const columns = ['created_by', 'active', 'publication_author', 'publication_title', 'publication_journal_name', 'publication_year', 'publication_volume', 'publication_issue', 'publication_artcile_number',
+  'publication_impact_factor'];
+  return insertDetails('investigator_publication', columns, detailsDataArray, userName);
 
 }
 
-module.exports.insertInvestigatorPublicationDetails = async(investigatorPublicationDetails, userName) => {
-    console.log('data in service ====>>>>>', investigatorPublicationDetails);
+module.exports.insertInvestigatorResearchImplementationDetails = async(detailsDataArray, userName) => {
 
-    const {publicationAuthor, publicationTitle, publicationjournalName, publicationYear, publicationVolume,
-        publicationIssue, publicationArtcicleNumber, impactFactor} = investigatorPublicationDetails;
-
-    let sql = {
-        text : `INSERT INTO investigator_publication (publication_author, publication_title, publication_journal_name, publication_year, publication_volume, publication_issue, publication_artcile_number,
-            publication_impact_factor, created_by, active) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) returning id`,
-        values : [publicationAuthor, publicationTitle, publicationjournalName, publicationYear, publicationVolume,
-            publicationIssue, publicationArtcicleNumber, impactFactor, userName, true]
-    }
-    console.log('sql ===>>>>', sql);
-
-    const result = await researchDbW.query(sql);
-    const response = result.rowCount > 0 
-        ? {
-            status: "Done",
-            message: "Record Inserted Successfully",
-            publicationId: result.rows[0].id,
-            rowCount: result.rowCount
-        }
-        : {
-            status: "Failed",
-            message: error?.message ?? "An error occurred during record insertion.",
-            errorCode: error?.code
-        };
-    
-    return response;
+  const columns = ['created_by', 'active', 'research_im_title', 'research_im_agency', 'research_im_role', 'research_im_duration', 'research_im_project_cost'];
+  return insertDetails('investigator_research_implementation', columns, detailsDataArray, userName);
 
 }
 
-module.exports.insertInvestigatorResearchImplementationDetails = async(researchProjectDetails, userName) => {
-    console.log('data in models ====>>>>>', researchProjectDetails);
-
-    const {researchTitle, researchAgency, researchRole, projectDuration, projectCost} = researchProjectDetails;
-
-    let sql = {
-        text : `INSERT INTO investigator_research_implementation (research_im_title, research_im_agency, research_im_role, research_im_duration, research_im_project_cost, created_by, active) values ($1, $2, $3, $4, $5, $6, $7) returning id`,
-        values : [researchTitle, researchAgency, researchRole, projectDuration, projectCost, userName, true]
-    }
-    console.log('sql ===>>>>', sql);
-
-    const result = await researchDbW.query(sql);
-    const response = result.rowCount > 0 
-        ? {
-            status: "Done",
-            message: "Record Inserted Successfully",
-            implementationId: result.rows[0].id,
-            rowCount: result.rowCount
-        }
-        : {
-            status: "Failed",
-            message: error?.message ?? "An error occurred during record insertion.",
-            errorCode: error?.code
-        };
-    
-    return response;
-
-}
-
-module.exports.insertInvestigatorResearchCompletedDetails = async(researchProjectCompleteDetails, userName) => {
-    console.log('data in models ====>>>>>', researchProjectCompleteDetails);
-
-    const { compltedProjecTitle, completedProjectAgency, completedProjectRole, completedProjectDuration, completedProjectCost} = researchProjectCompleteDetails;
-
-    let sql = {
-        text : `INSERT INTO investigator_research_complete (research_cm_title, research_cm_agency, research_cm_role, research_cm_duration, research_cm_project_cost, created_by, active) values ($1, $2, $3, $4, $5, $6, $7) returning id`,
-        values : [ compltedProjecTitle, completedProjectAgency, completedProjectRole, completedProjectDuration, completedProjectCost, userName, true]
-    }
-    console.log('sql ===>>>>', sql);
-
-    const result = await researchDbW.query(sql);
-    const response = result.rowCount > 0 
-        ? {
-            status: "Done",
-            message: "Record Inserted Successfully",
-            CompletedId: result.rows[0].id,
-            rowCount: result.rowCount
-        }
-        : {
-            status: "Failed",
-            message: error?.message ?? "An error occurred during record insertion.",
-            errorCode: error?.code
-        };
-    
-    return response;
+module.exports.insertInvestigatorResearchCompletedDetails = async(detailsDataArray, userName) => {
+  const columns = ['created_by', 'active', 'research_cm_title', 'research_cm_agency', 'research_cm_role', 'research_cm_duration', 'research_cm_project_cost'];
+  return insertDetails('investigator_research_complete', columns, detailsDataArray, userName);
 
 }
 
 
-module.exports.insertPharmacyDetails = async (pharmacySeedGrantDetails, userName, educationIdsArray, experienceIdsArray,
-    bookIdsArray, bookChapterIdsArray, publicationIdsArray, patentIdsArray, researchImplementationIdsArray, researchCompletedIdsArray, investorDetails, 
-    principalInvestigatorDetails, coInvestigatorDetails) => {
+
+const insertDetails = async(tableName, columns, detailsDataArray, userName) => {
+  let ids = [];
+  let rowCount = 0;
+
+  const insertPromises = detailsDataArray.map(details => {
+    if (details.length > 0) {
+      const values = [userName, true].concat(details);
+
+      const sql = {
+        text: `INSERT INTO ${tableName} (${columns.join(', ')}) VALUES (${Array(columns.length).fill('$').map((_, i) => `$${i + 1}`).join(', ')}) RETURNING id`,
+        values
+      };
+      console.log('sql ====>>>>>>', sql)
+      return researchDbW.query(sql)
+        .then(result => {
+          if (result.rowCount > 0 && result.rows[0].id) {
+            rowCount += 1
+            ids.push(result.rows[0].id)
+          }
+        })
+        .catch(error => {
+          throw {
+            status: "Failed",
+            message: error.message ?? "An error occurred.",
+            errorCode: error.code
+          };
+        })
+    }
+  });
+
+  return Promise.all(insertPromises)
+    .then(() => ({
+      status: "Done",
+      message: `Details inserted for ${tableName}`,
+      ids,
+      rowCount
+    }))
+    .catch(error => ({
+      status: "Failed",
+      message: error.message ?? "An error occurred.",
+      errorCode: error.code
+    }));
+};
+
+
+module.exports.insertPharmacyDetails = async (pharmacySeedGrantDetails, userName, educationalData, experienceData, bookData, bookChapterData, publicationData, 
+  patentData, implementationData, completedData, investorDetails,
+  principalInvestigatorDetails, coInvestigatorDetails) => {
     console.log('pharmacySeedGrantDetails in models  ===>>>>', pharmacySeedGrantDetails);
     console.log('investorDetails ===>>', investorDetails)
 
@@ -545,15 +385,15 @@ module.exports.insertPharmacyDetails = async (pharmacySeedGrantDetails, userName
     };
 
     const principalSql = {
-        text: `INSERT INTO principal_investigator (investigator_name, investigator_dsg, investigator_address, investigator_mobile, 
-            investigator_dob, active, created_by) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id`,
+        text: `INSERT INTO principal_investigator (principal_name, principal_dsg, principal_org, principal_mobile, 
+          principal_email,  active, created_by) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id`,
         values: [principalName, principalDsg, principalOrg, principalMob, principalEmail, true, userName]
     };
 
     const coInvestigatorSql = {
-        text: `INSERT INTO co_investigator_details (co_investigator_name, co_investigator_dsg, co_investigator_org, co_investigator_email, co_investigator_mobile, created_by, active
+        text: `INSERT INTO co_investigator_details (co_investigator_name, co_investigator_dsg, co_investigator_org, co_investigator_mobile, co_investigator_email,  created_by, active
         ) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id`,
-        values: [coIvestigatorName, coIvestigatorDsg, coIvestigatorOrg, coIvestigatorMob, coIvestigatorEmail, true, userName]
+        values: [coIvestigatorName, coIvestigatorDsg, coIvestigatorOrg, coIvestigatorMob, coIvestigatorEmail, userName, true]
     };
     
     const pharmacyResult = await researchDbW.query(sql);
@@ -599,107 +439,219 @@ module.exports.insertPharmacyDetails = async (pharmacySeedGrantDetails, userName
 
     console.log('pharmacyInvestigatorId inside function ===>>>', pharmacyInvestigatorId)
 
-    let pharmacyEducation = [];
-    let pharmacyExeperienceIds = [];
-    let pharmacyBookIds = [];
-    let pharmacyBookChapetrIds = [];
-    let pharmacyPatentIds = [];
-    let pharmacyPublicationIds = [];
-    let pharmacyImplementationIds= [];
-    let pharmacyCompletedIds = [];
-    let pharmacyEducationIds = educationIdsArray ? educationIdsArray.map(async (element) => {
+
+    const insertEducation = educationalData ? (educationalData.map(async (educationDetails) => {
+      console.log('educationDetails ===.>>>', educationDetails);
+      const [courseName, universityName, passOutYear] = educationDetails;
+  
       let sql = {
-        text: `INSERT INTO pharmacy_investigator_education (pharmacy_seed_id, investigator_education_id, created_by, active) VALUES ($1, $2, $3, $4) RETURNING id`,
-        values: [pharmacyIds, element, userName, true]
+          text: `INSERT INTO investigator_education (course_name, university_name, passout_year, created_by, active) VALUES ($1, $2, $3, $4, $5) RETURNING id`,
+          values: [courseName, universityName, passOutYear, userName, true]
       };
-      console.log("sql ===>>>>>", sql);
-      const education = await researchDbW.query(sql);
-      let seedEducationId = education.rows[0].id;
-      console.log('seedEducationId ===>>>>>>', seedEducationId);
-      pharmacyEducation.push(seedEducationId);
-    }) : null;
+      const result = await researchDbW.query(sql);
+      return result.rows[0].id;
+    })) : null;
+  
+    const educationsIds = await Promise.all(insertEducation);
+    console.log("educationsIds ====>>>>", educationsIds);
+  
+
+    const insertExperience = experienceData ? (experienceData.map(async (experienceDetails) => {
+      console.log('experienceDetails ===.>>>', experienceDetails);
+      const [possition, organizationName, experience] = experienceDetails;
+      let sql = {
+          text: `INSERT INTO investigator_experience(possition, organization_name, experience, created_by, active) VALUES ($1, $2, $3, $4, $5) RETURNING id`,
+          values: [possition, organizationName, experience, userName, true]
+      };
+      const result = await researchDbW.query(sql);
+      return result.rows[0].id;
+    })) : null;
+  
+    const experienceIds = await Promise.all(insertExperience);
+    console.log("experienceIds ====>>>>", experienceIds);
+
+  const insertInvestorBook = bookData ? (bookData.map(async (bookDetails) => {
+    console.log('bookDetails ===.>>>', bookDetails);
+    const [bookAuthor, bookNames, bookYear, bookVolume, bookPublisher, bookIsbn] = bookDetails;
+
+    let sql = {
+        text: `INSERT INTO investigator_book(book_author, book_names, book_year, book_volume, 
+          book_publisher, book_isbn, created_by, active) 
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id`,
+        values: [bookAuthor, bookNames, bookYear,  bookVolume, bookPublisher, bookIsbn, userName, true]
+    };
+    const result = await researchDbW.query(sql);
+    return result.rows[0].id;
+  })) : null;
+
+  const bookDetailsIds = await Promise.all(insertInvestorBook);
+  console.log("bookDetailsIds ====>>>>", bookDetailsIds);
+
+
+  const insertInvestorBookChapter = bookChapterData ? (bookChapterData.map(async (bookChapterDetails) => {
+    console.log('bookChapterDetails ===.>>>', bookChapterDetails);
+    const [book_chapter_author, book_chapter_title, book_chapter_names, book_chapter_volume, 
+      book_chapter_page_number, book_chapter_publisher, book_chapter_isbn,
+    ] = bookChapterDetails;
+
+    let sql = {
+        text: `INSERT INTO investigator_book_chapter (book_chapter_author, book_chapter_title, book_chapter_names, book_chapter_volume, book_chapter_year,
+          book_chapter_page_number, book_chapter_publisher, book_chapter_isbn, created_by, active) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, ) RETURNING id`,
+        values: [book_chapter_author, book_chapter_title, book_chapter_names, book_chapter_volume, 
+          book_chapter_page_number, book_chapter_publisher, book_chapter_isbn, userName, true]
+    };
+    const result = await researchDbW.query(sql);
+      return result.rows[0].id;
+  })) : null;
+
+  const bookChapterIds  = await Promise.all(insertInvestorBookChapter);
+  console.log("bookChapterIds ====>>>>", bookChapterIds);
+
+
+  const insertInvestorPublication = publicationData ? (publicationData.map(async (publicationDetails) => {
+    console.log('publicationDetails ===.>>>', publicationDetails);
+    const [publication_author, publication_title, publication_journal_name, 
+      publication_year, publication_volume, publication_issue, publication_artcile_number, publication_impact_factor] = publicationDetails;
+
+    let sql = {
+        text: `INSERT INTO investigator_publication (publication_author, publication_title, publication_journal_name, 
+          publication_year, publication_volume, publication_issue, publication_artcile_number, publication_impact_factor, created_by, active) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING id`,
+        values: [publication_author, publication_title, publication_journal_name, 
+          publication_year, publication_volume, publication_issue, publication_artcile_number, publication_impact_factor, userName, true]
+    };
+    const result = await researchDbW.query(sql);
+    return result.rows[0].id;
+  })) : null;
+
+  const publicationIds  = await Promise.all(insertInvestorPublication);
+  console.log("publicationIds ====>>>>", publicationIds);
+
+  const insertInvestorPatent = patentData ?(patentData.map(async (patentDetails) => {
+    console.log('patentDetails ===.>>>', patentDetails);
+    const [applicant_name, patent_title, patent_status, patent_year, patent_number] = patentDetails;
+
+    let sql = {
+        text: `INSERT INTO investigator_patent (applicant_name, patent_title, patent_status, patent_year, patent_number, created_by, active) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id`,
+        values: [applicant_name, patent_title, patent_status, patent_year, patent_number, userName, true]
+    };
+    const result = await researchDbW.query(sql);
+    return result.rows[0].id;
+  })) : null;
+
+  const patentIds  = await Promise.all(insertInvestorPatent);
+  console.log("patentIds ====>>>>", patentIds);
+
+  const insertImplementationDetails = implementationData ? (implementationData.map(async (implementationDetails) => {
+    console.log('implementationDetails ===.>>>', implementationDetails);
+    const [researchTitle, researchAgency, researchRole, researchDuration, researchCost] = implementationDetails;
+
+    let sql = {
+        text: `INSERT INTO investigator_research_implementation (research_im_title, research_im_agency, research_im_role, research_im_duration, research_im_project_cost, created_by, active) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id`,
+        values: [researchTitle, researchAgency, researchRole, researchDuration, researchCost, userName, true]
+    };
+    const result = await researchDbW.query(sql);
+    return result.rows[0].id;
+  })) : null;
+
+  const implementationIds  = await Promise.all(insertImplementationDetails);
+  console.log("implementationIds ====>>>>", implementationIds);
+
+  const insertCompletedReserch = completedData ? (completedData.map(async (completedDetails) => {
+    console.log('completedDetails ===.>>>', completedDetails);
+    const [researchTitle, researchAgency, researchRole, researchDuration, researchCost] = completedDetails;
+
+    let sql = {
+        text: `INSERT INTO investigator_research_complete (research_cm_title, research_cm_agency, research_cm_role, research_cm_duration, research_cm_project_cost, created_by, active) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id`,
+        values: [researchTitle, researchAgency, researchRole, researchDuration, researchCost, userName, true]
+    };
+    const result = await researchDbW.query(sql);
+    return result.rows[0].id;
+  })) : null;
+
+  const completedIds  = await Promise.all(insertCompletedReserch);
+  console.log("completedIds ====>>>>", completedIds);
     
-    let pharmacyExperience = experienceIdsArray ? experienceIdsArray.map(async (element) => {
+
+  let pharmacyEduction = educationsIds ? educationsIds.map(async (element) => {
+    console.log('element ====>>>>', element)
+    let sql = {
+      text: `INSERT INTO pharmacy_investigator_education (pharmacy_seed_id, investigator_education_id, created_by, active) VALUES ($1, $2, $3, $4) RETURNING id`,
+      values: [pharmacyIds, element, userName, true],
+    };
+    return researchDbW.query(sql)
+  }) : null;
+
+  let pharmacyExperience = experienceIds ? experienceIds.map(async (element) => {
       let sql = {
         text: `INSERT INTO pharmacy_investigator_experience (pharmacy_seed_id, investigator_experience_id, created_by, active) VALUES ($1, $2, $3, $4) RETURNING id`,
         values: [pharmacyIds, element, userName, true],
       };
-      console.log("sql in experient ===>>>>>", sql);
-      let experience =  await researchDbW.query(sql);
-      pharmacyExeperienceIds.push(experience.rows[0].id)
+      return researchDbW.query(sql)
     }) : null;
+
     
-    let pharmacyBook = bookIdsArray ? bookIdsArray.map(async (element) => {
+    let pharmacyBook = bookDetailsIds ? bookDetailsIds.map(async (element) => {
         let sql = {
-        text: `INSERT INTO pharmacy_investigator_book (pharmacy_seed_id, investigator_book, created_by, active) VALUES ($1, $2, $3, $4) RETURNING id`,
+        text: `INSERT INTO pharmacy_investigator_book (pharmacy_seed_id, investigator_book_id, created_by, active) VALUES ($1, $2, $3, $4) RETURNING id`,
         values: [pharmacyIds, element, userName, true],
       };
       console.log("sql ===>>>>>", sql);
-      let book =  await researchDbW.query(sql);
-      pharmacyBookIds.push(book.rows[0].id)
+      return researchDbW.query(sql)
     }) : null;
+
     
-    let pharmacyBookchapter = bookChapterIdsArray ? bookChapterIdsArray.map(async (element) => {
+    let pharmacyBookchapter = bookChapterIds ? bookChapterIds.map(async (element) => {
         let sql = {
         text: `INSERT INTO pharmacy_investigator_book_chapter (pharmacy_seed_id, investigator_book_chapter_id, created_by, active) VALUES ($1, $2, $3, $4) RETURNING id`,
         values: [pharmacyIds, element, userName, true],
       };
       console.log("sql ===>>>>>", sql);
-      let bookchapter =  await researchDbW.query(sql);
-      pharmacyBookChapetrIds.push(bookchapter.rows[0].id)
+      return researchDbW.query(sql)
     }) : null;
+
     
-    let pharmacyPublication = publicationIdsArray ? publicationIdsArray.map(async (element) => {
+    let pharmacyPublication = publicationIds ? publicationIds.map(async (element) => {
         let sql = {
         text: `INSERT INTO pharmacy_investigator_publication (pharmacy_seed_id, investigator_publication_id, created_by, active) VALUES ($1, $2, $3, $4) RETURNING id`,
         values: [pharmacyIds, element, userName, true],
       };
       console.log("sql ===>>>>>", sql);
-      let publication =  await researchDbW.query(sql);
-      pharmacyPublicationIds.push(publication.rows[0].id)
+      return researchDbW.query(sql)
     }) : null;
     
-    let pharmacyPatent = patentIdsArray ? patentIdsArray.map(async (element) => {
+    let pharmacyPatent = patentIds ? patentIds.map(async (element) => {
         let sql = {
         text: `INSERT INTO pharmacy_investigator_patent (pharmacy_seed_id, investigator_patent_id, created_by, active) VALUES ($1, $2, $3, $4) RETURNING id`,
         values: [pharmacyIds, element, userName, true],
       };
       console.log("sql ===>>>>>", sql);
-      let patent = await researchDbW.query(sql);
-      pharmacyPatentIds.push(patent.rows[0].id)
+      return researchDbW.query(sql)
     }) : null;
+
     
-    let pharmacyImplementation = researchImplementationIdsArray ? researchImplementationIdsArray.map(async (element) => {
+    let pharmacyImplementation = implementationIds ? implementationIds.map(async (element) => {
         let sql = {
         text: `INSERT INTO pharmacy_investigator_research_implementation (pharmacy_seed_id, investigator_research_implementation_id, created_by, active) VALUES ($1, $2, $3, $4) RETURNING id`,
     values: [pharmacyIds, element, userName, true],
       };
       console.log("sql ===>>>>>", sql);
-      let researchImplementatio =  await researchDbW.query(sql);
-      pharmacyImplementationIds.push(researchImplementatio.rows[0].id)
+      return researchDbW.query(sql)
     }) : null;
     
-    let pharmacyCompleted = researchCompletedIdsArray ? researchCompletedIdsArray.map(async (element) => {
-        let sql = {
-        text: `INSERT INTO pharmacy_investigator_research_complete (pharmacy_seed_id, investigator_research_complete_id, created_by, active) VALUES ($1, $2, $3, $4) RETURNING id`,
-        values: [pharmacyIds, element, userName, true],
+    let pharmacyCompleted = completedIds ? completedIds.map(async (element) => {
+      let sql = {
+          text: `INSERT INTO pharmacy_investigator_research_complete (pharmacy_seed_id, investigator_research_complete_id, created_by, active) VALUES ($1, $2, $3, $4) RETURNING id`,
+          values: [pharmacyIds, element, userName, true]
       };
       console.log("sql ===>>>>>", sql);
-      let researchComplete =  await researchDbW.query(sql);
-      pharmacyCompletedIds.push(researchComplete.rows[0].id)
-    }) : null;
+      return researchDbW.query(sql)
+  }) : null;
+  
     
     const promises = [
       pharmacyIds,
-      investigatorId,
-      ...(pharmacyEducationIds || []),
-      ...(pharmacyExperience || []),
-      ...(pharmacyBook || []),
-      ...(pharmacyBookchapter || []),
-      ...(pharmacyPatent || []),
-      ...(pharmacyPublication || []),
-      ...(pharmacyImplementation || []),
-      ...(pharmacyCompleted || [])
+      investigatorId
+      
     ];
     
     console.log('promises ===>>>>>>', promises);
@@ -708,6 +660,14 @@ module.exports.insertPharmacyDetails = async (pharmacySeedGrantDetails, userName
       const [
         pharmacyIds,
         investigatorId,
+        pharmacyEduction,
+        pharmacyExperience,
+        pharmacyBook,
+        pharmacyBookchapter, 
+        pharmacyPublication,
+        pharmacyPatent,
+        pharmacyImplementation, 
+        pharmacyCompleted
       ] = values;
     
       return {
@@ -715,14 +675,15 @@ module.exports.insertPharmacyDetails = async (pharmacySeedGrantDetails, userName
         message: "Inserted successfully",
         pharmacyIds,
         investigatorId,
-        pharmacyEducation,
-        pharmacyExeperienceIds,
-        pharmacyBookIds,
-        pharmacyBookChapetrIds,
-        pharmacyPatentIds,
-        pharmacyPublicationIds,
-        pharmacyImplementationIds,
-        pharmacyCompletedIds,
+        
+        bookDetailsIds,
+        bookChapterIds, 
+        experienceIds,
+        educationsIds,
+        publicationIds,
+        patentIds,
+        completedIds,
+        implementationIds,
         rowCount
 
       };
