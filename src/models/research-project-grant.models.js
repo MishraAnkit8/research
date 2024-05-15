@@ -413,7 +413,9 @@ module.exports.updateResearchConsultantData = async (
   updatedResearchGrant,
   updatedConsultantFilesData,
   FacultydataArray,
-  userName
+  userName,
+  updateSchoolIdsArray,
+  updateCampusIdsArray
 ) => {
   console.log("data in models ===>>>>", updatedResearchGrant);
   const supportingDocuments = updatedConsultantFilesData
@@ -430,11 +432,16 @@ module.exports.updateResearchConsultantData = async (
     fundingAmount,
     statusOfResearchProject,
     submissionGrantDate,
+    durationDate,
+    scheme,
+    paymentDate,
+    amountRecieved,
   } = updatedResearchGrant;
 
-  let baseQuery = `UPDATE research_project_grant SET  grant_proposal_category = $2, type_of_research_grant = $3, title_of_project = $4, thrust_area_of_research = $5, name_of_funding_agency = $6, funding_amount = $7, status_of_research_project = $8, submission_date = $9, updated_by = $10`;
+  let baseQuery = `UPDATE research_project_grant SET  grant_proposal_category = $2, type_of_research_grant = $3, title_of_project = $4, thrust_area_of_research = $5, name_of_funding_agency = $6, funding_amount = $7, status_of_research_project = $8, submission_date = $9,
+  projectDuration=$10, scheme=$11, paymentDate=$12, amountRecieved=$13, updated_by = $14`;
   let documentsQuery = supportingDocuments
-    ? `, supporting_documents = $11`
+    ? `, supporting_documents = $15`
     : "";
   console.log("documentsQuery ====>>>>", documentsQuery);
   let queryText = baseQuery + documentsQuery + ` WHERE id = $1`;
@@ -450,9 +457,14 @@ module.exports.updateResearchConsultantData = async (
     fundingAmount,
     statusOfResearchProject,
     submissionGrantDate,
+    durationDate,
+    scheme,
+    paymentDate,
+    amountRecieved,
     userName,
     ...(supportingDocuments ? [supportingDocuments] : []),
   ];
+
   console.log("values ===>>>>", values);
 
   let sql = {
@@ -478,10 +490,44 @@ module.exports.updateResearchConsultantData = async (
       : Promise.resolve({ rows: [{ id: existingRecord.rows[0].id }] });
   });
 
+  const insertGrantSchool = updateSchoolIdsArray
+    ? updateSchoolIdsArray.map(async (schoolId) => {
+        const existingRecord = await researchDbW.query({
+          text: `SELECT id FROM research_project_grant_school WHERE research_project_grant_id = $1 AND school_id = $2 and active = true`,
+          values: [consultantId, schoolId],
+        });
+
+        return existingRecord.rows.length === 0
+          ? researchDbW.query({
+              text: `INSERT INTO research_project_grant_school (research_project_grant_id, school_id) VALUES ($1, $2) RETURNING id`,
+              values: [consultantId, schoolId],
+            })
+          : Promise.resolve({ rows: [{ id: existingRecord.rows[0].id }] });
+      })
+    : [];
+
+  const insertGrantCampus = updateCampusIdsArray
+    ? updateCampusIdsArray.map(async (campusId) => {
+        const existingRecord = await researchDbW.query({
+          text: `SELECT id FROM research_project_grant_campus WHERE research_project_grant_id = $1 AND campus_id = $2 and active = true`,
+          values: [consultantId, campusId],
+        });
+
+        return existingRecord.rows.length === 0
+          ? researchDbW.query({
+              text: `INSERT INTO research_project_grant_campus (research_project_grant_id, campus_id) VALUES ($1, $2) RETURNING id`,
+              values: [consultantId, campusId],
+            })
+          : Promise.resolve({ rows: [{ id: existingRecord.rows[0].id }] });
+      })
+    : [];
+
   const researchProjectTable = await researchDbW.query(sql);
   const results = await Promise.all([
     researchProjectTable,
     ...insertFacultyPromises,
+    ...insertGrantSchool,
+    ...insertGrantCampus,
   ]);
 
   const rowCount = researchProjectTable.rowCount;
