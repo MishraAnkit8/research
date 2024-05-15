@@ -4,7 +4,7 @@ const redis = require("redis");
 const redisClientConn = redis.createClient({
   host: process.env.REDIS_HOST || "localhost",
   port: process.env.REDIS_PORT || 63796,
-  password: process.env.REDIS_PASSWORD || "yourpassword",
+  password: process.env.REDIS_PASSWORD || "",
 });
 
 // redis passWord yourpassword for server
