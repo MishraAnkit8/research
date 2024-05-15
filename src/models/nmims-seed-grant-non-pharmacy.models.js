@@ -89,8 +89,7 @@ module.exports.viewSeedGrantNonFormacy = async (grantedSeedId, userName) => {
 };
 
 module.exports.insertSeedGrantNonformacyForm = async (
-  seedGrantFormData,
-  userName
+  seedGrantFormData, pharmacyFiles, userName
 ) => {
   const {
     year,
@@ -117,8 +116,8 @@ module.exports.insertSeedGrantNonformacyForm = async (
   let sql = {
     text: `INSERT INTO nmims_seed_grant_non_formacy (year, title, commencement_date, completion_date, session_count_per_days,  per_session_fees,
         faculty_shares, nmims_shares, research_staff_expenses, travel, computer_charges, nmims_facility_charges, miscellaneous_including_contingency, advanced_payment, final_payment, total_fees, gross_fees, faculty_table_id, created_by,
-        totalamount,grandtotal, active)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22) RETURNING id`,
+        totalamount,grandtotal, active, support_document)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23) RETURNING id`,
 
     values: [
       year,
@@ -142,7 +141,8 @@ module.exports.insertSeedGrantNonformacyForm = async (
       userName,
       totalAmount,
       grandTotal,
-      true
+      true,
+      pharmacyFiles
     ],
   };
 

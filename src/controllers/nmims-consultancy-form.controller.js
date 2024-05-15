@@ -51,11 +51,12 @@ module.exports.viewConsultancyFormApprovalData = async(req, res, next) => {
 
 
 module.exports.insertconsultancyFormData = async(req, res, next) => {
-    console.log('req.body in controller ====>>>>>', req.body);
+    console.log('req.body in controller ankit ====>>>>>', req.body.consultancyObject);
     const  userName = req.body.username;
     console.log('userName in controller  ===>>>>>>', userName);
+    console.log('files in controller ====>>>>>', req.files)
 
-    const insertApprovalFormData = await consultancyFormService.insertApprovalFormDataService(req.body, userName);
+    const insertApprovalFormData = await consultancyFormService.insertApprovalFormDataService(req.body,req.files, userName);
 
     console.log('insertApprovalFormData ===>>>>>', insertApprovalFormData);
     const statusCode = insertApprovalFormData.status === "Done" ? 200 : (insertApprovalFormData.errorCode ? 400 : 500);
@@ -75,8 +76,9 @@ module.exports.updateConsultancyApprovalFormData = async(req, res, next) => {
     const  userName = req.body.username;
     console.log('userName in controller  ===>>>>>>', userName);
     console.log('data in controller ====>>>>', req.body);
+    console.log('req.files ======>>>>', req.files)
 
-    const updatedApprovalForm = await consultancyFormService.updateConsultancyApprovalData(req.body, userName);
+    const updatedApprovalForm = await consultancyFormService.updateConsultancyApprovalData(req.body, req.files, userName);
 
     console.log('updatedApprovalForm ====>>>>>>', updatedApprovalForm)
     const statusCode = updatedApprovalForm.status === "Done" ? 200 : (updatedApprovalForm.errorCode ? 400 : 500);

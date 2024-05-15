@@ -243,6 +243,26 @@
                                         class="form-control" required>
                                     <span style="color:red;" id="completionError"></span>
                                 </div>
+
+                                 <!-- Upload Supporting Documents-->
+                                  <!-- ArunDocument 1 -->
+                                  <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label  class="form-label fw-bold ">
+                                        Upload Supporting Documents
+                                        <div id="uploadNewSupportDocumentDiv">
+                                            <label for="uploadNewSupportDocument"><small>Click to Upload New File</small></label>
+                                            <input type="checkbox" name="uploadNewSupportDocument" id="uploadNewSupportDocument">
+                                        </div>
+                                    </label>
+                                    <div class="d-flex">
+                                        <input type="file" name="supporting-documents" id="supporting-documents"
+                                            class="col-md-12 form-control" data-validate="isEmpty,isExist,isFile"
+                                            data-err-msg="File is required." required multiple>
+                                        <button class="download-btn download-file" id="case-study-doc-edit"><i
+                                                class="fas fa-download text-danger"></i>Download</button>
+                                    </div>
+                                </div>
+
                                 <!-- Days -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="days" class=" sub-title fw-bold">Days/Sessions</label>
@@ -659,6 +679,12 @@
                         updateBtn.classList.add('d-none');
                         removeErrorMsg()
 
+                              // ArunDocument 3
+                        document.querySelector('#supporting-documents').classList.remove('d-none');
+                        document.querySelector('#uploadNewSupportDocumentDiv').classList.add('d-none');
+                        document.querySelector('#uploadNewSupportDocument').checked = false;
+                        document.querySelector('#case-study-doc-edit').classList.add('d-none');
+
                         $('#consultancy-modal-form').modal({
                             backdrop: 'static'
                         });
@@ -722,41 +748,72 @@
                 });
 
                 const insertConsultancyFormApprovalData = async (url) => {
-                    const seedGrantFormData = {};
-                    seedGrantFormData.year = document.getElementById('year').value;
-                    seedGrantFormData.title = document.getElementById('title').value;
+                    const seedGrantFormData = new FormData();
+                    const year = document.getElementById('year').value;
+                    const title = document.getElementById('title').value;
                     // seedGrantFormData.faculty =  document.getElementById('faculty-id').value;
-                    seedGrantFormData.commencementDate = document.getElementById('commencement-date').value;
-                    seedGrantFormData.completionDate = document.getElementById('completion-date').value;
-                    seedGrantFormData.sessionNumbers = document.getElementById('no-of-session').value;
-                    seedGrantFormData.sessionsFees = document.getElementById('sessions-fees').value;
-                    seedGrantFormData.totalFees = document.getElementById('total-fees').value;
-                    seedGrantFormData.facultyShare = document.getElementById('faculty-share').value;
-                    seedGrantFormData.nmimsShare = document.getElementById('nmims-share').value;
-                    seedGrantFormData.researchStaffExpenses = document.getElementById('research-staff-expenses').value;
-                    seedGrantFormData.travlExpanses = document.getElementById('travel').value;
-                    seedGrantFormData.computerCharges = document.getElementById('computer-charges').value;
-                    seedGrantFormData.faculityCharges = document.getElementById('facility-charges').value;
-                    seedGrantFormData.miscellaneousContingencyCharges = document.getElementById('miscellaneous-contingency').value;
-                    seedGrantFormData.advancedPayment = document.getElementById('advance-payment').value;
-                    seedGrantFormData.finalPayment = document.getElementById('final-payment').value;
-                    seedGrantFormData.grossFees = document.getElementById('gross-fees').value;
-                    seedGrantFormData.facultyId = document.getElementById('faculty-id').value;
-                    seedGrantFormData.totalAmount = document.getElementById('total-amount').value;
-                    seedGrantFormData.grandTotal = document.getElementById('grand-total').value;
+                    const commencementDate = document.getElementById('commencement-date').value;
+                    const completionDate = document.getElementById('completion-date').value;
+                    const sessionNumbers = document.getElementById('no-of-session').value;
+                    const sessionsFees = document.getElementById('sessions-fees').value;
+                    const totalFees = document.getElementById('total-fees').value;
+                    const facultyShare = document.getElementById('faculty-share').value;
+                    const nmimsShare = document.getElementById('nmims-share').value;
+                    const researchStaffExpenses = document.getElementById('research-staff-expenses').value;
+                    const travlExpanses = document.getElementById('travel').value;
+                    const computerCharges = document.getElementById('computer-charges').value;
+                    const faculityCharges = document.getElementById('facility-charges').value;
+                    const miscellaneousContingencyCharges = document.getElementById('miscellaneous-contingency').value;
+                    const advancedPayment = document.getElementById('advance-payment').value;
+                    const finalPayment = document.getElementById('final-payment').value;
+                    const grossFees = document.getElementById('gross-fees').value;
+                    const facultyId = document.getElementById('faculty-id').value;
+                    const totalAmount = document.getElementById('total-amount').value;
+                    const grandTotal = document.getElementById('grand-total').value;
 
 
+                    seedGrantFormData.append('year', year)
+                    seedGrantFormData.append('title', title)
+                    seedGrantFormData.append('commencementDate', commencementDate)
+                    seedGrantFormData.append('completionDate', completionDate)
+                    seedGrantFormData.append('sessionNumbers', sessionNumbers)
+                    seedGrantFormData.append('sessionsFees', sessionsFees)
+                    seedGrantFormData.append('totalFees', totalFees)
+                    seedGrantFormData.append('facultyShare', facultyShare)
+                    seedGrantFormData.append('nmimsShare', nmimsShare)
+                    seedGrantFormData.append('researchStaffExpenses', researchStaffExpenses)
+                    seedGrantFormData.append('travlExpanses', travlExpanses)
+                    seedGrantFormData.append('computerCharges', computerCharges)
+                    seedGrantFormData.append('faculityCharges', faculityCharges)
+                    seedGrantFormData.append('miscellaneousContingencyCharges', miscellaneousContingencyCharges)
+                    seedGrantFormData.append('advancedPayment', advancedPayment)
+                    seedGrantFormData.append('finalPayment', finalPayment)
+                    seedGrantFormData.append('grossFees', grossFees)
+                    seedGrantFormData.append('facultyId', facultyId)
+                    seedGrantFormData.append('totalAmount', totalAmount)
+                    seedGrantFormData.append('grandTotal', grandTotal)
 
-                    const payload = {
-                        seedGrantFormData: seedGrantFormData
+                    
+                  
+
+
+                    const pharmacyDoc = document.getElementById('supporting-documents');
+                    const pharmacyFiles = pharmacyDoc.files;
+                    console.log('caseStudyFiles ===>>>', pharmacyFiles)
+                    for (let i = 0; i < pharmacyFiles.length; i++) {
+                        console.log('file name  ==>>', pharmacyFiles[i].name);
+                        seedGrantFormData.append('pharmacyFiles', pharmacyFiles[i]);
                     }
-                    console.log('payload ===>>>>', payload)
+
+
+
+                    // const payload = {
+                    //     seedGrantFormData: seedGrantFormData
+                    // }
+                    // console.log('payload ===>>>>', payload)
                     fetch(url, {
                         method: 'POST',
-                        headers: {
-                            'content-type': 'application/json'
-                        },
-                        body: JSON.stringify(payload)
+                        body: seedGrantFormData
                     })
                         .then((Response) => {
                             return Response.ok ? Response.json() : 'NetWork Is Not Ok'
@@ -1431,6 +1488,16 @@
                 })
 
 
+                  // ArunDocument 2
+                  document.querySelector('#uploadNewSupportDocument').addEventListener('click',function(e){
+                    let is_checked = document.querySelector('#uploadNewSupportDocument').checked;
+                    console.log("is_checked :",is_checked);
+                    if(is_checked){
+                        document.querySelector('#supporting-documents').classList.remove('d-none');
+                    }else{
+                        document.querySelector('#supporting-documents').classList.add('d-none');
+                    }
+                })
 
 
 

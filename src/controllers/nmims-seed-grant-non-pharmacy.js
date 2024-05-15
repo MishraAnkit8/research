@@ -58,11 +58,11 @@ module.exports.viewNonformacyForm = async(req, res, next) => {
 
 
 module.exports.insertGrantedSeedNonFormacyForm = async(req, res, next) => {
-    console.log('req.body in controller ====>>>>>', req.body);
+    console.log('req.body in controller ankit ====>>>>>', req.body);
     const  userName = req.body.username;
     console.log('userName in controller  ===>>>>>>', userName);
 
-    const insertNonFormacyFormdata = await seedGrantNonForphacyService.insertSeedGrantNonFormacy(req.body, userName);
+    const insertNonFormacyFormdata = await seedGrantNonForphacyService.insertSeedGrantNonFormacy(req.body, req.files, userName);
 
     console.log('insertNonFormacyFormdata ===>>>>>', insertNonFormacyFormdata);
     const statusCode = insertNonFormacyFormdata.status === "Done" ? 200 : (insertNonFormacyFormdata.errorCode ? 400 : 500);

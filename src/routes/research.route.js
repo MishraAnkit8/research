@@ -139,16 +139,16 @@ router.post('/e-content/view', asyncErrorHandler(authMiddleware), asyncErrorHand
 
 // nmims consultancy form
 router.get('/nmims-consultancy-approval-form', asyncErrorHandler(authMiddleware), asyncErrorHandler(nmimsConsultancyForm.renderNmimsConsultancyForm));
-router.post('/nmims-consultancy-approval-form/insert', asyncErrorHandler(authMiddleware), asyncErrorHandler(nmimsConsultancyForm.insertconsultancyFormData));
+router.post('/nmims-consultancy-approval-form/insert', upload.array('consultancyFiles', 5) , asyncErrorHandler(authMiddleware), asyncErrorHandler(nmimsConsultancyForm.insertconsultancyFormData));
 router.post('/nmims-consultancy-approval-form/view', asyncErrorHandler(authMiddleware), asyncErrorHandler(nmimsConsultancyForm.viewConsultancyFormApprovalData));
-router.post('/nmims-consultancy-approval-form/update', asyncErrorHandler(authMiddleware), asyncErrorHandler(nmimsConsultancyForm.updateConsultancyApprovalFormData));
+router.post('/nmims-consultancy-approval-form/update', upload.array('consultancyFiles', 5), asyncErrorHandler(authMiddleware), asyncErrorHandler(nmimsConsultancyForm.updateConsultancyApprovalFormData));
 router.post('/nmims-consultancy-approval-form/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(nmimsConsultancyForm.deleteConsultancyFormData));
 
 // seedGrantNonPharmacy
 router.get('/nmims-seed-grant-non-pharmacy', asyncErrorHandler(authMiddleware), asyncErrorHandler(seedGrantNonPharmacy.renderNmimsSeedGrantNonFormacy));
-router.post('/nmims-seed-grant-non-pharmacy/insert', asyncErrorHandler(authMiddleware), asyncErrorHandler(seedGrantNonPharmacy.insertGrantedSeedNonFormacyForm));
+router.post('/nmims-seed-grant-non-pharmacy/insert',  upload.array('pharmacyFiles', 5) , asyncErrorHandler(authMiddleware), asyncErrorHandler(seedGrantNonPharmacy.insertGrantedSeedNonFormacyForm));
 router.post('/nmims-seed-grant-non-pharmacy/view', asyncErrorHandler(authMiddleware), asyncErrorHandler(seedGrantNonPharmacy.viewNonformacyForm));
-router.post('/nmims-seed-grant-non-pharmacy/update', asyncErrorHandler(authMiddleware), asyncErrorHandler(seedGrantNonPharmacy.updatedNonFormacyform));
+router.post('/nmims-seed-grant-non-pharmacy/update',  upload.array('pharmacyFiles', 5) ,  asyncErrorHandler(authMiddleware), asyncErrorHandler(seedGrantNonPharmacy.updatedNonFormacyform));
 router.post('/nmims-seed-grant-non-pharmacy/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(seedGrantNonPharmacy.deleteNonFormacyForm));
 
 // pharmacySeedGrantForm

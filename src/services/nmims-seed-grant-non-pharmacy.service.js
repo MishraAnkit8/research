@@ -51,11 +51,12 @@ module.exports.fetchNoFormacyForm = async(userName) => {
 
 
 
-module.exports.insertSeedGrantNonFormacy = async(body, userName) => {
-    const seedGrantFormData = body.seedGrantFormData;
+module.exports.insertSeedGrantNonFormacy = async(body, files, userName) => {
+    const seedGrantFormData = body;
+    const consultancyFiles = files?.map(file => file.filename).join(',');
     console.log('seedGrantFormData in service ==>>>', seedGrantFormData)
 
-    const insertSeedGrantNonFormacyData =  await seedGrantModels.insertSeedGrantNonformacyForm(seedGrantFormData, userName);
+    const insertSeedGrantNonFormacyData =  await seedGrantModels.insertSeedGrantNonformacyForm(seedGrantFormData, consultancyFiles, userName);
 
     console.log('insertSeedGrantNonFormacyData ====>>>>', insertSeedGrantNonFormacyData);
 
