@@ -46,11 +46,13 @@ module.exports.insertApprovalFormDataService = async(body, files, userName) => {
 }
 
 module.exports.updateConsultancyApprovalData = async(body, files, userName) => {
-    const nmimsConsultancyFormId = body.updatedConsultancyObject.nmimsConsultancyFormId;
+    console.log('body ====>>>>>', body)
+    const nmimsConsultancyFormId = body.nmimsConsultancyFormId;
+    console.log(' nmimsConsultancyFormId===>>>>>>', nmimsConsultancyFormId);
     const updatedConsultancyApprovalRecord = body;
     const consultancyFiles = files?.map(file => file.filename).join(',');
 
-    const updateConsultancyApprovalFormData  = await consultancyFormModels.updateApprovalFormData( updatedConsultancyApprovalRecord, consultancyFiles, userName);
+    const updateConsultancyApprovalFormData  = await consultancyFormModels.updateApprovalFormData(nmimsConsultancyFormId, updatedConsultancyApprovalRecord, consultancyFiles, userName);
     console.log('updateConsultancyApprovalFormData ====>>>>>', updateConsultancyApprovalFormData);
 
     return updateConsultancyApprovalFormData.status === "Done" ? {
