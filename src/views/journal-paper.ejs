@@ -90,7 +90,7 @@
                                             data-title-of-paper="<%- journalPaper.title_of_paper %>"
                                             data-abdc-indexed="<%- journalPaper.abdc_indexed %>"
                                             data-ugc-indexed="<%- journalPaper.ugc_indexed %>"
-                                            data-web-link-number="<%- journalPaper.web_link_doi_number %>"
+                                            data-web-link-number="<%- journalPaper.web_link_doi %>"
                                             data-date-of-publishing="<%- journalPaper.date_of_publishing %>"
                                             data-journal-category="<%- journalPaper.jorunal_article_type_id %>"
                                             data-all-authors="<%- journalPaper.all_article_authors_names  %>"
@@ -104,7 +104,11 @@
                                             data-impact-factors="<%- journalPaper.impact_factors %>"
                                             data-documents="<%- journalPaper.supporting_documents %>"
                                             data-documents-ids="<%- journalPaper.supporting_documents_ids %>"
-                                            data-journal-article-id="<%- journalPaper.article_id %>">
+                                            data-journal-article-id="<%- journalPaper.article_id %>"
+                                            data-nmims-student-foreign-authors="<%- journalPaper.nmims_student_foreign_authors %>"
+                                            data-foreign-authors-name="<%- journalPaper.foreign_authors_name %>"
+                                            data-foreign-auhtor-no="<%- journalPaper.foreign_auhtor_no %>"
+                                            data-no-nmims-student-author="<%- journalPaper.no_nmims_student_author %>">
                                             <td class=""> <%- index + 1 %> </td>
                                             <td class="year col-lg-1"> <%- journalPaper.year %> </td>
                                             <td class="school col-lg-1"> <%- journalPaper.associated_schools %> </td>
@@ -362,8 +366,7 @@
                                 </div>
                                 <!-- Count of Other Faculty -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <label for="count-other-faculty" class="form-label fw-bold">Count of Other
-                                        Faculty</label>
+                                    <label for="count-other-faculty" class="form-label fw-bold">NoN-NMIMS Authors</label>
                                     <input type="number" name="count-other-faculty" id="count-other-faculty"
                                         data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required."
                                         class="form-control numbers" required />
@@ -371,15 +374,15 @@
                                 <!-- Vol,Issue,Page No -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="page" class="form-label fw-bold">Vol,Issue,Page No.</label>
-                                    <input type="number" name="pages" id="pages" class="form-control numbers"
-                                        data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required."
+                                    <input type="text" name="pages" id="pages" class="form-control numbers"
+                                        data-validate="isEmpty,isExist,isLength:2:255" data-err-msg="Value is required."
                                         required>
                                 </div>
                                 <!-- ISSN No. -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="issNo" class="form-label fw-bold">ISSN No.</label>
-                                    <input type="number" name="iss-no" id="issn-no" class="form-control numbers"
-                                        data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required."
+                                    <input type="text" name="iss-no" id="issn-no" class="form-control numbers"
+                                        data-validate="isEmpty,isExist,isLength:2:255" data-err-msg="ISSN No. value is required."
                                         required>
                                 </div>
                                 <!-- SCS Cite Score -->
@@ -410,8 +413,8 @@
                                 <!-- Weblink-DOI Number -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="web-link" class="form-label fw-bold">WEB Link DOI No.</label>
-                                    <input type="number" name="webLinks" id="web-link-num" class="form-control numbers"
-                                        data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required"
+                                    <input type="text" name="webLinks" id="web-link-num" class="form-control numbers"
+                                        data-validate="isEmpty,isExist,isLength:2:255" data-err-msg="WEB Link DOI required"
                                         required>
                                 </div>
                                 <!-- Names of NMIMS Student  Author-->
@@ -521,19 +524,14 @@
 
                                 <!-- ABDC Indexed -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <label for="gs-index" class="form-label fw-bold mb-3">ABDC Indexed</label><br>
-                                    <div class="form-check-inline">
-                                        <label for="abdc-index-yes" class="form-check-label">
-                                            <input type="radio" class="form-check-input" id="abdc-index-yes"
-                                                name="abdc-index-category" value="Yes"> Yes
-                                        </label>
-                                    </div>
-                                    <div class="form-check-inline">
-                                        <label for="abdc-index-no" class="form-check-label">
-                                            <input type="radio" class="form-check-input" id="abdc-index-no"
-                                                name="abdc-index-category" value="No" checked> No
-                                        </label>
-                                    </div>
+                                    <label for="gs-index" class="form-label fw-bold mb-3">ABDC Categoryd</label><br>
+                                    <select class="form-control gap-10" id="abdc-index-category" data-validate="isEmpty,isExist" data-err-msg="This field is required and select value " required>
+                                        <option value="" selected>Select option</option>
+                                        <option  value="A*" >A*</option>
+                                        <option  value="A">A</option>
+                                        <option  value="B">B</option>
+                                        <option  value="C">C</option>
+                                    </select>
                                 </div>
                                 <!-- UGC Indexed -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
@@ -550,6 +548,46 @@
                                                 name="ugc-index-category" value="No" checked> No
                                         </label>
                                     </div>
+                                </div>
+
+                                  <!-- No. of Foreign authors-->
+                                  <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="scs-cite-score" class="form-label fw-bold">No. of Foreign authors</label>
+                                    <input type="number" name="scsCiteScores" id="foreign-author-no"
+                                        data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required."
+                                        class="form-control numbers" required>
+                                </div>
+
+                                  <!-- Names of foreign authors -->
+                                  <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="scs-cite-score" class="form-label fw-bold">Names of foreign authors</label>
+                                    <input type="text" name="scsCiteScores" id="foreign-authors-name"
+                                        data-validate="isEmpty,isExist,isAlphabeticWords" data-err-msg="This is required field and min length > 1."
+                                        class="form-control" required>
+                                </div>
+
+                                  <!-- No. of NMIMS student authors -->
+                                  <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="scs-cite-score" class="form-label fw-bold">No. of NMIMS student authors</label>
+                                    <input type="number" name="scsCiteScores" id="no-nmims-student-author"
+                                        data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required."
+                                        class="form-control numbers" required>
+                                </div>
+
+                                  <!-- Names of NMIMS student foreign authors -->
+                                  <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="nmims-student-foreign-authors" class="form-label fw-bold">Names of NMIMS student foreign authors</label>
+                                    <input type="text"  id="nmims-student-foreign-authors"
+                                        data-validate="isEmpty,isExist,isAlphabeticWords" data-err-msg="This is required field and min length > 1."
+                                        class="form-control numbers" required>
+                                </div>
+
+                                  <!-- SCS Cite Score -->
+                                  <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="scs-cite-score" class="form-label fw-bold">SCS Cite Score</label>
+                                    <input type="number" name="scsCiteScores" id="scs-cite-score"
+                                        data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required."
+                                        class="form-control numbers" required>
                                 </div>
 
                             </div>
@@ -642,7 +680,7 @@
                                 <!-- Count Faculty -->
                                 <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                                     <div class="box">
-                                        <div class="sub-title-text sub-title">Count Other Faculty:</div>
+                                        <div class="sub-title-text sub-title">NoN-NMIMS Authors:</div>
                                         <label class="view-content" id="view-count-of-other-faculty"></label>
                                     </div>
                                 </div>
@@ -689,28 +727,28 @@
                                     </div>
                                 </div>
                                 <!--NAMES OF FOREIGN AUTHORS-->
-                                <!-- <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                        <div class="box">
-                            <div class="sub-title-text sub-title">Name Of Foreign Authors:</div>
-                            <label class="view-content" id="view-foreign-authors"></label>
-                        </div>
-                    </div> -->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                <div class="box">
+                                    <div class="sub-title-text sub-title">Name Of Foreign Authors:</div>
+                                    <label class="view-content" id="view-foreign-authors"></label>
+                                </div>
+                            </div>
 
                                 <!--Names of NMIMS Student  Author-->
-                                <!-- <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                        <div class="box">
-                            <div class="sub-title-text sub-title">Names of NMIMS Student  Author:</div>
-                            <label class="view-content" id="view-names-nmims-student-author"></label>
-                        </div>
-                    </div> -->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                <div class="box">
+                                    <div class="sub-title-text sub-title">Names of NMIMS Student  Author:</div>
+                                    <label class="view-content" id="view-names-nmims-student-author"></label>
+                                </div>
+                            </div>
 
                                 <!--NO. OF NMIMS Student  Authors-->
-                                <!-- <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                        <div class="box">
-                            <div class="sub-title-text sub-title">NO. OF NMIMS Student  Authors:</div>
-                            <label class="view-content" id="view-no-nmims-student-author"></label>
-                        </div>
-                    </div> -->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                <div class="box">
+                                    <div class="sub-title-text sub-title">NO. OF NMIMS Student  Authors:</div>
+                                    <label class="view-content" id="view-no-nmims-student-author"></label>
+                                </div>
+                                </div>
                                 <!--abdc-indexed-->
                                 <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                                     <div class="box">
@@ -733,12 +771,12 @@
                                     </div>
                                 </div>
                                 <!--NO. OF FOREIGN AUTHORS -->
-                                <!-- <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                        <div class="box">
-                            <div class="sub-title-text sub-title">No Of Foreign Authors:</div>
-                            <label class="view-content" id="view-foreign-authors-number"></label>
-                        </div>
-                    </div> -->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                <div class="box">
+                                    <div class="sub-title-text sub-title">No Of Foreign Authors:</div>
+                                    <label class="view-content" id="view-foreign-authors-number"></label>
+                                </div>
+                            </div>
                                 <!--date-of-publishing -->
                                 <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                                     <div class="box">
@@ -884,6 +922,11 @@
                         impactFactorContainer = [];
                         facltyContainer = [];
                         allAuthorContainer = [];
+                        
+                        document.getElementById('foreign-author-no').value = '';
+                        document.getElementById('foreign-authors-name').value = '';
+                        document.getElementById('no-nmims-student-author').value = '';
+                        document.getElementById('nmims-student-foreign-authors').value = '';
                         // Array.from(campusDropDown.options).forEach(option => {
                         // option.selected = false;
                         // });
@@ -917,7 +960,7 @@
 
                     const wosIndexedCategory = document.querySelector('input[name="wos-index-category"]:checked').value;
                     const scsIndexedCategory = document.querySelector('input[name="scopus-category"]:checked').value;
-                    const abdcIndexedCategory = document.querySelector('input[name="abdc-index-category"]:checked').value;
+                    const abdcIndexedCategory = document.getElementById('abdc-index-category').value;
                     const ugcIndexedCategory = document.querySelector('input[name="ugc-index-category"]:checked').value;
                     const webLinkNumber = document.getElementById('web-link-num').value;
                     const uid = document.getElementById('uid').value;
@@ -926,6 +969,10 @@
                     const journalCategory = document.querySelector('input[name="journal-category"]:checked').value;
                     const nmimsAuthorsCount = document.getElementById('nmims-authors-count').value;
 
+                    const foreignAuhtorNo =  document.getElementById('foreign-author-no').value;
+                    const foreignAuthorsName =  document.getElementById('foreign-authors-name').value;
+                    const noNmimsStudentAuthor =  document.getElementById('no-nmims-student-author').value;
+                    const nmimsStudentForeignAuthors =  document.getElementById('nmims-student-foreign-authors').value;
                     const nmimsSchoolArrayObject = nmimsSchoolIdsContainer[nmimsSchoolIdsContainer.length - 1];
                     const nmimsCampusArrayObject = nmimsCampusIdsContainer[nmimsCampusIdsContainer.length - 1];
                     const nmimsFacultyArrayObject = facltyContainer[facltyContainer.length - 1];
@@ -951,6 +998,10 @@
 
                     journalDetails.append('year', year);
                     journalDetails.append('publisher', publisher);
+                    journalDetails.append('foreignAuhtorNo', foreignAuhtorNo);
+                    journalDetails.append('foreignAuthorsName', foreignAuthorsName);
+                    journalDetails.append('noNmimsStudentAuthor', noNmimsStudentAuthor);
+                    journalDetails.append('nmimsStudentForeignAuthors', nmimsStudentForeignAuthors);
                     journalDetails.append('totalAuthors', totalAuthors);
                     journalDetails.append('journalName', journalName);
                     journalDetails.append('countOtherFaculty', countOtherFaculty);
@@ -1205,6 +1256,12 @@
                         const pages = rowToBeUpdated.getAttribute('data-pages');
                         const issnNo = rowToBeUpdated.getAttribute('data-issn-no');
                         const dateOfPublishing = rowToBeUpdated.getAttribute('data-date-of-publishing');
+
+                        document.getElementById('foreign-author-no').value = rowToBeUpdated.getAttribute('data-foreign-auhtor-no')
+                        document.getElementById('foreign-authors-name').value = rowToBeUpdated.getAttribute('data-foreign-authors-name')
+                        document.getElementById('no-nmims-student-author').value = rowToBeUpdated.getAttribute('data-no-nmims-student-author')
+                        document.getElementById('nmims-student-foreign-authors').value = rowToBeUpdated.getAttribute('data-nmims-student-foreign-authors')
+
                         // console.log('dateOfPublishing ==>>', dateOfPublishing);
                         const formattedDate = formatDateToYYYYMMDD(dateOfPublishing);
                         // console.log('formattedDate ==>>', formattedDate);
@@ -1278,8 +1335,7 @@
                         scsIndexedNo.checked = scsIndexedCategory !== 'Yes';
 
                         // For ABDC indexed category
-                        abdcIndexedYes.checked = abdcIndexedCategory === 'Yes';
-                        abdcIndexedNo.checked = abdcIndexedCategory !== 'Yes';
+                        document.getElementById('abdc-index-category').value = rowToBeUpdated.getAttribute('data-abdc-indexed');
 
                         // For WOS indexed category
                         wosIndexedYes.checked = wosIndexedCategory === 'Yes';
@@ -1592,7 +1648,7 @@
                                     document.getElementById('view-count-of-other-faculty').innerText = data.journalAricleData.count_other_faculty;
                                     document.getElementById('view-issn-no').innerText = data.journalAricleData.issn_no;
                                     document.getElementById('view-abdc-indexed-category').innerText = data.journalAricleData.abdc_indexed;
-                                    document.getElementById('view-web-link-doi-number').innerText = data.journalAricleData.web_link_doi_number;
+                                    document.getElementById('view-web-link-doi-number').innerText = data.journalAricleData.web_link_doi;
                                     document.getElementById('view-pages').innerText = data.journalAricleData.pages;
                                     document.getElementById('view-scs-cite-score').innerText = data.journalAricleData.scs_cite_score;
                                     document.getElementById('view-impact-factor').innerText = data.journalAricleData.impact_factors;
@@ -1603,7 +1659,11 @@
                                     document.getElementById('view-title-of-paper').innerText = data.journalAricleData.title_of_paper;
                                     document.getElementById('view-journal-category').innerText = data.journalAricleData.jorunal_article_type_id;
                                     document.getElementById('view-nmims-authors-count').innerText = data.journalAricleData.nmims_authors_count;
-                                }
+                                    document.getElementById('view-foreign-authors').innerText = data.journalAricleData.foreign_authors_name;
+                                    document.getElementById('view-names-nmims-student-author').innerText = data.journalAricleData.nmims_student_foreign_authors;
+                                    document.getElementById('view-no-nmims-student-author').innerText = data.journalAricleData.no_nmims_student_author;
+                                    document.getElementById('view-foreign-authors-number').innerText = data.journalAricleData.foreign_auhtor_no;
+                                                                    }
                                 else {
                                     Swal.fire({
                                         position: "top-center",
@@ -1664,9 +1724,15 @@
                     const issnNo = document.getElementById('issn-no').value;
                     const scsCiteScore = document.getElementById('scs-cite-score').value;
                     const gsIndex = document.getElementById('gs-indexed').value;
+
+                    const foreignAuhtorNo =  document.getElementById('foreign-author-no').value;
+                    const foreignAuthorsName =  document.getElementById('foreign-authors-name').value;
+                    const noNmimsStudentAuthor =  document.getElementById('no-nmims-student-author').value;
+                    const nmimsStudentForeignAuthors =  document.getElementById('nmims-student-foreign-authors').value;
+
                     const wosIndexedCategory = document.querySelector('input[name="wos-index-category"]:checked').value;
                     const scsIndexedCategory = document.querySelector('input[name="scopus-category"]:checked').value;
-                    const abdcIndexedCategory = document.querySelector('input[name="abdc-index-category"]:checked').value;
+                    const abdcIndexedCategory = document.getElementById('abdc-index-category').value
                     const ugcIndexedCategory = document.querySelector('input[name="ugc-index-category"]:checked').value;
                     const webLinkNumber = document.getElementById('web-link-num').value;
                     const uid = document.getElementById('uid').value;
@@ -1692,6 +1758,10 @@
                     updatedJournalPaperDetails.append('journalPaperId', journalPaperId);
                     updatedJournalPaperDetails.append('year', year);
                     updatedJournalPaperDetails.append('publisher', publisher);
+                    updatedJournalPaperDetails.append('foreignAuhtorNo', foreignAuhtorNo);
+                    updatedJournalPaperDetails.append('foreignAuthorsName', foreignAuthorsName);
+                    updatedJournalPaperDetails.append('noNmimsStudentAuthor', noNmimsStudentAuthor);
+                    updatedJournalPaperDetails.append('nmimsStudentForeignAuthors', nmimsStudentForeignAuthors);
                     updatedJournalPaperDetails.append('totalAuthors', totalAuthors);
                     updatedJournalPaperDetails.append('journalName', journalName);
                     updatedJournalPaperDetails.append('countOtherFaculty', countOtherFaculty);

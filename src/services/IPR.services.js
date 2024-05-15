@@ -7,6 +7,8 @@ module.exports.fetchPatentForm = async(userName) => {
 
     const iprData = IPRFormData.iprData;
     console.log('iprData ====>>>>>', iprData);
+    // console.log('patentSdgGoalData ===>>>>>>', IPRFormData.patentSdgGoalData);
+
 
     return IPRFormData.status === "Done" ? {
         status : IPRFormData.status,
@@ -18,7 +20,8 @@ module.exports.fetchPatentForm = async(userName) => {
         patentStatus : IPRFormData.patentStatus,
         schoolList : IPRFormData.nmimsSchoolList,
         campusList : IPRFormData.nmimsCampusList,
-        supportingDocumnets : IPRFormData.supportingdocumnets
+        supportingDocumnets : IPRFormData.supportingdocumnets,
+        patentSdgGoalData : IPRFormData.patentSdgGoalData,
 
     } : {}
 
@@ -38,6 +41,10 @@ module.exports.IprInsertDataService = async(body, files, userName) => {
     const inventionTypeData = JSON.parse(IprData.typeOfInvention);
     const nmimsSchoolIds = JSON.parse(IprData.nmimsSchoolIds);
     const nmimsCampusIds = JSON.parse(IprData.nmimsCampusIds);
+    const sdgDataIds = JSON.parse(IprData.sdgGoalsContainer);
+    const sdgGoalsData = sdgDataIds || []
+    const sdgGoalsIdArray = sdgGoalsData.map(Number);
+    console.log('sdgGoalsIdArray:', sdgGoalsIdArray);
 
     // Extract internalFaculty and externalEmpList arrays
     const internalFaculty = facultyData.find(item => item !== null && item.internalFaculty)?.internalFaculty || [];
@@ -55,7 +62,7 @@ module.exports.IprInsertDataService = async(body, files, userName) => {
     console.log('campusIdsArray ===>>>>>', campusIdsArray);
     console.log('inventionTypeIdsArray ===>>>>>', inventionTypeIdsArray);
 
-    const insertIprData = await IPRModels.InsetIPRDataModels(IprData, iprFilesNamesArray, FacultydataArray, schoolIdsArray, campusIdsArray, inventionTypeIdsArray, patentStatus, userName);
+    const insertIprData = await IPRModels.InsetIPRDataModels(IprData, iprFilesNamesArray, FacultydataArray, schoolIdsArray, campusIdsArray, inventionTypeIdsArray, patentStatus, sdgGoalsIdArray, userName);
 
     console.log('insertIprData ===>>>>', insertIprData);
     console.log('schoolDataList ===>>>>', insertIprData.schoolNames);
@@ -118,6 +125,13 @@ module.exports.updatedIprData = async(iprId, body, files, userName) => {
     const inventionTypeData =  updatedIPRData.typeOfInvention !== 'undefined' ?  JSON.parse(updatedIPRData.typeOfInvention) : null;
     const nmimsSchoolIds = updatedIPRData.nmimsSchoolIds !== 'undefined' ? JSON.parse(updatedIPRData.nmimsSchoolIds) : null;
     const nmimsCampusIds = updatedIPRData.nmimsCampusIds !== 'undefined' ? JSON.parse(updatedIPRData.nmimsCampusIds) : null;
+
+    const sdgDataIds =  updatedIPRData.sdgGoalsContainer !== 'undefined' || null ? JSON.parse(updatedIPRData.sdgGoalsContainer) : null;
+    const sdgGoalsData = sdgDataIds !== 'undefined' || null ? sdgDataIds || [] : null;
+    console.log('sdgGoalsData ===>>>',sdgGoalsData);
+    const sdgGoalsIdArray = sdgGoalsData.map(Number);
+    console.log('sdgGoalsIdArray:', sdgGoalsIdArray);
+
     // Extract internalFaculty and externalEmpList arrays
     const internalFaculty = facultyData.find(item => item !== null && item.internalFaculty)?.internalFaculty || [];
     const externalEmpList = facultyData.find(item => item  !== null && item.externalEmpList )?.externalEmpList || [];
@@ -133,7 +147,7 @@ module.exports.updatedIprData = async(iprId, body, files, userName) => {
     // console.log('campusIdsArray ===>>>>>', campusIdsArray);
     // console.log('inventionTypeIdsArray ===>>>>>', inventionTypeIdsArray);
    
-    const iprDataToBeUpdated = await IPRModels.updateIPRRecordData(iprId, updatedIPRData,  iprFilesNamesArray, FacultydataArray, schoolIdsArray, campusIdsArray, inventionTypeIdsArray, patentStatus, userName);
+    const iprDataToBeUpdated = await IPRModels.updateIPRRecordData(iprId, updatedIPRData,  iprFilesNamesArray, FacultydataArray, schoolIdsArray, campusIdsArray, inventionTypeIdsArray, patentStatus, sdgGoalsIdArray,  userName);
 
     console.log('iprDataToBeUpdated ====>>>>', iprDataToBeUpdated);
 
@@ -149,7 +163,8 @@ module.exports.updatedIprData = async(iprId, body, files, userName) => {
         documentIds: iprDataToBeUpdated.documentIds,
         invetionTypeNames: iprDataToBeUpdated.invetionTypeNames,
         statusTypeName: iprDataToBeUpdated.statusTypeName,
-        updatedIPRData : updatedIPRData
+        updatedIPRData : updatedIPRData,
+        
 
     } : {
         status : iprDataToBeUpdated.status,
@@ -175,7 +190,8 @@ module.exports.viewIprRecordDataRecord = async(iprId, userName) => {
         iprNmimsCampusList : viewIprRowData.iprNmimsCampusList,
         iprInventionList : viewIprRowData.iprInventionList,
         iprStatusList : viewIprRowData.iprStatusList,
-        iprDocumentsList : viewIprRowData.iprDocumentsList
+        iprDocumentsList : viewIprRowData.iprDocumentsList,
+        sdgGoals : viewIprRowData.sdgGoals
 
     } : {
         status : viewIprRowData.status,

@@ -22,7 +22,7 @@ module.exports.renderPharmacySeedGrantform = async(req, res, next) => {
 
 
 module.exports.insertInvestigationEducationalDetails = async(req, res, next) => {
-    console.log('data commint from frontend ====>>>>', req.body);
+    console.log('data commint from frontend ====>>>>', req.body.detailsContainerArray);
     const  userName = req.body.username;
     console.log('userName in controller  ===>>>>>>', userName);
 
@@ -34,8 +34,10 @@ module.exports.insertInvestigationEducationalDetails = async(req, res, next) => 
     res.status(statusCode).send({
         status : insertPharmacyInvestigatorEdu.status,
         message : insertPharmacyInvestigatorEdu.message,
-        detailsIds : insertPharmacyInvestigatorEdu.educatoinIds,
+        educatoinIds : insertPharmacyInvestigatorEdu.ids,
         rowCount : insertPharmacyInvestigatorEdu.rowCount,
+        educaltionalDetails : insertPharmacyInvestigatorEdu.detailsDataArray,
+
         errorCode : insertPharmacyInvestigatorEdu.errorCode
     })
 }
@@ -54,8 +56,9 @@ module.exports.investigatorExperience = async(req, res, next) => {
     res.status(statusCode).send({
         status : insertExperience.status,
         message : insertExperience.message,
-        invastigatorExperienceId : insertExperience.invastigatorExperienceId,
+        experienceId : insertExperience.ids,
         rowCount : insertExperience.rowCount,
+        experienceDetails : insertExperience.detailsDataArray,
         errorCode : insertExperience.errorCode
     })
 }
@@ -74,8 +77,10 @@ module.exports.investigatorBook = async(req, res, next) => {
     res.status(statusCode).send({
         status : insertInvestigatorBook.status,
         message : insertInvestigatorBook.message,
-        bookId : insertInvestigatorBook.bookId,
+        bookDetailsIds : insertInvestigatorBook.ids,
         rowCount : insertInvestigatorBook.rowCount,
+        bookDetails : insertInvestigatorBook.detailsDataArray,
+
         errorCode : insertInvestigatorBook.errorCode
     })
 }
@@ -93,8 +98,10 @@ module.exports.investigatorBookChapter = async(req, res, next) => {
     res.status(statusCode).send({
         status : insertInvestigatorBookChapter.status,
         message : insertInvestigatorBookChapter.message,
-        bookChapterId : insertInvestigatorBookChapter.bookChapterId,
+        bookChapterDetailsIds : insertInvestigatorBookChapter.ids,
         rowCount : insertInvestigatorBookChapter.rowCount,
+        bookChapterDetails : insertInvestigatorBookChapter.detailsDataArray,
+
         errorCode : insertInvestigatorBookChapter.errorCode
     })
 }
@@ -113,31 +120,35 @@ module.exports.investigatorPatent = async(req, res, next) => {
     res.status(statusCode).send({
         status : insertInvestigatorPatent.status,
         message : insertInvestigatorPatent.message,
-        patentId : insertInvestigatorPatent.patentId,
+        patentDetailsIds : insertInvestigatorPatent.ids,
         rowCount : insertInvestigatorPatent.rowCount,
+        patentDetails : insertInvestigatorPatent.detailsDataArray,
+
         errorCode : insertInvestigatorPatent.errorCode
     })
 }
 
-// module.exports.investigatorPublication = async(req, res, next) => {
-//     console.log('publication data in controller ===>>>>>', req.body);
+module.exports.investigatorPublication = async(req, res, next) => {
+    console.log('publication data in controller ===>>>>>', req.body);
 
-//     const  userName = req.body.username;
-//     console.log('userName in controller  ===>>>>>>', userName);
+    const  userName = req.body.username;
+    console.log('userName in controller  ===>>>>>>', userName);
 
-//     const insertInvestigatorPublication = await pharmacyService.insertInvestorPublication(req.body, userName);
+    const insertInvestigatorPublication = await pharmacyService.insertInvestorPublication(req.body, userName);
 
-//     const statusCode = insertInvestigatorPublication.status === "Done" ? 200 : (insertInvestigatorPublication.errorCode ? 400 : 500);
-//     console.log('insertInvestigatorPublication ====>>>>>>', insertInvestigatorPublication);
+    const statusCode = insertInvestigatorPublication.status === "Done" ? 200 : (insertInvestigatorPublication.errorCode ? 400 : 500);
+    console.log('insertInvestigatorPublication ====>>>>>>', insertInvestigatorPublication);
     
-//     res.status(statusCode).send({
-//         status : insertInvestigatorPublication.status,
-//         message : insertInvestigatorPublication.message,
-//         publicationId : insertInvestigatorPublication.publicationId,
-//         rowCount : insertInvestigatorPublication.rowCount,
-//         errorCode : insertInvestigatorPublication.errorCode
-//     })
-// }
+    res.status(statusCode).send({
+        status : insertInvestigatorPublication.status,
+        message : insertInvestigatorPublication.message,
+        publicationDetailsIds : insertInvestigatorPublication.ids,
+        rowCount : insertInvestigatorPublication.rowCount,
+        PublicationDetails : insertInvestigatorPublication.detailsDataArray,
+
+        errorCode : insertInvestigatorPublication.errorCode
+    })
+}
 
 module.exports.investigatorResearchImplementation = async(req, res, next) => {
     console.log('implementation dat in controller ===>>>>>', req.body);
@@ -153,8 +164,9 @@ module.exports.investigatorResearchImplementation = async(req, res, next) => {
     res.status(statusCode).send({
         status : insertInvestigatorResImple.status,
         message : insertInvestigatorResImple.message,
-        implementationId : insertInvestigatorResImple.implementationId,
+        implementationIds : insertInvestigatorResImple.ids,
         rowCount : insertInvestigatorResImple.rowCount,
+        researchImplementationDetails : insertInvestigatorResImple.detailsDataArray,
         errorCode : insertInvestigatorResImple.errorCode
     })
 }
@@ -174,8 +186,9 @@ module.exports.investigatorResearchCompleted = async(req, res, next) => {
     res.status(statusCode).send({
         status : insertInvestigatorResCompleted.status,
         message : insertInvestigatorResCompleted.message,
-        CompletedId : insertInvestigatorResCompleted.CompletedId,
+        CompletedIds : insertInvestigatorResCompleted.ids,
         rowCount : insertInvestigatorResCompleted.rowCount,
+        completedDetails : insertInvestigatorResCompleted.detailsDataArray,
         errorCode : insertInvestigatorResCompleted.errorCode
     })
 }
