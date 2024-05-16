@@ -73,6 +73,7 @@ module.exports.insertconsultancyFormData = async(req, res, next) => {
 
 
 module.exports.updateConsultancyApprovalFormData = async(req, res, next) => {
+    console.log('ggggggggggggggggggggggggggggg');
     const  userName = req.body.username;
     console.log('userName in controller  ===>>>>>>', userName);
     console.log('data in controller ====>>>>', req.body);

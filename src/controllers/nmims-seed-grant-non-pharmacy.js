@@ -1,7 +1,3 @@
-// module.exports.renderNmimsSeedGrantNonFormacy = async(req, res, next) => {
-
-//     res.render('nmims-seed-grant-non-pharmacy')
-// }
 
 const seedGrantNonForphacyService = require('../services/nmims-seed-grant-non-pharmacy.service');
 
@@ -10,7 +6,7 @@ module.exports.renderNmimsSeedGrantNonFormacy = async(req, res, next) => {
     console.log('userName in controller  ===>>>>>>', userName);
 
     const renderSeedGrantFormData = await seedGrantNonForphacyService.fetchNoFormacyForm(userName);
-    // console.log('renderSeedGrantFormData in controller ===>>>>', renderSeedGrantFormData)
+    console.log('renderSeedGrantFormData in controller ===>>>>', renderSeedGrantFormData.seedGrantFormData)
     res.render("nmims-seed-grant-non-pharmacy", {
       status: renderSeedGrantFormData.status,
       message: renderSeedGrantFormData.message,
@@ -82,8 +78,9 @@ module.exports.updatedNonFormacyform = async(req, res, next) => {
     console.log('data in controller ====>>>>', req.body);
     const  userName = req.body.username;
     console.log('userName in controller  ===>>>>>>', userName);
+    console.log('files in controller =====>>>>', req.files);
 
-    const updatedNonFormacyDataFormacyFormData = await seedGrantNonForphacyService.updateSeedGrantNonFormacyData(req.body,userName);
+    const updatedNonFormacyDataFormacyFormData = await seedGrantNonForphacyService.updateSeedGrantNonFormacyData(req.body, req.files,userName);
 
     console.log('updatedNonFormacyDataFormacyFormData ====>>>>>>', updatedNonFormacyDataFormacyFormData)
     const statusCode = updatedNonFormacyDataFormacyFormData.status === "Done" ? 200 : (updatedNonFormacyDataFormacyFormData.errorCode ? 400 : 500);

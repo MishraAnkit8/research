@@ -7,10 +7,11 @@ module.exports.fetchNoFormacyForm = async(userName) => {
     const seedGrantFormData = await seedGrantModels.renderSeedGrantNonFormacy(userName);
 
     console.log("facultyData ====>>>>>", seedGrantFormData.facultyData);
-    console.log('seedGrantFormData ===>>>>', JSON.stringify(seedGrantFormData.seedGrantFormDataRows));
+    // console.log('seedGrantFormData ===>>>>', JSON.stringify(seedGrantFormData.seedGrantFormDataRows));
     const paymentDataArray = seedGrantFormData.seedGrantFormDataRows;
+    const seedGrantFormDataRows = seedGrantFormData.seedGrantFormDataRows;
     console.log("paymentDataArray ====>>>>", paymentDataArray);
-    console.log('seed grant ',JSON.stringify(seedGrantFormData.seedGrantFormDataRows))
+    // console.log('seed grant ',JSON.stringify(seedGrantFormData.seedGrantFormDataRows))
 
 
 
@@ -20,9 +21,9 @@ module.exports.fetchNoFormacyForm = async(userName) => {
              const Data = parseInt(payment.final_payment) + parseInt(payment.advanced_payment);
              let gstCharge = Data * 18/100;
 
-             console.log('gstCharge ===>>>>', gstCharge);
-             console.log('final_payment ===>>>>', parseInt(payment.final_payment));
-             console.log('final_payment ===>>>>',  parseInt(payment.final_payment));
+            //  console.log('gstCharge ===>>>>', gstCharge);
+            //  console.log('final_payment ===>>>>', parseInt(payment.final_payment));
+            //  console.log('final_payment ===>>>>',  parseInt(payment.final_payment));
              let totalCost = parseInt(payment.research_staff_expenses) + parseInt(payment.travel)
              + parseInt(payment.computer_charges) + parseInt(payment.nmims_facility_charges) + 
              parseInt(payment.gross_fees) + parseInt(payment.miscellaneous_including_contingency)
@@ -32,7 +33,7 @@ module.exports.fetchNoFormacyForm = async(userName) => {
              totalPayment.push({totalPayment : Data,totalGrant : grantTotal});
     })
 
-    console.log("totalPayment", totalPayment);
+    // console.log("totalPayment", totalPayment);
  
 
     return seedGrantFormData.status === "Done" ? {
@@ -73,11 +74,13 @@ module.exports.insertSeedGrantNonFormacy = async(body, files, userName) => {
     }
 }
 
-module.exports.updateSeedGrantNonFormacyData = async(body, userName) => {
-    const grantedSeedId = body.updatedSeedGrantData.grantedSeedId;
-    const updatedSeedGrantData = body.updatedSeedGrantData;
-
-    const updatedNonFormacyData  = await seedGrantModels.updateSeedGrantNonformacyForm(grantedSeedId, updatedSeedGrantData, userName);
+module.exports.updateSeedGrantNonFormacyData = async(body, files, userName) => {
+    const updatedSeedGrantData = body;
+    console.log('body in service cc =====>>>>>>>', body);
+    const pharmacyFiles = files?.map(file => file.filename).join(',');
+    console.log('pharmacyFiles in service ==>>>', pharmacyFiles)
+    const grantedSeedId = body.grantedSeedId;
+    const updatedNonFormacyData  = await seedGrantModels.updateSeedGrantNonformacyForm(grantedSeedId, updatedSeedGrantData, pharmacyFiles, userName);
     console.log('updatedNonFormacyData ====>>>>>', updatedNonFormacyData);
 
     return updatedNonFormacyData.status === "Done" ? {

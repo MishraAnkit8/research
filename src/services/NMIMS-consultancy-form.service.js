@@ -51,6 +51,7 @@ module.exports.updateConsultancyApprovalData = async(body, files, userName) => {
     console.log(' nmimsConsultancyFormId===>>>>>>', nmimsConsultancyFormId);
     const updatedConsultancyApprovalRecord = body;
     const consultancyFiles = files?.map(file => file.filename).join(',');
+    console.log('consultancyFiles ===>>>>', consultancyFiles)
 
     const updateConsultancyApprovalFormData  = await consultancyFormModels.updateApprovalFormData(nmimsConsultancyFormId, updatedConsultancyApprovalRecord, consultancyFiles, userName);
     console.log('updateConsultancyApprovalFormData ====>>>>>', updateConsultancyApprovalFormData);

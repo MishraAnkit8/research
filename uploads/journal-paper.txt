@@ -1,0 +1,2440 @@
+<%- include('./partials/head') %>
+    <!-- inline css -->
+    <!-- Navbar section -->
+    <%- include('./partials/header') %>
+        <!-- This is left sidebar  -->
+        <%- include('./partials/left-sidebar') %>
+
+            <!-- This is right side section -->
+            <main class="main" id="main-content">
+                <div class="base-section coustom-section">
+                    <!--DASHBOARD CONTENT START-->
+                    <div class="errorHtml"></div>
+                    <div class="breadcrumbs-container">
+                        <ul class="breadcrumb">
+                            <li class="breadcrumb-link">
+                                <a href="<%- BASE_URL %>research"> Research </a>
+                            </li>
+                            <li class="breadcrumb-link">Journal Articles Published</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <div class="table-card-header text-uppercase d-flex align-items-center justify-content-between">
+                            <div>
+                                <h5 class="pl-2">Journal Article Published List</h5>
+                            </div>
+                            <div>
+                                <button id="journal-paper-add-modal" type="button"
+                                    class="btn btn-primary border border-primary add-modal" data-toggle="modal"
+                                    data-target="#journal-paper-modal">ADD
+                                    <i class="fas fa-plus plus"></i></button>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body table-responsive">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <!-- <label>Show Entries</label>
+                                    <select class="form-select" id="changeEntry">
+                                        <option value="5">5</option>
+                                        <option value="10">10</option>
+                                        <option value="25">25</option>
+                                        <option value="50">50</option>
+                                        <option value="100">100</option>
+                                        <option value="150">150</option>
+                                        <option value="200">200</option>
+                                        <option value="250">250</option>
+                                        <option value="300">300</option>
+                                        <option value="350">350</option>
+                                        <option value="400">400</option>
+                                        <option value="500">500</option>
+                                        <option value="800">800</option>
+                                        <option value="1000">1000</option>
+                                    </select> -->
+                                </div>
+                                <div>
+                                    <!-- <div class="table-searchbar-container">
+                                        <button type="button" id="searchBtn"><i class="fas fa-search"></i></button>
+                                        <input type="search" id="searchKeyword" placeholder="Enter keywords"
+                                            class="table-searchbar">
+                                    </div> -->
+                                </div>
+                            </div>
+                            <table class="table vertical-lines custom-table table-responsive research-pagination"
+                                id="journal-paper-list">
+                                <thead scope="row">
+                                    <td class="col-lg-1 fw-bold">#</td>
+                                    <td class="col-lg-1 fw-bold">Year Of Publishing</td>
+                                    <td class="col-lg-1 fw-bold">School</td>
+                                    <td class="col-lg-1 fw-bold">Campus</td>
+                                    <td class="col-lg-1 fw-bold">Policy Cadre</td>
+                                    <td class="col-lg-1 fw-bold">Impact Factor</td>
+                                    <td class="col-lg-1 fw-bold">Publisher</td>
+                                    <td class="col-lg-1 fw-bold">Total No. of Authors</td>
+                                    <td class="col-lg-1 fw-bold">Journal Name</td>
+                                    <td class="col-lg-1 fw-bold">Action</td>
+                                </thead>
+                                <tbody class="data-list">
+                                    <% journalData .forEach(function(journalPaper,index) { %>
+                                        <tr scope="row"
+                                            data-count-other-faculty="<%- journalPaper.count_other_faculty %>"
+                                            data-nmims-author-count="<%- journalPaper.nmims_authors_count %>"
+                                            data-pages="<%- journalPaper.pages %>"
+                                            data-issn-no="<%- journalPaper.issn_no %>"
+                                            data-scs-cite-score="<%- journalPaper.scs_cite_score %>"
+                                            data-uid="<%- journalPaper.uid %>"
+                                            data-scs-indexed="<%- journalPaper.scs_indexed %>"
+                                            data-gs-indexed="<%- journalPaper.gs_index %>"
+                                            data-wos-indexed="<%- journalPaper.wos_indexed %>"
+                                            data-title-of-paper="<%- journalPaper.title_of_paper %>"
+                                            data-abdc-indexed="<%- journalPaper.abdc_indexed %>"
+                                            data-ugc-indexed="<%- journalPaper.ugc_indexed %>"
+                                            data-web-link-number="<%- journalPaper.web_link_doi_number %>"
+                                            data-date-of-publishing="<%- journalPaper.date_of_publishing %>"
+                                            data-journal-category="<%- journalPaper.jorunal_article_type_id %>"
+                                            data-all-authors="<%- journalPaper.all_article_authors_names  %>"
+                                            data-nmims-faculty-ids="<%- journalPaper.nmims_facilty_id %>"
+                                            data-article-faculties-ids="<%- journalPaper.articles_faculties_ids %>"
+                                            data-campus-ids="<%- journalPaper.campus_id %>"
+                                            data-school-ids="<%- journalPaper.school_id %>"
+                                            data-imapcat-factor-ids="<%- journalPaper.impact_factors_ids %>"
+                                            data-policy-cadre-ids="<%- journalPaper.policy_cadre_ids %>"
+                                            data-policy-cadre="<%- journalPaper.policy_cadre %>"
+                                            data-impact-factors="<%- journalPaper.impact_factors %>"
+                                            data-documents="<%- journalPaper.supporting_documents %>"
+                                            data-documents-ids="<%- journalPaper.supporting_documents_ids %>"
+                                            data-journal-article-id="<%- journalPaper.article_id %>">
+                                            <td class=""> <%- index + 1 %> </td>
+                                            <td class="year col-lg-1"> <%- journalPaper.year %> </td>
+                                            <td class="school col-lg-1"> <%- journalPaper.associated_schools %> </td>
+                                            <td class="campus col-lg-1"> <%- journalPaper.associated_campuses %> </td>
+                                            <td class="policy-cadre col-lg-1"><%- journalPaper.policy_cadre %></td>
+                                            <td class="impcat-factor col-lg-1"><%- journalPaper.impact_factors %></td>
+                                            <td class="publisher col-lg-1"><%- journalPaper.publisher %></td>
+                                            <td class="total-authors col-lg-1"><%- journalPaper.total_authors %></td>
+                                            <td class="journal-name col-lg-1"><%- journalPaper.journal_name %></td>
+
+                                            <td style="display:flex;justify-content: center;">
+                                                <b style="cursor: pointer;" title="View" class="view border-right-0"
+                                                    data-journal-article-id="<%- journalPaper.article_id %>">
+                                                    <!-- <label class="view" data-journal-article-id="<%- journalPaper.article_id %>">
+                                    <i class="fa-solid fa-eye view text-danger" data-journal-article-id="<%- journalPaper.article_id %>"></i>
+                                </label> -->
+                                                    &#128065;
+                                                </b>&ensp;
+                                                <b style="cursor: pointer;" title="Edit" class="edit border-right-0"
+                                                    data-journal-article-id="<%- journalPaper.article_id %>">
+                                                    <!-- <label class="edit" data-journal-article-id="<%- journalPaper.article_id %>">
+                                    <i class="fa fa-edit edit text-danger" data-journal-article-id="<%- journalPaper.article_id %>"></i>
+                                </label> -->
+                                                    &#9998;
+                                                </b>&ensp;
+                                                <b style="cursor: pointer;" title="Delete" class="delete border-right-0"
+                                                    data-journal-article-id="<%- journalPaper.article_id %>">
+                                                    <!-- <label class="delete" data-journal-article-id="<%- journalPaper.article_id %>">
+                                    <i class="fa-solid fa-trash delete text-danger" data-journal-article-id="<%- journalPaper.article_id %>"></i>
+                                </label> -->
+                                                    &#128465;
+
+                                                </b>
+                                            </td>
+                                        </tr>
+                                        <% }); %>
+                                </tbody>
+                                <tr>
+                                    <div id="no-records-message"
+                                        style="display: none; color: red; margin-top: 10px; padding-left: 40%;">
+                                        <b class="no-record">No records found.</b>
+                                    </div>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <label id="total-row-count"> </label>
+                            <label class="d-none" id="row-count"></label>
+                        </div>
+                        <div>
+                            <!-- <button id="prevBtn" class="btn btn-primary">Previous</button>
+                            <button id="nextBtn" class="btn btn-primary">Next</button>
+                            <p id="pagination" class="pagination-search"></p> -->
+                        </div>
+                    </div>
+                    <!--Import Modal -->
+                    <div class="modal fade" id="open-program-modal" tabindex="-1" aria-labelledby="open-program-modal"
+                        aria-hidden="true">
+                    </div>
+                    <!-- EDIT PROGRAM AND UPDATE -->
+                    <div class="modal fade" id="edit-program-modal" tabindex="-1" aria-labelledby="editModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="editModalLabel">Update Program</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div id="errorHtml"></div>
+                                <div class="modal-body">
+                                    <div class="mb-3">
+                                        <label for="exampleInputEmail1" class="form-label">Program Name</label>
+                                        <input type="text" class="form-control" id="program_name" name="program_name">
+                                        <input type="hidden" class="form-control" id="hidden_id" name="hidden_id">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="exampleInputPassword1" class="form-label">Program Type</label>
+                                        <select class="form-control" name="program_type_lid" id="program_type_lid">
+
+                                            <option value="1">Full Time</option>
+
+                                            <option value="2">Part Time</option>
+
+                                        </select>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="abbr" class="form-label">Program Abbr</label>
+                                        <input type="text" class="form-control" id="abbr" name="abbr">
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-primary updateProgram">Update</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <!-- journal paper modal form  -->
+            <div class="modal fade " id="journal-paper-modal" tabindex="-1" role="dialog"
+                aria-labelledby="journal-paper-modal" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-scrollable modal-lg modal-fullscreen p-5" role="document">
+                    <div class="modal-content modal-content-data validate-input">
+                        <div class="modal-header">
+                            <h4 class="modal-title" id="journal-paper-title">Journal Article Published</h4>
+                            <div class="close" id="headerClose" data-dismiss="modal" aria-label="Close">
+                                <span type="button" aria-hidden="true"><i class="fas fa-times "></i></span>
+                            </div>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <!-- year -->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="year" class="form-label fw-bold">Year Of Publishing </label>
+                                    <input type="text" name="year" id="year"
+                                        data-validate="isEmpty,isNumber,isValidYear"
+                                        data-err-msg="Year is required with formate yyyy." class="form-control"
+                                        required />
+                                </div>
+                                <!-- nmims School-->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="nmims-school" class="form-label fw-bold">School</label>
+                                    <select class="select-option drop-list" id="nmims-school-list"
+                                        data-validate="isEmpty,isExist"
+                                        data-err-msg="This field is required and select value" required multiple>
+                                        <option class="select-option" id="school-option" value="">Select School
+                                        </option>
+                                        <% nmimsSchoolList.forEach(function(school) { %>
+
+                                            <option value="<%= school.id %>">
+                                                <%= school.name %>
+                                            </option>
+                                            <% }); %>
+                                    </select>
+                                </div>
+
+                                <!-- nmims campus -->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="nmims-campus" class="form-label fw-bold">Campus</label>
+                                    <select class="select-option" id="nmims-campus-list" data-validate="isEmpty,isExist"
+                                        data-err-msg="This field is required and select value" required multiple>
+                                        <option value="" id="campus-option">Select Campus</option>
+                                        <% nmimsCampusList.forEach(function(campus) { %>
+                                            <option value="<%= campus.id %>">
+                                                <%= campus.name %>
+                                            </option>
+                                            <% }); %>
+                                    </select>
+                                </div>
+                                <!-- Policy Cadre
+                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="policyCadre" class="form-label fw-bold"> Policy Cadre </label>
+                        <input type="text" name="policy-cadre" id="policy-cadre" data-validate="isEmpty,isNotNumber,isExist,isNotSpecialChar" data-err-msg="Provide Valid Input" class="form-control"
+                             required />
+                    </div> -->
+
+                                <!-- Policy Cadre-->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="policy-cadre-list" class="form-label fw-bold">Policy Cadre</label>
+                                    <select class="select-option" id="policy-cadre-list" data-validate="isEmpty,isExist"
+                                        data-err-msg="This field is required and select value" required multiple>
+                                        <option value="">Select Policy Cadre</option>
+                                        <% policyCadre.forEach(function(policy) { %>
+                                            <option value="<%= policy.id %>">
+                                                <%= policy.name %>
+                                            </option>
+                                            <% }); %>
+                                    </select>
+                                </div>
+                                <!-- All authors -->
+                                <!-- <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="all-authors" class="form-label fw-bold">Names Of All Authors</label>
+                        <input type="text" name="all-authors" id="all-authors" data-validate="isEmpty,isNotNumber,isExist,isNotSpecialChar" data-err-msg="Provide Valid Input" class="form-control" required>
+                    </div> -->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="all-author-list" class="form-label fw-bold">Names Of All Authors</label>
+                                    <select class="select-option" id="all-author-list" data-validate="isEmpty,isExist"
+                                        data-err-msg="This field is required and select value" required multiple>
+                                        <option value="">Select Authors Names</option>
+                                        <% allAuthorList.forEach(function(author) { %>
+                                            <option value="<%= author.id %>">
+                                                <%= author.name %>
+                                            </option>
+                                            <% }); %>
+                                    </select>
+                                </div>
+                                <!-- Total No. of Authors -->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="totalAuthors" class="form-label fw-bold">Total No. of Authors</label>
+                                    <input type="number" name="total-authors" id="total-authors"
+                                        data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required."
+                                        class="form-control numbers" required>
+                                </div>
+                                <!-- Name of NMIMS Authors -->
+                                <!-- <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="nmims-authors" class="form-label fw-bold">Names Of NMIMS Authors</label>
+                        <input type="text" name="nmims-authors" id="nmims-authors" data-validate="isEmpty,isLength:2:255"  data-err-msg="Provide Valid Input" class="form-control"
+                             required>
+                    </div> -->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="nmims-faculty-list" class="form-label fw-bold">Names Of NMIMS
+                                        Authors</label>
+                                    <select class="select-option" id="internal-faculty-list"
+                                        data-validate="isEmpty,isExist"
+                                        data-err-msg="This field is required and select value" required multiple>
+                                        <option value="" id="select-author-name">Select NMIMS Authors Names </option>
+                                        <% internalEmpList.forEach(function(faculty) { %>
+                                            <option value="<%= faculty.id %>">
+                                                <%= faculty.name %>
+                                            </option>
+                                            <% }); %>
+                                    </select>
+                                </div>
+                                <!-- No. of NMIMS Authors -->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="NMIMSAuthors" class="form-label fw-bold">No. of NMIMS Authors</label>
+                                    <input type="number" name="volumes" id="nmims-authors-count"
+                                        data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required."
+                                        class="form-control numbers" required>
+                                </div>
+                                <!-- Journal Name -->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="journalName" class="form-label fw-bold">Journal Name</label>
+                                    <input type="text" name="journal-name" id="journal-name"
+                                        data-validate="isEmpty,isExist,isAllNumeric,isLength:2:255"
+                                        data-err-msg="Provide Valid Input" class="form-control" required>
+                                </div>
+
+                                <!-- uid -->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="uid" class="form-label fw-bold">UID</label>
+                                    <input type="number" name="uid" id="uid" data-validate="isEmpty,isNumber"
+                                        data-err-msg="Numeric value is required" class="form-control numbers" required>
+                                </div>
+
+                                <!-- Publisher -->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="publisher" class="form-label fw-bold"> Publisher </label>
+                                    <input type="text" name="publisher" id="publisher"
+                                        data-validate="isEmpty,isNotNumber,isNotSpecialChar,isExist"
+                                        data-err-msg="Provide Valid Input" class="form-control" required />
+                                </div>
+                                <!-- Count of Other Faculty -->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="count-other-faculty" class="form-label fw-bold">NoN-NMIMS Authors</label>
+                                    <input type="number" name="count-other-faculty" id="count-other-faculty"
+                                        data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required."
+                                        class="form-control numbers" required />
+                                </div>
+                                <!-- Vol,Issue,Page No -->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="page" class="form-label fw-bold">Vol,Issue,Page No.</label>
+                                    <input type="text" name="pages" id="pages" class="form-control numbers"
+                                        data-validate="isEmpty" data-err-msg="Numeric value is required."
+                                        required>
+                                </div>
+                                <!-- ISSN No. -->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="issNo" class="form-label fw-bold">ISSN No.</label>
+                                    <input type="text" name="iss-no" id="issn-no" class="form-control numbers"
+                                        data-validate="isEmpty" data-err-msg="Numeric value is required."
+                                        required>
+                                </div>
+                                <!-- SCS Cite Score -->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="scs-cite-score" class="form-label fw-bold">SCS Cite Score</label>
+                                    <input type="number" name="scsCiteScores" id="scs-cite-score"
+                                        data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required."
+                                        class="form-control numbers" required>
+                                </div>
+                                <!-- Impact Factor -->
+                                <!-- <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="impact-factor" class="form-label fw-bold">Impact Factor As Per Clarivate Analytics </label>
+                        <input type="text" name="impactFactors" id="impact-factor" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="Provide Valid Input"   class="form-control" required>
+                    </div> -->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="impact-factor-list" class="form-label fw-bold">Impact Factor</label>
+                                    <select class="select-option" id="impact-factor-list"
+                                        data-validate="isEmpty,isExist"
+                                        data-err-msg="This field is required and select value" required multiple>
+                                        <option value="">Select Impact Factors</option>
+                                        <% impactFactor.forEach(function(factor) { %>
+                                            <option value="<%= factor.id %>">
+                                                <%= factor.name %>
+                                            </option>
+                                            <% }); %>
+                                    </select>
+                                </div>
+                                <!-- Weblink-DOI Number -->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="web-link" class="form-label fw-bold">WEB Link DOI No.</label>
+                                    <input type="text" name="webLinks" id="web-link-num" class="form-control numbers"
+                                        data-validate="isEmpty," data-err-msg="Field is required" required>
+                                </div>
+                                <!-- Names of NMIMS Student  Author-->
+                                <!-- <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="names-nmims-student-author" class="form-label fw-bold">Names of NMIMS Student  Author</label>
+                        <input type="text"  id="names-nmims-student-author" data-validate="isEmpty,isLength:2:255"  data-err-msg="Provide Valid Input" class="form-control"
+                        required>
+                    </div> -->
+                                <!-- NO. OF NMIMS Student  Authors-->
+                                <!-- <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                        <label for="no-nmims-student-author" class="form-label fw-bold">NO. OF NMIMS Student  Authors</label>
+                        <input type="number"  id="no-nmims-student-author" class="form-control" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required" required>
+                    </div> -->
+                                <!-- Date of Publishing -->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="date-of-publishing" class="form-label fw-bold">Date of
+                                        Publishing</label>
+                                    <input type="date" name="dop" id="date-of-publishing"
+                                        data-validate="isEmpty,isExist" data-err-msg="Date is required"
+                                        class="form-control" required>
+                                </div>
+                                <!-- title-of-paper -->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="title-of-paper" class="form-label fw-bold">Title Of Paper</label>
+                                    <input type="text" name="dop" id="title-of-paper"
+                                        data-validate="isEmpty,isNotNumber,isExist" data-err-msg=" Provide valid input"
+                                        class="form-control" required>
+                                </div>
+
+                                <!-- Upload Supporting Documents-->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label class="form-label fw-bold ">
+                                        Upload Supporting Documents
+                                        <div id="uploadNewSupportDocumentDiv">
+                                            <label for="uploadNewSupportDocument"><small>Click to Upload New
+                                                    File</small></label>
+                                            <input type="checkbox" name="uploadNewSupportDocument"
+                                                id="uploadNewSupportDocument">
+                                        </div>
+                                    </label>
+                                    <div class="d-flex ">
+                                        <input type="file" name="journal-article-documents"
+                                            id="journal-article-documents" class="col-md-8 form-control"
+                                            data-validate="isEmpty,isExist,isFile" data-err-msg="File is required."
+                                            required multiple>
+                                        <button class="download-btn download-file d-none" id="journal-data-file-edit"><i
+                                                class="fas fa-download text-danger"></i>Download</button>
+                                    </div>
+                                </div>
+                                <!-- GS Indexed -->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="gs-index" class="form-label fw-bold">GS Indexed</label>
+                                    <input type="number" name="gs-indexed" id="gs-indexed"
+                                        data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required"
+                                        class="form-control numbers" required>
+                                </div>
+
+                                <!-- Research Journal Paper type   -->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="journal-category" id="journal-category"
+                                        class="form-label fw-bold mb-3">International/National Journal</label><br>
+                                    <div class="form-check-inline">
+                                        <label for="inter-national" class="form-check-label">
+                                            <input type="radio" class="form-check-input" id="inter-national"
+                                                name="journal-category" value="2"> International
+                                        </label>
+                                    </div>
+                                    <div class="form-check-inline">
+                                        <label for="national" class="form-check-label">
+                                            <input type="radio" class="form-check-input" id="national"
+                                                name="journal-category" value="1" checked> National
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- SCS Indexed -->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="scs-indexed" class="form-label fw-bold mb-3"> SCS Indexed </label><br>
+                                    <div class="form-check-inline">
+                                        <label for="scopus-yes" class="form-check-label">
+                                            <input type="radio" class="form-check-input" id="scopus-yes"
+                                                name="scopus-category" value="Yes"> Yes
+                                        </label>
+                                    </div>
+                                    <div class="form-check-inline">
+                                        <label for="scopus-no" class="form-check-label">
+                                            <input type="radio" class="form-check-input" id="scopus-no"
+                                                name="scopus-category" value="No" checked> No
+                                        </label>
+                                    </div>
+                                </div>
+                                <!-- WoS Indexed -->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="wos-indexed" class="form-label fw-bold mb-3">WoS Indexed</label><br>
+                                    <div class="form-check-inline">
+                                        <label for="wos-index-yes" class="form-check-label">
+                                            <input type="radio" class="form-check-input" id="wos-index-yes"
+                                                name="wos-index-category" value="Yes"> Yes
+                                        </label>
+                                    </div>
+                                    <div class="form-check-inline">
+                                        <label for="wos-index-no" class="form-check-label">
+                                            <input type="radio" class="form-check-input" id="wos-index-no"
+                                                name="wos-index-category" value="No" checked> No
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- ABDC Indexed -->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="gs-index" class="form-label fw-bold mb-3">ABDC Indexed</label><br>
+                                    <div class="form-check-inline">
+                                        <label for="abdc-index-yes" class="form-check-label">
+                                            <input type="radio" class="form-check-input" id="abdc-index-yes"
+                                                name="abdc-index-category" value="Yes"> Yes
+                                        </label>
+                                    </div>
+                                    <div class="form-check-inline">
+                                        <label for="abdc-index-no" class="form-check-label">
+                                            <input type="radio" class="form-check-input" id="abdc-index-no"
+                                                name="abdc-index-category" value="No" checked> No
+                                        </label>
+                                    </div>
+                                </div>
+                                <!-- UGC Indexed -->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="ugc-indexed" class="form-label fw-bold mb-3">UGC Indexed</label><br>
+                                    <div class="form-check-inline">
+                                        <label for="ugc-index-yes" class="form-check-label">
+                                            <input type="radio" class="form-check-input" id="ugc-index-yes"
+                                                name="ugc-index-category" value="Yes"> Yes
+                                        </label>
+                                    </div>
+                                    <div class="form-check-inline">
+                                        <label for="ugc-index-no" class="form-check-label">
+                                            <input type="radio" class="form-check-input" id="ugc-index-no"
+                                                name="ugc-index-category" value="No" checked> No
+                                        </label>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" id="footerClose" class="btn btn-secondary"
+                                data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary d-none" id="submit-btn">Submit</button>
+                            <button type="button" class="btn btn-primary d-none " id="update-btn">Update</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- modal form for view -->
+            <div class="modal fade " id="journal-paper-modal-view" tabindex="-1" role="dialog"
+                aria-labelledby="journal-paper-modal" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-scrollable modal-lg modal-fullscreen p-5" role="document">
+                    <div class="modal-content modal-content-data">
+                        <div class="modal-header">
+                            <h4 class="modal-title" id="journal-paper-title">Journal Article Published View</h4>
+                            <div class="close" data-dismiss="modal" aria-label="Close">
+                                <span type="button" aria-hidden="true"><i class="fas fa-times "></i></span>
+                            </div>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <!-- Year -->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="sub-title-text sub-title">Year:</div>
+                                        <label class="view-content" id="view-year"></label>
+
+                                    </div>
+                                </div>
+                                <!-- school -->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="sub-title-text sub-title">School:</div>
+                                        <label class="view-content" id="view-school"></label>
+                                    </div>
+                                </div>
+                                <!-- Campus -->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="sub-title-text sub-title">Campus:</div>
+                                        <label class="view-content" id="view-campus"></label>
+                                    </div>
+                                </div>
+                                <!--Policy Cadre -->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="sub-title-text sub-title">Policy Cadre:</div>
+                                        <label class="view-content" id="view-policy-cadre"></label>
+                                    </div>
+                                </div>
+                                <!-- All authors -->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="sub-title-text sub-title">All authors:</div>
+                                        <label class="view-content" id="view-all-authors"></label>
+                                    </div>
+                                </div>
+                                <!-- Total No. of Authors -->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="sub-title-text sub-title">Total No. of Authors:</div>
+                                        <label class="view-content" id="view-total-authors"></label>
+                                    </div>
+                                </div>
+                                <!-- Name of NMIMS Authors -->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="sub-title-text sub-title">Name Of NMIMS Authors:</div>
+                                        <label class="view-content" id="view-nmims-authors"></label>
+                                    </div>
+                                </div>
+                                <!-- Journal Name -->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="sub-title-text sub-title">Journal Name:</div>
+                                        <label class="view-content" id="view-journal-name"></label>
+                                    </div>
+                                </div>
+                                <!-- Publisher -->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="sub-title-text sub-title">Publisher:</div>
+                                        <label class="view-content" id="view-publisher"></label>
+                                    </div>
+                                </div>
+                                <!-- Count Faculty -->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="sub-title-text sub-title">Count Other Faculty:</div>
+                                        <label class="view-content" id="view-count-of-other-faculty"></label>
+                                    </div>
+                                </div>
+                                <!-- iss -number -->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="sub-title-text sub-title">ISSN No:</div>
+                                        <label class="view-content" id="view-issn-no"></label>
+                                    </div>
+                                </div>
+                                <!-- pages -->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="sub-title-text sub-title">Pages:</div>
+                                        <label class="view-content" id="view-pages"></label>
+                                    </div>
+                                </div>
+                                <!-- Scs-cite-score -->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="sub-title-text sub-title">SCS Cite Score:</div>
+                                        <label class="view-content" id="view-scs-cite-score"></label>
+                                    </div>
+                                </div>
+                                <!-- impact-factor -->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="sub-title-text sub-title">Impact Factor:</div>
+                                        <label class="view-content" id="view-impact-factor"></label>
+                                    </div>
+                                </div>
+                                <!--scs-indexed  category-->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="sub-title-text sub-title">SCS Indexed:</div>
+                                        <label class="view-content" id="view-scs-indexed-category"></label>
+                                    </div>
+                                </div>
+                                <!--wos-indexed -->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="sub-title-text sub-title">Wos Indexed:</div>
+                                        <label class="view-content" id="view-wos-indexed-category"></label>
+                                    </div>
+                                </div>
+                                <!--NAMES OF FOREIGN AUTHORS-->
+                                <!-- <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="sub-title-text sub-title">Name Of Foreign Authors:</div>
+                            <label class="view-content" id="view-foreign-authors"></label>
+                        </div>
+                    </div> -->
+
+                                <!--Names of NMIMS Student  Author-->
+                                <!-- <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="sub-title-text sub-title">Names of NMIMS Student  Author:</div>
+                            <label class="view-content" id="view-names-nmims-student-author"></label>
+                        </div>
+                    </div> -->
+
+                                <!--NO. OF NMIMS Student  Authors-->
+                                <!-- <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="sub-title-text sub-title">NO. OF NMIMS Student  Authors:</div>
+                            <label class="view-content" id="view-no-nmims-student-author"></label>
+                        </div>
+                    </div> -->
+                                <!--abdc-indexed-->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="sub-title-text sub-title">Abcd Indexed:</div>
+                                        <label class="view-content" id="view-abdc-indexed-category"></label>
+                                    </div>
+                                </div>
+                                <!--ugc-indexed -->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="sub-title-text sub-title">Ugc Indexed:</div>
+                                        <label class="view-content" id="view-ugc-indexed-category"></label>
+                                    </div>
+                                </div>
+                                <!--web-link -->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3 web-link d-none">
+                                    <div class="box">
+                                        <div class="sub-title-text sub-title">Web Link DOI Number:</div>
+                                        <label class="view-content" id="view-web-link-doi-number"></label>
+                                    </div>
+                                </div>
+                                <!--NO. OF FOREIGN AUTHORS -->
+                                <!-- <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                        <div class="box">
+                            <div class="sub-title-text sub-title">No Of Foreign Authors:</div>
+                            <label class="view-content" id="view-foreign-authors-number"></label>
+                        </div>
+                    </div> -->
+                                <!--date-of-publishing -->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="sub-title-text sub-title">Date Of Publishing:</div>
+                                        <label class="view-content" id="view-date-of-publishing"></label>
+                                    </div>
+                                </div>
+                                <!--Title of Paper -->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="sub-title-text sub-title">Title Of Paper :</div>
+                                        <label class="view-content" id="view-title-of-paper"></label>
+                                    </div>
+                                </div>
+                                <!--Research Journal Paper -->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="sub-title-text sub-title">Research Journal Paper:</div>
+                                        <label class="view-content" id="view-journal-category"></label>
+                                    </div>
+                                </div>
+                                <!--nmims_authors_count -->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="sub-title-text sub-title">No. of NMIMS Authors :</div>
+                                        <label class="view-content" id="view-nmims-authors-count"></label>
+                                    </div>
+                                </div>
+                                <!-- //documestns -->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="sub-title-text sub-title">
+                                            <button class="btn btn-primary h-10 w-10 download-file"
+                                                id="supporting-document">
+                                                <i class="fas fa-download text-danger"></i> Artciles Documents
+                                            </button>
+                                        </div>
+                                        <label class="view-content" id="view-patent-file"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- inline Javascript -->
+            <div id="employees-list-data" data-employees='<%- JSON.stringify(internalEmpList) %>'
+                style="display: none;"></div>
+            <div id="school-data-list" data-school='<%- JSON.stringify(nmimsSchoolList) %>' style="display: none;">
+            </div>
+            <div id="all-author-data-list" data-author='<%- JSON.stringify(allAuthorList) %>' style="display: none;">
+            </div>
+            <div id="campus-data-list" data-campus='<%- JSON.stringify(nmimsCampusList) %>' style="display: none;">
+            </div>
+            <div id="policy-cadre-data-list" data-policy='<%- JSON.stringify(policyCadre) %>' style="display: none;">
+            </div>
+            <div id="impact-factor-data-list" data-factor='<%- JSON.stringify(impactFactor) %>' style="display: none;">
+            </div>
+
+
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/tom-select/2.3.1/js/tom-select.complete.min.js"
+                integrity="sha512-zdXqksVc9s0d2eoJGdQ2cEhS4mb62qJueasTG4HjCT9J8f9x5gXCQGSdeilD+C7RqvUi1b4DdD5XaGjJZSlP9Q=="
+                crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+            <script>
+                let tomSelectInstance = null;
+
+
+
+                //for index icrement
+                let rowCount = document.getElementById('row-count');
+                console.log('rowCount ===>>>>>>', rowCount);
+                const totalRowCount = document.getElementById('total-row-count');
+                console.log('totalRowCount ===>>>>>', totalRowCount);
+                let rowIndex = rowCount.innerText;
+                console.log('rowIndex ===>>>>>', rowIndex);
+                let indexValue = parseInt(rowIndex, 10);
+
+                const journalPaperModal = document.getElementById('journal-paper-modal');
+                const journalPaperModalView = document.getElementById('journal-paper-modal-view');
+                journalPaperModalView.style.display = 'none';
+                const journalTable = document.getElementById('journal-paper-list');
+                const submitBtn = document.getElementById('submit-btn');
+                const updateBtn = document.getElementById('update-btn');
+                // const closeBtn = document.getElementById('close-btn');
+                const journalPaperAddModal = document.getElementById('journal-paper-add-modal');
+                const schoolDropDown = document.getElementById('nmims-school-list');
+                const campusDropDown = document.getElementById('nmims-campus-list');
+                const policyCadreDropDown = document.getElementById('policy-cadre-list');
+                const impactFactorDropDown = document.getElementById('impact-factor-list');
+                const internalFacultyDropDown = document.getElementById('internal-faculty-list');
+                const allAuthorsDropDown = document.getElementById('all-author-list');
+                let nmimsSchoolIdsContainer = [];
+                let nmimsCampusIdsContainer = [];
+                let policyCadreContainer = [];
+                let impactFactorContainer = [];
+                let facltyContainer = [];
+                let allAuthorContainer = [];
+                let nmimsCampusStoredIds, nmimsSchoolStoredIds, nmimsAuthorsStoredIds, journalArtileAllAothorsIds, policyCadreStoredIds,
+                    impactFactorStoredIds;
+
+                let rowToBeUpdated, journalPaperId;
+                const doiLinkNumberClass = document.querySelector('.web-link');
+
+                journalPaperAddModal.addEventListener('click', async function (event) {
+                    if (event.target.tagName === 'BUTTON' && event.target.classList.contains('add-modal') || event.target.classList.contains('plus')) {
+                        console.log('clicked111');
+                        // for button visualization
+                        submitBtn.classList.remove('d-none');
+                        updateBtn.classList.add('d-none');
+                        document.querySelector('#journal-paper-title').innerHTML = `Journal Article Published`;
+                        document.querySelector('#uploadNewSupportDocumentDiv').classList.add('d-none');
+                        document.querySelector('#journal-data-file-edit').classList.add('d-none');
+                        document.querySelector('#journal-article-documents').classList.remove('d-none');
+                        document.querySelector('#uploadNewSupportDocument').checked = false;
+                        removeErrorMsg()
+
+
+                        $('#journal-paper-modal').modal({
+                            backdrop: 'static'
+                        });
+                        // make input field empty
+                        document.getElementById('year').value = '';
+                        document.getElementById('publisher').value = '';
+                        document.getElementById('total-authors').value = '';
+                        document.getElementById('journal-name').value = '';
+                        document.getElementById('count-other-faculty').value = '';
+                        document.getElementById('pages').value = '';
+                        document.getElementById('issn-no').value = '';
+                        document.getElementById('scs-cite-score').value = '';
+                        document.getElementById('journal-article-documents').value = '';
+                        document.getElementById('gs-indexed').value = '';
+                        document.getElementById('web-link-num').value = '';
+                        document.getElementById('uid').value = '';
+                        document.getElementById('date-of-publishing').value = '';
+                        document.getElementById('title-of-paper').value = '';
+                        nmimsSchoolIdsContainer = [];
+                        nmimsCampusIdsContainer = [];
+                        policyCadreContainer = [];
+                        impactFactorContainer = [];
+                        facltyContainer = [];
+                        allAuthorContainer = [];
+                        // Array.from(campusDropDown.options).forEach(option => {
+                        // option.selected = false;
+                        // });
+
+                        // Array.from(schoolDropDown.options).forEach(option => {
+                        //     option.selected = false;
+                        // });
+
+                        const selectItems = document.querySelectorAll('.item');
+                        selectItems.forEach(item => {
+                            item.classList.add('d-none');
+                        });
+                        // 
+                        document.getElementById('nmims-authors-count').value = '';
+
+
+                        const nmimsSchoolList = document.getElementById('school-data-list').dataset.school;
+
+                        const schoolDataList = JSON.parse(nmimsSchoolList);
+
+                        const selectedSchool = schoolDataList.map(school => ({
+                            value: school.id,
+                            text: `${school.school_name}`
+                        }));
+
+                        new TomSelect("#nmims-school-list", {
+                            options: selectedSchool,
+                            placeholder: "Select Options",
+                            hidePlaceholder: true,
+                            hidePlaceholder: true,
+                            create: true,
+                            plugins: ['remove_button'],
+                            onItemAdd: function () {
+                                this.setTextboxValue('');
+                                this.refreshOptions();
+                            },
+                            render: {
+                                option: function (data, escape) {
+                                    return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                                },
+                                item: function (data, escape) {
+                                    return '<div>' + escape(data.text) + '</div>';
+                                }
+                            }
+                        });
+
+
+                        const nmimsCampusList = document.getElementById('campus-data-list').dataset.campus;
+
+                        const campusDataList = JSON.parse(nmimsCampusList);
+
+                        const selectedCampus = campusDataList.map(campus => ({
+                            value: campus.id,
+                            text: `${campus.campus_name}`
+                        }));
+
+                        new TomSelect("#nmims-campus-list", {
+                            options: selectedCampus,
+                            placeholder: "Select Options",
+                            hidePlaceholder: true,
+                            hidePlaceholder: true,
+                            create: true,
+                            plugins: ['remove_button'],
+                            onItemAdd: function () {
+                                this.setTextboxValue('');
+                                this.refreshOptions();
+                            },
+                            render: {
+                                option: function (data, escape) {
+                                    return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                                },
+                                item: function (data, escape) {
+                                    return '<div>' + escape(data.text) + '</div>';
+                                }
+                            }
+                        });
+
+
+                        const policyCadreList = document.getElementById('policy-cadre-data-list').dataset.policy;
+
+                        const policyCadreDataList = JSON.parse(policyCadreList);
+
+                        const selectPolicyCadre = policyCadreDataList.map(cadre => ({
+                            value: cadre.id,
+                            text: `${cadre.cadre_name}`
+                        }));
+
+                        new TomSelect("#policy-cadre-list", {
+                            options: selectPolicyCadre,
+                            placeholder: "Select Options",
+                            hidePlaceholder: true,
+                            hidePlaceholder: true,
+                            create: true,
+                            plugins: ['remove_button'],
+                            onItemAdd: function () {
+                                this.setTextboxValue('');
+                                this.refreshOptions();
+                            },
+                            render: {
+                                option: function (data, escape) {
+                                    return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                                },
+                                item: function (data, escape) {
+                                    return '<div>' + escape(data.text) + '</div>';
+                                }
+                            }
+                        });
+
+
+                        const allAuthorsList = document.getElementById('all-author-data-list').dataset.author;
+
+                        const allAuthorDataList = JSON.parse(allAuthorsList);
+
+                        const selectedAuthors = allAuthorDataList.map(author => ({
+                            value: author.id,
+                            text: ` ${author.employee_id}  ${author.faculty_name}`
+                        }));
+
+                        new TomSelect("#all-author-list", {
+                            options: selectedAuthors,
+                            placeholder: "Select Options",
+                            hidePlaceholder: true,
+                            hidePlaceholder: true,
+                            create: true,
+                            plugins: ['remove_button'],
+                            onItemAdd: function () {
+                                this.setTextboxValue('');
+                                this.refreshOptions();
+                            },
+                            render: {
+                                option: function (data, escape) {
+                                    return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                                },
+                                item: function (data, escape) {
+                                    return '<div>' + escape(data.text) + '</div>';
+                                }
+                            }
+                        });
+
+
+                        const impactFactorList = document.getElementById('impact-factor-data-list').dataset.factor;
+
+                        const impactFactorDataList = JSON.parse(impactFactorList);
+
+                        const selectImpcatFactor = impactFactorDataList.map(factor => ({
+                            value: factor.id,
+                            text: `${factor.impact_factor}`
+                        }));
+
+
+                        new TomSelect("#impact-factor-list", {
+                            options: selectImpcatFactor,
+                            placeholder: "Select Options",
+                            hidePlaceholder: true,
+                            hidePlaceholder: true,
+                            create: true,
+                            plugins: ['remove_button'],
+                            onItemAdd: function () {
+                                this.setTextboxValue('');
+                                this.refreshOptions();
+                            },
+                            render: {
+                                option: function (data, escape) {
+                                    return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                                },
+                                item: function (data, escape) {
+                                    return '<div>' + escape(data.text) + '</div>';
+                                }
+                            }
+                        });
+
+
+                        const inetrnalnmimsFaculty = document.getElementById('employees-list-data').dataset.employees;
+
+                        const nmimsFacultyDataList = JSON.parse(inetrnalnmimsFaculty);
+
+                        const selectInternalNmimsFaculty = nmimsFacultyDataList.map(faculty => ({
+                            value: faculty.id,
+                            text: ` ${faculty.employee_id}  ${faculty.faculty_name}`
+                        }));
+
+
+
+                        new TomSelect("#internal-faculty-list", {
+                            options: selectInternalNmimsFaculty,
+                            placeholder: "Select Options",
+                            hidePlaceholder: true,
+                            hidePlaceholder: true,
+                            create: true,
+                            plugins: ['remove_button'],
+                            onItemAdd: function () {
+                                this.setTextboxValue('');
+                                this.refreshOptions();
+                            },
+                            render: {
+                                option: function (data, escape) {
+                                    return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                                },
+                                item: function (data, escape) {
+                                    return '<div>' + escape(data.text) + '</div>';
+                                }
+                            }
+                        });
+
+
+                    }
+                })
+
+
+                const insertJournalPaper = async (url) => {
+                    const journalDetails = new FormData();
+                    const year = document.getElementById('year').value;
+                    const publisher = document.getElementById('publisher').value;
+                    const totalAuthors = document.getElementById('total-authors').value;
+                    const journalName = document.getElementById('journal-name').value;
+                    const countOtherFaculty = document.getElementById('count-other-faculty').value;
+                    const pages = document.getElementById('pages').value;
+                    const issnNo = document.getElementById('issn-no').value;
+                    const scsCiteScore = document.getElementById('scs-cite-score').value;
+                    const gsIndex = document.getElementById('gs-indexed').value;
+
+                    const wosIndexedCategory = document.querySelector('input[name="wos-index-category"]:checked').value;
+                    const scsIndexedCategory = document.querySelector('input[name="scopus-category"]:checked').value;
+                    const abdcIndexedCategory = document.querySelector('input[name="abdc-index-category"]:checked').value;
+                    const ugcIndexedCategory = document.querySelector('input[name="ugc-index-category"]:checked').value;
+                    const webLinkNumber = document.getElementById('web-link-num').value;
+                    const uid = document.getElementById('uid').value;
+                    const dateOfPublishing = document.getElementById('date-of-publishing').value;
+                    const titleOfPaper = document.getElementById('title-of-paper').value;
+                    const journalCategory = document.querySelector('input[name="journal-category"]:checked').value;
+                    const nmimsAuthorsCount = document.getElementById('nmims-authors-count').value;
+
+                    const nmimsSchoolArrayObject = nmimsSchoolIdsContainer[nmimsSchoolIdsContainer.length - 1];
+                    const nmimsCampusArrayObject = nmimsCampusIdsContainer[nmimsCampusIdsContainer.length - 1];
+                    const nmimsFacultyArrayObject = facltyContainer[facltyContainer.length - 1];
+                    const allAuthorsArrayObject = allAuthorContainer[allAuthorContainer.length - 1];
+                    const impactFactorArrayObject = impactFactorContainer[impactFactorContainer.length - 1];
+                    const policyCadreArrayObject = policyCadreContainer[policyCadreContainer.length - 1];
+
+                    const nmimsSchoolIds = JSON.stringify(nmimsSchoolArrayObject);
+                    const nmimsCampusIds = JSON.stringify(nmimsCampusArrayObject);
+                    const nmimsFacultiesIds = JSON.stringify(nmimsFacultyArrayObject);
+                    const allAuthorsIds = JSON.stringify(allAuthorsArrayObject);
+                    const impactFactorIds = JSON.stringify(impactFactorArrayObject);
+                    const policyCadreIds = JSON.stringify(policyCadreArrayObject);
+
+                    // journal article documents
+                    const journalarticalDocuments = document.getElementById('journal-article-documents');
+                    const articlesfilesData = journalarticalDocuments.files;
+                    console.log('articlesfilesData ===>>>', articlesfilesData)
+                    for (let i = 0; i < articlesfilesData.length; i++) {
+                        console.log('file name  ==>>', articlesfilesData[i].name);
+                        journalDetails.append('articlesDocuments', articlesfilesData[i]);
+                    }
+
+                    journalDetails.append('year', year);
+                    journalDetails.append('publisher', publisher);
+                    journalDetails.append('totalAuthors', totalAuthors);
+                    journalDetails.append('journalName', journalName);
+                    journalDetails.append('countOtherFaculty', countOtherFaculty);
+                    journalDetails.append('pages', pages);
+                    journalDetails.append('issnNo', issnNo);
+                    journalDetails.append('scsCiteScore', scsCiteScore);
+                    // journalDetails.append('impactFactor', impactFactor);
+                    journalDetails.append('wosIndexedCategory', wosIndexedCategory);
+                    journalDetails.append('scsIndexedCategory', scsIndexedCategory);
+                    journalDetails.append('abdcIndexedCategory', abdcIndexedCategory);
+                    journalDetails.append('ugcIndexedCategory', ugcIndexedCategory);
+                    journalDetails.append('webLinkNumber', webLinkNumber);
+                    journalDetails.append('uid', uid);
+                    journalDetails.append('dateOfPublishing', dateOfPublishing);
+                    journalDetails.append('titleOfPaper', titleOfPaper);
+                    journalDetails.append('journalCategory', journalCategory);
+                    journalDetails.append('nmimsAuthorsCount', nmimsAuthorsCount);
+                    journalDetails.append('nmimsSchoolIds', nmimsSchoolIds);
+                    journalDetails.append('nmimsCampusIds', nmimsCampusIds);
+                    journalDetails.append('nmimsFacultiesIds', nmimsFacultiesIds);
+                    journalDetails.append('allAuthorsIds', allAuthorsIds);
+                    journalDetails.append('impactFactorIds', impactFactorIds);
+                    journalDetails.append('policyCadreIds', policyCadreIds);
+                    journalDetails.append('gsIndex', gsIndex);
+
+                    fetch(url, {
+                        method: 'POST',
+                        body: journalDetails
+                    })
+                        .then((result) => {
+                            return result.json()
+                        })
+                        .then((data) => {
+                            if (data.status === 'Done') {
+                                //     console.log('data >>>', data);
+                                //     const rowCountInteger = parseInt(data.rowCount, 10);
+                                //     const IndexEntry = rowCountInteger + indexValue;
+                                //     indexValue = IndexEntry;
+                                //     console.log('IndexEntry ===>>>', IndexEntry);
+                                //     const newJournalPaper = document.createElement('tr');
+                                //     newJournalPaper.setAttribute('data-journal-article-id', data.journalPaperId)
+                                //     newJournalPaper.setAttribute('data-count-other-faculty', data.journalDetails.countOtherFaculty);
+                                //     newJournalPaper.setAttribute('data-pages', data.journalDetails.pages);
+                                //     newJournalPaper.setAttribute('data-issn-no', data.journalDetails.issnNo);
+                                //     newJournalPaper.setAttribute('data-scs-cite-score', data.journalDetails.scsCiteScore);
+                                //     newJournalPaper.setAttribute('data-impact-factor', data.journalDetails.impactFactor);
+                                //     newJournalPaper.setAttribute('data-scs-indexed', data.journalDetails.scsIndexedCategory);
+                                //     newJournalPaper.setAttribute('data-wos-indexed', data.journalDetails.wosIndexedCategory);
+                                //     newJournalPaper.setAttribute('data-abdc-indexed', data.journalDetails.abdcIndexedCategory);
+                                //     newJournalPaper.setAttribute('data-gs-indexed', data.journalDetails.gsIndex);
+                                //     newJournalPaper.setAttribute('data-uid', data.journalDetails.uid);
+                                //     newJournalPaper.setAttribute('data-ugc-indexed', data.journalDetails.ugcIndexedCategory);
+                                //     newJournalPaper.setAttribute('data-web-link-number', data.journalDetails.webLinkNumber);
+                                //     newJournalPaper.setAttribute('data-date-of-publishing', data.journalDetails.dateOfPublishing);
+                                //     newJournalPaper.setAttribute('data-title-of-paper', data.journalDetails.titleOfPaper);
+                                //     newJournalPaper.setAttribute('data-journal-category', data.journalDetails.journalCategory);
+                                //     newJournalPaper.setAttribute('data-nmims-author-count', data.journalDetails.nmimsAuthorsCount);
+                                //     newJournalPaper.setAttribute('data-school-ids', data.schoolsIdsStrings);
+                                //     newJournalPaper.setAttribute('data-campus-ids', data.campusIdsString);
+                                //     newJournalPaper.setAttribute('data-article-faculties-ids', data.allAuthorsIdsString);
+                                //     newJournalPaper.setAttribute('data-nmims-faculty-ids', data.nmisAuthorIdsstring);
+                                //     newJournalPaper.setAttribute('data-imapact-factor-ids', data.impacatFactorIdsString);
+                                //     newJournalPaper.setAttribute('data-policy-cadre-ids', data.policadreIdsstring);
+                                //     newJournalPaper.setAttribute('data-imapact-factor-ids', data.impacatFactorIdsString);
+                                //     newJournalPaper.setAttribute('data-documents', data.articleFilesNameArray);
+                                //     newJournalPaper.setAttribute('data-documents-ids', data.documentIdsString);
+                                //     // newJournalPaper.setAttribute('data-nmims-author-count', data.journalDetails.countStudentAuthors);
+                                //     newJournalPaper.innerHTML = `
+                                // <td>${IndexEntry}</td>
+                                // <td class="year col-lg-1"> ${data.journalDetails.year} </td>
+                                // <td class="school col-lg-1"> ${data.schoolList} </td>
+                                // <td class="campus col-lg-1"> ${data.campusList} </td>
+                                // <td class="policy-cadre col-lg-1">${data.policyCadreList}</td>
+                                // <td class="impcat-factor col-lg-1">${data.impactFactorList}</td>
+                                // <td class="publisher col-lg-1">${data.journalDetails.publisher}</td>
+                                // <td class="total-authors col-lg-1">${data.journalDetails.totalAuthors}</td>
+                                // <td class="journal-name col-lg-1">${data.journalDetails.journalName}</td>
+
+                                // <td title="View" class="border-right-0 view" style="cursor: pointer;"   data-journal-article-id="${data.journalPaperId}">
+                                //     &#128065;
+                                // </td>
+                                // <td title="Edit" class="border-right-0 edit" style="cursor: pointer;"   data-journal-article-id="${data.journalPaperId}">
+                                //     &#9998;
+                                // </td>
+                                // <td title="Delete" class="border-right-0 delete" style="cursor: pointer;"    data-journal-article-id="${data.journalPaperId}">
+                                //     &#128465;
+                                // </td>
+                                // ` ;
+                                //     journalTable.appendChild(newJournalPaper);
+                                $('#journal-paper-modal').modal('hide');
+                                Swal.fire({
+                                    position: "top-center",
+                                    icon: "success",
+                                    title: `${data.message}`,
+                                    showConfirmButton: true,
+                                    confirmButtonText: "OK",
+                                    confirmButtonColor: "#DD6B55"
+
+                                }).then(() => {
+                                    document.location.reload();
+                                });
+                                // rowCount.classList.remove('d-none');
+                                // totalRowCount.classList.add('d-none');
+                                // rowCount.innerText = `Total entries : ${IndexEntry}`
+                            }
+
+                            else {
+                                console.log('data in failed condition ====>>>>', data)
+                                Swal.fire({
+                                    position: "top-center",
+                                    icon: "error",
+                                    title: "Failed To Insert",
+                                    color: "red",
+                                    with: "20PX",
+                                    showConfirmButton: true,
+                                    confirmButtonText: "OK",
+                                    confirmButtonColor: "#DD6B55"
+                                });
+                            }
+                        }).catch((error) => {
+                            console.error("ERROR:", error);
+                            const message = "Internal Server Error";
+                            const errTitle = error
+                            Swal.fire({
+                                position: "top-center",
+                                icon: "error",
+                                title: `${message}`,
+                                color: "red",
+                                with: "20PX",
+                                html: `<span style="color: red;">${errTitle}</span>`,
+                                showConfirmButton: true,
+                                confirmButtonText: "OK",
+                                confirmButtonColor: "#DD6B55"
+                            });
+                        })
+                };
+
+                submitBtn.addEventListener('click', async () => {
+                    const isValid = validateRequiredFormFields(document.getElementById('submit-btn'));
+                    if (isValid) {
+                        await insertJournalPaper('<%- BASE_URL %>research/journal-paper/insert');
+                    }
+                    else {
+                        Swal.fire({
+                            position: "top-center",
+                            icon: "error",
+                            title: "Validation Failed",
+                            color: "red",
+                            showConfirmButton: true,
+                            confirmButtonText: "OK",
+                            confirmButtonColor: "#DD6B55"
+                        })
+                    }
+                });
+
+                // for deleting
+                journalTable.addEventListener('click', function (event) {
+
+                    if (event.target.classList.contains('delete')) {
+                        console.log('event.target ===>>>>', event.target);
+                        const journalPaperRowData = event.target.closest('tr');
+                        console.log('journalPaperRowData ===>>>>>>', journalPaperRowData);
+                        journalPaperId = event.target.getAttribute('data-journal-article-id');
+                        console.log('journalPaperId ==>>', journalPaperId);
+                        // confirm  alert api for delete
+                        let confirmDelete = "Do you want to delete the Journal Articles?";
+                        if (confirmDelete) {
+                            Swal.fire({
+                                title: "Are you sure?",
+                                text: "You won't be able to revert this!",
+                                icon: "warning",
+                                showCancelButton: true,
+                                confirmButtonColor: "#3085d6",
+                                cancelButtonColor: "#d33",
+                                confirmButtonText: "Yes, delete it!"
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    // Execute fetch request here after confirmation
+                                    fetch('<%- BASE_URL %>research/journal-paper/delete', {
+                                        method: 'POST',
+                                        headers: {
+                                            'content-type': 'application/json'
+                                        },
+                                        body: JSON.stringify({ journalPaperId })
+                                    })
+                                        .then((result) => result.json())
+                                        .then((data) => {
+                                            if (data.status === 'Done') {
+                                                console.log('data ==>>', data);
+                                                journalPaperRowData.remove();
+                                                Swal.fire({
+                                                    title: "Deleted!",
+                                                    text: "Record has been deleted.",
+                                                    icon: "success",
+                                                    showConfirmButton: true,
+                                                    confirmButtonText: "OK",
+                                                    confirmButtonColor: "#DD6B55"
+                                                }).then(() => {
+                                                    location.reload();
+                                                });
+                                            }
+                                        })
+                                        .catch((error) => {
+                                            console.error('Error:', error);
+                                        });
+                                }
+                            });
+                        }
+                        else {
+                            return
+                        }
+                    }
+                    // for updating 
+                    if (event.target.classList.contains('edit')) {
+
+                        console.log('clicked222')
+                        removeErrorMsg();
+                        $('#journal-paper-modal').modal({
+                            backdrop: 'static'
+                        });
+
+                        const selectItems = document.querySelectorAll('.item');
+                        selectItems.forEach(item => {
+                            item.classList.add('d-none');
+                        });
+
+
+
+                        $('#journal-paper-modal').modal('show');
+                        rowToBeUpdated = event.target.closest('tr');
+                        console.log('rowToBeUpdated ==>>', rowToBeUpdated)
+                        journalPaperId = event.target.getAttribute('data-journal-article-id');
+                        console.log('journalPaperId ==>>', journalPaperId);
+
+                        document.querySelector('#journal-article-documents').classList.add('d-none');
+                        document.querySelector('#uploadNewSupportDocumentDiv').classList.remove('d-none');
+                        document.querySelector('#journal-data-file-edit').classList.remove('d-none');
+
+                        // Hide the checkbox and uncheck it
+                        document.querySelector('#uploadNewSupportDocument').checked = false;
+
+                        const schoolDataIdsStored = rowToBeUpdated.getAttribute('data-school-ids');
+                        console.log('schoolDataIdsStored ===>>>>>', schoolDataIdsStored);
+
+                        // for button visualization
+                        submitBtn.classList.add('d-none');
+                        updateBtn.classList.remove('d-none');
+                        document.querySelector('#journal-paper-title').innerHTML = `Journal Article Published Edit`;
+                        const year = rowToBeUpdated.querySelector('.year');
+                        console.log('year ==>>', year)
+                        const totalAuthors = rowToBeUpdated.querySelector('.total-authors');
+                        const journalName = rowToBeUpdated.querySelector('.journal-name');
+                        const publisher = rowToBeUpdated.querySelector('.publisher');
+                        const titleOfPaper = rowToBeUpdated.getAttribute('data-title-of-paper');
+                        const pages = rowToBeUpdated.getAttribute('data-pages');
+                        const issnNo = rowToBeUpdated.getAttribute('data-issn-no');
+                        const dateOfPublishing = rowToBeUpdated.getAttribute('data-date-of-publishing');
+                        // console.log('dateOfPublishing ==>>', dateOfPublishing);
+                        const formattedDate = formatDateToYYYYMMDD(dateOfPublishing);
+                        // console.log('formattedDate ==>>', formattedDate);
+                        const scsCiteScore = rowToBeUpdated.getAttribute('data-scs-cite-score');
+                        const wosIndexedCategory = rowToBeUpdated.getAttribute('data-wos-indexed');
+                        const foreignAuthorsNumbers = rowToBeUpdated.getAttribute('data-foreign-authors-count');
+                        const abdcIndexedCategory = rowToBeUpdated.getAttribute('data-abdc-indexed');
+                        const ugcIndexedCategory = rowToBeUpdated.getAttribute('data-ugc-indexed');
+                        const webLinkNumber = rowToBeUpdated.getAttribute('data-web-link-number');
+                        const scsIndexedCategory = rowToBeUpdated.getAttribute('data-scs-indexed');
+                        const nmimsAuthorsCount = rowToBeUpdated.getAttribute('data-nmims-author-count');
+                        const journalCategoryNational = document.getElementById('national');
+                        const journalCategoryInternational = document.getElementById('inter-national');
+                        const journalCategory = rowToBeUpdated.getAttribute('data-journal-category');
+                        setFileNameAttributeToBeDownload(rowToBeUpdated);
+                        const scsIndexedYes = document.getElementById('scopus-yes');
+                        const scsIndexedNo = document.getElementById('scopus-no');
+                        const abdcIndexedYes = document.getElementById('abdc-index-yes');
+                        const abdcIndexedNo = document.getElementById('abdc-index-no');
+                        const wosIndexedYes = document.getElementById('wos-index-yes');
+                        const wosIndexedNo = document.getElementById('wos-index-no');
+                        const ugcIndexedYes = document.getElementById('ugc-index-yes');
+                        const ugcIndexedNo = document.getElementById('ugc-index-no');
+                        // for displaying alredy stored value
+                        document.getElementById('year').value = year.innerText.trim();
+                        console.log('=====>>>>>', year.innerText.trim())
+                        document.getElementById('publisher').value = publisher.innerText.trim();
+                        document.getElementById('journal-name').value = journalName.innerText.trim();
+                        document.getElementById('total-authors').value = totalAuthors.innerText.trim();
+                        document.getElementById('count-other-faculty').value = rowToBeUpdated.getAttribute('data-count-other-faculty');
+                        document.getElementById('title-of-paper').value = titleOfPaper.trim();
+                        document.getElementById('pages').value = pages.trim();
+                        document.getElementById('issn-no').value = issnNo.trim();
+                        document.getElementById('date-of-publishing').value = formattedDate;
+                        document.getElementById('scs-cite-score').value = scsCiteScore.trim();
+                        document.getElementById('web-link-num').value = webLinkNumber;
+                        document.getElementById('uid').value = rowToBeUpdated.getAttribute('data-uid');
+                        document.getElementById('gs-indexed').value = rowToBeUpdated.getAttribute('data-gs-indexed');
+                        document.getElementById('nmims-authors-count').value = rowToBeUpdated.getAttribute('data-nmims-author-count');
+                        // const campusValuesIds = rowToBeUpdated.getAttribute('data-campus-ids');
+                        // console.log('campusValuesIds ===>>>>>>', campusValuesIds);
+                        const campusValuesIds = rowToBeUpdated.getAttribute('data-campus-ids').split(',');
+                        const selectElement = document.getElementById("nmims-campus-list");
+
+                        for (const option of selectElement.options) {
+                            option.selected = campusValuesIds.includes(option.value);
+                        }
+
+                        const campusIdsArray = rowToBeUpdated.getAttribute('data-campus-ids').split(',').map(str => parseInt(str.trim(), 10));
+
+                        const schoolIdsArray = rowToBeUpdated.getAttribute('data-school-ids').split(',').map(str => parseInt(str.trim(), 10));
+
+                        const nmimsAuthorsIdsArray = rowToBeUpdated.getAttribute('data-nmims-faculty-ids').split(',').map(str => parseInt(str.trim(), 10));
+                        const allArticleAuthorsIdsArray = rowToBeUpdated.getAttribute('data-article-faculties-ids').split(',').map(str => parseInt(str.trim(), 10));
+                        const policyCadreIdsArray = rowToBeUpdated.getAttribute('data-policy-cadre-ids').split(',').map(str => parseInt(str.trim(), 10));
+                        const impactFactorIdsArray = rowToBeUpdated.getAttribute('data-imapcat-factor-ids').split(',').map(str => parseInt(str.trim(), 10));
+                        nmimsCampusStoredIds = { 'nmimsCampus': campusIdsArray }
+                        nmimsSchoolStoredIds = { 'nmimsSchool': schoolIdsArray };
+                        nmimsAuthorsStoredIds = { 'nmimsInternalFaculty': nmimsAuthorsIdsArray };
+                        journalArtileAllAothorsIds = { 'authorsList': allArticleAuthorsIdsArray };
+                        policyCadreStoredIds = { 'policyCadre': policyCadreIdsArray };
+                        impactFactorStoredIds = { 'impactFactor': impactFactorIdsArray };
+                        console.log('journalCategory ===>>>>>>', journalCategory);
+
+
+                        // // For journal category
+                        journalCategory === '1' ? journalCategoryNational.checked = true : journalCategoryInternational.checked = true;
+
+                        // journalCategory === '1' ? journalcampusIdsArrayCategoryNational.checked = true : journalCategoryInternational.checked = true;
+
+                        // For SCS indexed category
+                        scsIndexedYes.checked = scsIndexedCategory === 'Yes';
+                        scsIndexedNo.checked = scsIndexedCategory !== 'Yes';
+
+                        // For ABDC indexed category
+                        abdcIndexedYes.checked = abdcIndexedCategory === 'Yes';
+                        abdcIndexedNo.checked = abdcIndexedCategory !== 'Yes';
+
+                        // For WOS indexed category
+                        wosIndexedYes.checked = wosIndexedCategory === 'Yes';
+                        wosIndexedNo.checked = wosIndexedCategory !== 'Yes';
+
+                        // For UGC indexed category
+                        ugcIndexedYes.checked = ugcIndexedCategory === 'Yes';
+                        ugcIndexedNo.checked = ugcIndexedCategory !== 'Yes';
+
+
+                        const nmimsSchoolList = document.getElementById('school-data-list').dataset.school;
+
+                        const schoolDataList = JSON.parse(nmimsSchoolList);
+
+                        let schoolArr = [];
+
+                        Array.from(schoolDataList).forEach(data => {
+                            Array.from(schoolIdsArray).forEach(sd => {
+                                if (data.id == sd) {
+                                    schoolArr.push(data.id)
+                                }
+                            })
+                        })
+
+                        const selectedSchool = schoolDataList.map(school => ({
+                            value: school.id,
+                            text: `${school.school_name}`
+                        }));
+
+                        new TomSelect("#nmims-school-list", {
+                            options: selectedSchool,
+                            items: schoolArr,
+                            // placeholder : "Select Options",
+                            hidePlaceholder: true,
+                            hidePlaceholder: true,
+                            create: true,
+                            plugins: ['remove_button'],
+                            onItemAdd: function () {
+                                this.setTextboxValue('');
+                                this.refreshOptions();
+                            },
+                            render: {
+                                option: function (data, escape) {
+                                    return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                                },
+                                item: function (data, escape) {
+                                    return '<div>' + escape(data.text) + '</div>';
+                                }
+                            }
+                        });
+
+                        const nmimsCampusList = document.getElementById('campus-data-list').dataset.campus;
+
+                        const campusDataList = JSON.parse(nmimsCampusList);
+
+                        let cmpArray = [];
+
+                        Array.from(campusDataList).forEach(data => {
+                            Array.from(campusIdsArray).forEach(cmp => {
+                                if (data.id == cmp) {
+                                    cmpArray.push(data.id)
+                                }
+                            })
+                        })
+
+                        const selectedCampus = campusDataList.map(campus => ({
+                            value: campus.id,
+                            text: `${campus.campus_name}`
+                        }));
+
+                        new TomSelect("#nmims-campus-list", {
+                            options: selectedCampus,
+                            items: cmpArray,
+                            // placeholder : "Select Options",
+                            hidePlaceholder: true,
+                            hidePlaceholder: true,
+                            create: true,
+                            plugins: ['remove_button'],
+                            onItemAdd: function () {
+                                this.setTextboxValue('');
+                                this.refreshOptions();
+                            },
+                            render: {
+                                option: function (data, escape) {
+                                    return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                                },
+                                item: function (data, escape) {
+                                    return '<div>' + escape(data.text) + '</div>';
+                                }
+                            }
+                        });
+
+
+                        const policyCadreList = document.getElementById('policy-cadre-data-list').dataset.policy;
+
+                        const policyCadreDataList = JSON.parse(policyCadreList);
+
+                        let policyArr = []
+
+                        Array.from(policyCadreDataList).forEach(data => {
+                            Array.from(policyCadreIdsArray).forEach(pr => {
+                                if (data.id == pr) {
+                                    policyArr.push(data.id)
+                                }
+                            })
+                        })
+
+                        const selectPolicyCadre = policyCadreDataList.map(cadre => ({
+                            value: cadre.id,
+                            text: `${cadre.cadre_name}`
+                        }));
+
+                        new TomSelect("#policy-cadre-list", {
+                            options: selectPolicyCadre,
+                            items: policyArr,
+                            // placeholder : "Select Options",
+                            hidePlaceholder: true,
+                            hidePlaceholder: true,
+                            create: true,
+                            plugins: ['remove_button'],
+                            onItemAdd: function () {
+                                this.setTextboxValue('');
+                                this.refreshOptions();
+                            },
+                            render: {
+                                option: function (data, escape) {
+                                    return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                                },
+                                item: function (data, escape) {
+                                    return '<div>' + escape(data.text) + '</div>';
+                                }
+                            }
+                        });
+
+
+                        const allAuthorsList = document.getElementById('all-author-data-list').dataset.author;
+
+                        const allAuthorDataList = JSON.parse(allAuthorsList);
+
+                        let authArr = []
+
+                        Array.from(allAuthorDataList).forEach(data => {
+                            Array.from(allArticleAuthorsIdsArray).forEach(author => {
+                                if (data.id == author) {
+                                    authArr.push(data.id)
+                                }
+                            })
+                        })
+
+                        const selectedAuthors = allAuthorDataList.map(author => ({
+                            value: author.id,
+                            text: ` ${author.employee_id}  ${author.faculty_name}`
+                        }));
+
+                        new TomSelect("#all-author-list", {
+                            options: selectedAuthors,
+                            items: authArr,
+                            // placeholder : "Select Options",
+                            hidePlaceholder: true,
+                            hidePlaceholder: true,
+                            create: true,
+                            plugins: ['remove_button'],
+                            onItemAdd: function () {
+                                this.setTextboxValue('');
+                                this.refreshOptions();
+                            },
+                            render: {
+                                option: function (data, escape) {
+                                    return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                                },
+                                item: function (data, escape) {
+                                    return '<div>' + escape(data.text) + '</div>';
+                                }
+                            }
+                        });
+
+
+                        const impactFactorList = document.getElementById('impact-factor-data-list').dataset.factor;
+
+                        const impactFactorDataList = JSON.parse(impactFactorList);
+
+                        let selectedImpArr = [];
+
+                        Array.from(impactFactorDataList).forEach(data => {
+                            Array.from(impactFactorIdsArray).forEach(imp => {
+                                if (data.id == imp) {
+                                    selectedImpArr.push(data.id);
+                                }
+                            })
+                        })
+
+                        const selectImpcatFactor = impactFactorDataList.map(factor => ({
+                            value: factor.id,
+                            text: `${factor.impact_factor}`
+                        }));
+
+
+                        new TomSelect("#impact-factor-list", {
+                            options: selectImpcatFactor,
+                            items: selectedImpArr,
+                            // placeholder : "Select Options",
+                            hidePlaceholder: true,
+                            hidePlaceholder: true,
+                            create: true,
+                            plugins: ['remove_button'],
+                            onItemAdd: function () {
+                                this.setTextboxValue('');
+                                this.refreshOptions();
+                            },
+                            render: {
+                                option: function (data, escape) {
+                                    return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                                },
+                                item: function (data, escape) {
+                                    return '<div>' + escape(data.text) + '</div>';
+                                }
+                            }
+                        });
+
+
+                        const inetrnalnmimsFaculty = document.getElementById('employees-list-data').dataset.employees;
+
+                        const nmimsFacultyDataList = JSON.parse(inetrnalnmimsFaculty);
+
+                        let facultyArr = []
+
+                        Array.from(nmimsFacultyDataList).forEach(data => {
+                            Array.from(nmimsAuthorsIdsArray).forEach(emp => {
+                                if (data.id == emp) {
+                                    facultyArr.push(data.id)
+                                }
+                            })
+                        })
+
+                        const selectInternalNmimsFaculty = nmimsFacultyDataList.map(faculty => ({
+                            value: faculty.id,
+                            text: ` ${faculty.employee_id}  ${faculty.faculty_name}`
+                        }));
+
+
+
+                        new TomSelect("#internal-faculty-list", {
+                            options: selectInternalNmimsFaculty,
+                            items: facultyArr,
+                            // placeholder : "Select Options",
+                            hidePlaceholder: true,
+                            hidePlaceholder: true,
+                            create: true,
+                            plugins: ['remove_button'],
+                            onItemAdd: function () {
+                                this.setTextboxValue('');
+                                this.refreshOptions();
+                            },
+                            render: {
+                                option: function (data, escape) {
+                                    return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                                },
+                                item: function (data, escape) {
+                                    return '<div>' + escape(data.text) + '</div>';
+                                }
+                            }
+                        });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    }
+
+                    // for viewing record of journal paper
+                    if (event.target.classList.contains('view')) {
+                        console.log('clicked333');
+
+                        $('#journal-paper-modal-view').modal({
+                            backdrop: 'static'
+                        });
+                        const rowToBeViewed = event.target.closest('tr');
+                        console.log('rowToBeViewed ===>>>>', rowToBeViewed);
+                        journalPaperId = rowToBeViewed.getAttribute('data-journal-article-id');
+                        console.log('journalPaperId ==>>', journalPaperId)
+                        // updating value with actuall value
+
+
+                        fetch('<%- BASE_URL %>research/journal-paper/view', {
+                            method: 'POST',
+                            headers: {
+                                'content-type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                journalPaperId: journalPaperId
+                            })
+
+                        })
+                            .then((result) => {
+                                return result.json();
+                            })
+                            .then((data) => {
+                                console.log('data ==>>>>>>', data);
+
+                                if (data.status === "Done") {
+                                    console.log('data fetched')
+                                    setFileNameInButtons(data)
+                                    document.getElementById('view-year').innerText = data.journalAricleData.year;
+                                    document.getElementById('view-school').innerText = data.journalAricleData.associated_schools;
+                                    document.getElementById('view-campus').innerText = data.journalAricleData.associated_campuses;;
+                                    document.getElementById('view-all-authors').innerText = data.journalAricleData.all_article_authors_names;
+                                    document.getElementById('view-publisher').innerText = data.journalAricleData.publisher;
+                                    document.getElementById('view-nmims-authors').innerText = data.journalAricleData.internal_faculty_names;
+                                    document.getElementById('view-journal-name').innerText = data.journalAricleData.journal_name;
+                                    document.getElementById('view-total-authors').innerText = data.journalAricleData.total_authors;
+                                    document.getElementById('view-policy-cadre').innerText = data.journalAricleData.policy_cadre;
+                                    document.getElementById('view-count-of-other-faculty').innerText = data.journalAricleData.count_other_faculty;
+                                    document.getElementById('view-issn-no').innerText = data.journalAricleData.issn_no;
+                                    document.getElementById('view-abdc-indexed-category').innerText = data.journalAricleData.abdc_indexed;
+                                    document.getElementById('view-web-link-doi-number').innerText = data.journalAricleData.web_link_doi_number;
+                                    document.getElementById('view-pages').innerText = data.journalAricleData.pages;
+                                    document.getElementById('view-scs-cite-score').innerText = data.journalAricleData.scs_cite_score;
+                                    document.getElementById('view-impact-factor').innerText = data.journalAricleData.impact_factors;
+                                    document.getElementById('view-scs-indexed-category').innerText = data.journalAricleData.scs_indexed;
+                                    document.getElementById('view-wos-indexed-category').innerText = data.journalAricleData.wos_indexed;
+                                    document.getElementById('view-ugc-indexed-category').innerText = data.journalAricleData.ugc_indexed;
+                                    document.getElementById('view-date-of-publishing').innerText = formatDateToYYYYMMDD(data.journalAricleData.date_of_publishing);
+                                    document.getElementById('view-title-of-paper').innerText = data.journalAricleData.title_of_paper;
+                                    document.getElementById('view-journal-category').innerText = data.journalAricleData.jorunal_article_type_id;
+                                    document.getElementById('view-nmims-authors-count').innerText = data.journalAricleData.nmims_authors_count;
+                                }
+                                else {
+                                    Swal.fire({
+                                        position: "top-center",
+                                        icon: "error",
+                                        title: "Failed to fetch data",
+                                        color: "red",
+                                        with: "20PX",
+                                        showConfirmButton: true,
+                                        confirmButtonText: "OK",
+                                        confirmButtonColor: "#DD6B55"
+                                    });
+                                }
+
+
+                            }).catch((error) => {
+                                console.log("ERROIR : ", error);
+                                const errTitle = "Internal Server Error";
+                                const message = error
+                                // alert('An error occurred while updating the element');
+                                Swal.fire({
+                                    position: "top-center",
+                                    icon: "error",
+                                    title: `${message}`,
+                                    color: "red",
+                                    with: "20PX",
+                                    html: `<span style="color: red;">${errTitle}</span>`,
+                                    showConfirmButton: true,
+                                    confirmButtonText: "OK",
+                                    confirmButtonColor: "#DD6B55"
+                                });
+
+                            });
+                        $('#journal-paper-modal-view').modal('show');
+                    }
+
+                });
+
+                const updateJournalPaper = async (url) => {
+
+                    //form data object  object 
+                    const updatedJournalPaperDetails = new FormData();
+                    const journalarticalDocuments = document.getElementById('journal-article-documents');
+                    let articlesfilesData = journalarticalDocuments.files;
+                    articlesfilesData ?
+                        Array.from(articlesfilesData).forEach(file => {
+                            console.log('file name  ==>>', file.name);
+                            updatedJournalPaperDetails.append('articlesDocuments', file);
+                        }) :
+                        (articlesfilesData = null, updatedJournalPaperDetails.append('articlesDocuments', articlesfilesData));
+
+
+                    const year = document.getElementById('year').value;
+                    const publisher = document.getElementById('publisher').value;
+                    const totalAuthors = document.getElementById('total-authors').value;
+                    const journalName = document.getElementById('journal-name').value;
+                    const countOtherFaculty = document.getElementById('count-other-faculty').value;
+                    const pages = document.getElementById('pages').value;
+                    const issnNo = document.getElementById('issn-no').value;
+                    const scsCiteScore = document.getElementById('scs-cite-score').value;
+                    const gsIndex = document.getElementById('gs-indexed').value;
+                    const wosIndexedCategory = document.querySelector('input[name="wos-index-category"]:checked').value;
+                    const scsIndexedCategory = document.querySelector('input[name="scopus-category"]:checked').value;
+                    const abdcIndexedCategory = document.querySelector('input[name="abdc-index-category"]:checked').value;
+                    const ugcIndexedCategory = document.querySelector('input[name="ugc-index-category"]:checked').value;
+                    const webLinkNumber = document.getElementById('web-link-num').value;
+                    const uid = document.getElementById('uid').value;
+                    const dateOfPublishing = document.getElementById('date-of-publishing').value;
+                    const titleOfPaper = document.getElementById('title-of-paper').value;
+                    const journalCategory = document.querySelector('input[name="journal-category"]:checked').value;
+                    const nmimsAuthorsCount = document.getElementById('nmims-authors-count').value;
+
+                    const nmimsSchoolArrayObject = nmimsSchoolIdsContainer[nmimsSchoolIdsContainer.length - 1];
+                    const nmimsCampusArrayObject = nmimsCampusIdsContainer[nmimsCampusIdsContainer.length - 1];
+                    const nmimsFacultyArrayObject = facltyContainer[facltyContainer.length - 1];
+                    const allAuthorsArrayObject = allAuthorContainer[allAuthorContainer.length - 1];
+                    const impactFactorArrayObject = impactFactorContainer[impactFactorContainer.length - 1];
+                    const policyCadreArrayObject = policyCadreContainer[policyCadreContainer.length - 1];
+
+                    const nmimsSchoolIds = nmimsSchoolArrayObject ? JSON.stringify(nmimsSchoolArrayObject) : JSON.stringify(nmimsSchoolStoredIds);
+                    const nmimsCampusIds = nmimsCampusArrayObject ? JSON.stringify(nmimsCampusArrayObject) : JSON.stringify(nmimsCampusStoredIds);
+                    const nmimsFacultiesIds = nmimsFacultyArrayObject ? JSON.stringify(nmimsFacultyArrayObject) : JSON.stringify(nmimsAuthorsStoredIds);
+                    const allAuthorsIds = allAuthorsArrayObject ? JSON.stringify(allAuthorsArrayObject) : JSON.stringify(journalArtileAllAothorsIds);
+                    const impactFactorIds = impactFactorArrayObject ? JSON.stringify(impactFactorArrayObject) : JSON.stringify(impactFactorStoredIds);
+                    const policyCadreIds = policyCadreArrayObject ? JSON.stringify(policyCadreArrayObject) : JSON.stringify(policyCadreStoredIds);
+
+                    updatedJournalPaperDetails.append('journalPaperId', journalPaperId);
+                    updatedJournalPaperDetails.append('year', year);
+                    updatedJournalPaperDetails.append('publisher', publisher);
+                    updatedJournalPaperDetails.append('totalAuthors', totalAuthors);
+                    updatedJournalPaperDetails.append('journalName', journalName);
+                    updatedJournalPaperDetails.append('countOtherFaculty', countOtherFaculty);
+                    updatedJournalPaperDetails.append('pages', pages);
+                    updatedJournalPaperDetails.append('issnNo', issnNo);
+                    updatedJournalPaperDetails.append('scsCiteScore', scsCiteScore);
+                    updatedJournalPaperDetails.append('wosIndexedCategory', wosIndexedCategory);
+                    updatedJournalPaperDetails.append('scsIndexedCategory', scsIndexedCategory);
+                    updatedJournalPaperDetails.append('abdcIndexedCategory', abdcIndexedCategory);
+                    updatedJournalPaperDetails.append('ugcIndexedCategory', ugcIndexedCategory);
+                    updatedJournalPaperDetails.append('webLinkNumber', webLinkNumber);
+                    updatedJournalPaperDetails.append('uid', uid);
+                    updatedJournalPaperDetails.append('gsIndex', gsIndex);
+                    updatedJournalPaperDetails.append('dateOfPublishing', dateOfPublishing);
+                    updatedJournalPaperDetails.append('titleOfPaper', titleOfPaper);
+                    updatedJournalPaperDetails.append('journalCategory', journalCategory);
+                    updatedJournalPaperDetails.append('nmimsAuthorsCount', nmimsAuthorsCount);
+                    updatedJournalPaperDetails.append('nmimsSchoolIds', nmimsSchoolIds);
+                    updatedJournalPaperDetails.append('nmimsCampusIds', nmimsCampusIds);
+                    updatedJournalPaperDetails.append('nmimsFacultiesIds', nmimsFacultiesIds);
+                    updatedJournalPaperDetails.append('allAuthorsIds', allAuthorsIds);
+                    updatedJournalPaperDetails.append('impactFactorIds', impactFactorIds);
+                    updatedJournalPaperDetails.append('policyCadreIds', policyCadreIds);
+
+                    // fetch api call
+                    fetch(url, {
+                        method: 'post',
+                        body: updatedJournalPaperDetails
+                    })
+                        .then((result) => {
+                            return result.json()
+                        })
+                        .then((data) => {
+                            console.log('data ==>>>', data);
+
+                            if (data.status === 'Done') {
+                                rowToBeUpdated.setAttribute('data-count-other-faculty', data.updateJournalDetails.countOtherFaculty);
+                                rowToBeUpdated.setAttribute('data-pages', data.updateJournalDetails.pages);
+                                rowToBeUpdated.setAttribute('data-issn-no', data.updateJournalDetails.issnNo);
+                                rowToBeUpdated.setAttribute('data-scs-cite-score', data.updateJournalDetails.scsCiteScore);
+                                rowToBeUpdated.setAttribute('data-impact-factor', data.updateJournalDetails.impactFactor);
+                                rowToBeUpdated.setAttribute('data-scs-indexed', data.updateJournalDetails.scsIndexedCategory);
+                                rowToBeUpdated.setAttribute('data-wos-indexed', data.updateJournalDetails.wosIndexedCategory);
+                                rowToBeUpdated.setAttribute('data-abdc-indexed', data.updateJournalDetails.abdcIndexedCategory);
+                                rowToBeUpdated.setAttribute('data-gs-indexed', data.updateJournalDetails.gsIndex);
+                                rowToBeUpdated.setAttribute('data-uid', data.updateJournalDetails.uid);
+                                rowToBeUpdated.setAttribute('data-ugc-indexed', data.updateJournalDetails.ugcIndexedCategory);
+                                rowToBeUpdated.setAttribute('data-web-link-number', data.updateJournalDetails.webLinkNumber);
+                                rowToBeUpdated.setAttribute('data-date-of-publishing', data.updateJournalDetails.dateOfPublishing);
+                                rowToBeUpdated.setAttribute('data-title-of-paper', data.updateJournalDetails.titleOfPaper);
+                                rowToBeUpdated.setAttribute('data-journal-category', data.updateJournalDetails.journalCategory);
+                                rowToBeUpdated.setAttribute('data-nmims-author-count', data.updateJournalDetails.nmimsAuthorsCount);
+                                rowToBeUpdated.setAttribute('data-school-ids', data.schoolsIdsStrings);
+                                rowToBeUpdated.setAttribute('data-campus-ids', data.campusIdsString);
+                                rowToBeUpdated.setAttribute('data-article-faculties-ids', data.allAuthorsIdsString);
+                                rowToBeUpdated.setAttribute('data-nmims-faculty-ids', data.nmisAuthorIdsstring);
+                                rowToBeUpdated.setAttribute('data-imapact-factor-ids', data.impacatFactorIdsString);
+                                rowToBeUpdated.setAttribute('data-policy-cadre-ids', data.policadreIdsstring);
+                                rowToBeUpdated.setAttribute('data-imapact-factor-ids', data.impacatFactorIdsString);
+                                rowToBeUpdated.setAttribute('data-documents', data.articleFilesNameArray);
+                                rowToBeUpdated.setAttribute('data-documents-ids', data.documentIdsString);
+                                rowToBeUpdated.querySelector('.year').innerText = data.updateJournalDetails.year;
+                                rowToBeUpdated.querySelector('.school').innerText = data.schoolList;
+                                rowToBeUpdated.querySelector('.campus').innerText = data.campusList;
+                                rowToBeUpdated.querySelector('.journal-name').innerText = data.updateJournalDetails.journalName;
+                                rowToBeUpdated.querySelector('.total-authors').innerText = data.updateJournalDetails.totalAuthors;
+                                rowToBeUpdated.querySelector('.publisher').innerText = data.updateJournalDetails.publisher;
+                                rowToBeUpdated.querySelector('.policy-cadre').innerText = data.policyCadreList;
+                                rowToBeUpdated.querySelector('.impcat-factor').innerText = data.impactFactorList;
+
+                                $('#journal-paper-modal').modal('hide');
+                                Swal.fire({
+                                    position: "top-center",
+                                    icon: "success",
+                                    title: `${data.message}`,
+                                    showConfirmButton: true,
+                                    confirmButtonText: "OK",
+                                    confirmButtonColor: "#DD6B55"
+                                    // timer: 1500
+                                });
+                            }
+                            else {
+                                Swal.fire({
+                                    position: "top-center",
+                                    icon: "error",
+                                    title: "Updation Failed",
+                                    color: "red",
+                                    with: "20PX",
+                                    showConfirmButton: true,
+                                    confirmButtonText: "OK",
+                                    confirmButtonColor: "#DD6B55"
+                                });
+                            }
+
+
+                        })
+                        .catch((error) => {
+                            console.log("ERROIR : ", error);
+                            const errTitle = "Internal Server Error";
+                            const message = error
+                            // alert('An error occurred while updating the element');
+                            Swal.fire({
+                                position: "top-center",
+                                icon: "error",
+                                title: `${message}`,
+                                color: "red",
+                                with: "20PX",
+                                html: `<span style="color: red;">${errTitle}</span>`,
+                                showConfirmButton: true,
+                                confirmButtonText: "OK",
+                                confirmButtonColor: "#DD6B55"
+                            });
+                        })
+                }
+
+                updateBtn.addEventListener('click', async () => {
+                    formGroup = updateBtn.closest('.validate-input')
+                    console.log("formGroup::::::::", formGroup)
+                    formGroup.querySelectorAll('input[type="file"]')?.forEach(elm => {
+                        console.log("elm:::::::::", elm);
+                        elm.removeAttribute('data-validate')
+                    })
+                    formGroup.querySelectorAll('.select-option')?.forEach(elm => {
+                        console.log("elm:::::::::", elm);
+                        elm.removeAttribute('data-validate')
+                    });
+                    const isValid = validateRequiredFormFields(updateBtn);
+                    if (isValid) {
+                        await updateJournalPaper('<%- BASE_URL %>research/journal-paper/update');
+                    }
+                    else {
+                        Swal.fire({
+                            position: "top-center",
+                            icon: "error",
+                            title: "Validation Failed",
+                            color: "red",
+                            showConfirmButton: true,
+                            confirmButtonText: "OK",
+                            confirmButtonColor: "#DD6B55"
+                        });
+                    }
+                });
+
+
+                //    const nmimsSchoolList = document.getElementById('school-data-list').dataset.school;
+                //   const nmimsCampusList = document.getElementById('campus-data-list').dataset.campus;
+                //   const policyCadreList = document.getElementById('policy-cadre-data-list').dataset.policy;
+                //   const impactFactorList = document.getElementById('impact-factor-data-list').dataset.factor;
+                const inetrnalnmimsFaculty = document.getElementById('employees-list-data').dataset.employees;
+                //    const allAuthorsList = document.getElementById('all-author-data-list').dataset.author;
+
+
+
+                //   const schoolDataList = JSON.parse(nmimsSchoolList);
+                // const campusDataList = JSON.parse(nmimsCampusList);
+                //   const policyCadreDataList = JSON.parse(policyCadreList);
+                // const impactFactorDataList = JSON.parse(impactFactorList);
+                const nmimsFacultyDataList = JSON.parse(inetrnalnmimsFaculty);
+                //   const allAuthorDataList = JSON.parse(allAuthorsList);
+
+                // ajax for search bar to search status
+                // const selectedSchool = schoolDataList.map(school => ({
+                //     value: school.id,
+                //     text: `${school.school_name}`
+                // }));
+
+                // ajax for search bar to search status
+                // const selectedCampus = campusDataList.map(campus => ({
+                //     value: campus.id,
+                //     text: `${campus.campus_name}`
+                // }));
+
+                // ajax for search bar to search policy cadre
+                // const selectPolicyCadre = policyCadreDataList.map(cadre => ({
+                //     value: cadre.id,
+                //     text: `${cadre.cadre_name}`
+                // }));
+
+                // ajax for search bar to search impcat factor
+                // const selectImpcatFactor = impactFactorDataList.map(factor => ({
+                //     value: factor.id,
+                //     text: `${factor.impact_factor}`
+                // }));
+
+                // ajax for search bar to search impcat factor
+                // const selectInternalNmimsFaculty = nmimsFacultyDataList.map(faculty => ({
+                //     value: faculty.id,
+                //     text: ` ${faculty.employee_id}  ${faculty.faculty_name}`
+                // }));
+
+                // ajax for search bar to search all authors
+                // const selectedAuthors = allAuthorDataList.map(author => ({
+                //     value: author.id,
+                //     text: ` ${author.employee_id}  ${author.faculty_name}`
+                // }));
+
+                // new TomSelect("#nmims-campus-list", {
+                //     options: selectedCampus,
+                //     placeholder : "Select Options",
+                //     hidePlaceholder : true,
+                //     hidePlaceholder : true,
+                //     create: true,
+                //     plugins: ['remove_button'],
+                //     onItemAdd:function(){
+                //         this.setTextboxValue('');
+                //         this.refreshOptions();
+                //     },
+                //     render:{
+                //         option:function(data,escape){
+                //             return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                //         },
+                //         item:function(data,escape){
+                //             return '<div>' + escape(data.text) + '</div>';
+                //         }
+                //     }
+                // });
+
+                // new TomSelect("#nmims-school-list", {
+                //     options: selectedSchool,
+                //     placeholder : "Select Options",
+                //     hidePlaceholder : true,
+                //     hidePlaceholder : true,
+                //     create: true,
+                //     plugins: ['remove_button'],
+                //     onItemAdd:function(){
+                //         this.setTextboxValue('');
+                //         this.refreshOptions();
+                //     },
+                //     render:{
+                //         option:function(data,escape){
+                //             return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                //         },
+                //         item:function(data,escape){
+                //             return '<div>' + escape(data.text) + '</div>';
+                //         }
+                //     }
+                // });
+
+                // new TomSelect("#policy-cadre-list", {
+                //     options: selectPolicyCadre,
+                //     placeholder : "Select Options",
+                //     hidePlaceholder : true,
+                //     hidePlaceholder : true,
+                //     create: true,
+                //     plugins: ['remove_button'],
+                //     onItemAdd:function(){
+                //         this.setTextboxValue('');
+                //         this.refreshOptions();
+                //     },
+                //     render:{
+                //         option:function(data,escape){
+                //             return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                //         },
+                //         item:function(data,escape){
+                //             return '<div>' + escape(data.text) + '</div>';
+                //         }
+                //     }
+                // });
+
+                // new TomSelect("#impact-factor-list", {
+                //     options: selectImpcatFactor,
+                //     placeholder : "Select Options",
+                //     hidePlaceholder : true,
+                //     hidePlaceholder : true,
+                //     create: true,
+                //     plugins: ['remove_button'],
+                //     onItemAdd:function(){
+                //         this.setTextboxValue('');
+                //         this.refreshOptions();
+                //     },
+                //     render:{
+                //         option:function(data,escape){
+                //             return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                //         },
+                //         item:function(data,escape){
+                //             return '<div>' + escape(data.text) + '</div>';
+                //         }
+                //     }
+                // });
+
+                // new TomSelect("#internal-faculty-list", {
+                //     options: selectInternalNmimsFaculty,
+                //     placeholder : "Select Options",
+                //     hidePlaceholder : true,
+                //     hidePlaceholder : true,
+                //     create: true,
+                //     plugins: ['remove_button'],
+                //     onItemAdd:function(){
+                //         this.setTextboxValue('');
+                //         this.refreshOptions();
+                //     },
+                //     render:{
+                //         option:function(data,escape){
+                //             return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                //         },
+                //         item:function(data,escape){
+                //             return '<div>' + escape(data.text) + '</div>';
+                //         }
+                //     }
+                // });
+
+                // new TomSelect("#all-author-list", {
+                //     options: selectedAuthors,
+                //     placeholder : "Select Options",
+                //     hidePlaceholder : true,
+                //     hidePlaceholder : true,
+                //     create: true,
+                //     plugins: ['remove_button'],
+                //     onItemAdd:function(){
+                //         this.setTextboxValue('');
+                //         this.refreshOptions();
+                //     },
+                //     render:{
+                //         option:function(data,escape){
+                //             return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                //         },
+                //         item:function(data,escape){
+                //             return '<div>' + escape(data.text) + '</div>';
+                //         }
+                //     }
+                // });
+
+                // function for invention type drop down list selectedTypeOfInvention
+                function handleCampusDropDownList() {
+                    const selectedValues = Array.from(campusDropDown.options)
+                        .filter(option => option.selected)
+                        .map(option => option.value);
+                    const campusIds = selectedValues.length === 0 ? "" : selectedValues;
+                    console.log('campusIds ===>>>>>', campusIds);
+                    if (!nmimsCampusIdsContainer.some(campus => campus === campusIds)) {
+                        nmimsCampusIdsContainer.push({ 'nmimsCampus': campusIds });
+                    }
+                    console.log(" nmimsCampusIdsContainer ids :", nmimsCampusIdsContainer);
+                }
+
+                // function for handleCampusDropDownList drop down list 
+                function handlePolicyCadreDropDown() {
+                    const selectedValues = Array.from(policyCadreDropDown.options)
+                        .filter(option => option.selected)
+                        .map(option => option.value);
+                    const cadreIds = selectedValues.length === 0 ? "" : selectedValues;
+                    console.log('cadreIds ===>>>>>', cadreIds);
+                    if (!policyCadreContainer.some(cadre => cadre === cadreIds)) {
+                        policyCadreContainer.push({ 'policyCadre': cadreIds });
+                    }
+                    console.log(" policyCadreContainer ids :", policyCadreContainer);
+                }
+
+
+                // function for  drop down list school 
+                function handleSchoolDropDownList() {
+                    const schoolOption = document.getElementById('school-option');
+                    console.log('schoolOption ankit ===>>>>>>', schoolOption.innerText);
+                    schoolOption.classList.add('d-none')
+                    // // schoolOption.removeAttribute('placeholder');
+                    // schoolOption.removeAttribute("placeholder");
+                    const selectedValues = Array.from(schoolDropDown.options)
+                        .filter(option => option.selected)
+                        .map(option => option.value);
+
+                    const schoolIds = selectedValues.length === 0 ? "" : selectedValues;
+                    console.log('schoolIds ===>>>>>', schoolIds);
+                    if (!nmimsSchoolIdsContainer.some(school => school === schoolIds)) {
+                        nmimsSchoolIdsContainer.push({ 'nmimsSchool': schoolIds });
+                    }
+                    console.log("nmimsSchoolIdsContainer ids :", nmimsSchoolIdsContainer);
+                }
+
+                // function for drop down list impact factor
+                function handleImpactFactorDropDownList() {
+                    const selectedValues = Array.from(impactFactorDropDown.options)
+                        .filter(option => option.selected)
+                        .map(option => option.value);
+                    const impcatFactorIds = selectedValues.length === 0 ? "" : selectedValues;
+                    console.log('impcatFactorIds ===>>>>>', impcatFactorIds);
+                    if (!impactFactorContainer.some(factor => factor === impcatFactorIds)) {
+                        impactFactorContainer.push({ 'impactFactor': impcatFactorIds });
+                    }
+                    console.log("impactFactorContainer ids :", impactFactorContainer);
+                };
+
+
+                function handleInternalFacultyDropDownList() {
+                    const selectedValues = Array.from(internalFacultyDropDown.options)
+                        .filter(option => option.selected)
+                        .map(option => option.value);
+                    const internalFacultyIds = selectedValues.length === 0 ? "" : selectedValues;
+                    console.log('internalFacultyIds ===>>>>>', internalFacultyIds);
+                    if (!facltyContainer.some(faculty => faculty === internalFacultyIds)) {
+                        facltyContainer.push({ 'nmimsInternalFaculty': internalFacultyIds });
+                    }
+                    console.log("facltyContainer ids :", facltyContainer);
+
+                }
+
+                function handleAuthorsList() {
+                    const selectedValues = Array.from(allAuthorsDropDown.options)
+                        .filter(option => option.selected)
+                        .map(option => option.value);
+                    const authorsIds = selectedValues.length === 0 ? "" : selectedValues;
+                    console.log('authorsIds ===>>>>>', authorsIds);
+                    if (!impactFactorContainer.some(author => author === authorsIds)) {
+                        allAuthorContainer.push({ 'authorsList': authorsIds });
+                    }
+                    console.log("allAuthorContainer ids :", allAuthorContainer);
+
+                }
+
+                campusDropDown.addEventListener("change", handleCampusDropDownList);
+                schoolDropDown.addEventListener("change", handleSchoolDropDownList);
+                policyCadreDropDown.addEventListener("change", handlePolicyCadreDropDown);
+                impactFactorDropDown.addEventListener("change", handleImpactFactorDropDownList);
+                allAuthorsDropDown.addEventListener("change", handleAuthorsList);
+                internalFacultyDropDown.addEventListener("change", handleInternalFacultyDropDownList);
+
+                function setFileNameInButtons(data) {
+                    console.log('data ==>>>', data);
+                    articleDoucments = document.getElementById('supporting-document');
+                    articleDoucments.setAttribute('data-filename', data.articleDocuments[0].documents_name);
+                }
+
+                //eventlistner for download files
+                document.addEventListener('click', async function (event) {
+                    const button = event.target.closest('button');
+                    if (button && button.id && button.classList.contains('download-file')) {
+                        console.log('button ===>>>', button)
+                        try {
+                            const fileDataString = button.getAttribute('data-filename');
+                            if (!fileDataString) {
+                                throw new Error('Data filename attribute not found on button.');
+                            }
+
+                            const fileArray = fileDataString.split(',').map(fileName => fileName.trim()).filter(Boolean);
+                            if (fileArray.length === 0) {
+                                throw new Error('No file names found in data filename attribute.');
+                            }
+
+                            const downloadPromises = fileArray.map(async (fileName) => {
+                                console.log('fileName ===>>>', fileName)
+                                const fileUrl = `<%- BASE_URL %>research/journal-paper/download/${fileName}`;
+                                downloadFile(fileName, fileUrl)
+                                try {
+                                    const response = await fetch(fileUrl);
+                                    if (!response.ok) {
+                                        throw new Error(`Failed to download file: ${fileName}`);
+                                    }
+                                    console.log('File downloaded successfully:', fileName);
+                                    return fileName;
+                                } catch (error) {
+                                    console.error('Error downloading file:', error);
+                                    throw error;
+                                }
+                            });
+
+                            const downloadedFiles = await Promise.all(downloadPromises);
+                            console.log('All files downloaded successfully:', downloadedFiles);
+                        } catch (error) {
+                            console.error('Error downloading files:', error);
+                            alert(`There was a problem downloading files: ${error.message}`);
+                        }
+                    }
+                });
+
+
+                // set string file value into button
+                function setFileNameAttributeToBeDownload(data) {
+                    console.log('data row in side function ===>>', data);
+                    const articleDataFiles = document.getElementById('journal-data-file-edit');
+                    console.log('articleDataFiles ===>>>>>', articleDataFiles)
+                    articleDataFiles.classList.remove('d-none');
+                    const articleDataString = data.getAttribute('data-documents');
+                    console.log('articleDataString ====>>>>>>', articleDataString);
+                    // setAttribute into button
+                    articleDataFiles.setAttribute('data-filename', articleDataString);
+
+                };
+
+                $("#journal-paper-list").DataTable({
+                    "pageLength": 5,
+                    "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+                })
+
+                document.querySelector('#uploadNewSupportDocument').addEventListener('click', function (e) {
+
+                    let is_checked = document.querySelector('#uploadNewSupportDocument').checked;
+                    console.log("is_checked :", is_checked);
+                    if (is_checked) {
+                        document.querySelector('#journal-article-documents').classList.remove('d-none');
+                    } else {
+                        document.querySelector('#journal-article-documents').classList.add('d-none');
+                    }
+                });
+
+                document.getElementById('headerClose').addEventListener('click', () => {
+                    document.location.reload();
+                })
+
+                document.getElementById('footerClose').addEventListener('click', () => {
+                    document.location.reload();
+                })
+
+
+            </script>
+            <!-- for pagination -->
+            <!-- <%- include('./partials/pagination') %> -->
+            <!-- footer section -->
+            <%- include('./partials/footer') %>
+                <%- include('./partials/footer-end') %>
