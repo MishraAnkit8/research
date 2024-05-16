@@ -22,11 +22,13 @@ module.exports.fetchConsultancyFormData = async(userName) => {
 
 
 
-module.exports.insertApprovalFormDataService = async(body, userName) => {
-    const consultancyFormData = body.consultancyObject;
+module.exports.insertApprovalFormDataService = async(body, files, userName) => {
+    const consultancyFiles = files?.map(file => file.filename).join(',');
+    console.log('consultancyFiles ===>>>>>>>', consultancyFiles);
+    const consultancyFormData = body;
     console.log('consultancyFormData in service ==>>>', consultancyFormData)
 
-    const consultancyApprovalFormData =  await consultancyFormModels.insertConsultancyApprovalFormData(consultancyFormData, userName);
+    const consultancyApprovalFormData =  await consultancyFormModels.insertConsultancyApprovalFormData(consultancyFormData, consultancyFiles, userName);
 
     console.log('consultancyApprovalFormData ====>>>>', consultancyApprovalFormData);
 
@@ -43,11 +45,15 @@ module.exports.insertApprovalFormDataService = async(body, userName) => {
     }
 }
 
-module.exports.updateConsultancyApprovalData = async(body, userName) => {
-    const nmimsConsultancyFormId = body.updatedConsultancyObject.nmimsConsultancyFormId;
-    const updatedConsultancyApprovalRecord = body.updatedConsultancyObject;
+module.exports.updateConsultancyApprovalData = async(body, files, userName) => {
+    console.log('body ====>>>>>', body)
+    const nmimsConsultancyFormId = body.nmimsConsultancyFormId;
+    console.log(' nmimsConsultancyFormId===>>>>>>', nmimsConsultancyFormId);
+    const updatedConsultancyApprovalRecord = body;
+    const consultancyFiles = files?.map(file => file.filename).join(',');
+    console.log('consultancyFiles ===>>>>', consultancyFiles)
 
-    const updateConsultancyApprovalFormData  = await consultancyFormModels.updateApprovalFormData(nmimsConsultancyFormId, updatedConsultancyApprovalRecord, userName);
+    const updateConsultancyApprovalFormData  = await consultancyFormModels.updateApprovalFormData(nmimsConsultancyFormId, updatedConsultancyApprovalRecord, consultancyFiles, userName);
     console.log('updateConsultancyApprovalFormData ====>>>>>', updateConsultancyApprovalFormData);
 
     return updateConsultancyApprovalFormData.status === "Done" ? {

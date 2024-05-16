@@ -98,7 +98,8 @@
                                             data-session-count-per-days="<%- grantSeedData.session_count_per_days %>"
                                             data-total-amount="<%- grantSeedData.totalamount %>"
                                             data-grand-total-amount="<%- grantSeedData.grandtotal %>"
-                                            data-faculty-designation="<%- grantSeedData.faculty_dsg %>">
+                                            data-faculty-designation="<%- grantSeedData.faculty_dsg %>"
+                                            data-supporting-documents="<%- grantSeedData.supporting_documents %>">
                                             <td class="col-lg-1"><%- index + 1 %></td>
                                             <td class="col-lg-1 faculty-name"><%- grantSeedData.faculty_name %></td>
                                             <td class="col-lg-1 project-title"><%- grantSeedData.title %></td>
@@ -109,11 +110,11 @@
                                                 <b title="View" class="view" style="cursor: pointer;"
                                                     data-consultancy-id="<%- grantSeedData.consultancy_id %>">
                                                     &#128065;
-                                                </b>&ensp;
+                                                </b>&ensp;&ensp;&ensp;
                                                 <b title="Edit" class="edit" style="cursor: pointer;"
                                                     data-consultancy-id="<%- grantSeedData.consultancy_id %>">
                                                     &#9998;
-                                                </b>&ensp;
+                                                </b>&ensp;&ensp;&ensp;
                                                 <b title="Delete" class="delete" style="cursor: pointer;"
                                                     data-consultancy-id="<%- grantSeedData.consultancy_id %>">
                                                     &#128465;
@@ -254,6 +255,26 @@
                                         class="form-control" required>
                                     <span style="color:red;" id="completionError"></span>
                                 </div>
+
+                                 <!-- Upload Supporting Documents-->
+                                  <!-- ArunDocument 1 -->
+                                  <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label  class="form-label fw-bold ">
+                                        Upload Supporting Documents
+                                        <div id="uploadNewSupportDocumentDiv">
+                                            <label for="uploadNewSupportDocument"><small>Click to Upload New File</small></label>
+                                            <input type="checkbox" name="uploadNewSupportDocument" id="uploadNewSupportDocument">
+                                        </div>
+                                    </label>
+                                    <div class="d-flex">
+                                        <input type="file" name="supporting-documents" id="supporting-documents"
+                                            class="col-md-12 form-control" data-validate="isEmpty,isExist,isFile"
+                                            data-err-msg="File is required." required multiple>
+                                            <button class="download-btn download-file" id="seed-non-pharamacy-file-edit"><i
+                                                class="fas fa-download text-danger"></i>Download</button>
+                                    </div>
+                                </div>
+
                                 <!-- Days -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="days" class=" sub-title fw-bold">Days/Sessions</label>
@@ -464,6 +485,19 @@
                                     </tr>
                                 </tbody>
                             </table>
+                            <!-- Upload Data -->
+                            <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="sub-title-text sub-title">
+                                            <button class="btn btn-primary h-10 w-10 download-file"
+                                                id="nmims-seed-data-file-view">
+                                                <i class="fas fa-download text-danger"></i> Download Document
+                                            </button>
+                                        </div>
+                                        <label class="view-content" id="view-nmims-non-pharmacy-file"></label>
+                                    </div>
+                            </div>
+
                             <div class=" sub-title text-start fw-bold">BUDGET</div>
                             <hr>
                             <table class="table table-bordered">
@@ -670,6 +704,12 @@
                         updateBtn.classList.add('d-none');
                         removeErrorMsg()
 
+                              // ArunDocument 3
+                        document.querySelector('#supporting-documents').classList.remove('d-none');
+                        document.querySelector('#uploadNewSupportDocumentDiv').classList.add('d-none');
+                        document.querySelector('#uploadNewSupportDocument').checked = false;
+                        document.querySelector('#case-study-doc-edit').classList.add('d-none');
+
                         $('#consultancy-modal-form').modal({
                             backdrop: 'static'
                         });
@@ -734,42 +774,72 @@
                 });
 
                 const insertConsultancyFormApprovalData = async (url) => {
-                    const seedGrantFormData = {};
-                    seedGrantFormData.year = document.getElementById('year').value;
-                    seedGrantFormData.title = document.getElementById('title').value;
+                    const seedGrantFormData = new FormData();
+                    const year = document.getElementById('year').value;
+                    const title = document.getElementById('title').value;
                     // seedGrantFormData.faculty =  document.getElementById('faculty-id').value;
-                    seedGrantFormData.commencementDate = document.getElementById('commencement-date').value;
-                    seedGrantFormData.completionDate = document.getElementById('completion-date').value;
-                    seedGrantFormData.sessionNumbers = document.getElementById('no-of-session').value;
-                    seedGrantFormData.sessionsFees = document.getElementById('sessions-fees').value;
-                    seedGrantFormData.totalFees = document.getElementById('total-fees').value;
-                    seedGrantFormData.facultyShare = document.getElementById('faculty-share').value;
-                    seedGrantFormData.nmimsShare = document.getElementById('nmims-share').value;
-                    seedGrantFormData.researchStaffExpenses = document.getElementById('research-staff-expenses').value;
-                    seedGrantFormData.travlExpanses = document.getElementById('travel').value;
-                    seedGrantFormData.computerCharges = document.getElementById('computer-charges').value;
-                    seedGrantFormData.faculityCharges = document.getElementById('facility-charges').value;
-                    seedGrantFormData.miscellaneousContingencyCharges = document.getElementById('miscellaneous-contingency').value;
-                    seedGrantFormData.advancedPayment = document.getElementById('advance-payment').value;
-                    seedGrantFormData.finalPayment = document.getElementById('final-payment').value;
-                    seedGrantFormData.grossFees = document.getElementById('gross-fees').value;
-                    seedGrantFormData.facultyId = document.getElementById('faculty-id').value;
-                    seedGrantFormData.totalAmount = document.getElementById('total-amount').value;
-                    seedGrantFormData.grandTotal = document.getElementById('grand-total').value;
-                    seedGrantFormData.faculityDsg = document.getElementById('faculty-designation').value
+                    const commencementDate = document.getElementById('commencement-date').value;
+                    const completionDate = document.getElementById('completion-date').value;
+                    const sessionNumbers = document.getElementById('no-of-session').value;
+                    const sessionsFees = document.getElementById('sessions-fees').value;
+                    const totalFees = document.getElementById('total-fees').value;
+                    const facultyShare = document.getElementById('faculty-share').value;
+                    const nmimsShare = document.getElementById('nmims-share').value;
+                    const researchStaffExpenses = document.getElementById('research-staff-expenses').value;
+                    const travlExpanses = document.getElementById('travel').value;
+                    const computerCharges = document.getElementById('computer-charges').value;
+                    const faculityCharges = document.getElementById('facility-charges').value;
+                    const miscellaneousContingencyCharges = document.getElementById('miscellaneous-contingency').value;
+                    const advancedPayment = document.getElementById('advance-payment').value;
+                    const finalPayment = document.getElementById('final-payment').value;
+                    const grossFees = document.getElementById('gross-fees').value;
+                    const facultyId = document.getElementById('faculty-id').value;
+                    const totalAmount = document.getElementById('total-amount').value;
+                    const grandTotal = document.getElementById('grand-total').value;
 
 
+                    seedGrantFormData.append('year', year)
+                    seedGrantFormData.append('title', title)
+                    seedGrantFormData.append('commencementDate', commencementDate)
+                    seedGrantFormData.append('completionDate', completionDate)
+                    seedGrantFormData.append('sessionNumbers', sessionNumbers)
+                    seedGrantFormData.append('sessionsFees', sessionsFees)
+                    seedGrantFormData.append('totalFees', totalFees)
+                    seedGrantFormData.append('facultyShare', facultyShare)
+                    seedGrantFormData.append('nmimsShare', nmimsShare)
+                    seedGrantFormData.append('researchStaffExpenses', researchStaffExpenses)
+                    seedGrantFormData.append('travlExpanses', travlExpanses)
+                    seedGrantFormData.append('computerCharges', computerCharges)
+                    seedGrantFormData.append('faculityCharges', faculityCharges)
+                    seedGrantFormData.append('miscellaneousContingencyCharges', miscellaneousContingencyCharges)
+                    seedGrantFormData.append('advancedPayment', advancedPayment)
+                    seedGrantFormData.append('finalPayment', finalPayment)
+                    seedGrantFormData.append('grossFees', grossFees)
+                    seedGrantFormData.append('facultyId', facultyId)
+                    seedGrantFormData.append('totalAmount', totalAmount)
+                    seedGrantFormData.append('grandTotal', grandTotal)
 
-                    const payload = {
-                        seedGrantFormData: seedGrantFormData
+                    
+                  
+
+
+                    const pharmacyDoc = document.getElementById('supporting-documents');
+                    const pharmacyFiles = pharmacyDoc.files;
+                    console.log('caseStudyFiles ===>>>', pharmacyFiles)
+                    for (let i = 0; i < pharmacyFiles.length; i++) {
+                        console.log('file name  ==>>', pharmacyFiles[i].name);
+                        seedGrantFormData.append('pharmacyFiles', pharmacyFiles[i]);
                     }
-                    console.log('payload ===>>>>', payload)
+
+
+
+                    // const payload = {
+                    //     seedGrantFormData: seedGrantFormData
+                    // }
+                    // console.log('payload ===>>>>', payload)
                     fetch(url, {
                         method: 'POST',
-                        headers: {
-                            'content-type': 'application/json'
-                        },
-                        body: JSON.stringify(payload)
+                        body: seedGrantFormData
                     })
                         .then((Response) => {
                             return Response.ok ? Response.json() : 'NetWork Is Not Ok'
@@ -942,6 +1012,7 @@
                             .then((data) => {
                                 if (data.status === "Done") {
                                     console.log('data ===>>>>>', data)
+                                    setFileNameInButtons(data)
                                     document.getElementById('view-year').innerText = data.nonFormacyData.year;
                                     document.getElementById('view-title').innerText = data.nonFormacyData.title;
                                     document.getElementById('view-faculty-name').innerText = data.nonFormacyData.faculty_name;
@@ -1065,6 +1136,7 @@
                         updateBtn.classList.remove('d-none');
                         approvalFormRecordToBeUpdated = event.target.closest('tr');
                         console.log('approvalFormRecordToBeUpdated', approvalFormRecordToBeUpdated);
+                        setFileNameAttributeToBeDownload(approvalFormRecordToBeUpdated)
 
 
                         console.log('approvalFormRecordToBeUpdated ===>>>>', JSON.stringify(approvalFormRecordToBeUpdated));
@@ -1183,6 +1255,7 @@
                         document.getElementById('total-amount').value = approvalFormRecordToBeUpdated.getAttribute('data-total-payment');
                         document.getElementById('grand-total').value = approvalFormRecordToBeUpdated.getAttribute('data-grant-total-payment');
 
+
                         // formatDateToYYYYMMDD(subMissionDate);
                         $('#consultancy-modal-form').modal('show');
                     }
@@ -1221,69 +1294,97 @@
                 //facultyDropDownList.addEventListener("change", handleFacultyDropDownListChange);
 
                 const updateApprovalFormRecordData = async (url) => {
-                    const updatedSeedGrantData = {};
-                    updatedSeedGrantData.grantedSeedId = grantedSeedId;
-                    updatedSeedGrantData.year = document.getElementById('year').value;
-                    updatedSeedGrantData.title = document.getElementById('title').value;
-                    // updatedSeedGrantData.faculty =  document.getElementById('faculty-id').value;
-                    updatedSeedGrantData.commencementDate = document.getElementById('commencement-date').value;
-                    updatedSeedGrantData.completionDate = document.getElementById('completion-date').value;
-                    updatedSeedGrantData.sessionNumbers = document.getElementById('no-of-session').value;
-                    updatedSeedGrantData.sessionsFees = document.getElementById('sessions-fees').value;
-                    updatedSeedGrantData.totalFees = document.getElementById('total-fees').value;
-                    updatedSeedGrantData.facultyShare = document.getElementById('faculty-share').value;
-                    updatedSeedGrantData.nmimsShare = document.getElementById('nmims-share').value;
-                    updatedSeedGrantData.researchStaffExpenses = document.getElementById('research-staff-expenses').value;
-                    updatedSeedGrantData.travlExpanses = document.getElementById('travel').value;
-                    updatedSeedGrantData.computerCharges = document.getElementById('computer-charges').value;
-                    updatedSeedGrantData.faculityCharges = document.getElementById('facility-charges').value;
-                    updatedSeedGrantData.miscellaneousContingencyCharges = document.getElementById('miscellaneous-contingency').value;
-                    updatedSeedGrantData.advancedPayment = document.getElementById('advance-payment').value;
-                    updatedSeedGrantData.finalPayment = document.getElementById('final-payment').value;
-                    updatedSeedGrantData.grossFees = document.getElementById('gross-fees').value;
-                    updatedSeedGrantData.facultyId = document.getElementById('faculty-id').value ? document.getElementById('faculty-id').value : facultyId;
-                    updatedSeedGrantData.faculityDsg = document.getElementById('faculty-designation').value;
+                    const updatedSeedGrantData = new FormData();
+                    const year = document.getElementById('year').value;
+                    const title = document.getElementById('title').value;
+                    // seedGrantFormData.faculty =  document.getElementById('faculty-id').value;
+                    const commencementDate = document.getElementById('commencement-date').value;
+                    const completionDate = document.getElementById('completion-date').value;
+                    const sessionNumbers = document.getElementById('no-of-session').value;
+                    const sessionsFees = document.getElementById('sessions-fees').value;
+                    const totalFees = document.getElementById('total-fees').value;
+                    const facultyShare = document.getElementById('faculty-share').value;
+                    const nmimsShare = document.getElementById('nmims-share').value;
+                    const researchStaffExpenses = document.getElementById('research-staff-expenses').value;
+                    const travlExpanses = document.getElementById('travel').value;
+                    const computerCharges = document.getElementById('computer-charges').value;
+                    const faculityCharges = document.getElementById('facility-charges').value;
+                    const miscellaneousContingencyCharges = document.getElementById('miscellaneous-contingency').value;
+                    const advancedPayment = document.getElementById('advance-payment').value;
+                    const finalPayment = document.getElementById('final-payment').value;
+                    const grossFees = document.getElementById('gross-fees').value;
+                    const facultyId = document.getElementById('faculty-id').value;
+                    const totalAmount = document.getElementById('total-amount').value;
+                    const grandTotal = document.getElementById('grand-total').value;
+
+                    updatedSeedGrantData.append('grantedSeedId', grantedSeedId)
+                    updatedSeedGrantData.append('year', year)
+                    updatedSeedGrantData.append('title', title)
+                    updatedSeedGrantData.append('commencementDate', commencementDate)
+                    updatedSeedGrantData.append('completionDate', completionDate)
+                    updatedSeedGrantData.append('sessionNumbers', sessionNumbers)
+                    updatedSeedGrantData.append('sessionsFees', sessionsFees)
+                    updatedSeedGrantData.append('totalFees', totalFees)
+                    updatedSeedGrantData.append('facultyShare', facultyShare)
+                    updatedSeedGrantData.append('nmimsShare', nmimsShare)
+                    updatedSeedGrantData.append('researchStaffExpenses', researchStaffExpenses)
+                    updatedSeedGrantData.append('travlExpanses', travlExpanses)
+                    updatedSeedGrantData.append('computerCharges', computerCharges)
+                    updatedSeedGrantData.append('faculityCharges', faculityCharges)
+                    updatedSeedGrantData.append('miscellaneousContingencyCharges', miscellaneousContingencyCharges)
+                    updatedSeedGrantData.append('advancedPayment', advancedPayment)
+                    updatedSeedGrantData.append('finalPayment', finalPayment)
+                    updatedSeedGrantData.append('grossFees', grossFees)
+                    updatedSeedGrantData.append('facultyId', facultyId)
+                    updatedSeedGrantData.append('totalAmount', totalAmount)
+                    updatedSeedGrantData.append('grandTotal', grandTotal)
+
+                    const pharmacyDoc = document.getElementById('supporting-documents');
+                    const pharmacyFiles = pharmacyDoc.files;
+
+                    console.log('caseStudyFiles ===>>>', pharmacyFiles)
+                    for (let i = 0; i < pharmacyFiles.length; i++) {
+                        console.log('file name  ==>>', pharmacyFiles[i].name);
+                        updatedSeedGrantData.append('pharmacyFiles', pharmacyFiles[i]);
+                    }
 
                     console.log('facultu id in updation ===>>>>', facultyId);
 
-                    const payload = {
-                        updatedSeedGrantData: updatedSeedGrantData
-                    }
+                    // const payload = {
+                    //     updatedSeedGrantData: updatedSeedGrantData
+                    // }
 
-                    console.log('payload ===>>>>', payload)
+                    // console.log('payload ===>>>>', payload)
 
                     fetch(url, {
                         method: 'POST',
-                        headers: {
-                            'content-type': 'application/json'
-                        },
-                        body: JSON.stringify(payload)
+                        body: updatedSeedGrantData
                     })
                         .then((Response) => {
                             return Response.ok ? Response.json() : "Network response was not okk"
                         })
                         .then((data) => {
                             if (data.status === "Done") {
-                                approvalFormRecordToBeUpdated.querySelector('.faculty-name').innerText = data.facultTableData[0].faculty_name;
-                                approvalFormRecordToBeUpdated.querySelector('.project-title').innerText = data.updatedNonFormacyData.title;
-                                approvalFormRecordToBeUpdated.querySelector('.year').innerText = data.updatedNonFormacyData.year;
-                                approvalFormRecordToBeUpdated.querySelector('.total-fees').innerText = data.updatedNonFormacyData.totalFees;
-                                approvalFormRecordToBeUpdated.setAttribute('data-consultancy-id', data.updatedNonFormacyData.grantedSeedId);
-                                approvalFormRecordToBeUpdated.setAttribute('data-faculty-id', data.updatedNonFormacyData.facultyId);
-                                approvalFormRecordToBeUpdated.setAttribute('data-commencement-date', data.updatedNonFormacyData.commencementDate);
-                                approvalFormRecordToBeUpdated.setAttribute('data-completion-date', data.updatedNonFormacyData.completionDate);
-                                approvalFormRecordToBeUpdated.setAttribute('data-research-staff-expenses', data.updatedNonFormacyData.researchStaffExpenses);
-                                approvalFormRecordToBeUpdated.setAttribute('data-travel-expenses', data.updatedNonFormacyData.travlExpanses);
-                                approvalFormRecordToBeUpdated.setAttribute('data-computer-charges', data.updatedNonFormacyData.computerCharges);
-                                approvalFormRecordToBeUpdated.setAttribute('data-nmims-facility-charges', data.updatedNonFormacyData.faculityCharges);
-                                approvalFormRecordToBeUpdated.setAttribute('data-miscellaneous-including-contingency', data.updatedNonFormacyData.miscellaneousContingencyCharges);
-                                approvalFormRecordToBeUpdated.setAttribute('data-advanced-payment', data.updatedNonFormacyData.advancedPayment);
-                                approvalFormRecordToBeUpdated.setAttribute('data-final-payment', data.updatedNonFormacyData.finalPayment);
-                                approvalFormRecordToBeUpdated.setAttribute('data-per-session-fees', data.updatedNonFormacyData.sessionsFees);
-                                approvalFormRecordToBeUpdated.setAttribute('data-total-fees', data.updatedNonFormacyData.totalFees);
-                                approvalFormRecordToBeUpdated.setAttribute('data-faculty-shares', data.updatedNonFormacyData.facultyShare);
-                                approvalFormRecordToBeUpdated.setAttribute('data-nmims-shares', data.updatedNonFormacyData.nmimsShare);
-                                approvalFormRecordToBeUpdated.setAttribute('data-gross-fees', data.updatedNonFormacyData.grossFees);
+                                // approvalFormRecordToBeUpdated.querySelector('.faculty-name').innerText = data.facultTableData[0].faculty_name;
+                                // approvalFormRecordToBeUpdated.querySelector('.project-title').innerText = data.updatedNonFormacyData.title;
+                                // approvalFormRecordToBeUpdated.querySelector('.year').innerText = data.updatedNonFormacyData.year;
+                                // approvalFormRecordToBeUpdated.querySelector('.total-fees').innerText = data.updatedNonFormacyData.totalFees;
+                                // approvalFormRecordToBeUpdated.setAttribute('data-consultancy-id', data.updatedNonFormacyData.grantedSeedId);
+                                // approvalFormRecordToBeUpdated.setAttribute('data-faculty-id', data.updatedNonFormacyData.facultyId);
+                                // approvalFormRecordToBeUpdated.setAttribute('data-commencement-date', data.updatedNonFormacyData.commencementDate);
+                                // approvalFormRecordToBeUpdated.setAttribute('data-completion-date', data.updatedNonFormacyData.completionDate);
+                                // approvalFormRecordToBeUpdated.setAttribute('data-research-staff-expenses', data.updatedNonFormacyData.researchStaffExpenses);
+                                // approvalFormRecordToBeUpdated.setAttribute('data-travel-expenses', data.updatedNonFormacyData.travlExpanses);
+                                // approvalFormRecordToBeUpdated.setAttribute('data-computer-charges', data.updatedNonFormacyData.computerCharges);
+                                // approvalFormRecordToBeUpdated.setAttribute('data-nmims-facility-charges', data.updatedNonFormacyData.faculityCharges);
+                                // approvalFormRecordToBeUpdated.setAttribute('data-miscellaneous-including-contingency', data.updatedNonFormacyData.miscellaneousContingencyCharges);
+                                // approvalFormRecordToBeUpdated.setAttribute('data-advanced-payment', data.updatedNonFormacyData.advancedPayment);
+                                // approvalFormRecordToBeUpdated.setAttribute('data-final-payment', data.updatedNonFormacyData.finalPayment);
+                                // approvalFormRecordToBeUpdated.setAttribute('data-per-session-fees', data.updatedNonFormacyData.sessionsFees);
+                                // approvalFormRecordToBeUpdated.setAttribute('data-total-fees', data.updatedNonFormacyData.totalFees);
+                                // approvalFormRecordToBeUpdated.setAttribute('data-faculty-shares', data.updatedNonFormacyData.facultyShare);
+                                // approvalFormRecordToBeUpdated.setAttribute('data-nmims-shares', data.updatedNonFormacyData.nmimsShare);
+                                // approvalFormRecordToBeUpdated.setAttribute('data-gross-fees', data.updatedNonFormacyData.grossFees);
                                 console.log('data ===>>>>', data);
                                 Swal.fire({
                                     position: "top-center",
@@ -1292,7 +1393,7 @@
                                     showConfirmButton: true,
                                     confirmButtonText: "OK",
                                     confirmButtonColor: "#DD6B55",
-                                    timer: 1500
+                                    // timer: 1500
                                 }).then(() => {
                                     document.location.reload()
                                 });
@@ -1358,59 +1459,85 @@
                     }
                 })
 
-                document.getElementById('final-payment').addEventListener('input', () => {
+                // document.getElementById('final-payment').addEventListener('input', () => {
+                //     let finalPayment = document.getElementById('final-payment').value;
+                //     let advancePayment = document.getElementById('advance-payment').value;
+                //     let totalAmount = document.getElementById('total-amount');
+
+                //     let advance = Number.parseInt(advancePayment)
+                //     let final = Number.parseInt(finalPayment);
+
+                //     let total = advance + final
+                //     totalAmount.value = total
+
+                //     //   document.querySelector('#commonTr').setAttribute('data-total-amount', totalAmount)
+                //     console.log('advance and final ', finalPayment, advancePayment)
+                // })
+                document.getElementById('advance-payment').addEventListener('input', calculateTotal);
+                document.getElementById('final-payment').addEventListener('input', calculateTotal);
+
+                function calculateTotal() {
                     let finalPayment = document.getElementById('final-payment').value;
                     let advancePayment = document.getElementById('advance-payment').value;
                     let totalAmount = document.getElementById('total-amount');
 
-                    let advance = Number.parseInt(advancePayment)
-                    let final = Number.parseInt(finalPayment);
+                    let advance = Number.parseInt(advancePayment) || 0;
+                    let final = Number.parseInt(finalPayment) || 0;
 
-                    let total = advance + final
-                    totalAmount.value = total
+                    let total = advance + final;
+                    totalAmount.value = total;
 
-                    //   document.querySelector('#commonTr').setAttribute('data-total-amount', totalAmount)
-                    console.log('advance and final ', finalPayment, advancePayment)
-                })
+                    console.log('totalAmount ====>>>>>>', totalAmount)
 
-
-                document.getElementById('miscellaneous-contingency').addEventListener('input', () => {
-
-                    let grossFees = Number.parseInt(document.getElementById('gross-fees').value);
-                    let researchStaffExpenses = Number.parseInt(document.getElementById('research-staff-expenses').value);
-                    let travel = Number.parseInt(document.getElementById('travel').value);
-                    let miscellaneous = Number.parseInt(document.getElementById('miscellaneous-contingency').value);
-                    let computerCharges = Number.parseInt(document.getElementById('computer-charges').value);
-                    let facultyCharges = Number.parseInt(document.getElementById('facility-charges').value);
-
-                    let finalPayment = document.getElementById('final-payment').value;
-                    let advancePayment = document.getElementById('advance-payment').value;
+                    console.log('advance and final ', finalPayment, advancePayment);
+                }
 
 
-                    let advance = Number.parseInt(advancePayment)
-                    let final = Number.parseInt(finalPayment);
+               // Add event listeners to all relevant input fields
+            document.getElementById('gross-fees').addEventListener('input', calculateGrandTotal);
+            document.getElementById('research-staff-expenses').addEventListener('input', calculateGrandTotal);
+            document.getElementById('travel').addEventListener('input', calculateGrandTotal);
+            document.getElementById('miscellaneous-contingency').addEventListener('input', calculateGrandTotal);
+            document.getElementById('computer-charges').addEventListener('input', calculateGrandTotal);
+            document.getElementById('facility-charges').addEventListener('input', calculateGrandTotal);
+            document.getElementById('final-payment').addEventListener('input', calculateGrandTotal);
+            document.getElementById('advance-payment').addEventListener('input', calculateGrandTotal);
+            document.getElementById('no-of-session').addEventListener('input', calculateGrandTotal);
+            document.getElementById('sessions-fees').addEventListener('input', calculateGrandTotal);
 
-                    console.log('advance and final ', advance, final)
+    function calculateGrandTotal() {
+        let grossFees = Number.parseInt(document.getElementById('gross-fees').value) || 0;
+        let researchStaffExpenses = Number.parseInt(document.getElementById('research-staff-expenses').value) || 0;
+        let travel = Number.parseInt(document.getElementById('travel').value) || 0;
+        let miscellaneous = Number.parseInt(document.getElementById('miscellaneous-contingency').value) || 0;
+        let computerCharges = Number.parseInt(document.getElementById('computer-charges').value) || 0;
+        let facultyCharges = Number.parseInt(document.getElementById('facility-charges').value) || 0;
 
-                    let grandTotal = document.getElementById('grand-total')
+        let finalPayment = Number.parseInt(document.getElementById('final-payment').value) || 0;
+        let advancePayment = Number.parseInt(document.getElementById('advance-payment').value) || 0;
 
-                    let total = grossFees + computerCharges + miscellaneous + computerCharges + travel + researchStaffExpenses
-                    let totalpayment = advance + final;
+        let totalAmount = document.getElementById('grand-total');
 
-                    const gstCharges = totalpayment * 18 / 100;
-                    console.log('gstCharges ====>>>>', gstCharges);
+        // Calculate total fees
+        let totalFees = (Number.parseInt(document.getElementById('no-of-session').value) || 0) * (Number.parseInt(document.getElementById('sessions-fees').value) || 0);
 
-                    let totalFees = parseInt(document.getElementById('no-of-session').value) * parseInt(document.getElementById('sessions-fees').value);
+        let total = grossFees + computerCharges + miscellaneous + facultyCharges + travel + researchStaffExpenses;
+        let totalPayment = advancePayment + finalPayment;
 
-                    const grandTotalAmount = total + gstCharges + totalFees;
-                    console.log('grandTotalAmount ====>>>>', grandTotalAmount);
-                    grandTotal.value = grandTotalAmount;
-                    let tr = document.getElementById('commonTr')
-                    console.log('tr ====>>>>', tr);
-                    //  document.querySelector('#commonTr').setAttribute('data-grand-total-amount', grandTotalAmount);
+        const gstCharges = totalPayment * 18 / 100;
 
-                })
+        const grandTotalAmount = total + gstCharges + totalFees;
 
+        totalAmount.value = grandTotalAmount;
+
+        console.log('advance and final', advancePayment, finalPayment);
+        console.log('gstCharges ====>>>>', gstCharges);
+        console.log('grandTotalAmount ====>>>>', grandTotalAmount);
+
+    }
+
+// Initial calculation on page load
+calculateGrandTotal();
 
 
                 // $('body').keypress(function(e){ 
@@ -1444,7 +1571,83 @@
                 })
 
 
+                  // ArunDocument 2
+                  document.querySelector('#uploadNewSupportDocument').addEventListener('click',function(e){
+                    let is_checked = document.querySelector('#uploadNewSupportDocument').checked;
+                    console.log("is_checked :",is_checked);
+                    if(is_checked){
+                        document.querySelector('#supporting-documents').classList.remove('d-none');
+                    }else{
+                        document.querySelector('#supporting-documents').classList.add('d-none');
+                    }
+                })
 
+
+             //  set file string into button
+             function setFileNameInButtons(data) {
+                    console.log('data XXXXXXXXX==>>>', data);
+                    console.log('data.nonFormacyData.supporting_documents ====>>>>>', data.nonFormacyData.supporting_documents);
+                   let  patetDataFileView = document.getElementById('nmims-seed-data-file-view');
+                    patetDataFileView.setAttribute('data-filename', data.nonFormacyData.supporting_documents);
+                }
+
+                //eventlistner for download files
+                document.addEventListener('click', async function (event) {
+                    const button = event.target.closest('button');
+                    if (button && button.id && button.classList.contains('download-file')) {
+                        console.log('button ===>>>', button)
+                        try {
+                            const fileDataString = button.getAttribute('data-filename');
+                            console.log('fileDataString ===>>>>>>', fileDataString);
+                            if (!fileDataString) {
+                                throw new Error('Data filename attribute not found on button.');
+                            }
+
+                            const fileArray = fileDataString.split(',').map(fileName => fileName.trim()).filter(Boolean);
+                            if (fileArray.length === 0) {
+                                throw new Error('No file names found in data filename attribute.');
+                            }
+
+                            const downloadPromises = fileArray.map(async (fileName) => {
+                                console.log('fileName ===>>>', fileName)
+                                const fileUrl = `<%- BASE_URL %>research/nmims-seed-grant-non-pharmacy/download/${fileName}`;
+                                downloadFile(fileName, fileUrl)
+                                try {
+                                    const response = await fetch(fileUrl);
+                                    if (!response.ok) {
+                                        throw new Error(`Failed to download file: ${fileName}`);
+                                    }
+                                    console.log('File downloaded successfully:', fileName);
+                                    return fileName;
+                                } catch (error) {
+                                    console.error('Error downloading file:', error);
+                                    throw error;
+                                }
+                            });
+
+                            const downloadedFiles = await Promise.all(downloadPromises);
+                            console.log('All files downloaded successfully:', downloadedFiles);
+                        } catch (error) {
+                            console.error('Error downloading files:', error);
+                            alert(`There was a problem downloading files: ${error.message}`);
+                        }
+                    }
+                });
+
+
+                // set string file value into button
+                function setFileNameAttributeToBeDownload(data) {
+                    console.log('data row ankit  in side function ===>>', data);
+                    const nonPharmacyFiles = document.getElementById('seed-non-pharamacy-file-edit');
+                    nonPharmacyFiles.classList.remove('d-none');
+                    const nonPharmacyFilesString = data.getAttribute('data-supporting-documents');
+                    console.log('nonPharmacyFilesString ====>>>>', nonPharmacyFilesString);
+
+                    // setAttribute into button
+                    nonPharmacyFiles.setAttribute('data-filename', nonPharmacyFilesString);
+
+                };
+            
 
 
             </script>

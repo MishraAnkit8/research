@@ -87,20 +87,19 @@ module.exports.insertResearchConsultancyData = async (
 ) => {
   const researchCunsultancyData = body;
 
-    const facultyData = JSON.parse(researchCunsultancyData.facultyDataContainer);
-    const nmimsSchoolIds = JSON.parse(researchCunsultancyData.nmimsSchoolIds);
-    const nmimsCampusIds = JSON.parse(researchCunsultancyData.nmimsCampusIds);
+  const facultyData = JSON.parse(researchCunsultancyData.facultyDataContainer);
+  const nmimsSchoolIds = JSON.parse(researchCunsultancyData.nmimsSchoolIds);
+  const nmimsCampusIds = JSON.parse(researchCunsultancyData.nmimsCampusIds);
 
-    const schoolIdsArray = (nmimsSchoolIds.nmimsSchool || []).map((id) =>
-      parseInt(id)
-    );
-    const campusIdsArray = (nmimsCampusIds.nmimsCampus || []).map((id) =>
-      parseInt(id)
-    );
+  const schoolIdsArray = (nmimsSchoolIds.nmimsSchool || []).map((id) =>
+    parseInt(id)
+  );
+  const campusIdsArray = (nmimsCampusIds.nmimsCampus || []).map((id) =>
+    parseInt(id)
+  );
 
-    const schoolsIdsStrings = schoolIdsArray.join(",");
-    const campusIdsString = campusIdsArray.join(",");
-
+  const schoolsIdsStrings = schoolIdsArray.join(",");
+  const campusIdsString = campusIdsArray.join(",");
 
   // Extract internalFaculty and externalEmpList arrays
   const internalFaculty =
@@ -159,6 +158,23 @@ module.exports.updateResearchConstant = async (
   // console.log('data in service =====>>>>', updatedResearchGrant.internalEmpId)
   // Parse the facultyDataContainer property to extract internalFaculty and externalEmpList arrays
   const facultyData = JSON.parse(updatedResearchGrant.facultyDataContainer);
+  const updateNmimsSchoolIds = JSON.parse(updatedResearchGrant.nmimsSchoolIds);
+  const updateNmimsCampusIds = JSON.parse(updatedResearchGrant.nmimsCampusIds);
+
+  const updateSchoolIdsArray = (updateNmimsSchoolIds.nmimsSchool || []).map(
+    (id) => parseInt(id)
+  );
+
+  const updateCampusIdsArray = (updateNmimsCampusIds.nmimsCampus || []).map(
+    (id) => parseInt(id)
+  );
+  // const updateNmimsAuthorsArray = (
+  //   updateNmimsFacultiesIds.nmimsInternalFaculty || []
+  // ).map((id) => parseInt(id));
+
+  const schoolsIdsStrings = updateSchoolIdsArray.join(",");
+  const campusIdsString = updateCampusIdsArray.join(",");
+
   // Extract internalFaculty and externalEmpList arrays
   const internalFaculty =
     facultyData.find((item) => item !== null && item.internalFaculty)
@@ -182,7 +198,9 @@ module.exports.updateResearchConstant = async (
       updatedResearchGrant,
       updatedConsultantFilesData,
       FacultydataArray,
-      userName
+      userName,
+      updateSchoolIdsArray,
+      updateCampusIdsArray
     );
 
   console.log(

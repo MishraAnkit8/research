@@ -79,13 +79,17 @@
                                     <th class="col-lg-1">Action</th>
                                 </thead>
                                 <tbody class="data-list">
-                                    <% researchProjectData.forEach(function(consultancy, index) { %>
+                                    <% researchPojectGrantFacultyData.forEach(function(consultancy, index) { %>
 
-                                        <tr id="nearTd" scope="row" data-consultancy-id="<%- consultancy.id %>"
+                                        <tr id="nearTd" scope="row" data-consultancy-id="<%- consultancy.project_id %>"
                                             data-submission-date="<%- consultancy.submission_date.toISOString().split('T')[0] %>"
                                             data-supporting-documents="<%- consultancy.supporting_documents %>"
                                             data-campus-ids="<%- consultancy.campus_id %>"
-                                            data-school-ids="<%- consultancy.school_id %>">
+                                            data-school-ids="<%- consultancy.school_id %>"
+                                            data-projectDuration="<%- consultancy.projectduration %>"
+                                            data-scheme="<%- consultancy.scheme %>"
+                                            data-paymentDate="<%- consultancy.paymentdate %>"
+                                            data-amountRecieved="<%- consultancy.amountrecieved %>">
                                             <td><%- index + 1 %></td>
                                             <td class="grant-proposal col-lg-1"><%- consultancy.grant_proposal_category
                                                     %></td>
@@ -120,11 +124,11 @@
                                                 <b title="View" class="border-right-0 view" style="cursor: pointer;"
                                                     data-consultancy-id="<%- consultancy.id %>">
                                                     &#128065;
-                                                </b>&ensp;
+                                                </b>&ensp;&ensp;&ensp;
                                                 <b title="Edit" class="border-right-0 edit" style="cursor: pointer;"
                                                     data-consultancy-id="<%- consultancy.id %>">
                                                     &#9998;
-                                                </b>&ensp;
+                                                </b>&ensp;&ensp;&ensp;
                                                 <b title="Delete" class="border-right-0 delete" style="cursor: pointer;"
                                                     data-consultancy-id="<%- consultancy.id %>">
                                                     &#128465;
@@ -1242,7 +1246,97 @@
                         document.getElementById('add-btn').classList.add('d-none');
 
                         consultantRowToBeUpdated = event.target.closest('tr');
-                        consultantId = event.target.getAttribute('data-consultancy-id');
+                        consultantId = consultantRowToBeUpdated.getAttribute('data-consultancy-id');
+
+
+                        const campusIdsArray = consultantRowToBeUpdated.getAttribute('data-campus-ids').split(',').map(str => parseInt(str.trim(), 10));
+                        const schoolIdsArray = consultantRowToBeUpdated.getAttribute('data-school-ids').split(',').map(str => parseInt(str.trim(), 10));
+
+                        nmimsCampusStoredIds = { 'nmimsCampus': campusIdsArray }
+                        nmimsSchoolStoredIds = { 'nmimsSchool': schoolIdsArray };
+
+
+                        const nmimsSchoolList = document.getElementById('school-data-list').dataset.school;
+
+                        const schoolDataList = JSON.parse(nmimsSchoolList);
+
+                        let schoolArr = [];
+
+                        Array.from(schoolDataList).forEach(data => {
+                            Array.from(schoolIdsArray).forEach(sd => {
+                                if (data.id == sd) {
+                                    schoolArr.push(data.id)
+                                }
+                            })
+                        })
+
+                        const selectedSchool = schoolDataList.map(school => ({
+                            value: school.id,
+                            text: `${school.school_name}`
+                        }));
+
+                        new TomSelect("#nmims-school-list", {
+                            options: selectedSchool,
+                            items: schoolArr,
+                            // placeholder : "Select Options",
+                            hidePlaceholder: true,
+                            hidePlaceholder: true,
+                            create: true,
+                            plugins: ['remove_button'],
+                            onItemAdd: function () {
+                                this.setTextboxValue('');
+                                this.refreshOptions();
+                            },
+                            render: {
+                                option: function (data, escape) {
+                                    return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                                },
+                                item: function (data, escape) {
+                                    return '<div>' + escape(data.text) + '</div>';
+                                }
+                            }
+                        });
+
+                        const nmimsCampusList = document.getElementById('campus-data-list').dataset.campus;
+
+                        const campusDataList = JSON.parse(nmimsCampusList);
+
+                        let cmpArray = [];
+
+                        Array.from(campusDataList).forEach(data => {
+                            Array.from(campusIdsArray).forEach(cmp => {
+                                if (data.id == cmp) {
+                                    cmpArray.push(data.id)
+                                }
+                            })
+                        })
+
+                        const selectedCampus = campusDataList.map(campus => ({
+                            value: campus.id,
+                            text: `${campus.campus_name}`
+                        }));
+
+                        new TomSelect("#nmims-campus-list", {
+                            options: selectedCampus,
+                            items: cmpArray,
+                            // placeholder : "Select Options",
+                            hidePlaceholder: true,
+                            hidePlaceholder: true,
+                            create: true,
+                            plugins: ['remove_button'],
+                            onItemAdd: function () {
+                                this.setTextboxValue('');
+                                this.refreshOptions();
+                            },
+                            render: {
+                                option: function (data, escape) {
+                                    return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                                },
+                                item: function (data, escape) {
+                                    return '<div>' + escape(data.text) + '</div>';
+                                }
+                            }
+                        });
 
 
 
@@ -1271,6 +1365,8 @@
                             value: faculty.id,
                             text: ` ${faculty.employee_id}  ${faculty.faculty_name}`
                         }));
+
+                        console.log('emp array ', JSON.stringify(employeesList), consultantId)
 
 
                         // Initialize TomSelect dropdown with options containing id and faculty_name
@@ -1326,7 +1422,7 @@
 
                         // function call for download button
                         setFileNameAttributeToBeDownload(consultantRowToBeUpdated);
-                        consultantId = event.target.getAttribute('data-consultancy-id');
+                        consultantId = consultantRowToBeUpdated.getAttribute('data-consultancy-id');
                         console.log('consultantId ==>>', consultantId);
                         const isGrantProposalCategoryGoverement = document.getElementById('goverment');
                         const isGrantProposalCategoryIndustry = document.getElementById('industry');
@@ -1431,9 +1527,19 @@
                         // document.getElementById('co-investigators').value = coInvestigator;
                         // document.getElementById('total-grant-sanction-rupees').value = totalGrntSanctioRupee;
                         // document.getElementById('recieved-amount').value = recievedAmount;
-                        // const receivedAmountDateFormate = formatDateToYYYYMMDD(recievedAmountDate);
-                        // document.getElementById('duration-of-project').value = projectDuration;
-                        // document.getElementById('amount-recieved-date').value = receivedAmountDateFormate;
+                        //const receivedAmountDateFormate = formatDateToYYYYMMDD(recievedAmountDate);
+                        document.getElementById('duration-date').value = consultantRowToBeUpdated.getAttribute('data-projectduration');
+                        document.getElementById('scheme').value = consultantRowToBeUpdated.getAttribute('data-scheme');
+                        document.getElementById('amount-received').value = consultantRowToBeUpdated.getAttribute('data-amountRecieved');
+
+                        let paymentdate = consultantRowToBeUpdated.getAttribute('data-paymentDate');
+                        console.log('payment date ', paymentdate)
+                        const PaymentDate = formatDateToYYYYMMDD(paymentdate);
+                        document.getElementById('annual-payment-date').value = PaymentDate
+
+
+
+
                         document.getElementById('thurst-area').value = thurstAreaOfResearch.innerText.trim();
                         console.log('thurstAreaOfResearch ===>>>>', thurstAreaOfResearch)
                         document.getElementById('funding-agency').value = fundingAgency.innerText.trim();
@@ -1688,6 +1794,12 @@
                     const updatedStatusOfResearchProject = document.querySelector('input[name="research-project-status"]:checked').value;
                     const updatedSubmissionGrantDate = document.getElementById('submission-grant-date').value;
                     const updatedAuthorType = document.querySelector('input[name="author-type"]:checked').value;
+                    const updatedPaymentDate = document.getElementById('annual-payment-date').value;
+                    const updatedScheme = document.getElementById('scheme').value;
+                    const updatedAmount = document.getElementById('amount-received').value;
+                    const updatedDuration = document.getElementById('duration-date').value;
+
+
                     console.log('updatedAuthorType ===>>>', updatedAuthorType)
                     // const updatedSchool = document.getElementById('school').value;
                     // const updatedCampus = document.getElementById('campus').value;
@@ -1714,6 +1826,13 @@
                         updatedConsultantFiles = null;
                         updatedConsultantData.append('researchSupportingDocument', updatedConsultantFiles);
                     }
+
+                    const nmimsSchoolArrayObject = nmimsSchoolIdsContainer[nmimsSchoolIdsContainer.length - 1];
+                    const nmimsCampusArrayObject = nmimsCampusIdsContainer[nmimsCampusIdsContainer.length - 1];
+
+                    const nmimsSchoolIds = nmimsSchoolArrayObject ? JSON.stringify(nmimsSchoolArrayObject) : JSON.stringify(nmimsSchoolStoredIds);
+                    const nmimsCampusIds = nmimsCampusArrayObject ? JSON.stringify(nmimsCampusArrayObject) : JSON.stringify(nmimsCampusStoredIds);
+
                     updatedConsultantData.append('consultantId', consultantId);
                     updatedConsultantData.append('grantProposalCategory', updatedGrantProposalCategory);
                     updatedConsultantData.append('typeOfGrant', updatedTypeOfGrant);
@@ -1723,6 +1842,13 @@
                     updatedConsultantData.append('fundingAmount', updatedFundingAmount);
                     updatedConsultantData.append('statusOfResearchProject', updatedStatusOfResearchProject);
                     updatedConsultantData.append('submissionGrantDate', updatedSubmissionGrantDate);
+                    updatedConsultantData.append('durationDate', updatedDuration);
+                    updatedConsultantData.append('amountRecieved', updatedAmount);
+                    updatedConsultantData.append('scheme', updatedScheme);
+                    updatedConsultantData.append('paymentDate', updatedPaymentDate);
+                    updatedConsultantData.append('nmimsSchoolIds', nmimsSchoolIds);
+                    updatedConsultantData.append('nmimsCampusIds', nmimsCampusIds);
+
                     // updatedConsultantData.append('school', updatedSchool);
                     // updatedConsultantData.append('projectDuration' , updateProjectDuration);
                     // updatedConsultantData.append('campus', updatedCampus);
@@ -1772,6 +1898,8 @@
                                     confirmButtonText: "OK",
                                     confirmButtonColor: "#DD6B55",
                                     timer: 1500
+                                }).then(() => {
+                                    document.location.reload();
                                 });
                                 $('#consultancy-modal').modal('hide');
                             }

@@ -8,7 +8,10 @@ module.exports.renderResearchProjectConsultancy = async (req, res, next) => {
     await researchConsultancyService.fetchResearConsultacyData(userName);
   console.log("external json ", JSON.stringify(researchcConsultancyData));
 
-  // console.log('researchcConsultancyData in controller ===>>>>>', researchcConsultancyData);
+  console.log(
+    "researchcConsultancyData in controller ===>>>>>",
+    researchcConsultancyData.researchPojectGrantFacultyData
+  );
 
   res.render("research-project-grant", {
     status: researchcConsultancyData.status,
@@ -75,7 +78,7 @@ module.exports.updatedConsultantData = async (req, res, next) => {
   const userName = req.body.username;
   console.log("userName in controller  ===>>>>>>", userName);
 
-  console.log("data comming from templates ==>>", req.body);
+  console.log("data comming from templates ==>>", JSON.stringify(req.body));
   const consultantId = req.body.consultantId;
   const updatedConsultant = req.body;
 
