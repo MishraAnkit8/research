@@ -89,7 +89,9 @@ module.exports.viewSeedGrantNonFormacy = async (grantedSeedId, userName) => {
 };
 
 module.exports.insertSeedGrantNonformacyForm = async (
-  seedGrantFormData, pharmacyFiles, userName
+  seedGrantFormData,
+  pharmacyFiles,
+  userName
 ) => {
   const {
     year,
@@ -144,7 +146,8 @@ module.exports.insertSeedGrantNonformacyForm = async (
       facultyDsg,
       pharmacyFiles,
       userName,
-      true
+      true,
+      facultyDesignation,
     ],
   };
 
@@ -170,7 +173,10 @@ module.exports.insertSeedGrantNonformacyForm = async (
 };
 
 module.exports.updateSeedGrantNonformacyForm = async (
-  grantedSeedId, updatedSeedGrantData, pharmacyFiles, userName
+  grantedSeedId,
+  updatedSeedGrantData,
+  pharmacyFiles,
+  userName
 ) => {
   const {
     year,
@@ -231,12 +237,11 @@ module.exports.updateSeedGrantNonformacyForm = async (
       ...(pharmacyFiles ? [pharmacyFiles] : [])
     ]
 
-    let sql = {
-      text: queryText,
-      values: values
+  let sql = {
+    text: queryText,
+    values: values,
   };
-  console.log('sql ====>>>>>>', sql);
-
+  console.log("sql ====>>>>>>", sql);
 
   let facultySql = {
     text: `SELECT * FROM faculty_table  WHERE id = $1 and active=true `,
