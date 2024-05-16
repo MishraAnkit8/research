@@ -8,7 +8,9 @@ const storage = multer.diskStorage({
     },
     filename: function (req, file, cb) {
         // Append a unique identifier (UUID) to the original filename
-        let uniqueFileName = uuidv4() + '_' + file.originalname;
+        // let uniqueFileName = uuidv4() + '_' + file.originalname;
+        let uniqueFileName = file.originalname;
+        console.log('uniqueFileName ====>>>>>>>', uniqueFileName);
         cb(null, uniqueFileName);
     }
 });

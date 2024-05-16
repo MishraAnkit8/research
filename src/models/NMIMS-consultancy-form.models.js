@@ -14,7 +14,7 @@ module.exports.renderNmimsConsultancyApprovalForm = async (userName) => {
                         c.year, c.title, c.commencement_date, c.created_by AS created_by, c.updated_by AS updated_by, c.completion_date, c.research_staff_expenses,
                         c.travel, c.computer_charges, c.nmims_facility_charges, c.miscellaneous_including_contingency,
                         c.advanced_payment, c.final_payment, c.per_session_fees, c.session_count_per_days, c.total_fees,
-                        c.faculty_shares, c.nmims_shares, c.gross_fees , c.faculty_dsg
+                        c.faculty_shares, c.nmims_shares, c.gross_fees , c.faculty_dsg, c.supporting_documents
                       FROM 
                           faculty_table f
                       JOIN 
@@ -58,7 +58,7 @@ module.exports.viewConsultancyApprovalForm = async (
                 c.year, c.title, c.commencement_date, c.completion_date, c.research_staff_expenses,
                 c.travel, c.computer_charges, c.nmims_facility_charges, c.miscellaneous_including_contingency,
                 c.advanced_payment, c.final_payment, c.per_session_fees, c.session_count_per_days, c.total_fees,
-                c.faculty_shares, c.nmims_shares, c.gross_fees , c.faculty_dsg
+                c.faculty_shares, c.nmims_shares, c.gross_fees , c.faculty_dsg, c.supporting_documents
             FROM 
                 faculty_table f
             JOIN 
@@ -226,6 +226,7 @@ module.exports.updateApprovalFormData = async (nmimsConsultancyFormId,
     facultyId,
     faculityDsg,
     userName,
+    ...(consultancyFiles ? [consultancyFiles] : [])
   ]
 
   let sql = {
