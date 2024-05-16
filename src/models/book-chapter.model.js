@@ -43,7 +43,7 @@ module.exports.insertBookChapterData = async (
     nmimsCampusAuthors,
     nmimsSchoolAuthors,
   } = bookChapter;
-  const doiBookIdParsed = doiBookId === "" ? null : parseInt(doiBookId, 10);
+  // const doiBookIdParsed = doiBookId === "" ? null : parseInt(doiBookId, 10);
   let sql = {
     text: `INSERT INTO book_chapter_publications (author_name, book_title, edition, editor_name, book_editor, chapter_title, volume_number, publisher_category, page_number, publisher_name, 
             publication_year, book_url, doi_id, isbn, number_of_nmims_authors, nmims_authors, nmims_campus_authors, nmims_school_authors, supporting_documents, created_by)
@@ -61,7 +61,7 @@ module.exports.insertBookChapterData = async (
       publisherName,
       publicationYear,
       bookUrl,
-      doiBookIdParsed,
+      doiBookId,
       isbnNo,
       numberOfNmimsAuthors,
       nmimsAuthors,
@@ -124,7 +124,7 @@ module.exports.updatedBookChapter = async (
     nmimsSchoolAuthors,
   } = updatedBookChapterPublication;
 
-  const doiBookIdParsed = doiBookId === "" ? null : parseInt(doiBookId, 10);
+  // const doiBookIdParsed = doiBookId === "" ? null : parseInt(doiBookId, 10);
   const supportingDocuments = updateBookChapterDataFiles || null;
 
   const sql = {
@@ -144,7 +144,7 @@ module.exports.updatedBookChapter = async (
       publisherName,
       publicationYear,
       bookUrl,
-      doiBookIdParsed,
+      doiBookId,
       isbnNo,
       numberOfNmimsAuthors,
       nmimsAuthors,

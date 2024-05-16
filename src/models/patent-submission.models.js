@@ -301,16 +301,19 @@ module.exports.insertPatentData = async (
   const patnetSubmissionDataPromise = researchDbW.query(patentDataSql);
 
   const insertFacultyPromises = FacultydataArray.map((faculty_id) => {
-    return patnetSubmissionDataPromise.then((result) => {
-      const patentId = result.rows[0].id;
-      const patentGrantFacultySql = {
-        text: `INSERT INTO patent_submission_faculty (patent_submission_grant_id, faculty_id) VALUES ($1, $2) RETURNING id`,
-        values: [patentId, faculty_id],
-      };
-
-      console.log("patentGrantFacultySql ===>>>>>", patentGrantFacultySql);
-      return researchDbW.query(patentGrantFacultySql);
-    });
+    if(faculty_id > 0){
+      return patnetSubmissionDataPromise.then((result) => {
+        const patentId = result.rows[0].id;
+        const patentGrantFacultySql = {
+          text: `INSERT INTO patent_submission_faculty (patent_submission_grant_id, faculty_id) VALUES ($1, $2) RETURNING id`,
+          values: [patentId, faculty_id],
+        };
+  
+        console.log("patentGrantFacultySql ===>>>>>", patentGrantFacultySql);
+        return researchDbW.query(patentGrantFacultySql);
+      });
+    }
+  
   });
 
   const insertDsgGoalsPromises = sdgGoalsIdArray.map((element) => {
@@ -362,9 +365,9 @@ module.exports.insertPatentData = async (
     .then(([patnetSubmissionData, patentstage, ...results]) => {
       const patentId = patnetSubmissionData.rows[0].id;
       const rowCount = patnetSubmissionData.rowCount;
-      const insertFacultyIds = results
-        .slice(0, FacultydataArray.length)
-        .map((result) => result.rows[0].id);
+      // const insertFacultyIds = results
+      //   .slice(0, FacultydataArray.length)
+      //   .map((result) => result.rows[0].id);
       const insertSdgGoalsIds = results
         .slice(
           FacultydataArray.length,
@@ -396,7 +399,7 @@ module.exports.insertPatentData = async (
         message: "Record Inserted Successfully",
         patentId: patentId,
         patentstage: patentstage,
-        patentGrantIds: insertFacultyIds,
+        // patentGrantIds: insertFacultyIds,
         sdgGoalsIds: insertSdgGoalsIds,
         inventionTypeIds: insertInventionTypeIds,
         patentStatusId: patentStatusId,

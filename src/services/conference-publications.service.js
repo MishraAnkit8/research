@@ -65,7 +65,7 @@ module.exports.insertConferenceData = async(body , files, userName) => {
     const facultyIds = facultycontainer.flat();
 
     // Step 3: Convert each element to an integer and subtract 2
-    const facultyIdscontainer = facultyIds.map(element => parseInt(element) - 2);
+    const facultyIdscontainer = facultyIds.map(element => parseInt(element));
     console.log('facultyIdscontainer ===>>>>>', facultyIdscontainer);
 
     const conferenceDocument = files.conferenceDocument?.map(file => file.filename).join(',');

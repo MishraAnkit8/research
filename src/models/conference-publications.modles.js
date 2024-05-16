@@ -118,8 +118,8 @@ module.exports.insertConferencePublication = async (
     conferencePublications,
     JSON.stringify(facultyIdscontainer)
   );
-  const doiBookIdParsed =
-    doiWebLinkId === "" ? null : parseInt(doiWebLinkId, 10);
+  // const doiBookIdParsed =
+  //   doiWebLinkId === "" ? null : parseInt(doiWebLinkId, 10);
   const conferenceProofFilesString =
     conferenceProofFile === "" ? null : conferenceProofFile;
 
@@ -141,7 +141,7 @@ module.exports.insertConferencePublication = async (
       presentationAward,
       volAndIssueNo,
       issnIsbnNo,
-      doiBookIdParsed,
+      doiWebLinkId,
       sponsored,
       spentAmount,
       publicationDate,
@@ -248,8 +248,8 @@ module.exports.updateConferencePublication = async (
   const conferenceFilesarray = { confernceDocString, conferenceProofString };
   console.log("conferenceFiles  =>>", conferenceFilesarray);
 
-  const doiBookIdParsed =
-    doiWebLinkId === "" ? null : parseInt(doiWebLinkId, 10);
+  // const doiBookIdParsed =
+  //   doiWebLinkId === "" ? null : parseInt(doiWebLinkId, 10);
   const conferenceDocument = confernceDocString || null;
   const conferenceProofe = conferenceProofString || null;
   let sql = {
@@ -270,7 +270,7 @@ module.exports.updateConferencePublication = async (
       presentationAward,
       volAndIssueNo,
       issnIsbnNo,
-      doiBookIdParsed,
+      doiWebLinkId,
       sponsored,
       spentAmount,
       publicationDate,

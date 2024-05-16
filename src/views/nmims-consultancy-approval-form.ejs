@@ -90,7 +90,8 @@
                                             data-gross-fees="<%- consultancyData.gross_fees %>"
                                             data-faculty-designation="<%- consultancyData.faculty_dsg %>"
                                             data-session-count-per-days="<%- consultancyData.session_count_per_days %>"
-                                            data-supporting-documents="<%- consultancyData.supporting_documents %>">
+                                            data-supporting-documents="<%- consultancyData.supporting_documents %>"
+                                            data-grand-total="<%- consultancyData.grandTotal %>">
                                             <td class="col-lg-1"><%- index + 1 %></td>
                                             <td class="col-lg-1 faculty-name"><%- consultancyData.faculty_name %> </td>
                                             <td class="col-lg-1 project-title"><%- consultancyData.title %></td>
@@ -388,11 +389,11 @@
                                 </div>
                                 <!-- Final Payment -->
 
-                                <!-- <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="grand-total" class=" sub-title fw-bold">Grand Total</label>
                                     <input type="number" name="grand-total" id="grand-total" class="form-control"
                                         disabled>
-                                </div> -->
+                                </div>
 
 
                             </div>
@@ -678,7 +679,7 @@
                         document.querySelector('#supporting-documents').classList.remove('d-none');
                         document.querySelector('#uploadNewSupportDocumentDiv').classList.add('d-none');
                         document.querySelector('#uploadNewSupportDocument').checked = false;
-                        document.querySelector('#case-study-doc-edit').classList.add('d-none');
+                        document.querySelector('#approval-consultancy-file-edit').classList.add('d-none');
 
                         $('#consultancy-modal-form').modal({
                             backdrop: 'static'
@@ -938,7 +939,7 @@
                                     document.getElementById('view-advanced-payment').innerText = data.approvalFormData.advanced_payment;
                                     document.getElementById('view-final-payment').innerText = data.approvalFormData.final_payment;
                                     document.getElementById('view-total-payment').innerText = data.totalAmount;
-                                    document.getElementById('view-grand-total-amount').innerText = data.grandTotalAmount;
+                                    document.getElementById('view-grand-total-amount').innerText = data.approvalFormData.grandtotal;
                                     // document.getElementById('view-coordinator-faculty').innerText = data
                                     // document.getElementById('view-vice-chancellor').innerText = data
                                     document.getElementById('view-vice-chancellor-date').innerText = data.completionDateFormate;
@@ -1032,6 +1033,7 @@
                         console.log('nmimsConsultancyFormId ====>>>>', nmimsConsultancyFormId);
                         facultyId = approvalFormRecordToBeUpdated.getAttribute('data-faculty-id')
                         console.log('facultyId ====>>>>>', facultyId);
+                        document.getElementById('grand-total').value = approvalFormRecordToBeUpdated.getAttribute('data-grand-total')
                         document.getElementById('year').value = approvalFormRecordToBeUpdated.querySelector('.year').innerText;
                         document.getElementById('title').value = approvalFormRecordToBeUpdated.querySelector('.project-title').innerText;
                         const commencementDate = approvalFormRecordToBeUpdated.getAttribute('data-commencement-date');
@@ -1145,7 +1147,7 @@
                         console.log('file name  ==>>', consultancyFiles[i].name);
                         updatedConsultancyObject.append('consultancyFiles', consultancyFiles[i]);
                     }
-
+                    const grandTotal = document.getElementById('grand-total').value;
                     updatedConsultancyObject.append('nmimsConsultancyFormId', nmimsConsultancyFormId)
                     updatedConsultancyObject.append('year', year)
                     updatedConsultancyObject.append('title', title);
@@ -1167,6 +1169,7 @@
                     updatedConsultancyObject.append('finalPayment', finalPayment)
                     updatedConsultancyObject.append('grossFees', grossFees)
                     updatedConsultancyObject.append('facultyId', facultyId)
+                    updatedConsultancyObject.append('grandTotal', grandTotal)
 
                     // const payload = {
                     //     updatedConsultancyObject: updatedConsultancyObject
@@ -1425,6 +1428,72 @@
                     approvalFile.setAttribute('data-filename', approvalFileString);
 
                 };
+
+                document.getElementById('advance-payment').addEventListener('input', calculateTotal);
+                document.getElementById('final-payment').addEventListener('input', calculateTotal);
+
+                function calculateTotal() {
+                    let finalPayment = document.getElementById('final-payment').value;
+                    let advancePayment = document.getElementById('advance-payment').value;
+                    let totalAmount = document.getElementById('total-amount');
+
+                    let advance = Number.parseInt(advancePayment) || 0;
+                    let final = Number.parseInt(finalPayment) || 0;
+
+                    let total = advance + final;
+                    totalAmount.value = total;
+
+                    console.log('totalAmount ====>>>>>>', totalAmount)
+
+                    console.log('advance and final ', finalPayment, advancePayment);
+                }
+
+
+               // Add event listeners to all relevant input fields
+            document.getElementById('gross-fees').addEventListener('input', calculateGrandTotal);
+            document.getElementById('research-staff-expenses').addEventListener('input', calculateGrandTotal);
+            document.getElementById('travel').addEventListener('input', calculateGrandTotal);
+            document.getElementById('miscellaneous-contingency').addEventListener('input', calculateGrandTotal);
+            document.getElementById('computer-charges').addEventListener('input', calculateGrandTotal);
+            document.getElementById('facility-charges').addEventListener('input', calculateGrandTotal);
+            document.getElementById('final-payment').addEventListener('input', calculateGrandTotal);
+            document.getElementById('advance-payment').addEventListener('input', calculateGrandTotal);
+            document.getElementById('no-of-session').addEventListener('input', calculateGrandTotal);
+            document.getElementById('sessions-fees').addEventListener('input', calculateGrandTotal);
+
+    function calculateGrandTotal() {
+        let grossFees = Number.parseInt(document.getElementById('gross-fees').value) || 0;
+        let researchStaffExpenses = Number.parseInt(document.getElementById('research-staff-expenses').value) || 0;
+        let travel = Number.parseInt(document.getElementById('travel').value) || 0;
+        let miscellaneous = Number.parseInt(document.getElementById('miscellaneous-contingency').value) || 0;
+        let computerCharges = Number.parseInt(document.getElementById('computer-charges').value) || 0;
+        let facultyCharges = Number.parseInt(document.getElementById('facility-charges').value) || 0;
+
+        let finalPayment = Number.parseInt(document.getElementById('final-payment').value) || 0;
+        let advancePayment = Number.parseInt(document.getElementById('advance-payment').value) || 0;
+
+        let totalAmount = document.getElementById('grand-total');
+
+        // Calculate total fees
+        let totalFees = (Number.parseInt(document.getElementById('no-of-session').value) || 0) * (Number.parseInt(document.getElementById('sessions-fees').value) || 0);
+
+        let total = grossFees + computerCharges + miscellaneous + facultyCharges + travel + researchStaffExpenses;
+        let totalPayment = advancePayment + finalPayment;
+
+        const gstCharges = totalPayment * 18 / 100;
+
+        const grandTotalAmount = total + gstCharges + totalFees;
+
+        totalAmount.value = grandTotalAmount;
+
+        console.log('advance and final', advancePayment, finalPayment);
+        console.log('gstCharges ====>>>>', gstCharges);
+        console.log('grandTotalAmount ====>>>>', grandTotalAmount);
+
+    }
+
+// Initial calculation on page load
+calculateGrandTotal();
 
 
             </script>

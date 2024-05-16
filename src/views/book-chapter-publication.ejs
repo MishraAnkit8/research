@@ -252,8 +252,8 @@
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="page-number" class="form-label fw-bold">Page numbers Of The
                                         Chapter</label>
-                                    <input type="text" name="vol" id="page-number" data-validate="isEmpty"
-                                        data-err-msg="Numeric value is required." class="form-control" required>
+                                    <input type="text" name="vol" id="page-number" data-validate="isEmpty,isExist"
+                                        data-err-msg="Provide valid input" class="form-control" required>
                                 </div>
                                 <!-- Publisher Name -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
@@ -296,14 +296,15 @@
                                 <!-- ISBN Number -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="ISBN-Number" class="form-label fw-bold">ISBN Number</label>
-                                    <input type="number" name="ISBN-Number" id="isbn-no" class="form-control"
-                                        data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required"
+                                    <input type="text" name="ISBN-Number" id="isbn-no" class="form-control"
+                                        data-validate="isEmpty,isExist" data-err-msg="Provide valid input"
                                         required>
                                 </div>
                                 <!-- DOI of Book Chapter -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="doi-book-id" class="form-label fw-bold">DOI ID Of Book Chapter</label>
-                                    <input type="number" name="doi-book-id" id="doi-book-id" class="form-control">
+                                    <input type="text" name="doi-book-id" id="doi-book-id" class="form-control"data-validate="isEmpty,isExist,isLength:2:255"
+                                    data-err-msg="Provide Valid input." required>
                                 </div>
                                 <!-- volume number -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
@@ -332,7 +333,6 @@
                                     <label for="nmims-campus-authors" class="form-label fw-bold ">Campus of
                                         Author</label>
                                     <input type="url" name="nmims-campus-authors" id="nmims-campus-authors"
-                                        placeholder="Campus of Author"
                                         data-validate="isEmpty,isAlphabeticWords,isLength:2:255" class="form-control"
                                         data-err-msg="Provide Valid Input" required />
                                 </div>
@@ -387,8 +387,8 @@
                 <div class="modal-dialog modal-dialog-scrollable modal-lg modal-fullscreen p-5" role="document">
                     <div class="modal-content modal-content-data">
                         <div class="modal-header">
+                            <h5 class="modal-title" id="book-chapter">BOOK CHAPTER PUBLICATION VIEW</h5>
                             <div class="close" data-dismiss="modal" aria-label="Close">
-                                <h5 class="modal-title" id="book-chapter">BOOK CHAPTER PUBLICATION VIEW</h5>
                                 <span TYPE="button" aria-hidden="true"><i class="fas fa-times"></i></span>
                             </div>
                         </div>
@@ -536,6 +536,7 @@
                 </div>
             </div>
             <!-- inline javascript -->
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
             <script>
 
                 // for index icrement
@@ -720,11 +721,11 @@
                                 Swal.fire({
                                     position: "top-center",
                                     icon: "success",
-                                    title: `${message}`,
+                                    title: `${data.message}`,
                                     showConfirmButton: true,
                                     confirmButtonText: "OK",
                                     confirmButtonColor: "#DD6B55",
-                                    timer: 1500
+                                    // timer: 1500
                                 }).then(() => {
                                     document.location.reload();
                                 });
@@ -959,7 +960,7 @@
                         const viewNmimsAuthors = document.getElementById('view-nmims-authors');
                         const viewNmimsCampusAuthors = document.getElementById('view-nmims-campus-authors');
                         const viewNmimsSchoolAuthors = document.getElementById('view-nmims-school-authors');
-                        const viewSupportingDocuments = document.getElementById('view-support-document');
+                        // const viewSupportingDocuments = document.getElementById('view-support-document');
 
                         fetch('<%- BASE_URL %>research/book-publication-main/book-chapter-publication/view', {
                             method: 'POST',

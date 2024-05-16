@@ -247,7 +247,8 @@
                                 <!-- Patent Stage -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="patent-stage" class="form-label fw-bold">Patent Stage</label>
-                                    <select id="patent-stage" required multiple>
+                                    <select id="patent-stage" data-validate="isEmpty,isExist"
+                                    data-err-msg="This field is required and select value" required multiple>
                                         <option value="">Select Patent Stage</option>
                                         <% patentStagData.forEach(function(status) { %>
                                             <option value="<%= status.id %>">
@@ -260,8 +261,9 @@
                                 <!-- Sustainable Development Goals (SDG) [dropdown list to be added] ? -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="sdg-goals" class="form-label fw-bold ">Sustainable Development Goals
-                                        (SDG)?</label>
-                                    <select class="select-option drop-list" id="sdg-goals-data" required multiple>
+                                        (SDG)</label>
+                                    <select class="select-option drop-list" id="sdg-goals-data" data-validate="isEmpty,isExist"
+                                    data-err-msg="This field is required and select value" required multiple>
                                         <option value="" selected>Select SDG Goals</option>
                                         <% patentSdgGoalData.forEach(function(goals) { %>
                                             <option value="<%= goals.id %>">
@@ -659,9 +661,9 @@
 
                                 const patentInventionType = document.getElementById('invention-types').dataset.invention;
                                 const inventionTypeData = JSON.parse(patentInventionType);
-                                const employeesListData = document.getElementById('employees-list-data').dataset.employees;
+                                // const employeesListData = document.getElementById('employees-list-data').dataset.employees;
 
-                                const employeesDataObj = JSON.parse(employeesListData);
+                                // const employeesDataObj = JSON.parse(employeesListData);
 
 
                                 // ajax for search bar to search status
@@ -751,6 +753,54 @@
                                         }
                                     }
                                 });
+                                const employeesListData = document.getElementById('employees-list-data').dataset.employees;
+
+                                const employeesDataObj = JSON.parse(employeesListData);
+
+
+                                // ajax for search bar to search employee name 
+                                const facultyOptions = employeesDataObj.map(faculty => ({
+                                    value: faculty.id,
+                                    text: ` ${faculty.employee_id}  ${faculty.faculty_name}`
+                                }));
+
+                                let selectEmpList = JSON.parse('<%- JSON.stringify(selectedPatentFaculty) %>')
+
+                                let selectPatentEmp = selectEmpList.filter(data => patentId == data.patent_submission_grant_id).map(patent => patent)
+                                console.log('selected patent faculty ', JSON.stringify(selectPatentEmp))
+
+
+                                facultyOptions.forEach(data => {
+                                    selectPatentEmp.forEach(emp => {
+                                        if (data.value == emp.faculty_id) {
+                                            selectEmp.push(emp.faculty_id)
+                                        }
+                                    })
+})
+
+
+// Initialize TomSelect dropdown with options containing id and faculty_name
+new TomSelect("#emp-name", {
+    options: facultyOptions,
+    items: selectEmp,
+    // placeholder: "Select Employee Name",
+    hidePlaceholder: true,
+    create: true,
+    plugins: ['remove_button'],
+    onItemAdd: function () {
+        this.setTextboxValue('');
+        this.refreshOptions();
+    },
+    render: {
+        option: function (data, escape) {
+            return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+        },
+        item: function (data, escape) {
+            return '<div>' + escape(data.text) + '</div>';
+        }
+    }
+});
+
 
 
 

@@ -240,7 +240,7 @@ module.exports.insertJournalArticle = async (
   } = journalDetails;
 
   let articleSql = {
-    text: `INSERT INTO journal_paper_article (year, publisher, total_authors, journal_name, count_other_faculty, pages, issn_no, scs_cite_score,scs_indexed , wos_indexed,
+    text: `INSERT INTO journal_paper_article (year, publisher, total_authors, journal_name, count_other_faculty, pages, issn_no, scs_cite_score, wos_indexed,
                 abdc_indexed, ugc_indexed, web_link_doi, uid, date_of_publishing, title_of_paper, jorunal_article_type_id, nmims_authors_count, gs_index, nmims_student_foreign_authors,
                 foreign_authors_name, foreign_auhtor_no, no_nmims_student_author, scs_indexed, created_by)
                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24) RETURNING id`,

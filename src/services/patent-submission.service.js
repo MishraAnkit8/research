@@ -120,7 +120,7 @@ module.exports.insertPatentFormData = async(body , files, userName) => {
             message : insertPatentData.message,
             patentId : insertPatentData.patentId,
             patentDataFilesString : patentDataFilesString,
-            patentGrantIds: insertPatentData.patentGrantIds,
+            // patentGrantIds: insertPatentData.patentGrantIds,
             sdgGoalsIds : insertPatentData.sdgGoalsIds,
             inventionTypeIds : insertPatentData.inventionTypeIds,
             patentStatusId : insertPatentData.patentStatusId,

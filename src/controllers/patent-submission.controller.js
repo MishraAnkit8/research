@@ -66,7 +66,7 @@ module.exports.insertPatentsubmission = async (req, res, next) => {
     message: patentDataSubmission.message,
     patentId: patentDataSubmission.patentId,
     patentDataFilesString: patentDataSubmission.patentDataFilesString,
-    patentGrantIds: patentDataSubmission.patentGrantIds,
+    // patentGrantIds: patentDataSubmission.patentGrantIds,
     sdgGoalsIds: patentDataSubmission.sdgGoalsIds,
     inventionTypeIds: patentDataSubmission.inventionTypeIds,
     patentStatusId: patentDataSubmission.patentStatusId,

@@ -87,7 +87,7 @@ module.exports.fetchResearchConsultancy = async (userName) => {
     //     ft.name
     // ORDER BY  r.id desc
     //     `,
-    text: `SELECT 
+    text: `SELECT DISTINCT
         r.id AS project_id,
         r.title_of_project,
         r.grant_proposal_category,
@@ -104,12 +104,6 @@ module.exports.fetchResearchConsultancy = async (userName) => {
         r.scheme,
         r.amountRecieved,
         r.paymentDate,
-        f.id AS faculty_id,
-        f.employee_id,
-        f.faculty_name,
-        f.designation,
-        f.address,
-        ft.name AS faculty_type,
         string_agg(DISTINCT ns.school_name, ', ') AS associated_schools,
         string_agg(DISTINCT ns.id::text, ', ') AS school_id,
         string_agg(DISTINCT nc.campus_name, ', ') AS associated_campuses,
@@ -149,13 +143,7 @@ module.exports.fetchResearchConsultancy = async (userName) => {
         r.projectDuration,
         r.scheme,
         r.amountRecieved,
-        r.paymentDate,
-        f.id,
-        f.employee_id,
-        f.faculty_name,
-        f.designation,
-        f.address,
-        ft.name   
+        r.paymentDate  
     ORDER BY  r.id desc
 `,
     values: [userName],
