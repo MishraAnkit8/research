@@ -260,11 +260,12 @@
                                                 id="uploadNewSupportDocument">
                                         </div>
                                     </label>
-                                    <div class="d-flex">
+                                    <div class="d-flex col-md-10">
                                         <input type="file" name="supporting-documents" id="supporting-documents"
                                             class="col-md-12 form-control" data-validate="isEmpty,isExist,isFile"
                                             data-err-msg="File is required." required multiple>
-                                            <button class="download-btn download-file" id="approval-consultancy-file-edit"><i
+                                        <button class="download-btn download-file"
+                                            id="approval-consultancy-file-edit"><i
                                                 class="fas fa-download text-danger"></i>Download</button>
                                     </div>
                                 </div>
@@ -466,8 +467,8 @@
                                     </tr>
                                 </tbody>
                             </table>
-                              <!-- Upload Data -->
-                              <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                            <!-- Upload Data -->
+                            <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                                 <div class="box">
                                     <div class="sub-title-text sub-title">
                                         <button class="btn btn-primary h-10 w-10 download-file"
@@ -477,7 +478,7 @@
                                     </div>
                                     <label class="view-content" id="view-nmims-non-pharmacy-file"></label>
                                 </div>
-                        </div>
+                            </div>
 
                             <div class=" sub-title text-start fw-bold">BUDGET</div>
                             <hr>
@@ -668,6 +669,7 @@
                     if (event.target.tagName === 'BUTTON' && event.target.classList.contains('add-modal') || event.target.classList.contains('plus')) {
                         submitBtn.classList.remove('d-none');
                         updateBtn.classList.add('d-none');
+
                         document.querySelector('#consultancyData-study').innerHTML = 'Consultancy Approval Form';
                         facultyIdContainerArray = [];
 
@@ -678,7 +680,7 @@
                         document.querySelector('#supporting-documents').classList.remove('d-none');
                         document.querySelector('#uploadNewSupportDocumentDiv').classList.add('d-none');
                         document.querySelector('#uploadNewSupportDocument').checked = false;
-                        document.querySelector('#case-study-doc-edit').classList.add('d-none');
+                        document.querySelector('#approval-consultancy-file-edit').classList.add('d-none');
 
                         $('#consultancy-modal-form').modal({
                             backdrop: 'static'
@@ -913,7 +915,7 @@
                             .then((data) => {
                                 if (data.status === "Done") {
                                     console.log('data ===>>>>>', data);
-                                    setFileNameInButtons(data) 
+                                    setFileNameInButtons(data)
                                     document.getElementById('view-year').innerText = data.approvalFormData.year;
                                     document.getElementById('view-title').innerText = data.approvalFormData.title;
                                     document.getElementById('view-faculty-name').innerText = data.approvalFormData.faculty_name;
@@ -1017,6 +1019,7 @@
                     if (event.target.classList.contains('edit')) {
 
                         removeErrorMsg()
+                        document.querySelector('#supporting-documents').classList.add('d-none');
 
                         console.log('yes edit clickeddd ===');
                         submitBtn.classList.add('d-none');
@@ -1362,12 +1365,12 @@
 
 
 
-                         //  set file string into button
-             function setFileNameInButtons(data) {
+                //  set file string into button
+                function setFileNameInButtons(data) {
                     console.log('data XXXXXXXXX==>>>', data);
                     console.log('data.nonFormacyData.supporting_documents ====>>>>>', data.approvalFormData.supporting_documents);
-                   let  approvalFile = document.getElementById('consultancy-approval-file');
-                   approvalFile.setAttribute('data-filename', data.approvalFormData.supporting_documents);
+                    let approvalFile = document.getElementById('consultancy-approval-file');
+                    approvalFile.setAttribute('data-filename', data.approvalFormData.supporting_documents);
                 }
 
                 //eventlistner for download files
