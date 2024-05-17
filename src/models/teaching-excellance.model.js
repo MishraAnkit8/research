@@ -18,14 +18,14 @@ module.exports.fetchTeachingExecellance = async (userName) => {
 
 module.exports.insertTeachingExecellanceData = async(teachingExecellance, teachingFilesArrayData, userName) => {
     const {pedagogyInnovation, pedagogyLink, fdpProgram, fdpProgramLink, workShopDetails, workShopLink, invitingFaculty, 
-        invitingFacultyLink, programOrientation, programOrientationLink, pedagogyInnovationDescription, FdpProgramDescription, workshopDetailsDescription, invitingFacultyDescription, programOrientationDescription} = teachingExecellance;
+        invitingFacultyLink, programOrientation, programOrientationLink} = teachingExecellance;
     let sql = {
         text : `INSERT INTO teaching_execellance (pedagogy_innovation, pedagogy_innovation_link, fdp_program, fdp_program_link,workshop_details,
              workshop_link, inviting_faculty, inviting_faculty_link, program_orientation, program_orientation_link,
-            pedagogy_innovation_file, fdp_program_file, workshop_file, inviting_faculty_file, program_orientation_file, created_by, pedagogy_innovation_description, fdp_program_description, workshop_details_description, inviting_faculty_description, program_orientation_description) VALUES($1, $2 , $3 ,$4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21) RETURNING id`,
+            pedagogy_innovation_file, fdp_program_file, workshop_file, inviting_faculty_file, program_orientation_file, created_by) VALUES($1, $2 , $3 ,$4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16) RETURNING id`,
         values : [pedagogyInnovation, pedagogyLink, fdpProgram, fdpProgramLink, workShopDetails, workShopLink, invitingFaculty, 
             invitingFacultyLink, programOrientation, programOrientationLink, teachingFilesArrayData.pedagogyInnovationFileString, teachingFilesArrayData.fdpProgramFileString, teachingFilesArrayData.workShopFileString, teachingFilesArrayData.invitingFacultyFileString, teachingFilesArrayData.programOrientationFileString, userName,
-            pedagogyInnovationDescription, FdpProgramDescription, workshopDetailsDescription, invitingFacultyDescription, programOrientationDescription]
+            ]
     }
     console.log('data inserted successfully ==>>', sql);
     // console.log('researchDbW.query(sql) in models ===>>', researchDbW.query(sql));
@@ -45,7 +45,7 @@ module.exports.insertTeachingExecellanceData = async(teachingExecellance, teachi
 
 module.exports.updateTeachingExecellance = async(teachingId, updatedTeachingExecellance, teachingDocumentToBeUpdate, userName) => {
     const {pedagogyInnovation, pedagogyLink, fdpProgram, fdpProgramLink, workShopDetails, workShopLink, invitingFaculty, 
-        invitingFacultyLink, programOrientation, programOrientationLink, pedagogyInnovationDescription, FdpProgramDescription, workshopDetailsDescription, invitingFacultyDescription, programOrientationDescription} = updatedTeachingExecellance;
+        invitingFacultyLink, programOrientation, programOrientationLink, pedagogyInnovationDescription, FdpProgramDescription, } = updatedTeachingExecellance;
 
   const pedagogyInnovationFile =
     teachingDocumentToBeUpdate.pedagogyInnovationFileString

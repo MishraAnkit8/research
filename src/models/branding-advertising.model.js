@@ -22,8 +22,7 @@ module.exports.insertBrandingAndAdvertisingData = async(advertisingData, brandin
 
         const {facultyRecognition, facultyRecognitionLink, facultyAward, facultyAwardLink, staffAward, staffAwardLink, alumniAward, alumniAwardLink,
             studentAward, studentAwardLink, internationalLinkage, internationalLinkageLink, conferenceParticipation, conferenceParticipationLink, organisingConference,
-            organisingConferenceLink, studentEventParticipation, studentEventParticipationLink, newsPaperArticle, newsPaperArticleLink,facultyRecognitionDescription, facultyAwardDescription, staffAwardDescription
-        , alumniAwardDescription, studentAwardDescription, internationalLinkageDescription, conferenceParticipationDescription, organisingConferenceDescription, studentEventParticipationDescription, newspaperArticleDescription } = advertisingData;
+            organisingConferenceLink, studentEventParticipation, studentEventParticipationLink, newsPaperArticle, newsPaperArticleLink} = advertisingData;
     console.log('advertisingDataBefore Inserting',advertisingData);
 
         let sql = {
@@ -32,14 +31,13 @@ module.exports.insertBrandingAndAdvertisingData = async(advertisingData, brandin
                  student_award, student_award_link, international_linkage, international_linkage_link, conference_participation, conference_participation_link,
                  organising_conference, organising_conference_link, student_event_participation, student_event_participation_link, newspaper_article, newspaper_article_link, 
                  faculty_recognition_documents, faculty_award_documents, staff_award_documents, alumni_award_documents, student_award_documents, international_linkage_documents, 
-                 conference_participation_documents, organising_conference_documents, student_event_participation_documents, newspaper_article_documents, created_by, faculty_recognition_description, faculty_award_description, staff_award_description,
-                 alumni_award_description, student_award_description, international_linkage_description, conference_participation_description, organising_conference_description, student_event_participation_description, newspaper_article_description) 
-                 VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27 , $28, $29, $30, $31, $32, $33, $34, $35, $36, $37, $38, $39, $40, $41) RETURNING id`,
+                 conference_participation_documents, organising_conference_documents, student_event_participation_documents, newspaper_article_documents, created_by) 
+                 VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27 , $28, $29, $30, $31) RETURNING id`,
             values : [facultyRecognition, facultyRecognitionLink, facultyAward, facultyAwardLink, staffAward, staffAwardLink, alumniAward, alumniAwardLink,
                 studentAward, studentAwardLink, internationalLinkage, internationalLinkageLink, conferenceParticipation, conferenceParticipationLink, organisingConference,
                 organisingConferenceLink, studentEventParticipation, studentEventParticipationLink, newsPaperArticle, newsPaperArticleLink, brandingFilesContainer.facultyRecognitionDocuments,
                 brandingFilesContainer.facultyAwardDocuments, brandingFilesContainer.staffAwardDocuments, brandingFilesContainer.alumniAwardDocuments, brandingFilesContainer.studentAwardDocuments, brandingFilesContainer.internationalLinkageDocuments, brandingFilesContainer.conferenceParticipationDocuments, brandingFilesContainer.organisingConferenceDocuments,
-                brandingFilesContainer.studentEventParticipationDocuments, brandingFilesContainer.newspaperArticleDocuments, userName, facultyRecognitionDescription, facultyAwardDescription, staffAwardDescription, alumniAwardDescription, studentAwardDescription, internationalLinkageDescription, conferenceParticipationDescription, organisingConferenceDescription, studentEventParticipationDescription, newspaperArticleDescription]
+                brandingFilesContainer.studentEventParticipationDocuments, brandingFilesContainer.newspaperArticleDocuments, userName]
         }
 
   //handle promise and throw error in case of Insert
@@ -76,8 +74,7 @@ module.exports.updateBrandingAdvertising = async (advertisingId, updatedAdvertis
         studentAward, studentAwardLink, internationalLinkage, internationalLinkageLink,
         conferenceParticipation, conferenceParticipationLink, organisingConference,
         organisingConferenceLink, studentEventParticipation, studentEventParticipationLink,
-        newsPaperArticle, newsPaperArticleLink, facultyRecognitionDescription, facultyAwardDescription, staffAwardDescription
-        , alumniAwardDescription, studentAwardDescription, internationalLinkageDescription, conferenceParticipationDescription, organisingConferenceDescription, studentEventParticipationDescription, newspaperArticleDescription
+        newsPaperArticle, newsPaperArticleLink
     } = updatedAdvertisingData;
    
     const filesArray = [
@@ -120,17 +117,7 @@ module.exports.updateBrandingAdvertising = async (advertisingId, updatedAdvertis
         { field: 'newspaper_article', value: newsPaperArticle },
         { field: 'newspaper_article_documents', value: updatedNewspaperArticleFilesArray },
         { field: 'newspaper_article_link', value: newsPaperArticleLink },
-        { field: 'updated_by', value: userName },
-        { field: 'faculty_recognition_description', value:facultyRecognitionDescription}, 
-        { field: 'faculty_award_description', value:facultyAwardDescription},
-        { field: 'staff_award_description' , value:staffAwardDescription},
-        { field: 'alumni_award_description' ,value:alumniAwardDescription},
-        { field: 'student_award_description', value:studentAwardDescription},
-        { field: 'international_linkage_description', value:internationalLinkageDescription },
-        { field: 'conference_participation_description', value:conferenceParticipationDescription},
-        { field: 'organising_conference_description' , value:organisingConferenceDescription},
-        { field: 'student_event_participation_description', value:studentEventParticipationDescription },
-        { field: 'newspaper_article_description', value:newspaperArticleDescription}
+        { field: 'updated_by', value: userName }
     ];
 
   console.log("fieldsToUpdate ===>>", fieldsToUpdate);
