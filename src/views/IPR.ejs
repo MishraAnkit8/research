@@ -314,6 +314,7 @@
                                     <input type="date" name="patent-filed-date" id="patent-filed-date"
                                         data-validate="isEmpty,isExist" data-err-msg="Date is required"
                                         class="form-control patent-filed-date" required>
+                                        <span style="color:red;" id="patentFiledError"></span>
                                 </div>
             
                                 <!-- Date of Grant -->
@@ -324,6 +325,8 @@
                                     <input type="date" name="patent-grant-date" id="patent-grant-date"
                                         data-validate="isEmpty,isExist" data-err-msg="Date is required"
                                         class="form-control patent-grant-date" required>
+                                        <span style="color:red;" id="patentGrantError"></span>
+
                                 </div>
             
                                 <!-- Date of Published -->
@@ -333,7 +336,8 @@
                                     </label><span id="patent-published-date-span" style="color: red; padding: 2px;"></span>
                                     <input type="date" name="GrantDate" id="patent-published-date" data-validate="isEmpty,isExist"
                                         data-err-msg="Date is required" class="form-control patent-published-date" required>
-                                </div>
+                                        <span style="color:red;" id="patentPublishError"></span>
+                                    </div>
             
                                 <!-- Patent Publication Number -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
@@ -388,8 +392,7 @@
                                 </div>
                                 <!-- Details of Other Inventors -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <label for="is-internal" class="form-label fw-bold mb-3">Details of Inventors Id And
-                                        Name</label><br>
+                                    <label for="is-internal" class="form-label fw-bold mb-3">Inventors Names</label><br>
                                     <div class="form-check-inline">
                                         <label for="internal" class="form-check-label enter-faculty-type">
                                             <input type="radio" class="form-check-input enternal-type" name="author-type"
@@ -505,7 +508,7 @@
                                             <input type="text" class="form-control" id="faculty-designation">
                                     </div>
                                     <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none" id="id-class">
-                                        <label for="faculty-emp-id" class="form-label fw-bold">Faculty Id (Optional)
+                                        <label for="faculty-emp-id" class="form-label fw-bold">Faculty Id
                                             </lable>
                                             <input type="text" class="form-control" id="faculty-emp-id">
                                     </div>
@@ -956,7 +959,18 @@
 
                 submitBtn.addEventListener('click', async () => {
                     const isValid = validateRequiredFormFields(submitBtn);
-                    if (isValid) {
+                    const patentFiledDate = document.getElementById('patent-filed-date').value;
+					const patentGrantDate = document.getElementById('patent-grant-date').value;
+					const patentPublishedDate = document.getElementById('patent-published-date').value;
+
+
+                    let date1 = new Date(patentFiledDate);
+                    let date2 = new Date(patentGrantDate);
+                    let date3 = new Date(patentPublishedDate);
+
+                    let dateValidate = date1 < date2 && date2 < date3;
+
+                    if (isValid && dateValidate) {
                         await insertIPRforms('<%- BASE_URL %>research/IPR/insert');
 
                     }
@@ -970,6 +984,20 @@
                             allowOutsideClick: false,
                             confirmButtonText: "OK",
                             confirmButtonColor: "#DD6B55"
+                        }).then(() => {
+                            if(date1 > date2){
+                                document.getElementById('patentFiledError').innerText='Patent Filed Date Must Be Smaller Than Grant Date'
+                            }else{
+                                document.getElementById('patentFiledError').innerText=''
+ 
+                            }
+
+                            if(date2 > date3){
+                                document.getElementById('patentGrantError').innerText='Patent Grant Date Must Be Smaller Than Published Date'
+                            }else{
+                                document.getElementById('patentGrantError').innerText=''
+
+                            }
                         });
                     }
                 });
@@ -1460,7 +1488,15 @@
                         elm.removeAttribute('data-validate')
                     })
                     const isValid = validateRequiredFormFields(updateBtn);
-                    if (isValid) {
+                    const patentFiledDate = document.getElementById('patent-filed-date').value;
+					const patentGrantDate = document.getElementById('patent-grant-date').value;
+					const patentPublishedDate = document.getElementById('patent-published-date').value;
+                    let date1 = new Date(patentFiledDate);
+                    let date2 = new Date(patentGrantDate);
+                    let date3 = new Date(patentPublishedDate);
+
+                    let dateValidate = date1 < date2 && date2 < date3;
+                    if (isValid && dateValidate) {
                         await updatedIprData('<%- BASE_URL %>research/IPR/update');
                     }
                     else {
@@ -1473,7 +1509,7 @@
                             allowOutsideClick: false,
                             confirmButtonText: "OK",
                             confirmButtonColor: "#DD6B55"
-                        });
+                        }).then();
                     }
                 })
 
