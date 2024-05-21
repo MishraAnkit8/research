@@ -90,7 +90,8 @@
                                             data-scheme="<%- consultancy.scheme %>"
                                             data-paymentDate="<%- consultancy.paymentdate %>"
                                             data-amountRecieved="<%- consultancy.amountrecieved %>"
-                                            data-grant-type="<%- consultancy.type_of_research_grant %>">
+                                            data-grant-type="<%- consultancy.type_of_research_grant %>"
+                                            data-grant-proposal="<%- consultancy.grant_proposal_category %>">
                                             <td><%- index + 1 %></td>
                                             <td class="grant-proposal col-lg-1"><%- consultancy.grant_proposal_category
                                                     %></td>
@@ -465,7 +466,7 @@
                                     <div class="form-check-inline">
                                         <label for="internal" class="form-check-label enter-faculty-type">
                                             <input type="radio" class="form-check-input enternal-type"
-                                                name="author-type" id="is-internal" value="Internal">
+                                                name="author-type" id="is-internal" value="Internal" checked>
                                             <span id="enternal-text">Internal</span>
                                         </label>
                                         <div class="col-lg-1 p-6 w-100 d-none" id="employee-list">
@@ -1047,8 +1048,8 @@
                     // const recievedAmountDate = document.getElementById('amount-recieved-date').value;
                     const statusOfResearchProject = document.querySelector('input[name="research-project-status"]:checked').value;
                     const submissionGrantDate = document.getElementById('submission-grant-date').value;
-                    const authorType = document.querySelector('input[name="author-type"]:checked').value;
-                    console.log('authorType ====>>>>>>', authorType);
+                    // const authorType = document.querySelector('input[name="author-type"]:checked').value;
+                    // console.log('authorType ====>>>>>>', authorType);
                     // const projectDuration = document.getElementById('duration-of-project').value
                     // console.log('authorType ===>>>>', authorType)
 
@@ -1061,7 +1062,7 @@
 
                     console.log('schools campus list ', JSON.stringify(nmimsSchoolIds), JSON.stringify(nmimsCampusIds))
 
-                    await insertFacultyNameString(authorType, researchConsultancyData);
+                    await insertFacultyNameString(researchConsultancyData);
                     const supportingDocument = document.getElementById('supporting-documents');
                     const consultancyFilesData = supportingDocument.files;
                     if (consultancyFilesData.length > 0) {
@@ -1495,7 +1496,7 @@
                         // const recievedAmountDate = consultantRowToBeUpdated.getAttribute('data-recieved-amount-date')
                         // assigning value with actuall value
                         const GrantProposalCategory = consultantRowToBeUpdated.getAttribute('data-grant-proposal');
-                        console.log('GrantProposalCategory ', GrantProposalCategory)
+                        console.log('GrantProposalCategory', GrantProposalCategory)
                         if (GrantProposalCategory === 'Goverment') {
                             isGrantProposalCategoryGoverement.checked = true;
                         }
@@ -2250,7 +2251,7 @@
                 employeeDropdown.addEventListener("change", handleEmployeeDropdownChange);
 
                 // function for add drop down list or  add new faculty data
-                async function insertFacultyNameString(authorType, researchConsultancyData) {
+                async function insertFacultyNameString(researchConsultancyData) {
                     console.log('externalFacultyIdArray in side my function ====>>>', externalFacultyIdArray);
                     const externalFacultyDetails = externalFacultyIdArray;
                     console.log('facultyIdContainer ====>>>>>', facultyIdContainer);
