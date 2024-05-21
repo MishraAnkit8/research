@@ -1131,20 +1131,26 @@
                     const isValid = validateRequiredFormFields(submitBtn);
                     const internalAuthor = document.getElementById('is-internal');
                     const externalAuthor = document.getElementById('is-external');
-                    
-                    if (isValid) {
+
+                    if (isValid && internalAuthor.checked || externalAuthor.checked) {
                         await insertConferencePublicationForm('<%- BASE_URL %>research/conference-publication/insert');
                     }
-                    else {
+                     else {
                         Swal.fire({
                             position: "top-center",
                             icon: "error",
-                            allowOutsideClick: false,
                             title: "Validation Failed",
                             color: "red",
                             showConfirmButton: true,
+                            allowOutsideClick: false,
                             confirmButtonText: "OK",
                             confirmButtonColor: "#DD6B55"
+                        }).then(() => {
+                            if (internalAuthor.checked || externalAuthor.checked) {
+                                document.getElementById('facultyTypeError').innerText = ''
+                            } else {
+                                document.getElementById('facultyTypeError').innerText = 'Select One Of The Faculty Type'
+                            }
                         });
                     }
                 });
@@ -1662,9 +1668,13 @@
                     // formGroup.querySelectorAll('.select-option')?.forEach(elm => {
                     //     console.log("elm:::::::::", elm);
                     //     elm.removeAttribute('data-validate')
+
                     // });
+                    const internalAuthor = document.getElementById('is-internal');
+                    const externalAuthor = document.getElementById('is-external');
+
                     const isValid = validateRequiredFormFields(updateBtn);
-                    if (isValid) {
+                    if (isValid && internalAuthor.checked || externalAuthor.checked) {
                         await updateConferencePublication('<%- BASE_URL %>research/conference-publication/update');
                     }
                     else {
@@ -1676,6 +1686,12 @@
                             showConfirmButton: true,
                             confirmButtonText: "OK",
                             confirmButtonColor: "#DD6B55"
+                        }).then(() => {
+                            if (internalAuthor.checked || externalAuthor.checked) {
+                                document.getElementById('facultyTypeError').innerText = ''
+                            } else {
+                                document.getElementById('facultyTypeError').innerText = 'Select One Of The Faculty Type'
+                            }
                         });
                     }
 
