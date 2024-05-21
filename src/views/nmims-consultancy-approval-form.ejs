@@ -241,6 +241,8 @@
                                     <input type="Date" name="policy-cadre" id="commencement-date"
                                         data-validate="isEmpty,isExist" data-err-msg="Date is requird."
                                         class="form-control" required />
+                                    <span style="color:red;" id="commencementError"></span>
+
                                 </div>
                                 <!-- Date of Completion -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
@@ -248,6 +250,8 @@
                                     <input type="date" name="completion-date" id="completion-date"
                                         data-validate="isEmpty,isExist" data-err-msg="Date is requird."
                                         class="form-control" required>
+                                    <span style="color:red;" id="completionError"></span>
+
                                 </div>
                                 <!-- Upload Supporting Documents-->
                                 <!-- ArunDocument 1 -->
@@ -307,29 +311,30 @@
                                     <input type="text" name="volumes" id="nmims-share" data-validate="isEmpty,isExist"
                                         data-err-msg="Value is required." class="form-control" value="30%">
                                 </div>
-                                   <!-- Details of Distribution of Faculty Share (if more than one faculty) -->
-                                   <div
-                                   class="table-card-header text-uppercase d-flex align-items-center justify-content-between">
-                                   <div>
-                                       <h5 class="pl-2">Details of Distribution of Faculty Share (if more than one faculty)</h5>
-                                   </div>
-                                   <div>
-                                       <span>ADD</span>
-                                       <button id="" type="button" class="btn btn-primary add-modal">
-                                           <i class="fas fa-plus plus" id="insert-faculty-share-datails"></i></button>
-                                       </button>
-                                   </div>
-                               </div>
-                               <table class="table vertical-lines custom-table table-responsive">
-                                   <thead>
-                                       <th class="col-lg-1">Serial no</th>
-                                       <th class="col-lg-1"> </th>
-                                       <th class="col-lg-1">Fees(RS.)</th>
-                                       
-                                   </thead>
-                                   <tbody id="add-faculty-share-datails">
-                                   </tbody>
-                               </table>
+                                <!-- Details of Distribution of Faculty Share (if more than one faculty) -->
+                                <div
+                                    class="table-card-header text-uppercase d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <h5 class="pl-2">Details of Distribution of Faculty Share (if more than one
+                                            faculty)</h5>
+                                    </div>
+                                    <div>
+                                        <span>ADD</span>
+                                        <button id="" type="button" class="btn btn-primary add-modal">
+                                            <i class="fas fa-plus plus" id="insert-faculty-share-datails"></i></button>
+                                        </button>
+                                    </div>
+                                </div>
+                                <table class="table vertical-lines custom-table table-responsive">
+                                    <thead>
+                                        <th class="col-lg-1">Serial no</th>
+                                        <th class="col-lg-1"> </th>
+                                        <th class="col-lg-1">Fees(RS.)</th>
+
+                                    </thead>
+                                    <tbody id="add-faculty-share-datails">
+                                    </tbody>
+                                </table>
                                 <!-- Details of Distribution of Faculty Share (if more than one faculty) -->
                                 <!-- <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="journalName" class=" sub-title fw-bold">Details of Distribution of Faculty Share (if more than one faculty)</label>
@@ -624,14 +629,14 @@
                             <div class="row">
                                 <div class="col-lg-8">
                                     <div class="box">
-                                        <div class=" sub-title">Faculty Coordinator :</div>
+                                        <span class=" sub-title">Faculty Coordinator :</span>
                                         <label class="view-content" id="view-coordinator-faculty">Ankit</label>
                                     </div>
                                 </div>
 
                                 <div class="col-lg-4">
                                     <div class="box">
-                                        <div class=" sub-title">Vice Chancellor :</div>
+                                        <span class=" sub-title">Vice Chancellor :</span>
                                         <label class="view-content" id="view-vice-chancellor">Ankit Kumar Mishra</label>
                                     </div>
                                 </div>
@@ -640,14 +645,14 @@
                                 <div class="col-lg-8">
                                     <div class="d-flex">
                                         <div class=" sub-title">Date : </div>
-                                        <label class="view-content pl-4" id="view-coordinator-faculty-date"></label>
+                                        <label class="view-content pl-2" id="view-coordinator-faculty-date"></label>
                                     </div>
                                 </div>
 
                                 <div class="col-lg-4">
                                     <div class="d-flex">
                                         <div class=" sub-title">Date :</div>
-                                        <label class="view-content pl-4" id="view-vice-chancellor-date"></label>
+                                        <label class="view-content pl-2" id="view-vice-chancellor-date"></label>
                                     </div>
                                 </div>
                             </div>
@@ -911,8 +916,17 @@
                 }
 
                 submitBtn.addEventListener('click', async () => {
+                    let commencementDate = document.getElementById('commencement-date').value;
+                    let completionDate = document.getElementById('completion-date').value;
+
+                    console.log('user dates ', commencementDate, completionDate)
+
+                    let date1 = new Date(commencementDate);
+                    let date2 = new Date(completionDate);
+
+                    let dateValidate = date1 < date2 ? true : false;
                     const isValid = validateRequiredFormFields(submitBtn);
-                    if (isValid) {
+                    if (isValid && dateValidate) {
                         await insertConsultancyFormApprovalData('<%- BASE_URL %>research/nmims-consultancy-approval-form/insert');
                     }
                     else {
@@ -924,6 +938,15 @@
                             showConfirmButton: true,
                             confirmButtonText: "OK",
                             confirmButtonColor: "#DD6B55"
+                        }).then(() => {
+                            if (dateValidate) {
+                                console.log('date true')
+                                document.getElementById('completionError').innerText = ''
+                            } else {
+                                console.log('date false')
+                                document.getElementById('completionError').innerText = 'Completion date should be greater than commencement date '
+
+                            }
                         });
                     }
                 });
@@ -985,7 +1008,7 @@
                                     // document.getElementById('view-coordinator-faculty').innerText = data
                                     // document.getElementById('view-vice-chancellor').innerText = data
                                     document.getElementById('view-vice-chancellor-date').innerText = data.completionDateFormate;
-                                    document.getElementById('view-coordinator-faculty-date').innerText = data.commencementDateFormate;
+                                    document.getElementById('view-coordinator-faculty-date').innerText = data.commencementDateFormate.trim();
 
                                 }
                             })
@@ -1337,8 +1360,19 @@
                         console.log("elm:::::::::", elm);
                         elm.removeAttribute('data-validate')
                     })
+
+                    let commencementDate = document.getElementById('commencement-date').value;
+                    let completionDate = document.getElementById('completion-date').value;
+
+                    console.log('user dates ', commencementDate, completionDate)
+
+                    let date1 = new Date(commencementDate);
+                    let date2 = new Date(completionDate);
+
+                    let dateValidate = date1 < date2 ? true : false;
+
                     const isValid = validateRequiredFormFields(updateBtn);
-                    if (isValid) {
+                    if (isValid && dateValidate) {
                         await updateApprovalFormRecordData('<%- BASE_URL %>research/nmims-consultancy-approval-form/update');
                     }
                     else {
@@ -1350,6 +1384,15 @@
                             showConfirmButton: true,
                             confirmButtonText: "OK",
                             confirmButtonColor: "#DD6B55"
+                        }).then(() => {
+                            if (dateValidate) {
+                                console.log('date true')
+                                document.getElementById('completionError').innerText = ''
+                            } else {
+                                console.log('date false')
+                                document.getElementById('completionError').innerText = 'Completion date should be greater than commencement date '
+
+                            }
                         });
                     }
                 })
@@ -1529,55 +1572,55 @@
                 }
 
 
-               // Add event listeners to all relevant input fields
-            document.getElementById('gross-fees').addEventListener('input', calculateGrandTotal);
-            document.getElementById('research-staff-expenses').addEventListener('input', calculateGrandTotal);
-            document.getElementById('travel').addEventListener('input', calculateGrandTotal);
-            document.getElementById('miscellaneous-contingency').addEventListener('input', calculateGrandTotal);
-            document.getElementById('computer-charges').addEventListener('input', calculateGrandTotal);
-            document.getElementById('facility-charges').addEventListener('input', calculateGrandTotal);
-            document.getElementById('final-payment').addEventListener('input', calculateGrandTotal);
-            document.getElementById('advance-payment').addEventListener('input', calculateGrandTotal);
-            document.getElementById('no-of-session').addEventListener('input', calculateGrandTotal);
-            document.getElementById('sessions-fees').addEventListener('input', calculateGrandTotal);
+                // Add event listeners to all relevant input fields
+                document.getElementById('gross-fees').addEventListener('input', calculateGrandTotal);
+                document.getElementById('research-staff-expenses').addEventListener('input', calculateGrandTotal);
+                document.getElementById('travel').addEventListener('input', calculateGrandTotal);
+                document.getElementById('miscellaneous-contingency').addEventListener('input', calculateGrandTotal);
+                document.getElementById('computer-charges').addEventListener('input', calculateGrandTotal);
+                document.getElementById('facility-charges').addEventListener('input', calculateGrandTotal);
+                document.getElementById('final-payment').addEventListener('input', calculateGrandTotal);
+                document.getElementById('advance-payment').addEventListener('input', calculateGrandTotal);
+                document.getElementById('no-of-session').addEventListener('input', calculateGrandTotal);
+                document.getElementById('sessions-fees').addEventListener('input', calculateGrandTotal);
 
-    function calculateGrandTotal() {
-        let grossFees = Number.parseInt(document.getElementById('gross-fees').value) || 0;
-        let researchStaffExpenses = Number.parseInt(document.getElementById('research-staff-expenses').value) || 0;
-        let travel = Number.parseInt(document.getElementById('travel').value) || 0;
-        let miscellaneous = Number.parseInt(document.getElementById('miscellaneous-contingency').value) || 0;
-        let computerCharges = Number.parseInt(document.getElementById('computer-charges').value) || 0;
-        let facultyCharges = Number.parseInt(document.getElementById('facility-charges').value) || 0;
+                function calculateGrandTotal() {
+                    let grossFees = Number.parseInt(document.getElementById('gross-fees').value) || 0;
+                    let researchStaffExpenses = Number.parseInt(document.getElementById('research-staff-expenses').value) || 0;
+                    let travel = Number.parseInt(document.getElementById('travel').value) || 0;
+                    let miscellaneous = Number.parseInt(document.getElementById('miscellaneous-contingency').value) || 0;
+                    let computerCharges = Number.parseInt(document.getElementById('computer-charges').value) || 0;
+                    let facultyCharges = Number.parseInt(document.getElementById('facility-charges').value) || 0;
 
-        let finalPayment = Number.parseInt(document.getElementById('final-payment').value) || 0;
-        let advancePayment = Number.parseInt(document.getElementById('advance-payment').value) || 0;
+                    let finalPayment = Number.parseInt(document.getElementById('final-payment').value) || 0;
+                    let advancePayment = Number.parseInt(document.getElementById('advance-payment').value) || 0;
 
-        let totalAmount = document.getElementById('grand-total');
+                    let totalAmount = document.getElementById('grand-total');
 
-        // Calculate total fees
-        let totalFees = (Number.parseInt(document.getElementById('no-of-session').value) || 0) * (Number.parseInt(document.getElementById('sessions-fees').value) || 0);
+                    // Calculate total fees
+                    let totalFees = (Number.parseInt(document.getElementById('no-of-session').value) || 0) * (Number.parseInt(document.getElementById('sessions-fees').value) || 0);
 
-        let total = grossFees + computerCharges + miscellaneous + facultyCharges + travel + researchStaffExpenses;
-        let totalPayment = advancePayment + finalPayment;
+                    let total = grossFees + computerCharges + miscellaneous + facultyCharges + travel + researchStaffExpenses;
+                    let totalPayment = advancePayment + finalPayment;
 
-        const gstCharges = totalPayment * 18 / 100;
+                    const gstCharges = totalPayment * 18 / 100;
 
-        const grandTotalAmount = total + gstCharges + totalFees;
+                    const grandTotalAmount = total + gstCharges + totalFees;
 
-        totalAmount.value = grandTotalAmount;
+                    totalAmount.value = grandTotalAmount;
 
-        console.log('advance and final', advancePayment, finalPayment);
-        console.log('gstCharges ====>>>>', gstCharges);
-        console.log('grandTotalAmount ====>>>>', grandTotalAmount);
+                    console.log('advance and final', advancePayment, finalPayment);
+                    console.log('gstCharges ====>>>>', gstCharges);
+                    console.log('grandTotalAmount ====>>>>', grandTotalAmount);
 
-    }
+                }
 
-    // Initial calculation on page load
-    calculateGrandTotal();
+                // Initial calculation on page load
+                calculateGrandTotal();
 
-    function handleDeleteButtonClick() {
-        this.parentNode.parentNode.remove();
-    }
+                function handleDeleteButtonClick() {
+                    this.parentNode.parentNode.remove();
+                }
 
             </script>
 
