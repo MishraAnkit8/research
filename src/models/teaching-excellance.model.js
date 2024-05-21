@@ -129,40 +129,27 @@ module.exports.updateTeachingExecellance = async (
   ];
   console.log("filesArray in teaching models ==>>>", filesArray);
 
-  const teachingFieldsToUpdate = [
-    { field: "pedagogy_innovation", value: pedagogyInnovation },
-    { field: "pedagogy_innovation_file", value: pedagogyInnovationFile },
-    { field: "pedagogy_innovation_link", value: pedagogyLink },
-    { field: "fdp_program", value: fdpProgram },
-    { field: "fdp_program_file", value: fdpProgramFile },
-    { field: "fdp_program_link", value: fdpProgramLink },
-    { field: "workshop_details", value: workShopDetails },
-    { field: "workshop_file", value: workShopFile },
-    { field: "workshop_link", value: workShopLink },
-    { field: "inviting_faculty", value: invitingFaculty },
-    { field: "inviting_faculty_file", value: invitingFacultyFile },
-    { field: "inviting_faculty_link", value: invitingFacultyLink },
-    { field: "program_orientation", value: programOrientation },
-    { field: "program_orientation_file", value: programOrientationFile },
-    { field: "program_orientation_link", value: programOrientationLink },
-    { field: "updated_by", value: userName },
-    { field: "pedagogy_innovation_description", value: pedagogyInnovation },
-    { field: "fdp_program_description", value: FdpProgramDescription },
-    {
-      field: "workshop_details_description",
-      value: workshopDetailsDescription,
-    },
-    {
-      field: "inviting_faculty_description",
-      value: workshopDetailsDescription,
-    },
-    {
-      field: "program_orientation_description",
-      value: programOrientationDescription,
-    },
-  ];
+        const teachingFieldsToUpdate = [
+            { field: 'pedagogy_innovation', value: pedagogyInnovation },
+            { field: 'pedagogy_innovation_file', value: pedagogyInnovationFile },
+            { field: 'pedagogy_innovation_link', value: pedagogyLink },
+            { field: 'fdp_program', value: fdpProgram },
+            { field: 'fdp_program_file', value: fdpProgramFile },
+            { field: 'fdp_program_link', value: fdpProgramLink },
+            { field: 'workshop_details', value: workShopDetails },
+            { field: 'workshop_file', value: workShopFile },
+            { field: 'workshop_link', value: workShopLink },
+            { field: 'inviting_faculty', value: invitingFaculty },
+            { field: 'inviting_faculty_file', value: invitingFacultyFile },
+            { field: 'inviting_faculty_link', value: invitingFacultyLink },
+            { field: 'program_orientation', value: programOrientation },
+            { field: 'program_orientation_file', value: programOrientationFile },
+            { field: 'program_orientation_link', value: programOrientationLink },
+            { field: 'updated_by', value: userName }
+         
+        ]
 
-  console.log("teachingFieldsToUpdate ===>>>", teachingFieldsToUpdate);
+        console.log('teachingFieldsToUpdate ===>>>', teachingFieldsToUpdate);
 
   const setStatements = teachingFieldsToUpdate
     .filter((fieldInfo) => fieldInfo.value !== null)

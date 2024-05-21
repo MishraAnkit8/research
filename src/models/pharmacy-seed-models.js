@@ -9,7 +9,7 @@ const researchDbW = dbPoolManager.get('researchDbW', research_write_db);
 module.exports.renderPharmacyData = async(userName) => {
 
     let sql = {
-        text : `SELECT
+        text : `SELECT DISTINCT
         ps.id AS pharmacy_seed_id,
         ps.summary_title,
         ps.summary_objectives,
@@ -82,24 +82,9 @@ module.exports.renderPharmacyData = async(userName) => {
         cid.co_investigator_dsg,
         cid.co_investigator_org,
         cid.co_investigator_email,
-        cid.co_investigator_mobile,
+        cid.co_investigator_mobile
         
-        pie.id AS pharmacy_investigator_education_id,
-        pie.active AS pharmacy_investigator_education_active,
-        piex.id AS pharmacy_investigator_experience_id,
-        piex.active AS pharmacy_investigator_experience_active,
-        pib.id AS pharmacy_investigator_book_id,
-        pib.active AS pharmacy_investigator_book_active,
-        pibc.id AS pharmacy_investigator_book_chapter_id,
-        pibc.active AS pharmacy_investigator_book_chapter_active,
-        pip.id AS pharmacy_investigator_patent_id,
-        pip.active AS pharmacy_investigator_patent_active,
-        pipu.id AS pharmacy_investigator_publication_id,
-        pipu.active AS pharmacy_investigator_publication_active,
-        pir.id AS pharmacy_investigator_research_implementation_id,
-        pir.active AS pharmacy_investigator_research_implementation_active,
-        pirc.id AS pharmacy_investigator_research_complete_id,
-        pirc.active AS pharmacy_investigator_research_complete_active
+   
     FROM
     pharmacy_seed AS ps
     LEFT JOIN 
@@ -114,25 +99,8 @@ module.exports.renderPharmacyData = async(userName) => {
       pharmacy_co_investigator AS pco ON ps.id = pco.pharmacy_seed_id
     LEFT JOIN 
             co_investigator_details AS cid ON pco.co_investigator_details_id = cid.id
-    LEFT JOIN 
-      pharmacy_investigator_education AS pie ON ps.id = pie.pharmacy_seed_id
-    LEFT JOIN 
-      pharmacy_investigator_experience AS piex ON ps.id = piex.pharmacy_seed_id
-    LEFT JOIN 
-      pharmacy_investigator_book AS pib ON ps.id = pib.pharmacy_seed_id
-    LEFT JOIN 
-      pharmacy_investigator_book_chapter AS pibc ON ps.id = pibc.pharmacy_seed_id
-    LEFT JOIN 
-      pharmacy_investigator_patent AS pip ON ps.id = pip.pharmacy_seed_id
-    LEFT JOIN 
-      pharmacy_investigator_publication AS pipu ON ps.id = pipu.pharmacy_seed_id
-    LEFT JOIN 
-      pharmacy_investigator_research_implementation AS pir ON ps.id = pir.pharmacy_seed_id
-    LEFT JOIN 
-      pharmacy_investigator_research_complete AS pirc ON ps.id = pirc.pharmacy_seed_id
     WHERE 
-         ps.created_by = $1 AND ps.active = true AND pi.active = true AND inv.active = true AND pie.active = true AND 
-        piex.active = true AND pipu.active = true AND pir.active = true AND pirc.active = true
+         ps.created_by = $1 AND ps.active = true AND pi.active = true AND inv.active = true 
     ORDER BY 
       ps.id DESC`,
     values : [userName]
@@ -196,7 +164,7 @@ module.exports.renderPharmacyData = async(userName) => {
     // values : [userName]
     // }
 
-    console.log('sql ====>>>>>', sql);
+    // console.log('sql ====>>>>>', sql);
     const pharmacyDataPromise = await researchDbR.query(sql);
     const investigatorPublication = await researchDbR.query(publicationDetails);
     // const investigatorEducation = await researchDbR.query(investorEducationalDetails);
@@ -329,7 +297,7 @@ module.exports.insertPharmacyDetails = async (pharmacySeedGrantDetails, userName
     console.log('pharmacySeedGrantDetails in models  ===>>>>', pharmacySeedGrantDetails);
     console.log('investorDetails ===>>', investorDetails)
 
-    const {invatigatorName, investigatorDesignation, investigatorAddress, invatigatorMobile, invastigatorDateOfBirth} = investorDetails;
+    const {invatigatorName, investigatorDesignation, investigatorAddress, invatigatorMobile, investigatorEmail, invastigatorDateOfBirth} = investorDetails;
 
     const {principalName, principalDsg, principalOrg, principalMob, principalEmail} = principalInvestigatorDetails;
 
@@ -379,9 +347,9 @@ module.exports.insertPharmacyDetails = async (pharmacySeedGrantDetails, userName
     console.log('sql =====>>>>>>', sql);
 
     const investigatorSql = {
-        text: `INSERT INTO investigator (investigator_name, investigator_dsg, investigator_address, investigator_mobile, 
-            investigator_dob, active, created_by) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id`,
-        values: [invatigatorName, investigatorDesignation, investigatorAddress, invatigatorMobile, invastigatorDateOfBirth, true, userName]
+        text: `INSERT INTO investigator (investigator_name, investigator_dsg, investigator_address, investigator_mobile, investigator_email, 
+            investigator_dob, active, created_by) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id`,
+        values: [invatigatorName, investigatorDesignation, investigatorAddress, invatigatorMobile, investigatorEmail, invastigatorDateOfBirth, true, userName]
     };
 
     const principalSql = {
@@ -490,14 +458,14 @@ module.exports.insertPharmacyDetails = async (pharmacySeedGrantDetails, userName
 
   const insertInvestorBookChapter = bookChapterData ? (bookChapterData.map(async (bookChapterDetails) => {
     console.log('bookChapterDetails ===.>>>', bookChapterDetails);
-    const [book_chapter_author, book_chapter_title, book_chapter_names, book_chapter_volume, 
-      book_chapter_page_number, book_chapter_publisher, book_chapter_isbn,
+    const [book_chapter_author, book_chapter_title, book_chapter_names, book_chapter_volume, book_chapter_year,
+      book_chapter_page_number, book_chapter_publisher, book_chapter_isbn
     ] = bookChapterDetails;
 
     let sql = {
-        text: `INSERT INTO investigator_book_chapter (book_chapter_author, book_chapter_title, book_chapter_names, book_chapter_volume, book_chapter_year,
-          book_chapter_page_number, book_chapter_publisher, book_chapter_isbn, created_by, active) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, ) RETURNING id`,
-        values: [book_chapter_author, book_chapter_title, book_chapter_names, book_chapter_volume, 
+        text: `INSERT INTO investigator_book_chapter (book_chapter_author, book_chapter_title, book_chapter_names, book_chapter_volume,
+          book_chapter_page_number, book_chapter_year, book_chapter_publisher, book_chapter_isbn, created_by, active) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING id`,
+        values: [book_chapter_author, book_chapter_title, book_chapter_names, book_chapter_volume, book_chapter_year,
           book_chapter_page_number, book_chapter_publisher, book_chapter_isbn, userName, true]
     };
     const result = await researchDbW.query(sql);
@@ -776,24 +744,8 @@ module.exports.viewPharmacyGrantData = async(pharmacyId, userName) => {
         cid.co_investigator_dsg,
         cid.co_investigator_org,
         cid.co_investigator_email,
-        cid.co_investigator_mobile,
-        
-        pie.id AS pharmacy_investigator_education_id,
-        pie.active AS pharmacy_investigator_education_active,
-        piex.id AS pharmacy_investigator_experience_id,
-        piex.active AS pharmacy_investigator_experience_active,
-        pib.id AS pharmacy_investigator_book_id,
-        pib.active AS pharmacy_investigator_book_active,
-        pibc.id AS pharmacy_investigator_book_chapter_id,
-        pibc.active AS pharmacy_investigator_book_chapter_active,
-        pip.id AS pharmacy_investigator_patent_id,
-        pip.active AS pharmacy_investigator_patent_active,
-        pipu.id AS pharmacy_investigator_publication_id,
-        pipu.active AS pharmacy_investigator_publication_active,
-        pir.id AS pharmacy_investigator_research_implementation_id,
-        pir.active AS pharmacy_investigator_research_implementation_active,
-        pirc.id AS pharmacy_investigator_research_complete_id,
-        pirc.active AS pharmacy_investigator_research_complete_active
+        cid.co_investigator_mobile
+     
     FROM
     pharmacy_seed AS ps
     LEFT JOIN 
@@ -808,25 +760,9 @@ module.exports.viewPharmacyGrantData = async(pharmacyId, userName) => {
       pharmacy_co_investigator AS pco ON ps.id = pco.pharmacy_seed_id
     LEFT JOIN 
             co_investigator_details AS cid ON pco.co_investigator_details_id = cid.id
-    LEFT JOIN 
-      pharmacy_investigator_education AS pie ON ps.id = pie.pharmacy_seed_id
-    LEFT JOIN 
-      pharmacy_investigator_experience AS piex ON ps.id = piex.pharmacy_seed_id
-    LEFT JOIN 
-      pharmacy_investigator_book AS pib ON ps.id = pib.pharmacy_seed_id
-    LEFT JOIN 
-      pharmacy_investigator_book_chapter AS pibc ON ps.id = pibc.pharmacy_seed_id
-    LEFT JOIN 
-      pharmacy_investigator_patent AS pip ON ps.id = pip.pharmacy_seed_id
-    LEFT JOIN 
-      pharmacy_investigator_publication AS pipu ON ps.id = pipu.pharmacy_seed_id
-    LEFT JOIN 
-      pharmacy_investigator_research_implementation AS pir ON ps.id = pir.pharmacy_seed_id
-    LEFT JOIN 
-      pharmacy_investigator_research_complete AS pirc ON ps.id = pirc.pharmacy_seed_id
+  
     WHERE 
-        ps.id = $1 AND  ps.created_by = $2 AND ps.active = true AND pi.active = true AND inv.active = true AND pie.active = true AND 
-        piex.active = true AND pipu.active = true AND pir.active = true AND pirc.active = true`,
+        ps.id = $1 AND  ps.created_by = $2 AND ps.active = true AND pi.active = true AND inv.active = true AND cid.active = true`,
         values : [pharmacyId , userName]
     }
 
@@ -954,3 +890,415 @@ module.exports.viewPharmacyGrantData = async(pharmacyId, userName) => {
 
 
 }
+
+
+module.exports.retriveDataFromDetailsTable = async(pharmacyId) => {
+  console.log(' id in models ===>>>>', pharmacyId)
+
+  let investigatorEduSql = {
+    text: `select ie.id, ie.course_name, ie.university_name, ie.passout_year
+           FROM pharmacy_investigator_education pie
+          JOIN investigator_education ie ON pie.investigator_education_id = ie.id
+          WHERE pie.pharmacy_seed_id = $1 and pie.active=true and ie.active=true `,
+    values: [pharmacyId],
+  };
+
+  let investigatorExeSql = {
+      text: `select  iex.id, iex.possition, iex.organization_name, iex.experience
+             FROM pharmacy_investigator_experience piex
+            JOIN investigator_experience iex ON piex.investigator_experience_id = iex.id
+            WHERE piex.pharmacy_seed_id = $1 and piex.active=true and iex.active=true `,
+      values: [pharmacyId],
+    };
+
+    let investigatorBookSql = {
+      text: `select  ib.id, ib.book_author, ib.book_names, ib.book_year,
+          ib.book_year, ib.book_volume, ib.book_publisher, ib.book_isbn
+             FROM pharmacy_investigator_book pib
+            JOIN investigator_book ib ON pib.investigator_book_id = ib.id
+            WHERE pib.pharmacy_seed_id = $1 and pib.active=true and ib.active=true `,
+      values: [pharmacyId],
+    };
+
+    let investigatorBookChapterSql = {
+      text: `select  ibc.id,  ibc.book_chapter_author, ibc.book_chapter_title, ibc.book_chapter_names,
+              ibc.book_chapter_year, ibc.book_chapter_volume, ibc.book_chapter_page_number, ibc.book_chapter_publisher,
+              ibc.book_chapter_isbn
+              FROM pharmacy_investigator_book_chapter pibc
+              JOIN investigator_book_chapter ibc ON pibc.investigator_book_chapter_id = ibc.id
+              WHERE pibc.pharmacy_seed_id = $1 and pibc.active=true and ibc.active=true `,
+      values: [pharmacyId],
+    };
+
+    let investigatorPubSql = {
+      text: `select  ipub.id, ipub.publication_author, ipub.publication_title, ipub.publication_journal_name,
+              ipub.publication_issue, ipub.publication_year, ipub.publication_volume, ipub.publication_artcile_number,
+              ipub.publication_impact_factor
+              FROM pharmacy_investigator_publication pipub
+              JOIN investigator_publication ipub ON pipub.investigator_publication_id = ipub.id
+              WHERE pipub.pharmacy_seed_id = $1 and pipub.active=true and ipub.active=true `,
+      values : [pharmacyId]
+    };
+
+    let investigatorPatentSql = {
+      text: `select  ipa.id, ipa.applicant_name, ipa.patent_title, ipa.patent_status,
+              ipa.patent_year, ipa.patent_number
+              FROM pharmacy_investigator_patent pip
+              JOIN investigator_patent ipa ON pip.investigator_patent_id = ipa.id
+              WHERE pip.pharmacy_seed_id = $1 and pip.active=true and ipa.active=true `,
+      values: [pharmacyId],
+    };
+
+
+    let investigatorImplementationSql = {
+      text: `select  irm.id, irm.research_im_title, irm.research_im_agency, irm.research_im_role,
+              irm.research_im_duration, irm.research_im_project_cost
+              FROM pharmacy_investigator_research_implementation pirm
+              JOIN investigator_research_implementation irm ON pirm.investigator_research_implementation_id = irm.id
+              WHERE pirm.pharmacy_seed_id = $1 and pirm.active=true and irm.active=true `,
+      values: [pharmacyId],
+    };
+
+    let investigatorCompletedSql = {
+      text: `select  irc.id, irc.research_cm_title, irc.research_cm_agency, irc.research_cm_role,
+              irc.research_cm_duration, irc.research_cm_project_cost
+              FROM pharmacy_investigator_research_complete pirc
+              JOIN investigator_research_complete irc ON pirc.investigator_research_complete_id = irc.id
+              WHERE pirc.pharmacy_seed_id = $1 and pirc.active=true and irc.active=true  `,
+      values: [pharmacyId],
+    };
+
+    const educaltionalDetails = await researchDbR.query(investigatorEduSql);
+    const experienceDetails = await researchDbR.query(investigatorExeSql);
+    const bookDetails = await researchDbR.query(investigatorBookSql);
+    const bookChapterDetails = await researchDbR.query(investigatorBookChapterSql);
+    const PublicationDetails = await researchDbR.query(investigatorPubSql);
+    const patentDetails = await researchDbR.query(investigatorPatentSql);
+    const researchImplementationDetails = await researchDbR.query(investigatorImplementationSql);
+    const completedResearchDetails = await researchDbR.query(investigatorCompletedSql);
+
+    const promises = [educaltionalDetails, experienceDetails,
+      bookDetails, bookChapterDetails, PublicationDetails, patentDetails, researchImplementationDetails, completedResearchDetails]
+
+  return Promise.all(promises).then(([educaltionalDetails, experienceDetails,
+    bookDetails, bookChapterDetails, PublicationDetails, patentDetails, researchImplementationDetails, completedResearchDetails]
+) => {
+      return {
+          status : "Done",
+          message : "Data Fetched Successfully",
+          educaltionalDetails : educaltionalDetails.rows,
+          experienceDetails : experienceDetails.rows,
+          bookDetails : bookDetails.rows,
+          bookChapterDetails : bookChapterDetails.rows,
+          PublicationDetails : PublicationDetails.rows,
+          patentDetails : patentDetails.rows,
+          researchImplementationDetails : researchImplementationDetails.rows,
+          completedResearchDetails : completedResearchDetails.rows
+      }
+  })
+  .catch(error => {
+      console.error('Error:', error.message); 
+      return {
+        status: "Failed",
+        message: error.message,
+        errorCode: error.code
+      };
+    });
+}
+
+
+module.exports.updatePharmacySeedData = async(
+  pharmacyId, updatePharmacyDetails, userName, educationalData, experienceData, bookData, bookChapterData, publicationData, 
+    patentData, implementationData, completedData, investorDetails,
+    principalInvestigatorDetails, coInvestigatorDetails
+) => {
+  console.log('updatePharmacyDetails data in models ====>>>>>', updatePharmacyDetails);
+  console.log('patentData ===>>>>>', patentData);
+
+  const {invatigatorName, investigatorDesignation, investigatorAddress, invatigatorMobile, investigatorEmail, invastigatorDateOfBirth} = investorDetails;
+
+  const {principalName, principalDsg, principalOrg, principalMob, principalEmail} = principalInvestigatorDetails;
+
+  const {coIvestigatorName, coIvestigatorDsg, coIvestigatorOrg, coIvestigatorMob, coIvestigatorEmail} = coInvestigatorDetails;
+
+
+  const {
+      summaryTitle, summaryProjectTitle, projectDuration, totalCost,
+      consumablesAmount, analysisAmount, otherAmount, projectTitle, researchStatus, scientificImportance, projectObjectives,
+      detailedMethodology, timeLines, budgetConsumableAmount, consumablesJustification, solventsAmount, solventsJustification,
+      chemicalsAmount, chemicalsJustification, biomarkersReferenceAmount, biomarkersReferenceJustifications, hplcAmount,
+      hplcJustification, experimentalAnimalsAmount, experimentalAnimalsJustification, cellLinesAmount, cellLinesJustifications,
+      kitsAnalysisAmount, kitsAnalysisJustifications, evaluationAnalysisAmount, evaluationAnalysisJustification, proposedOutCome,
+      previousProjectExplaination, references, projectBackGround, hypothesis
+      
+    } = updatePharmacyDetails;
+    
+    
+    let sql = {
+      text: `UPDATE  pharmacy_seed 
+                summary_title = $2, summary_objectives = $3,
+                project_duration = $4, total_cost = $4, consumables_amount = $5, analysis_amount = $6, other_amount = $7,
+                project_title = $8, project_status = $9, scientific_importance = $10, project_objectives = $11,
+                detailed_methodology = $12, time_lines = $13, budget_consumable_amount = $14, consumables_justification = $15,
+                solvents_amount = $16, solvents_justification = $17, chemicals_amount = $18, chemicals_justification = $19,
+                biomarkers_reference_amount = $20, biomarkers_reference_justifications = $21, hplc_amount = $22,
+                hplc_justification = $23, experimental_animals_amount = $24, experimental_animals_justification = $25,
+                cell_lines_amount = $26, cell_lines_justifications = $27, kits_analysis_amount = $28, kits_analysis_justifications = $29,
+                evaluation_analysis_amount = $30, evaluation_analysis_justification = $31, proposed_out_come = $32,
+                previous_project_explaination = $33, pharmacy_references = $34, project_background = $35, hypothesis = $36, updated_by = $37 WHERE id = $1
+            `,
+      values: [ pharmacyId,
+        summaryTitle, summaryProjectTitle, projectDuration, totalCost,
+        consumablesAmount, analysisAmount, otherAmount, projectTitle, researchStatus, scientificImportance, projectObjectives,
+        detailedMethodology, timeLines, budgetConsumableAmount, consumablesJustification, 
+        solventsAmount, solventsJustification, chemicalsAmount, chemicalsJustification, 
+        biomarkersReferenceAmount, biomarkersReferenceJustifications, hplcAmount, 
+        hplcJustification, experimentalAnimalsAmount, experimentalAnimalsJustification, 
+        cellLinesAmount, cellLinesJustifications, kitsAnalysisAmount, kitsAnalysisJustifications, 
+        evaluationAnalysisAmount, evaluationAnalysisJustification, proposedOutCome, 
+        previousProjectExplaination, references, projectBackGround, hypothesis, userName
+      ]
+    };
+  console.log('sql =====>>>>>>', sql);
+
+
+// Insert educational data
+const insertEducation = insertOrUpdateRecords(
+  educationalData, 
+  'investigator_education', 
+  ['course_name', 'university_name', 'passout_year'], 
+  ['course_name', 'university_name', 'passout_year'], 
+  userName
+);
+
+// Insert experience data
+const insertExperience = insertOrUpdateRecords(
+  experienceData, 
+  'investigator_experience', 
+  ['possition', 'organization_name', 'experience'], 
+  ['possition', 'organization_name', 'experience'], 
+  userName
+);
+
+// Insert book data
+const insertBookDetails = insertOrUpdateRecords(
+  bookData, 
+  'investigator_book', 
+  ['book_author', 'book_names', 'book_year', 'book_volume', 'book_publisher', 'book_isbn'], 
+  ['book_author', 'book_names', 'book_year', 'book_volume', 'book_publisher', 'book_isbn'], 
+  userName
+);
+
+// Insert bookChapterData data
+const insertBookChapterDetails = insertOrUpdateRecords(
+  bookChapterData, 
+  'investigator_book_chapter', 
+  ['book_chapter_author', 'book_chapter_title', 'book_chapter_names', 'book_chapter_volume',
+    'book_chapter_page_number', 'book_chapter_year', 'book_chapter_publisher', 'book_chapter_isbn'], 
+  ['book_chapter_author', 'book_chapter_title', 'book_chapter_names', 'book_chapter_volume',
+  'book_chapter_page_number', 'book_chapter_year', 'book_chapter_publisher', 'book_chapter_isbn'], 
+  userName
+);
+
+// Insert patentData data
+const insertPatentDetails = insertOrUpdateRecords(
+  patentData, 
+  'investigator_patent', 
+  ['applicant_name', 'patent_title', 'patent_status', 'patent_year', 'patent_number'], 
+  ['applicant_name', 'patent_title', 'patent_status', 'patent_year', 'patent_number'], 
+  userName
+);
+
+// Insert publicationData data
+const insertPublicationDetails = insertOrUpdateRecords(
+  publicationData, 
+  'investigator_publication', 
+  ['publication_author', 'publication_title', 'publication_journal_name', 
+    'publication_issue', 'publication_year', 'publication_volume', 'publication_artcile_number', 'publication_impact_factor'], 
+  ['publication_author', 'publication_title', 'publication_journal_name', 
+  'publication_issue', 'publication_year', 'publication_volume', 'publication_artcile_number', 'publication_impact_factor'], 
+  userName
+);
+
+// Insert implementationData data
+const insertImplementationDetails = insertOrUpdateRecords(
+  implementationData, 
+  'investigator_research_implementation', 
+  ['research_im_title', 'research_im_agency', 'research_im_role', 'research_im_duration', 'research_im_project_cost'], 
+  ['research_im_title', 'research_im_agency', 'research_im_role', 'research_im_duration', 'research_im_project_cost'], 
+  userName
+);
+
+// Insert completedData data
+const insertCompletedDetails = insertOrUpdateRecords(
+  completedData, 
+  'investigator_research_complete', 
+  ['research_cm_title', 'research_cm_agency', 'research_cm_role', 'research_cm_duration', 'research_cm_project_cost'], 
+  ['research_cm_title', 'research_cm_agency', 'research_cm_role', 'research_cm_duration', 'research_cm_project_cost'], 
+  userName
+);
+
+console.log('insertCompletedDetails ===>>>>', insertCompletedDetails);
+
+// Add more datasets as needed
+Promise.all([insertEducation, insertExperience, insertBookDetails, insertBookChapterDetails, insertPatentDetails, insertPublicationDetails, insertImplementationDetails, insertCompletedDetails])
+    .then(async ([
+    educationIds, 
+    experienceIds, 
+    bookDetailsIds, 
+    bookChapterIds, 
+    patentIds, 
+    publicationIds, 
+    implementationIds, 
+    completedIds
+  ]) => {
+    console.log('All data processed, collected IDs:', {
+      educationIds, 
+      experienceIds, 
+      bookDetailsIds, 
+      bookChapterIds, 
+      patentIds, 
+      publicationIds, 
+      implementationIds, 
+      completedIds
+    });
+ 
+     await insertAllPharmacyInvestigatorRecords(pharmacyId, educationIds, userName)
+     await insertAllPharmacyInvestigatorRecords(pharmacyId, experienceIds, userName)
+     await insertAllPharmacyInvestigatorRecords(pharmacyId, bookDetailsIds, userName)
+     await insertAllPharmacyInvestigatorRecords(pharmacyId, bookChapterIds, userName)
+     await insertAllPharmacyInvestigatorRecords(pharmacyId, publicationIds, userName)
+     await insertAllPharmacyInvestigatorRecords(pharmacyId, patentIds, userName)
+     await insertAllPharmacyInvestigatorRecords(pharmacyId, implementationIds, userName)
+     await insertAllPharmacyInvestigatorRecords(pharmacyId, completedIds, userName)
+
+    console.log('Pharmacy investigator records inserted successfully', educationIds);
+  })
+  .catch(error => {
+    console.error('Error processing data:', error);
+  });
+
+}
+
+
+
+
+const insertOrUpdateRecords = async (data, tableName, uniqueColumns, allColumns, userName) => {
+  return Promise.all(data.map(async (details) => {
+    try {
+      console.log(`Processing details for table ${tableName}:`, details);
+
+      const [id, ...detailsWithoutId] = details;
+      // console.log('detailsWithoutId =====>>>>>>', detailsWithoutId);
+      // console.log('detailsWithoutId.length ===>>>>', detailsWithoutId.length)
+
+      // if (detailsWithoutId.length !== allColumns.length) {
+      //   throw new Error(`Invalid number of details provided for ${tableName}. Expected ${allColumns.length}, got ${detailsWithoutId.length}`);
+      // }
+
+      let idsArray = data.map(item => item[0]);
+      console.log('IDs Array:', idsArray);
+
+      // Check if the record exists
+      const existingRecord = await researchDbW.query({
+        text: `SELECT * FROM ${tableName} WHERE id = $1 AND created_by = $2 AND active=true`,
+        values: [id, userName],
+      });
+
+      // console.log('existingRecord row count ====>>>>>', existingRecord.rowCount);
+
+      if (existingRecord.rowCount === 0) {
+        // Insert new record
+        const placeholders = allColumns.map((_, i) => `$${i + 1}`).join(', ');
+        const result = await researchDbW.query({
+          text: `INSERT INTO ${tableName} (${allColumns.join(', ')}, created_by, active) VALUES (${placeholders}, $${allColumns.length + 1}, $${allColumns.length + 2}) RETURNING id`,
+          values: [...detailsWithoutId, userName, true]
+        });
+        console.log(`Inserted new record in ${tableName} with ID: ${result.rows[0].id}`);
+        return result.rows[0];
+      } else {
+        // Update existing record
+        const updateColumns = allColumns.map((col, i) => `${col} = $${i + 1}`).join(', ');
+        const result = await researchDbW.query({
+          text: `UPDATE ${tableName} SET ${updateColumns}, updated_by = $${allColumns.length + 1}, updated_at = NOW() WHERE id = $${allColumns.length + 2} RETURNING id`,
+          values: [...detailsWithoutId, userName, id]
+        });
+        // console.log(`Updated existing record in ${tableName} with ID: ${result.rows[0].id}`);
+        return result.rows[0];
+      }
+    } catch (error) {
+      console.error(`Error processing details for table ${tableName}:`, details, error);
+      throw error;  
+    }
+  }));
+};
+
+
+
+async function insertIfNotExists(tableName, pharmacySeedId, relationalId, tableId, userName) {
+  // console.log('tableId ankit  ===>>>>', tableId);
+  // console.log(`id :::${tableId} ${tableName}`)
+  return Promise.all(tableId ? tableId.map(async (element) => {
+    // console.log('element id ===>>>>>>>', element.id);
+    // console.log('relationalId =====>>>>>>', relationalId);
+
+    const checkSql = {
+      text: `SELECT *  FROM ${tableName} WHERE pharmacy_seed_id = $1 AND ${relationalId} = $2 AND created_by = $3 AND active = true`,
+      values: [pharmacySeedId, element.id, userName],
+    }
+
+    // console.log(`Executing SQL for ${tableName} check:`, checkSql);
+
+    const result = await researchDbW.query(checkSql);
+    // console.log('result row count ===>>>>>>', result.rowCount)
+
+    if (result.rowCount === 0) {
+      // console.log(`No existing record found. Inserting into ${tableName}.`);
+
+      const insertSql = {
+        text: `insert into ${tableName} (pharmacy_seed_id, ${relationalId}, created_by, active) VALUES ($1, $2, $3, $4) RETURNING id`,
+        values: [pharmacySeedId, element.id, userName, true],
+      };
+
+      // console.log(`Executing SQL for ${tableName} insert:`, insertSql);
+
+      return researchDbW.query(insertSql);
+    } else {
+      // console.log(`Record already exists in ${tableName}. Skipping insert.`);
+      return null;
+    }
+  }) : null);
+}
+
+
+const insertAllPharmacyInvestigatorRecords = async (pharmacySeedId, tableId, userName) => {
+  // console.log('tableId ++++>>>>>>', tableId)
+  try {
+    const insertPharmacyEducation = insertIfNotExists('pharmacy_investigator_education', pharmacySeedId,  'investigator_education_id', tableId, userName);
+    const insertPharmacyExperience = insertIfNotExists('pharmacy_investigator_experience', pharmacySeedId, 'investigator_experience_id', tableId, userName);
+    const insertPharmacyBook = insertIfNotExists('pharmacy_investigator_book', pharmacySeedId, 'investigator_book_id', tableId, userName);
+    const insertPharmacyBookChapter = insertIfNotExists('pharmacy_investigator_book_chapter', pharmacySeedId, 'investigator_book_chapter_id', tableId, userName);
+    const insertPharmacyPublication = insertIfNotExists('pharmacy_investigator_publication', pharmacySeedId, 'investigator_publication_id', tableId, userName);
+    const insertPharmacyPatent = insertIfNotExists('pharmacy_investigator_patent', pharmacySeedId, 'investigator_patent_id', tableId, userName);
+    const insertPharmacyImplementation = insertIfNotExists('pharmacy_investigator_research_implementation', pharmacySeedId, 'investigator_research_implementation_id', tableId, userName);
+    const insertPharmacyCompleted = insertIfNotExists('pharmacy_investigator_research_complete', pharmacySeedId, 'investigator_research_complete_id', tableId, userName);
+
+    const results = await Promise.all([
+      insertPharmacyEducation,
+      insertPharmacyExperience,
+      insertPharmacyBook,
+      insertPharmacyBookChapter,
+      insertPharmacyPublication,
+      insertPharmacyPatent,
+      insertPharmacyImplementation,
+      insertPharmacyCompleted
+    ]);
+
+    // console.log('All data inserted:', results);
+  } catch (error) {
+    // console.error('Error inserting data:', error);
+  }
+};
+
+
+

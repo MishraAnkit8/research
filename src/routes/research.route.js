@@ -167,6 +167,9 @@ router.post('/pharmacy-seed-grant-form/investigator-patent/insert', asyncErrorHa
 router.post('/pharmacy-seed-grant-form/investigator-publication/insert', asyncErrorHandler(authMiddleware), asyncErrorHandler(pharmacySeedGrantForm.investigatorPublication));
 router.post('/pharmacy-seed-grant-form/investigator-research-implementation/insert', asyncErrorHandler(authMiddleware), asyncErrorHandler(pharmacySeedGrantForm.investigatorResearchImplementation));
 router.post('/pharmacy-seed-grant-form/investigator-research-completed/insert', asyncErrorHandler(authMiddleware), asyncErrorHandler(pharmacySeedGrantForm.investigatorResearchCompleted));
+router.post('/pharmacy-seed-grant-form/details', asyncErrorHandler(authMiddleware), asyncErrorHandler(pharmacySeedGrantForm.retriveDetailsDataPharamacy));
+router.post('/pharmacy-seed-grant-form/update', asyncErrorHandler(authMiddleware), asyncErrorHandler(pharmacySeedGrantForm.updatePharmacyDetailsData));
+
 
 
 
