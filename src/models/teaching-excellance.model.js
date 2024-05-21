@@ -91,12 +91,8 @@ module.exports.updateTeachingExecellance = async(teachingId, updatedTeachingExec
             { field: 'program_orientation', value: programOrientation },
             { field: 'program_orientation_file', value: programOrientationFile },
             { field: 'program_orientation_link', value: programOrientationLink },
-            { field: 'updated_by', value: userName },
-            { field: 'pedagogy_innovation_description', value: pedagogyInnovation },
-            { field: 'fdp_program_description', value: FdpProgramDescription },
-            { field: 'workshop_details_description', value: workshopDetailsDescription },
-            { field: 'inviting_faculty_description', value: workshopDetailsDescription },
-            { field: 'program_orientation_description', value: programOrientationDescription }
+            { field: 'updated_by', value: userName }
+         
         ]
 
         console.log('teachingFieldsToUpdate ===>>>', teachingFieldsToUpdate);

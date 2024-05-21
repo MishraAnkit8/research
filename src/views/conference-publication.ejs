@@ -469,8 +469,7 @@
 
                                 <!-- Inventor -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <label for="investor-details" class="form-label fw-bold mb-3">Author Details
-                                        ?</label><br>
+                                    <label for="investor-details" class="form-label fw-bold mb-3">Name Of Co-Authors</label><br>
                                     <div class="form-check-inline">
                                         <label for="is-internal" class="form-check-label enter-faculty-type">
                                             <input type="radio" class="form-check-input enternal-type"
@@ -478,7 +477,8 @@
                                             <span id="enternal-text">Internal</span>
                                         </label>
                                         <div class="col-lg-1 p-6 w-100 d-none" id="employee-list">
-                                            <select id="emp-name" style="width: 200px;" multiple>
+                                            <select id="emp-name" style="width: 200px;" data-validate="isEmpty,isExist"
+                                            data-err-msg="This field is required and select value" required multiple>
                                                 <option value="">select employee name</option>
                                                 <% internalEmpList.forEach(function(employee) { %>
                                                     <option value="<%= employee.id %>">
@@ -592,7 +592,7 @@
                                             <input type="text" class="form-control" id="faculty-emp-id">
                                     </div>
                                     <div class="form-group col-lg-2 col-md-6 col-sm-12 mb-4 d-none" id="address-class">
-                                        <label for="faculty-address" class="form-label fw-bold">Faculty Addres</lable>
+                                        <label for="faculty-address" class="form-label fw-bold">Faculty Address</lable>
                                             <input type="text" class="form-control" id="faculty-address">
                                     </div>
 
@@ -708,7 +708,7 @@
                                 <!-- Are you the Presenter ? -->
                                 <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                                     <div class="box">
-                                        <div class="task-sub-title sub-title-text">Are you the Presenter ?:</div>
+                                        <div class="task-sub-title sub-title-text d-none">Are you the Presenter ?:</div>
                                         <label class="view-content" id="view-is-presenter"></label>
                                     </div>
                                 </div>
@@ -717,7 +717,7 @@
                                 <!-- Faculty Type -->
                                 <div class="col-lg-12 col-md-6  col-sm-12 p-3">
                                     <div class="box">
-                                        <div class="task-sub-title sub-title-text fw-bold"> Faculty Details Id And Name:
+                                        <div class="task-sub-title sub-title-text fw-bold d-none"> Faculty Details Id And Name:
                                         </div>
                                         <label class="view-content" id="faculty-details-container"></label>
                                     </div>
@@ -1879,7 +1879,7 @@
                     let isAward = document.getElementById('is-award-yes');
                     let proofError = document.getElementById('proofError');
                     if (isAward.checked) {
-                        proofError.innerText = '*Please Enter the documents'
+                        proofError.innerText = '*Please upload the documents'
                     }
                 })
 
@@ -1971,6 +1971,7 @@
                                     // timer: 1500
                                 })
                             }
+                         
 
                         }).catch((error) => {
                             console.log('error ===>>>>>', error);

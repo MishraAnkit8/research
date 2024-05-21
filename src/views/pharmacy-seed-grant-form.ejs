@@ -75,9 +75,9 @@
                                     <th class="col-lg-1">Summary Title </th>
                                     <th class="col-lg-1">Project <Title></Title>
                                     </th>
-                                    <th class="col-lg-1">Principal Investigator</th>
-                                    <th class="col-lg-1">Co Investigator</th>
-                                    <th class="col-lg-1">Project Status</th>
+                                    <th class="col-lg-1 principal-investigator-name">Principal Investigator</th>
+                                    <th class="col-lg-1 co-investigator">Co Investigator</th>
+                                    <th class="col-lg-1 research-status">Project Status</th>
                                     <th class="col-lg-1">Action</th>
                                 </thead>
                                 <% pharmacyData.forEach(function(pharmacy,index) {%>
@@ -89,6 +89,7 @@
                                         data-analysis-amount="<%-pharmacy.analysis_amount %>"
                                         data-other-amount="<%-pharmacy.other_amount %>"
                                         data-scientific-importance="<%-pharmacy.scientific_importance %>"
+                                        data-project-title="<%-pharmacy.project_title %>"
                                         data-project-objectives="<%-pharmacy.project_objectives %>"
                                         data-detailed-methodology="<%-pharmacy.detailed_methodology %>"
                                         data-time-lines="<%-pharmacy.time_lines %>"
@@ -130,13 +131,14 @@
                                         data-co-investigator-dsg="<%-pharmacy.co_investigator_dsg %>"
                                         data-co-investigator-org="<%-pharmacy.co_investigator_org %>"
                                         data-co-investigator-email="<%-pharmacy.co_investigator_email %>"
-                                        data-co-investigator-mobile="<%-pharmacy.co_investigator_mobile %>">
+                                        data-co-investigator-mobile="<%- pharmacy.co_investigator_mobile %>"
+                                        data-research-status="<%- pharmacy.project_status %>">
                                         <td><%- index + 1 %></td>
                                         <td><%- pharmacy.summary_title %></td>
                                         <td><%- pharmacy.project_title %></td>
                                         <td><%- pharmacy.principal_name %></td>
                                         <td><%- pharmacy.co_investigator_name %></td>
-                                        <td><%- pharmacy.project_status %></td>
+                                        <td class="research-status"><%- pharmacy.project_status %></td>
                                         <td colspan="3px" style="display:flex;justify-content: center;">
                                             <b title="View" class="view border-right-0" style="cursor: pointer;"
                                                 data-pharmacy-id="<%-pharmacy.pharmacy_seed_id %>">
@@ -614,21 +616,21 @@
                                 </div>
                                 <!-- kits-analysis-amount  -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <label for="HPLC-justification" class="form-label fw-bold">Kits for analysis
+                                    <label for="kits-analysis-justification" class="form-label fw-bold">Kits for analysis
                                         Justification.</label>
-                                    <input type="text" name="HPLC-justification" id="HPLC-justification"
+                                    <input type="text" name="kits-analysis-justification" id="kits-analysis-justification"
                                         class="form-control" data-validate="isEmpty,isExist, isLength:2:255"
                                         data-err-msg="Provide Valid Input" required>
                                 </div>
                                 <!-- Evaluation and analysis (outsourcing) -->
-                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                <!-- <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="kits-analysis-justification" class="form-label fw-bold">Evaluation and
                                         analysis (outsourcing) justification.</label>
                                     <input type="text" name="kits-analysis-justification"
                                         id="evaluation-analysis-amount" class="form-control"
                                         data-validate="isEmpty,isExist, isLength:2:255"
                                         data-err-msg="Provide Valid Input" required>
-                                </div>
+                                </div> -->
                                 <!-- evaluation-analysis-justification -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="evaluation-analysis-justification" class="form-label fw-bold">Evaluation
@@ -656,8 +658,8 @@
                                 </div>
                                 <!--12.	References:-->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <label for="references" class="form-label fw-bold">References</label>
-                                    <input type="text" id="references" data-validate="isEmpty,isLength:2:255"
+                                    <label for="pharmacy-references" class="form-label fw-bold">References</label>
+                                    <input type="text" id="pharmacy-references" data-validate="isEmpty,isLength:2:255"
                                         data-err-msg="Provide Valid Input" class="form-control" required>
                                 </div>
 
@@ -730,7 +732,7 @@
                                         </button>
                                     </div>
                                 </div>
-                                <table class="table vertical-lines custom-table table-responsive">
+                                <table id="education-details-table" class="table vertical-lines custom-table table-responsive">
                                     <thead>
                                         <th class="col-lg-1">Serial no</th>
                                         <th class="col-lg-1">Degree </th>
@@ -754,7 +756,7 @@
                                         </button>
                                     </div>
                                 </div>
-                                <table class="table vertical-lines custom-table table-responsive">
+                                <table id="experience-details-table" class="table vertical-lines custom-table table-responsive">
                                     <thead>
                                         <th class="col-lg-1">Serial no</th>
                                         <th class="col-lg-1">Position </th>
@@ -779,12 +781,11 @@
                                         </button>
                                     </div>
                                 </div>
-                                <table class="table vertical-lines custom-table table-responsive">
+                                <table id="publication-details-table" class="table vertical-lines custom-table table-responsive">
                                     <thead>
                                         <th class="col-lg-1">Serial no</th>
                                         <th class="col-lg-1">Authors </th>
-                                        <th class="col-lg-1">Title <Title></Title>
-                                        </th>
+                                        <th class="col-lg-1">Title</th>
                                         <th class="col-lg-1">Name of Journal</th>
                                         <th class="col-lg-1">Year</th>
                                         <th class="col-lg-1">Volume</th>
@@ -808,12 +809,11 @@
                                         </button>
                                     </div>
                                 </div>
-                                <table class="table vertical-lines custom-table table-responsive">
+                                <table id="book-details-table" class="table vertical-lines custom-table table-responsive">
                                     <thead>
                                         <th class="col-lg-1">Serial no</th>
                                         <th class="col-lg-1">Authors </th>
-                                        <th class="col-lg-1">Name of the book <Title></Title>
-                                        </th>
+                                        <th class="col-lg-1">Name of the book</th>
                                         <th class="col-lg-1">Year</th>
                                         <th class="col-lg-1">Volume </th>
                                         <th class="col-lg-1">Publisher</th>
@@ -835,13 +835,13 @@
                                         </button>
                                     </div>
                                 </div>
-                                <table class="table vertical-lines custom-table table-responsive">
+                                <table id="book-chapter-details-table" class="table vertical-lines custom-table table-responsive">
                                     <thead>
                                         <th class="col-lg-1">Serial no</th>
                                         <th class="col-lg-1">Authors </th>
-                                        <th class="col-lg-1">Title of chapter <Title></Title>
-                                        </th>
+                                        <th class="col-lg-1">Title of chapter </th>
                                         <th class="col-lg-1">Name of the book</th>
+                                        <th class="col-lg-1">Year </th>
                                         <th class="col-lg-1">Volume </th>
                                         <th class="col-lg-1">Page numbers</th>
                                         <th class="col-lg-1">Publisher</th>
@@ -864,12 +864,11 @@
                                         </button>
                                     </div>
                                 </div>
-                                <table class="table vertical-lines custom-table table-responsive">
+                                <table id="patent-details-table" class="table vertical-lines custom-table table-responsive">
                                     <thead>
                                         <th class="col-lg-1">Serial no</th>
                                         <th class="col-lg-1">Name of Applicant/s </th>
-                                        <th class="col-lg-1">Title <Title></Title>
-                                        </th>
+                                        <th class="col-lg-1">Title </th>
                                         <th class="col-lg-1">Status (Filed/ Published/Granted)</th>
                                         <th class="col-lg-1">Number </th>
                                         <th class="col-lg-1">Month & Year </th>
@@ -891,12 +890,12 @@
                                         </button>
                                     </div>
                                 </div>
-                                <table class="table vertical-lines custom-table table-responsive">
+                                <table id="implementation-details-table" class="table vertical-lines custom-table table-responsive">
                                     <thead>
                                         <th class="col-lg-1">Serial no</th>
+                                        <th class="col-lg-1">id</th>
                                         <th class="col-lg-1">Title</th>
-                                        <th class="col-lg-1">Agency <Title></Title>
-                                        </th>
+                                        <th class="col-lg-1">Agency</th>
                                         <th class="col-lg-1">Role (PI/ Co-PI)</th>
                                         <th class="col-lg-1">Duration </th>
                                         <th class="col-lg-1">Cost in Rs. </th>
@@ -919,12 +918,12 @@
                                         </button>
                                     </div>
                                 </div>
-                                <table class="table vertical-lines custom-table table-responsive">
+                                <table id="completed-details-table" class="table vertical-lines custom-table table-responsive">
                                     <thead>
                                         <th class="col-lg-1">Serial no</th>
+                                        <th class="col-lg-1">id</th>
                                         <th class="col-lg-1">Title</th>
-                                        <th class="col-lg-1">Agency <Title></Title>
-                                        </th>
+                                        <th class="col-lg-1">Agency</th>
                                         <th class="col-lg-1">Role (PI/ Co-PI)</th>
                                         <th class="col-lg-1">Duration </th>
                                         <th class="col-lg-1">Cost in Rs. </th>
@@ -939,7 +938,7 @@
                             <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                             <button type="button" class="btn btn-primary d-none"
                                 id="submit-pharmacy-btn">Submit</button>
-                            <button type="button" class="btn btn-primary d-none " id="update-btn">Update</button>
+                            <button type="button" class="btn btn-primary d-none " id="update-pharmacy-btn">Update</button>
                         </div>
                     </div>
                 </div>
@@ -1489,18 +1488,19 @@
                 // let completedArray = [];
                 // let completedDetails = []
                 // let completedIdsContainer = []
+                let pharmacyId
 
                 document.querySelector('#insert-education').addEventListener('click', function () {
                     console.log("BUTTON CLICKED");
                     let newRow = `
-        <tr>
-            <td>1</td>
-            <td><input type="text"  class="education-details"></td>
-            <td><input type="text" class="education-details"></td>
-            <td><input type="number" class="education-details"></td>
-            <td><button class="delete-row"><i class="fas fa-trash-alt text-danger"></i></button></td>
-        </tr> 
-    `;
+                            <tr>
+                                <td>1</td>
+                                <td><input type="text"  class="education-details"></td>
+                                <td><input type="text" class="education-details"></td>
+                                <td><input type="number" class="education-details"></td>
+                                <td><button class="delete-row btn btn-danger">Delete</button></td>
+                            </tr> 
+                        `;
 
                     document.querySelector('#add-eductaion-details').insertAdjacentHTML('afterend', newRow);
                     let deleteButton = document.querySelector('#add-eductaion-details').nextElementSibling.querySelector('.delete-row');
@@ -1509,14 +1509,14 @@
 
                 document.querySelector('#insert-experience').addEventListener('click', function () {
                     let newRow = `
-            <tr>
-                <td>1</td>
-                <td><input type="text"  class="experience-details"></td>
-                <td><input type="text" class="experience-details"></td>
-                <td><input type="number" class="experience-details"></td>
-                <td><button class="delete-row"><i class="fas fa-trash-alt text-danger"></i></button></td>
-            </tr> 
-        `;
+                            <tr>
+                                <td>1</td>
+                                <td><input type="text"  class="experience-details"></td>
+                                <td><input type="text" class="experience-details"></td>
+                                <td><input type="number" class="experience-details"></td>
+                                <td><button class="delete-row btn btn-danger">Delete</button></td>
+                            </tr> 
+                                    `;
 
                     document.querySelector('#add-experience-details').insertAdjacentHTML('afterend', newRow);
                     let deleteButton = document.querySelector('#add-experience-details').nextElementSibling.querySelector('.delete-row');
@@ -1526,19 +1526,19 @@
 
                 document.querySelector('#insert-publication').addEventListener('click', function () {
                     let newRow = `
-            <tr>
-                <td>1</td>
-                <td><input type="text"  class="publication-details"></td>
-                <td><input type="text" class="publication-details"></td>
-                <td><input type="text" class="publication-details"></td>
-                <td><input type="number"  class="publication-details"></td>
-                <td><input type="number" class="publication-details"></td>
-                <td><input type="text" class="publication-details"></td>
-                <td><input type="number" class="publication-details"></td>
-                <td><input type="text" class="publication-details"></td>
-                <td><button class="delete-row"><i class="fas fa-trash-alt text-danger"></i></button></td>
-            </tr> 
-        `;
+                            <tr>
+                                <td>1</td>
+                                <td><input type="text"  class="publication-details"></td>
+                                <td><input type="text" class="publication-details"></td>
+                                <td><input type="text" class="publication-details"></td>
+                                <td><input type="number"  class="publication-details"></td>
+                                <td><input type="number" class="publication-details"></td>
+                                <td><input type="text" class="publication-details"></td>
+                                <td><input type="number" class="publication-details"></td>
+                                <td><input type="text" class="publication-details"></td>
+                                <td><button class="delete-row btn btn-danger">Delete</button></td>
+                            </tr> 
+                        `;
 
                     document.querySelector('#add-publication-details').insertAdjacentHTML('afterend', newRow);
                     let deleteButton = document.querySelector('#add-publication-details').nextElementSibling.querySelector('.delete-row');
@@ -1554,7 +1554,7 @@
                 <td><input type="text" class="patent-details"></td>
                 <td><input type="number"  class="patent-details"></td>
                 <td><input type="number" class="patent-details"></td>
-                <td><button class="delete-row"><i class="fas fa-trash-alt text-danger"></i></button></td>
+                <td><button class="delete-row btn btn-danger">Delete</button></td>
             </tr> 
         `;
 
@@ -1573,7 +1573,7 @@
                 <td><input type="number" class="book-details"></td>
                 <td><input type="text" class="book-details"></td>
                 <td><input type="number" class="book-details"></td>
-                <td><button class="delete-row"><i class="fas fa-trash-alt text-danger"></i></button></td>
+                <td><button class="delete-row btn btn-danger">Delete</button></td>
             </tr> 
         `;
 
@@ -1584,19 +1584,19 @@
 
                 document.querySelector('#insert-book-chapter').addEventListener('click', function () {
                     let newRow = `
-            <tr>
-                <td>1</td>
-                <td><input type="text"  class="book-chapter-details"></td>
-                <td><input type="text" class="book-chapter-details"></td>
-                <td><input type="text" class="book-chapter-details"></td>
-                <td><input type="number"  class="book-chapter-details"></td>
-                <td><input type="number" class="book-chapter-details"></td>
-                <td><input type="number" class="book-chapter-details"></td>
-                <td><input type="text" class="book-chapter-details"></td>
-                <td><input type="number" class="book-chapter-details"></td>
-                <td><button class="delete-row"><i class="fas fa-trash-alt text-danger"></i></button></td>
-            </tr> 
-        `;
+                            <tr>
+                                <td>1</td>
+                                <td><input type="text"  class="book-chapter-details"></td>
+                                <td><input type="text" class="book-chapter-details"></td>
+                                <td><input type="text" class="book-chapter-details"></td>
+                                <td><input type="number"  class="book-chapter-details"></td>
+                                <td><input type="number" class="book-chapter-details"></td>
+                                <td><input type="number" class="book-chapter-details"></td>
+                                <td><input type="text" class="book-chapter-details"></td>
+                                <td><input type="number" class="book-chapter-details"></td>
+                                <td><button class="delete-row btn btn-danger">Delete</button></td>
+                            </tr> 
+                        `;
 
                     document.querySelector('#add-book-chapter-details').insertAdjacentHTML('afterend', newRow);
                     let deleteButton = document.querySelector('#add-book-chapter-details').nextElementSibling.querySelector('.delete-row');
@@ -1605,15 +1605,15 @@
 
                 document.querySelector('#insert-res-implementation').addEventListener('click', function () {
                     let newRow = `
-            <tr>
-                <td>1</td>
-                <td><input type="text"  class="implementation-details"></td>
-                <td><input type="text" class="implementation-details"></td>
-                <td><input type="text" class="implementation-details"></td>
-                <td><input type="number" class="implementation-details"></td>
-                <td><input type="number"  class="implementation-details"></td>
-                <td><button class="delete-row"><i class="fas fa-trash-alt text-danger"></i></button></td>            </tr> 
-        `;
+                        <tr>
+                            <td>1</td>
+                            <td><input type="text"  class="implementation-details"></td>
+                            <td><input type="text" class="implementation-details"></td>
+                            <td><input type="text" class="implementation-details"></td>
+                            <td><input type="number" class="implementation-details"></td>
+                            <td><input type="number"  class="implementation-details"></td>
+                            <td><button class="delete-row btn btn-danger">Delete</button></td>            </tr> 
+                    `;
 
                     document.querySelector('#add-res-implementation').insertAdjacentHTML('afterend', newRow);
                     let deleteButton = document.querySelector('#add-res-implementation').nextElementSibling.querySelector('.delete-row');
@@ -1622,17 +1622,17 @@
 
                 document.querySelector('#insert-res-completed').addEventListener('click', function () {
                     let newRow = `
-            <tr>
-                <td>1</td>
-                <td><input type="text"  class="completed-details"></td>
-                <td><input type="text" class="completed-details"></td>
-                <td><input type="text" class="completed-details"></td>
-                <td><input type="number" class="completed-details"></td>
-                <td><input type="number"  class="completed-details"></td>
-                <td><button class="delete-row"><i class="fas fa-trash-alt text-danger"></i></button></td>
-        </tr> 
-            </tr> 
-        `;
+                            <tr>
+                                <td>1</td>
+                                <td><input type="text"  class="completed-details"></td>
+                                <td><input type="text" class="completed-details"></td>
+                                <td><input type="text" class="completed-details"></td>
+                                <td><input type="number" class="completed-details"></td>
+                                <td><input type="number"  class="completed-details"></td>
+                                <td><button class="delete-row btn btn-danger">Delete</button></td>
+                        </tr> 
+                            </tr> 
+                        `;
 
                     document.querySelector('#add-res-completed').insertAdjacentHTML('afterend', newRow);
                     let deleteButton = document.querySelector('#add-res-completed').nextElementSibling.querySelector('.delete-row');
@@ -1794,7 +1794,7 @@
 
                 //     inputFields.forEach((field, index) => {
                 //         if (field.value !== '') {
-                //             console.log('indexxxxxxxxxx===>>>>', index)
+                            // console.log('indexxxxxxxxxx===>>>>', index)
                 //             currentValues.push(field.value);
                 //         }
                 //     });
@@ -1969,10 +1969,9 @@
 
 
                 const submitBtn = document.getElementById('submit-pharmacy-btn');
-                const updateBtn = document.getElementById('update-btn');
+                const updateBtn = document.getElementById('update-pharmacy-btn');
                 const pharmacyList = document.getElementById('pharmacy-seed-grant-form-list');
                 const addPharmacyForm = document.getElementById('consultancy-add-new-form');
-                let pharmacyId
                 let educationIdsArray = [];
                 let eperienceIdsArray = [];
                 let bookIdsArray = [];
@@ -2019,7 +2018,7 @@
 
                     educationDetailsRow.forEach((field, index) => {
                         if (field.value !== '') {
-                            console.log('indexxxxxxxxxx===>>>>', index)
+                            // console.log('indexxxxxxxxxx===>>>>', index)
                             educaltionalDetails.push(field.value);
                         }
                     });
@@ -2030,7 +2029,7 @@
 
                     experienceDetilasRow.forEach((field, index) => {
                         if (field.value !== '') {
-                            console.log('indexxxxxxxxxx===>>>>', index)
+                            // console.log('indexxxxxxxxxx===>>>>', index)
                             experienceDetails.push(field.value);
                         }
                     });
@@ -2041,7 +2040,7 @@
 
                     bookDetilasRow.forEach((field, index) => {
                         if (field.value !== '') {
-                            console.log('indexxxxxxxxxx===>>>>', index)
+                            // console.log('indexxxxxxxxxx===>>>>', index)
                             bookDetails.push(field.value);
                         }
                     });
@@ -2052,7 +2051,7 @@
 
                     bookChapterDetilasRow.forEach((field, index) => {
                         if (field.value !== '') {
-                            console.log('indexxxxxxxxxx===>>>>', index)
+                            // console.log('indexxxxxxxxxx===>>>>', index)
                             bookChapterDetails.push(field.value);
                         }
                     });
@@ -2063,7 +2062,7 @@
 
                     publicationDetilasRow.forEach((field, index) => {
                         if (field.value !== '') {
-                            console.log('indexxxxxxxxxx===>>>>', index)
+                            // console.log('indexxxxxxxxxx===>>>>', index)
                             publicationDetails.push(field.value);
                         }
                     });
@@ -2074,7 +2073,7 @@
 
                     patentDetilasRow.forEach((field, index) => {
                         if (field.value !== '') {
-                            console.log('indexxxxxxxxxx===>>>>', index)
+                            // console.log('indexxxxxxxxxx===>>>>', index)
                             patentDetails.push(field.value);
                         }
                     });
@@ -2085,7 +2084,7 @@
 
                     resImDetilasRow.forEach((field, index) => {
                         if (field.value !== '') {
-                            console.log('indexxxxxxxxxx===>>>>', index)
+                            // console.log('indexxxxxxxxxx===>>>>', index)
                             implementationDetails.push(field.value);
                         }
                     });
@@ -2096,7 +2095,7 @@
 
                     resComDetilasRow.forEach((field, index) => {
                         if (field.value !== '') {
-                            console.log('indexxxxxxxxxx===>>>>', index)
+                            // console.log('indexxxxxxxxxx===>>>>', index)
                             completedDetails.push(field.value);
                         }
                     });
@@ -2149,26 +2148,16 @@
                     pharmacySeedGrantDetails.proposedOutCome = document.getElementById('proposed-outcome').value;
 
                     pharmacySeedGrantDetails.previousProjectExplaination = document.getElementById('previous-project-explaination').value;
-                    pharmacySeedGrantDetails.references = document.getElementById('references').value;
+                    pharmacySeedGrantDetails.references = document.getElementById('pharmacy-references').value;
 
                     pharmacySeedGrantDetails.invatigatorName = document.getElementById('investigator-name').value
                     pharmacySeedGrantDetails.investigatorDesignation = document.getElementById('investigator-designation').value
                     pharmacySeedGrantDetails.investigatorAddress = document.getElementById('investigator-adress').value
-                    pharmacySeedGrantDetails.invatigatorEmail = document.getElementById('investigator-email').value
+                    pharmacySeedGrantDetails.investigatorEmail = document.getElementById('investigator-email').value
                     pharmacySeedGrantDetails.invatigatorMobile = document.getElementById('investigator-mobile').value
                     pharmacySeedGrantDetails.invastigatorDateOfBirth = document.getElementById('investigator-date-of-birth').value;
                     pharmacySeedGrantDetails.projectBackGround = document.getElementById('project-back-ground').value;
                     pharmacySeedGrantDetails.hypothesis = document.querySelector('input[name="hypothesis"]:checked').value;
-
-
-                    // pharmacySeedGrantDetails.educationIdsArray = educationalIdsContainer;
-                    // pharmacySeedGrantDetails.eperienceIdsArray = eperienceIdsArray;
-                    // pharmacySeedGrantDetails.bookIdsArray = bookIdsArray;
-                    // pharmacySeedGrantDetails.bookChapterIdsArray = bookChapterIdsArray;
-                    // pharmacySeedGrantDetails.publicationIdsArray = publicationIdsArray;
-                    // pharmacySeedGrantDetails.pharmacyIdsArray = pharmacyIdsArray;
-                    // pharmacySeedGrantDetails.researchImplementationIdsArray = researchImplementationIdsArray;
-                    // pharmacySeedGrantDetails.researchCompletedIdsArray = researchCompletedIdsArray;
 
                     pharmacySeedGrantDetails.principalName = document.getElementById('principal-investigator-name').value;
 
@@ -2312,7 +2301,7 @@
                                     document.getElementById('view-co-investigator-mob').innerText = data.pharmacyData[0].co_investigator_mobile;
                                     document.getElementById('view-co-investigator-email').innerText = data.pharmacyData[0].co_investigator_email;
 
-                                    document.getElementById('view-project-duration').innerText = data.pharmacyData[0].project_duration;
+                                    document.getElementById('view-project-duration').innerText = formatDateToYYYYMMDD(data.pharmacyData[0].project_duration);
                                     document.getElementById('view-total-cost').innerText = data.pharmacyData[0].total_cost;
                                     document.getElementById('view-consumables-amount').innerText = data.pharmacyData[0].consumables_amount;
                                     document.getElementById('view-evaluation-and-analysis-amount').innerText = data.pharmacyData[0].analysis_amount;
@@ -2325,7 +2314,7 @@
                                     document.getElementById('view-hypothesis-rationale').innerText = data.pharmacyData[0].hypothesis;
                                     document.getElementById('view-objectives').innerText = data.pharmacyData[0].project_objectives;
                                     document.getElementById('view-detailed-methodology').innerText = data.pharmacyData[0].detailed_methodology;
-                                    document.getElementById('view-timelines').innerText = data.pharmacyData[0].time_lines;
+                                    document.getElementById('view-timelines').innerText = formatDateToYYYYMMDD(data.pharmacyData[0].time_lines);
 
                                     document.getElementById('view-budget-consumables-amount').innerText = data.pharmacyData[0].budget_consumable_amount;
                                     document.getElementById('view-consumables-justification').innerText = data.pharmacyData[0].consumables_justification;
@@ -2363,6 +2352,7 @@
                                     const educationHeader = ['Degree', 'Institution, University', 'Year of Passing'];
                                     const educationDetails = data.educaltionalDetails;
                                     generateTable(educationHeader, educationDetails, educationalContainer);
+                                   
 
                                     const experienceContainer = document.getElementById('experience-details-table-container');
                                     const experienceDetails = data.educaltionalDetails;
@@ -2414,12 +2404,14 @@
 
                         const pharcmacyRowToBeupdate = event.target.closest('tr');
                         console.log('pharcmacyRowToBeupdate =====>>>>>>>>', pharcmacyRowToBeupdate);
+                        pharmacyId = pharcmacyRowToBeupdate.getAttribute('data-pharmacy-id');
+                        console.log('pharmacyId ====>>>>>>>', pharmacyId);
                         document.getElementById('summary-project-title').value = pharcmacyRowToBeupdate.getAttribute('data-summary-project-title')
                         document.getElementById('summary-project-objectives').value = pharcmacyRowToBeupdate.getAttribute('data-project-objectives')
                         // document.getElementById('principal-investigator-id').value = pharcmacyRowToBeupdate.getAttribute('')
                         // document.getElementById('co-investigator').value = pharcmacyRowToBeupdate.getAttribute('')
 
-                        document.getElementById('project-duration').value = pharcmacyRowToBeupdate.getAttribute('data-project-duration')
+                        document.getElementById('project-duration').value = formatDateToYYYYMMDD(pharcmacyRowToBeupdate.getAttribute('data-project-duration'))
                         document.getElementById('total-cost').value = pharcmacyRowToBeupdate.getAttribute('data-total-cost')
                         document.getElementById('consumables-amount').value = pharcmacyRowToBeupdate.getAttribute('data-consumables-amount')
                         document.getElementById('evaluation-analysis-amount').value = pharcmacyRowToBeupdate.getAttribute('data-analysis-amount')
@@ -2427,12 +2419,12 @@
 
                         document.getElementById('project-title').value = pharcmacyRowToBeupdate.getAttribute('data-project-title')
 
-                        document.getElementById('research-status').value = pharcmacyRowToBeupdate.getAttribute('data-')
+                        document.getElementById('research-status').value = pharcmacyRowToBeupdate.getAttribute('data-research-status');
                         document.getElementById('scientific-importance').value = pharcmacyRowToBeupdate.getAttribute('data-scientific-importance')
 
                         document.getElementById('objective').value = pharcmacyRowToBeupdate.getAttribute('data-project-objectives')
                         document.getElementById('detailed-methodology').value = pharcmacyRowToBeupdate.getAttribute('data-detailed-methodology')
-                        document.getElementById('timelines').value = pharcmacyRowToBeupdate.getAttribute('data-time-lines')
+                        document.getElementById('timelines').value = formatDateToYYYYMMDD(pharcmacyRowToBeupdate.getAttribute('data-time-lines'))
                         document.getElementById('budget-consumables-amount').value = pharcmacyRowToBeupdate.getAttribute('data-budget-consumable-amount')
                         document.getElementById('consumables-justification').value = pharcmacyRowToBeupdate.getAttribute('data-consumables-justification')
                         document.getElementById('solvents-amount').value = pharcmacyRowToBeupdate.getAttribute('data-solvents-amount')
@@ -2448,13 +2440,13 @@
                         document.getElementById('cell-lines-amount').value = pharcmacyRowToBeupdate.getAttribute('data-cell-lines-amount')
                         document.getElementById('cell-lines-justification').value = pharcmacyRowToBeupdate.getAttribute('data-cell-lines-justifications')
                         document.getElementById('kits-analysis-amount').value = pharcmacyRowToBeupdate.getAttribute('data-kits-analysis-amount')
-                        document.getElementById('HPLC-justification').value = pharcmacyRowToBeupdate.getAttribute('data-kits-analysis-justifications')
+                        document.getElementById('kits-analysis-justification').value = pharcmacyRowToBeupdate.getAttribute('data-kits-analysis-justifications')
                         document.getElementById('evaluation-analysis-amount').value = pharcmacyRowToBeupdate.getAttribute('data-evaluation-analysis-amount')
                         document.getElementById('evaluation-analysis-justification').value = pharcmacyRowToBeupdate.getAttribute('data-evaluation-analysis-justification')
                         document.getElementById('proposed-outcome').value = pharcmacyRowToBeupdate.getAttribute('data-proposed-out-come')
 
                         document.getElementById('previous-project-explaination').value = pharcmacyRowToBeupdate.getAttribute('data-previous-project-explaination')
-                        document.getElementById('references').value = pharcmacyRowToBeupdate.getAttribute('data-pharmacy-references')
+                        document.getElementById('pharmacy-references').value = pharcmacyRowToBeupdate.getAttribute('data-pharmacy-references');
 
                         document.getElementById('project-back-ground').value = pharcmacyRowToBeupdate.getAttribute('data-project-background');
 
@@ -2465,8 +2457,47 @@
                         document.getElementById('investigator-mobile').value = pharcmacyRowToBeupdate.getAttribute('data-investigator-mobile');
                         document.getElementById('investigator-date-of-birth').value = pharcmacyRowToBeupdate.getAttribute('data-investigator-dob');
 
+                        document.getElementById('principal-investigator-name').value = pharcmacyRowToBeupdate.getAttribute('data-principal-name');
+                        document.getElementById('principal-investigator-dsg').value = pharcmacyRowToBeupdate.getAttribute('data-principal-dsg');
+                        document.getElementById('principal-investigator-org').value = pharcmacyRowToBeupdate.getAttribute('data-principal-org');
+                        document.getElementById('principal-investigator-mob').value = pharcmacyRowToBeupdate.getAttribute('data-principal-mobile');
+                        document.getElementById('principal-investigator-email').value = pharcmacyRowToBeupdate.getAttribute('data-principal-email');
 
+                        document.getElementById('co-investigator-name').value = pharcmacyRowToBeupdate.getAttribute('data-co-investigator-name');
+                        document.getElementById('co-investigator-dsg').value = pharcmacyRowToBeupdate.getAttribute('data-co-investigator-dsg');
+                        document.getElementById('co-investigator-org').value = pharcmacyRowToBeupdate.getAttribute('data-co-investigator-org');
+                        document.getElementById('co-investigator-mob').value = pharcmacyRowToBeupdate.getAttribute('data-co-investigator-mobile');
+                        document.getElementById('co-investigator-email').value = pharcmacyRowToBeupdate.getAttribute('data-co-investigator-email');
+
+                        document.getElementById('project-title').value = pharcmacyRowToBeupdate.getAttribute('data-project-title');
+                        
+                        fetch('<%- BASE_URL %>research/pharmacy-seed-grant-form/details', {
+                            method : 'POST',
+                            headers: {
+                            'content-type': 'application/json'
+                        },
+                            body: JSON.stringify({pharmacyId})
+                        })
+                        .then((Response) => {
+                            return Response.ok ? Response.json()  : 'There was network issue'
+                        })
+                        .then((data) => {
+                            if(data.status === "Done"){
+                                console.log('data ====>>>>>', data);
+                               
+                                createTableRows('education-details-table', data.educaltionalDetails, 'education-details')
+                                createTableRows('experience-details-table', data.experienceDetails, 'experience-details')
+                                createTableRows('publication-details-table', data.PublicationDetails, 'publication-details')
+                                createTableRows('book-details-table', data.bookDetails, 'book-details')
+                                createTableRows('book-chapter-details-table', data.bookChapterDetails, 'book-chapter-details')
+                                createTableRows('patent-details-table', data.patentDetails, 'patent-details')
+                                createTableRows('implementation-details-table', data.researchImplementationDetails, 'implementation-details')
+                                createTableRows('completed-details-table', data.completedResearchDetails, 'completed-details')
+                            }
+                        })
                         $('#pharmacy-seed-grant-modal').modal('show');
+
+                        
                     }
                 })
 
@@ -2508,8 +2539,360 @@
 
                     tableContainer.appendChild(table);
                 }
+               
+
+    // Function to create table rows from data
+    function createTableRows(tableId, data, inputClassName) {
+    console.log('data to create table ===>>>>>', data);
+    let table = document.querySelector(`#${tableId}`);
+    let tbody = table.querySelector('tbody');
+    let thead = table.querySelector('thead');
+    tbody.innerHTML = '';
+    thead.innerHTML = '';
+
+    let serialNumber = 1;
+
+    // Create table header
+    let headerRow = document.createElement('tr');
+
+    // Serial number header
+    let serialHeader = document.createElement('th');
+    serialHeader.textContent = 'Serial';
+    headerRow.appendChild(serialHeader);
+
+    // Add headers based on the keys of the first rowData object
+    Object.keys(data[0]).forEach(function (key) {
+        if (key !== 'id') {
+            let th = document.createElement('th');
+            th.textContent = key;
+            headerRow.appendChild(th);
+        }
+    });
+
+    // Add id header and hide it
+    let idHeader = document.createElement('th');
+    idHeader.textContent = 'ID';
+    idHeader.classList.add('d-none');
+    headerRow.appendChild(idHeader);
+
+    thead.appendChild(headerRow);
+
+    // Create table rows
+    data.forEach(function (rowData) {
+        let row = document.createElement('tr');
+        row.setAttribute('data-table-id', rowData.id);
+
+        // Add serial number cell
+        let serialCell = document.createElement('td');
+        serialCell.textContent = serialNumber++;
+        row.appendChild(serialCell);
+
+        // Add data cells
+        Object.keys(rowData).forEach(function (key) {
+            if (key !== 'id') {
+                let cell = document.createElement('td');
+                let input = document.createElement('input');
+                input.type = 'text';
+                input.value = rowData[key];
+                if (inputClassName) {
+                    input.classList.add(inputClassName);
+                }
+                cell.appendChild(input);
+                row.appendChild(cell);
+            }
+        });
+
+        // Add hidden id cell
+        let idCell = document.createElement('td');
+        let idInput = document.createElement('input');
+        idInput.type = 'text';
+        idInput.value = rowData.id;
+        idInput.classList.add('d-none');
+        if (inputClassName) {
+            idInput.classList.add(inputClassName);
+        }
+        idCell.appendChild(idInput);
+        row.appendChild(idCell);
+
+        // Add delete button cell
+        let deleteCell = document.createElement('td');
+        let deleteButton = document.createElement('button');
+        deleteButton.textContent = 'Delete';
+        deleteButton.classList.add('btn', 'btn-danger');
+        deleteButton.addEventListener('click', function () {
+            var index = data.indexOf(rowData);
+            data.splice(index, 1);
+            createTableRows(tableId, data, inputClassName);
+        });
+        deleteCell.appendChild(deleteButton);
+        row.appendChild(deleteCell);
+
+        // Append the row to the table body
+        tbody.appendChild(row);
+    });
+}
+
+    const updatePharmacyDetailsFunction = async (url) => {
+            const updatePharmacyDetails = {}
+            updatePharmacyDetails.pharmacyId = pharmacyId;
+            // console.log('pharmacyId ankit ====>>>>>>>', updatePharmacyDetails.pharmacyId);
+            updatePharmacyDetails.summaryTitle = document.getElementById('summary-project-title').value;
+            updatePharmacyDetails.summaryProjectTitle = document.getElementById('summary-project-objectives').value;
+            // updatePharmacyDetails.principalInvestigator = document.getElementById('principal-investigator-id').value;
+            // updatePharmacyDetails.coInvestigator = document.getElementById('co-investigator').value;
+
+            let educationDetailsRow = document.querySelectorAll('.education-details');
+
+            let educaltionalDetails = [];
+
+            educationDetailsRow.forEach((field, index) => {
+                if (field.value !== '') {
+                    console.log('indexxxxxxxxxx===>>>>', field.value)
+                    educaltionalDetails.push(field.value);
+                }
+            });
+
+            let experienceDetilasRow = document.querySelectorAll('.experience-details');
+
+            let experienceDetails = [];
+
+            experienceDetilasRow.forEach((field, index) => {
+                if (field.value !== '') {
+                    // console.log('indexxxxxxxxxx===>>>>', index)
+                    experienceDetails.push(field.value);
+                }
+            });
+
+            let bookDetilasRow = document.querySelectorAll('.book-details');
+
+            let bookDetails = [];
+
+            bookDetilasRow.forEach((field, index) => {
+                if (field.value !== '') {
+                    // console.log('indexxxxxxxxxx===>>>>', index)
+                    bookDetails.push(field.value);
+                }
+            });
+
+            let bookChapterDetilasRow = document.querySelectorAll('.book-chapter-details');
+
+            let bookChapterDetails = [];
+
+            bookChapterDetilasRow.forEach((field, index) => {
+                if (field.value !== '') {
+                    // console.log('indexxxxxxxxxx===>>>>', index)
+                    bookChapterDetails.push(field.value);
+                }
+            });
+
+            let publicationDetilasRow = document.querySelectorAll('.publication-details');
+
+            let publicationDetails = [];
+
+            publicationDetilasRow.forEach((field, index) => {
+                if (field.value !== '') {
+                    // console.log('indexxxxxxxxxx===>>>>', index)
+                    publicationDetails.push(field.value);
+                }
+            });
+
+            let patentDetilasRow = document.querySelectorAll('.patent-details');
+
+            let patentDetails = [];
+
+            patentDetilasRow.forEach((field, index) => {
+                if (field.value !== '') {
+                    // console.log('indexxxxxxxxxx===>>>>', index)
+                    patentDetails.push(field.value);
+                }
+            });
+
+            let resImDetilasRow = document.querySelectorAll('.implementation-details');
+
+            let implementationDetails = [];
+
+            resImDetilasRow.forEach((field, index) => {
+                if (field.value !== '') {
+                    // console.log('indexxxxxxxxxx===>>>>', index)
+                    implementationDetails.push(field.value);
+                }
+            });
+
+            let resComDetilasRow = document.querySelectorAll('.completed-details');
+
+            let completedDetails = [];
+
+            resComDetilasRow.forEach((field, index) => {
+                if (field.value !== '') {
+                    // console.log('indexxxxxxxxxx===>>>>', index)
+                    completedDetails.push(field.value);
+                }
+            });
 
 
+            // console.log('educaltionalDetails ===>', educaltionalDetails);
+            // console.log('experienceDetails ===>', experienceDetails);
+            
+            
+
+            updatePharmacyDetails.educaltionalData = educaltionalDetails;
+            updatePharmacyDetails.experienceData = experienceDetails;
+            updatePharmacyDetails.bookData = bookDetails;
+            updatePharmacyDetails.bookChapterData = bookChapterDetails;
+            updatePharmacyDetails.publicationData = publicationDetails;
+            updatePharmacyDetails.patentData = patentDetails;
+            updatePharmacyDetails.implementationData = implementationDetails;
+            updatePharmacyDetails.completedData = completedDetails;
+
+            updatePharmacyDetails.projectDuration = document.getElementById('project-duration').value;
+            updatePharmacyDetails.totalCost = document.getElementById('total-cost').value;
+            updatePharmacyDetails.consumablesAmount = document.getElementById('consumables-amount').value;
+            updatePharmacyDetails.analysisAmount = document.getElementById('evaluation-analysis-amount').value;
+            updatePharmacyDetails.otherAmount = document.getElementById('other-amount').value;
+
+            updatePharmacyDetails.projectTitle = document.getElementById('project-title').value;
+
+            updatePharmacyDetails.researchStatus = document.getElementById('research-status').value;
+            updatePharmacyDetails.scientificImportance = document.getElementById('scientific-importance').value;
+
+            updatePharmacyDetails.projectObjectives = document.getElementById('objective').value;
+            updatePharmacyDetails.detailedMethodology = document.getElementById('detailed-methodology').value;
+            updatePharmacyDetails.timeLines = document.getElementById('timelines').value;
+            updatePharmacyDetails.budgetConsumableAmount = document.getElementById('budget-consumables-amount').value;
+            updatePharmacyDetails.consumablesJustification = document.getElementById('consumables-justification').value;
+            updatePharmacyDetails.solventsAmount = document.getElementById('solvents-amount').value;
+            updatePharmacyDetails.solventsJustification = document.getElementById('solvents-justification').value;
+            updatePharmacyDetails.chemicalsAmount = document.getElementById('chemicals-amount').value;
+            updatePharmacyDetails.chemicalsJustification = document.getElementById('chemicals-justification').value;
+            updatePharmacyDetails.biomarkersReferenceAmount = document.getElementById('biomarkers-reference-amount').value;
+            updatePharmacyDetails.biomarkersReferenceJustifications = document.getElementById('biomarkers-reference-justification').value;
+            updatePharmacyDetails.hplcAmount = document.getElementById('HPLC-amount').value;
+            updatePharmacyDetails.hplcJustification = document.getElementById('HPLC-justification').value;
+            updatePharmacyDetails.experimentalAnimalsAmount = document.getElementById('experimental-animals-amount').value;
+            updatePharmacyDetails.experimentalAnimalsJustification = document.getElementById('experimental-animals-justification').value;
+            updatePharmacyDetails.cellLinesAmount = document.getElementById('cell-lines-amount').value;
+            updatePharmacyDetails.cellLinesJustifications = document.getElementById('cell-lines-justification').value;
+            updatePharmacyDetails.kitsAnalysisAmount = document.getElementById('kits-analysis-amount').value;
+            updatePharmacyDetails.kitsAnalysisJustifications = document.getElementById('HPLC-justification').value;
+            updatePharmacyDetails.evaluationAnalysisAmount = document.getElementById('evaluation-analysis-amount').value;
+            updatePharmacyDetails.evaluationAnalysisJustification = document.getElementById('evaluation-analysis-justification').value;
+            updatePharmacyDetails.proposedOutCome = document.getElementById('proposed-outcome').value;
+
+            updatePharmacyDetails.previousProjectExplaination = document.getElementById('previous-project-explaination').value;
+            updatePharmacyDetails.references = document.getElementById('pharmacy-references').value;
+
+            updatePharmacyDetails.invatigatorName = document.getElementById('investigator-name').value
+            updatePharmacyDetails.investigatorDesignation = document.getElementById('investigator-designation').value
+            updatePharmacyDetails.investigatorAddress = document.getElementById('investigator-adress').value
+            updatePharmacyDetails.investigatorEmail = document.getElementById('investigator-email').value
+            updatePharmacyDetails.invatigatorMobile = document.getElementById('investigator-mobile').value
+            updatePharmacyDetails.invastigatorDateOfBirth = document.getElementById('investigator-date-of-birth').value;
+            updatePharmacyDetails.projectBackGround = document.getElementById('project-back-ground').value;
+            updatePharmacyDetails.hypothesis = document.querySelector('input[name="hypothesis"]:checked').value;
+
+            updatePharmacyDetails.principalName = document.getElementById('principal-investigator-name').value;
+
+            updatePharmacyDetails.principalDsg = document.getElementById('principal-investigator-dsg').value;
+            updatePharmacyDetails.principalOrg = document.getElementById('principal-investigator-org').value;
+
+            updatePharmacyDetails.principalMob = document.getElementById('principal-investigator-mob').value;
+            updatePharmacyDetails.principalEmail = document.getElementById('principal-investigator-email').value
+
+            updatePharmacyDetails.coIvestigatorName = document.getElementById('co-investigator-name').value;
+
+            updatePharmacyDetails.coIvestigatorDsg = document.getElementById('co-investigator-dsg').value;
+            updatePharmacyDetails.coIvestigatorOrg = document.getElementById('co-investigator-org').value;
+
+            updatePharmacyDetails.coIvestigatorMob = document.getElementById('co-investigator-mob').value;
+            updatePharmacyDetails.coIvestigatorEmail = document.getElementById('co-investigator-email').value;
+
+            const payload = {
+                updatePharmacyDetails: updatePharmacyDetails
+            }
+            fetch(url, {
+            method: "POST", headers: {
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        })
+            .then((result) => {
+                if (result.ok) {
+                    return result.json()
+                }
+            })
+            .then((data) => {
+                if (data.status === "Done") {
+                    console.log('data ====>>>>>>>>', data);
+                    // $('#pharmacy-seed-grant-modal').modal('hide');
+                    Swal.fire({
+                        position: "top-center",
+                        icon: "success",
+                        title: `${data.message}`,
+                        showConfirmButton: true,
+                        allowOutsideClick: false,
+                        confirmButtonText: "OK",
+                        confirmButtonColor: "#DD6B55"
+                    }).then(data => {
+                        document.location.reload();
+                    });
+                }
+                else {
+                    console.log('data ====>>>>>', data);
+                    Swal.fire({
+                        position: "top-center",
+                        icon: "error",
+                        title: `${data.errorCode}`,
+                        color: "red",
+                        with: "20PX",
+                        html: `<span style="color: red;">${data.message}</span>`,
+                        showConfirmButton: true,
+                        allowOutsideClick: false,
+                        confirmButtonText: "OK",
+                        confirmButtonColor: "#DD6B55"
+                    });
+                }
+
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                const message = error;
+                Swal.fire({
+                    position: "top-center",
+                    icon: "error",
+                    title: "Data Insertion Failed",
+                    color: "red",
+                    with: "20PX",
+                    html: `<span style="color: red;">${message}</span>`,
+                    showConfirmButton: true,
+                    allowOutsideClick: false,
+                    confirmButtonText: "OK",
+                    confirmButtonColor: "#DD6B55"
+                });
+            });
+
+        }
+    
+
+
+    document.getElementById('update-pharmacy-btn').addEventListener('click', async () => {
+            console.log('clicked submit button');
+            const isValid = validateRequiredFormFields(document.getElementById('update-pharmacy-btn'));
+            if (isValid) {
+                await updatePharmacyDetailsFunction('<%- BASE_URL %>research/pharmacy-seed-grant-form/update');
+            }
+            else {
+                Swal.fire({
+                    position: "top-center",
+                    icon: "error",
+                    title: "Validation Failed",
+                    color: "red",
+                    showConfirmButton: true,
+                    allowOutsideClick: false,
+                    confirmButtonText: "OK",
+                    confirmButtonColor: "#DD6B55"
+                });
+            }
+        });
 
             </script>
             <%- include('./partials/footer') %>

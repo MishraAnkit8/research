@@ -343,7 +343,7 @@ module.exports.insertPharmacySeedDetials = async(body, userName) => {
         coIvestigatorEmail : pharmacySeedGrantDetails.coIvestigatorEmail
     }
       
-      console.log(investorDetails);
+      console.log('investorDetails =>>>>', investorDetails);
       
 
     const pharmacyData = await pharmacySeedModels.insertPharmacyDetails(pharmacySeedGrantDetails, userName, educationalData, experienceData, bookData, bookChapterData, publicationData, 
@@ -390,6 +390,90 @@ module.exports.viewPharmacyData = async(pharmacyId, userName) => {
         errorCode : pharamcySeedView.errorCode
     }
 }
+
+
+module.exports.retriveDetail = async(body) => {
+    const pharmacyId = body.pharmacyId;
+    console.log('pharcmacyId in service ====>>>>>>>', pharmacyId);
+
+    const retriveDataDetails = await pharmacySeedModels.retriveDataFromDetailsTable(pharmacyId);
+
+    console.log('retriveDataDetails ===>>>>', retriveDataDetails);
+
+    return retriveDataDetails.status === "Done" ? {
+        status : retriveDataDetails.status,
+        message : retriveDataDetails.message,
+        educaltionalDetails : retriveDataDetails.educaltionalDetails,
+        experienceDetails : retriveDataDetails.experienceDetails,
+        bookDetails : retriveDataDetails.bookDetails,
+        bookChapterDetails : retriveDataDetails.bookChapterDetails,
+        PublicationDetails : retriveDataDetails.PublicationDetails,
+        patentDetails : retriveDataDetails.patentDetails,
+        researchImplementationDetails : retriveDataDetails.researchImplementationDetails,
+        completedResearchDetails : retriveDataDetails.completedResearchDetails
+
+    } : {
+        status : retriveDataDetails.status,
+        message : retriveDataDetails.message,
+        errorCode : retriveDataDetails.errorCode
+    }
+
+
+}
+
+
+
+
+
+module.exports.updatePharmacyData = async(body, userName) => {
+    const updatePharmacyDetails = body.updatePharmacyDetails;
+    const pharmacyId = updatePharmacyDetails.pharmacyId
+    console.log('updatePharmacyDetails ===>>>>>', updatePharmacyDetails);
+    const educationalData = groupArrayIntoChunks(updatePharmacyDetails.educaltionalData, 4);
+    const experienceData = groupArrayIntoChunks(updatePharmacyDetails.experienceData, 4);
+    const bookData = groupArrayIntoChunks(updatePharmacyDetails.bookData, 7);
+    const bookChapterData = groupArrayIntoChunks(updatePharmacyDetails.bookChapterData, 9);
+    const publicationData = groupArrayIntoChunks(updatePharmacyDetails.publicationData, 9);
+    const patentData = groupArrayIntoChunks(updatePharmacyDetails.patentData, 6);
+    const implementationData = groupArrayIntoChunks(updatePharmacyDetails.implementationData, 6);
+    const completedData = groupArrayIntoChunks(updatePharmacyDetails.completedData, 6);
+    console.log('educationalData ====>>>>>>', educationalData);
+    console.log('patentData ====>>>>>>>', patentData);
+
+    console.log('bookChapterData ====>>>>>>>', bookChapterData)
+
+    const investorDetails = {
+        invatigatorName: updatePharmacyDetails.invatigatorName,
+        investigatorDesignation: updatePharmacyDetails.investigatorDesignation,
+        investigatorAddress: updatePharmacyDetails.investigatorAddress,
+        invatigatorMobile: updatePharmacyDetails.invatigatorMobile,
+        invastigatorDateOfBirth: updatePharmacyDetails.invastigatorDateOfBirth
+    };
+    const principalInvestigatorDetails = {
+        principalName : updatePharmacyDetails.principalName,
+        principalDsg : updatePharmacyDetails.principalDsg,
+        principalOrg :  updatePharmacyDetails.principalOrg,
+        principalMob : updatePharmacyDetails.principalMob,
+        principalEmail : updatePharmacyDetails.principalEmail
+    }
+
+    const coInvestigatorDetails = {
+        coIvestigatorName : updatePharmacyDetails.coIvestigatorName,
+        coIvestigatorDsg : updatePharmacyDetails.coIvestigatorDsg,
+        coIvestigatorOrg :  updatePharmacyDetails.coIvestigatorOrg,
+        coIvestigatorMob : updatePharmacyDetails.coIvestigatorMob,
+        coIvestigatorEmail : updatePharmacyDetails.coIvestigatorEmail
+}
+  
+  console.log('investorDetails =>>>>', investorDetails);
+
+  const pharamcySeedUpdate = await pharmacySeedModels.updatePharmacySeedData(pharmacyId, updatePharmacyDetails, userName, educationalData, experienceData, bookData, bookChapterData, publicationData, 
+    patentData, implementationData, completedData, investorDetails,
+    principalInvestigatorDetails, coInvestigatorDetails)
+
+
+}
+
 
 
 

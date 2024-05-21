@@ -245,3 +245,37 @@ module.exports.viewPharmacySeedGrantData = async(req, res, next) => {
         errorCode : viewPharmacySeed.errorCode ? viewPharmacySeed.errorCode : null
     })
 }
+
+
+module.exports.retriveDetailsDataPharamacy = async(req, res, next) => {
+    console.log('req.body data is comming from frontend ===>>>>>', req.body)
+
+    const retriveDetailsData = await pharmacyService.retriveDetail(req.body);
+
+    const statusCode = retriveDetailsData.status === 'Done' ? 200 : (retriveDetailsData.errorCode ? 400 : 500);
+
+    res.status(statusCode).send({
+        status : retriveDetailsData.status,
+        message : retriveDetailsData.message,
+        educaltionalDetails : retriveDetailsData.educaltionalDetails,
+        experienceDetails : retriveDetailsData.experienceDetails,
+        bookDetails : retriveDetailsData.bookDetails,
+        bookChapterDetails : retriveDetailsData.bookChapterDetails,
+        PublicationDetails : retriveDetailsData.PublicationDetails,
+        patentDetails : retriveDetailsData.patentDetails,
+        researchImplementationDetails : retriveDetailsData.researchImplementationDetails,
+        completedResearchDetails : retriveDetailsData.completedResearchDetails,
+        errorCode : retriveDetailsData.errorCode ? retriveDetailsData.errorCode : null
+    })
+
+    
+}
+
+
+module.exports.updatePharmacyDetailsData = async(req, res, next) => {
+    console.log(' data in controller for update ===>>>>>', req.body);
+    const  userName = req.body.username;
+    console.log('userName in controller  ===>>>>>>', userName);
+
+    const updatePharmacyDetail = await pharmacyService.updatePharmacyData(req.body, userName)
+}

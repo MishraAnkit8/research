@@ -306,7 +306,7 @@
                                 <!-- Faculty Share -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="total-fees" class=" sub-title fw-bold">Faculty Share 70%(a)</label>
-                                    <input type="text" name="total-fees" id="faculty-share"
+                                    <input type="text" name="faculty-share" id="faculty-share"
                                         data-validate="isEmpty,isExist,isNumericSpecialChar"
                                         data-err-msg="Value is required." class="form-control" required>
                                 </div>
@@ -317,6 +317,29 @@
                                         data-validate="isEmpty,isExist,isNumericSpecialChar"
                                         data-err-msg="Value is required." class="form-control" required>
                                 </div>
+                                   <!-- investigator Experience Details -->
+                                <div
+                                   class="table-card-header text-uppercase d-flex align-items-center justify-content-between">
+                                   <div>
+                                       <h5 class="pl-2">Details of Distribution of Faculty Share (if more than one faculty)</h5>
+                                   </div>
+                                   <div>
+                                       <span>ADD</span>
+                                       <button id="" type="button" class="btn btn-primary add-modal">
+                                           <i class="fas fa-plus plus" id="insert-faculty-share-datails"></i></button>
+                                       </button>
+                                   </div>
+                               </div>
+                               <table class="table vertical-lines custom-table table-responsive">
+                                   <thead>
+                                       <th class="col-lg-1">Serial no</th>
+                                       <th class="col-lg-1"> </th>
+                                       <th class="col-lg-1">Fees(RS.)</th>
+                                       
+                                   </thead>
+                                   <tbody id="add-faculty-share-datails">
+                                   </tbody>
+                               </table>
                                 <!-- Details of Distribution of Faculty Share (if more than one faculty) -->
                                 <!-- <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="journalName" class=" sub-title fw-bold">Details of Distribution of
@@ -695,8 +718,20 @@
                 let facultyId, approvalFormRecordToBeUpdated, grantedSeedId;
 
                 const addnonFormacyFormData = document.getElementById('Consultancy-add-new-form');
+                document.querySelector('#insert-faculty-share-datails').addEventListener('click', function () {
+                    let newRow = `
+                            <tr>
+                                <td>1</td>
+                                <td><input type="text"  class="faculty-share-details"></td>
+                                <td><input type="text" class="faculty-share-details"></td>
+                                <td><button class="delete-row"><i class="fas fa-trash-alt text-danger"></i></button></td>
+                            </tr> 
+                                    `;
 
-
+                    document.querySelector('#add-faculty-share-datails').insertAdjacentHTML('afterend', newRow);
+                    let deleteButton = document.querySelector('#add-faculty-share-datails').nextElementSibling.querySelector('.delete-row');
+                    deleteButton.addEventListener('click', handleDeleteButtonClick);
+                });
 
                 addnonFormacyFormData.addEventListener('click', (event) => {
 
@@ -706,8 +741,6 @@
                         submitBtn.classList.remove('d-none');
                         updateBtn.classList.add('d-none');
                         removeErrorMsg()
-
-
 
                         // ArunDocument 3
                         document.querySelector('#supporting-documents').classList.remove('d-none');
@@ -1681,6 +1714,10 @@
                     nonPharmacyFiles.setAttribute('data-filename', nonPharmacyFilesString);
 
                 };
+
+                function handleDeleteButtonClick() {
+                    this.parentNode.parentNode.remove();
+                }
 
 
 

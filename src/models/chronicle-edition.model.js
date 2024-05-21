@@ -11,14 +11,30 @@ const researchDbW = dbPoolManager.get("researchDbW", research_write_db);
 module.exports.fetchEditorData = async () => {
   const sql = {
     text: `
-          SELECT 'vc_editor_table' AS table_name, id, editor_data AS editor_data, date as date FROM vc_editor_table vc
-          UNION ALL
-          SELECT 'research_editor_table' AS table_name, id, editor_data AS editor_data, date as date FROM research_editor_table r
-          UNION ALL
-          SELECT 'meeting_editor_table' AS table_name, id, editor_data AS editor_data, date as date FROM meeting_editor_table m
-          UNION ALL
-          SELECT 'branding_editor_table' AS table_name, id, editor_data AS editor_data, date as date FROM branding_editor_table b
-          WHERE vc.active=true and r.active=true and m.active=true and b.active=true ORDER BY table_name, id desc
+    SELECT 'vc_editor_table' AS table_name, id, editor_data, date 
+    FROM vc_editor_table 
+    WHERE active = true
+    
+    UNION ALL
+    
+    SELECT 'research_editor_table' AS table_name, id, editor_data, date 
+    FROM research_editor_table 
+    WHERE active = true
+    
+    UNION ALL
+    
+    SELECT 'meeting_editor_table' AS table_name, id, editor_data, date 
+    FROM meeting_editor_table 
+    WHERE active = true
+    
+    UNION ALL
+    
+    SELECT 'branding_editor_table' AS table_name, id, editor_data, date 
+    FROM branding_editor_table 
+    WHERE active = true
+    
+    ORDER BY table_name, id DESC;
+    
       `,
   };
 
