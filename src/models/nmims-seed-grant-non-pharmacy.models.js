@@ -114,7 +114,7 @@ module.exports.insertSeedGrantNonformacyForm = async (
     facultyId,
     totalAmount,
     grandTotal,
-    facultyDsg
+    facultyDsg,
   } = seedGrantFormData;
   let sql = {
     text: `INSERT INTO nmims_seed_grant_non_formacy (year, title, commencement_date, completion_date, session_count_per_days,  per_session_fees,
@@ -147,7 +147,6 @@ module.exports.insertSeedGrantNonformacyForm = async (
       pharmacyFiles,
       userName,
       true,
-      facultyDesignation,
     ],
   };
 
@@ -199,43 +198,45 @@ module.exports.updateSeedGrantNonformacyForm = async (
     facultyId,
     totalAmount,
     grandTotal,
-    facultyDsg
+    facultyDsg,
   } = updatedSeedGrantData;
 
   let baseSql = `UPDATE nmims_seed_grant_non_formacy  SET year = $2, title = $3, commencement_date = $4, completion_date = $5, session_count_per_days = $6,  per_session_fees = $7,
  faculty_shares = $8, nmims_shares = $9, research_staff_expenses = $10, travel = $11, computer_charges = $12, nmims_facility_charges = $13, miscellaneous_including_contingency = $14, advanced_payment = $15, final_payment = $16, total_fees = $17, gross_fees = $18, faculty_table_id = $19,
- totalamount = $20, grandtotal = $21, faculty_dsg = $22, updated_by = $23`
-  
-  let supportingDocumentsUpdate = pharmacyFiles ? `, supporting_documents = $24` : '';
+ totalamount = $20, grandtotal = $21, faculty_dsg = $22, updated_by = $23`;
+
+  let supportingDocumentsUpdate = pharmacyFiles
+    ? `, supporting_documents = $24`
+    : "";
 
   let queryText = baseSql + supportingDocumentsUpdate + ` WHERE id = $1`;
 
-  let  values =  [
-      grantedSeedId,
-      year,
-      title,
-      commencementDate,
-      completionDate,
-      sessionNumbers,
-      sessionsFees,
-      facultyShare,
-      nmimsShare,
-      researchStaffExpenses,
-      travlExpanses,
-      computerCharges,
-      faculityCharges,
-      miscellaneousContingencyCharges,
-      advancedPayment,
-      finalPayment,
-      totalFees,
-      grossFees,
-      facultyId,
-      totalAmount,
-      grandTotal,
-      facultyDsg,
-      userName,
-      ...(pharmacyFiles ? [pharmacyFiles] : [])
-    ]
+  let values = [
+    grantedSeedId,
+    year,
+    title,
+    commencementDate,
+    completionDate,
+    sessionNumbers,
+    sessionsFees,
+    facultyShare,
+    nmimsShare,
+    researchStaffExpenses,
+    travlExpanses,
+    computerCharges,
+    faculityCharges,
+    miscellaneousContingencyCharges,
+    advancedPayment,
+    finalPayment,
+    totalFees,
+    grossFees,
+    facultyId,
+    totalAmount,
+    grandTotal,
+    facultyDsg,
+    userName,
+    ...(pharmacyFiles ? [pharmacyFiles] : []),
+  ];
 
   let sql = {
     text: queryText,
