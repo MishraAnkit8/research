@@ -32,7 +32,9 @@ module.exports.fetchIPRData = async (userName) => {
                 string_agg(DISTINCT ns.school_name, ', ') AS associated_schools,
                 string_agg(DISTINCT ns.id::text, ', ') AS school_id,
                 string_agg(DISTINCT nc.campus_name, ', ') AS associated_campuses,
-                string_agg(DISTINCT nc.id::text, ', ') AS campus_id
+                string_agg(DISTINCT nc.id::text, ', ') AS campus_id,
+                string_agg(DISTINCT sdg.id::text, ', ') AS sdg_id,
+                string_agg(DISTINCT intr.id::text, ', ') AS faculty_id
             FROM
                 IPR ipr
             LEFT JOIN
@@ -55,10 +57,19 @@ module.exports.fetchIPRData = async (userName) => {
                 ipr_nmims_campus inc ON ipr.id = inc.ipr_id
             LEFT JOIN
                 nmims_campus nc ON inc.campus_id = nc.id
+            LEFT JOIN
+              ipr_sdg_goals isdg ON ipr.id = isdg.ipr_id
+            LEFT JOIN
+                sdg_goals sdg ON isdg.sdg_goals_id = sdg.id
+            LEFT JOIN
+              ipr_faculty iprf ON ipr.id = iprf.ipr_id
+            LEFT JOIN
+                  faculties intr ON iprf.faculty_id = intr.id
+            
             WHERE
                 ipr.created_by = $1 and ipr.active=true and iit.active=true and it.active=true and 
                 ist.active=true and ps.active=true and isd.active=true and sd.active=true and ins.active=true and ns.active=true
-                and inc.active=true and nc.active=true 
+                and inc.active=true and nc.active=true and intr.faculty_type_id=1
             GROUP BY
                 ipr.id,
                 ipr.patent_title,
