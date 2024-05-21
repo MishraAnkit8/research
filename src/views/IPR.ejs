@@ -392,7 +392,8 @@
                                 </div>
                                 <!-- Details of Other Inventors -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <label for="is-internal" class="form-label fw-bold mb-3">Inventors Names</label><br>
+                                    <label for="is-internal" class="form-label fw-bold mb-3">Inventors Names</label>
+                                    <span style="color:red;" id="facultyTypeError"></span></br>
                                     <div class="form-check-inline">
                                         <label for="internal" class="form-check-label enter-faculty-type">
                                             <input type="radio" class="form-check-input enternal-type" name="author-type"
@@ -959,6 +960,8 @@
 
                 submitBtn.addEventListener('click', async () => {
                     const isValid = validateRequiredFormFields(submitBtn);
+                    const internalAuthor = document.getElementById('is-internal');
+                    const externalAuthor = document.getElementById('is-external');
                     const patentFiledDate = document.getElementById('patent-filed-date').value;
 					const patentGrantDate = document.getElementById('patent-grant-date').value;
 					const patentPublishedDate = document.getElementById('patent-published-date').value;
@@ -970,7 +973,7 @@
 
                     let dateValidate = date1 < date2 && date2 < date3;
 
-                    if (isValid && dateValidate) {
+                    if (isValid && dateValidate && internalAuthor.checked || externalAuthor.checked) {
                         await insertIPRforms('<%- BASE_URL %>research/IPR/insert');
 
                     }
@@ -997,6 +1000,11 @@
                             }else{
                                 document.getElementById('patentGrantError').innerText=''
 
+                            }
+                            if (internalAuthor.checked || externalAuthor.checked) {
+                                document.getElementById('facultyTypeError').innerText = ''
+                            } else {
+                                document.getElementById('facultyTypeError').innerText = 'Select One Of The Faculty Type'
                             }
                         });
                     }
@@ -1491,12 +1499,14 @@
                     const patentFiledDate = document.getElementById('patent-filed-date').value;
 					const patentGrantDate = document.getElementById('patent-grant-date').value;
 					const patentPublishedDate = document.getElementById('patent-published-date').value;
+                    const internalAuthor = document.getElementById('is-internal');
+                    const externalAuthor = document.getElementById('is-external');
                     let date1 = new Date(patentFiledDate);
                     let date2 = new Date(patentGrantDate);
                     let date3 = new Date(patentPublishedDate);
 
                     let dateValidate = date1 < date2 && date2 < date3;
-                    if (isValid && dateValidate) {
+                    if (isValid && dateValidate && internalAuthor.checked || externalAuthor.checked) {
                         await updatedIprData('<%- BASE_URL %>research/IPR/update');
                     }
                     else {
@@ -1509,7 +1519,26 @@
                             allowOutsideClick: false,
                             confirmButtonText: "OK",
                             confirmButtonColor: "#DD6B55"
-                        }).then();
+                        }).then(() => {
+                            if(date1 > date2){
+                                document.getElementById('patentFiledError').innerText='Patent Filed Date Must Be Smaller Than Grant Date'
+                            }else{
+                                document.getElementById('patentFiledError').innerText=''
+ 
+                            }
+
+                            if(date2 > date3){
+                                document.getElementById('patentGrantError').innerText='Patent Grant Date Must Be Smaller Than Published Date'
+                            }else{
+                                document.getElementById('patentGrantError').innerText=''
+
+                            }
+                            if (internalAuthor.checked || externalAuthor.checked) {
+                                document.getElementById('facultyTypeError').innerText = ''
+                            } else {
+                                document.getElementById('facultyTypeError').innerText = 'Select One Of The Faculty Type'
+                            }
+                        });
                     }
                 })
 

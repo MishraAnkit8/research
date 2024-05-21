@@ -463,7 +463,8 @@
                                 <!-- if faculty choose internal Authors then show search bar -->
                                 <div class="form-group col-lg-12 col-md-6 col-sm-12 mb-4">
                                     <label for="is-internal" class="form-label fw-bold mb-3">Faculty Details Id And
-                                        Name</label><br>
+                                        Name</label>
+                                        <span style="color:red;" id="facultyTypeError"></span><br>
                                     <div class="form-check-inline">
                                         <label for="internal" class="form-check-label enter-faculty-type">
                                             <input type="radio" class="form-check-input enternal-type"
@@ -1212,7 +1213,10 @@
 
                 submitBtn.addEventListener('click', async () => {
                     const isValid = validateRequiredFormFields(submitBtn);
-                    if (isValid) {
+                    const internalAuthor = document.getElementById('is-internal');
+                    const externalAuthor = document.getElementById('is-external');
+							
+                    if ((isValid && internalAuthor.checked || externalAuthor.checked) ) {
                         await insertResearchConsultancyForm('<%- BASE_URL %>research/research-project-grant/insert');
 
                     }
@@ -1226,7 +1230,13 @@
                             allowOutsideClick: false,
                             confirmButtonText: "OK",
                             confirmButtonColor: "#DD6B55"
-                        });
+                        }).then(() => {
+                                    if(internalAuthor.checked || externalAuthor.checked){
+                                    document.getElementById('facultyTypeError').innerText=''
+                                    }else{
+                                    document.getElementById('facultyTypeError').innerText='Select One Of The Faculty Type'
+                                    }
+                                });;
                     }
                 });
 
@@ -1956,7 +1966,9 @@
                         elm.removeAttribute('data-validate')
                     })
                     const isValid = validateRequiredFormFields(updateBtn);
-                    if (isValid) {
+                    const internalAuthor = document.getElementById('is-internal');
+                    const externalAuthor = document.getElementById('is-external');
+                    if (isValid && internalAuthor.checked || externalAuthor.checked) {
                         await updateResearchConsultancy('<%- BASE_URL %>research/research-project-grant/update');
                     }
                     else {
@@ -1969,6 +1981,12 @@
                             allowOutsideClick: false,
                             confirmButtonText: "OK",
                             confirmButtonColor: "#DD6B55"
+                        }).then(() => {
+                            if (internalAuthor.checked || externalAuthor.checked) {
+                                document.getElementById('facultyTypeError').innerText = ''
+                            } else {
+                                document.getElementById('facultyTypeError').innerText = 'Select One Of The Faculty Type'
+                            }
                         });
                     }
                 });
