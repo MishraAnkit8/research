@@ -727,7 +727,7 @@ module.exports.updateIPRRecordData = async (
 
     const insertSdgGoalsPromises = sdgGoalsIdArray.map(async sdg_goals_id => {
       const existingRecord = await researchDbW.query({
-        text: `SELECT id FROM ipr_sdg_goals WHERE ipr_id = $1 AND sdg_goals_id = $2 anmd active=true`,
+        text: `SELECT id FROM ipr_sdg_goals WHERE ipr_id = $1 AND sdg_goals_id = $2 and active=true`,
         values: [iprId, sdg_goals_id]
       });
     
