@@ -129,15 +129,17 @@ module.exports.viewGrantedSeedNonFormacyData = async (body, userName) => {
     console.log('totalAmount===>>>', totalAmount);
     const facultySharesPercentage = parseInt(nonFormacyData.nonFormacyformData[0].faculty_shares);
     const nmimsSharePercentage = parseInt(nonFormacyData.nonFormacyformData[0].nmims_shares);
+    const totalFees = nonFormacyData.nonFormacyformData[0].session_count_per_days * nonFormacyData.nonFormacyformData[0].per_session_fees;
+    console.log('totalFees ===>>>>', totalFees);
 
     console.log('facultySharesPercentage ===>>>>', facultySharesPercentage);
-    const facultyShareAmount = totalAmount * facultySharesPercentage / 100;
-    const nmimsShareAmount = totalAmount * nmimsSharePercentage/100;
+    const facultyShareAmount = totalFees * facultySharesPercentage / 100;
+    const nmimsShareAmount = totalFees * nmimsSharePercentage/100;
+    
     console.log('nmimsShareAmount ::::', nmimsShareAmount);
     console.log('facultyShareAmount ===>>>', facultyShareAmount);
 
-    const totalFees = nonFormacyData.nonFormacyformData[0].session_count_per_days * nonFormacyData.nonFormacyformData[0].per_session_fees;
-    console.log('totalFees ===>>>>', totalFees);
+    
 
     // const totalExpensesAmount = nonFormacyData.nonFormacyformData[0].research_staff_expenses + nonFormacyData.nonFormacyformData[0].travel + 
     //                             nonFormacyData.nonFormacyformData[0].computer_charges + nonFormacyData.nonFormacyformData[0].nmims_facility_charges
