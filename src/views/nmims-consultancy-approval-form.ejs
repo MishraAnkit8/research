@@ -327,7 +327,6 @@
                                 </div>
                                 <table class="table vertical-lines custom-table table-responsive">
                                     <thead>
-                                        <th class="col-lg-1">Serial no</th>
                                         <th class="col-lg-1"> </th>
                                         <th class="col-lg-1">Fees(RS.)</th>
 
@@ -694,9 +693,9 @@
                 let facultyId, approvalFormRecordToBeUpdated, nmimsConsultancyFormId;
 
                 document.querySelector('#insert-faculty-share-datails').addEventListener('click', function () {
+
                     let newRow = `
                             <tr>
-                                <td>1</td>
                                 <td><input type="text"  class="faculty-share-details"></td>
                                 <td><input type="text" class="faculty-share-details"></td>
                                 <td><button class="delete-row"><i class="fas fa-trash-alt text-danger"></i></button></td>
@@ -753,6 +752,36 @@
                         document.getElementById('final-payment').value = '';
                         document.getElementById('gross-fees').value = '';
                         document.getElementById('faculty-designation').value = '';
+
+                        const facultyDropDownList = document.getElementById("faculty-id");
+                        // Parse the JSON data
+                        const facultyListData = JSON.parse(document.getElementById('faculty-list-data').dataset.facultyList);
+                        let facultyOptions = facultyListData.map(faculty => ({
+                            value: faculty.id,
+                            text: `${faculty.faculty_name} ${faculty.designation}`
+                        }));;
+
+                        //  Initialize TomSelect dropdown with options containing id and faculty_name
+                        new TomSelect("#faculty-id", {
+                            options: facultyOptions,
+                            placeholder: 'Select Faculty',
+                            hidePlaceholder: true,
+                            create: true,
+                            plugins: ['remove_button'],
+                            onItemAdd: function () {
+                                this.setTextboxValue('');
+                                this.refreshOptions();
+                            },
+                            render: {
+                                option: function (data, escape) {
+                                    return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                                },
+                                item: function (data, escape) {
+                                    return '<div>' + escape(data.text) + '</div>';
+                                }
+                            }
+                        });
+
                     }
                 });
 
@@ -1156,42 +1185,43 @@
                         document.getElementById('final-payment').value = approvalFormRecordToBeUpdated.getAttribute('data-final-payment');
                         document.getElementById('gross-fees').value = approvalFormRecordToBeUpdated.getAttribute('data-gross-fees');
                         // formatDateToYYYYMMDD(subMissionDate);
+                        console.log('faculty designation ', approvalFormRecordToBeUpdated.getAttribute('data-faculty-designation'))
                         document.getElementById('faculty-designation').value = approvalFormRecordToBeUpdated.getAttribute('data-faculty-designation');
                         $('#consultancy-modal-form').modal('show');
                     }
                 })
 
-                const facultyDropDownList = document.getElementById("faculty-id");
-                // Parse the JSON data
-                const facultyListData = JSON.parse(document.getElementById('faculty-list-data').dataset.facultyList);
+                // const facultyDropDownList = document.getElementById("faculty-id");
+                // // Parse the JSON data
+                // const facultyListData = JSON.parse(document.getElementById('faculty-list-data').dataset.facultyList);
 
-                // Construct an array of objects with id and faculty_name
-                const facultyOptions = facultyListData.map(faculty => ({
-                    value: faculty.id,
-                    text: `  ${faculty.faculty_name} ${faculty.designation}`
-                }));
+                // // Construct an array of objects with id and faculty_name
+                // const facultyOptions = facultyListData.map(faculty => ({
+                //     value: faculty.id,
+                //     text: `  ${faculty.faculty_name} ${faculty.designation}`
+                // }));
 
 
-                // Initialize TomSelect dropdown with options containing id and faculty_name
-                new TomSelect("#faculty-id", {
-                    options: facultyOptions
-                });
+                // // Initialize TomSelect dropdown with options containing id and faculty_name
+                // new TomSelect("#faculty-id", {
+                //     options: facultyOptions
+                // });
 
                 let facultyIdContainerArray;
 
                 // function for select faculty id from drop down list
-                function handleFacultyDropDownListChange() {
-                    const selectedValues = Array.from(facultyDropDownList.options)
-                        .filter(option => option.selected)
-                        .map(option => option.value);
-                    console.log('selectedValues ===>>>', selectedValues);
-                    facultyId = selectedValues.length === 0 ? "" : selectedValues;
-                    facultyIdContainerArray.push({ 'facultyId': facultyId })
-                    console.log("Selected facultyId values:", facultyId);
+                // function handleFacultyDropDownListChange() {
+                //     const selectedValues = Array.from(facultyDropDownList.options)
+                //         .filter(option => option.selected)
+                //         .map(option => option.value);
+                //     console.log('selectedValues ===>>>', selectedValues);
+                //     facultyId = selectedValues.length === 0 ? "" : selectedValues;
+                //     facultyIdContainerArray.push({ 'facultyId': facultyId })
+                //     console.log("Selected facultyId values:", facultyId);
 
-                }
+                // }
 
-                facultyDropDownList.addEventListener("change", handleFacultyDropDownListChange);
+                // facultyDropDownList.addEventListener("change", handleFacultyDropDownListChange);
 
                 const updateApprovalFormRecordData = async (url) => {
                     // const updatedConsultancyObject = {};
@@ -1621,6 +1651,16 @@
                 function handleDeleteButtonClick() {
                     this.parentNode.parentNode.remove();
                 }
+
+                document.getElementById('headerClose').addEventListener('click', () => {
+                    console.log('header close ')
+                    document.location.reload();
+                })
+
+                document.getElementById('footerClose').addEventListener('click', () => {
+                    console.log('footer close ')
+                    document.location.reload();
+                })
 
             </script>
 
