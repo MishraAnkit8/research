@@ -469,7 +469,8 @@
 
                                 <!-- Inventor -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <label for="investor-details" class="form-label fw-bold mb-3">Name Of Co-Authors</label>
+                                    <label for="investor-details" class="form-label fw-bold mb-3">Name Of
+                                        Co-Authors</label>
                                     <span style="color:red;" id="facultyTypeError"></span></br>
                                     <div class="form-check-inline">
                                         <label for="is-internal" class="form-check-label enter-faculty-type">
@@ -478,8 +479,7 @@
                                             <span id="enternal-text">Internal</span>
                                         </label>
                                         <div class=" col-lg-1 p-6 w-100 d-none" id="employee-list">
-                                            <select id="emp-name" style="width: 200px;" 
-                                                multiple>
+                                            <select id="emp-name" style="width: 200px;" multiple>
                                                 <option value="">select employee name</option>
                                                 <% internalEmpList.forEach(function(employee) { %>
                                                     <option value="<%= employee.id %>">
@@ -1135,7 +1135,7 @@
                     if (isValid && internalAuthor.checked || externalAuthor.checked) {
                         await insertConferencePublicationForm('<%- BASE_URL %>research/conference-publication/insert');
                     }
-                     else {
+                    else {
                         Swal.fire({
                             position: "top-center",
                             icon: "error",
@@ -1664,7 +1664,7 @@
                         console.log("elm:::::::::", elm);
                         elm.removeAttribute('data-validate')
                     })
-                    
+
                     // formGroup.querySelectorAll('.select-option')?.forEach(elm => {
                     //     console.log("elm:::::::::", elm);
                     //     elm.removeAttribute('data-validate')
@@ -2030,6 +2030,27 @@
                 //  addEventListener   for insert external details
                 InsertDetails.addEventListener('click', async () => {
                     console.log('clickedd insert details buttons')
+
+                    let elements = document.querySelectorAll('.id-class');
+
+                    let newVal = document.getElementById('faculty-emp-id').value;
+                    for (var i = 0; i < elements.length; i++) {
+                        console.log("elements[i].textContent : ", elements[i].textContent);
+                        console.log("newVal : ", newVal);
+                        if (elements[i].textContent.trim() === newVal) {
+                            Swal.fire({
+                                position: "top-center",
+                                icon: "error",
+                                title: `Duplicate Faculty Id Not Allowed`,
+                                showConfirmButton: true,
+                                allowOutsideClick: false,
+                                confirmButtonText: "OK",
+                                confirmButtonColor: "#DD6B55"
+                            })
+                            return;
+                        };
+                    }
+
                     await insertExternalDetails('<%- BASE_URL %>research/external/faculty-insert');
 
                 });
@@ -2222,6 +2243,29 @@
                     let facultyError = checkAlphabets(facultyName, 'facultyInsertError');
                     let designationError = checkAlphabets(facultyDesignation, 'desInsertError');
                     let empError = checkEmpError(facultyEmp, 'empInsertError');
+
+                    let appendFaculty = document.getElementById('appendFaculty');
+                    let elements = appendFaculty.querySelectorAll('tr');
+
+                    for (var i = 0; i < elements.length; i++) {
+
+                        let facultyId = elements[i].querySelector('#updateFacultyId').value;
+                        console.log('faculty Id ', facultyId)
+
+                        if (facultyId === facultyEmp) {
+                            Swal.fire({
+                                position: "top-center",
+                                icon: "error",
+                                title: `Duplicate Faculty Id Not Allowed`,
+                                showConfirmButton: true,
+                                allowOutsideClick: false,
+                                confirmButtonText: "OK",
+                                confirmButtonColor: "#DD6B55"
+                            })
+                            return;
+                        };
+                    }
+
 
                     if (addrError && facultyError && designationError && empError) {
 
