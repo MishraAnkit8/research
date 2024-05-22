@@ -1,5 +1,6 @@
 const { getRedisData } = require('../../utils/redis.utils');
-const iprServices = require('../services/IPR.services')
+const iprServices = require('../services/IPR.services');
+
 module.exports.renderIPR = async(req, res, next) => {
     const  userName = req.body.username;
     console.log('userName in controller  ===>>>>>>', userName);

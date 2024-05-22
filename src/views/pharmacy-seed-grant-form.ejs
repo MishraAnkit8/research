@@ -2924,23 +2924,86 @@
                         const closestButton = deleteButton.closest('button');
                         console.log('closestButton ====>>>>>', closestButton);
 
-                        // Add event listener to check for button click
                         if (closestButton) {
                             const closestButtonId = closestButton.id;
                             console.log('closestButton id ====', closestButtonId);
 
-                            // Add an event listener to the closest button
                             closestButton.addEventListener('click', function (event) {
                                 if (deleteId === closestButtonId) {
-                                    console.log('yes both are equal');
-                                    console.log('clickeddd ====>>>>>')
+                                    if (event.target.classList.contains('delete-experience')) {
+                                        console.log('yes both are equal');
+                                        console.log('clicked this will be deleted ====>>>>>');
+                                        const rowToBeDeleted = event.target.closest('tr');
+                                        awardId = rowToBeDeleted.getAttribute('data-award-id');
+                                        console.log('awardId ===>>>>', awardId);
 
+                                        let confirmDelete = "Do you want to delete the Research Award Row?";
+                                        if (confirmDelete) {
+                                            Swal.fire({
+                                                title: "Are you sure?",
+                                                text: "You won't be able to revert this!",
+                                                icon: "warning",
+                                                showCancelButton: true,
+                                                confirmButtonColor: "#3085d6",
+                                                allowOutsideClick: false,
+                                                cancelButtonColor: "#d33",
+                                                confirmButtonText: "Yes, delete it!"
+                                            }).then((result) => {
+                                                if (result.isConfirmed) {
+                                                    // Execute fetch request here after confirmation
+                                                    fetch('<%- BASE_URL %>research/research-award/delete', {
+                                                        method: 'POST',
+                                                        headers: {
+                                                            'content-type': 'application/json'
+                                                        },
+                                                        body: JSON.stringify({ awardId })
+                                                    })
+                                                        .then((result) => result.json())
+                                                        .then((data) => {
+                                                            if (data.status === 'Done') {
+                                                                console.log('data ==>>', data);
+                                                                rowToBeDeleted.remove();
+                                                                Swal.fire({
+                                                                    title: "Deleted!",
+                                                                    text: "Record has been deleted.",
+                                                                    icon: "success",
+                                                                    showConfirmButton: true,
+                                                                    allowOutsideClick: false,
+                                                                    confirmButtonText: "OK",
+                                                                    confirmButtonColor: "#DD6B55"
+                                                                }).then(() => {
+                                                                    location.reload();
+                                                                });
+                                                            }
+                                                        })
+                                                        .catch((error) => {
+                                                            console.error('Error:', error);
+                                                            const message = error;
+                                                            Swal.fire({
+                                                                position: "top-center",
+                                                                icon: "error",
+                                                                title: `${message}`,
+                                                                color: "red",
+                                                                showConfirmButton: true,
+                                                                allowOutsideClick: false,
+                                                                confirmButtonText: "OK",
+                                                                confirmButtonColor: "#DD6B55"
+                                                            });
+                                                        });
+                                                }
+                                            });
+                                        }
+                                        else {
+                                            return
+                                        }
+                                    };
+
+                                    
                                 } else {
                                     console.log('Button IDs do not match');
                                 }
                             });
 
-                            // Optionally, trigger the click event manually if required
                             if (deleteId === closestButtonId) {
                                 closestButton.click();
                             }
