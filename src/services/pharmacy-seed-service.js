@@ -325,6 +325,7 @@ module.exports.insertPharmacySeedDetials = async(body, userName) => {
         investigatorDesignation: pharmacySeedGrantDetails.investigatorDesignation,
         investigatorAddress: pharmacySeedGrantDetails.investigatorAddress,
         invatigatorMobile: pharmacySeedGrantDetails.invatigatorMobile,
+        investigatorEmail: pharmacySeedGrantDetails.investigatorEmail,
         invastigatorDateOfBirth: pharmacySeedGrantDetails.invastigatorDateOfBirth
       };
     const principalInvestigatorDetails = {
@@ -429,14 +430,14 @@ module.exports.updatePharmacyData = async(body, userName) => {
     const updatePharmacyDetails = body.updatePharmacyDetails;
     const pharmacyId = updatePharmacyDetails.pharmacyId
     console.log('updatePharmacyDetails ===>>>>>', updatePharmacyDetails);
-    const educationalData = groupArrayIntoChunks(updatePharmacyDetails.educaltionalData, 4);
-    const experienceData = groupArrayIntoChunks(updatePharmacyDetails.experienceData, 4);
-    const bookData = groupArrayIntoChunks(updatePharmacyDetails.bookData, 7);
-    const bookChapterData = groupArrayIntoChunks(updatePharmacyDetails.bookChapterData, 9);
-    const publicationData = groupArrayIntoChunks(updatePharmacyDetails.publicationData, 9);
-    const patentData = groupArrayIntoChunks(updatePharmacyDetails.patentData, 6);
-    const implementationData = groupArrayIntoChunks(updatePharmacyDetails.implementationData, 6);
-    const completedData = groupArrayIntoChunks(updatePharmacyDetails.completedData, 6);
+    const educationalData = groupArrayIntoChunksUpdate(updatePharmacyDetails.educaltionalData, 4);
+    const experienceData = groupArrayIntoChunksUpdate(updatePharmacyDetails.experienceData, 4);
+    const bookData = groupArrayIntoChunksUpdate(updatePharmacyDetails.bookData, 7);
+    const bookChapterData = groupArrayIntoChunksUpdate(updatePharmacyDetails.bookChapterData, 9);
+    const publicationData = groupArrayIntoChunksUpdate(updatePharmacyDetails.publicationData, 9);
+    const patentData = groupArrayIntoChunksUpdate(updatePharmacyDetails.patentData, 6);
+    const implementationData = groupArrayIntoChunksUpdate(updatePharmacyDetails.implementationData, 6);
+    const completedData = groupArrayIntoChunksUpdate(updatePharmacyDetails.completedData, 6);
     console.log('educationalData ====>>>>>>', educationalData);
     console.log('patentData ====>>>>>>>', patentData);
 
@@ -447,6 +448,7 @@ module.exports.updatePharmacyData = async(body, userName) => {
         investigatorDesignation: updatePharmacyDetails.investigatorDesignation,
         investigatorAddress: updatePharmacyDetails.investigatorAddress,
         invatigatorMobile: updatePharmacyDetails.invatigatorMobile,
+        investigatorEmail: updatePharmacyDetails.investigatorEmail,
         invastigatorDateOfBirth: updatePharmacyDetails.invastigatorDateOfBirth
     };
     const principalInvestigatorDetails = {
@@ -469,7 +471,18 @@ module.exports.updatePharmacyData = async(body, userName) => {
 
   const pharamcySeedUpdate = await pharmacySeedModels.updatePharmacySeedData(pharmacyId, updatePharmacyDetails, userName, educationalData, experienceData, bookData, bookChapterData, publicationData, 
     patentData, implementationData, completedData, investorDetails,
-    principalInvestigatorDetails, coInvestigatorDetails)
+    principalInvestigatorDetails, coInvestigatorDetails);
+
+    console.log('pharamcySeedUpdate in service  ======>>>>>>>', pharamcySeedUpdate);
+
+    return pharamcySeedUpdate.status === "Done" ? {
+        status : pharamcySeedUpdate.status,
+        message : pharamcySeedUpdate.message
+    } : {
+        status : pharamcySeedUpdate.status,
+        message : pharamcySeedUpdate.message,
+        errorCode : pharamcySeedUpdate.errorCode
+    }
 
 
 }
@@ -477,15 +490,26 @@ module.exports.updatePharmacyData = async(body, userName) => {
 
 
 
-function splitArrayIntoChunks(arr, chunkSize) {
-    const result = [];
-    for (let i = 0; i < arr.length; i += chunkSize) {
-      result.push(arr.slice(i, i + chunkSize));
-    }
-    return result;
-  }
+// function splitArrayIntoChunks(arr, chunkSize) {
+//     const result = [];
+//     for (let i = 0; i < arr.length; i += chunkSize) {
+//       result.push(arr.slice(i, i + chunkSize));
+//     }
+//     return result;
+//   }
 
 function groupArrayIntoChunks(array, chunkSize) {
+    let groupedArray = [];
+    for (let i = 0; i < array.length; i += chunkSize) {
+        groupedArray.push(array.slice(i, i + chunkSize));
+    }
+    return groupedArray;
+}
+
+function groupArrayIntoChunksUpdate(array, chunkSize) {
+    if (array.length % chunkSize !== 0) {
+        chunkSize = chunkSize - 1;
+    }
     let groupedArray = [];
     for (let i = 0; i < array.length; i += chunkSize) {
         groupedArray.push(array.slice(i, i + chunkSize));

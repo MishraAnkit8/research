@@ -899,7 +899,7 @@ module.exports.retriveDataFromDetailsTable = async(pharmacyId) => {
     text: `select ie.id, ie.course_name, ie.university_name, ie.passout_year
            FROM pharmacy_investigator_education pie
           JOIN investigator_education ie ON pie.investigator_education_id = ie.id
-          WHERE pie.pharmacy_seed_id = $1 and pie.active=true and ie.active=true `,
+          WHERE pie.pharmacy_seed_id = $1 and pie.active=true and ie.active=true  order by id `,
     values: [pharmacyId],
   };
 
@@ -1035,17 +1035,17 @@ module.exports.updatePharmacySeedData = async(
     
     
     let sql = {
-      text: `UPDATE  pharmacy_seed 
+      text: `UPDATE  pharmacy_seed SET 
                 summary_title = $2, summary_objectives = $3,
-                project_duration = $4, total_cost = $4, consumables_amount = $5, analysis_amount = $6, other_amount = $7,
-                project_title = $8, project_status = $9, scientific_importance = $10, project_objectives = $11,
-                detailed_methodology = $12, time_lines = $13, budget_consumable_amount = $14, consumables_justification = $15,
-                solvents_amount = $16, solvents_justification = $17, chemicals_amount = $18, chemicals_justification = $19,
-                biomarkers_reference_amount = $20, biomarkers_reference_justifications = $21, hplc_amount = $22,
-                hplc_justification = $23, experimental_animals_amount = $24, experimental_animals_justification = $25,
-                cell_lines_amount = $26, cell_lines_justifications = $27, kits_analysis_amount = $28, kits_analysis_justifications = $29,
-                evaluation_analysis_amount = $30, evaluation_analysis_justification = $31, proposed_out_come = $32,
-                previous_project_explaination = $33, pharmacy_references = $34, project_background = $35, hypothesis = $36, updated_by = $37 WHERE id = $1
+                project_duration = $4, total_cost = $5, consumables_amount = $6, analysis_amount = $7, other_amount = $8,
+                project_title = $9, project_status = $10, scientific_importance = $11, project_objectives = $12,
+                detailed_methodology = $13, time_lines = $14, budget_consumable_amount = $15, consumables_justification = $16,
+                solvents_amount = $17, solvents_justification = $18, chemicals_amount = $19, chemicals_justification = $20,
+                biomarkers_reference_amount = $21, biomarkers_reference_justifications = $22, hplc_amount = $23,
+                hplc_justification = $24, experimental_animals_amount = $25, experimental_animals_justification = $26,
+                cell_lines_amount = $27, cell_lines_justifications = $28, kits_analysis_amount = $29, kits_analysis_justifications = $30,
+                evaluation_analysis_amount = $31, evaluation_analysis_justification = $32, proposed_out_come = $33,
+                previous_project_explaination = $34, pharmacy_references = $35, project_background = $36, hypothesis = $37, updated_by = $38 WHERE id = $1
             `,
       values: [ pharmacyId,
         summaryTitle, summaryProjectTitle, projectDuration, totalCost,
@@ -1061,38 +1061,120 @@ module.exports.updatePharmacySeedData = async(
     };
   console.log('sql =====>>>>>>', sql);
 
+  const investigatorSql = {
+    text :  `	UPDATE investigator
+    SET 
+      investigator_name = $1, 
+      investigator_dsg = $2,
+      investigator_address = $3,
+      investigator_mobile = $4,
+      investigator_email = $5,
+      investigator_dob = $6,
+      updated_by = $7,
+      updated_at = CURRENT_TIMESTAMP
+    FROM pharmacy_investigator
+    WHERE 
+      pharmacy_investigator.investigator_id = investigator.id
+      AND pharmacy_investigator.pharmacy_seed_id = $8
+      AND investigator.active = true
+      AND pharmacy_investigator.active = true
+    
+  `,
+  values : [invatigatorName, investigatorDesignation, investigatorAddress, invatigatorMobile, investigatorEmail, invastigatorDateOfBirth, userName, pharmacyId]
+};
+  console.log('investigatorSql ======>>>>>>>', investigatorSql);
+
+  const principlaInvestigatorSql = {
+    text :  `UPDATE principal_investigator
+    SET 
+      principal_name = $1, 
+      principal_dsg = $2,
+      principal_org = $3,
+      principal_mobile = $4,
+      principal_email = $5,
+      updated_by = $6,
+      updated_at = CURRENT_TIMESTAMP
+    FROM pharmacy_principal_investigator
+    WHERE 
+      pharmacy_principal_investigator.principal_investigator_id = principal_investigator.id
+      AND pharmacy_principal_investigator.pharmacy_seed_id = $7
+      AND principal_investigator.active = true
+      AND pharmacy_principal_investigator.active = true
+    
+  `,
+  values : [principalName, principalDsg, principalOrg, principalMob, principalEmail, userName, pharmacyId]
+};
+  console.log('principlaInvestigatorSql ======>>>>>>>', principlaInvestigatorSql);
+
+
+  const coInvestigatorSql = {
+    text :  `UPDATE co_investigator_details
+    SET 
+      co_investigator_name = $1, 
+      co_investigator_dsg = $2,
+      co_investigator_org = $3,
+      co_investigator_mobile = $4,
+      co_investigator_email = $5,
+      updated_by = $6,
+      updated_at = CURRENT_TIMESTAMP
+    FROM pharmacy_co_investigator
+    WHERE 
+      pharmacy_co_investigator.co_investigator_details_id = co_investigator_details.id
+      AND pharmacy_co_investigator.pharmacy_seed_id = $7
+      AND co_investigator_details.active = true
+      AND pharmacy_co_investigator.active = true;
+    
+  `,
+  values : [coIvestigatorName, coIvestigatorDsg, coIvestigatorOrg, coIvestigatorMob, coIvestigatorEmail, userName, pharmacyId]
+};
+  console.log('coInvestigatorSql ======>>>>>>>', coInvestigatorSql);
+
+
 
 // Insert educational data
-const insertEducation = insertOrUpdateRecords(
-  educationalData, 
+const insertEducation = await insertOrUpdateRecords(
+  pharmacyId,
+  educationalData,
   'investigator_education', 
+  'pharmacy_investigator_education',
+  'investigator_education_id',
   ['course_name', 'university_name', 'passout_year'], 
   ['course_name', 'university_name', 'passout_year'], 
   userName
 );
 
+
 // Insert experience data
-const insertExperience = insertOrUpdateRecords(
+const insertExperience = await insertOrUpdateRecords(
+  pharmacyId,
   experienceData, 
-  'investigator_experience', 
+  'investigator_experience',
+  'pharmacy_investigator_experience',
+  'investigator_experience_id', 
   ['possition', 'organization_name', 'experience'], 
   ['possition', 'organization_name', 'experience'], 
   userName
 );
 
 // Insert book data
-const insertBookDetails = insertOrUpdateRecords(
+const insertBookDetails = await insertOrUpdateRecords(
+  pharmacyId,
   bookData, 
   'investigator_book', 
+  'pharmacy_investigator_book',
+  'investigator_book_id',
   ['book_author', 'book_names', 'book_year', 'book_volume', 'book_publisher', 'book_isbn'], 
   ['book_author', 'book_names', 'book_year', 'book_volume', 'book_publisher', 'book_isbn'], 
   userName
 );
 
 // Insert bookChapterData data
-const insertBookChapterDetails = insertOrUpdateRecords(
+const insertBookChapterDetails = await insertOrUpdateRecords(
+  pharmacyId,
   bookChapterData, 
   'investigator_book_chapter', 
+  'pharmacy_investigator_book_chapter',
+  'investigator_book_chapter_id',
   ['book_chapter_author', 'book_chapter_title', 'book_chapter_names', 'book_chapter_volume',
     'book_chapter_page_number', 'book_chapter_year', 'book_chapter_publisher', 'book_chapter_isbn'], 
   ['book_chapter_author', 'book_chapter_title', 'book_chapter_names', 'book_chapter_volume',
@@ -1101,18 +1183,24 @@ const insertBookChapterDetails = insertOrUpdateRecords(
 );
 
 // Insert patentData data
-const insertPatentDetails = insertOrUpdateRecords(
+const insertPatentDetails = await insertOrUpdateRecords(
+  pharmacyId,
   patentData, 
   'investigator_patent', 
+  'pharmacy_investigator_patent',
+  'investigator_patent_id',
   ['applicant_name', 'patent_title', 'patent_status', 'patent_year', 'patent_number'], 
   ['applicant_name', 'patent_title', 'patent_status', 'patent_year', 'patent_number'], 
   userName
 );
 
 // Insert publicationData data
-const insertPublicationDetails = insertOrUpdateRecords(
+const insertPublicationDetails = await insertOrUpdateRecords(
+  pharmacyId,
   publicationData, 
   'investigator_publication', 
+  'pharmacy_investigator_publication',
+  'investigator_publication_id',
   ['publication_author', 'publication_title', 'publication_journal_name', 
     'publication_issue', 'publication_year', 'publication_volume', 'publication_artcile_number', 'publication_impact_factor'], 
   ['publication_author', 'publication_title', 'publication_journal_name', 
@@ -1121,187 +1209,124 @@ const insertPublicationDetails = insertOrUpdateRecords(
 );
 
 // Insert implementationData data
-const insertImplementationDetails = insertOrUpdateRecords(
+const insertImplementationDetails = await insertOrUpdateRecords(
+  pharmacyId,
   implementationData, 
-  'investigator_research_implementation', 
+  'pharmacy_investigator_research_implementation',
+  'investigator_research_implementation',
+  'investigator_research_implementation_id', 
   ['research_im_title', 'research_im_agency', 'research_im_role', 'research_im_duration', 'research_im_project_cost'], 
   ['research_im_title', 'research_im_agency', 'research_im_role', 'research_im_duration', 'research_im_project_cost'], 
   userName
 );
 
 // Insert completedData data
-const insertCompletedDetails = insertOrUpdateRecords(
-  completedData, 
+const insertCompletedDetails = await insertOrUpdateRecords(
+  pharmacyId,
+  completedData,
+  'pharmacy_investigator_research_complete',
   'investigator_research_complete', 
+  'investigator_research_complete_id',
   ['research_cm_title', 'research_cm_agency', 'research_cm_role', 'research_cm_duration', 'research_cm_project_cost'], 
   ['research_cm_title', 'research_cm_agency', 'research_cm_role', 'research_cm_duration', 'research_cm_project_cost'], 
   userName
 );
 
-console.log('insertCompletedDetails ===>>>>', insertCompletedDetails);
+// console.log('insertCompletedDetails ===>>>>', insertCompletedDetails);
+console.log('ankit kumar mishra');
 
-// Add more datasets as needed
-Promise.all([insertEducation, insertExperience, insertBookDetails, insertBookChapterDetails, insertPatentDetails, insertPublicationDetails, insertImplementationDetails, insertCompletedDetails])
-    .then(async ([
-    educationIds, 
-    experienceIds, 
-    bookDetailsIds, 
-    bookChapterIds, 
-    patentIds, 
-    publicationIds, 
-    implementationIds, 
-    completedIds
-  ]) => {
-    console.log('All data processed, collected IDs:', {
-      educationIds, 
-      experienceIds, 
-      bookDetailsIds, 
-      bookChapterIds, 
-      patentIds, 
-      publicationIds, 
-      implementationIds, 
-      completedIds
-    });
- 
-     await insertAllPharmacyInvestigatorRecords(pharmacyId, educationIds, userName)
-     await insertAllPharmacyInvestigatorRecords(pharmacyId, experienceIds, userName)
-     await insertAllPharmacyInvestigatorRecords(pharmacyId, bookDetailsIds, userName)
-     await insertAllPharmacyInvestigatorRecords(pharmacyId, bookChapterIds, userName)
-     await insertAllPharmacyInvestigatorRecords(pharmacyId, publicationIds, userName)
-     await insertAllPharmacyInvestigatorRecords(pharmacyId, patentIds, userName)
-     await insertAllPharmacyInvestigatorRecords(pharmacyId, implementationIds, userName)
-     await insertAllPharmacyInvestigatorRecords(pharmacyId, completedIds, userName)
+const pharmacyDetails = await researchDbW.query(sql);
+console.log('pharmacyDetails ====>>>>', pharmacyDetails);
 
-    console.log('Pharmacy investigator records inserted successfully', educationIds);
-  })
-  .catch(error => {
-    console.error('Error processing data:', error);
+const investigatorDetails = await researchDbW.query(investigatorSql);
+
+const principalInvestigator = await researchDbW.query(principlaInvestigatorSql);
+
+const coInvestigator = await researchDbW.query(coInvestigatorSql);
+console.log('coInvestigator ====>>>>', coInvestigator);
+
+const promises = [pharmacyDetails, investigatorDetails, principalInvestigator, coInvestigator];
+
+return await Promise.all(promises).then(([pharmacyDetails, investigatorDetails, principalInvestigator, coInvestigator]) => {
+  return {
+    status : "Done",
+    message : 'Record updated successfully',
+    pharmacyDetails,
+    investigatorDetails,
+    principalInvestigator,
+    coInvestigator
+  }
+})
+.catch((error) => {
+  return {
+    status: "Failed",
+    message: error.message,
+    errorCode: error.code,
+  };
+});
+
+}
+
+
+
+
+const  insertOrUpdateRecords = async (pharmacyId, data, tableName, pharmacyTable, relTableId, uniqueColumns, allColumns, userName) => {
+  const modifiedData = data.map((details) => details.slice(0, -1));
+  const insertData = data.map((details) => details);
+
+  let idsArray = data.map((item) => item[item.length - 1]);
+
+  const queries = idsArray.map(async (id, index) => {
+    try {
+      const existingRecord = await researchDbW.query({
+        text: `SELECT * FROM ${tableName} WHERE id = $1 AND created_by = $2 AND active=true`,
+        values: [id, userName],
+      });
+
+      if (existingRecord.rowCount === 0) {
+        const data = insertData[index];
+        const placeholders = allColumns.map((_, i) => `$${i + 1}`).join(", ");
+        const text = `INSERT INTO ${tableName} (${allColumns.join(", ")}, created_by, active) VALUES (${placeholders}, $${allColumns.length + 1}, $${allColumns.length + 2}) RETURNING id`;
+        const values = [...data, userName, true];
+
+        try {
+          const result = await researchDbW.query({ text, values });
+          const pharmacyTableId = result.rows[0].id;
+          const sql = {
+            text: `INSERT INTO ${pharmacyTable} (pharmacy_seed_id, ${relTableId}, created_by, active) VALUES ($1, $2, $3, $4) RETURNING id`,
+            values: [pharmacyId, pharmacyTableId, userName, true],
+          };
+          return await researchDbW.query(sql);
+        } catch (err) {
+          console.error(`Error inserting record in ${tableName}: ${err.message}`);
+        }
+      } else {
+        const data = modifiedData[index];
+        const updateColumns = allColumns.map((col, i) => `${col} = $${i + 1}`).join(", ");
+        const text = `UPDATE ${tableName} SET ${updateColumns}, updated_by = $${allColumns.length + 1}, updated_at = NOW() WHERE id = $${allColumns.length + 2}`;
+        const values = [...data, userName, id];
+
+        try {
+          await researchDbW.query({ text, values });
+          // console.log(`Updated existing record in ${tableName} with ID: ${id}`);
+        } catch (err) {
+          console.error(`Error updating record with ID ${id} in ${tableName}: ${err.message}`);
+        }
+      }
+    } catch (error) {
+      console.error(`Error processing details for table ${tableName}: ${error.message}`);
+      throw error;
+    }
   });
 
-}
-
-
-
-
-const insertOrUpdateRecords = async (data, tableName, uniqueColumns, allColumns, userName) => {
-  return Promise.all(data.map(async (details) => {
-    try {
-      console.log(`Processing details for table ${tableName}:`, details);
-
-      const modifiedData = data.map(details => {
-        return details.slice(0, -1);
-      });
-
-      console.log('modifiedData ===>>>>>', modifiedData);
-
-    
-      let idsArray = data.map(item => item[item.length - 1]);
-      console.log('idsArray ====>>>>', idsArray)
-
-      // Check if the record exists
-      const queries = idsArray.map(async (id) => {
-        const existingRecord = await researchDbW.query({
-          text: `SELECT * FROM ${tableName} WHERE id = $1 AND created_by = $2 AND active=true`,
-          values: [id, userName],
-        });
-        console.log('existingRecord.rowCount ====>>>>>>>', existingRecord.rowCount)
-  
-        if (existingRecord.rowCount === 0) {
-          // Insert new record
-          const placeholders = allColumns.map((_, i) => `$${i + 1}`).join(', ');
-          const result = await researchDbW.query({
-            text: `INSERT INTO ${tableName} (${allColumns.join(', ')}, created_by, active) VALUES (${placeholders}, $${allColumns.length + 1}, $${allColumns.length + 2}) RETURNING id`,
-            values: [...detailsWithoutId, userName, true]
-          });
-          console.log(`Inserted new record in ${tableName} with ID: ${result.rows[0].id}`);
-          return result.rows[0];
-        } else {
-          // Update existing record
-          const updateColumns = allColumns.map((col, i) => `${col} = $${i + 1}`).join(', ');
-          const result = await researchDbW.query({
-            text: `UPDATE ${tableName} SET ${updateColumns}, updated_by = $${allColumns.length + 1}, updated_at = NOW() WHERE id = $${allColumns.length + 2} RETURNING id`,
-            values: [...modifiedData, userName, id]
-          });
-          console.log(`Updated existing record in ${tableName} with ID: ${result.rows[0].id}`);
-          return result.rows[0];
-        }
-      });
-  
-      const results = await Promise.all(queries);
-      console.log('All operations completed:', results);
-    } catch (error) {
-      console.error(`Error processing details for table ${tableName}:`, error);
-      throw error;  
-    }
-  }));
-};
-
-
-
-async function insertIfNotExists(tableName, pharmacySeedId, relationalId, tableId, userName) {
-  // console.log('tableId ankit  ===>>>>', tableId);
-  // console.log(`id :::${tableId} ${tableName}`)
-  return Promise.all(tableId ? tableId.map(async (element) => {
-    // console.log('element id ===>>>>>>>', element.id);
-    // console.log('relationalId =====>>>>>>', relationalId);
-
-    const checkSql = {
-      text: `SELECT *  FROM ${tableName} WHERE pharmacy_seed_id = $1 AND ${relationalId} = $2 AND created_by = $3 AND active = true`,
-      values: [pharmacySeedId, element.id, userName],
-    }
-
-    // console.log(`Executing SQL for ${tableName} check:`, checkSql);
-
-    const result = await researchDbW.query(checkSql);
-    // console.log('result row count ===>>>>>>', result.rowCount)
-
-    if (result.rowCount === 0) {
-      // console.log(`No existing record found. Inserting into ${tableName}.`);
-
-      const insertSql = {
-        text: `insert into ${tableName} (pharmacy_seed_id, ${relationalId}, created_by, active) VALUES ($1, $2, $3, $4) RETURNING id`,
-        values: [pharmacySeedId, element.id, userName, true],
-      };
-
-      // console.log(`Executing SQL for ${tableName} insert:`, insertSql);
-
-      return researchDbW.query(insertSql);
-    } else {
-      // console.log(`Record already exists in ${tableName}. Skipping insert.`);
-      return null;
-    }
-  }) : null);
-}
-
-
-const insertAllPharmacyInvestigatorRecords = async (pharmacySeedId, tableId, userName) => {
-  // console.log('tableId ++++>>>>>>', tableId)
   try {
-    const insertPharmacyEducation = insertIfNotExists('pharmacy_investigator_education', pharmacySeedId,  'investigator_education_id', tableId, userName);
-    const insertPharmacyExperience = insertIfNotExists('pharmacy_investigator_experience', pharmacySeedId, 'investigator_experience_id', tableId, userName);
-    const insertPharmacyBook = insertIfNotExists('pharmacy_investigator_book', pharmacySeedId, 'investigator_book_id', tableId, userName);
-    const insertPharmacyBookChapter = insertIfNotExists('pharmacy_investigator_book_chapter', pharmacySeedId, 'investigator_book_chapter_id', tableId, userName);
-    const insertPharmacyPublication = insertIfNotExists('pharmacy_investigator_publication', pharmacySeedId, 'investigator_publication_id', tableId, userName);
-    const insertPharmacyPatent = insertIfNotExists('pharmacy_investigator_patent', pharmacySeedId, 'investigator_patent_id', tableId, userName);
-    const insertPharmacyImplementation = insertIfNotExists('pharmacy_investigator_research_implementation', pharmacySeedId, 'investigator_research_implementation_id', tableId, userName);
-    const insertPharmacyCompleted = insertIfNotExists('pharmacy_investigator_research_complete', pharmacySeedId, 'investigator_research_complete_id', tableId, userName);
-
-    const results = await Promise.all([
-      insertPharmacyEducation,
-      insertPharmacyExperience,
-      insertPharmacyBook,
-      insertPharmacyBookChapter,
-      insertPharmacyPublication,
-      insertPharmacyPatent,
-      insertPharmacyImplementation,
-      insertPharmacyCompleted
-    ]);
-
-    // console.log('All data inserted:', results);
+    await Promise.all(queries);
+    console.log(`All queries processed successfully for table ${tableName}`);
   } catch (error) {
-    // console.error('Error inserting data:', error);
+    console.error(`Error processing some queries for table ${tableName}: ${error.message}`);
   }
 };
+
 
 
 

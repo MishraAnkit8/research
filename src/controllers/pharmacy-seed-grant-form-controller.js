@@ -277,5 +277,15 @@ module.exports.updatePharmacyDetailsData = async(req, res, next) => {
     const  userName = req.body.username;
     console.log('userName in controller  ===>>>>>>', userName);
 
-    const updatePharmacyDetail = await pharmacyService.updatePharmacyData(req.body, userName)
+    const updatePharmacyDetail = await pharmacyService.updatePharmacyData(req.body, userName);
+
+    console.log('updatePharmacyDetail data in controller =====>>>>>>>', updatePharmacyDetail);
+    const statusCode = updatePharmacyDetail.status === "Done" ? 200 : (updatePharmacyDetail.errorCode ? 400 : 500);
+    console.log('statusCode ======>>>>>>>', statusCode);
+
+    res.status(statusCode).send({
+        status : updatePharmacyDetail.status,
+        message : updatePharmacyDetail.message,
+        errorCode : updatePharmacyDetail.errorCode ? updatePharmacyDetail.errorCode : null
+    })
 }
