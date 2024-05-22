@@ -1188,46 +1188,49 @@ const insertOrUpdateRecords = async (data, tableName, uniqueColumns, allColumns,
     try {
       console.log(`Processing details for table ${tableName}:`, details);
 
-      const [id, ...detailsWithoutId] = details;
-      // console.log('detailsWithoutId =====>>>>>>', detailsWithoutId);
-      // console.log('detailsWithoutId.length ===>>>>', detailsWithoutId.length)
-
-      // if (detailsWithoutId.length !== allColumns.length) {
-      //   throw new Error(`Invalid number of details provided for ${tableName}. Expected ${allColumns.length}, got ${detailsWithoutId.length}`);
-      // }
-
-      let idsArray = data.map(item => item[0]);
-      console.log('IDs Array:', idsArray);
-
-      // Check if the record exists
-      const existingRecord = await researchDbW.query({
-        text: `SELECT * FROM ${tableName} WHERE id = $1 AND created_by = $2 AND active=true`,
-        values: [id, userName],
+      const modifiedData = data.map(details => {
+        return details.slice(0, -1);
       });
 
-      // console.log('existingRecord row count ====>>>>>', existingRecord.rowCount);
+      console.log('modifiedData ===>>>>>', modifiedData);
 
-      if (existingRecord.rowCount === 0) {
-        // Insert new record
-        const placeholders = allColumns.map((_, i) => `$${i + 1}`).join(', ');
-        const result = await researchDbW.query({
-          text: `INSERT INTO ${tableName} (${allColumns.join(', ')}, created_by, active) VALUES (${placeholders}, $${allColumns.length + 1}, $${allColumns.length + 2}) RETURNING id`,
-          values: [...detailsWithoutId, userName, true]
+    
+      let idsArray = data.map(item => item[item.length - 1]);
+      console.log('idsArray ====>>>>', idsArray)
+
+      // Check if the record exists
+      const queries = idsArray.map(async (id) => {
+        const existingRecord = await researchDbW.query({
+          text: `SELECT * FROM ${tableName} WHERE id = $1 AND created_by = $2 AND active=true`,
+          values: [id, userName],
         });
-        console.log(`Inserted new record in ${tableName} with ID: ${result.rows[0].id}`);
-        return result.rows[0];
-      } else {
-        // Update existing record
-        const updateColumns = allColumns.map((col, i) => `${col} = $${i + 1}`).join(', ');
-        const result = await researchDbW.query({
-          text: `UPDATE ${tableName} SET ${updateColumns}, updated_by = $${allColumns.length + 1}, updated_at = NOW() WHERE id = $${allColumns.length + 2} RETURNING id`,
-          values: [...detailsWithoutId, userName, id]
-        });
-        // console.log(`Updated existing record in ${tableName} with ID: ${result.rows[0].id}`);
-        return result.rows[0];
-      }
+        console.log('existingRecord.rowCount ====>>>>>>>', existingRecord.rowCount)
+  
+        if (existingRecord.rowCount === 0) {
+          // Insert new record
+          const placeholders = allColumns.map((_, i) => `$${i + 1}`).join(', ');
+          const result = await researchDbW.query({
+            text: `INSERT INTO ${tableName} (${allColumns.join(', ')}, created_by, active) VALUES (${placeholders}, $${allColumns.length + 1}, $${allColumns.length + 2}) RETURNING id`,
+            values: [...detailsWithoutId, userName, true]
+          });
+          console.log(`Inserted new record in ${tableName} with ID: ${result.rows[0].id}`);
+          return result.rows[0];
+        } else {
+          // Update existing record
+          const updateColumns = allColumns.map((col, i) => `${col} = $${i + 1}`).join(', ');
+          const result = await researchDbW.query({
+            text: `UPDATE ${tableName} SET ${updateColumns}, updated_by = $${allColumns.length + 1}, updated_at = NOW() WHERE id = $${allColumns.length + 2} RETURNING id`,
+            values: [...modifiedData, userName, id]
+          });
+          console.log(`Updated existing record in ${tableName} with ID: ${result.rows[0].id}`);
+          return result.rows[0];
+        }
+      });
+  
+      const results = await Promise.all(queries);
+      console.log('All operations completed:', results);
     } catch (error) {
-      console.error(`Error processing details for table ${tableName}:`, details, error);
+      console.error(`Error processing details for table ${tableName}:`, error);
       throw error;  
     }
   }));
