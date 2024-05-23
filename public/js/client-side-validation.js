@@ -63,6 +63,15 @@ function validateRequiredFormFields(actionBtn) {
         }
       }
 
+      if (validate === "isValidMonth") {
+        const isValid = isValidMonth(elemVal);
+        if (!isValid) {
+          isValidElem = false;
+          validationState = false;
+          break;
+        }
+      }
+
       if (validate === "isAlphabet") {
         const isValid = isAlphabet(elemVal);
         if (!isValid) {
@@ -315,6 +324,17 @@ function isValidYear(year) {
   }
 
   return numericYear >= 1900 && numericYear <= 3000;
+}
+
+function isValidMonth(month) {
+  const numericMonth = parseInt(month, 10);
+
+  if (isNaN(numericMonth)) {
+    // Not a valid numeric month
+    return false;
+  }
+
+  return numericMonth >= 0 && numericMonth <= 11;
 }
 
 function isFloatingNumber(input) {

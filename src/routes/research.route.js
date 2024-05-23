@@ -170,6 +170,22 @@ router.post('/pharmacy-seed-grant-form/investigator-research-completed/insert', 
 router.post('/pharmacy-seed-grant-form/details', asyncErrorHandler(authMiddleware), asyncErrorHandler(pharmacySeedGrantForm.retriveDetailsDataPharamacy));
 router.post('/pharmacy-seed-grant-form/update', asyncErrorHandler(authMiddleware), asyncErrorHandler(pharmacySeedGrantForm.updatePharmacyDetailsData));
 
+//delete pharamy main row record 
+router.post('/pharmacy-seed-grant-form/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(pharmacySeedGrantForm.deletePharmcySeedDetails));
+
+// delete formacy details like education experience
+
+router.post('/pharmacy-seed-grant-form/education-details/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(pharmacySeedGrantForm.deleteEducationalDetails));
+router.post('/pharmacy-seed-grant-form/experience-details/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(pharmacySeedGrantForm.deleteExperienceDetails));
+router.post('/pharmacy-seed-grant-form/book-details/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(pharmacySeedGrantForm.deleteBookDetails));
+router.post('/pharmacy-seed-grant-form/book-chapter-details/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(pharmacySeedGrantForm.deleteBookChapterDetails));
+router.post('/pharmacy-seed-grant-form/publication-details/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(pharmacySeedGrantForm.deletePublicationDetails));
+router.post('/pharmacy-seed-grant-form/patent-details/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(pharmacySeedGrantForm.deletePatentDetails));
+router.post('/pharmacy-seed-grant-form/implementation-details/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(pharmacySeedGrantForm.deleteImplementationDetails));
+router.post('/pharmacy-seed-grant-form/completed-details/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(pharmacySeedGrantForm.deleteCompleteDetails));
+
+
+
 
 
 
