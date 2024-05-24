@@ -15,7 +15,7 @@ module.exports.renderSeedGrantNonFormacy = async (userName) => {
                     c.travel, c.computer_charges, c.nmims_facility_charges, c.miscellaneous_including_contingency,
                     c.advanced_payment, c.final_payment, c.per_session_fees, c.session_count_per_days, c.total_fees,
                     c.faculty_shares, c.nmims_shares, c.gross_fees ,
-                    c.totalamount,c.grandtotal
+                    c.totalamount,c.grandtotal, c.faculty_dsg, c.supporting_documents
                 FROM 
                     faculty_table f
                 JOIN 
@@ -55,7 +55,7 @@ module.exports.viewSeedGrantNonFormacy = async (grantedSeedId, userName) => {
                 c.year, c.title, c.commencement_date, c.created_by AS created_by, c.updated_by AS updated_by, c.completion_date, c.research_staff_expenses,
                 c.travel, c.computer_charges, c.nmims_facility_charges, c.miscellaneous_including_contingency,
                 c.advanced_payment, c.final_payment, c.per_session_fees, c.session_count_per_days, c.total_fees,
-                c.faculty_shares, c.nmims_shares, c.gross_fees,c.totalamount,c.grandtotal
+                c.faculty_shares, c.nmims_shares, c.gross_fees,c.totalamount,c.grandtotal, c.faculty_dsg, c.supporting_documents
             FROM 
                 faculty_table f
             JOIN 
@@ -90,6 +90,7 @@ module.exports.viewSeedGrantNonFormacy = async (grantedSeedId, userName) => {
 
 module.exports.insertSeedGrantNonformacyForm = async (
   seedGrantFormData,
+  pharmacyFiles,
   userName
 ) => {
   const {
@@ -113,12 +114,13 @@ module.exports.insertSeedGrantNonformacyForm = async (
     facultyId,
     totalAmount,
     grandTotal,
+    facultyDsg,
   } = seedGrantFormData;
   let sql = {
     text: `INSERT INTO nmims_seed_grant_non_formacy (year, title, commencement_date, completion_date, session_count_per_days,  per_session_fees,
-        faculty_shares, nmims_shares, research_staff_expenses, travel, computer_charges, nmims_facility_charges, miscellaneous_including_contingency, advanced_payment, final_payment, total_fees, gross_fees, faculty_table_id, created_by,
-        totalamount,grandtotal, active)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22) RETURNING id`,
+        faculty_shares, nmims_shares, research_staff_expenses, travel, computer_charges, nmims_facility_charges, miscellaneous_including_contingency, advanced_payment, final_payment, total_fees, gross_fees, faculty_table_id,
+        totalamount,grandtotal,faculty_dsg, supporting_documents, created_by, active)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24) RETURNING id`,
 
     values: [
       year,
@@ -139,10 +141,12 @@ module.exports.insertSeedGrantNonformacyForm = async (
       totalFees,
       grossFees,
       facultyId,
-      userName,
       totalAmount,
       grandTotal,
-      true
+      facultyDsg,
+      pharmacyFiles,
+      userName,
+      true,
     ],
   };
 
@@ -170,6 +174,7 @@ module.exports.insertSeedGrantNonformacyForm = async (
 module.exports.updateSeedGrantNonformacyForm = async (
   grantedSeedId,
   updatedSeedGrantData,
+  pharmacyFiles,
   userName
 ) => {
   const {
@@ -191,34 +196,53 @@ module.exports.updateSeedGrantNonformacyForm = async (
     totalFees,
     grossFees,
     facultyId,
+    totalAmount,
+    grandTotal,
+    facultyDsg,
   } = updatedSeedGrantData;
 
+  let baseSql = `UPDATE nmims_seed_grant_non_formacy  SET year = $2, title = $3, commencement_date = $4, completion_date = $5, session_count_per_days = $6,  per_session_fees = $7,
+ faculty_shares = $8, nmims_shares = $9, research_staff_expenses = $10, travel = $11, computer_charges = $12, nmims_facility_charges = $13, miscellaneous_including_contingency = $14, advanced_payment = $15, final_payment = $16, total_fees = $17, gross_fees = $18, faculty_table_id = $19,
+ totalamount = $20, grandtotal = $21, faculty_dsg = $22, updated_by = $23`;
+
+  let supportingDocumentsUpdate = pharmacyFiles
+    ? `, supporting_documents = $24`
+    : "";
+
+  let queryText = baseSql + supportingDocumentsUpdate + ` WHERE id = $1`;
+
+  let values = [
+    grantedSeedId,
+    year,
+    title,
+    commencementDate,
+    completionDate,
+    sessionNumbers,
+    sessionsFees,
+    facultyShare,
+    nmimsShare,
+    researchStaffExpenses,
+    travlExpanses,
+    computerCharges,
+    faculityCharges,
+    miscellaneousContingencyCharges,
+    advancedPayment,
+    finalPayment,
+    totalFees,
+    grossFees,
+    facultyId,
+    totalAmount,
+    grandTotal,
+    facultyDsg,
+    userName,
+    ...(pharmacyFiles ? [pharmacyFiles] : []),
+  ];
+
   let sql = {
-    text: `UPDATE nmims_seed_grant_non_formacy  SET year = $2, title = $3, commencement_date = $4, completion_date = $5, session_count_per_days = $6,  per_session_fees = $7,
-    faculty_shares = $8, nmims_shares = $9, research_staff_expenses = $10, travel = $11, computer_charges = $12, nmims_facility_charges = $13, miscellaneous_including_contingency = $14, advanced_payment = $15, final_payment = $16, total_fees = $17, gross_fees = $18, faculty_table_id = $19, updated_by = $20 WHERE id = $1`,
-    values: [
-      grantedSeedId,
-      year,
-      title,
-      commencementDate,
-      completionDate,
-      sessionNumbers,
-      sessionsFees,
-      facultyShare,
-      nmimsShare,
-      researchStaffExpenses,
-      travlExpanses,
-      computerCharges,
-      faculityCharges,
-      miscellaneousContingencyCharges,
-      advancedPayment,
-      finalPayment,
-      totalFees,
-      grossFees,
-      facultyId,
-      userName,
-    ],
+    text: queryText,
+    values: values,
   };
+  console.log("sql ====>>>>>>", sql);
 
   let facultySql = {
     text: `SELECT * FROM faculty_table  WHERE id = $1 and active=true `,

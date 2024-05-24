@@ -82,7 +82,9 @@ module.exports.insertBookPublicationData = async (
       console.log("error.constraint ====>>>>>", error.constraint);
       console.log("error.message ====>>>", error.message);
       const message =
-        error.code === "23505" ? "Doi Id Of Book should Uniq" : error.message;
+        error.code === "23505"
+          ? "Doi Id Of Book should be Unique"
+          : error.message;
       console.log("message =====>>>>>>", message);
       return {
         status: "Failed",
@@ -171,7 +173,7 @@ module.exports.updatedBookPublication = async (
       console.log("error.constraint ====>>>>>", error.constraint);
       console.log("error.message ====>>>", error.message);
       const message =
-        error.code === "23505" ? "Doi Id Of Book should Uniq" : error.message;
+        error.code === "23505" ? "Doi Id Of Book should Unique" : error.message;
       console.log("message =====>>>>>>", message);
       return {
         status: "Failed",

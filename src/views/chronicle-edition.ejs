@@ -28,36 +28,30 @@
       flex-grow: 1;
       margin-right: 5px;
       margin-bottom: 10px;
-      /* Adjust margin as needed */
       min-width: 0;
       background-color: #5ca4ea;
-      /* Allow buttons to shrink if necessary */
     }
 
-    .editor-btn:hover {
+    /* .editor-btn:hover {
       transform: scale(1.01);
-      /* box-shadow: rgb(99 99 99 / 20%) 0px 2px 8px 0px; */
-      /* background: #ad0000; */
+      
       background: #ad0000;
       color: #fff !important;
-      /* Change background color to red on hover */
-    }
+    } */
 
     /* Media query for smaller screens */
-    @media (max-width: 768px) {
+    /* @media (max-width: 768px) {
       .editor-btn {
         flex-basis: calc(50% - 5px);
-        /* Two buttons per row, accounting for margins */
       }
-    }
+    } */
 
     /* Media query for even smaller screens */
-    @media (max-width: 480px) {
+    /* @media (max-width: 480px) {
       .editor-btn {
         flex-basis: 100%;
-        /* Each button takes up full width */
       }
-    }
+    } */
 
     /* .chronicle-date{
   width: 100px;
@@ -74,7 +68,7 @@
           <div class="breadcrumbs-container">
             <ul class="breadcrumb">
               <li class="breadcrumb-link">
-                <a href="<%- BASE_URL %>dashboard"> Dashboard </a>
+                <a href="<%- BASE_URL %>dashboard-page"> Dashboard </a>
               </li>
               <li class="breadcrumb-link">Chronicle Edition</li>
             </ul>
@@ -89,123 +83,113 @@
             <button id="branding-add-modal" class="btn btn-primary editor-btn insert-data chronicle-edition-add-modal"
               data-toggle="modal" data-target="#branding-modal">Branding</button>
           </div>
-
-          <div class="">
+          <div>
             <div class="table-card-header text-uppercase d-flex align-items-center justify-content-between">
-              <div>
-                <h5 class="pl-2">CHRONICLE EDITION </h5>
-              </div>
-              <!-- <div class="">
-                <button style="text-align: end;" id="chronicle-edition-add-modal" type="button" class="btn btn-primary add-modal" data-toggle="modal"
-                    data-target="#chronicle-edition-modal">
-                    <i  class="fas fa-plus plus"></i></button>
-                </button>
-            </div> -->
+                <div>
+                  <h5 class="pl-2">CHRONICLE EDITION </h5>
+                </div>
             </div>
             <div class="card-body table-responsive">
-              <div class="d-flex justify-content-between">
-                <div>
-                  <!-- <label>Show Entries</label>
-                  <select class="form-select" id="changeEntry">
-                    <option value="5">5</option>
-                    <option value="10">10</option>
-                    <option value="25">25</option>
-                    <option value="50">50</option>
-                    <option value="100">100</option>
-                    <option value="150">150</option>
-                    <option value="200">200</option>
-                    <option value="250">250</option>
-                    <option value="300">300</option>
-                    <option value="350">350</option>
-                    <option value="400">400</option>
-                    <option value="500">500</option>
-                    <option value="800">800</option>
-                    <option value="1000">1000</option>
-                  </select> -->
+                <table class="table vertical-lines custom-table" id="chronicle-list">
+                  <thead>
+                    <tr>
+                      <th class="col-lg-1 text-start">Serial</th>
+                      <th class="col-lg-1">Type</th>
+                      <th class="col-lg-1">Created By</th>
+                      <th class="col-lg-1">Created Date</th>
+                      <th class="col-lg-1">Updated Date</th>
+                      <th class="col-lg-1">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% for (let i=0; i < chronicleEditorData.length; i++) { %>
+                      <tr  data-chronicle-id="<%= chronicleEditorData[i][0] %>"
+                        editor-data-content="<%= chronicleEditorData[i][5] %>">
+                        <td class="col-lg-1 text-start">
+                          <%= i + 1 %>
+                        </td>
+                        <td class="col-lg-1 head-text editor-type">
+                          <%= chronicleEditorData[i][1] %>
+                        </td>
+                        <td class="col-lg-1 head-text created-by">
+                          <%= chronicleEditorData[i][2] %>
+                        </td>
+                        <td class="col-lg-1 head-text created-date">
+                          <%= chronicleEditorData[i][3] %>
+                        </td>
+                        <td class="col-lg-1 head-text updated-at">
+                          <%= chronicleEditorData[i][4] %>
+                        </td>
+                        <!-- <td class="col-lg-1">
+                                            <label class="view" data-chronicle-id="<%= chronicleEditorData[i][0] %>">
+                                                <i class="fa-solid fa-eye view text-danger" data-chronicle-id="<%= chronicleEditorData[i][0] %>"></i>
+                                            </label>
+                                            <label class="edit" data-chronicle-id="<%= chronicleEditorData[i][0] %>">
+                                                <i class="fa fa-edit edit text-danger" data-chronicle-id="<%= chronicleEditorData[i][0] %>"></i>
+                                            </label>
+                                            <label class="delete" data-chronicle-id="<%= chronicleEditorData[i][0] %>">
+                                                <i class="fa-solid fa-trash delete text-danger" data-chronicle-id="<%= chronicleEditorData[i][0] %>"></i>
+                                            </label>
+                                        </td> -->
+                        <td style="display:flex;justify-content: center;">
+                          <b title="View" class="view border-right-0" style="cursor: pointer;"
+                            data-chronicle-id="<%= chronicleEditorData[i][0] %>">
+                            &#128065;
+                          </b>&ensp;&ensp;&ensp;
+                          <b title="Edit" class="edit border-right-0" style="cursor: pointer;"
+                            data-chronicle-id="<%= chronicleEditorData[i][0] %>">
+                            &#9998;
+                          </b>&ensp;&ensp;&ensp;
+                          <b title="Delete" class="delete border-right-0" style="cursor: pointer;"
+                            data-chronicle-id="<%= chronicleEditorData[i][0] %>">
+                            &#128465;
+                          </b>
+                        </td>
+                      </tr>
+                  </tbody>
+                  <% } %>
+                </table>
+            </div>
+        </div>
+    
+       
+          <!--Import Modal -->
+          <div class="modal fade" id="open-program-modal" tabindex="-1" aria-labelledby="open-program-modal"
+            aria-hidden="true">
+          </div>
+          <!-- EDIT PROGRAM AND UPDATE -->
+          <div class="modal fade" id="edit-program-modal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title-head" id="editModalLabel">Update Program</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div>
-                  <!-- <div class="table-searchbar-container">
-                    <button type="button" id="searchBtn"><i class="fas fa-search"></i></button>
-                    <input type="search" id="searchKeyword" placeholder="Enter keywords" class="table-searchbar">
-                  </div> -->
+                <div id="errorHtml"></div>
+                <div class="modal-body">
+                  <div class="mb-3">
+                    <label for="exampleInputEmail1" class=" sub-title">Program Name</label>
+                    <input type="text" class="form-control" id="program_name" name="program_name">
+                    <input type="hidden" class="form-control" id="hidden_id" name="hidden_id">
+                  </div>
+                  <div class="mb-3">
+                    <label for="exampleInputPassword1" class=" sub-title">Program Type</label>
+                    <select class="form-control" name="program_type_lid" id="program_type_lid">
+                      <option value="1">Full Time</option>
+                      <option value="2">Part Time</option>
+                    </select>
+                  </div>
+      
+                  <div class="mb-3">
+                    <label for="abbr" class=" sub-title">Program Abbr</label>
+                    <input type="text" class="form-control" id="abbr" name="abbr">
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-primary updateProgram">Update</button>
                 </div>
               </div>
-              <table class="table vertical-lines custom-table" id="chronicle-list">
-                <thead>
-                  <tr>
-                    <th class="col-lg-1 text-start">#</th>
-                    <th class="col-lg-1">Type</th>
-                    <th class="col-lg-1">Created By</th>
-                    <th class="col-lg-1">Created Date</th>
-                    <th class="col-lg-1">Updated Date</th>
-                    <th class="col-lg-1">Action</th>
-                  </tr>
-                </thead>
-                <tbody class="data-list">
-                  <% for (let i=0; i < chronicleEditorData.length; i++) { %>
-                    <tr class="row" data-chronicle-id="<%= chronicleEditorData[i][0] %>"
-                      editor-data-content="<%= chronicleEditorData[i][5] %>">
-                      <td class="col-lg-1 text-start">
-                        <%= i + 1 %>
-                      </td>
-                      <td class="col-lg-1 head-text editor-type">
-                        <%= chronicleEditorData[i][1] %>
-                      </td>
-                      <td class="col-lg-1 head-text created-by">
-                        <%= chronicleEditorData[i][2] %>
-                      </td>
-                      <td class="col-lg-1 head-text created-date">
-                        <%= chronicleEditorData[i][3] %>
-                      </td>
-                      <td class="col-lg-1 head-text updated-at">
-                        <%= chronicleEditorData[i][4] %>
-                      </td>
-                      <!-- <td class="col-lg-1">
-                              <label class="view" data-chronicle-id="<%= chronicleEditorData[i][0] %>">
-                                  <i class="fa-solid fa-eye view text-danger" data-chronicle-id="<%= chronicleEditorData[i][0] %>"></i>
-                              </label>
-                              <label class="edit" data-chronicle-id="<%= chronicleEditorData[i][0] %>">
-                                  <i class="fa fa-edit edit text-danger" data-chronicle-id="<%= chronicleEditorData[i][0] %>"></i>
-                              </label>
-                              <label class="delete" data-chronicle-id="<%= chronicleEditorData[i][0] %>">
-                                  <i class="fa-solid fa-trash delete text-danger" data-chronicle-id="<%= chronicleEditorData[i][0] %>"></i>
-                              </label>
-                          </td> -->
-                      <td  style="display:flex;justify-content: center;"> 
-                      <b title="View" class="view border-right-0" style="cursor: pointer;"
-                        data-chronicle-id="<%= chronicleEditorData[i][0] %>">
-                        &#128065;
-                      </b>
-                      <b title="Edit" class="edit border-right-0" style="cursor: pointer;"
-                        data-chronicle-id="<%= chronicleEditorData[i][0] %>">
-                        &#9998;
-                    </b>
-                      <b title="Delete" class="delete border-right-0" style="cursor: pointer;"
-                        data-chronicle-id="<%= chronicleEditorData[i][0] %>">
-                        &#128465;
-                    </b>
-                      </td>
-                    </tr>
-                  </tbody>
-                    <% } %>
-               
-                <tr>
-                  <div id="no-records-message" style="display: none; color: red; margin-top: 10px; padding-left: 40%;">
-                    <b class="no-record">No records found.</b>
-                  </div>
-                </tr>
-              </table>
-            </div>
-          </div>
-          <div class="d-flex justify-content-between">
-            <div>
-              <label id="total-row-count">Total entries : <%- rowCount %> </label>
-              <label class="d-none" id="row-count"> <%- rowCount %></label>
-            </div>
-            <div>
-              <button id="prevBtn" class="btn btn-primary">Previous</button>
-              <button id="nextBtn" class="btn btn-primary">Next</button>
-              <p id="pagination" class="pagination-search"></p>
             </div>
           </div>
         </div>
@@ -746,8 +730,9 @@
                         Swal.fire({
                           position: "top-center",
                           icon: "success",
-                          title: `${data.message}`,
+                          title: `Record inserted successfully`,
                           showConfirmButton: true,
+                          allowOutsideClick: false,
                           confirmButtonText: "OK",
                           confirmButtonColor: "#DD6B55"
 
@@ -772,6 +757,7 @@
                           color: "red",
                           with: "20PX",
                           showConfirmButton: true,
+                          allowOutsideClick: false,
                           confirmButtonText: "OK",
                           confirmButtonColor: "#DD6B55"
                         });
@@ -812,7 +798,16 @@
             }
           }
           else {
-            alert('Validation Failed');
+            Swal.fire({
+              position: "top-center",
+              icon: "error",
+              title: "Validation Failed",
+              color: "red",
+              showConfirmButton: true,
+              allowOutsideClick: false,
+              confirmButtonText: "OK",
+              confirmButtonColor: "#DD6B55"
+            })
           }
         });
 
@@ -832,7 +827,16 @@
             }
           }
           else {
-            alert('Validation Failed');
+            Swal.fire({
+              position: "top-center",
+              icon: "error",
+              title: "Validation Failed",
+              color: "red",
+              showConfirmButton: true,
+              allowOutsideClick: false,
+              confirmButtonText: "OK",
+              confirmButtonColor: "#DD6B55"
+            })
           }
         });
 
@@ -852,7 +856,16 @@
             }
           }
           else {
-            alert('Validation Failed');
+            Swal.fire({
+              position: "top-center",
+              icon: "error",
+              title: "Validation Failed",
+              color: "red",
+              showConfirmButton: true,
+              allowOutsideClick: false,
+              confirmButtonText: "OK",
+              confirmButtonColor: "#DD6B55"
+            })
           }
         });
 
@@ -872,7 +885,16 @@
             }
           }
           else {
-            alert('Validation Failed');
+            Swal.fire({
+              position: "top-center",
+              icon: "error",
+              title: "Validation Failed",
+              color: "red",
+              showConfirmButton: true,
+              allowOutsideClick: false,
+              confirmButtonText: "OK",
+              confirmButtonColor: "#DD6B55"
+            })
           }
         });
 
@@ -1110,13 +1132,24 @@
                     editorDataToBeUpdate.querySelector('.created-date').innerText = data.chronicleDate;
                     editorDataToBeUpdate.setAttribute('editor-data-content', data.updatedChronicleEditorData);
                     editorDataToBeUpdate.querySelector('.updated-at').innerText = data.updatedAt;
-                    alert('Content Updated Successfully');
+                    Swal.fire({
+                      position: "top-center",
+                      icon: "success",
+                      title: `Content updated successfully`,
+                      showConfirmButton: true,
+                      allowOutsideClick: false,
+                      confirmButtonText: "OK",
+                      confirmButtonColor: "#DD6B55"
+                    }).then(data => {
+                      document.location.reload();
+                    });
+
+                                $('#vc-modal').modal('hide');
+                                $('#research-modal').modal('hide');
+                                $('#meeting-modal').modal('hide');
+                                $('#branding-modal').modal('hide');
                   }
 
-                  $('#vc-modal').modal('hide');
-                  $('#research-modal').modal('hide');
-                  $('#meeting-modal').modal('hide');
-                  $('#branding-modal').modal('hide');
                 })
                 .catch(error => {
                   console.error('Error sending data to server:', error);
@@ -1152,7 +1185,16 @@
             }
           }
           else {
-            alert('Validation Failed');
+            Swal.fire({
+              position: "top-center",
+              icon: "error",
+              title: "Validation Failed",
+              color: "red",
+              showConfirmButton: true,
+              allowOutsideClick: false,
+              confirmButtonText: "OK",
+              confirmButtonColor: "#DD6B55"
+            })
           }
         });
 
@@ -1174,7 +1216,16 @@
             }
           }
           else {
-            alert('Validation Failed');
+            Swal.fire({
+              position: "top-center",
+              icon: "error",
+              title: "Validation Failed",
+              color: "red",
+              showConfirmButton: true,
+              allowOutsideClick: false,
+              confirmButtonText: "OK",
+              confirmButtonColor: "#DD6B55"
+            })
           }
         });
 
@@ -1196,7 +1247,16 @@
             }
           }
           else {
-            alert('Validation Failed');
+            Swal.fire({
+              position: "top-center",
+              icon: "error",
+              title: "Validation Failed",
+              color: "red",
+              showConfirmButton: true,
+              allowOutsideClick: false,
+              confirmButtonText: "OK",
+              confirmButtonColor: "#DD6B55"
+            })
           }
         });
 
@@ -1218,7 +1278,16 @@
             }
           }
           else {
-            alert('Validation Failed');
+            Swal.fire({
+              position: "top-center",
+              icon: "error",
+              title: "Validation Failed",
+              color: "red",
+              showConfirmButton: true,
+              allowOutsideClick: false,
+              confirmButtonText: "OK",
+              confirmButtonColor: "#DD6B55"
+            })
           }
 
         });
@@ -1236,11 +1305,11 @@
         }
 
         $("#chronicle-list").DataTable({
-                    "pageLength": 5,
-                    "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
-                    })
+          "pageLength": 5,
+          "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+        })
 
       </script>
       <!-- <%- include('./partials/pagination') %> -->
-        <%- include('./partials/footer') %>
-          <%- include('./partials/footer-end') %>
+      <%- include('./partials/footer') %>
+        <%- include('./partials/footer-end') %>

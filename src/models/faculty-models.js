@@ -31,6 +31,7 @@ module.exports.insertFacultyDetails = async (exetrnalFacultyDetails) => {
       };
     })
     .catch((error) => {
+      console.log('error ===>>>>', error)
       return {
         status: "Failed",
         message: error.message,

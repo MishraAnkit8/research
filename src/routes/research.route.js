@@ -139,18 +139,20 @@ router.post('/e-content/view', asyncErrorHandler(authMiddleware), asyncErrorHand
 
 // nmims consultancy form
 router.get('/nmims-consultancy-approval-form', asyncErrorHandler(authMiddleware), asyncErrorHandler(nmimsConsultancyForm.renderNmimsConsultancyForm));
-router.post('/nmims-consultancy-approval-form/insert', asyncErrorHandler(authMiddleware), asyncErrorHandler(nmimsConsultancyForm.insertconsultancyFormData));
+router.post('/nmims-consultancy-approval-form/insert', upload.array('consultancyFiles', 5) , asyncErrorHandler(authMiddleware), asyncErrorHandler(nmimsConsultancyForm.insertconsultancyFormData));
 router.post('/nmims-consultancy-approval-form/view', asyncErrorHandler(authMiddleware), asyncErrorHandler(nmimsConsultancyForm.viewConsultancyFormApprovalData));
-router.post('/nmims-consultancy-approval-form/update', asyncErrorHandler(authMiddleware), asyncErrorHandler(nmimsConsultancyForm.updateConsultancyApprovalFormData));
+router.post('/nmims-consultancy-approval-form/update', upload.array('consultancyFiles', 5), asyncErrorHandler(authMiddleware), asyncErrorHandler(nmimsConsultancyForm.updateConsultancyApprovalFormData));
 router.post('/nmims-consultancy-approval-form/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(nmimsConsultancyForm.deleteConsultancyFormData));
-
+router.get('/nmims-consultancy-approval-form/download/:fileName', downloadFileService.downloadFile);
+router.get('/nmims-consultancy-approval-form/viewing/:fileName', downloadFileService.viewFile);
 // seedGrantNonPharmacy
 router.get('/nmims-seed-grant-non-pharmacy', asyncErrorHandler(authMiddleware), asyncErrorHandler(seedGrantNonPharmacy.renderNmimsSeedGrantNonFormacy));
-router.post('/nmims-seed-grant-non-pharmacy/insert', asyncErrorHandler(authMiddleware), asyncErrorHandler(seedGrantNonPharmacy.insertGrantedSeedNonFormacyForm));
+router.post('/nmims-seed-grant-non-pharmacy/insert',  upload.array('pharmacyFiles', 5) , asyncErrorHandler(authMiddleware), asyncErrorHandler(seedGrantNonPharmacy.insertGrantedSeedNonFormacyForm));
 router.post('/nmims-seed-grant-non-pharmacy/view', asyncErrorHandler(authMiddleware), asyncErrorHandler(seedGrantNonPharmacy.viewNonformacyForm));
-router.post('/nmims-seed-grant-non-pharmacy/update', asyncErrorHandler(authMiddleware), asyncErrorHandler(seedGrantNonPharmacy.updatedNonFormacyform));
+router.post('/nmims-seed-grant-non-pharmacy/update',  upload.array('pharmacyFiles', 5) ,  asyncErrorHandler(authMiddleware), asyncErrorHandler(seedGrantNonPharmacy.updatedNonFormacyform));
 router.post('/nmims-seed-grant-non-pharmacy/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(seedGrantNonPharmacy.deleteNonFormacyForm));
-
+router.get('/nmims-seed-grant-non-pharmacy/download/:fileName', downloadFileService.downloadFile);
+router.get('/nmims-seed-grant-non-pharmacy/viewing/:fileName', downloadFileService.viewFile);
 // pharmacySeedGrantForm
 router.get('/pharmacy-seed-grant-form', asyncErrorHandler(authMiddleware), asyncErrorHandler(pharmacySeedGrantForm.renderPharmacySeedGrantform));
 router.post('/pharmacy-seed-grant-form/insert', asyncErrorHandler(authMiddleware), asyncErrorHandler(pharmacySeedGrantForm.insertPharmacySeedForms));
@@ -165,6 +167,25 @@ router.post('/pharmacy-seed-grant-form/investigator-patent/insert', asyncErrorHa
 router.post('/pharmacy-seed-grant-form/investigator-publication/insert', asyncErrorHandler(authMiddleware), asyncErrorHandler(pharmacySeedGrantForm.investigatorPublication));
 router.post('/pharmacy-seed-grant-form/investigator-research-implementation/insert', asyncErrorHandler(authMiddleware), asyncErrorHandler(pharmacySeedGrantForm.investigatorResearchImplementation));
 router.post('/pharmacy-seed-grant-form/investigator-research-completed/insert', asyncErrorHandler(authMiddleware), asyncErrorHandler(pharmacySeedGrantForm.investigatorResearchCompleted));
+router.post('/pharmacy-seed-grant-form/details', asyncErrorHandler(authMiddleware), asyncErrorHandler(pharmacySeedGrantForm.retriveDetailsDataPharamacy));
+router.post('/pharmacy-seed-grant-form/update', asyncErrorHandler(authMiddleware), asyncErrorHandler(pharmacySeedGrantForm.updatePharmacyDetailsData));
+
+//delete pharamy main row record 
+router.post('/pharmacy-seed-grant-form/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(pharmacySeedGrantForm.deletePharmcySeedDetails));
+
+// delete formacy details like education experience
+
+router.post('/pharmacy-seed-grant-form/education-details/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(pharmacySeedGrantForm.deleteEducationalDetails));
+router.post('/pharmacy-seed-grant-form/experience-details/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(pharmacySeedGrantForm.deleteExperienceDetails));
+router.post('/pharmacy-seed-grant-form/book-details/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(pharmacySeedGrantForm.deleteBookDetails));
+router.post('/pharmacy-seed-grant-form/book-chapter-details/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(pharmacySeedGrantForm.deleteBookChapterDetails));
+router.post('/pharmacy-seed-grant-form/publication-details/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(pharmacySeedGrantForm.deletePublicationDetails));
+router.post('/pharmacy-seed-grant-form/patent-details/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(pharmacySeedGrantForm.deletePatentDetails));
+router.post('/pharmacy-seed-grant-form/implementation-details/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(pharmacySeedGrantForm.deleteImplementationDetails));
+router.post('/pharmacy-seed-grant-form/completed-details/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(pharmacySeedGrantForm.deleteCompleteDetails));
+
+
+
 
 
 

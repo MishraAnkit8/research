@@ -32,7 +32,9 @@ module.exports.fetchIPRData = async (userName) => {
                 string_agg(DISTINCT ns.school_name, ', ') AS associated_schools,
                 string_agg(DISTINCT ns.id::text, ', ') AS school_id,
                 string_agg(DISTINCT nc.campus_name, ', ') AS associated_campuses,
-                string_agg(DISTINCT nc.id::text, ', ') AS campus_id
+                string_agg(DISTINCT nc.id::text, ', ') AS campus_id,
+                string_agg(DISTINCT sdg.id::text, ', ') AS sdg_id,
+                string_agg(DISTINCT intr.id::text, ', ') AS faculty_id
             FROM
                 IPR ipr
             LEFT JOIN
@@ -55,10 +57,19 @@ module.exports.fetchIPRData = async (userName) => {
                 ipr_nmims_campus inc ON ipr.id = inc.ipr_id
             LEFT JOIN
                 nmims_campus nc ON inc.campus_id = nc.id
+            LEFT JOIN
+              ipr_sdg_goals isdg ON ipr.id = isdg.ipr_id
+            LEFT JOIN
+                sdg_goals sdg ON isdg.sdg_goals_id = sdg.id
+            LEFT JOIN
+              ipr_faculty iprf ON ipr.id = iprf.ipr_id
+            LEFT JOIN
+                  faculties intr ON iprf.faculty_id = intr.id
+            
             WHERE
                 ipr.created_by = $1 and ipr.active=true and iit.active=true and it.active=true and 
                 ist.active=true and ps.active=true and isd.active=true and sd.active=true and ins.active=true and ns.active=true
-                and inc.active=true and nc.active=true 
+                and inc.active=true and nc.active=true and intr.faculty_type_id=1
             GROUP BY
                 ipr.id,
                 ipr.patent_title,
@@ -123,6 +134,10 @@ module.exports.fetchIPRData = async (userName) => {
     text: `select *  FROM ipr_nmims_campus where active=true ORDER BY id`,
   };
 
+  let sdgGoalSql = {
+    text: `select *  FROM sdg_goals where active=true  ORDER BY id`
+};
+
   console.log("iPRSql ===>>>", iPRSql);
   console.log("internalEmpSql ===>>>", internalEmpSql);
   const iprPromise = await researchDbR.query(iPRSql);
@@ -138,7 +153,7 @@ module.exports.fetchIPRData = async (userName) => {
   const iprSatatus = await researchDbR.query(iprPatentStageSql);
   const iprInvetiontype = await researchDbR.query(iprInventionTypeSql);
   const iprFaculty = await researchDbR.query(iprFacultySql);
-
+  const patentSdgGoalData = await researchDbR.query(sdgGoalSql);
   const promises = [
     iprPromise,
     internalEmpPromise,
@@ -153,6 +168,7 @@ module.exports.fetchIPRData = async (userName) => {
     iprSatatus,
     iprInvetiontype,
     iprFaculty,
+    patentSdgGoalData
   ];
 
   return Promise.all(promises)
@@ -171,6 +187,7 @@ module.exports.fetchIPRData = async (userName) => {
         iprSatatus,
         iprInvetiontype,
         iprFaculty,
+        patentSdgGoalData,
       ]) => {
         return {
           status: "Done",
@@ -189,6 +206,7 @@ module.exports.fetchIPRData = async (userName) => {
           iprSatatus: iprSatatus.rows,
           iprInvetiontype: iprInvetiontype.rows,
           iprFaculty: iprFaculty.rows,
+          patentSdgGoalData : patentSdgGoalData.rows,
         };
       }
     )
@@ -209,6 +227,7 @@ module.exports.InsetIPRDataModels = async (
   campusIdsArray,
   inventionTypeIdsArray,
   patentStatus,
+  sdgGoalsIdArray,
   userName
 ) => {
   console.log("iprFilesString in models ====>>>>", iprFilesNamesArray);
@@ -226,8 +245,8 @@ module.exports.InsetIPRDataModels = async (
   } = IprData;
 
   let iprSql = {
-    text: `INSERT INTO IPR (patent_title, patent_application_number, applicant_name, patent_filed_date, patent_published_date, patent_grant_date, patent_publication_number, patent_grant_number, institutional_affiliation, created_by)
-                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9 , $10) RETURNING id`,
+    text: `INSERT INTO IPR (patent_title, patent_application_number, applicant_name, patent_filed_date, patent_published_date, patent_grant_date, patent_publication_number, patent_grant_number, institutional_affiliation, created_by, active)
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9 , $10, $11) RETURNING id`,
     values: [
       titleOfInvention,
       applicationNum,
@@ -239,6 +258,7 @@ module.exports.InsetIPRDataModels = async (
       patentGrantedNo,
       instituteAffiliation,
       userName,
+      true
     ],
   };
 
@@ -316,6 +336,17 @@ module.exports.InsetIPRDataModels = async (
     return researchDbW.query(iprSatatusSql);
   });
 
+  const insertSdgGoalsPromises = sdgGoalsIdArray.map((element) => {
+    const SdgGoalsSql = {
+      text: `INSERT INTO ipr_sdg_goals (ipr_id, sdg_goals_id) VALUES ($1, $2) RETURNING id`,
+      values: [iprId, element]
+  };
+    console.log("SdgGoalsSql ===>>>>>", SdgGoalsSql);
+    return researchDbW.query(SdgGoalsSql);
+  });
+
+
+
   const selectSchoolDataPromises = schoolIdsArray.map(async (schoolId) => {
     const schoolSql = {
       text: `SELECT * FROM nmims_school WHERE id = $1 and active=true `,
@@ -366,6 +397,7 @@ module.exports.InsetIPRDataModels = async (
     ...selectCampusDataPromises,
     ...selectInvetionTypePromises,
     ...selectPatentSatatusPromises,
+    ...insertSdgGoalsPromises,
   ])
     .then((results) => {
       console.log("Results:", results);
@@ -619,6 +651,7 @@ module.exports.updateIPRRecordData = async (
   campusIdsArray,
   inventionTypeIdsArray,
   patentStatus,
+  sdgGoalsIdArray,
   userName
 ) => {
   console.log("data in models for updation ===>>>>", updatedIPRData);
@@ -702,6 +735,23 @@ module.exports.updateIPRRecordData = async (
           : Promise.resolve({ rows: [{ id: existingRecord.rows[0].id }] });
       })
     : [];
+
+    const insertSdgGoalsPromises = sdgGoalsIdArray.map(async sdg_goals_id => {
+      const existingRecord = await researchDbW.query({
+        text: `SELECT id FROM ipr_sdg_goals WHERE ipr_id = $1 AND sdg_goals_id = $2 and active=true`,
+        values: [iprId, sdg_goals_id]
+      });
+    
+      return existingRecord.rows.length === 0 ? (
+        researchDbW.query({
+          text: `INSERT INTO ipr_sdg_goals (ipr_id, sdg_goals_id) VALUES ($1, $2) RETURNING id`,
+          values: [iprId, sdg_goals_id]
+        })
+      ) : (
+        Promise.resolve({ rows: [{ id: existingRecord.rows[0].id }] })
+      );
+    });
+
 
   console.log("insertIprStatusPromises ===>>>>>", insertIprStatusPromises);
   const insertInventionTypePromises = inventionTypeIdsArray
@@ -834,6 +884,7 @@ module.exports.updateIPRRecordData = async (
     ...selectCampusDataPromises,
     ...selectInvetionTypePromises,
     ...selectPatentSatatusPromises,
+    ...insertSdgGoalsPromises,
   ])
     .then((results) => {
       console.log("Results:", results);
@@ -1148,6 +1199,13 @@ module.exports.iprRecordToBeViewed = async (iprId, userName) => {
     values: [iprId],
   };
 
+  let sdgGoalSql = {
+    text: `SELECT sg.id, sg.name
+        FROM ipr_sdg_goals iprsg
+        JOIN sdg_goals sg ON iprsg.sdg_goals_id = sg.id
+        WHERE iprsg.ipr_id = $1 and iprsg.active=true and sg.active=true`,
+    values : [iprId]
+};
   console.log("iprDocuments ===>>>>>>", iprDocuments);
   console.log("iprStatusSql ===>>>>>", iprStatusSql);
   console.log("iprInvetionSql ===>>>>", iprInvetionSql);
@@ -1163,6 +1221,7 @@ module.exports.iprRecordToBeViewed = async (iprId, userName) => {
   const iprInventionList = await researchDbW.query(iprInvetionSql);
   const iprStatusList = await researchDbW.query(iprStatusSql);
   const iprDocumentsList = await researchDbW.query(iprDocuments);
+  const sdgGoals = await researchDbW.query(sdgGoalSql)
   const promises = [
     viewIPRRecord,
     facultyData,
@@ -1171,6 +1230,7 @@ module.exports.iprRecordToBeViewed = async (iprId, userName) => {
     iprInventionList,
     iprStatusList,
     iprDocumentsList,
+    sdgGoals,
   ];
   return Promise.all(promises)
     .then(([viewIPRRecord]) => {
@@ -1185,6 +1245,7 @@ module.exports.iprRecordToBeViewed = async (iprId, userName) => {
         iprInventionList: iprInventionList.rows,
         iprStatusList: iprStatusList.rows,
         iprDocumentsList: iprDocumentsList.rows,
+        sdgGoals : sdgGoals.rows,
       };
     })
     .catch((error) => {

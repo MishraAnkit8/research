@@ -4,7 +4,7 @@ module.exports.renderJournalPaper = async (userName) => {
 
     const fetchJournalArticle  = await journalPaperModel.fetchJournalPaper(userName);
 
-   console.log('journalArticleData ===>>>>', fetchJournalArticle.rowCount);
+//    console.log('journalArticleData ===>>>>', fetchJournalArticle);
    // makeing object based in article_id
    const journalData = {};
    fetchJournalArticle.journalArticleData.forEach(data => {
@@ -15,7 +15,7 @@ module.exports.renderJournalPaper = async (userName) => {
        }
    });
    const journalArticleData = Object.values(journalData);
-//    console.log('journalArticleData in service ===>>>>>>>', journalArticleData);
+   console.log('journalArticleData in service ===>>>>>>>', journalArticleData);
    
    return fetchJournalArticle.status === "Done" ? {
                 status : fetchJournalArticle.status,
@@ -41,6 +41,9 @@ module.exports.insertJournalPapper = async (body, files, userName) => {
     const journalDetails =  body;
     console.log('journalDetails inservice ==>>', journalDetails);
     const articleFilesNameArray = files ?.map(file => file.filename);
+    const journalFiles = files ?.map(file => file.filename).join(',');
+
+    console.log('journalFiles =====>>>>>>', journalFiles)
     console.log('articleFilesNameArray ===>>>>>>', articleFilesNameArray);
     const nmimsFacultiesIds = JSON.parse(journalDetails.nmimsFacultiesIds);
     const nmimsSchoolIds = JSON.parse(journalDetails.nmimsSchoolIds);
@@ -71,7 +74,7 @@ module.exports.insertJournalPapper = async (body, files, userName) => {
     
 
     const newJournalPaper = await journalPaperModel.insertJournalArticle(journalDetails, articleFilesNameArray, schoolIdsArray, campusIdsArray,
-        impactFactorArray, policyCadreArray, allAuthorsArray, nmimsAuthorsArray, userName);
+        impactFactorArray, policyCadreArray, allAuthorsArray, nmimsAuthorsArray, journalFiles, userName);
 
     console.log('newJournalPaper ==>>', newJournalPaper);
     const documentIds = newJournalPaper.documentIds;
@@ -142,6 +145,9 @@ module.exports.updateJournalPaper = async (body, files, userName) => {
 
     console.log(' updateJournalDetails data for updation in service ===>>>>', updateJournalDetails);
     const updatedArticleFilesNameArray = files ?.map(file => file.filename);
+    console.log('updatedArticleFilesNameArray ====>>>>>>>', updatedArticleFilesNameArray);
+    const journalFiles = files ?.map(file => file.filename).join(',');
+    console.log('journalFiles in update =====>>>>>>', journalFiles);
 
     console.log('updatedArticleFilesNameArray ===>>>>>>', updatedArticleFilesNameArray);
 
@@ -174,7 +180,7 @@ module.exports.updateJournalPaper = async (body, files, userName) => {
     const allAuthorsIdsString = updateAllAuthorsArray.join(',');
 
     const updatedJournalData = await journalPaperModel.updateJournalPaperData(journalPaperId, updateJournalDetails, updateSchoolIdsArray, updateCampusIdsArray, updateNmimsAuthorsArray,
-         updateImpactFactorArray, updatePolicyCadreArray, updateAllAuthorsArray, updatedArticleFilesNameArray, userName);
+         updateImpactFactorArray, updatePolicyCadreArray, updateAllAuthorsArray, updatedArticleFilesNameArray, journalFiles, userName);
 
     console.log('data is service ==>>>', updatedJournalData);
     const documentIds = updatedJournalData.documentIds;

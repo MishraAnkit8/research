@@ -15,7 +15,7 @@ function validateRequiredFormFields(actionBtn) {
     const validateArr = elem.dataset.validate
       ? elem.dataset.validate.split(",")
       : [];
-    const errorMsg = elem.dataset.errMsg
+    let errorMsg = elem.dataset.errMsg
       ? elem.dataset.errMsg
       : "Please enter a valid value";
     const emptyErrorMsg = elem.dataset.errMsg
@@ -45,8 +45,26 @@ function validateRequiredFormFields(actionBtn) {
         }
       }
 
+      if (validate === "isAllNumeric") {
+        const isValid = isAllNumeric(elemVal);
+        if (!isValid) {
+          isValidElem = false;
+          validationState = false;
+          break;
+        }
+      }
+
       if (validate === "isValidYear") {
         const isValid = isValidYear(elemVal);
+        if (!isValid) {
+          isValidElem = false;
+          validationState = false;
+          break;
+        }
+      }
+
+      if (validate === "isValidMonth") {
+        const isValid = isValidMonth(elemVal);
         if (!isValid) {
           isValidElem = false;
           validationState = false;
@@ -117,10 +135,23 @@ function validateRequiredFormFields(actionBtn) {
         const betweenArr = validate.split(":");
         const min = betweenArr[1];
         const max = betweenArr[2];
-        const isValid = between(elemVal, min, max);
+        const isValid = isBetween(elemVal, min, max);
         if (!isValid) {
           isValidElem = false;
           validationState = false;
+          break;
+        }
+      }
+
+      if (validate.includes("isFile")) {
+        const arr = ["pdf", "xlsx", "xlsm", "xls","docx"]
+        let ext = elemVal.substring(elemVal.lastIndexOf('.') + 1);
+        let isValid = arr.includes(ext?.toLowerCase())
+
+        if(!isValid) {
+          isValidElem = false;
+          validationState = false;
+          errorMsg = `Invalid File Type only ${arr.join(", ")} are allowed`;
           break;
         }
       }
@@ -143,7 +174,6 @@ function validateRequiredFormFields(actionBtn) {
           break;
         }
       }
-
 
       if (validate === "isValidHttpUrl") {
         const isValid = isValidHttpUrl(elemVal);
@@ -229,6 +259,30 @@ function toggleErrorState(formGroup, errorMsg, errorElem, isValidElem) {
 //     return true;
 // }
 
+function isAllNumeric(input) {
+  if (!input || input === "") {
+    return false;
+  }
+  let count = 0;
+
+  for (let i = 0; i < input.length; i++) {
+    const charCode = input.charAt(i);
+
+    // Ensure it's a digit (between char code 48 to 57)
+    if (charCode > 0 || charCode < 9) {
+      count++;
+    }
+  }
+
+  if (input.length === count) {
+    console.log("Validated Wrongly");
+    return false;
+  } else {
+    console.log("Validated ", count);
+    return true;
+  }
+}
+
 function isNumber(input) {
   if (!input || input === "") {
     return false;
@@ -272,6 +326,17 @@ function isValidYear(year) {
   return numericYear >= 1900 && numericYear <= 3000;
 }
 
+function isValidMonth(month) {
+  const numericMonth = parseInt(month, 10);
+
+  if (isNaN(numericMonth)) {
+    // Not a valid numeric month
+    return false;
+  }
+
+  return numericMonth >= 0 && numericMonth <= 11;
+}
+
 function isFloatingNumber(input) {
   if (parseFloat(input) != input) {
     return false;
@@ -303,20 +368,15 @@ function isValidHttpUrl(string) {
   try {
     const newUrl = new URL(string);
 
-    if(newUrl.protocol === 'http:' || newUrl.protocol === 'https:'){
+    if (newUrl.protocol === "http:" || newUrl.protocol === "https:") {
       return true;
-    }else{
+    } else {
       return false;
     }
   } catch (err) {
     return false;
   }
 }
-
-
-
-
-
 
 function isAlphabeticWords(input) {
   if (!input || input.trim() === "") {

@@ -12,6 +12,9 @@
                     <div class="breadcrumbs-container">
                         <ul class="breadcrumb">
                             <li class="breadcrumb-link">
+                                <a href="<%- BASE_URL %>dashboard-page"> Dashboard </a>
+                            </li>
+                            <li class="breadcrumb-link">
                                 <a href="<%- BASE_URL %>research"> Research </a>
                             </li>
                             <li class="breadcrumb-link">
@@ -110,15 +113,15 @@
                                                 <b title="View" class="view border-right-0" style="cursor: pointer;"
                                                     data-bookChapter-id="<%- bookChapter.id %>">
                                                     &#128065;
-                                                </b>&ensp;
+                                                </b>&ensp;&ensp;&ensp;
                                                 <b title="Edit" class="edit border-right-0" style="cursor: pointer;"
                                                     data-bookChapter-id="<%- bookChapter.id %>">
                                                     &#9998;
-                                                </b>&ensp;
+                                                </b>&ensp;&ensp;&ensp;
                                                 <b title="Delete" class="delete border-right-0" style="cursor: pointer;"
                                                     data-bookChapter-id="<%- bookChapter.id %>">
                                                     &#128465;
-                                                </b>&ensp;
+                                                </b>&ensp;&ensp;&ensp;
                                             </td>
 
                                         </tr>
@@ -249,8 +252,8 @@
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="page-number" class="form-label fw-bold">Page numbers Of The
                                         Chapter</label>
-                                    <input type="number" name="vol" id="page-number" data-validate="isEmpty,isNumber"
-                                        data-err-msg="Numeric value is required." class="form-control" required>
+                                    <input type="text" name="vol" id="page-number" data-validate="isEmpty,isExist"
+                                        data-err-msg="Provide valid input" class="form-control" required>
                                 </div>
                                 <!-- Publisher Name -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
@@ -293,21 +296,22 @@
                                 <!-- ISBN Number -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="ISBN-Number" class="form-label fw-bold">ISBN Number</label>
-                                    <input type="number" name="ISBN-Number" id="isbn-no" class="form-control"
-                                        data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required"
+                                    <input type="text" name="ISBN-Number" id="isbn-no" class="form-control"
+                                        data-validate="isEmpty,isExist" data-err-msg="Provide valid input"
                                         required>
                                 </div>
                                 <!-- DOI of Book Chapter -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="doi-book-id" class="form-label fw-bold">DOI ID Of Book Chapter</label>
-                                    <input type="number" name="doi-book-id" id="doi-book-id" class="form-control">
+                                    <input type="text" name="doi-book-id" id="doi-book-id" class="form-control"data-validate="isEmpty,isExist,isLength:2:255"
+                                    data-err-msg="Provide Valid input." required>
                                 </div>
                                 <!-- volume number -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="volume-number" class="form-label fw-bold">Volume Number</label>
-                                    <input type="number" name="volume-number" id="volume-number" class="form-control"
-                                        data-validate="isEmpty,isNumber" data-err-msg="numeric value is required."
-                                        required>
+                                    <input type="text" name="volume-number" id="volume-number" class="form-control"
+                                        data-validate="isEmpty,isExist,isLength:2:255"
+                                        data-err-msg="Field value is required." required>
                                 </div>
                                 <!-- No. of NMIMS Authors -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
@@ -326,16 +330,15 @@
                                 </div>
                                 <!-- NMIMS Campus - Author -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <label for="nmims-campus-authors" class="form-label fw-bold ">NMIMS Campus
+                                    <label for="nmims-campus-authors" class="form-label fw-bold ">Campus of
                                         Author</label>
                                     <input type="url" name="nmims-campus-authors" id="nmims-campus-authors"
-                                        placeholder="NMIMS Campus Author"
                                         data-validate="isEmpty,isAlphabeticWords,isLength:2:255" class="form-control"
                                         data-err-msg="Provide Valid Input" required />
                                 </div>
                                 <!--NMIMS School - Author-->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <label for="nmims-school-authors" class="form-label fw-bold ">NMIMS School
+                                    <label for="nmims-school-authors" class="form-label fw-bold ">School of
                                         Author</label>
                                     <input type="url" name="nmimsSchoolAuthors" id="nmims-school-authors"
                                         data-validate="isEmpty,isAlphabeticWords,isLength:2:255"
@@ -344,11 +347,13 @@
                                 <!-- Upload Supporting Documents-->
                                 <div class="form-group col-lg-6 col-md-8 col-sm-12 mb-4">
                                     <div class="col-lg-6 col-md-8 col-sm-12">
-                                        <label for="supporting-documents" class="form-label fw-bold ">
+                                        <label class="form-label fw-bold ">
                                             Upload Supporting Documents
                                             <div id="uploadNewSupportDocumentDiv">
-                                                <label for="uploadNewSupportDocument"><small>Click to Upload New File</small></label>
-                                                <input type="checkbox" name="uploadNewSupportDocument" id="uploadNewSupportDocument">
+                                                <label for="uploadNewSupportDocument"><small>Click to Upload New
+                                                        File</small></label>
+                                                <input type="checkbox" name="uploadNewSupportDocument"
+                                                    id="uploadNewSupportDocument">
                                             </div>
                                         </label>
                                         <div class="d-flex">
@@ -382,8 +387,8 @@
                 <div class="modal-dialog modal-dialog-scrollable modal-lg modal-fullscreen p-5" role="document">
                     <div class="modal-content modal-content-data">
                         <div class="modal-header">
+                            <h5 class="modal-title" id="book-chapter">BOOK CHAPTER PUBLICATION VIEW</h5>
                             <div class="close" data-dismiss="modal" aria-label="Close">
-                                <h5 class="modal-title" id="book-chapter">BOOK CHAPTER PUBLICATION VIEW</h5>
                                 <span TYPE="button" aria-hidden="true"><i class="fas fa-times"></i></span>
                             </div>
                         </div>
@@ -505,7 +510,7 @@
                                 <!-- NMIMS SCHOOL AUTHOR -->
                                 <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                                     <div class="box">
-                                        <div class="task-sub-title sub-title-text">NMIMS School Authors :</div>
+                                        <div class="task-sub-title sub-title-text">School of Author :</div>
                                         <label class="view-content" id="view-nmims-school-authors"></label>
                                     </div>
                                 </div>
@@ -531,6 +536,7 @@
                 </div>
             </div>
             <!-- inline javascript -->
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
             <script>
 
                 // for index icrement
@@ -715,11 +721,11 @@
                                 Swal.fire({
                                     position: "top-center",
                                     icon: "success",
-                                    title: `${message}`,
+                                    title: `${data.message}`,
                                     showConfirmButton: true,
                                     confirmButtonText: "OK",
                                     confirmButtonColor: "#DD6B55",
-                                    timer: 1500
+                                    // timer: 1500
                                 }).then(() => {
                                     document.location.reload();
                                 });
@@ -737,6 +743,7 @@
                                     icon: "error",
                                     title: `${data.status}`,
                                     color: "red",
+                                    allowOutsideClick: false,
                                     with: "20PX",
                                     html: `<span style="color: red;">${data.message}</span>`,
                                     showConfirmButton: true,
@@ -750,6 +757,7 @@
                             Swal.fire({
                                 position: "top-center",
                                 icon: "error",
+                                allowOutsideClick: false,
                                 title: `${error}`,
                                 color: "red",
                                 showConfirmButton: true,
@@ -771,6 +779,7 @@
                             title: "Validation Failed",
                             color: "red",
                             showConfirmButton: true,
+                            allowOutsideClick: false,
                             confirmButtonText: "OK",
                             confirmButtonColor: "#DD6B55"
                         });
@@ -861,6 +870,7 @@
                                 text: "You won't be able to revert this!",
                                 icon: "warning",
                                 showCancelButton: true,
+                                allowOutsideClick: false,
                                 confirmButtonColor: "#3085d6",
                                 cancelButtonColor: "#d33",
                                 confirmButtonText: "Yes, delete it!"
@@ -885,6 +895,7 @@
                                                     text: `${data.message}`,
                                                     icon: "success",
                                                     showConfirmButton: true,
+                                                    allowOutsideClick: false,
                                                     confirmButtonText: "OK",
                                                     confirmButtonColor: "#DD6B55"
                                                 }).then(() => {
@@ -895,6 +906,7 @@
                                                 Swal.fire({
                                                     position: "top-center",
                                                     icon: "error",
+                                                    allowOutsideClick: false,
                                                     title: `${data.errorCode}`,
                                                     color: "red",
                                                     with: "20PX",
@@ -912,6 +924,7 @@
                                                 icon: "error",
                                                 title: `${error}`,
                                                 color: "red",
+                                                allowOutsideClick: false,
                                                 showConfirmButton: true,
                                                 confirmButtonText: "OK",
                                                 confirmButtonColor: "#DD6B55"
@@ -954,7 +967,7 @@
                         const viewNmimsAuthors = document.getElementById('view-nmims-authors');
                         const viewNmimsCampusAuthors = document.getElementById('view-nmims-campus-authors');
                         const viewNmimsSchoolAuthors = document.getElementById('view-nmims-school-authors');
-                        const viewSupportingDocuments = document.getElementById('view-support-document');
+                        // const viewSupportingDocuments = document.getElementById('view-support-document');
 
                         fetch('<%- BASE_URL %>research/book-publication-main/book-chapter-publication/view', {
                             method: 'POST',
@@ -1092,6 +1105,7 @@
                                     icon: "success",
                                     title: `${data.message}`,
                                     showConfirmButton: true,
+                                    allowOutsideClick: false,
                                     confirmButtonText: "OK",
                                     confirmButtonColor: "#DD6B55",
                                     timer: 1500
@@ -1108,6 +1122,7 @@
                                     with: "20PX",
                                     html: `<span style="color: red;">${data.message}</span>`,
                                     showConfirmButton: true,
+                                    allowOutsideClick: false,
                                     confirmButtonText: "OK",
                                     confirmButtonColor: "#DD6B55"
                                 });
@@ -1120,6 +1135,7 @@
                                 position: "top-center",
                                 icon: "error",
                                 title: "Updation Failed",
+                                allowOutsideClick: false,
                                 color: "red",
                                 with: "20PX",
                                 html: `<span style="color: red;">${error}</span>`,
@@ -1145,6 +1161,7 @@
                         Swal.fire({
                             position: "top-center",
                             icon: "error",
+                            allowOutsideClick: false,
                             title: "Validation Failed",
                             color: "red",
                             showConfirmButton: true,
@@ -1218,16 +1235,16 @@
                     "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
                 })
 
-document.querySelector('#uploadNewSupportDocument').addEventListener('click',function(e){
+                document.querySelector('#uploadNewSupportDocument').addEventListener('click', function (e) {
 
-    let is_checked = document.querySelector('#uploadNewSupportDocument').checked;
-    console.log("is_checked :",is_checked);
-    if(is_checked){
-        document.querySelector('#supporting-documents').classList.remove('d-none');
-    }else{
-        document.querySelector('#supporting-documents').classList.add('d-none');
-    }
-});
+                    let is_checked = document.querySelector('#uploadNewSupportDocument').checked;
+                    console.log("is_checked :", is_checked);
+                    if (is_checked) {
+                        document.querySelector('#supporting-documents').classList.remove('d-none');
+                    } else {
+                        document.querySelector('#supporting-documents').classList.add('d-none');
+                    }
+                });
 
             </script>
             <!-- pagination -->

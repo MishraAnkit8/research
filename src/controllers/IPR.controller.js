@@ -1,5 +1,6 @@
 const { getRedisData } = require('../../utils/redis.utils');
-const iprServices = require('../services/IPR.services')
+const iprServices = require('../services/IPR.services');
+
 module.exports.renderIPR = async(req, res, next) => {
     const  userName = req.body.username;
     console.log('userName in controller  ===>>>>>>', userName);
@@ -7,12 +8,12 @@ module.exports.renderIPR = async(req, res, next) => {
     const iprList = await iprServices.fetchPatentForm(userName);
 
     // console.log('iprList ===>>>', iprList);
-    console.log('iprList.iprData ===>>>>>>', iprList.iprData);
-    console.log('iprList.internalEmpList ===>>>>>>', iprList.internalEmpList);
+    // console.log('iprList.iprData ===>>>>>>', iprList.iprData);
+    // console.log('iprList.internalEmpList ===>>>>>>', iprList.internalEmpList);
     // console.log('iprList.inventiontype ===>>>>>>', iprList.inventiontype);
-    console.log('iprList.patentStatus ===>>>>>>', iprList.patentStatus);
-    console.log('iprList.schoolList ===>>>>>>', iprList.schoolList);
-    console.log('iprList.schoolList ===>>>>>>', iprList.schoolList);
+    // console.log('iprList.patentStatus ===>>>>>>', iprList.patentStatus);
+    // console.log('iprList.schoolList ===>>>>>>', iprList.schoolList);
+    // console.log('iprList.schoolList ===>>>>>>', iprList.schoolList);
 
     res.render('IPR', {
             IPRDataList : iprList.iprData,
@@ -23,6 +24,7 @@ module.exports.renderIPR = async(req, res, next) => {
             patentStatus : iprList.patentStatus,
             nmimsSchoolList : iprList.schoolList,
             nmimsCampusList : iprList.campusList,
+            patentSdgGoalData : iprList.patentSdgGoalData
 
         })
 }
@@ -132,6 +134,7 @@ module.exports.viewIprRecordData = async(req, res, next) => {
         iprInventionList : iprRowToBeViewed.iprInventionList,
         iprStatusList : iprRowToBeViewed.iprStatusList,
         iprDocumentsList : iprRowToBeViewed.iprDocumentsList,
+        sdgGoals : iprRowToBeViewed.sdgGoals,
         errorCode : iprRowToBeViewed.errorCode
     })
 }

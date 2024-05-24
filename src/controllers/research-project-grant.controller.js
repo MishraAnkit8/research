@@ -6,9 +6,12 @@ module.exports.renderResearchProjectConsultancy = async (req, res, next) => {
 
   const researchcConsultancyData =
     await researchConsultancyService.fetchResearConsultacyData(userName);
-    console.log('external json ',JSON.stringify(researchcConsultancyData.externalDetails))
+  console.log("external json ", JSON.stringify(researchcConsultancyData));
 
-  // console.log('researchcConsultancyData in controller ===>>>>>', researchcConsultancyData);
+  console.log(
+    "researchcConsultancyData in controller ===>>>>>",
+    researchcConsultancyData.researchPojectGrantFacultyData
+  );
 
   res.render("research-project-grant", {
     status: researchcConsultancyData.status,
@@ -20,6 +23,9 @@ module.exports.renderResearchProjectConsultancy = async (req, res, next) => {
     rowCount: researchcConsultancyData.rowCount,
     InternalFaculty: researchcConsultancyData.InternalFaculty,
     externalDetails: researchcConsultancyData.externalDetails,
+    internalFaculty: researchcConsultancyData.internalFaculty,
+    nmimsSchoolList: researchcConsultancyData.nmimsSchoolList,
+    nmimsCampusList: researchcConsultancyData.nmimsCampusList,
     errorCode: researchcConsultancyData.errorCode
       ? researchcConsultancyData.errorCode
       : null,
@@ -31,7 +37,7 @@ module.exports.insertResearchConsultancyData = async (req, res, next) => {
   console.log("userName in controller  ===>>>>>>", userName);
 
   const researchConsultantData = req.body;
-  console.log("researchConsultantData ==>>", researchConsultantData);
+  console.log("researchConsultantData ==>>", JSON.stringify(req.body));
   console.log("files in controllerr ==>>>", req.files);
 
   const researchcConsultancyData =
@@ -72,7 +78,7 @@ module.exports.updatedConsultantData = async (req, res, next) => {
   const userName = req.body.username;
   console.log("userName in controller  ===>>>>>>", userName);
 
-  console.log("data comming from templates ==>>", req.body);
+  console.log("data comming from templates ==>>", JSON.stringify(req.body));
   const consultantId = req.body.consultantId;
   const updatedConsultant = req.body;
 

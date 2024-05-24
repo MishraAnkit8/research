@@ -7,10 +7,11 @@ module.exports.fetchNoFormacyForm = async(userName) => {
     const seedGrantFormData = await seedGrantModels.renderSeedGrantNonFormacy(userName);
 
     console.log("facultyData ====>>>>>", seedGrantFormData.facultyData);
-    console.log('seedGrantFormData ===>>>>', JSON.stringify(seedGrantFormData.seedGrantFormDataRows));
+    // console.log('seedGrantFormData ===>>>>', JSON.stringify(seedGrantFormData.seedGrantFormDataRows));
     const paymentDataArray = seedGrantFormData.seedGrantFormDataRows;
+    const seedGrantFormDataRows = seedGrantFormData.seedGrantFormDataRows;
     console.log("paymentDataArray ====>>>>", paymentDataArray);
-    console.log('seed grant ',JSON.stringify(seedGrantFormData.seedGrantFormDataRows))
+    // console.log('seed grant ',JSON.stringify(seedGrantFormData.seedGrantFormDataRows))
 
 
 
@@ -20,9 +21,9 @@ module.exports.fetchNoFormacyForm = async(userName) => {
              const Data = parseInt(payment.final_payment) + parseInt(payment.advanced_payment);
              let gstCharge = Data * 18/100;
 
-             console.log('gstCharge ===>>>>', gstCharge);
-             console.log('final_payment ===>>>>', parseInt(payment.final_payment));
-             console.log('final_payment ===>>>>',  parseInt(payment.final_payment));
+            //  console.log('gstCharge ===>>>>', gstCharge);
+            //  console.log('final_payment ===>>>>', parseInt(payment.final_payment));
+            //  console.log('final_payment ===>>>>',  parseInt(payment.final_payment));
              let totalCost = parseInt(payment.research_staff_expenses) + parseInt(payment.travel)
              + parseInt(payment.computer_charges) + parseInt(payment.nmims_facility_charges) + 
              parseInt(payment.gross_fees) + parseInt(payment.miscellaneous_including_contingency)
@@ -32,7 +33,7 @@ module.exports.fetchNoFormacyForm = async(userName) => {
              totalPayment.push({totalPayment : Data,totalGrant : grantTotal});
     })
 
-    console.log("totalPayment", totalPayment);
+    // console.log("totalPayment", totalPayment);
  
 
     return seedGrantFormData.status === "Done" ? {
@@ -51,11 +52,12 @@ module.exports.fetchNoFormacyForm = async(userName) => {
 
 
 
-module.exports.insertSeedGrantNonFormacy = async(body, userName) => {
-    const seedGrantFormData = body.seedGrantFormData;
+module.exports.insertSeedGrantNonFormacy = async(body, files, userName) => {
+    const seedGrantFormData = body;
+    const consultancyFiles = files?.map(file => file.filename).join(',');
     console.log('seedGrantFormData in service ==>>>', seedGrantFormData)
 
-    const insertSeedGrantNonFormacyData =  await seedGrantModels.insertSeedGrantNonformacyForm(seedGrantFormData, userName);
+    const insertSeedGrantNonFormacyData =  await seedGrantModels.insertSeedGrantNonformacyForm(seedGrantFormData, consultancyFiles, userName);
 
     console.log('insertSeedGrantNonFormacyData ====>>>>', insertSeedGrantNonFormacyData);
 
@@ -72,11 +74,13 @@ module.exports.insertSeedGrantNonFormacy = async(body, userName) => {
     }
 }
 
-module.exports.updateSeedGrantNonFormacyData = async(body, userName) => {
-    const grantedSeedId = body.updatedSeedGrantData.grantedSeedId;
-    const updatedSeedGrantData = body.updatedSeedGrantData;
-
-    const updatedNonFormacyData  = await seedGrantModels.updateSeedGrantNonformacyForm(grantedSeedId, updatedSeedGrantData, userName);
+module.exports.updateSeedGrantNonFormacyData = async(body, files, userName) => {
+    const updatedSeedGrantData = body;
+    console.log('body in service cc =====>>>>>>>', body);
+    const pharmacyFiles = files?.map(file => file.filename).join(',');
+    console.log('pharmacyFiles in service ==>>>', pharmacyFiles)
+    const grantedSeedId = body.grantedSeedId;
+    const updatedNonFormacyData  = await seedGrantModels.updateSeedGrantNonformacyForm(grantedSeedId, updatedSeedGrantData, pharmacyFiles, userName);
     console.log('updatedNonFormacyData ====>>>>>', updatedNonFormacyData);
 
     return updatedNonFormacyData.status === "Done" ? {
@@ -125,15 +129,17 @@ module.exports.viewGrantedSeedNonFormacyData = async (body, userName) => {
     console.log('totalAmount===>>>', totalAmount);
     const facultySharesPercentage = parseInt(nonFormacyData.nonFormacyformData[0].faculty_shares);
     const nmimsSharePercentage = parseInt(nonFormacyData.nonFormacyformData[0].nmims_shares);
+    const totalFees = nonFormacyData.nonFormacyformData[0].session_count_per_days * nonFormacyData.nonFormacyformData[0].per_session_fees;
+    console.log('totalFees ===>>>>', totalFees);
 
     console.log('facultySharesPercentage ===>>>>', facultySharesPercentage);
-    const facultyShareAmount = totalAmount * facultySharesPercentage / 100;
-    const nmimsShareAmount = totalAmount * nmimsSharePercentage/100;
+    const facultyShareAmount = totalFees * facultySharesPercentage / 100;
+    const nmimsShareAmount = totalFees * nmimsSharePercentage/100;
+    
     console.log('nmimsShareAmount ::::', nmimsShareAmount);
     console.log('facultyShareAmount ===>>>', facultyShareAmount);
 
-    const totalFees = nonFormacyData.nonFormacyformData[0].session_count_per_days * nonFormacyData.nonFormacyformData[0].per_session_fees;
-    console.log('totalFees ===>>>>', totalFees);
+    
 
     // const totalExpensesAmount = nonFormacyData.nonFormacyformData[0].research_staff_expenses + nonFormacyData.nonFormacyformData[0].travel + 
     //                             nonFormacyData.nonFormacyformData[0].computer_charges + nonFormacyData.nonFormacyformData[0].nmims_facility_charges

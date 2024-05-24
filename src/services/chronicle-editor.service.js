@@ -1,12 +1,13 @@
 const chronicleModels = require('../models/chronicle-edition.model');
 
 
-module.exports.renderChronicleEdition = async(req, res, next) => {
-    const renderVcEditorData = await chronicleModels.fetchEditorData();
-    const fetchVcOfficeData = await chronicleModels.fetchVcOfficeData();
-    const fetchResearchData = await chronicleModels.renderResearchData();
-    const fetchMeetingData = await chronicleModels.renderMeetingData();
-    const fetchBrandingData = await chronicleModels.renderBrandingData();
+module.exports.renderChronicleEdition = async(userName) => {
+
+    const renderVcEditorData = await chronicleModels.fetchEditorData(userName);
+    const fetchVcOfficeData = await chronicleModels.fetchVcOfficeData(userName);
+    const fetchResearchData = await chronicleModels.renderResearchData(userName);
+    const fetchMeetingData = await chronicleModels.renderMeetingData(userName);
+    const fetchBrandingData = await chronicleModels.renderBrandingData(userName);
 
     // console.log('fetchVcOfficeData in service ===>>>', fetchVcOfficeData)
     return {
@@ -24,53 +25,53 @@ module.exports.renderChronicleEdition = async(req, res, next) => {
 //     return fetchVcOfficeData
 // }
 
-module.exports.insertVcDataService = async (body) => {
+module.exports.insertVcDataService = async (body, username) => {
     console.log("data in service ==>>>", body);
     const chronicleEditorData = body.chronicleEditorData;
     console.log('chronicleEditorData  in service ===>>', chronicleEditorData);
     const chronicleDate = body.chronicleDate;
     console.log('chronicleDate in service ===>>>', chronicleDate)
 
-    const vcEditorData = await chronicleModels.insertVcEditorData(chronicleEditorData, chronicleDate);
+    const vcEditorData = await chronicleModels.insertVcEditorData(chronicleEditorData, chronicleDate, username);
     console.log("vcEditorData in service ==>>>", vcEditorData);
     return vcEditorData;
 };
 
-module.exports.insertResearchDataService = async(body) => {
+module.exports.insertResearchDataService = async(body, userName) => {
     console.log('insertResearchDataService Data in service  ==>>', body);
     const chronicleEditorData = body.chronicleEditorData;
     console.log('chronicleEditorData  in service ===>>', chronicleEditorData);
     const chronicleDate = body.chronicleDate;
     console.log('chronicleDate in service ===>>>', chronicleDate)
-    const researchEditorData = await chronicleModels.insertResearchEditor(chronicleEditorData, chronicleDate);
+    const researchEditorData = await chronicleModels.insertResearchEditor(chronicleEditorData, chronicleDate, userName);
     console.log('researchEditorData in service ==>>>', researchEditorData)
     return researchEditorData
 }
 
-module.exports.insertMeetingDataService = async(body) => {
+module.exports.insertMeetingDataService = async(body, userName) => {
     const chronicleEditorData = body.chronicleEditorData;
     const chronicleDate = body.chronicleDate;
     // console.log('chronicleDate in service ===>>>', chronicleDate)
-    const meetingEditorData = await chronicleModels.insertMeetingEditor(chronicleEditorData, chronicleDate);
+    const meetingEditorData = await chronicleModels.insertMeetingEditor(chronicleEditorData, chronicleDate, userName);
     // console.log('meetingEditorData in service ==>>>', meetingEditorData)
     return meetingEditorData
 }
 
-module.exports.insertBrandingDataService = async(body) => {
+module.exports.insertBrandingDataService = async(body, userName) => {
     console.log('insertBrandingDataService  Data in service  ==>>', body);
     const chronicleEditorData = body.chronicleEditorData;
     console.log('chronicleEditorData  in service ===>>', chronicleEditorData);
     const chronicleDate = body.chronicleDate;
     console.log('chronicleDate in service ===>>>', chronicleDate)
-    const brandingEditorData = await chronicleModels.insertBrandingeditor(chronicleEditorData, chronicleDate);
+    const brandingEditorData = await chronicleModels.insertBrandingeditor(chronicleEditorData, chronicleDate, userName);
     console.log('brandingEditorData in service ==>>>', brandingEditorData)
     return brandingEditorData
 }
 
 //update vc office data
-module.exports.updatedVcOfficeData = async(body) => {
+module.exports.updatedVcOfficeData = async(body, userName) => {
     console.log('body data in service =====>>>>>', body);
-    const updateVcOfficeContent = await chronicleModels.updateVcData(body);
+    const updateVcOfficeContent = await chronicleModels.updateVcData(body, userName);
     if(updateVcOfficeContent.rowCount === 1){
         console.log('updateVcOfficeContent in service ===>>>', updateVcOfficeContent);
         return updateVcOfficeContent
@@ -86,8 +87,8 @@ module.exports.updatedVcOfficeData = async(body) => {
 };
 
 //update meeting content
-module.exports.updatedMeetingStackholder = async(body) => {
-    const updateMeetingContent = await chronicleModels.updateMeetingData(body);
+module.exports.updatedMeetingStackholder = async(body, userName) => {
+    const updateMeetingContent = await chronicleModels.updateMeetingData(body, userName);
     if(updateMeetingContent.rowCount === 1){
         return updateMeetingContent
     }
@@ -101,8 +102,8 @@ module.exports.updatedMeetingStackholder = async(body) => {
 }
 
 //update research content
-module.exports.updatedResearch = async(body) => {
-    const updateRearchContent = await chronicleModels.updateResearchData(body);
+module.exports.updatedResearch = async(body, userName) => {
+    const updateRearchContent = await chronicleModels.updateResearchData(body, userName);
     if(updateRearchContent.rowCount === 1){
         return updateRearchContent
     }
@@ -116,8 +117,8 @@ module.exports.updatedResearch = async(body) => {
 };
 
 //update branding content
-module.exports.updatedBrandingAdvertising = async(body) => {
-    const updateBrandingContent = await chronicleModels.updateBrandingData(body);
+module.exports.updatedBrandingAdvertising = async(body, userName) => {
+    const updateBrandingContent = await chronicleModels.updateBrandingData(body, userName);
     if(updateBrandingContent.rowCount === 1){
         return updateBrandingContent
     }
@@ -130,26 +131,26 @@ module.exports.updatedBrandingAdvertising = async(body) => {
 }
 
 
-module.exports.deleteVcContent = async(body) => {
+module.exports.deleteVcContent = async(body, userName) => {
     console.log('data in service', body);
-    const vcContentDelete = await chronicleModels.deleteVcEditorContent(body);
+    const vcContentDelete = await chronicleModels.deleteVcEditorContent(body, userName);
     return vcContentDelete;
 }
 
-module.exports.deleteMeetingContent = async(body) => {
+module.exports.deleteMeetingContent = async(body, userName) => {
     console.log('data in service', body)
-    const meetingContentDelete = await chronicleModels.deleteMeetingEditorContent(body);
+    const meetingContentDelete = await chronicleModels.deleteMeetingEditorContent(body,userName);
     return meetingContentDelete
 }
 
-module.exports.deleteResearchContent = async(body) => {
+module.exports.deleteResearchContent = async(body, userName) => {
     console.log('data in service', body);
-    const researchContentDelete = await chronicleModels.deleteResearchEditorContent(body);
+    const researchContentDelete = await chronicleModels.deleteResearchEditorContent(body, userName);
     return researchContentDelete;
 }
 
-module.exports.deleteBrandingContent = async(body) => {
+module.exports.deleteBrandingContent = async(body, userName) => {
     console.log('data in service', body);
-    const brandingContentDelete = await chronicleModels.deleteBrandingEditorContnent(body);
+    const brandingContentDelete = await chronicleModels.deleteBrandingEditorContnent(body, userName);
     return brandingContentDelete;
 }

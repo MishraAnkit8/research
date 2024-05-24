@@ -14,6 +14,9 @@
                     <div class="breadcrumbs-container">
                         <ul class="breadcrumb">
                             <li class="breadcrumb-link">
+                                <a href="<%- BASE_URL %>dashboard-page"> Dashboard </a>
+                            </li>
+                            <li class="breadcrumb-link">
                                 <a href="<%- BASE_URL %>research"> Research </a>
                             </li>
                             <li class="breadcrumb-link">Research Seminar</li>
@@ -86,7 +89,7 @@
                                             data-ugc-indexed="<%- seminar.ugc_indexed %>"
                                             data-web-link="<%- seminar.web_link %>" data-uid="<%- seminar.uid %>"
                                             data-date-of-publishing="<%- seminar.date_of_publishing %>"
-                                            data-supporting-documents="<%- seminar.research_seminars %>">
+                                            data-supporting-documents="<%- seminar.supporting_documents %>">
                                             <td> <%- index+1 %> </td>
                                             <td class=" cell year col-lg-1"> <%- seminar.year %> </td>
                                             <td class=" cell school col-lg-1"> <%- seminar.school %> </td>
@@ -103,11 +106,11 @@
                                                 <b title="View" class="border-right-0 view" style="cursor: pointer;"
                                                     data-seminar-id="<%- seminar.id %>">
                                                     &#128065;
-                                                </b>&ensp;
+                                                </b>&ensp;&ensp;&ensp;
                                                 <b title="Edit" class="border-right-0 edit" style="cursor: pointer;"
                                                     data-seminar-id="<%- seminar.id %>">
                                                     &#9998;
-                                                </b>&ensp;
+                                                </b>&ensp;&ensp;&ensp;
                                                 <b title="Delete" class="border-right-0 delete" style="cursor: pointer;"
                                                     data-seminar-id="<%- seminar.id %>">
                                                     &#128465;
@@ -260,17 +263,15 @@
                                 <!-- Pages-->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="pages" class="form-label fw-bold">Vol,ISS,Pages</label>
-                                    <input type="number" name="pages" id="pages" class="form-control"
-                                        data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required."
-                                        required>
+                                    <input type="text" name="pages" id="pages" class="form-control"
+                                        data-validate="isEmpty,isExist" data-err-msg="Provide valid input" required>
                                 </div>
 
                                 <!-- ISSN No. -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="iss-no" class="form-label fw-bold">ISSN No.</label>
-                                    <input type="number" name="iss-no" id="issn-no" class="form-control"
-                                        data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required."
-                                        required>
+                                    <input type="text" name="iss-no" id="issn-no" class="form-control"
+                                        data-validate="isEmpty" data-err-msg="Numeric value is required." required>
                                 </div>
 
                                 <!-- SCS Cite Score -->
@@ -332,8 +333,7 @@
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="web-link" class="form-label fw-bold">WEB Link</label>
                                     <input type="text" name="webLinks" id="web-link" class="form-control"
-                                        data-validate="isEmpty,isValidHttpUrl,isExist"
-                                        data-err-msg="This field is required." required>
+                                        data-validate="isEmpty,isExist" data-err-msg="This field is required." required>
                                 </div>
 
                                 <!-- UID -->
@@ -362,7 +362,7 @@
                                 </div>
                                 <!-- Upload Supporting Documents-->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <label for="supporting-documents" class="form-label fw-bold ">
+                                    <label class="form-label fw-bold ">
                                         Upload Supporting Documents
                                         <div id="uploadNewSupportDocumentDiv">
                                             <label for="uploadNewSupportDocument"><small>Click to Upload New
@@ -498,7 +498,7 @@
                                 <!--abdc-indexed-->
                                 <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                                     <div class="box">
-                                        <div class="sub-title-text sub-title">ABCD Indexed:</div>
+                                        <div class="sub-title-text sub-title">ABDC Indexed:</div>
                                         <label id="view-abdc-indexed"></label>
                                     </div>
                                 </div>
@@ -513,7 +513,8 @@
                                 <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                                     <div class="box">
                                         <div class="sub-title-text sub-title">WEB LINK:</div>
-                                        <label id="view-web-link"></label>
+                                        <!-- <label id="view-web-link"></label> -->
+                                        <a  class="view-content" id="view-web-link"></a>
                                     </div>
                                 </div>
                                 <!--UID -->
@@ -580,7 +581,7 @@
                 const submitBtn = document.getElementById('submit-btn');
                 const updateBtn = document.getElementById('update-btn');
                 const seminarAddModal = document.getElementById('research-seminar-add-modal');
-                let seminarRowToBeUpdated,   seminarId;
+                let seminarRowToBeUpdated, seminarId;
                 let updatedResearchSeminar = {};
 
                 seminarAddModal.addEventListener('click', async function (event) {
@@ -591,6 +592,7 @@
                         updateBtn.classList.add('d-none');
                         document.querySelector('#uploadNewSupportDocumentDiv').classList.add('d-none');
                         document.querySelector('#research-data-file-edit').classList.add('d-none')
+                        document.querySelector('#journal-article-documents').classList.remove('d-none');
                         document.querySelector('#uploadNewSupportDocument').checked = false;
 
                         removeErrorMsg();
@@ -750,6 +752,7 @@
                                     icon: "success",
                                     title: `${data.message}`,
                                     showConfirmButton: true,
+                                    allowOutsideClick: false,
                                     confirmButtonText: "OK",
                                     confirmButtonColor: "#DD6B55"
 
@@ -767,6 +770,7 @@
                                     color: "red",
                                     with: "20PX",
                                     showConfirmButton: true,
+                                    allowOutsideClick: false,
                                     confirmButtonText: "OK",
                                     confirmButtonColor: "#DD6B55"
                                 });
@@ -783,14 +787,15 @@
                     }
                     else {
                         Swal.fire({
-                        position: "top-center",
-                        icon: "error",
-                        title: "Validation Failed",
-                        color: "red",
-                        showConfirmButton: true,
-                        confirmButtonText: "OK",
-                        confirmButtonColor: "#DD6B55"
-                    });
+                            position: "top-center",
+                            icon: "error",
+                            title: "Validation Failed",
+                            color: "red",
+                            showConfirmButton: true,
+                            allowOutsideClick: false,
+                            confirmButtonText: "OK",
+                            confirmButtonColor: "#DD6B55"
+                        });
                     }
                 });
 
@@ -812,6 +817,7 @@
                                 text: "You won't be able to revert this!",
                                 icon: "warning",
                                 showCancelButton: true,
+                                allowOutsideClick: false,
                                 confirmButtonColor: "#3085d6",
                                 cancelButtonColor: "#d33",
                                 confirmButtonText: "Yes, delete it!"
@@ -835,6 +841,7 @@
                                                     text: "Record has been deleted.",
                                                     icon: "success",
                                                     showConfirmButton: true,
+                                                    allowOutsideClick: false,
                                                     confirmButtonText: "OK",
                                                     confirmButtonColor: "#DD6B55"
                                                 }).then(() => {
@@ -851,6 +858,7 @@
                                                 title: `${message}`,
                                                 color: "red",
                                                 showConfirmButton: true,
+                                                allowOutsideClick: false,
                                                 confirmButtonText: "OK",
                                                 confirmButtonColor: "#DD6B55"
                                             });
@@ -905,6 +913,7 @@
 
                         seminarRowToBeUpdated = event.target.closest('tr');
                         console.log('seminarRowToBeUpdated ==>>>', seminarRowToBeUpdated)
+                        setFileNameAttributeToBeDownload(seminarRowToBeUpdated)
                         seminarId = event.target.getAttribute('data-seminar-id');
                         console.log('seminarId ==>>', seminarId);
                         // for button visualization
@@ -1013,7 +1022,7 @@
                             })
                             .then((data) => {
                                 setFileNameInButtons(data);
-                                console.log('data is viewing', data);
+                                console.log('data is viewing', JSON.stringify(data));
                                 viewYear.innerText = data.seminarData[0].year;
                                 viewCampus.innerText = data.seminarData[0].campus;
                                 viewJournalName.innerText = data.seminarData[0].journal_name;
@@ -1023,6 +1032,7 @@
                                 viewIssNo.innerText = data.seminarData[0].issn_no;
                                 viewAbcdIndexed.innerText = data.seminarData[0].abdc_indexed;
                                 viewWebLink.innerText = data.seminarData[0].web_link;
+                                viewWebLink.setAttribute('href', viewWebLink.innerText)
                                 viewPages.innerText = data.seminarData[0].pages;
                                 viewScsCiteScore.innerText = data.seminarData[0].pages;
                                 viewImpactFactor.innerText = data.seminarData[0].impact_factor;
@@ -1145,6 +1155,7 @@
                                 icon: "success",
                                 title: `${data.message}`,
                                 showConfirmButton: true,
+                                allowOutsideClick: false,
                                 confirmButtonText: "OK",
                                 confirmButtonColor: "#DD6B55"
                                 // timer: 1500
@@ -1159,6 +1170,7 @@
                                 color: "red",
                                 with: "20PX",
                                 showConfirmButton: true,
+                                allowOutsideClick: false,
                                 confirmButtonText: "OK",
                                 confirmButtonColor: "#DD6B55"
                             });
@@ -1177,6 +1189,7 @@
                                 with: "20PX",
                                 html: `<span style="color: red;">${errTitle}</span>`,
                                 showConfirmButton: true,
+                                allowOutsideClick: false,
                                 confirmButtonText: "OK",
                                 confirmButtonColor: "#DD6B55"
                             });
@@ -1202,6 +1215,7 @@
                             title: "Validation Failed",
                             color: "red",
                             showConfirmButton: true,
+                            allowOutsideClick: false,
                             confirmButtonText: "OK",
                             confirmButtonColor: "#DD6B55"
                         });
@@ -1213,7 +1227,7 @@
 
                 function setFileNameInButtons(data) {
                     console.log('data ==>>>', data);
-                 let  articleDoucments = document.getElementById('supporting-document');
+                    let articleDoucments = document.getElementById('supporting-document');
                     articleDoucments.setAttribute('data-filename', data.seminarData[0].supporting_documents);
                 }
 
@@ -1233,7 +1247,7 @@
                             if (fileArray.length === 0) {
                                 throw new Error('No file names found in data filename attribute.');
                             }
-//There was a problem downloading files: Data filename attribute not found on button.
+                            //There was a problem downloading files: Data filename attribute not found on button.
                             // const downloadFile = (fileName, fileUrl) => {
                             //     const a = document.createElement('a');
                             //     a.href = fileUrl;
@@ -1275,8 +1289,8 @@
                     const articleDataFiles = document.getElementById('research-data-file-edit');
                     console.log('articleDataFiles ===>>>>>', articleDataFiles)
                     articleDataFiles.classList.remove('d-none');
-                    
-                    const articleDataString = data.getAttribute('data-documents');
+
+                    const articleDataString = data.getAttribute('data-supporting-documents');
                     console.log('articleDataString ====>>>>>>', articleDataString);
                     // setAttribute into button
                     articleDataFiles.setAttribute('data-filename', articleDataString);

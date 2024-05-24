@@ -42,7 +42,7 @@ module.exports.insertEditedBook = async (
     nmimsSchoolAuthors,
   } = editedBook;
 
-  const doiIdParsed = doiBookId === "" ? null : parseInt(doiBookId, 10);
+  // const doiIdParsed = doiBookId === "" ? null : parseInt(doiBookId, 10);
 
   let sql = {
     text: `INSERT INTO edited_book_publications (author_name, book_title, edition, editor_name, chapter_title, publication_place, publisher_category, page_number, publisher_name, 
@@ -60,7 +60,7 @@ module.exports.insertEditedBook = async (
       publisherName,
       publicationYear,
       bookUrl,
-      doiIdParsed,
+      doiBookId,
       isbnNo,
       numberOfNmimsAuthors,
       nmimsAuthors,
@@ -127,7 +127,7 @@ module.exports.updatedEditedBookPublication = async (
   const supportingDocumentString = updatedEditedBookFiles
     ? updatedEditedBookFiles
     : null;
-  const doiIdParsed = doiBookId === "" ? null : parseInt(doiBookId, 10);
+  // const doiIdParsed = doiBookId === "" ? null : parseInt(doiBookId, 10);
   let querywithOutDoc = `UPDATE edited_book_publications SET author_name = $2, book_title = $3, edition = $4, editor_name = $5, chapter_title = $6, publication_place = $7, publisher_category = $8, page_number = $9, publisher_name = $10, 
                             publication_year = $11, book_url = $12, doi_id = $13, isbn_no = $14, number_of_nmims_authors = $15, nmims_authors = $16, nmims_campus_authors = $17, nmims_school_authors = $18,  updated_by = $19`;
   console.log("querywithOutDoc ====>>>", querywithOutDoc);
@@ -148,7 +148,7 @@ module.exports.updatedEditedBookPublication = async (
     publisherName,
     publicationYear,
     bookUrl,
-    doiIdParsed,
+    doiBookId,
     isbnNo,
     numberOfNmimsAuthors,
     nmimsAuthors,

@@ -2,17 +2,22 @@ const patentFormsModels = require('../models/patent-submission.models');
 
 module.exports.fetchPatentForm = async (userName) => {
     const patentSubmissionForm = await patentFormsModels.fetchPatentSubMissionForms(userName);
+    const fetchSdgGoals = await patentFormsModels.fetchSdgGoals();
+    const fetchSelectedFaculties = await patentFormsModels.fetchFaculty();
 
-    console.log('patentSubmissionForm in SErvice  ====>>>', patentSubmissionForm);
-    console.log('patentSubmissionForm in services ===>>>>>', patentSubmissionForm.patentData);
-    console.log('facultTableData in services :::::===>>>>>',patentSubmissionForm.internalFacultyData);
-    console.log('research_project_grant_faculty Data In Service ::: ==>>>>', patentSubmissionForm.patentGrantFacultyIdContainer)
-    console.log('facultTableData in services :::::===>>>>>',patentSubmissionForm.externalPatentFacultyId);
-    console.log('externalPatentFacultyId ===>>>>', patentSubmissionForm.externalPatentFacultyId);
-    console.log('patentSdgGoalData ===>>>>>>', patentSubmissionForm.patentSdgGoalData);
-    console.log('patentInnovationTypeData in services :::::===>>>>>', patentSubmissionForm.patentInnovationTypeData);
-    console.log('patentStagData ===>>>>', patentSubmissionForm.patentStagData);
-    console.log('patentSubmissionsData ===>>>>>>', patentSubmissionForm.patentSubmissionsData);
+    // console.log('patentSubmissionForm in SErvice  ====>>>', patentSubmissionForm);
+    // console.log('patentSubmissionForm in services ===>>>>>', patentSubmissionForm.patentData);
+    // console.log('facultTableData in services :::::===>>>>>',patentSubmissionForm.internalFacultyData);
+    // console.log('research_project_grant_faculty Data In Service ::: ==>>>>', patentSubmissionForm.patentGrantFacultyIdContainer)
+    // console.log('facultTableData in services :::::===>>>>>',patentSubmissionForm.externalPatentFacultyId);
+    // console.log('externalPatentFacultyId ===>>>>', patentSubmissionForm.externalPatentFacultyId);
+    // console.log('patentSdgGoalData ===>>>>>>', patentSubmissionForm.patentSdgGoalData);
+    // console.log('patentInnovationTypeData in services :::::===>>>>>', patentSubmissionForm.patentInnovationTypeData);
+    // console.log('patentStagData ===>>>>', patentSubmissionForm.patentStagData);
+    // console.log('patentSubmissionsData ===>>>>>>', patentSubmissionForm.patentSubmissionsData);
+
+    console.log('patentSubmissionsData ===>>>>>>', JSON.stringify(fetchSdgGoals.selectSdgGoals));
+
 
     // const patentSubmissionsData = patentSubmissionForm.patentSubmissionsData
     const patentSubmissionMap = {};
@@ -63,8 +68,9 @@ module.exports.fetchPatentForm = async (userName) => {
         internalPatentFacultyId : patentSubmissionForm.internalPatentFacultyId,
         externalPatentFacultyId : patentSubmissionForm.externalPatentFacultyId,
         patentGrantFacultyIdContainer : patentSubmissionForm.patentGrantFacultyIdContainer,
-        patentGrantFacultyIds : patentGrantFacultyIds
-
+        patentGrantFacultyIds : patentGrantFacultyIds,
+        selectSdgGoals : fetchSdgGoals.selectSdgGoals,
+        selectedPatentFaculty : fetchSelectedFaculties.selectedPatentFaculty
     } : {
         status : patentSubmissionForm.status,
         message : patentSubmissionForm.message,
@@ -114,7 +120,7 @@ module.exports.insertPatentFormData = async(body , files, userName) => {
             message : insertPatentData.message,
             patentId : insertPatentData.patentId,
             patentDataFilesString : patentDataFilesString,
-            patentGrantIds: insertPatentData.patentGrantIds,
+            // patentGrantIds: insertPatentData.patentGrantIds,
             sdgGoalsIds : insertPatentData.sdgGoalsIds,
             inventionTypeIds : insertPatentData.inventionTypeIds,
             patentStatusId : insertPatentData.patentStatusId,

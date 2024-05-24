@@ -4,11 +4,13 @@ const errorMsgMidWare = require('../middleware/error.middleware');
 module.exports.fetchConferencePublication = async(userName) => {
 
     const conferencePublicationData = await conferencePublicationModels.fetchConferencePublication(userName);
+    const fetchConferenceFaculty = await conferencePublicationModels.fetchConferenceFaculty();
     
     console.log('feched data in service  ==>' , conferencePublicationData);
     const conferenceDataList = conferencePublicationData.conferenceDataList;
     const externalEmpList = conferencePublicationData.externalEmpList;
     const internalEmpList = conferencePublicationData.internalEmpList;
+    const internalFaculty = fetchConferenceFaculty.internalFaculty;
 
     // Extract author names from patentList
     // const authorNameArray = conferenceDataList ? conferencePublicationData.conferenceDataList.rows.map(conference => conference.author_type) : [];
@@ -36,6 +38,7 @@ module.exports.fetchConferencePublication = async(userName) => {
         conferenceDataList : conferenceDataList,
         internalEmpList : internalEmpList,
         externalEmpList : externalEmpList,
+        internalFaculty : internalFaculty,
         rowCount : conferencePublicationData.rowCount
     }
 };
@@ -62,7 +65,7 @@ module.exports.insertConferenceData = async(body , files, userName) => {
     const facultyIds = facultycontainer.flat();
 
     // Step 3: Convert each element to an integer and subtract 2
-    const facultyIdscontainer = facultyIds.map(element => parseInt(element) - 2);
+    const facultyIdscontainer = facultyIds.map(element => parseInt(element));
     console.log('facultyIdscontainer ===>>>>>', facultyIdscontainer);
 
     const conferenceDocument = files.conferenceDocument?.map(file => file.filename).join(',');
