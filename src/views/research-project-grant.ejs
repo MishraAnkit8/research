@@ -2202,12 +2202,13 @@
                                 document.getElementById('add-more-details').classList.remove('d-none');
                                 const newFacultyDataRow = document.createElement('tr');
                                 newFacultyDataRow.innerHTML = `
-                    <td class="name-class"> ${data.facultyData.facultyName} </td>
-                    <td class="dsg-class"> ${data.facultyData.facultyDsg} </td>
-                    <td class="id-class"> ${data.facultyData.facultyEmpId} </td>
-                    <td class="address-class"> ${data.facultyData.facultyAddr} </td>
+                                <td class="name-class"> ${data.facultyData.facultyName} </td>
+                                <td class="dsg-class"> ${data.facultyData.facultyDsg} </td>
+                                <td class="id-class"> ${data.facultyData.facultyEmpId} </td>
+                                <td class="address-class"> ${data.facultyData.facultyAddr} </td>
                     `
-                                facultyTableList.appendChild(newFacultyDataRow);
+                    facultyTableList.appendChild(newFacultyDataRow);
+                    
                                 Swal.fire({
                                     position: "top-center",
                                     icon: "success",
@@ -2598,12 +2599,16 @@
                                     <td ><input id="updateFacultyAddr" type="text" value=${facultyAddr} /></br><span style="color:red;" id='addrUpdError'></span></td>
                                     <td ><input id="updateFacultyDes" type="text" value=${facultyDesignation} /></br><span style="color:red;" id='desUpdError'></span></td>
                                     <td ><input id="updateFacultyId" type="text" value=${facultyEmp} /></br><span style="color:red;" id='empUpdError'></span></td>
-                                    <td><button class="btn btn-primary updateFaculty">Update</button></td>
+                                    <td>
+                                        <button class="btn btn-primary updateFaculty">Update</button>
+                                    
+                                        <button id="delete-faculty" class="delete-row  btn btn-danger delete-faculty">Delete</button>
+                                    </td>
                                     </tr>`
 
                                     appendFaculty.insertAdjacentHTML('beforeEnd', htmlData);
-
-
+                                    let deleteButton = document.querySelector('#delete-faculty').nextElementSibling.querySelector('.delete-row');
+                                    deleteButton.addEventListener('click', handleDeleteButtonClick);
 
                                 });
                             }
@@ -2717,11 +2722,12 @@
                     console.log(" nmimsCampusIdsContainer ids :", nmimsCampusIdsContainer);
                 }
 
+                function handleDeleteButtonClick() {
+                    this.parentNode.parentNode.remove();
+                }
 
 
-
-
-
+                
 
             </script>
             <!-- inline javascript -->

@@ -89,12 +89,14 @@ module.exports.delJournalPaper = async (req, res, next) => {
 
 module.exports.updateJournalPaper = async (req, res, next) => {
     const  userName = req.body.username;
-    console.log('data is comming from template ==>>>>>', JSON.stringify(req.body));
-    console.log('files in conteroller ===>>>>', req.files)
+    // console.log('data is comming from template ==>>>>>', JSON.stringify(req.body));
+
+    console.log('files in conteroller ===>>>>', req.files);
+    console.log('data is comming from frontend =====>>>>>>', req.body)
     
     const updatePaper = await journalPaperService.updateJournalPaper(req.body, req.files, userName);
 
-    console.log('updatePaper updation in controller', JSON.stringify(updatePaper));
+    // console.log('updatePaper updation in controller', JSON.stringify(updatePaper));
     const statusCode = updatePaper.status === "Done" ? 200 : (updatePaper.errorCode ? 400 : 500);
     console.log('statusCode ==>>>>', statusCode);
 

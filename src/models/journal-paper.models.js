@@ -35,6 +35,7 @@ module.exports.fetchJournalPaper = async (userName) => {
                     jpa.nmims_student_foreign_authors,
                     jpa.foreign_authors_name,
                     jpa.foreign_auhtor_no,
+                    jpa.article_supporting_documents,
                     jpa.no_nmims_student_author,
                     string_agg(DISTINCT jaf.impact_factor, ', ') AS impact_factors,
                     string_agg(DISTINCT jaf.id::text, ', ') AS impact_factors_ids,
@@ -106,7 +107,8 @@ module.exports.fetchJournalPaper = async (userName) => {
                     jpa.foreign_authors_name,
                     jpa.foreign_auhtor_no,
                     jpa.no_nmims_student_author,
-                    jpa.web_link_doi
+                    jpa.web_link_doi,
+                    jpa.article_supporting_documents
                 ORDER BY
                     jpa.id desc`,
     values: [userName],
@@ -210,6 +212,7 @@ module.exports.insertJournalArticle = async (
   policyCadreArray,
   allAuthorsArray,
   nmimsAuthorsArray,
+  journalFiles,
   userName
 ) => {
   console.log("journalDetails in models ==>>", journalDetails);
@@ -242,8 +245,8 @@ module.exports.insertJournalArticle = async (
   let articleSql = {
     text: `INSERT INTO journal_paper_article (year, publisher, total_authors, journal_name, count_other_faculty, pages, issn_no, scs_cite_score, wos_indexed,
                 abdc_indexed, ugc_indexed, web_link_doi, uid, date_of_publishing, title_of_paper, jorunal_article_type_id, nmims_authors_count, gs_index, nmims_student_foreign_authors,
-                foreign_authors_name, foreign_auhtor_no, no_nmims_student_author, scs_indexed, created_by)
-                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24) RETURNING id`,
+                foreign_authors_name, foreign_auhtor_no, no_nmims_student_author, scs_indexed, article_supporting_documents, created_by)
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25) RETURNING id`,
 
     values: [
       year,
@@ -269,6 +272,7 @@ module.exports.insertJournalArticle = async (
       foreignAuhtorNo,
       noNmimsStudentAuthor,
       scsIndex,
+      journalFiles,
       userName,
     ],
   };
@@ -651,10 +655,11 @@ module.exports.updateJournalPaperData = async (
   updatePolicyCadreArray,
   updateAllAuthorsArray,
   updatedArticleFilesNameArray,
+  journalFiles,
   userName
 ) => {
   console.log("updateJournalDetails in models:", updateJournalDetails);
-  console.log("journalPaperId ===>>>>", journalPaperId);
+  console.log("journalFiles ===>>>>", journalFiles);
 
   // Extract variables from updateJournalDetails
   const {
@@ -683,45 +688,53 @@ module.exports.updateJournalPaperData = async (
     scsIndex,
   } = updateJournalDetails;
 
-  let sql = {
-    text: `UPDATE journal_paper_article 
+  // const supportingDocument = journalFiles || null;
+
+  let baseQuery =  `UPDATE journal_paper_article 
                 SET year = $2, publisher = $3, total_authors = $4,journal_name = $5,count_other_faculty = $6,
                     pages = $7,issn_no = $8,scs_cite_score = $9,wos_indexed = $10,abdc_indexed = $11,
                     ugc_indexed = $12, web_link_doi = $13,uid = $14,date_of_publishing = $15,
                     title_of_paper = $16,jorunal_article_type_id = $17,nmims_authors_count = $18,gs_index = $19,
                     foreign_auhtor_no = $20, foreign_authors_name = $21, no_nmims_student_author = $22, nmims_student_foreign_authors = $23,
-                    scs_indexed = $24 ,updated_by = $25
-                WHERE
-                    id = $1;`,
-    values: [
-      journalPaperId,
-      year,
-      publisher,
-      totalAuthors,
-      journalName,
-      countOtherFaculty,
-      pages,
-      issnNo,
-      scsCiteScore,
-      wosIndexedCategory,
-      abdcIndexedCategory,
-      ugcIndexedCategory,
-      webLinkNumber,
-      uid,
-      dateOfPublishing,
-      titleOfPaper,
-      journalCategory,
-      nmimsAuthorsCount,
-      gsIndex,
-      foreignAuhtorNo,
-      foreignAuthorsName,
-      noNmimsStudentAuthor,
-      nmimsStudentForeignAuthors,
-      scsIndex,
-      userName,
-    ],
+                    scs_indexed = $24 ,updated_by = $25`;
+
+ let documentsQuery = journalFiles ?  `, article_supporting_documents = $26` : '';
+ let queryText = baseQuery + documentsQuery + ` WHERE id = $1`;
+
+let values = [
+                      journalPaperId,
+                      year,
+                      publisher,
+                      totalAuthors,
+                      journalName,
+                      countOtherFaculty,
+                      pages,
+                      issnNo,
+                      scsCiteScore,
+                      wosIndexedCategory,
+                      abdcIndexedCategory,
+                      ugcIndexedCategory,
+                      webLinkNumber,
+                      uid,
+                      dateOfPublishing,
+                      titleOfPaper,
+                      journalCategory,
+                      nmimsAuthorsCount,
+                      gsIndex,
+                      foreignAuhtorNo,
+                      foreignAuthorsName,
+                      noNmimsStudentAuthor,
+                      nmimsStudentForeignAuthors,
+                      scsIndex,
+                      userName,
+                      ...(journalFiles ? [journalFiles] : [])
+                    ]
+
+  let sql = {
+    text: queryText,
+    values: values,
   };
-  console.log("sql ====>>>", sql);
+   
   const updateJournalarticles = await researchDbW.query(sql);
   console.log("AFTER UPDATE>>>>>>>>>>>>");
   const insertDocumentPromises = updatedArticleFilesNameArray
@@ -1060,6 +1073,7 @@ module.exports.viewJournalPaperData = async (journalPaperId, userName) => {
                     jpa.nmims_student_foreign_authors,
                     jpa.foreign_authors_name,
                     jpa.foreign_auhtor_no,
+                    jpa.article_supporting_documents,
                     jpa.no_nmims_student_author,
                     string_agg(DISTINCT jaf.impact_factor, ', ') AS impact_factors,
                     string_agg(DISTINCT jaf.id::text, ', ') AS impact_factors_ids,
@@ -1131,7 +1145,9 @@ module.exports.viewJournalPaperData = async (journalPaperId, userName) => {
                     jpa.nmims_student_foreign_authors,
                     jpa.foreign_authors_name,
                     jpa.foreign_auhtor_no,
-                    jpa.no_nmims_student_author`,
+                    jpa.no_nmims_student_author,
+                    jpa.article_supporting_documents`,
+                   
 
     values: [journalPaperId, userName],
   };
