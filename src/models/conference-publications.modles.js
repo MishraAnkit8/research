@@ -68,8 +68,9 @@ module.exports.fetchConferencePublication = async (userName) => {
 
 
 
-  console.log("conferenceSql ===>>>", conferenceSql);
-  console.log("internalEmpSql ===>>>", internalEmpSql);
+  // console.log("conferenceSql ===>>>", conferenceSql);
+  // console.log("internalEmpSql ===>>>", internalEmpSql);
+
   const conferencePromise = await researchDbR.query(conferenceSql);
   const internalEmpPromise = await researchDbR.query(internalEmpSql);
   const promises = [conferencePromise, internalEmpPromise];
@@ -168,6 +169,7 @@ module.exports.insertConferencePublication = async (
   const conferenceId = conferenceTable.rows[0].id;
   const rowCount = conferenceTable.rowCount;
 
+  // insert external faculties
   const insertexternalDetails = externalFacultyData ? externalFacultyData.map( async(detailsData) => {
     console.log('detailsData ======>>>>>>>>>', detailsData);
     const [facultyName, facultyEmpId, facultyDsg, facultyAddr ] = detailsData
@@ -185,6 +187,7 @@ module.exports.insertConferencePublication = async (
 
   const externalIds = await Promise.all(insertexternalDetails);
   console.log('externalIds =======>>>>>>>>', externalIds);
+  // insert external conference  faculties
   const insertConferenceFaculty = externalIds ? externalIds.map(async(element) => {
     let sql = {
       text: `INSERT INTO conference_faculty (conference_id, faculty_id, created_by, active) VALUES ($1, $2, $3, $4) RETURNING id`,
@@ -201,9 +204,8 @@ module.exports.insertConferencePublication = async (
 
   let conferenceFacultiesIds = [];
 
-
-  await Promise.all(
-    facultyIdscontainer.map(async (element) => {
+// insert internal conference  faculties
+  await Promise.all(facultyIdscontainer.map(async (element) => {
       let confacultySql = {
         text: `INSERT INTO conference_faculty (conference_id, faculty_id, created_by, active) VALUES ($1, $2, $3, $4) RETURNING id`,
         values: [conferenceId, element, userName, true],
@@ -213,7 +215,7 @@ module.exports.insertConferencePublication = async (
       conferenceFacultiesIds.push(conFacIds);
     })
   );
-  // }
+
 
   return {
     status: "Done",

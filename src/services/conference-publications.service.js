@@ -4,36 +4,12 @@ const errorMsgMidWare = require('../middleware/error.middleware');
 module.exports.fetchConferencePublication = async(userName) => {
 
     const conferencePublicationData = await conferencePublicationModels.fetchConferencePublication(userName);
-    // const fetchConferenceFaculty = await conferencePublicationModels.fetchConferenceFaculty();
     
     console.log('feched data in service  ==>' , conferencePublicationData);
+    
     const conferenceDataList = conferencePublicationData.conferenceDataList;
-    const externalEmpList = conferencePublicationData.externalEmpList;
     const internalEmpList = conferencePublicationData.internalEmpList;
-    // const internalFaculty = fetchConferenceFaculty.internalFaculty;
 
-    // Extract author names from patentList
-    // const authorNameArray = conferenceDataList ? conferencePublicationData.conferenceDataList.rows.map(conference => conference.author_type) : [];
-    // const resultArray = [
-    //     ...conferencePublicationData.internalEmpList.rows.map(emp => ({ authorName: emp.employee_name, table: 'internalEmpList' })),
-    //     ...conferencePublicationData.externalEmpList.rows.map(emp => ({ authorName: emp.external_emp_name, table: 'externalEmpList' }))
-    // ];
-
-    // console.log('resultArray ====>>>>>>', resultArray)
-
-    // conferenceDataList ?  conferenceDataList.map(conference => {
-    //     console.log('project in service====>>>>', conference.author_type);
-    //     const facultyTypeAuthors = conference.author_type;
-    //     console.log('facultyTypeAuthors ===>>>>', facultyTypeAuthors);
-    //     const matchedAuthor = resultArray.find(item => item.authorName === facultyTypeAuthors);
-    //     conference.author_type = matchedAuthor ? matchedAuthor : { authorName:facultyTypeAuthors, table : "internalEmpList"}
-    //     console.log('matchedAuthor ====>>>>', matchedAuthor)
-        
-    // }) : [];
-    // console.log('conferenceDataList ===>>>', conferenceDataList)
-    // const rowCount = conferencePublicationData.conferenceDataList.rowCount;
-    // console.log('rowCount ===>>>', rowCount)
-    // console.log('conferenceDataList ===>>>', conferenceDataList)
     return {
         conferenceDataList : conferenceDataList,
         internalEmpList : internalEmpList,
@@ -47,44 +23,45 @@ module.exports.insertConferenceData = async(body , files, userName) => {
     const conferencePublications = body;
 
     const facultycontainer = JSON.parse(body.facultycontainer);
-    console.log('facultycontainer =====>>>>>>', facultycontainer);
+    // console.log('facultycontainer =====>>>>>>', facultycontainer);
 
     // Step 2: Flatten the nested array
     const facultyLastElement = facultycontainer[facultycontainer.length - 1];
-    console.log('facultyLastElement ====>>>>>>>', facultyLastElement);
+    // console.log('facultyLastElement ====>>>>>>>', facultyLastElement);
     const facultyIds = facultyLastElement.flat();
 
-    console.log('facultyIds ======>>>>>>>>>>', facultyIds);
+    // console.log('facultyIds ======>>>>>>>>>>', facultyIds);
 
     // Step 3: Convert each element to an integer and subtract 2
     const facultyIdscontainer = facultyIds.map(element => parseInt(element));
-    console.log('facultyIdscontainer ===>>>>>', facultyIdscontainer);
+    // console.log('facultyIdscontainer ===>>>>>', facultyIdscontainer);
 
     const externalData =  JSON.parse(body.externalFacultyDetails);;
     const externalFacultyData = groupArrayIntoChunks(externalData, 4);
 
-    console.log('externalFacultyData ======>>>>>>>', externalFacultyData);
+    // console.log('externalFacultyData ======>>>>>>>', externalFacultyData);
 
     const conferenceDocument = files.conferenceDocument?.map(file => file.filename).join(',');
     const conferenceProofFile = files.conferenceProof?.map(file => file.filename).join(',');
+
     // console.log('authorNameString ===>>>', authorNameString)
-    console.log('conferenceDocumentData string in service ===>>>', conferenceDocument)
-    console.log('conferenceProofData string in service  ==>>>', conferenceProofFile)
+    // console.log('conferenceDocumentData string in service ===>>>', conferenceDocument)
+    // console.log('conferenceProofData string in service  ==>>>', conferenceProofFile)
+
     const insertConferencePublication = await conferencePublicationModels.insertConferencePublication(conferencePublications, conferenceDocument, conferenceProofFile, facultyIdscontainer, externalFacultyData, userName);
-    console.log('insertConferencePublication in service ===>>>>', insertConferencePublication);
+    
+    // console.log('insertConferencePublication in service ===>>>>', insertConferencePublication);
+
     return insertConferencePublication.status === "Done" ? {
       status : "Done",
       message : insertConferencePublication.message,
       conferenceId : insertConferencePublication.conferenceId,
       conferenceFacultiesIds : insertConferencePublication.conferenceFacultiesIds,
-      // externalEmpId : insertConferencePublication.externalEmpId ? insertConferencePublication.externalEmpId : null,
       conferenceDocument : conferenceDocument,
       conferenceProofFile : conferenceProofFile,
       rowCount : insertConferencePublication.rowCount,
       conferencePublications : conferencePublications,
-      // authorNameString : authorNameString, 
-      // internalNamesString : internalNamesString,
-      // externalNamesString : externalNamesString
+     
 
     } : {
       status : insertConferencePublication.status,
@@ -111,36 +88,38 @@ module.exports.updatedConferencePublication = async (body, files, userName) => {
     console.log('data in service' , body);
     const upadtedConferenceData = body
     const conferenceId =  body.conferenceId;
-    console.log('files in service ==>' , files);
+    // console.log('files in service ==>' , files);
  
 
     const facultycontainer =  body.facultycontainer ? JSON.parse(body.facultycontainer) : null;
-    console.log('facultycontainer =====>>>>>>', facultycontainer);
+    // console.log('facultycontainer =====>>>>>>', facultycontainer);
+
     const internalUpdate = body.internalUpdate ? JSON.parse(body.internalUpdate) : null;
-    console.log('internalUpdate ====>>>>>>', internalUpdate);
+    // console.log('internalUpdate ====>>>>>>', internalUpdate);
+
     // Step 2: Flatten the nested array
     const facultyLastElement =  facultycontainer ? facultycontainer[facultycontainer.length - 1] : null;
-    console.log('facultyLastElement ====>>>>>>>', facultyLastElement);
+    // console.log('facultyLastElement ====>>>>>>>', facultyLastElement);
     const facultyIds = facultyLastElement ? facultyLastElement.flat() : null;
 
-    console.log('facultyIds ======>>>>>>>>>>', facultyIds);
+    // console.log('facultyIds ======>>>>>>>>>>', facultyIds);
 
     // Step 3: Convert each element to an integer and subtract 2
     const facultyIdscontainer = facultyIds ? facultyIds.map(element => parseInt(element)) : null;
-    console.log('facultyIdscontainer ===>>>>>', facultyIdscontainer);
+    // console.log('facultyIdscontainer ===>>>>>', facultyIdscontainer);
 
     const externalFacultyUpdate =  JSON.parse(body.externalFacultyUpdate);
     const externalFacultyDataUpdate = groupArrayIntoChunks(externalFacultyUpdate, 5);
-    console.log('externalFacultyDataUpdate ======>>>>>>>', externalFacultyDataUpdate);
+    // console.log('externalFacultyDataUpdate ======>>>>>>>', externalFacultyDataUpdate);
 
     const externalFacultyDetailsInsert = body.externalFacultyDetails ?  JSON.parse(body.externalFacultyDetails) : null;
-    console.log('externalDetailsInsert ====>>>>>>', )
     const insertExternalData = groupArrayIntoChunks(externalFacultyDetailsInsert, 4);
 
     const confernceDocString = files.conferenceDocument ? files.conferenceDocument.map(file => file.filename).join(',') : null;
     const conferenceProofString = files.conferenceProof ? files.conferenceProof.map(file => file.filename).join(',') : null;
-    console.log('confernceDocString in service ==>>', confernceDocString);
-    console.log('conferenceProofString in service ==>>', conferenceProofString);
+    // console.log('confernceDocString in service ==>>', confernceDocString);
+    // console.log('conferenceProofString in service ==>>', conferenceProofString);
+
     const updateConferencePublicationData = await conferencePublicationModels.updateConferencePublication(upadtedConferenceData, conferenceId, confernceDocString,
         conferenceProofString,
         insertExternalData,
@@ -219,13 +198,7 @@ module.exports.deleteExternalFacultyDetails = async(body, userName) => {
 
 }
 
-function groupArrayIntoChunks(array, chunkSize) {
-  let groupedArray = [];
-  for (let i = 0; i < array.length; i += chunkSize) {
-      groupedArray.push(array.slice(i, i + chunkSize));
-  }
-  return groupedArray;
-}
+
 
 module.exports.deleteInternalData = async(body, userName) => {
   const internalId = body.internalId;
@@ -234,5 +207,14 @@ module.exports.deleteInternalData = async(body, userName) => {
   console.log('deleteInternalDetails ====>>>>', deleteInternalDetails);
 
 }
+
+function groupArrayIntoChunks(array, chunkSize) {
+  let groupedArray = [];
+  for (let i = 0; i < array.length; i += chunkSize) {
+      groupedArray.push(array.slice(i, i + chunkSize));
+  }
+  return groupedArray;
+}
+
 
 
