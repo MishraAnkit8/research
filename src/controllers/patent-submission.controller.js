@@ -1,40 +1,25 @@
 const patentSubmissionservice = require("../services/patent-submission.service");
+const { getRedisData } = require('../../utils/redis.utils');
 
 module.exports.renderPatentSubMissionAndGrant = async (req, res, next) => {
   console.log("data in controller ");
   const userName = req.body.username;
   console.log("userName in controller  ===>>>>>>", userName);
 
-  const patentSubmissionList = await patentSubmissionservice.fetchPatentForm(
-    userName
-  );
+  const patentSubmissionList = await patentSubmissionservice.fetchPatentForm(userName);
 
-  console.log(
-    "patentSubmissionList ===>>>>",
-    JSON.stringify(patentSubmissionList.internalPatentFacultyId)
-  );
-
- // console.log('patent sdg goal data ',JSON.stringify(patentSubmissionList.selectSdgGoals))
+  console.log('patentSubmissionList =====>>>>>>>>', patentSubmissionList.patentSubmissionsData);
+ 
     res.render("patent-submission", {
     status: patentSubmissionList.status,
-    message: patentSubmissionList.rowCount,
-    patentData: patentSubmissionList.patentData,
-    patentSubmissionsData: patentSubmissionList.patentSubmissionsData,
+    message: patentSubmissionList.message,
     rowCount: patentSubmissionList.rowCount,
     patentStagData: patentSubmissionList.patentStagData,
-    patentSubmissionsDataList: patentSubmissionList.patentSubmissionsDataList,
+    patentSubmissionsData: patentSubmissionList.patentSubmissionsData,
     internalFacultyData: patentSubmissionList.internalFacultyData,
     patentSdgGoalData: patentSubmissionList.patentSdgGoalData,
     patentInventionTypeData: patentSubmissionList.patentInventionTypeData,
-    patentData: patentSubmissionList.patentData,
-    internalPatentFacultyId: patentSubmissionList.internalPatentFacultyId,
-    externalPatentFacultyId: patentSubmissionList.externalPatentFacultyId,
-    patentGrantFacultyIdContainer:
-      patentSubmissionList.patentGrantFacultyIdContainer,
-    patentGrantFacultyIds: patentSubmissionList.patentGrantFacultyIds,
     errorCode: patentSubmissionList.errorCode,
-    selectSdgGoals : patentSubmissionList.selectSdgGoals,
-    selectedPatentFaculty : patentSubmissionList.selectedPatentFaculty
   });
 };
 
@@ -44,37 +29,22 @@ module.exports.insertPatentsubmission = async (req, res, next) => {
   const userName = req.body.username;
   console.log("userName in controller  ===>>>>>>", userName);
 
-  const patentDataSubmission =
-    await patentSubmissionservice.insertPatentFormData(
-      req.body,
-      req.files,
-      userName
-    );
+  const patentDataSubmission = await patentSubmissionservice.insertPatentFormData(req.body, req.files, userName);
 
   console.log("patentDataSubmission ===>>>>", patentDataSubmission);
 
-  const statusCode =
-    patentDataSubmission.status === "Done"
-      ? 200
-      : patentDataSubmission.errorCode
-      ? 400
-      : 500;
+  const statusCode = patentDataSubmission.status === "Done" ? 200 : patentDataSubmission.errorCode ? 400 : 500;
+
   res.status(statusCode).send({
     status: patentDataSubmission.status,
     message: patentDataSubmission.message,
-    status: patentDataSubmission.status,
-    message: patentDataSubmission.message,
-    patentId: patentDataSubmission.patentId,
-    patentDataFilesString: patentDataSubmission.patentDataFilesString,
-    // patentGrantIds: patentDataSubmission.patentGrantIds,
-    sdgGoalsIds: patentDataSubmission.sdgGoalsIds,
-    inventionTypeIds: patentDataSubmission.inventionTypeIds,
-    patentStatusId: patentDataSubmission.patentStatusId,
-    patentData: patentDataSubmission.patentData,
-    rowCount: patentDataSubmission.rowCount,
-    errorCode: patentDataSubmission.errorCode
-      ? patentDataSubmission.errorCode
-      : null,
+    patentId : patentDataSubmission.patentId,
+    patentFacultyIds : patentDataSubmission.patentFacultyIds,
+    patentSdgGoalsIds : patentDataSubmission.patentSdgGoalsIds,
+    patentInventionIds : patentDataSubmission.patentInventionIds,
+    patentSatausIds : patentDataSubmission.patentSatausIds,
+    rowCount : patentDataSubmission.rowCount,
+    errorCode: patentDataSubmission.errorCode ? patentDataSubmission.errorCode : null,
   });
 };
 
@@ -178,3 +148,97 @@ module.exports.viewPatentSubmissionData = async (req, res, next) => {
       : null,
   });
 };
+
+
+module.exports.retriveExternalDetails = async(req, res, next) => {
+  console.log('data commimg from frontend ====>>>>>', req.body);
+  const sessionid = req.cookies.session;
+  let sessionData = await getRedisData(`${sessionid}:session`)
+  const  userName = sessionData.username;
+  console.log('userName in controller  ===>>>>>>', userName);
+
+  const retriveFacultyData = await patentSubmissionservice.retriveExternalData(req.body, userName);
+
+  console.log('retriveFacultyData ====>>>>>>', retriveFacultyData);
+  const statusCode = retriveFacultyData.status === "Done" ? 200 : (retriveFacultyData.errorCode ? 400 : 500);
+
+  res.status(statusCode).send({
+    status : retriveFacultyData.status,
+    message : retriveFacultyData.message,
+    exetrnalData : retriveFacultyData.exetrnalData,
+    rowCount : retriveFacultyData.rowCount,
+    errorCode : retriveFacultyData.errorCode ?retriveFacultyData.errorCode : null
+  })
+
+
+
+}
+
+
+module.exports.deletePatentInvetionType = async(req, res, next) => {
+  console.log('data comming from frontend ======>>>>>', req.body);
+  const sessionid = req.cookies.session;
+  let sessionData = await getRedisData(`${sessionid}:session`)
+  const  userName = sessionData.username;
+  console.log('userName in controller  ===>>>>>>', userName);
+
+  const deleteInternalFacultyDetails = await patentSubmissionservice.deletePatentInvention(req.body, userName);
+}
+
+
+module.exports.detelePatentStatus = async(req, res, next) => {
+  console.log('data comming from frontend ======>>>>>', req.body);
+  const sessionid = req.cookies.session;
+  let sessionData = await getRedisData(`${sessionid}:session`)
+  const  userName = sessionData.username;
+  console.log('userName in controller  ===>>>>>>', userName);
+
+  const deleteInternalFacultyDetails = await patentSubmissionservice.deletePatentStage(req.body, userName);
+}
+
+
+module.exports.deletePatentSdgGoals = async(req, res, next) => {
+  console.log('data comming from frontend ======>>>>>', req.body);
+  const sessionid = req.cookies.session;
+  let sessionData = await getRedisData(`${sessionid}:session`)
+  const  userName = sessionData.username;
+  console.log('userName in controller  ===>>>>>>', userName);
+
+  const deleteInternalFacultyDetails = await patentSubmissionservice.deletePatenGoals(req.body, userName);
+}
+
+module.exports.deletePatentInternalFaculty = async(req, res, next) => {
+  console.log('data comming from frontend ======>>>>>', req.body);
+  const sessionid = req.cookies.session;
+  let sessionData = await getRedisData(`${sessionid}:session`)
+  const  userName = sessionData.username;
+  console.log('userName in controller  ===>>>>>>', userName);
+
+  const deleteInternalFacultyDetails = await patentSubmissionservice.deletePatentInternalFacultyData(req.body, userName);
+}
+
+module.exports.deletePatentExternalFaculty = async(req, res, next) => {
+  console.log('data comming from frontend =====>>>>>>', req.body);
+
+  const sessionid = req.cookies.session;
+  let sessionData = await getRedisData(`${sessionid}:session`)
+  const  userName = sessionData.username;
+  console.log('userName in controller  ===>>>>>>', userName);
+
+  const deleteExternalFaculty = await patentSubmissionservice.deleteExternalFacultyDetails(req.body, userName);
+
+  console.log('deleteExternalFaculty ====>>>>>>', deleteExternalFaculty);
+  const statusCode = deleteExternalFaculty.status === "Done" ? 200 : (deleteExternalFaculty.errorCode ? 400 : 500);
+
+  res.status(statusCode).send({
+    status : deleteExternalFaculty.status,
+    message : deleteExternalFaculty.message,
+    rowCount : deleteExternalFaculty.rowCount,
+    errorCode : deleteExternalFaculty.errorCode ?deleteExternalFaculty.errorCode : null
+  })
+
+
+
+}
+
+

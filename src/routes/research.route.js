@@ -90,6 +90,15 @@ router.post('/patent-submission/insert', upload.array('patentFilesData', 5), asy
 router.post('/patent-submission/update', upload.array('patentFilesData', 5), asyncErrorHandler(authMiddleware), asyncErrorHandler(patentSubmission.updatePatentSubMissiom));
 router.post('/patent-submission/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(patentSubmission.deletePatentData));
 router.post('/patent-submission/view', asyncErrorHandler(authMiddleware), asyncErrorHandler(patentSubmission.viewPatentSubmissionData));
+
+router.post('/patent-submission/external-details', asyncErrorHandler(patentSubmission.retriveExternalDetails));
+router.post('/patent-submission/invention-type-details/delete', asyncErrorHandler(patentSubmission.deletePatentInvetionType));
+router.post('/patent-submission/patent-stage/delete', asyncErrorHandler(patentSubmission.detelePatentStatus));
+router.post('/patent-submission/patent-sdg-goals/delete', asyncErrorHandler(patentSubmission.deletePatentSdgGoals));
+router.post('/patent-submission/internal-faculty/delete', asyncErrorHandler(patentSubmission.deletePatentInternalFaculty));
+router.post('/patent-submission/external-faculty-data-details/delete', asyncErrorHandler(patentSubmission.deletePatentExternalFaculty));
+
+
 router.get('/patent-submission/download/:fileName', downloadFileService.downloadFile);
 router.get('/patent-submission/viewing/:fileName', downloadFileService.viewFile);
 
