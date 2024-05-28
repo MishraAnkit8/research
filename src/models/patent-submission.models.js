@@ -51,7 +51,7 @@ module.exports.fetchPatentSubMissionForms = async (userName) => {
                 LEFT JOIN 
                     faculties f ON psf.faculty_id = f.id
                 WHERE
-                    created_by = $1 and f.active=true and psf.active=true and pss.active=true and psss.active=true
+                psg.created_by = $1 and f.active=true and psf.active=true and pss.active=true and psss.active=true
                     and it.active=true and psit.active=true and sg.active=true and pssg.active=true
                 ORDER BY psg.id desc`,
     values: [userName],

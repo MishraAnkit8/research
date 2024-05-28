@@ -125,7 +125,7 @@ module.exports.fetchResearchConsultancy = async (userName) => {
     LEFT JOIN 
         nmims_campus nc on rc.campus_id = nc.id             
     WHERE
-       created_by = $1 and r.active=true and rf.active=true and f.active=true and ft.active=true 
+       r.created_by = $1 and r.active=true and rf.active=true and f.active=true and ft.active=true 
        and rs.active=true and ns.active=true and rc.active=true and nc.active=true 
     GROUP BY
         r.id ,

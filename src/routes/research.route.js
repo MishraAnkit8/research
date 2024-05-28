@@ -74,6 +74,13 @@ router.post('/conference-publication/update', upload.fields([
     { name: 'conferenceDocument', maxCount: 5 },
     { name: 'conferenceProof', maxCount: 5 }])
     , asyncErrorHandler(authMiddleware), asyncErrorHandler(conferenceController.updateConferencePublication));
+
+
+router.post('/conference-publication/external-details', asyncErrorHandler(conferenceController.retriveExternalDetails));
+router.post('/conference-publication/external-faculty-data-details/delete', asyncErrorHandler(conferenceController.deleteExternalFacultyDetails));
+router.post('/conference-publication/internal-faculty-data-details/delete', asyncErrorHandler(conferenceController.deleteInternalId));
+
+
 router.get('/conference-publication/download/:fileName', downloadFileService.downloadFile);
 router.get('/conference-publication/viewing/:fileName', downloadFileService.viewFile);
 

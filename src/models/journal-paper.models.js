@@ -81,7 +81,7 @@ module.exports.fetchJournalPaper = async (userName) => {
                     journal_article_policy_cadre japc ON jpa.id = japc.journal_article_id
                 LEFT JOIN
                     policy_cadre pc ON japc.policy_cadre_id = pc.id
-                where created_by = $1 and pc.active=true and japc.active=true and sd.active=true
+                where jpa.created_by = $1 and pc.active=true and japc.active=true and sd.active=true
                 and jad.active=true and a.active=true and aa.active=true and f.active=true 
                 and nf.active=true and jaf.active=true and jaif.active=true and nc.active=true 
                 and jac.active=true and ns.active=true and jpa.active=true and jas.active=true
