@@ -57,37 +57,24 @@ module.exports.updatePatentSubMissiom = async (req, res, next) => {
 
   const patentId = req.body.patentId;
 
-  const updatedPatentSubmissionData =
-    await patentSubmissionservice.updatPatentSubmission(
-      req.body,
-      patentId,
-      req.files,
-      userName
-    );
+  const updatedPatentSubmissionData = await patentSubmissionservice.updatPatentSubmission(req.body, patentId, req.files,
+    userName);
 
-  console.log(
-    "updatedPatentSubmissionData in controller ====>>>>>",
-    updatedPatentSubmissionData
-  );
-  const statusCode =
-    updatedPatentSubmissionData.status === "Done"
-      ? 200
-      : updatedPatentSubmissionData.errorCode
-      ? 400
-      : 500;
+  console.log("updatedPatentSubmissionData in controller ====>>>>>",updatedPatentSubmissionData);
+
+  const statusCode = updatedPatentSubmissionData.status === "Done" ? 200 : updatedPatentSubmissionData.errorCode
+      ? 400 : 500;
   res.status(statusCode).send({
     status: "Done",
     message: updatedPatentSubmissionData.message,
-    patentDataFiles: updatedPatentSubmissionData.patentDataFiles,
-    patentId: updatedPatentSubmissionData.patentId,
-    patentStageId: updatedPatentSubmissionData.patentStageId,
-    patentGrantIds: updatedPatentSubmissionData.patentGrantIds,
-    inventionTypeIds: updatedPatentSubmissionData.inventionTypeIds,
-    sdgGoalsIds: updatedPatentSubmissionData.sdgGoalsIds,
-    updatedPatentData: updatedPatentSubmissionData.updatedPatentData,
-    errorCode: updatedPatentSubmissionData.errorCode
-      ? updatedPatentSubmissionData.errorCode
-      : null,
+    // patentDataFiles: updatedPatentSubmissionData.patentDataFiles,
+    // patentId: updatedPatentSubmissionData.patentId,
+    // patentStageId: updatedPatentSubmissionData.patentStageId,
+    // patentGrantIds: updatedPatentSubmissionData.patentGrantIds,
+    // inventionTypeIds: updatedPatentSubmissionData.inventionTypeIds,
+    // sdgGoalsIds: updatedPatentSubmissionData.sdgGoalsIds,
+    // updatedPatentData: updatedPatentSubmissionData.updatedPatentData,
+    errorCode: updatedPatentSubmissionData.errorCode ? updatedPatentSubmissionData.errorCode : null,
   });
 };
 
@@ -182,7 +169,13 @@ module.exports.deletePatentInvetionType = async(req, res, next) => {
   const  userName = sessionData.username;
   console.log('userName in controller  ===>>>>>>', userName);
 
-  const deleteInternalFacultyDetails = await patentSubmissionservice.deletePatentInvention(req.body, userName);
+  const deleteInvetion = await patentSubmissionservice.deletePatentInvention(req.body, userName);
+  const statusCode = deleteInvetion.status === "Done" ? 200 : deleteInvetion.errorCode ? 400 : 500;
+res.status(statusCode).send({
+  status: deleteInvetion.status,
+  message: deleteInvetion.message,
+  errorCode: deleteInvetion.errorCode ? deleteInvetion.errorCode : null,
+});
 }
 
 
@@ -193,7 +186,13 @@ module.exports.detelePatentStatus = async(req, res, next) => {
   const  userName = sessionData.username;
   console.log('userName in controller  ===>>>>>>', userName);
 
-  const deleteInternalFacultyDetails = await patentSubmissionservice.deletePatentStage(req.body, userName);
+  const deletePatentStage = await patentSubmissionservice.deletePatentStage(req.body, userName);
+  const statusCode = deletePatentStage.status === "Done" ? 200 : deletePatentStage.errorCode ? 400 : 500;
+  res.status(statusCode).send({
+    status: deletePatentStage.status,
+    message: deletePatentStage.message,
+    errorCode: deletePatentStage.errorCode ? deletePatentStage.errorCode : null,
+  });
 }
 
 
@@ -204,7 +203,13 @@ module.exports.deletePatentSdgGoals = async(req, res, next) => {
   const  userName = sessionData.username;
   console.log('userName in controller  ===>>>>>>', userName);
 
-  const deleteInternalFacultyDetails = await patentSubmissionservice.deletePatenGoals(req.body, userName);
+  const deletePatentSdgGoals = await patentSubmissionservice.deletePatenGoals(req.body, userName);
+  const statusCode = deletePatentSdgGoals.status === "Done" ? 200 : deletePatentSdgGoals.errorCode ? 400 : 500;
+  res.status(statusCode).send({
+    status: deletePatentSdgGoals.status,
+    message: deletePatentSdgGoals.message,
+    errorCode: deletePatentSdgGoals.errorCode ? deletePatentSdgGoals.errorCode : null,
+  });
 }
 
 module.exports.deletePatentInternalFaculty = async(req, res, next) => {
@@ -215,6 +220,12 @@ module.exports.deletePatentInternalFaculty = async(req, res, next) => {
   console.log('userName in controller  ===>>>>>>', userName);
 
   const deleteInternalFacultyDetails = await patentSubmissionservice.deletePatentInternalFacultyData(req.body, userName);
+  const statusCode = deleteInternalFacultyDetails.status === "Done" ? 200 : deleteInternalFacultyDetails.errorCode ? 400 : 500;
+  res.status(statusCode).send({
+    status: deleteInternalFacultyDetails.status,
+    message: deleteInternalFacultyDetails.message,
+    errorCode: deleteInternalFacultyDetails.errorCode ? deleteInternalFacultyDetails.errorCode : null,
+  });
 }
 
 module.exports.deletePatentExternalFaculty = async(req, res, next) => {

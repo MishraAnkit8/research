@@ -31,19 +31,19 @@ module.exports.insertPatentFormData = async(body , files, userName) => {
     console.log('patentData in service', patentData);
 
     const sdgDataIds = JSON.parse(patentData.sdgGoalsContainer);
-    console.log('sdgDataIds ====>>>>>', sdgDataIds);
+    // console.log('sdgDataIds ====>>>>>', sdgDataIds);
     const sdgGoalsData = sdgDataIds || []
     const sdgGoalsIdArray = sdgGoalsData.map(Number);
     console.log('sdgGoalsIdArray:', sdgGoalsIdArray);
 
     const inventionTypesData = JSON.parse(patentData.typeOfInvention);
-    console.log('inventionTypesData ===>>>>', inventionTypesData);
-    const inventionTypesIds = inventionTypesData.typeOfInventions || [];
-    const inventionIdsArray = inventionTypesIds.map(Number);
+    const invetionIds = inventionTypesData || [];
+    const inventionIdsArray = invetionIds.map(Number);
     console.log('inventionIdsArray ===>>>>>', inventionIdsArray);
-
-    const patentStatusId = parseInt(patentData.patentStage);
-    const patentStatusArray = [patentStatusId];
+    // patentStatusIdsArray
+    const patentStatusId = JSON.parse(patentData.patentStatusIdsArray);
+    const PatentStageIds = patentStatusId || [];
+    const patentStatusArray = PatentStageIds.map(Number);
     console.log('patentStatusArray ==>>>>', patentStatusArray)
 
     const facultyInternalIds = patentData.facultyContainer ? JSON.parse(patentData.facultyContainer) : null;
@@ -85,42 +85,60 @@ module.exports.insertPatentFormData = async(body , files, userName) => {
 module.exports.updatPatentSubmission = async(body, patentId, files, userName) => {
     const updatedPatentData = body;
     console.log('body in service  ====>>>>', body);
-    const sdgDataIds =  updatedPatentData.sdgGoalsContainer !== 'undefined' || null ? JSON.parse(updatedPatentData.sdgGoalsContainer) : null;
-    const sdgGoalsData = sdgDataIds !== 'undefined' || null ? sdgDataIds || [] : null;
-    console.log('sdgGoalsData ===>>>',sdgGoalsData);
+    const sdgDataIds = JSON.parse(updatedPatentData.sdgGoalsContainer);
+    console.log("sdgDataIds ====>>>>>", sdgDataIds);
+    const sdgGoalsData = sdgDataIds || [];
     const sdgGoalsIdArray = sdgGoalsData.map(Number);
-    console.log('sdgGoalsIdArray:', sdgGoalsIdArray);
-    const inventionIdsArray = [parseInt(updatedPatentData.typeOfInvention)];
-    console.log('inventionIdsArray ===>>>>>', inventionIdsArray);
-    const patentStatusIdArray = [parseInt(updatedPatentData.patentStage)];
-    console.log('patentStatusIdArray ===>>>>', patentStatusIdArray);
+    console.log("sdgGoalsIdArray:", sdgGoalsIdArray);
 
-    // Parse the facultyDataContainer property to extract internalFaculty and externalEmpList arrays
-    const facultyData = JSON.parse(updatedPatentData.facultyDataContainer);
-    // Extract internalFaculty and externalEmpList arrays
-    const internalFaculty = facultyData.find(item => item !== null && item.internalFaculty)?.internalFaculty || [];
-    const externalEmpList = facultyData.find(item => item  !== null && item.externalEmpList )?.externalEmpList || [];
-    const internalFacultyList =  internalFaculty.map(Number)
-    console.log('externalEmpList:', externalEmpList);
-    console.log('internalFacultyList:', internalFacultyList);
-    const FacultydataArray = [...externalEmpList, ...internalFacultyList];
-    console.log('FacultydataArray ===>>>>>', FacultydataArray);
+    const inventionTypesData = JSON.parse(updatedPatentData.typeOfInvention);
+    const inventionTypesIds = inventionTypesData || [];
+    const inventionIdsArray = inventionTypesIds.map(Number);
+    console.log("inventionIdsArray ===>>>>>", inventionIdsArray);
+    // patentStatusIdsArray
+
+    const patentStatusId = JSON.parse(updatedPatentData.patentStatusIdsArray);
+    const PatentStageIds = patentStatusId || [];
+    const patentStatusArray = PatentStageIds.map(Number);
+    console.log("patentStatusArray ==>>>>", patentStatusArray);
+
+    const facultyInternalIds = updatedPatentData.facultyContainer ? JSON.parse(updatedPatentData.facultyContainer)
+      : null;
+    const facultyIds = facultyInternalIds || [];
+    const facultyIdsArray = facultyIds.map(Number);
+    console.log("facultyIdsArray ==>>>>", facultyIdsArray);
+    
+    console.log("facultyInternalIds ====>>>>>", facultyInternalIds);
+    const internalFacultyArray = facultyInternalIds ? facultyInternalIds || [] : [];
+    const facultyIdsContainer =  internalFacultyArray ? internalFacultyArray.map(Number) : [];
+
+    console.log("facultyIdsContainer =====>>>>>>>", facultyIdsContainer);
+
+    const externalData = JSON.parse(body.externalFacultyDetails);
+    const externalFacultyData = groupArrayIntoChunks(externalData, 4);
+    console.log("externalFacultyData ====>>>>>>", externalFacultyData);
+
+    const updateExternalDetailsUpdate =  body.externalFacultyUpdate ? JSON.parse(body.externalFacultyUpdate) : null;
+    const externalDetailsUpdate =  updateExternalDetailsUpdate ? groupArrayIntoChunks(updateExternalDetailsUpdate, 5) : null;
+   
     const patentDataFiles = files ?.map(file => file.filename).join(',')
 
-    const upadtedPatentSubmissionData = await patentFormsModels.updatePatentsubmissionData(updatedPatentData, patentId, patentDataFiles, sdgGoalsIdArray, inventionIdsArray, FacultydataArray, patentStatusIdArray, userName);
+    const upadtedPatentSubmissionData = await patentFormsModels.updatePatentsubmissionData(patentId, updatedPatentData, patentDataFiles, userName,
+        sdgGoalsIdArray, inventionIdsArray, patentStatusArray, facultyIdsContainer, externalDetailsUpdate, externalFacultyData
+    );
 
     console.log('upadtedPatentSubmissionData ====>>>>', upadtedPatentSubmissionData);
 
     return upadtedPatentSubmissionData.status === "Done" ? {
                 status : "Done",
                 message : upadtedPatentSubmissionData.message,
-                patentDataFiles : patentDataFiles ? patentDataFiles : null,
-                patentId : patentId,
-                patentStageId : upadtedPatentSubmissionData.patentstage,
-                patentGrantIds : upadtedPatentSubmissionData.patentGrantIds,
-                InventionTypeIds : upadtedPatentSubmissionData.InventionTypeIds,
-                sdgGoalsIds : upadtedPatentSubmissionData.sdgGoalsIds,
-                updatedPatentData : updatedPatentData
+                // patentDataFiles : patentDataFiles ? patentDataFiles : null,
+                // patentId : patentId,
+                // patentStageId : upadtedPatentSubmissionData.patentstage,
+                // patentGrantIds : upadtedPatentSubmissionData.patentGrantIds,
+                // InventionTypeIds : upadtedPatentSubmissionData.InventionTypeIds,
+                // sdgGoalsIds : upadtedPatentSubmissionData.sdgGoalsIds,
+                // updatedPatentData : updatedPatentData
     } : {
                 status : upadtedPatentSubmissionData.status,
                 message : upadtedPatentSubmissionData.message,
@@ -234,14 +252,35 @@ module.exports.deletePatentInternalFacultyData = async(body, userName) => {
     const patentId = body.patentId
     const deleteInternalDetails = await patentFormsModels.deletePatentInternalFaculty(internalId, patentId, userName);
     console.log('deleteInternalDetails ====>>>>', deleteInternalDetails);
+    console.log('deleteInternalDetails ====>>>>', deleteInternalDetails);
+    return deleteInternalDetails.status === "Done" ? {
+        status : deleteInternalDetails.status,
+        message : deleteInternalDetails.message,
+        rowCount : deleteInternalDetails.rowCount
+      } : {
+        status : deleteInternalDetails.status,
+        message : deleteInternalDetails.message,
+        errorCode : deleteInternalDetails.errorCode
+      }
   
   }
 
 module.exports.deletePatentInvention = async(body, userName) => {
     const internalId = body.internalId;
+
     const patentId = body.patentId
     const deleteInternalDetails = await patentFormsModels.deletePatentInventionType(internalId, patentId, userName);
     console.log('deleteInternalDetails ====>>>>', deleteInternalDetails);
+    return deleteInternalDetails.status === "Done" ? {
+        status : deleteInternalDetails.status,
+        message : deleteInternalDetails.message,
+        rowCount : deleteInternalDetails.rowCount
+      } : {
+        status : deleteInternalDetails.status,
+        message : deleteInternalDetails.message,
+        errorCode : deleteInternalDetails.errorCode
+      }
+    
   
   }
 
@@ -250,6 +289,16 @@ module.exports.deletePatentStage = async(body, userName) => {
     const patentId = body.patentId
     const deleteInternalDetails = await patentFormsModels.deletPatentPatentStatus(internalId, patentId, userName);
     console.log('deleteInternalDetails ====>>>>', deleteInternalDetails);
+    console.log('deleteInternalDetails ====>>>>', deleteInternalDetails);
+    return deleteInternalDetails.status === "Done" ? {
+        status : deleteInternalDetails.status,
+        message : deleteInternalDetails.message,
+        rowCount : deleteInternalDetails.rowCount
+      } : {
+        status : deleteInternalDetails.status,
+        message : deleteInternalDetails.message,
+        errorCode : deleteInternalDetails.errorCode
+      }
   
   }
 
@@ -258,6 +307,16 @@ module.exports.deletePatenGoals = async(body, userName) => {
     const patentId = body.patentId
     const deleteInternalDetails = await patentFormsModels.deletePatentSdgGoals(internalId, patentId, userName);
     console.log('deleteInternalDetails ====>>>>', deleteInternalDetails);
+    console.log('deleteInternalDetails ====>>>>', deleteInternalDetails);
+    return deleteInternalDetails.status === "Done" ? {
+        status : deleteInternalDetails.status,
+        message : deleteInternalDetails.message,
+        rowCount : deleteInternalDetails.rowCount
+      } : {
+        status : deleteInternalDetails.status,
+        message : deleteInternalDetails.message,
+        errorCode : deleteInternalDetails.errorCode
+      }
   
   }
 
@@ -280,3 +339,5 @@ function formatDate(dateString) {
     }
     return groupedArray;
   }
+
+  

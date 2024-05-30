@@ -45,6 +45,24 @@ function validateRequiredFormFields(actionBtn) {
         }
       }
 
+      if (validate === "isDecimalNumber") {
+        const isValid = isDecimalNumber(elemVal);
+        if (!isValid) {
+          isValidElem = false;
+          validationState = false;
+          break;
+        }
+      }
+
+      if (validate === "isSpecialSymbol") {
+        const isValid = isSpecialSymbol(elemVal);
+        if (!isValid) {
+          isValidElem = false;
+          validationState = false;
+          break;
+        }
+      }
+
       if (validate === "isAllNumeric") {
         const isValid = isAllNumeric(elemVal);
         if (!isValid) {
@@ -175,8 +193,25 @@ function validateRequiredFormFields(actionBtn) {
         }
       }
 
+      if (validate === "isAlphaNumericSpecial") {
+        const isValid = isAlphaNumericSpecial(elemVal);
+        if (!isValid) {
+          isValidElem = false;
+          validationState = false;
+          break;
+        }
+      }
+
       if (validate === "isValidHttpUrl") {
         const isValid = isValidHttpUrl(elemVal);
+        if (!isValid) {
+          isValidElem = false;
+          validationState = false;
+          break;
+        }
+      }
+      if (validate === "isSpace") {
+        const isValid = isSpace(elemVal);
         if (!isValid) {
           isValidElem = false;
           validationState = false;
@@ -311,8 +346,94 @@ function isNumber(input) {
   return true;
 }
 
+function isDecimalNumber(input) {
+  if (!input || input === "") {
+    return false;
+  }
+
+  if (input.includes("-") || input.includes("*")) {
+    return false;
+  }
+
+  if (input.startsWith("+")) {
+    return false;
+  }
+
+  let decimalPointCount = 0;
+  for (let i = 0; i < input.length; i++) {
+    const charCode = input.charCodeAt(i);
+
+    if ((charCode < 48 || charCode > 57) && charCode !== 46) {
+      return false;
+    }
+
+    // Count the decimal points
+    if (charCode === 46) {
+      decimalPointCount++;
+    }
+
+    if (decimalPointCount > 1) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+
+function isSpecialSymbol(input) {
+  if (!input || input === "") {
+    return false;
+  }
+
+  for (let i = 0; i < input.length; i++) {
+    const charCode = input.charCodeAt(i);
+    
+    if ((charCode >= 32 && charCode <= 47) ||
+        (charCode >= 58 && charCode <= 64) || 
+        (charCode >= 91 && charCode <= 96) ||
+        (charCode >= 123 && charCode <= 126)) { 
+      continue; 
+    } else {
+      return false;
+    }
+  }
+
+  return true; 
+}
+
+function isAlphaNumericSpecial(input) {
+  if (!input || input === "") {
+    return false;
+  }
+
+  for (let i = 0; i < input.length; i++) {
+    const charCode = input.charCodeAt(i);
+    
+    if ((charCode >= 48 && charCode <= 57) ||
+        (charCode >= 65 && charCode <= 90) ||
+        (charCode >= 97 && charCode <= 122) ||
+        (charCode >= 32 && charCode <= 47) ||
+        (charCode >= 58 && charCode <= 64) ||
+        (charCode >= 91 && charCode <= 96) ||
+        (charCode >= 123 && charCode <= 126)) {
+      continue; 
+    } else {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+
 function isNotNumber(input) {
   return !isNumber(input);
+}
+
+
+function isSpace(input) {
+  return input === ' ';
 }
 
 function isValidYear(year) {

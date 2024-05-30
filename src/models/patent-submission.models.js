@@ -274,17 +274,10 @@ module.exports.insertPatentData = async (
       });
 };
 
-module.exports.updatePatentsubmissionData = async (
-  updatedPatentData,
-  patentId,
-  patentDataFiles,
-  sdgGoalsIdArray,
-  inventionIdsArray,
-  FacultydataArray,
-  patentStatusIdArray,
-  userName
+module.exports.updatePatentsubmissionData = async (patentId, updatedPatentData, patentDataFiles, userName,
+  sdgGoalsIdArray, inventionIdsArray, patentStatusArray, facultyIdsContainer, externalDetailsUpdate, externalFacultyData
 ) => {
-  console.log("Data in models:", updatedPatentData);
+  console.log("patentDataFiles:", patentDataFiles);
 
   const { titleOfInvention, applicationNum, subMissionDate } =
     updatedPatentData;
@@ -309,10 +302,19 @@ module.exports.updatePatentsubmissionData = async (
   };
 
   console.log("patentsubmissonSql:", patentsubmissonSql);
+  const patentRowCount = await researchDbW.query(patentsubmissonSql)
+  .then(result => {
+    return result.rowCount;
+  })
+  .catch(error => {
+    console.error('Error executing query:', error);
+  });
+  console.log('patentRowCount===>>>>>>', patentRowCount);
 
-  const patentGrantSubmission = await researchDbW.query(patentsubmissonSql);
 
-  const insertFacultyPromises = FacultydataArray.map(async (faculty_id) => {
+
+  console.log('facultyIdsContainer ===>>>>>', facultyIdsContainer);
+  const insertFacultyPromises = facultyIdsContainer ? facultyIdsContainer.map(async (faculty_id) => {
     const existingRecord = await researchDbW.query({
       text: `SELECT id FROM patent_submission_faculty WHERE patent_submission_grant_id = $1 AND faculty_id = $2 and active=true `,
       values: [patentId, faculty_id],
@@ -324,9 +326,13 @@ module.exports.updatePatentsubmissionData = async (
           values: [patentId, faculty_id],
         })
       : Promise.resolve({ rows: [{ id: existingRecord.rows[0].id }] });
-  });
+  }) : null;
 
-  const insertSdgGoalsPromises = sdgGoalsIdArray.map(async (sdg_goals_id) => {
+
+  const internalPatentFacultyIds = await Promise.all(insertFacultyPromises);
+  console.log('internalPatentFaculty ===>>>>>', internalPatentFacultyIds);
+
+  const insertSdgGoalsPromises = sdgGoalsIdArray ? sdgGoalsIdArray.map(async (sdg_goals_id) => {
     const existingRecord = await researchDbW.query({
       text: `SELECT id FROM patent_submission_sdg_goals WHERE patent_submission_grant_id = $1 AND sdg_goals_id = $2 and active=true`,
       values: [patentId, sdg_goals_id],
@@ -338,9 +344,12 @@ module.exports.updatePatentsubmissionData = async (
           values: [patentId, sdg_goals_id],
         })
       : Promise.resolve({ rows: [{ id: existingRecord.rows[0].id }] });
-  });
+  }) : null;
 
-  const insertInventionTypePromises = inventionIdsArray.map(
+  const insertSdgGoals = await Promise.all(insertSdgGoalsPromises);
+  console.log('insertSdgGoals ===>>>>', insertSdgGoals);
+
+  const insertInventionTypePromises = inventionIdsArray ? inventionIdsArray.map(
     async (invention_type_id) => {
       const existingRecord = await researchDbW.query({
         text: `SELECT id FROM patent_submission_invention_type WHERE patent_submission_grant_id = $1 AND invention_type_id = $2 and active=true`,
@@ -354,9 +363,12 @@ module.exports.updatePatentsubmissionData = async (
           })
         : Promise.resolve({ rows: [{ id: existingRecord.rows[0].id }] });
     }
-  );
+  ) : null;
 
-  const insertPatentStatusPromises = patentStatusIdArray.map(
+  const insertInventionType = await Promise.all(insertInventionTypePromises);
+  console.log('insertInventionType ====>>>>>>>', insertInventionType);
+
+  const insertPatentStatusPromises = patentStatusArray ? patentStatusArray.map(
     async (pantent_stage_status_id) => {
       const existingRecord = await researchDbW.query({
         text: `SELECT id FROM patent_submission_stage_status WHERE patent_submission_grant_id = $1 AND pantent_stage_status_id = $2 and active=true `,
@@ -370,60 +382,102 @@ module.exports.updatePatentsubmissionData = async (
           })
         : Promise.resolve({ rows: [{ id: existingRecord.rows[0].id }] });
     }
-  );
+  ) : null;
 
-  const results = await Promise.all([
-    patentGrantSubmission,
-    ...insertFacultyPromises,
-    ...insertSdgGoalsPromises,
-    ...insertInventionTypePromises,
-    ...insertPatentStatusPromises,
-  ]);
+  const insertPatentStatus = await Promise.all(insertPatentStatusPromises);
+  console.log('insertPatentStatus ====>>>>>>>', insertPatentStatus);
 
-  const rowCount = patentGrantSubmission.rowCount;
-  const insertFacultyIds = results
-    .slice(1, 1 + FacultydataArray.length)
-    .map((result) => result.rows[0].id);
-  const insertSdgGoalsIds = results
-    .slice(
-      1 + FacultydataArray.length,
-      1 + FacultydataArray.length + sdgGoalsIdArray.length
-    )
-    .map((result) => result.rows[0].id);
-  const insertInventionTypeIds = results
-    .slice(
-      1 + FacultydataArray.length + sdgGoalsIdArray.length,
-      1 +
-        FacultydataArray.length +
-        sdgGoalsIdArray.length +
-        inventionIdsArray.length
-    )
-    .map((result) => result.rows[0].id);
-  const patentStatusIds = results
-    .slice(
-      1 +
-        FacultydataArray.length +
-        sdgGoalsIdArray.length +
-        inventionIdsArray.length,
-      1 +
-        FacultydataArray.length +
-        sdgGoalsIdArray.length +
-        inventionIdsArray.length +
-        patentStatusIdArray.length
-    )
-    .map((result) => result.rows[0].id);
+  // insert external faculties
+  const insertexternalDetails = externalFacultyData ? externalFacultyData.map( async(detailsData) => {
+    console.log('detailsData ======>>>>>>>>>', detailsData);
+    const [facultyName, facultyEmpId, facultyDsg, facultyAddr ] = detailsData
+      
+    let sql = {
+        text: `INSERT INTO faculties (faculty_type_id, faculty_name, employee_id, designation, address, created_by) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`,
+        values: [2, facultyName,facultyEmpId, facultyDsg, facultyAddr, userName]
+    };
+      
+    console.log('sql external faculty data', sql);
+    const externalResult = await researchDbW.query(sql);
+    return externalResult.rows[0].id
+      
+    }) : null;
+      
+  const externalIds = await Promise.all(insertexternalDetails);
+  console.log('externalIds =======>>>>>>>>', externalIds);
 
-  return {
-    status: "Done",
-    message: "Record Updated Successfully",
-    patentId: patentId,
-    patentstage: patentStatusIds, // Assuming this is the correct array to return
-    patentGrantIds: insertFacultyIds,
-    sdgGoalsIds: insertSdgGoalsIds,
-    InventionTypeIds: insertInventionTypeIds,
-    patentStatusId: patentStatusIds,
-    rowCount: rowCount,
-  };
+  //update external faculty details 
+  const updateExternalFaculty = externalDetailsUpdate
+  ? externalDetailsUpdate.map((externalDetails) => {
+      console.log('externalDetails =====>>>>>>>', externalDetails);
+      const [facultyName, facultyEmpId, facultyDsg, facultyAddr, id] = externalDetails;
+
+      let sql = {
+        text: `UPDATE faculties SET faculty_type_id = $1, faculty_name = $2, employee_id = $3, designation = $4, address = $5,  updated_by = $6 WHERE id = $7`,
+        values: [2, facultyName, facultyEmpId, facultyDsg, facultyAddr, userName, id]
+      };
+
+      console.log('sql external faculty data', sql);
+
+      return researchDbW.query(sql)
+        .then(externalResult => {
+          if (externalResult.rowCount === 0) {
+            console.error(`No rows updated for externalDetails: ${externalDetails}`);
+          }
+          return externalResult.rowCount;
+        })
+        .catch(error => {
+          console.error(`Error updating external faculty for details: ${externalDetails}`, error);
+          return 0; 
+        });
+    })
+  : [];
+
+  Promise.all(updateExternalFaculty)
+    .then(externalUpdate => {
+      console.log('externalUpdate ====>>>>>>', externalUpdate);
+    })
+    .catch(error => {
+      console.error('Error updating external faculties:', error);
+    });
+
+
+  //insert external faculty id into 
+  const insertExConFaculty = externalIds? externalIds.map(async (faculty_id) => {
+    let sql = {
+      text: `INSERT INTO patent_submission_faculty (patent_submission_grant_id, faculty_id) VALUES ($1, $2) RETURNING id`,
+      values: [patentId, faculty_id]
+    };
+    console.log('SQL ======>>>>>>>>>', sql);
+    const confacultySql = await researchDbW.query(sql);
+    return confacultySql.rows[0].id;
+  }) : [];
+  
+  const insertExCon = internalPatentFacultyIds.length > 0 ? await Promise.all(insertExConFaculty) : [];
+  console.log('insertExCon ===>>>>>', insertExCon);
+
+  const promises = [patentRowCount, internalPatentFacultyIds, insertSdgGoals, insertInventionType,
+    insertPatentStatus, externalIds, updateExternalFaculty, insertExCon];
+
+  return await Promise.all(promises).then(([patentRowCount, internalPatentFacultyIds, insertSdgGoals, insertInventionType,
+    insertPatentStatus, externalIds, updateExternalFaculty, insertExCon]) => {
+      return {
+        status: "Done",
+        message: 'Updated successfully',
+        patentRowCount : patentRowCount,
+        updateExternalFaculty : updateExternalFaculty
+      }
+    }) .catch((error) => {
+      console.error("Error:", error.message);
+      return {
+        status: "Failed",
+        message: error.message,
+        errorCode: error.code,
+      };
+    });
+
+  
+
 };
 
 module.exports.deletePatentSubmissionData = async (patentId) => {
@@ -713,14 +767,17 @@ module.exports.deletedPatentExternalDetails = async(externalId, userName) => {
 module.exports.deletePatentInternalFaculty = async(internalId, patentId) => {
 
   console.log('internalId in models ====>>>>>>', internalId);
-  let sql = {
-    text: `UPDATE  patent_submission_faculty  SET active = false WHERE faculty_id = $1 And patent_submission_grant_id = $2`,
-    values: [internalId, patentId]
-  }
-  console.log('sql ====>>>>', sql);
-
-  const externalFacultyDelete  = await researchDbW.query(sql);
-  const  promises = [externalFacultyDelete];
+  const deleteRecord = internalId ? internalId.map(async(internalId) => {
+    let sql = {
+      text: `UPDATE  patent_submission_faculty  SET active = false WHERE faculty_id = $1 And patent_submission_grant_id = $2`,
+      values: [internalId, patentId]
+    }
+    console.log('sql ===>>>>>>>>>', sql);
+    const result  = await researchDbW.query(sql);
+    return result.rowCount
+  }) : null
+ 
+  const  promises = [deleteRecord];
 
   return Promise.all(promises).then(([externalFacultyDelete]) => {
     return {
@@ -736,21 +793,24 @@ module.exports.deletePatentInternalFaculty = async(internalId, patentId) => {
       errorCode: error.code,
     };
   });
-
-
 }
 
 module.exports.deletePatentInventionType = async(internalId, patentId) => {
 
   console.log('internalId in models ====>>>>>>', internalId);
-  let sql = {
-    text: `UPDATE  patent_submission_invention_type  SET active = false WHERE invention_type_id = $1 And patent_submission_grant_id = $2`,
-    values: [internalId, patentId]
-  }
-  console.log('sql ====>>>>', sql);
+  const deleteRecord = internalId ? internalId.map(async(internalId) => {
+    let sql = {
+      text: `UPDATE  patent_submission_invention_type  SET active = false WHERE invention_type_id = $1 And patent_submission_grant_id = $2`,
+      values: [internalId, patentId]
+    }
+    console.log('sql ===>>>>>>>>>', sql);
+    const result  = await researchDbW.query(sql);
+    return result.rowCount
+  }) : null
+ 
+  
 
-  const externalFacultyDelete  = await researchDbW.query(sql);
-  const  promises = [externalFacultyDelete];
+  const  promises = [deleteRecord];
 
   return Promise.all(promises).then(([externalFacultyDelete]) => {
     return {
@@ -773,14 +833,17 @@ module.exports.deletePatentInventionType = async(internalId, patentId) => {
 module.exports.deletePatentSdgGoals = async(internalId, patentId) => {
 
   console.log('internalId in models ====>>>>>>', internalId);
-  let sql = {
-    text: `UPDATE  patent_submission_sdg_goals  SET active = false WHERE sdg_goals_id = $1 And patent_submission_grant_id = $2`,
-    values: [internalId, patentId]
-  }
-  console.log('sql ====>>>>', sql);
-
-  const externalFacultyDelete  = await researchDbW.query(sql);
-  const  promises = [externalFacultyDelete];
+  const deleteRecord = internalId ? internalId.map(async(internalId) => {
+    let sql = {
+      text: `UPDATE  patent_submission_sdg_goals  SET active = false WHERE sdg_goals_id = $1 And patent_submission_grant_id = $2`,
+      values: [internalId, patentId]
+    }
+    console.log('sql ===>>>>>>>>>', sql);
+    const result  = await researchDbW.query(sql);
+    return result.rowCount
+  }) : null
+ 
+  const  promises = [deleteRecord];
 
   return Promise.all(promises).then(([externalFacultyDelete]) => {
     return {
@@ -796,27 +859,31 @@ module.exports.deletePatentSdgGoals = async(internalId, patentId) => {
       errorCode: error.code,
     };
   });
-
 
 }
 
 module.exports.deletPatentPatentStatus = async(internalId, patentId) => {
 
   console.log('internalId in models ====>>>>>>', internalId);
-  let sql = {
-    text: `UPDATE  patent_submission_stage_status  SET active = false WHERE pantent_stage_status_id = $1 And patent_submission_grant_id = $2`,
-    values: [internalId, patentId]
-  }
-  console.log('sql ====>>>>', sql);
+  const deleteRecord = internalId ? internalId.map(async(internalId) => {
+    let sql = {
+      text: `UPDATE  patent_submission_stage_status  SET active = false WHERE pantent_stage_status_id = $1 And patent_submission_grant_id = $2`,
+      values: [internalId, patentId]
+    }
+    console.log('sql ===>>>>>>>>>', sql);
+    const result  = await researchDbW.query(sql);
+    return result.rowCount
+  }) : null;
 
-  const externalFacultyDelete  = await researchDbW.query(sql);
-  const  promises = [externalFacultyDelete];
+ const rowCount = await Promise.all(deleteRecord);
+ console.log('rowCount ====>>>>>', rowCount);
+  const  promises = [deleteRecord];
 
-  return Promise.all(promises).then(([externalFacultyDelete]) => {
+  return Promise.all(promises).then(([deleteRecord]) => {
     return {
       status : 'Done',
       message : 'Delete Successfully',
-      rowCount : externalFacultyDelete.rowCount
+      rowCount : deleteRecord.rowCount
     }
   })
   .catch((error) => {
@@ -829,3 +896,6 @@ module.exports.deletPatentPatentStatus = async(internalId, patentId) => {
 
 
 }
+
+
+
