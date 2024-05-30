@@ -267,7 +267,7 @@
                                 <!-- Page numbers -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="page-number" class="form-label fw-bold">Page Number <i style="color: red;">*</i></label>
-                                    <input type="text" name="pageNumber" id="page-number" class="form-control" data-validate="isEmpty,isAlphaNumericSpecial"
+                                    <input type="text" name="pageNumber" id="page-number" class="form-control" data-validate="isEmpty,isExist,isLength:2:255"
                                         data-err-msg="Provide valid input ." required>
                                 </div>
                             
@@ -754,32 +754,66 @@
 
                         console.log('==>>>', rowToBeDelete)
                         console.log('ID', caseStudyId);
-                        let confirmDelete = confirm("Do you want to delete the Case Study?");
-                        if (!confirmDelete) {
-                            return;
-                        }
-                        fetch('<%- BASE_URL %>research/case-study/delete', {
-                            method: 'POST',
-                            headers: {
-                                'content-type': 'application/json'
-                            },
-                            body: JSON.stringify({
-                                caseStudyId: caseStudyId
-                            })
-                        })
-                            .then((result) => {
-                                return result.json();
-                            })
-                            .then((data) => {
-                                if (data.status === 'done') {
-                                    console.log('data ==>>', data);
-                                    rowToBeDelete.remove();
-                                    location.reload();
+
+                        let confirmDelete = "Do you want to delete the Case Study?";
+                        if (confirmDelete) {
+                            Swal.fire({
+                                title: "Are you sure?",
+                                text: "You won't be able to revert this!",
+                                icon: "warning",
+                                showCancelButton: true,
+                                allowOutsideClick: false,
+                                confirmButtonColor: "#3085d6",
+                                cancelButtonColor: "#d33",
+                                confirmButtonText: "Yes, delete it!"
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    // Execute fetch request here after confirmation
+                                    fetch('<%- BASE_URL %>research/case-study/delete', {
+                                        method: 'POST',
+                                        headers: {
+                                            'content-type': 'application/json'
+                                        },
+                                        body: JSON.stringify({ caseStudyId })
+                                    })
+                                        .then((result) => result.json())
+                                        .then((data) => {
+                                            if (data.status === 'done') {
+                                                console.log('data ==>>', data);
+                                                rowToBeDelete.remove();
+                                                Swal.fire({
+                                                    title: "Deleted!",
+                                                    text: "Record has been deleted.",
+                                                    icon: "success",
+                                                    showConfirmButton: true,
+                                                    allowOutsideClick: false,
+                                                    confirmButtonText: "OK",
+                                                    confirmButtonColor: "#DD6B55"
+                                                }).then(() => {
+                                                    location.reload();
+                                                });
+                                            }
+                                        })
+                                        .catch((error) => {
+                                            console.error('Error:', error);
+                                            const message = error;
+                                            Swal.fire({
+                                                position: "top-center",
+                                                icon: "error",
+                                                title: `${message}`,
+                                                color: "red",
+                                                showConfirmButton: true,
+                                                allowOutsideClick: false,
+                                                confirmButtonText: "OK",
+                                                confirmButtonColor: "#DD6B55"
+                                            });
+                                        });
                                 }
-                            })
-                            .catch((error) => {
-                                console.log('ERROR ::', error);
-                            })
+                            });
+                        }
+                        else {
+                            return
+                        }
                     }
 
                     if (event.target.classList.contains('edit')) {
@@ -814,7 +848,7 @@
                         const nmimsCampusAuthors = rowToBeUpdate.getAttribute('data-nmims-campus-authors');
                         const nmimsSchoolAuthors = rowToBeUpdate.getAttribute('data-nmims-school-authors');
                         const authorsFirstName = rowToBeUpdate.querySelector('.author-first-name');
-                        const authorLastName = rowToBeUpdate.querySelector('.author-last-name');
+                        // const authorLastName = rowToBeUpdate.querySelector('.author-last-name');
                         const titleOfCaseStudy = rowToBeUpdate.querySelector('.title-of-case-study');
                         const edition = rowToBeUpdate.querySelector('.edition');
                         const volumeNumber = rowToBeUpdate.querySelector('.volume-number');
@@ -823,7 +857,7 @@
 
                         //showing actually stored value  
                         document.getElementById('author-first-name').value = authorsFirstName.innerText.trim();
-                        document.getElementById('author-last-name').value = authorLastName.innerText.trim();
+                        // document.getElementById('author-last-name').value = authorLastName.innerText.trim();
                         document.getElementById('title-of-case-study').value = titleOfCaseStudy.innerText.trim();
                         document.getElementById('edition').value = edition.innerText.trim();
                         document.getElementById('volume-number').value = volumeNumber.innerText.trim();
@@ -850,7 +884,7 @@
                     console.log('data is updated');
                     const updatedCaseStudies = new FormData
                     const authorsFirstName = document.getElementById('author-first-name').value;
-                    const authorLastName = document.getElementById('author-last-name').value;
+                    // const authorLastName = document.getElementById('author-last-name').value;
                     const titleOfCaseStudy = document.getElementById('title-of-case-study').value;
                     const edition = document.getElementById('edition').value;
                     const publisherCategory = document.querySelector('input[name="publisher-category"]:checked').value;
@@ -876,7 +910,7 @@
 
                     updatedCaseStudies.append('caseStudyId', caseStudyId)
                     updatedCaseStudies.append('authorsFirstName', authorsFirstName)
-                    updatedCaseStudies.append('authorLastName', authorLastName)
+                    // updatedCaseStudies.append('authorLastName', authorLastName)
                     updatedCaseStudies.append('titleOfCaseStudy', titleOfCaseStudy)
                     updatedCaseStudies.append('edition', edition)
                     updatedCaseStudies.append('publisherCategory', publisherCategory)
@@ -900,21 +934,21 @@
                         .then((data) => {
                             console.log('data ===>>>', data);
                             if (data.status === 'Done') {
-                                const updatedCaseStudies = data.updatedCaseStudies
-                                console.log('caseID >>>', caseStudyId);
-                                rowToBeUpdate.querySelector('.author-first-name').innerText = updatedCaseStudies.authorsFirstName;
-                                rowToBeUpdate.querySelector('.author-last-name').innerText = updatedCaseStudies.authorLastName;
-                                rowToBeUpdate.querySelector('.edition').innerText = updatedCaseStudies.edition;
-                                rowToBeUpdate.querySelector('.volume-number').innerText = updatedCaseStudies.volumeNumber;
-                                rowToBeUpdate.querySelector('.publication-year').innerText = updatedCaseStudies.publicationYear;
-                                rowToBeUpdate.setAttribute('data-page-number', updatedCaseStudies.pageNumber);
-                                rowToBeUpdate.setAttribute('data-publisher-category', updatedCaseStudies.publisherCategory);
-                                rowToBeUpdate.setAttribute('data-url-of-caseStudy', updatedCaseStudies.urlOfCaseStudy);
-                                rowToBeUpdate.setAttribute('data-numberOfNmimsAuthors', updatedCaseStudies.numberOfNmimsAuthors);
-                                rowToBeUpdate.setAttribute('data-nmims-authors', updatedCaseStudies.nmimsAuthors);
-                                rowToBeUpdate.setAttribute('data-nmims-campus-authors', updatedCaseStudies.nmimsCampusAuthors);
-                                rowToBeUpdate.setAttribute('data-nmims-school-authors', updatedCaseStudies.nmimsSchoolAuthors);
-                                rowToBeUpdate.setAttribute('data-supporting-documents', data.caseStudyFiles);
+                                // const updatedCaseStudies = data.updatedCaseStudies
+                                // console.log('caseID >>>', caseStudyId);
+                                // rowToBeUpdate.querySelector('.author-first-name').innerText = updatedCaseStudies.authorsFirstName;
+                                // rowToBeUpdate.querySelector('.author-last-name').innerText = updatedCaseStudies.authorLastName;
+                                // rowToBeUpdate.querySelector('.edition').innerText = updatedCaseStudies.edition;
+                                // rowToBeUpdate.querySelector('.volume-number').innerText = updatedCaseStudies.volumeNumber;
+                                // rowToBeUpdate.querySelector('.publication-year').innerText = updatedCaseStudies.publicationYear;
+                                // rowToBeUpdate.setAttribute('data-page-number', updatedCaseStudies.pageNumber);
+                                // rowToBeUpdate.setAttribute('data-publisher-category', updatedCaseStudies.publisherCategory);
+                                // rowToBeUpdate.setAttribute('data-url-of-caseStudy', updatedCaseStudies.urlOfCaseStudy);
+                                // rowToBeUpdate.setAttribute('data-numberOfNmimsAuthors', updatedCaseStudies.numberOfNmimsAuthors);
+                                // rowToBeUpdate.setAttribute('data-nmims-authors', updatedCaseStudies.nmimsAuthors);
+                                // rowToBeUpdate.setAttribute('data-nmims-campus-authors', updatedCaseStudies.nmimsCampusAuthors);
+                                // rowToBeUpdate.setAttribute('data-nmims-school-authors', updatedCaseStudies.nmimsSchoolAuthors);
+                                // rowToBeUpdate.setAttribute('data-supporting-documents', data.caseStudyFiles);
                                 
 
                                 $('#case-study-modal').modal('hide');

@@ -202,6 +202,15 @@ function validateRequiredFormFields(actionBtn) {
         }
       }
 
+      if (validate === "isAlphaNumericWithSpace") {
+        const isValid = isAlphaNumericWithSpace(elemVal);
+        if (!isValid) {
+          isValidElem = false;
+          validationState = false;
+          break;
+        }
+      }
+
       if (validate === "isValidHttpUrl") {
         const isValid = isValidHttpUrl(elemVal);
         if (!isValid) {
@@ -229,6 +238,9 @@ function validateRequiredFormFields(actionBtn) {
         }
       }
     }
+
+   
+  
 
     toggleErrorState(formGroup, errorMsg, errorElem, isValidElem);
   }
@@ -407,17 +419,25 @@ function isAlphaNumericSpecial(input) {
     return false;
   }
 
+  const firstChar = input.charCodeAt(0);
+  if ((firstChar >= 48 && firstChar <= 57) ||
+      (firstChar >= 32 && firstChar <= 47) ||
+      (firstChar >= 58 && firstChar <= 64) ||
+      (firstChar >= 91 && firstChar <= 96) || 
+      (firstChar >= 123 && firstChar <= 126)) {
+    return false;
+  }
+
   for (let i = 0; i < input.length; i++) {
     const charCode = input.charCodeAt(i);
-    
     if ((charCode >= 48 && charCode <= 57) ||
         (charCode >= 65 && charCode <= 90) ||
         (charCode >= 97 && charCode <= 122) ||
         (charCode >= 32 && charCode <= 47) ||
         (charCode >= 58 && charCode <= 64) ||
         (charCode >= 91 && charCode <= 96) ||
-        (charCode >= 123 && charCode <= 126)) {
-      continue; 
+        (charCode >= 123 && charCode <= 126)) { 
+      continue;
     } else {
       return false;
     }
@@ -426,10 +446,37 @@ function isAlphaNumericSpecial(input) {
   return true;
 }
 
-
 function isNotNumber(input) {
   return !isNumber(input);
 }
+
+function isAlphaNumericWithSpace(input) {
+  if (!input || input === "") {
+    return false;
+  }
+
+
+  const firstChar = input.charCodeAt(0);
+  if (!((firstChar >= 65 && firstChar <= 90) || // A-Z
+        (firstChar >= 97 && firstChar <= 122))) { // a-z
+    return false;
+  }
+
+  for (let i = 0; i < input.length; i++) {
+    const charCode = input.charCodeAt(i);
+    if ((charCode >= 48 && charCode <= 57) || 
+        (charCode >= 65 && charCode <= 90) ||
+        (charCode >= 97 && charCode <= 122) || 
+        charCode === 32) { // space
+      continue;
+    } else {
+      return false;
+    }
+  }
+
+  return true;
+}
+
 
 
 function isSpace(input) {

@@ -590,7 +590,7 @@ module.exports.viewResearchConsultancy = async (consultantId, userName) => {
         LEFT JOIN
             faculties f ON rgf.faculty_id = f.id 
         WHERE
-            rg.id = $1 AND created_by = $2 and rg.active=true and rgf.active=true and f.active=true
+            rg.id = $1 AND rg.created_by = $2 and rg.active=true and rgf.active=true and f.active=true
         `,
     values: [consultantId, userName],
   };
