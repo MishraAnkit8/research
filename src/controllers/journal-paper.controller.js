@@ -157,3 +157,38 @@ module.exports.viewJournalPaper = async(req, res, next) => {
         errorCode : viewJournalDetails.errorCode ? viewJournalDetails.errorCode : null
     })
 }
+
+module.exports.deleteJournalArticleSchool = async(req, res, next) => {
+    const  userName = req.body.username;
+    console.log('Data Comming from Template' , req.body);
+    console.log('userName ====>>>>>>', userName);
+
+}
+
+module.exports.deleteJournalArticleCampus = async(req, res, next) => {
+    const  userName = req.body.username;
+    console.log('Data Comming from Template' , req.body);
+    console.log('userName ====>>>>>>', userName);
+
+}
+
+module.exports.deleteJournalArticlePolicyCadre = async(req, res, next) => {
+    const  userName = req.body.username;
+    console.log('Data Comming from Template' , req.body);
+    console.log('userName ====>>>>>>', userName);
+
+}
+
+module.exports.deleteJournalArticleIntrenalFaculty = async(req, res, next) => {
+    const  userName = req.body.username;
+    console.log('Data Comming from Template' , req.body);
+    console.log('userName ====>>>>>>', userName);
+
+}
+
+module.exports.deleteJournalArticleAllAuthors = async(req, res, next) => {
+    const  userName = req.body.username;
+    console.log('Data Comming from Template' , req.body);
+    console.log('userName ====>>>>>>', userName);
+
+}

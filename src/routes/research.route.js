@@ -48,6 +48,14 @@ router.get('/journal-paper', asyncErrorHandler(authMiddleware), asyncErrorHandle
 router.post('/journal-paper/insert', upload.array('articlesDocuments', 5), asyncErrorHandler(authMiddleware), asyncErrorHandler(journalController.insertJournalPapperDetails));
 router.post('/journal-paper/update', upload.array('articlesDocuments', 5), asyncErrorHandler(authMiddleware), asyncErrorHandler(journalController.updateJournalPaper));
 router.post('/journal-paper/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(journalController.delJournalPaper));
+//delete form drop down list
+router.post('/journal-articles-school/nmims-school/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(journalController.deleteJournalArticleSchool));
+router.post('/journal-articles-campus/nmims-campus/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(journalController.deleteJournalArticleCampus));
+router.post('/journal-articles-policy-cadre/nmims-policy-cadre/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(journalController.deleteJournalArticlePolicyCadre));
+router.post('/journal-articles-internal-nmims-authors/internal-nmims-authors/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(journalController.deleteJournalArticleIntrenalFaculty));
+router.post('/journal-articles-all-authors/all-authors/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(journalController.deleteJournalArticleAllAuthors));
+
+
 router.post('/journal-paper/view', asyncErrorHandler(authMiddleware), asyncErrorHandler(journalController.viewJournalPaper));
 router.get('/journal-paper/download/:fileName', asyncErrorHandler(authMiddleware), downloadFileService.downloadFile);
 
