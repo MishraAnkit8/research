@@ -1159,7 +1159,7 @@
                     const publisher = document.getElementById('publisher').value;
                     const totalAuthors = document.getElementById('total-authors').value;
                     const journalName = document.getElementById('journal-name').value;
-                    const countOtherFaculty = document.getElementById('count-other-faculty').value;
+                    const otherAuthorsNames = document.getElementById('count-other-faculty').value;
                     const pages = document.getElementById('pages').value;
                     const issnNo = document.getElementById('issn-no').value;
                     const scsCiteScore = document.getElementById('scs-cite-score').value;
@@ -1204,7 +1204,7 @@
                         console.log('file name  ==>>', articlesfilesData[i].name);
                         journalDetails.append('articlesDocuments', articlesfilesData[i]);
                     }
-                    scsIndex
+                    
                     journalDetails.append('year', year);
                     journalDetails.append('scsIndex', scsIndex);
                     journalDetails.append('publisher', publisher);
@@ -1214,7 +1214,7 @@
                     journalDetails.append('nmimsStudentForeignAuthors', nmimsStudentForeignAuthors);
                     journalDetails.append('totalAuthors', totalAuthors);
                     journalDetails.append('journalName', journalName);
-                    journalDetails.append('countOtherFaculty', countOtherFaculty);
+                    journalDetails.append('otherAuthorsNames', otherAuthorsNames);
                     journalDetails.append('pages', pages);
                     journalDetails.append('issnNo', issnNo);
                     journalDetails.append('scsCiteScore', scsCiteScore);
@@ -1253,7 +1253,7 @@
                                 //     console.log('IndexEntry ===>>>', IndexEntry);
                                 //     const newJournalPaper = document.createElement('tr');
                                 //     newJournalPaper.setAttribute('data-journal-article-id', data.journalPaperId)
-                                //     newJournalPaper.setAttribute('data-count-other-faculty', data.journalDetails.countOtherFaculty);
+                                //     newJournalPaper.setAttribute('data-count-other-faculty', data.journalDetails.otherAuthorsNames);
                                 //     newJournalPaper.setAttribute('data-pages', data.journalDetails.pages);
                                 //     newJournalPaper.setAttribute('data-issn-no', data.journalDetails.issnNo);
                                 //     newJournalPaper.setAttribute('data-scs-cite-score', data.journalDetails.scsCiteScore);
@@ -1324,7 +1324,7 @@
                                 Swal.fire({
                                     position: "top-center",
                                     icon: "error",
-                                    title: "Failed To Insert",
+                                    title: `${data.message}`,
                                     color: "red",
                                     with: "20PX",
                                     showConfirmButton: true,
@@ -1581,11 +1581,10 @@
                         }));
 
                         //school tom select
-                        new TomSelect("#nmims-school-list", {
+                        const schholTomSelectlist = new TomSelect("#nmims-school-list", {
                             options: selectedSchool,
                             items: schoolArr,
                             // placeholder : "Select Options",
-                            hidePlaceholder: true,
                             hidePlaceholder: true,
                             create: false,
                             plugins: ['remove_button'],
@@ -1601,7 +1600,6 @@
                                     return '<div>' + escape(data.text) + '</div>';
                                 }
                             },
-
                             onDelete: function (values) {
                                 console.log('Remove button clicked :::::', values);
 
@@ -1609,37 +1607,48 @@
                                     ? `Are you sure you want to remove these ${values.length} items?`
                                     : `Are you sure you want to remove "${values[0]}"?`;
 
-                                if (confirm(message)) {
-                                    fetch('<%- BASE_URL %>research/journal-articles-school/nmims-school/delete', {
-                                        method: 'POST',
-                                        headers: {
-                                            'Content-Type': 'application/json'
-                                        },
-                                        body: JSON.stringify({ internalId: values, journalPaperId: journalPaperId })
-                                    })
-                                        .then(response => response.json())
-                                        .then(data => {
-                                            console.log('data ====>>>>>>>', data);
-                                            if (data.status === "Done") {
-                                                Swal.fire(
-                                                    'Deleted!',
-                                                    'Your item(s) has been deleted.',
-                                                    'success'
-                                                );
-
-                                                values.forEach(value => {
-                                                    tomSelectStatus.removeOption(value);
-                                                });
-                                            }
+                                Swal.fire({
+                                    title: 'Confirm Deletion',
+                                    text: message,
+                                    icon: 'warning',
+                                    showCancelButton: true,
+                                    confirmButtonColor: '#3085d6',
+                                    cancelButtonColor: '#d33',
+                                    confirmButtonText: 'Yes, delete it!'
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        fetch('<%- BASE_URL %>research/journal-articles-school/nmims-school/delete', {
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type': 'application/json'
+                                            },
+                                            body: JSON.stringify({ internalId: values, journalPaperId: journalPaperId })
                                         })
-                                        .catch(error => {
-                                            Swal.fire(
-                                                'Error!',
-                                                'There was a problem with the delete operation: ' + error.message,
-                                                'error'
-                                            );
-                                        });
-                                }
+                                            .then(response => response.json())
+                                            .then(data => {
+                                                console.log('data ====>>>>>>>', data);
+                                                if (data.status === "Done") {
+                                                    Swal.fire(
+                                                        'Deleted!',
+                                                        'Your item(s) has been deleted.',
+                                                        'success'
+                                                    );
+
+                                                    values.forEach(value => {
+                                                        schholTomSelectlist.removeOption(value);
+                                                    });
+                                                }
+                                            })
+                                            .catch(error => {
+                                                Swal.fire(
+                                                    'Error!',
+                                                    'There was a problem with the delete operation: ' + error.message,
+                                                    'error'
+                                                );
+                                            });
+                                    }
+                                });
+
                                 return false;
                             }
                         });
@@ -1664,7 +1673,7 @@
                         }));
 
                         //campus tom select
-                        new TomSelect("#nmims-campus-list", {
+                        const articleCampuslist = new TomSelect("#nmims-campus-list", {
                             options: selectedCampus,
                             items: cmpArray,
                             // placeholder : "Select Options",
@@ -1691,37 +1700,48 @@
                                     ? `Are you sure you want to remove these ${values.length} items?`
                                     : `Are you sure you want to remove "${values[0]}"?`;
 
-                                if (confirm(message)) {
-                                    fetch('<%- BASE_URL %>research/journal-articles-campus/nmims-campus/delete', {
-                                        method: 'POST',
-                                        headers: {
-                                            'Content-Type': 'application/json'
-                                        },
-                                        body: JSON.stringify({ internalId: values, journalPaperId: journalPaperId })
-                                    })
-                                        .then(response => response.json())
-                                        .then(data => {
-                                            console.log('data ====>>>>>>>', data);
-                                            if (data.status === "Done") {
-                                                Swal.fire(
-                                                    'Deleted!',
-                                                    'Your item(s) has been deleted.',
-                                                    'success'
-                                                );
-
-                                                values.forEach(value => {
-                                                    tomSelectStatus.removeOption(value);
-                                                });
-                                            }
+                                Swal.fire({
+                                    title: 'Confirm Deletion',
+                                    text: message,
+                                    icon: 'warning',
+                                    showCancelButton: true,
+                                    confirmButtonColor: '#3085d6',
+                                    cancelButtonColor: '#d33',
+                                    confirmButtonText: 'Yes, delete it!'
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        fetch('<%- BASE_URL %>research/journal-articles-campus/nmims-campus/delete', {
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type': 'application/json'
+                                            },
+                                            body: JSON.stringify({ internalId: values, journalPaperId: journalPaperId })
                                         })
-                                        .catch(error => {
-                                            Swal.fire(
-                                                'Error!',
-                                                'There was a problem with the delete operation: ' + error.message,
-                                                'error'
-                                            );
-                                        });
-                                }
+                                            .then(response => response.json())
+                                            .then(data => {
+                                                console.log('data ====>>>>>>>', data);
+                                                if (data.status === "Done") {
+                                                    Swal.fire(
+                                                        'Deleted!',
+                                                        'Your item(s) has been deleted.',
+                                                        'success'
+                                                    );
+
+                                                    values.forEach(value => {
+                                                        articleCampuslist.removeOption(value);
+                                                    });
+                                                }
+                                            })
+                                            .catch(error => {
+                                                Swal.fire(
+                                                    'Error!',
+                                                    'There was a problem with the delete operation: ' + error.message,
+                                                    'error'
+                                                );
+                                            });
+                                    }
+                                });
+
                                 return false;
                             }
                         });
@@ -1747,7 +1767,7 @@
                         }));
 
                         // tom select policy cadre
-                        new TomSelect("#policy-cadre-list", {
+                       const articlePolicayCadreList = new TomSelect("#policy-cadre-list", {
                             options: selectPolicyCadre,
                             items: policyArr,
                             // placeholder : "Select Options",
@@ -1774,37 +1794,48 @@
                                     ? `Are you sure you want to remove these ${values.length} items?`
                                     : `Are you sure you want to remove "${values[0]}"?`;
 
-                                if (confirm(message)) {
-                                    fetch('<%- BASE_URL %>research/journal-articles-policy-cadre/nmims-policy-cadre/delete', {
-                                        method: 'POST',
-                                        headers: {
-                                            'Content-Type': 'application/json'
-                                        },
-                                        body: JSON.stringify({ internalId: values, journalPaperId: journalPaperId })
-                                    })
-                                        .then(response => response.json())
-                                        .then(data => {
-                                            console.log('data ====>>>>>>>', data);
-                                            if (data.status === "Done") {
-                                                Swal.fire(
-                                                    'Deleted!',
-                                                    'Your item(s) has been deleted.',
-                                                    'success'
-                                                );
-
-                                                values.forEach(value => {
-                                                    tomSelectStatus.removeOption(value);
-                                                });
-                                            }
+                                Swal.fire({
+                                    title: 'Confirm Deletion',
+                                    text: message,
+                                    icon: 'warning',
+                                    showCancelButton: true,
+                                    confirmButtonColor: '#3085d6',
+                                    cancelButtonColor: '#d33',
+                                    confirmButtonText: 'Yes, delete it!'
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        fetch('<%- BASE_URL %>research/journal-articles-policy-cadre/nmims-policy-cadre/delete', {
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type': 'application/json'
+                                            },
+                                            body: JSON.stringify({ internalId: values, journalPaperId: journalPaperId })
                                         })
-                                        .catch(error => {
-                                            Swal.fire(
-                                                'Error!',
-                                                'There was a problem with the delete operation: ' + error.message,
-                                                'error'
-                                            );
-                                        });
-                                }
+                                            .then(response => response.json())
+                                            .then(data => {
+                                                console.log('data ====>>>>>>>', data);
+                                                if (data.status === "Done") {
+                                                    Swal.fire(
+                                                        'Deleted!',
+                                                        'Your item(s) has been deleted.',
+                                                        'success'
+                                                    );
+
+                                                    values.forEach(value => {
+                                                        articlePolicayCadreList.removeOption(value);
+                                                    });
+                                                }
+                                            })
+                                            .catch(error => {
+                                                Swal.fire(
+                                                    'Error!',
+                                                    'There was a problem with the delete operation: ' + error.message,
+                                                    'error'
+                                                );
+                                            });
+                                    }
+                                });
+
                                 return false;
                             }
                         });
@@ -1830,7 +1861,7 @@
                         }));
 
                         //all-author-lists
-                        new TomSelect("#all-author-list", {
+                       const allarticleAuthorsList = new TomSelect("#all-author-list", {
                             options: selectedAuthors,
                             items: authArr,
                             // placeholder : "Select Options",
@@ -1857,37 +1888,48 @@
                                     ? `Are you sure you want to remove these ${values.length} items?`
                                     : `Are you sure you want to remove "${values[0]}"?`;
 
-                                if (confirm(message)) {
-                                    fetch('<%- BASE_URL %>research/journal-articles-all-authors/all-authors/delete', {
-                                        method: 'POST',
-                                        headers: {
-                                            'Content-Type': 'application/json'
-                                        },
-                                        body: JSON.stringify({ internalId: values, journalPaperId: journalPaperId })
-                                    })
-                                        .then(response => response.json())
-                                        .then(data => {
-                                            console.log('data ====>>>>>>>', data);
-                                            if (data.status === "Done") {
-                                                Swal.fire(
-                                                    'Deleted!',
-                                                    'Your item(s) has been deleted.',
-                                                    'success'
-                                                );
-
-                                                values.forEach(value => {
-                                                    tomSelectStatus.removeOption(value);
-                                                });
-                                            }
+                                Swal.fire({
+                                    title: 'Confirm Deletion',
+                                    text: message,
+                                    icon: 'warning',
+                                    showCancelButton: true,
+                                    confirmButtonColor: '#3085d6',
+                                    cancelButtonColor: '#d33',
+                                    confirmButtonText: 'Yes, delete it!'
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        fetch('<%- BASE_URL %>research/journal-articles-all-authors/all-authors/delete', {
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type': 'application/json'
+                                            },
+                                            body: JSON.stringify({ internalId: values, journalPaperId: journalPaperId })
                                         })
-                                        .catch(error => {
-                                            Swal.fire(
-                                                'Error!',
-                                                'There was a problem with the delete operation: ' + error.message,
-                                                'error'
-                                            );
-                                        });
-                                }
+                                            .then(response => response.json())
+                                            .then(data => {
+                                                console.log('data ====>>>>>>>', data);
+                                                if (data.status === "Done") {
+                                                    Swal.fire(
+                                                        'Deleted!',
+                                                        'Your item(s) has been deleted.',
+                                                        'success'
+                                                    );
+
+                                                    values.forEach(value => {
+                                                        allarticleAuthorsList.removeOption(value);
+                                                    });
+                                                }
+                                            })
+                                            .catch(error => {
+                                                Swal.fire(
+                                                    'Error!',
+                                                    'There was a problem with the delete operation: ' + error.message,
+                                                    'error'
+                                                );
+                                            });
+                                    }
+                                });
+
                                 return false;
                             }
                         });
@@ -1958,7 +2000,7 @@
 
 
                         // internal faculty
-                        new TomSelect("#internal-faculty-list", {
+                       const nmimsArticleAuthors = new TomSelect("#internal-faculty-list", {
                             options: selectInternalNmimsFaculty,
                             items: facultyArr,
                             // placeholder : "Select Options",
@@ -1985,42 +2027,51 @@
                                     ? `Are you sure you want to remove these ${values.length} items?`
                                     : `Are you sure you want to remove "${values[0]}"?`;
 
-                                if (confirm(message)) {
-                                    fetch('<%- BASE_URL %>research/journal-articles-internal-nmims-authors/internal-nmims-authors/delete', {
-                                        method: 'POST',
-                                        headers: {
-                                            'Content-Type': 'application/json'
-                                        },
-                                        body: JSON.stringify({ internalId: values, journalPaperId: journalPaperId })
-                                    })
-                                        .then(response => response.json())
-                                        .then(data => {
-                                            console.log('data ====>>>>>>>', data);
-                                            if (data.status === "Done") {
-                                                Swal.fire(
-                                                    'Deleted!',
-                                                    'Your item(s) has been deleted.',
-                                                    'success'
-                                                );
-
-                                                values.forEach(value => {
-                                                    tomSelectStatus.removeOption(value);
-                                                });
-                                            }
+                                Swal.fire({
+                                    title: 'Confirm Deletion',
+                                    text: message,
+                                    icon: 'warning',
+                                    showCancelButton: true,
+                                    confirmButtonColor: '#3085d6',
+                                    cancelButtonColor: '#d33',
+                                    confirmButtonText: 'Yes, delete it!'
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        fetch('<%- BASE_URL %>research/journal-articles-internal-nmims-authors/internal-nmims-authors/delete', {
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type': 'application/json'
+                                            },
+                                            body: JSON.stringify({ internalId: values, journalPaperId: journalPaperId })
                                         })
-                                        .catch(error => {
-                                            Swal.fire(
-                                                'Error!',
-                                                'There was a problem with the delete operation: ' + error.message,
-                                                'error'
-                                            );
-                                        });
-                                }
+                                            .then(response => response.json())
+                                            .then(data => {
+                                                console.log('data ====>>>>>>>', data);
+                                                if (data.status === "Done") {
+                                                    Swal.fire(
+                                                        'Deleted!',
+                                                        'Your item(s) has been deleted.',
+                                                        'success'
+                                                    );
+
+                                                    values.forEach(value => {
+                                                        nmimsArticleAuthors.removeOption(value);
+                                                    });
+                                                }
+                                            })
+                                            .catch(error => {
+                                                Swal.fire(
+                                                    'Error!',
+                                                    'There was a problem with the delete operation: ' + error.message,
+                                                    'error'
+                                                );
+                                            });
+                                    }
+                                });
+
                                 return false;
                             }
                         });
-
-
 
 
                     }
@@ -2146,7 +2197,7 @@
                     const publisher = document.getElementById('publisher').value;
                     const totalAuthors = document.getElementById('total-authors').value;
                     const journalName = document.getElementById('journal-name').value;
-                    const countOtherFaculty = document.getElementById('count-other-faculty').value;
+                    const otherAuthorsNames = document.getElementById('count-other-faculty').value;
                     const pages = document.getElementById('pages').value;
                     const issnNo = document.getElementById('issn-no').value;
                     const scsCiteScore = document.getElementById('scs-cite-score').value;
@@ -2193,7 +2244,7 @@
                     updatedJournalPaperDetails.append('nmimsStudentForeignAuthors', nmimsStudentForeignAuthors);
                     updatedJournalPaperDetails.append('totalAuthors', totalAuthors);
                     updatedJournalPaperDetails.append('journalName', journalName);
-                    updatedJournalPaperDetails.append('countOtherFaculty', countOtherFaculty);
+                    updatedJournalPaperDetails.append('otherAuthorsNames', otherAuthorsNames);
                     updatedJournalPaperDetails.append('pages', pages);
                     updatedJournalPaperDetails.append('issnNo', issnNo);
                     updatedJournalPaperDetails.append('scsCiteScore', scsCiteScore);
@@ -2227,7 +2278,7 @@
                             console.log('data ==>>>', data);
 
                             if (data.status === 'Done') {
-                                // rowToBeUpdated.setAttribute('data-count-other-faculty', data.updateJournalDetails.countOtherFaculty);
+                                // rowToBeUpdated.setAttribute('data-count-other-faculty', data.updateJournalDetails.otherAuthorsNames);
                                 // rowToBeUpdated.setAttribute('data-pages', data.updateJournalDetails.pages);
                                 // rowToBeUpdated.setAttribute('data-issn-no', data.updateJournalDetails.issnNo);
                                 // rowToBeUpdated.setAttribute('data-scs-cite-score', data.updateJournalDetails.scsCiteScore);
@@ -2279,7 +2330,7 @@
                                 Swal.fire({
                                     position: "top-center",
                                     icon: "error",
-                                    title: "Updation Failed",
+                                    title: `${data.message}`,
                                     color: "red",
                                     with: "20PX",
                                     showConfirmButton: true,

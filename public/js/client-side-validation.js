@@ -72,14 +72,14 @@ function validateRequiredFormFields(actionBtn) {
         }
       }
 
-      if (validate === "isValidYear") {
-        const isValid = isValidYear(elemVal);
-        if (!isValid) {
-          isValidElem = false;
-          validationState = false;
-          break;
-        }
-      }
+      // if (validate === "isValidYear") {
+      //   const isValid = isValidYear(elemVal);
+      //   if (!isValid) {
+      //     isValidElem = false;
+      //     validationState = false;
+      //     break;
+      //   }
+      // }
 
       if (validate === "isValidMonth") {
         const isValid = isValidMonth(elemVal);

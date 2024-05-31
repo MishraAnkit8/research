@@ -27,7 +27,7 @@ const isStringifiedArray = (value) => {
 //   cunstom validation for file 
 const isValidFile = (files) => {
     if (!files || files.length === 0) {
-      return false; 
+      return false; // No files uploaded
     }
   
     const allowedTypes = ["application/pdf", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/vnd.ms-excel.sheet.macroenabled.12", "application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"];
@@ -35,21 +35,21 @@ const isValidFile = (files) => {
   
     for (const file of files) {
       if (!allowedTypes.includes(file.mimetype)) {
-        return false; 
+        return false; // File type not allowed
       }
   
       if (file.size > maxSizeInBytes) {
-        return false; 
+        return false; // File size exceeds the maximum allowed size
       }
     }
   
-    return true;
+    return true; // All files are valid
   };
   
 
 
 // validate org insert
-module.exports.validateBookChapter = [
+module.exports.validateBookPublication = [
 check('authorName')
     .notEmpty()
     .withMessage('All authors names is required')
@@ -74,20 +74,12 @@ check('nmimsCampusAuthors')
     .withMessage('NMIMS Campus - Author  should be a string')
     .isLength({ min: 2 }),
 
-check('chapterTitle')
-    .notEmpty()
-    .withMessage('Title Of Chapter  is required')
-    .bail()
-    .isString()
-    .withMessage('Title Of Chapter should be a string')
-    .isLength({ min: 2 }),
-
 check('bookTitle')
     .notEmpty()
-    .withMessage('Title Of The Book   is required')
+    .withMessage('Title Of Book  is required')
     .bail()
     .isString()
-    .withMessage('Title Of The Book  should be a string')
+    .withMessage('Title Of Book  should be a string')
     .isLength({ min: 2 }),
 
  check('edition')
@@ -96,6 +88,13 @@ check('bookTitle')
     .bail()
     .isAlphanumeric()
     .withMessage('Edition should be combination of alphanumeric '),
+
+check('volumeNumber')
+    .notEmpty()
+    .withMessage('Volume Number is required')
+    .bail()
+    .isString()
+    .withMessage('Volume Number should be a string'),
 
 check('publisherName')
     .notEmpty()
@@ -118,6 +117,14 @@ check('publicationYear')
     .isInt({ min: 1900, max: 3000 })
     .withMessage('Publication Year should be an integer between 1900 to 3000'),
 
+check('bookUrl')
+    .notEmpty()
+    .withMessage('Website link  required')
+    .bail()
+    .isString()
+    .withMessage('Website link  should be a string'),
+
+
 check('isbnNo')
     .notEmpty()
     .withMessage('ISBN Number is required')
@@ -125,34 +132,19 @@ check('isbnNo')
     .isString()
     .withMessage('ISBN Number should be astring'),
 
-check('volumeNumber')
-    .notEmpty()
-    .withMessage('Volume Number  is required')
-    .bail()
-    .isString()
-    .withMessage('Volume Number  should be astring'),
-
 check('doiBookId')
     .notEmpty()
-    .withMessage('Weblink Of the Book is required')
+    .withMessage('Doi Id/Web Link required')
     .bail()
     .isString()
-    .withMessage('Weblink Of the Book should be a string'),
+    .withMessage('Doi Id/Web Link  should be a string'),
 
-
-check('bookEditor')
+check('publicationPlace')
     .notEmpty()
-    .withMessage('Editor(s) Of The Book required')
+    .withMessage('Place Of Publication required')
     .bail()
     .isString()
-    .withMessage('Editor(s) Of The Book should be a string'),
-
-check('bookUrl')
-    .notEmpty()
-    .withMessage('Weblink Of the Book required')
-    .bail()
-    .isString()
-    .withMessage('Weblink Of the Book should be a string'),
+    .withMessage('Place Of Publication should be a string'),
 
 
 check('numberOfNmimsAuthors')
@@ -160,16 +152,7 @@ check('numberOfNmimsAuthors')
     .withMessage('No. Of NMIMS Authors is required')
     .bail()
     .isInt()
-    .withMessage('No. Of NMIMS Authors should be an integer'), 
-
-check('pageNumber')
-    .notEmpty()
-    .withMessage('Page numbers Of The Chapter is required')
-    .bail()
-    .isString()
-    .withMessage('Page numbers Of The Chapter should be string')
-    .isLength({ min : 2}),
-
+    .withMessage('No. Of NMIMS Authors should be an integer'),
 
 check('nmimsAuthors')
     .notEmpty()

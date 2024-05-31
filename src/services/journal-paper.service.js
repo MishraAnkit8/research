@@ -249,3 +249,105 @@ module.exports.viewJournalPaper = async (journalPaperId, userName) => {
     }
 
 }
+
+
+// service for dropdown school
+module.exports.deleteSchoolDetails = async(body, userName) => {
+    console.log('body in service school ====>>>>', body);
+
+    const journalPaperId = body.journalPaperId;
+    const internalId = body.internalId;
+    console.log('internalId ===>>>>>', internalId);
+
+    const result = await journalPaperModel.deleteNmimsSchool(internalId, journalPaperId, userName);
+    console.log('result ===>>>>>>>', result);
+    return result.status === "Done" ? {
+        status : result.status,
+        message : result.message
+    } : {
+        status : result.status,
+        message : result.message,
+        errorCode : result.errorCode
+    }
+}
+
+// service for dropdown campus
+module.exports.deleteCampusDetails = async(body, userName) => {
+    console.log('body in service campus ====>>>>', body);
+    const journalPaperId = body.journalPaperId;
+    const internalId = body.internalId;
+    console.log('internalId ===>>>>>', internalId);
+
+    const result = await journalPaperModel.deleteNmimsCampus(internalId, journalPaperId, userName);
+    console.log('result ===>>>>>>>', result);
+    return result.status === "Done" ? {
+        status : result.status,
+        message : result.message
+    } : {
+        status : result.status,
+        message : result.message,
+        errorCode : result.errorCode
+    }
+}
+
+// service for dropdown internal nmims faculty
+module.exports.deleteNmimsAuthorsDetails = async(body, userName) => {
+    console.log('body in service internal authors ====>>>>', body);
+    const journalPaperId = body.journalPaperId;
+    const internalId = body.internalId;
+    console.log('internalId ===>>>>>', internalId);
+
+    const result = await journalPaperModel.deleteInternalFaculty(internalId, journalPaperId, userName);
+
+    console.log('result ===>>>>>>>', result);
+    return result.status === "Done" ? {
+        status : result.status,
+        message : result.message
+    } : {
+        status : result.status,
+        message : result.message,
+        errorCode : result.errorCode
+    }
+}
+
+// service for dropdown all authors
+module.exports.deleteAllauthorsDetails = async(body, userName) => {
+    console.log('body in service  all authors ====>>>>', body);
+    const journalPaperId = body.journalPaperId;
+    const internalId = body.internalId;
+    console.log('internalId ===>>>>>', internalId);
+
+
+    const result = await journalPaperModel.deleteAllAuthorsDetails(internalId, journalPaperId, userName);
+
+    console.log('result ===>>>>>>>', result);
+    return result.status === "Done" ? {
+        status : result.status,
+        message : result.message
+    } : {
+        status : result.status,
+        message : result.message,
+        errorCode : result.errorCode
+    }
+}
+
+// service for dropdown policy cadre
+module.exports.deletePolicyDetails = async(body, userName) => {
+    console.log('body in service policy cadre ====>>>>', body);
+
+    const journalPaperId = body.journalPaperId;
+    const internalId = body.internalId;
+    console.log('internalId ===>>>>>', internalId);
+
+    const result = await journalPaperModel.deletPolicyCadre(internalId, journalPaperId, userName);
+
+    console.log('result ===>>>>>>>', result);
+    return result.status === "Done" ? {
+        status : result.status,
+        message : result.message
+    } : {
+        status : result.status,
+        message : result.message,
+        errorCode : result.errorCode
+    }
+}

@@ -49,7 +49,7 @@ const isValidFile = (files) => {
 
 
 // validate org insert
-module.exports.validateBookChapter = [
+module.exports.validateEditedBook = [
 check('authorName')
     .notEmpty()
     .withMessage('All authors names is required')
@@ -74,20 +74,12 @@ check('nmimsCampusAuthors')
     .withMessage('NMIMS Campus - Author  should be a string')
     .isLength({ min: 2 }),
 
-check('chapterTitle')
-    .notEmpty()
-    .withMessage('Title Of Chapter  is required')
-    .bail()
-    .isString()
-    .withMessage('Title Of Chapter should be a string')
-    .isLength({ min: 2 }),
-
 check('bookTitle')
     .notEmpty()
-    .withMessage('Title Of The Book   is required')
+    .withMessage('Title Of Book  is required')
     .bail()
     .isString()
-    .withMessage('Title Of The Book  should be a string')
+    .withMessage('Title Of Book  should be a string')
     .isLength({ min: 2 }),
 
  check('edition')
@@ -118,6 +110,8 @@ check('publicationYear')
     .isInt({ min: 1900, max: 3000 })
     .withMessage('Publication Year should be an integer between 1900 to 3000'),
 
+
+
 check('isbnNo')
     .notEmpty()
     .withMessage('ISBN Number is required')
@@ -125,34 +119,26 @@ check('isbnNo')
     .isString()
     .withMessage('ISBN Number should be astring'),
 
-check('volumeNumber')
-    .notEmpty()
-    .withMessage('Volume Number  is required')
-    .bail()
-    .isString()
-    .withMessage('Volume Number  should be astring'),
-
 check('doiBookId')
     .notEmpty()
-    .withMessage('Weblink Of the Book is required')
+    .withMessage('DOI ID/ WebLink is required')
     .bail()
     .isString()
-    .withMessage('Weblink Of the Book should be a string'),
+    .withMessage('DOI ID/ WebLink should be a string'),
 
+check('publicationPlace')
+    .notEmpty()
+    .withMessage('Place Of Publication required')
+    .bail()
+    .isString()
+    .withMessage('Place Of Publication should be a string'),
 
-check('bookEditor')
+check('editorName')
     .notEmpty()
     .withMessage('Editor(s) Of The Book required')
     .bail()
     .isString()
     .withMessage('Editor(s) Of The Book should be a string'),
-
-check('bookUrl')
-    .notEmpty()
-    .withMessage('Weblink Of the Book required')
-    .bail()
-    .isString()
-    .withMessage('Weblink Of the Book should be a string'),
 
 
 check('numberOfNmimsAuthors')
@@ -160,16 +146,7 @@ check('numberOfNmimsAuthors')
     .withMessage('No. Of NMIMS Authors is required')
     .bail()
     .isInt()
-    .withMessage('No. Of NMIMS Authors should be an integer'), 
-
-check('pageNumber')
-    .notEmpty()
-    .withMessage('Page numbers Of The Chapter is required')
-    .bail()
-    .isString()
-    .withMessage('Page numbers Of The Chapter should be string')
-    .isLength({ min : 2}),
-
+    .withMessage('No. Of NMIMS Authors should be an integer'),
 
 check('nmimsAuthors')
     .notEmpty()

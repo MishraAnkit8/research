@@ -295,7 +295,7 @@
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="isbn-no" class="form-label fw-bold">ISBN Number <i style="color: red;">*</i></label>
                                     <input type="text" name="ISBN-Number" id="isbn-no" class="form-control"
-                                        data-validate="isEmpty,isExist,isLength:2:255" data-err-msg="Provide valid input."
+                                        data-validate="isEmpty,isLength:1:255" data-err-msg="Provide valid input."
                                         required>
                                 </div>
                                 <!-- DOI of book -->
@@ -311,7 +311,7 @@
                                         Publication <i style="color: red;">*</i></label>
                                     <input type="text" name="publication-place" id="publication-place"
                                         class="form-control"
-                                        data-validate="isEmpty,isNotNumber,isExist,isLength:2:255,isAlphabet"
+                                        data-validate="isEmpty,isExist,isAlphaNumericSpecial,isLength:2:255"
                                         data-err-msg="Provide Valid Input" required>
                                 </div>
                                 <!-- No. of NMIMS Authors -->
@@ -326,7 +326,7 @@
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="nmims-authors" class="form-label fw-bold ">Name of NMIMS Authors <i style="color: red;">*</i></label>
                                     <input type="text" name="web-link" id="nmims-authors"
-                                        data-validate="isEmpty,isAlphabeticWords,isLength:2:255"
+                                        data-validate="isEmpty,isAlphaNumericSpecial,isLength:2:255"
                                         data-err-msg="Provide Valid Input" class="form-control" required />
                                 </div>
                              
@@ -548,7 +548,7 @@
                         const bookPublicationDataFiles = document.querySelector('#book-publication-edit');
                         bookPublicationDataFiles.classList.add('d-none');
 
-                        const authorLastName = document.getElementById('author-last-name');
+                        const authorName = document.getElementById('author-last-name');
                         const bookTitle = document.getElementById('book-title');
                         const edition = document.getElementById('edition');
                         const isbnNo = document.getElementById('isbn-no');
@@ -567,7 +567,7 @@
                         const supportingDocuments = document.querySelector('input[type="file"]');
 
                         // 
-                        authorLastName.value = '';
+                        authorName.value = '';
                         bookTitle.value = '';
                         edition.value = '';
                         isbnNo.value = '';
@@ -588,7 +588,7 @@
                 const insertBookPublication = async (url) => {
 
                     const bookPublicationData = new FormData();
-                    const authorLastName = document.getElementById('author-last-name').value;
+                    const authorName = document.getElementById('author-last-name').value;
                     const bookTitle = document.getElementById('book-title').value;
                     const edition = document.getElementById('edition').value;
                     const isbnNo = document.getElementById('isbn-no').value;
@@ -615,7 +615,7 @@
 
 
                     // appending value
-                    bookPublicationData.append('authorLastName', authorLastName);
+                    bookPublicationData.append('authorName', authorName);
                     bookPublicationData.append('bookTitle', bookTitle);
                     bookPublicationData.append('edition', edition);
                     bookPublicationData.append('isbnNo', isbnNo);
@@ -661,7 +661,7 @@
                                 //         newBookPublication.setAttribute('data-supporting-documents', data.filename);
                                 //         newBookPublication.innerHTML = `
                                 // <td >${IndexEntry}</td>
-                                //     <td class="author-last-name">${data.bookPublicationData.authorLastName}</td>
+                                //     <td class="author-last-name">${data.bookPublicationData.authorName}</td>
                                 //     <td class="publication-year">${data.bookPublicationData.publicationYear}</td>
                                 //     <td class="book-title">${data.bookPublicationData.bookTitle}</td>
                                 //     <td class="isbn-no">${data.bookPublicationData.isbnNo}</td>
@@ -755,7 +755,7 @@
 
                         // fileView.classList.remove('d-none');
                         // modalImage.classList.remove('d-none');
-                        const authorLastName = document.getElementById('author-last-name');
+                        const authorName = document.getElementById('author-last-name');
                         const bookTitle = document.getElementById('book-title');
                         const edition = document.getElementById('edition');
                         const isbnNo = document.getElementById('isbn-no');
@@ -774,7 +774,7 @@
                         const supportingDocuments = bookPublicationRowToBeUpdated.getAttribute('data-supporting-documents');
                         console.log('supportingDocuments ==>>', supportingDocuments)
                         // assigning related row data value
-                        authorLastName.value = bookPublicationRowToBeUpdated.querySelector('.author-last-name').innerText;
+                        authorName.value = bookPublicationRowToBeUpdated.querySelector('.author-last-name').innerText;
                         bookTitle.value = bookPublicationRowToBeUpdated.querySelector('.book-title').innerText;
                         edition.value = bookPublicationRowToBeUpdated.getAttribute('data-edition');
                         publisherName.value = bookPublicationRowToBeUpdated.querySelector('.publisher-name').innerText;
@@ -993,7 +993,7 @@
                         updatedBookPublicationData.append('researchSupportingDocument', bookPublicationDataFiles);
                     }
                     updatedBookPublicationData.append('bookPublicationId', bookPublicationId);
-                    updatedBookPublicationData.append('authorLastName', updatedaAuthorLastName);
+                    updatedBookPublicationData.append('authorName', updatedaAuthorLastName);
                     updatedBookPublicationData.append('bookTitle', updatedBookTitle);
                     updatedBookPublicationData.append('edition', updatedEdition);
                     updatedBookPublicationData.append('isbnNo', updatedIsbnNo);
@@ -1035,7 +1035,7 @@
                                 if (updatedDocuments.files) {
                                     bookPublicationRowToBeUpdated.setAttribute('data-supporting-documents', data.updatedFile);
                                 };
-                                bookPublicationRowToBeUpdated.querySelector('.author-last-name').innerText = data.updatedBookPublication.authorLastName;
+                                bookPublicationRowToBeUpdated.querySelector('.author-last-name').innerText = data.updatedBookPublication.authorName;
                                 bookPublicationRowToBeUpdated.querySelector('.book-title').innerText = data.updatedBookPublication.bookTitle;
                                 bookPublicationRowToBeUpdated.querySelector('.publisher-name').innerText = data.updatedBookPublication.publisherName;
                                 bookPublicationRowToBeUpdated.querySelector('.isbn-no').innerText = data.updatedBookPublication.isbnNo;

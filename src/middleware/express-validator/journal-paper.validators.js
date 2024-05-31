@@ -1,218 +1,182 @@
-// const { check } = require("express-validator");
-// const { validationHandler } = require("./validation.handler");
+const { check } = require("express-validator");
+const { validationHandler } = require("./validation.handler");
 
-// //check if value is an integer
-// const isInt = (value) => {
-//   if (value && isNaN(value)) {
-//     return false;
-//   }
-//   return true;
-// };
+//check if value is an integer
+const isInt = (value) => {
+  if (value && isNaN(value)) {
+    return false;
+  }
+  return true;
+};
 
-// // validate org insert
-// module.exports.validateJournalPaper = [
-//   check("journalDetails", "No data to be inserted.")
-//     .notEmpty()
-//     .withMessage("journalDetails should not be empty"),
+// Custom validator to check if the stringified array contains valid IDs
+const isStringifiedArray = (value) => {
+    try {
+      const parsed = JSON.parse(value);
+      if (parsed && Object.values(parsed).length === 1) {
+        const ids = Object.values(parsed)[0];
+        return Array.isArray(ids) && ids.every(id => typeof id === 'string' || typeof id === 'number');
+      }
+      return false;
+    } catch (e) {
+      return false;
+    }
+  };
 
-//   check("journalDetails.year")
-//     .notEmpty()
-//     .withMessage("year  required")
-//     .bail()
-//     .isInt()
-//     .withMessage("year shuold be integer"),
+//   cunstom validation for file 
+const isValidFile = (files) => {
+    if (!files || files.length === 0) {
+      return false; // No files uploaded
+    }
+  
+    const allowedTypes = ["application/pdf", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/vnd.ms-excel.sheet.macroenabled.12", "application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"];
+    const maxSizeInBytes = 5 * 1024 * 1024; // 5MB
+  
+    for (const file of files) {
+      if (!allowedTypes.includes(file.mimetype)) {
+        return false; // File type not allowed
+      }
+  
+      if (file.size > maxSizeInBytes) {
+        return false; // File size exceeds the maximum allowed size
+      }
+    }
+  
+    return true; // All files are valid
+  };
+  
 
-//  check("journalDetails.school")
-//     .notEmpty()
-//     .withMessage("school name is required")
-//     .bail()
-//     .isString()
-//     .withMessage("school name should be string")
-//     .isLength({ min: 2 }), 
+  const nmimsFields = [
+    'nmimsSchoolIds',
+    'nmimsCampusIds',
+    'nmimsFacultiesIds',
+    'allAuthorsIds',
+    'policyCadreIds'
+  ];
 
-//  check("journalDetails.campus")
-//     .notEmpty()
-//     .withMessage("campus is required")
-//     .bail()
-//     .isString()
-//     .withMessage(" journal paper campus  should be string")
-//     .isLength({ min: 2 }), 
-     
-//  check("journalDetails.policyCadre")
-//     .notEmpty()
-//     .withMessage("policy cadre is required")
-//     .bail()
-//     .isString()
-//     .withMessage("policy cadre  should be string"),
+// validate org insert
+module.exports.validateJournalPaper = [
 
-//  check("journalDetails.journalCategory")
-//     .notEmpty()
-//     .withMessage("journal Category is required")
-//     .bail()
-//     .isString()
-//     .withMessage("researchType should be string"),
 
-//  check("journalDetails.allAuthors")
-//     .notEmpty()
-//     .withMessage("all authors is required")
-//     .bail()
-//     .isString()
-//     .withMessage("all Authors name should be string")
-//     .isLength({ min: 2 }),
+...nmimsFields.map(field => (
+        check(field)
+          .notEmpty()
+          .withMessage(`${field.replace(/([A-Z])/g, ' $1').toLowerCase()} is required`)
+          .bail()
+          .custom(isStringifiedArray)
+          .withMessage(`${field.replace(/([A-Z])/g, ' $1').toLowerCase()} should be a stringified array of IDs`)
+      )),
 
-//  check("journalDetails.totalAuthors")
-//     .notEmpty()
-//     .withMessage("total authors is required")
-//     .bail()
-//     .isInt()
-//     .withMessage("total authors should be integer"),
- 
-//  check("journalDetails.nmimsAuthors")
-//     .notEmpty()
-//     .withMessage("nmims authors is required")
-//     .bail()
-//     .isString()
-//     .withMessage("nmims authors should be string")
-//     .isLength({ min: 2 }),
+check('year')
+    .notEmpty()
+    .withMessage('Year is required')
+    .bail()
+    .isInt({ min: 1900, max: 3000 })
+    .withMessage('Year should be an integer between 1900 to 3000'),
 
-//  check("journalDetails.nmimsAuthorsCount")
-//     .notEmpty()
-//     .withMessage("nmims authors count is required")
-//     .bail()
-//     .isInt()
-//     .withMessage("nmims authors count should be integer"),
-    
-//  check("journalDetails.countOtherFaculty")
-//     .notEmpty()
-//     .withMessage("count other faculty  is required")
-//     .bail()
-//     .bail()
-//     .isInt()
-//     .withMessage("count other faculty should be integer"),
-    
-//  check("journalDetails.titleOfPaper")
-//     .notEmpty()
-//     .withMessage("title of paper is required")
-//     .bail()
-//     .isString()
-//     .withMessage("title of paper  should be string")
-//     .isLength({ min: 2 }), 
+ check('totalAuthors')
+    .notEmpty()
+    .withMessage('Total No. of Authors is required')
+    .bail()
+    .isInt()
+    .withMessage('Total No. of Authors should be an integer'),
 
-//  check("journalDetails.journalName")
-//     .notEmpty()
-//     .withMessage("journal name is required")
-//     .bail()
-//     .isString()
-//     .withMessage("journal name should be string")
-//     .isLength({ min: 2 }), 
+check('nmimsAuthorsCount')
+    .notEmpty()
+    .withMessage('No. of NMIMS Authors is required')
+    .bail()
+    .isInt()
+    .withMessage('No. of NMIMS Authors should be an integer'),
 
-//  check("journalDetails.publisher")
-//     .notEmpty()
-//     .withMessage("publisher is required")
-//     .bail()
-//     .isString()
-//     .withMessage("publisher  should be string")
-//     .isLength({ min: 2 }), 
+check('uid')
+    .notEmpty()
+    .withMessage('UID is required')
+    .bail()
+    .isInt()
+    .withMessage('UID should be an integer'),
 
-//  check("journalDetails.pages")
-//     .notEmpty()
-//     .withMessage("pages is required")
-//     .bail()
-//     .isInt()
-//     .withMessage("pages  should be integer"),
+check('journalName')
+    .notEmpty()
+    .withMessage('Journal Name is required')
+    .bail()
+    .isString()
+    .withMessage('Journal Name should be a string')
+    .isLength({ min: 2 }),
 
-//  check("journalDetails.issnNo")
-//     .notEmpty()
-//     .withMessage("issn No is required")
-//     .bail()
-//     .isInt()
-//     .withMessage("issn  should be integer"),
+check('publisher')
+    .notEmpty()
+    .withMessage('Publisher is required')
+    .bail()
+    .isString()
+    .withMessage('Publisher should be a string')
+    .isLength({ min: 2 }),
 
-//  check("journalDetails.dateOfPublishing")
-//     .notEmpty()
-//     .withMessage(" date of publishing is required")
-//     .bail()
-//     .isDate()
-//     .withMessage("date of publishing sholud not be empty"), 
+check('titleOfPaper')
+    .notEmpty()
+    .withMessage('Title of paper is required')
+    .bail()
+    .isString()
+    .withMessage('Title of paper should be a string')
+    .isLength({ min: 2 }),
 
-//     check("journalDetails.impactFactor")
-//     .notEmpty()
-//     .withMessage("impact factor is required")
-//     .bail()
-//     .isString()
-//     .withMessage("impact factor  should be string")
-//     .isLength({ min: 2 }), 
+  // Optional fields
 
-//     check("journalDetails.scsCiteScore")
-//     .notEmpty()
-//     .withMessage("scs cite score is required")
-//     .bail()
-//     .isInt()
-//     .withMessage("scs cite score should be integer"),
-    
-//  check("journalDetails.scsIndexedCategory")
-//     .notEmpty()
-//     .withMessage("scs indexed category is required")
-//     .bail()
-//     .isString()
-//     .withMessage("scs indexed category should be string"),
-    
-//  check("journalDetails.wosIndexedCategory")
-//     .notEmpty()
-//     .withMessage("wos indexed catgory is required")
-//     .bail()
-//     .isString()
-//     .withMessage("wos indexed catgory  should be String"),
+check('otherAuthorsNames')
+        .optional({ checkFalsy: true })
+        .isString()
+        .withMessage('Names-Others Authors should be a string')
+        .isLength({ min: 2 })
+        .withMessage('Names-Others Authors should be at least 2 characters long'),
 
-//  check("journalDetails.foreignAuthors")
-//     .notEmpty()
-//     .withMessage("foreign authors  is required")
-//     .bail()
-//     .isString()
-//     .withMessage("foreign authors should be String"),
+check('pages')
+  .optional({ checkFalsy: true })
+  .isString()
+  .withMessage('Vol,Issue,Page No. should be a string')
+  .isLength({ min: 2 }),
 
-//  check("journalDetails.abdcIndexedCategory")
-//     .notEmpty()
-//     .withMessage("abcd indexed category  required")
-//     .bail()
-//     .isString()
-//     .withMessage("abcd indexed category should be String"), 
+check('impactFactor')
+    .notEmpty()
+    .withMessage('Impact factor is required')
+    .bail()
+    .isDecimal()
+    .withMessage('Impact factor Decimal'),
 
-//     check("journalDetails.ugcIndexedCategory")
-//     .notEmpty()
-//     .withMessage("ugc indexed category is required")
-//     .bail()
-//     .bail()
-//     .isString()
-//     .withMessage("ugc indexed category should be integer"),
-    
-//  check("journalDetails.webLinkNumber")
-//     .notEmpty()
-//     .withMessage("webLinkNumber is required")
-//     .bail()
-//     .isInt()
-//     .withMessage("webLinkNumber  should be Number"),
+check('webLinkNumber')
+    .notEmpty()
+    .withMessage('WEB Link DOI is required')
+    .bail()
+    .isString()
+    .withMessage('WEB Link DOI should be a string')
+    .isLength({ min: 2 }),
 
-//  check("journalDetails.foreignAuthorsNumbers")
-//     .notEmpty()
-//     .withMessage("foreignAuthorsNumbers is required")
-//     .bail()
-//     .isInt()
-//     .withMessage("foreignAuthorsNumbers should be integer"),
+check('dateOfPublishing')
+    .notEmpty()
+    .withMessage('Date of Publishing is required')
+    .bail()
+    .isDate()
+    .withMessage('Date of Publishing should be a Date'),
 
-// check("journalDetails.nmimsStudentAuthors")
-//     .notEmpty()
-//     .withMessage("Names of NMIMS Student  Author is required")
-//     .bail()
-//     .isString()
-//     .withMessage("Names of NMIMS Student  Author  should be Number"),
 
-//  check("journalDetails.countStudentAuthors")
-//     .notEmpty()
-//     .withMessage("NO. OF NMIMS Student  Authors is required")
-//     .bail()
-//     .isInt()
-//     .withMessage("NO. OF NMIMS Student  Authors should be integer"),
+check('pages')
+    .optional({ checkFalsy: true })
+    .isString()
+    .withMessage('Pages should be an string'),
 
-//   validationHandler, // Handler for validation errors
-// ];
+check('gsIndex')
+    .optional({ checkFalsy: true })
+    .isInt()
+    .withMessage('GS Indexed be an integer'),
+
+
+check('noNmimsStudentAuthor')
+    .optional({ checkFalsy: true })
+    .isInt()
+    .withMessage('No. of NMIMS student authors should be an integer'), 
+
+// check('articlesDocuments')
+//     .custom(isValidFile)
+//     .withMessage('Invalid file. Please upload a valid file (JPEG, PNG, or PDF format, maximum size 5MB).'),
+
+
+  validationHandler, // Handler for validation errors
+];

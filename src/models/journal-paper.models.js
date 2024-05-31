@@ -216,7 +216,7 @@ module.exports.insertJournalArticle = async (
     publisher,
     totalAuthors,
     journalName,
-    countOtherFaculty,
+    otherAuthorsNames,
     pages,
     issnNo,
     scsCiteScore,
@@ -249,7 +249,7 @@ module.exports.insertJournalArticle = async (
       publisher,
       totalAuthors,
       journalName,
-      countOtherFaculty,
+      otherAuthorsNames,
       pages,
       issnNo,
       scsCiteScore,
@@ -588,7 +588,7 @@ module.exports.deleteJournalPaper = async ({ journalPaperId }) => {
   const deleteArticleDocuments = await researchDbW.query(articleDocSql);
   const deleteArticleSchools = await researchDbW.query(articlSchSql);
   const deleteArticleCampus = await researchDbW.query(articleCamSql);
-  const deleteArlicleFactor = await researchDbW.query(articleFactorSql);
+  // const deleteArlicleFactor = await researchDbW.query(articleFactorSql);
   const deleteArticlePolicy = await researchDbW.query(articlePolicySql);
 
   const deletePromises = [
@@ -597,7 +597,7 @@ module.exports.deleteJournalPaper = async ({ journalPaperId }) => {
     deleteNmimsArticleAuthors,
     deleteArticleSchools,
     deleteArticleCampus,
-    deleteArlicleFactor,
+    // deleteArlicleFactor,
     deleteArticlePolicy,
   ];
 
@@ -620,7 +620,7 @@ module.exports.deleteJournalPaper = async ({ journalPaperId }) => {
         documentsRowCount: deleteArticleDocuments.rowCount,
         campusRowCount: deleteArticleCampus.rowCount,
         schoolRowcount: deleteArticleSchools.rowCount,
-        factorRowCount: deleteArlicleFactor.rowCount,
+        // factorRowCount: deleteArlicleFactor.rowCount,
         policyRowCount: deleteArticlePolicy.rowCount,
       };
     })
@@ -654,7 +654,7 @@ module.exports.updateJournalPaperData = async (
     publisher,
     totalAuthors,
     journalName,
-    countOtherFaculty,
+    otherAuthorsNames,
     pages,
     issnNo,
     scsCiteScore,
@@ -695,7 +695,7 @@ let values = [
                       publisher,
                       totalAuthors,
                       journalName,
-                      countOtherFaculty,
+                      otherAuthorsNames,
                       pages,
                       issnNo,
                       scsCiteScore,
@@ -1281,3 +1281,153 @@ module.exports.viewJournalPaperData = async (journalPaperId, userName) => {
       };
     });
 };
+
+//all authors 
+module.exports.deleteAllAuthorsDetails = async(externalId, userName, journalPaperId) => {
+  console.log('externalId in models  =====>>>>>>>', externalId);
+
+  const allAuthorsDetails = externalId.map(async(externalId) => {
+    let externalSql = {
+      text : `UPDATE all_article_authors SET active=false WHERE faculty_id = $1 AND journal_article_id = $2`,
+      values : [externalId, journalPaperId]
+    }
+    console.log('externalSql', externalSql);
+  
+    return await researchDbW.query(externalSql);
+
+  });
+
+  return Promise.all(allAuthorsDetails).then((result) => {
+    return {
+      status : "Done",
+      message : "Record Deleted successfully",
+      result : result
+    } 
+  }).catch((error) => {
+    return {
+      status: "Failed",
+      message: error.message,
+      errorCode: error.code,
+    };
+  });
+
+
+}
+
+//nmims internal  authors 
+module.exports.deleteInternalFaculty = async(internalId, journalPaperId, userName) => {
+  console.log("internalId in models ====>>>>>>", internalId);
+
+  const internalNmimsDetails = internalId.map(async(internalId) => {
+    let sql = {
+      text: `UPDATE  nmims_faculties  SET active = false WHERE faculty_id = $1 And journal_article_id = $2`,
+      values: [internalId, journalPaperId],
+    };
+    console.log("sql ===>>>>>>>>>", sql);
+    return await researchDbW.query(sql)
+
+  })
+ 
+  return Promise.all(internalNmimsDetails).then((result) => {
+    return {
+      status : "Done",
+      message : "Record Deleted successfully",
+      result : result
+    } 
+  }).catch((error) => {
+    return {
+      status: "Failed",
+      message: error.message,
+      errorCode: error.code,
+    };
+  });
+
+}
+
+//nmims school
+module.exports.deleteNmimsSchool = async (internalId, journalPaperId, userName) => {
+  console.log("internalId in models ====>>>>>>", internalId);
+
+  const nmimsArticleSchoolsPromises = internalId.map(async (id) => {
+    let sql = {
+      text: `UPDATE journal_article_school SET active = false WHERE school_id = $1 And journal_article_id = $2`,
+      values: [id, journalPaperId],
+    };
+
+    return await researchDbW.query(sql);
+  });
+
+  return await Promise.all(nmimsArticleSchoolsPromises)
+    .then((result) => {
+      return {
+        status: "Done",
+        message: "Record Deleted successfully",
+        result: result,
+      };
+    })
+    .catch((error) => {
+      return {
+        status: "Failed",
+        message: error.message,
+        errorCode: error.code,
+      };
+    });
+};
+
+//nmims campus
+module.exports.deleteNmimsCampus = async(internalId, journalPaperId, userName) => {
+
+  console.log("internalId in models ====>>>>>>", internalId);
+  const articleCampus = internalId.map(async(internalId) => {
+    let sql = {
+      text: `UPDATE  journal_article_campus  SET active = false WHERE campus_id = $1 And journal_article_id = $2`,
+      values: [internalId, journalPaperId],
+    };
+    console.log("sql ===>>>>>>>>>", sql);
+    return await researchDbW.query(sql);
+
+  })
+  
+  return Promise.all(articleCampus).then((result) => {
+    return {
+      status : "Done",
+      message : "Record Deleted successfully",
+      result : result
+    } 
+  }).catch((error) => {
+    return {
+      status: "Failed",
+      message: error.message,
+      errorCode: error.code,
+    };
+  });
+
+}
+//nmims policy cadre
+module.exports.deletPolicyCadre = async(internalId, journalPaperId, userName) => {
+  console.log('internalId in models ====>>>>>>', internalId);
+
+  const articlePolicyCadre = internalId.map(async(internalId) => {
+    let policysql = {
+      text: `UPDATE  journal_article_policy_cadre  SET active = false WHERE policy_cadre_id = $1 And journal_article_id = $2`,
+      values: [internalId, journalPaperId]
+    };
+
+    console.log('policysql ===>>>>>>', policysql);
+    return await researchDbW.query(policysql);
+  })
+
+  return Promise.all(articlePolicyCadre).then((result) => {
+      return {
+        status : "Done",
+        message : "Record Deleted successfully",
+        result : result
+      } 
+    }).catch((error) => {
+      return {
+        status: "Failed",
+        message: error.message,
+        errorCode: error.code,
+      };
+    });
+}

@@ -6,6 +6,7 @@ const { asyncErrorHandler } = require('../middleware/error.middleware');
 const { validateCaseStudy } = require('../middleware/express-validator/case-study.validator');
 const { validateJournalPaper } = require('../middleware/express-validator/journal-paper.validators');
 const { validateResearchSeminar } = require('../middleware/express-validator/research-seminar.validators');
+const { validateConference } = require('../middleware/express-validator/conference.validator');
 
 //middleware for download file
 const downloadFileService = require('../middleware/download-file.middleware');
@@ -45,8 +46,8 @@ router.get('/', asyncErrorHandler(researchController.renderResearch));
 
 //journal paper 
 router.get('/journal-paper', asyncErrorHandler(authMiddleware), asyncErrorHandler(journalController.renderJournalPaper));
-router.post('/journal-paper/insert', upload.array('articlesDocuments', 5), asyncErrorHandler(authMiddleware), asyncErrorHandler(journalController.insertJournalPapperDetails));
-router.post('/journal-paper/update', upload.array('articlesDocuments', 5), asyncErrorHandler(authMiddleware), asyncErrorHandler(journalController.updateJournalPaper));
+router.post('/journal-paper/insert', upload.array('articlesDocuments', 5),validateJournalPaper, asyncErrorHandler(authMiddleware), asyncErrorHandler(journalController.insertJournalPapperDetails));
+router.post('/journal-paper/update', upload.array('articlesDocuments', 5), validateJournalPaper, asyncErrorHandler(authMiddleware), asyncErrorHandler(journalController.updateJournalPaper));
 router.post('/journal-paper/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(journalController.delJournalPaper));
 //delete form drop down list
 router.post('/journal-articles-school/nmims-school/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(journalController.deleteJournalArticleSchool));
