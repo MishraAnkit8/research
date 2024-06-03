@@ -117,7 +117,10 @@ router.post('/research-project-grant/insert', upload.array('researchSupportingDo
 router.post('/research-project-grant/update', upload.array('researchSupportingDocument', 5), asyncErrorHandler(researchProjGrantController.updatedConsultantData));
 router.post('/research-project-grant/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(researchProjGrantController.deleteResearchConsultant));
 router.post('/research-project-grant/view', asyncErrorHandler(authMiddleware), asyncErrorHandler(researchProjGrantController.viewResearchProjectConsultancy));
-// router.post('/research-project-grant/faculty-insert', asyncErrorHandler(researchProjGrantController.insertExternalFacultyDetails));
+router.post('/research-project-grant/external-details', asyncErrorHandler(researchProjGrantController.retriveExternalDetails));
+router.post('/research-project-grant/external-faculty-data-details/delete', asyncErrorHandler(researchProjGrantController.deleteExternalFacultyData));
+router.post('/research-project-grant/consultancy-internal-faculty/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(researchProjGrantController.deleteInternalFaculty));
+
 
 router.get('/research-project-grant/download/:fileName', downloadFileService.downloadFile);
 router.get('/research-project-grant/viewing/:fileName', downloadFileService.viewFile);
@@ -141,7 +144,16 @@ router.get('/IPR', asyncErrorHandler(authMiddleware), asyncErrorHandler(IPRContr
 router.post('/IPR/insert', upload.array('supportingDocuments', 5), asyncErrorHandler(authMiddleware), asyncErrorHandler(IPRController.IPRInsertedData));
 router.post('/IPR/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(IPRController.deleteIPRData));
 router.post('/IPR/update', upload.array('supportingDocuments', 5), asyncErrorHandler(authMiddleware),asyncErrorHandler(IPRController.updateIPRRowData));
+router.post('/IPR/external-details', asyncErrorHandler(IPRController.retriveExternalDetails));
+router.post('/IPR/external-faculty-data-details/delete', asyncErrorHandler(IPRController.deletePatentExternalFaculty));
 router.post('/IPR/view', asyncErrorHandler(IPRController.viewIprRecordData));
+
+//delete form drop down list
+router.post('/IPR/patent-status/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(IPRController.deletePatentStage));
+router.post('/IPR/ipr-invention-type/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(IPRController.deleteInventionDetails));
+router.post('/IPR/ipr-internal-faculty/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(IPRController.deleteInternalFaculty));
+router.post('/IPR/ipr-sdg-goals/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(IPRController.deleteSdgGoals));
+
 router.get('/IPR/download/:fileName', downloadFileService.downloadFile);
 router.get('/IPR/viewing/:fileName', downloadFileService.viewFile);
 

@@ -79,19 +79,20 @@
                                     <th class="col-lg-1">Action</th>
                                 </thead>
                                 <tbody class="data-list">
-                                    <% researchPojectGrantFacultyData.forEach(function(consultancy, index) { %>
+                                    <% researchData.forEach(function(consultancy, index) { %>
 
                                         <tr id="nearTd" scope="row" data-consultancy-id="<%- consultancy.project_id %>"
                                             data-submission-date="<%- consultancy.submission_date.toISOString().split('T')[0] %>"
                                             data-supporting-documents="<%- consultancy.supporting_documents %>"
-                                            data-campus-ids="<%- consultancy.campus_id %>"
-                                            data-school-ids="<%- consultancy.school_id %>"
                                             data-projectDuration="<%- consultancy.projectduration %>"
                                             data-scheme="<%- consultancy.scheme %>"
                                             data-paymentDate="<%- consultancy.paymentdate %>"
                                             data-amountRecieved="<%- consultancy.amountrecieved %>"
                                             data-grant-type="<%- consultancy.type_of_research_grant %>"
-                                            data-grant-proposal="<%- consultancy.grant_proposal_category %>">
+                                            data-grant-proposal="<%- consultancy.grant_proposal_category %>"
+                                            data-nmims-school="<%- consultancy.nmims_school%>"
+                                            data-nmims-campus="<%- consultancy.nmims_campus%>"
+                                            data-internal-faculty-ids="<%- consultancy.faculty_id %>">
                                             <td><%- index + 1 %></td>
                                             <td class="grant-proposal col-lg-1"><%- consultancy.grant_proposal_category
                                                     %></td>
@@ -99,7 +100,7 @@
                                             </td>
                                             <td class="title-of-project col-lg-1"><%- consultancy.title_of_project %>
                                             </td>
-                                            <td class="schools col-lg-1"><%- consultancy.associated_schools %>
+                                            <td class="schools col-lg-1"><%- consultancy.nmims_campus %>
                                             </td>
                                             <td class="campus col-lg-1"><%- consultancy.associated_campuses %> %>
                                             </td>
@@ -220,52 +221,20 @@
                         </div>
                         <div class="modal-body">
                             <div class="row">
-                            
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <label for="nmims-school" class="form-label fw-bold">School <i style="color: red;">*</i></label>
-                                    <select class="select-option drop-list" id="nmims-school-list" data-validate="isEmpty,isExist"
-                                        data-err-msg="This field is required and select value" required multiple>
-                                        <option class="select-option" id="school-option" value="">Select School
-                                        </option>
-                                        <% nmimsSchoolList.forEach(function(school) { %>
-                            
-                                            <option value="<%= school.id %>">
-                                                <%= school.name %>
-                                            </option>
-                                            <% }); %>
-                                    </select>
+                                    <label for="nmims-campus-authors" class="form-label fw-bold ">NMIMS Campus<i style="color: red;">*</i></label>
+                                    <input type="url" name="web-link" id="nmims-campus"
+                                        data-validate="isEmpty,isAlphaNumericSpecial,isExist,isLength:2:255"
+                                        data-err-msg="Provide Valid Input" class="form-control" required />
                                 </div>
-                            
-                                <!-- nmims campus -->
+                                <!--NMIMS School - Author-->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <label for="nmims-campus" class="form-label fw-bold">Campus <i style="color: red;">*</i></label>
-                                    <select class="select-option" id="nmims-campus-list" data-validate="isEmpty,isExist"
-                                        data-err-msg="This field is required and select value" required multiple>
-                                        <option value="" id="campus-option">Select Campus</option>
-                                        <% nmimsCampusList.forEach(function(campus) { %>
-                                            <option value="<%= campus.id %>">
-                                                <%= campus.name %>
-                                            </option>
-                                            <% }); %>
-                                    </select>
+                                    <label for="nmims-school-authors" class="form-label fw-bold ">NMIMS School <i style="color: red;">*</i></label>
+                                    <input type="url" name="web-link" id="nmims-school"
+                                        data-validate="isEmpty,isAlphaNumericSpecial,isExist,isLength:2:255"
+                                        data-err-msg="Provide Valid Input" class="form-control" required />
                                 </div>
-                                <!-- school
-                                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                                    <label for="school" class="form-label fw-bold">School</label>
-                                                    <input type="text" name="school" id="school" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="Provide Valid Input" class="form-control"  required>
-                                                </div> -->
-                            
-                                <!-- campus -->
-                                <!-- <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                                    <label for="school" class="form-label fw-bold">campus</label>
-                                                    <input type="text" name="campus" id="campus" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="Provide Valid Input" class="form-control" required>
-                                                </div> -->
-                            
-                                <!-- faculty department
-                                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                                    <label for="faculty-department" class="form-label fw-bold">Faculty Department</label>
-                                                    <input type="text" name="facult-department" id="faculty-department" data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="Provide Valid Input" class="form-control" required>
-                                                </div> -->
+  
                                 <!-- Grant Proposal -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="grant-proposal" class="form-label fw-bold mb-3">Grant
@@ -393,33 +362,14 @@
                                     <input type="date" name="submission-grant-date" id="submission-grant-date" data-validate="isEmpty,isExist"
                                         data-err-msg="Date is required" class="form-control" required>
                                 </div>
-                                <!-- Upload Supporting Documents-->
-                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <label class="form-label fw-bold">
-                                        Upload Supporting Documents <i style="color: red;">*</i>
-                                    </label>
+                              
                             
-                                    <div id="uploadNewSupportDocumentDiv">
-                                        <label for="uploadNewSupportDocument"><small>Click to Upload New
-                                                File</small></label>
-                                        <input type="checkbox" name="uploadNewSupportDocument" id="uploadNewSupportDocument">
-                                    </div>
-                                    <div class="d-flex">
-                                        <input type="file" name="researchSupportingDocument" id="supporting-documents"
-                                            data-validate="isEmpty,isExist,isFile" data-err-msg="File is required." class="col-md-12 form-control"
-                                            required multiple>
-                                        <button class="download-btn download-file" id="consultancy-file-edit"><i
-                                                class="fas fa-download text-danger"></i>Download</button>
-                                    </div>
-                                </div>
-                            
-                            
-                            
+                            <!-- //Duration Of Project In Months -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="duration-date" class="form-label fw-bold">
                                         Duration Of Project In Months <i style="color: red;">*</i>
                                     </label>
-                                    <input type="text" name="duration-date" id="duration-date" data-validate="isEmpty,isAlphaNumericSpecial"
+                                    <input type="text" name="duration-date" id="duration-date" data-validate="isEmpty,isExist,isLength:2:255"
                                         data-err-msg="provide valid input" class="form-control" required>
                                 </div>
                             
@@ -446,176 +396,69 @@
                                     <input type="number" name="amount-received" id="amount-received" data-validate="isEmpty,isExist"
                                         data-err-msg="Field is required and provide valid input" class="form-control" required>
                                 </div>
+
+                                  <!-- Upload Supporting Documents-->
+                                  <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label class="form-label fw-bold">
+                                        Upload Supporting Documents <i style="color: red;">*</i>
+                                    </label>
                             
-                            
+                                    <div id="uploadNewSupportDocumentDiv">
+                                        <label for="uploadNewSupportDocument"><small>Click to Upload New
+                                                File</small></label>
+                                        <input type="checkbox" name="uploadNewSupportDocument" id="uploadNewSupportDocument">
+                                    </div>
+                                    <div class="d-flex">
+                                        <input type="file" name="researchSupportingDocument" id="supporting-documents"
+                                            data-validate="isEmpty,isExist,isFile" data-err-msg="File is required." class="col-md-12 form-control"
+                                            required multiple>
+                                        <button class="download-btn download-file" id="consultancy-file-edit"><i
+                                                class="fas fa-download text-danger"></i>Download</button>
+                                    </div>
+                                </div>
                             
                                 <!-- if faculty choose internal Authors then show search bar -->
-                                <div class="form-group col-lg-12 col-md-6 col-sm-12 mb-4">
-                                    <label for="is-internal" class="form-label fw-bold mb-3">Faculty Details Id And
-                                        Name <i style="color: red;">*</i></label>
-                                    <span style="color:red;" id="facultyTypeError"></span><br>
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="investor-details" class="form-label fw-bold mb-3">Details of Faculty</label>
+                                    <span style="color:red;" id="facultyTypeError"></span></br>
                                     <div class="form-check-inline">
-                                        <label for="internal" class="form-check-label enter-faculty-type">
+                                        <label for="is-internal" class="form-check-label enter-faculty-type">
                                             <input type="radio" class="form-check-input enternal-type" name="author-type" id="is-internal"
-                                                value="Internal" checked>
+                                                value="Internal">
                                             <span id="enternal-text">Internal</span>
                                         </label>
-                                        <div class="col-lg-1 p-6 w-100 d-none" id="employee-list">
-                                            <select id="emp-name" style="width: 200px;" multiple>
+                                        <div class=" col-lg-1 p-6 w-100 d-none" id="employee-list">
+                                            <select id="emp-name" class="internal-faculty-list-data" style="width: 200px;" multiple>
                                                 <option value="">select employee name</option>
                                                 <% InternalFaculty.forEach(function(employee) { %>
-                                                    <option value="<%= employee.employee_name %>">
-                                                        <%= employee.employee_name %>
+                                                    <option value="<%= employee.id %>">
+                                                        <%= employee.faculty_name %>
                                                     </option>
                                                     <% }); %>
                                             </select>
                                         </div>
                                     </div>
+                                
                                     <div class="form-check-inline">
-                                        <label for="is-external" class="form-check-label external-faculty">
-                                            <input type="radio" class="form-check-input" id="is-external" name="author-type" value="External">
+                                        <label for="is-external-details" class="form-check-label external-faculty">
+                                            <input type="radio" class="form-check-input" id="is-external-details" name="author-type" value="External">
                                             <span id="external-text">External</span>
                                         </label>
-                            
-                            
-                                    </div>
-                            
-                            
-                                    <div class="form-check-inline">
-                            
-                                        <label for="is-external" class="form-check-label external-faculty">
-                                            <input type="radio" class="form-check-input d-none" id="is-external-update" name="author-type"
-                                                value="External">
-                                            <span id="external-text-upd" class="d-none">External</span>
-                                        </label>
-                            
                                     </div>
                                 </div>
-                                <br>
-                            
-                                <div id="author-details" class="form-group col-md-12 col-sm-12 mb-4 d-none">
-                                    <div class="author-details-section col-lg-12 col-md-8 col-sm-12">
-                                        <label for="author-name " class="form-label fw-bold col-lg-12"> External Authors
-                                            Details:</label>
-                                        <div id="dynamic-rows" class="col-lg-12 col-md-8 col-sm-12 mb-4">
-                                        </div>
-                                    </div>
-                                </div>
-                                <table id="faculty-table-list">
-                                    <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none" id="name-class">
-                                        <label for="faculty-name" class="form-label fw-bold">Faculty Name</label>
-                                        <input type="text" class="form-control" id="faculty-name" required>
-                                        <span style="color:red;" id="facultyError"></span>
-                                    </div>
-                                    <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none" id="dsg-class">
-                                        <label for="" class="form-label fw-bold">Faculty Designation :</label>
-                                        <input type="text" class="form-control" id="faculty-designation" required>
-                                        <span style="color:red;" id="desError"></span>
-                                    </div>
-                                    <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none" id="id-class">
-                                        <label for="faculty-emp-id" class="form-label fw-bold">Faculty Id
-                                        </label>
-                                        <input type="text" class="form-control" id="faculty-emp-id">
-                                        <span style="color:red;" id="empError"></span>
-                            
-                                    </div>
-                                    <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none" id="address-class">
-                                        <label for="faculty-address" class="form-label fw-bold">Faculty Address</label>
-                                        <input type="text" class="form-control" id="faculty-address" required>
-                                        <span style="color:red;" id="addrError"></span>
-                                    </div>
-                            
-                                    <div class="form-group col-lg-6 col-md-6 col-sm-12 mb-4 d-none" id="add-btn">
-                                        <button id="insert-details" data-bs-target="#" class="btn col-lg-4 col-md-6 col-sm-12 btn-primary"
-                                            type="button">Insert
-                                            Faculty Details</button>
-                                        <button id="add-more-details" data-bs-target="#" class="btn col-lg-4 col-md-6 col-sm-12 btn-primary"
-                                            type="button">Add More
-                                            Details</button>
-                            
-                                    </div>
+                                <table id="external-details-table"
+                                    class="table vertical-lines custom-table table-responsive research-pagination re d-none">
+                                    <thead>
+                                        <th class="col-lg-4 col-md-6 col-sm-12 mb-4">faculty Name </th>
+                                        <th class="col-lg-4 col-md-6 col-sm-12 mb-4">Employee Id</th>
+                                        <th class="col-lg-4 col-md-6 col-sm-12 mb-4">Designation</th>
+                                        <th class="col-lg-4 col-md-6 col-sm-12 mb-4">Address</th>
+                                        <th class="col-lg-4 col-md-6 col-sm-12 mb-4">Action</th>
+                                    </thead>
+                                    <tbody id="add-faculty-details">
+                                    </tbody>
                                 </table>
-                            
-                            
-                            
-                            
-                                <div>
-                                    <table style="width:100%;" class="table  table-responsive d-none " id="externalfacultyTable">
-                                        <thead>
-                                            <th>Sr.No</th>
-                                            <th>Faculty Name</th>
-                                            <th>Faculty Address</th>
-                                            <th>Faculty Designation</th>
-                                            <th>Employee Id</th>
-                                            <th colspan>Action</th>
-                                        </thead>
-                                        <tbody id="appendFaculty">
-                            
-                            
-                            
-                                        </tbody>
-                            
-                                    </table>
-                                    <!-- <button id="addFaculty"
-                                                                    class="btn btn-primary d-none">Insert Faculty Details</button> -->
-                            
-                            
-                                </div>
-                                <div></div>
-                                <div></div>
-                                <table id="faculty-table-list-upd">
-                                    <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none" id="name-class-upd">
-                                        <label for="faculty-name-upd" class="form-label fw-bold">Faculty
-                                            Name</label>
-                                        <input type="text" class="form-control" id="faculty-name-upd" required>
-                                        <span style="color:red;" id="facultyInsertError"></span>
-                                    </div>
-                                    <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none" id="dsg-class-upd">
-                                        <label for="" class="form-label fw-bold">Faculty Designation :</label>
-                                        <input type="text" class="form-control" id="faculty-designation-upd" required>
-                                        <span style="color:red;" id="desInsertError"></span>
-                                    </div>
-                                    <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none" id="id-class-upd">
-                                        <label for="faculty-emp-id-upd" class="form-label fw-bold">Faculty Id
-                                        </label>
-                                        <input type="text" class="form-control" id="faculty-emp-id-upd">
-                                        <span style="color:red;" id="empInsertError"></span>
-                            
-                                    </div>
-                                    <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none" id="address-class-upd">
-                                        <label for="faculty-address" class="form-label fw-bold">Faculty
-                                            Addres</label>
-                                        <input type="text" class="form-control" id="faculty-address-upd" required>
-                                        <span style="color:red;" id="addrInsertError"></span>
-                                    </div>
-                            
-                                    <div class="form-group col-lg-6 col-md-6 col-sm-12 mb-4 d-none" id="add-btn-upd">
-                                        <button id="insert-details-upd" data-bs-target="#" class="btn col-lg-4 col-md-6 col-sm-12 btn-primary"
-                                            type="button">Insert
-                                            Faculty Details</button>
-                                    </div>
-                                </table>
-                            
-                            
-                                <!-- Total Grant Sanctioned in Rupees
-                                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                                    <label for="total-grant-sanction-rupees" class="form-label fw-bold">Total Grant Sanctioned in Rupees</label>
-                                                    <input type="number" name="funding-amount" id="total-grant-sanction-rupees" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required." class="form-control" required>
-                                                </div> -->
-                            
-                                <!-- Amount received with date of receipt -->
-                                <!-- <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                                    <label for="recieved-amount" class="form-label fw-bold">Amount Received</label>
-                                                    <input type="number" name="funding-amount" id="recieved-amount" data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required." class="form-control" required>
-                                                </div> -->
-                            
-                                <!-- Amount received with date of receipt-->
-                                <!-- <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                                    <label for="submission-grant-date" class="form-label fw-bold">
-                                                        Amount Received With Date
-                                                    </label>
-                                                    <input type="date" name="amount-recieved-date" id="amount-recieved-date" data-validate="isEmpty,isExist" data-err-msg="Date is required" class="form-control" required>
-                                                </div> -->
+                                  
                             </div>
                         </div>
                         <!--  footer buttons if needed -->
@@ -643,21 +486,6 @@
                         </div>
                         <div class="modal-body">
                             <div class="row">
-                                <!-- school -->
-                                <!-- <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                        <div class="box">
-                            <div class="task-sub-title sub-title-text">  School: </div>
-                            <label class="view-content" id="view-school-name"></label>
-                        </div>
-                    </div> -->
-
-                                <!-- campus name   -->
-                                <!-- <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                        <div class="box">
-                            <div class="task-sub-title sub-title-text"> Campus : </div>
-                            <label class="view-content" id="view-campus-name"></label>
-                        </div>
-                    </div> -->
                                 <!-- Grant Proposal -->
                                 <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                                     <div class="box">
@@ -716,68 +544,6 @@
                                 </div>
 
 
-
-
-                                <!-- Faculty Department -->
-                                <!-- <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                        <div class="box">
-                            <div class="task-sub-title sub-title-text"> Faculty Department: </div>
-                            <label class="view-content" id="view-faculty-dept"></label>
-                        </div>
-                    </div> -->
-
-                                <!-- Name of the Scheme-->
-                                <!-- <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                        <div class="box">
-                            <div class="task-sub-title sub-title-text"> Name Of The Scheme: </div>
-                            <label class="view-content" id="view-scheme-name"></label>
-                        </div>
-                    </div> -->
-
-                                <!-- Duration of the Project -->
-                                <!-- <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                        <div class="box">
-                            <div class="task-sub-title sub-title-text"> Duration of the Project: </div>
-                            <label class="view-content" id="view-project-duration"></label>
-                        </div>
-                    </div> -->
-
-                                <!-- Name of Principal Investigator -->
-                                <!-- <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                        <div class="box">
-                            <div class="task-sub-title sub-title-text"> Name of Principal Investigator: </div>
-                            <label class="view-content" id="view-princilpal-investigator-name"></label>
-                        </div>
-                    </div> -->
-
-                                <!-- Name of Co-Investigators -->
-                                <!-- <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                        <div class="box">
-                            <div class="task-sub-title sub-title-text"> Name of Co-Investigators: </div>
-                            <label class="view-content" id="view-co-investigator-name"></label>
-                        </div>
-                    </div> -->
-
-                                <!-- Total Grant Sanctioned in Rupees -->
-                                <!-- <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                        <div class="box">
-                            <div class="task-sub-title sub-title-text"> Total Grant Sanctioned in Rupees: </div>
-                            <label class="view-content" id="view-total-grant-sanctioned-rupee"></label>
-                        </div>
-                    </div> -->
-
-                                <!-- Amount received with date of receipt -->
-                                <!-- <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                        <div class="box">
-                            <div class="task-sub-title sub-title-text"> Amount Received With Date  </div>
-                            <div class="d-flex">
-                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                                    <label class="view-content" id="view-recieved-amount"></label></div>
-                                <div class="col-lg-4 col-md-6  col-sm-12 p-3"><label class="view-content" id="view-amount-recieved-date"></label></div>
-                            </div>
-                            
-                        </div>
-                    </div> -->
                                 <!-- Upload Supporting Documents -->
                                 <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                                     <div class="box">
@@ -810,17 +576,14 @@
 
             <div id="employees-list-data" data-employees='<%- JSON.stringify(InternalFaculty) %>'
                 style="display: none;"></div>
-            <div id="school-data-list" data-school='<%- JSON.stringify(nmimsSchoolList) %>' style="display: none;">
-            </div>
-            <div id="campus-data-list" data-campus='<%- JSON.stringify(nmimsCampusList) %>' style="display: none;">
-            </div>
+
             <script src="https://cdnjs.cloudflare.com/ajax/libs/tom-select/2.3.1/js/tom-select.complete.min.js"
                 integrity="sha512-zdXqksVc9s0d2eoJGdQ2cEhS4mb62qJueasTG4HjCT9J8f9x5gXCQGSdeilD+C7RqvUi1b4DdD5XaGjJZSlP9Q=="
                 crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
             <!-- inline javascript -->
             <script>
-                //   for index icrement
+
                 let projectGrantId;
                 let rowCount = document.getElementById('row-count');
                 const totalRowCount = document.getElementById('total-row-count');
@@ -835,12 +598,9 @@
                 const campusDropDown = document.getElementById('nmims-campus-list');
 
                 let consultantId, consultantRowToBeUpdated;
-                let nmimsCampusStoredIds, nmimsSchoolStoredIds, storedFacultyValue, InternalAuthorValue, externalAuthorValue;
                 let facultyIdContainer = [];
                 let externalFacultyData = [];
                 let externalFacultyIdArray = [];
-                let nmimsSchoolIdsContainer = [];
-                let nmimsCampusIdsContainer = [];
                 const facultyTableList = document.getElementById('faculty-table-list');
 
                 const employeeDropdown = document.getElementById("emp-name");
@@ -852,15 +612,6 @@
                 const addResearchConsultancyModal = document.getElementById('add-research-project-grant');
 
                 addResearchConsultancyModal.addEventListener('click', function (event) {
-
-                    const facultyName = document.getElementById('faculty-name');
-                    const facultyDes = document.getElementById('faculty-designation');
-                    const facultyAddr = document.getElementById('faculty-address');
-                    const facultyId = document.getElementById('faculty-emp-id');
-                    facultyName.value = '';
-                    facultyDes.value = '';
-                    facultyAddr.value = '';
-                    facultyId.value = '';
 
                     if (event.target.tagName === 'BUTTON' && event.target.classList.contains('add-modal') || event.target.classList.contains('plus')) {
                         submitBtn.classList.remove('d-none');
@@ -898,7 +649,7 @@
                         const supportingDocument = document.getElementById('supporting-documents');
                         const isInternalFaculty = document.getElementById('is-internal');
                         const isExternalFaculty = document.getElementById('is-external');
-                        document.getElementById('author-details').classList.add('d-none');
+                        // document.getElementById('author-details').classList.add('d-none');
                         titleOfProject.value = '';
                         thurstAreaOfResearch.value = '';
                         fundingAgency.value = '';
@@ -906,8 +657,8 @@
                         statusGranted.checked = false;
                         submissionGrantDate.value = '';
                         supportingDocument.value = '';
-                        isInternalFaculty.checked = false;
-                        isExternalFaculty.checked = false;
+                        // isInternalFaculty.checked = false;
+                        // isExternalFaculty.checked = false;
 
                         const employeesListData = document.getElementById('employees-list-data').dataset.employees;
                         const employeesDataObj = JSON.parse(employeesListData);
@@ -919,9 +670,6 @@
                             value: faculty.id,
                             text: ` ${faculty.employee_id}  ${faculty.faculty_name}`
                         }));
-
-
-                        // Initialize TomSelect dropdown with options containing id and faculty_name
 
                         new TomSelect("#emp-name", {
                             options: facultyOptions,
@@ -942,69 +690,6 @@
                                 }
                             }
                         });
-
-
-                        const nmimsSchoolList = document.getElementById('school-data-list').dataset.school;
-
-                        const schoolDataList = JSON.parse(nmimsSchoolList);
-
-                        const selectedSchool = schoolDataList.map(school => ({
-                            value: school.id,
-                            text: `${school.school_name}`
-                        }));
-
-                        new TomSelect("#nmims-school-list", {
-                            options: selectedSchool,
-                            placeholder: "Select Options",
-                            hidePlaceholder: true,
-                            hidePlaceholder: true,
-                            create: false,
-                            plugins: ['remove_button'],
-                            onItemAdd: function () {
-                                this.setTextboxValue('');
-                                this.refreshOptions();
-                            },
-                            render: {
-                                option: function (data, escape) {
-                                    return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
-                                },
-                                item: function (data, escape) {
-                                    return '<div>' + escape(data.text) + '</div>';
-                                }
-                            }
-                        });
-
-
-                        const nmimsCampusList = document.getElementById('campus-data-list').dataset.campus;
-
-                        const campusDataList = JSON.parse(nmimsCampusList);
-
-                        const selectedCampus = campusDataList.map(campus => ({
-                            value: campus.id,
-                            text: `${campus.campus_name}`
-                        }));
-
-                        new TomSelect("#nmims-campus-list", {
-                            options: selectedCampus,
-                            placeholder: "Select Options",
-                            hidePlaceholder: true,
-                            hidePlaceholder: true,
-                            create: false,
-                            plugins: ['remove_button'],
-                            onItemAdd: function () {
-                                this.setTextboxValue('');
-                                this.refreshOptions();
-                            },
-                            render: {
-                                option: function (data, escape) {
-                                    return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
-                                },
-                                item: function (data, escape) {
-                                    return '<div>' + escape(data.text) + '</div>';
-                                }
-                            }
-                        });
-
                     }
                 });
 
@@ -1021,7 +706,10 @@
                     const annualPaymentDate = document.getElementById('annual-payment-date').value;
                     const durationDate = document.getElementById('duration-date').value;
 
-                    console.log('new created json ', durationDate)
+                    console.log('new created json ', durationDate);
+
+                    const nmimsSchool = document.getElementById('nmims-school').value;
+                    const nmimsCampus = document.getElementById('nmims-campus').value;
 
                     // const school = document.getElementById('school').value;
                     // console.log('school ====>>>', school)
@@ -1036,21 +724,8 @@
                     // const recievedAmountDate = document.getElementById('amount-recieved-date').value;
                     const statusOfResearchProject = document.querySelector('input[name="research-project-status"]:checked').value;
                     const submissionGrantDate = document.getElementById('submission-grant-date').value;
-                    // const authorType = document.querySelector('input[name="author-type"]:checked').value;
-                    // console.log('authorType ====>>>>>>', authorType);
                     // const projectDuration = document.getElementById('duration-of-project').value
-                    // console.log('authorType ===>>>>', authorType)
 
-
-                    const nmimsSchoolArrayObject = nmimsSchoolIdsContainer[nmimsSchoolIdsContainer.length - 1];
-                    const nmimsCampusArrayObject = nmimsCampusIdsContainer[nmimsCampusIdsContainer.length - 1];
-
-                    const nmimsSchoolIds = JSON.stringify(nmimsSchoolArrayObject);
-                    const nmimsCampusIds = JSON.stringify(nmimsCampusArrayObject);
-
-                    console.log('schools campus list ', JSON.stringify(nmimsSchoolIds), JSON.stringify(nmimsCampusIds))
-
-                    await insertFacultyNameString(researchConsultancyData);
                     const supportingDocument = document.getElementById('supporting-documents');
                     const consultancyFilesData = supportingDocument.files;
                     if (consultancyFilesData.length > 0) {
@@ -1063,7 +738,22 @@
                         }
                     }
 
+                    let externalFacultyDetailsRow = document.querySelectorAll('.external-faculty-details');
+                    let externalFacultyDetails = [];
+
+                    externalFacultyDetailsRow.forEach((field, index) => {
+                        if (field.value !== '') {
+                            externalFacultyDetails.push(field.value);
+                        }
+                    });
+
+                    const facultyIdsArray = facultyIdContainer ? facultyIdContainer[facultyIdContainer.length - 1] : null;
+                    const facultyContainer = facultyIdsArray ? JSON.stringify(facultyIdsArray) : null;
+
                     // appending into form
+                    researchConsultancyData.append('nmimsSchool' , nmimsSchool);
+                    researchConsultancyData.append('nmimsCampus', nmimsCampus);
+                    researchConsultancyData.append('facultyContainer', facultyContainer);
                     researchConsultancyData.append('grantProposalCategory', grantProposalCategory);
                     researchConsultancyData.append('typeOfGrant', typeOfGrant);
                     researchConsultancyData.append('titleOfProject', titleOfProject);
@@ -1072,12 +762,11 @@
                     researchConsultancyData.append('fundingAmount', fundingAmount);
                     researchConsultancyData.append('statusOfResearchProject', statusOfResearchProject);
                     researchConsultancyData.append('submissionGrantDate', submissionGrantDate);
-                    researchConsultancyData.append('nmimsSchoolIds', nmimsSchoolIds);
-                    researchConsultancyData.append('nmimsCampusIds', nmimsCampusIds);
                     researchConsultancyData.append('scheme', scheme);
                     researchConsultancyData.append('durationDate', durationDate);
                     researchConsultancyData.append('amountReceived', amountRecieved);
                     researchConsultancyData.append('annualPaymentDate', annualPaymentDate);
+                    researchConsultancyData.append('externalFacultyDetails', JSON.stringify(externalFacultyDetails));
 
 
                     // researchConsultancyData.append('school', school);
@@ -1158,7 +847,8 @@
                                     confirmButtonText: "OK",
                                     confirmButtonColor: "#DD6B55"
                                     // timer: 1500
-                                }).then(() => {
+                                })
+                                .then(() => {
                                     document.location.reload()
                                 });
                             }
@@ -1179,7 +869,6 @@
                             }
                         })
                         .catch((error) => {
-                            // This will catch network errors and errors thrown from the .then block above
                             console.error('Error:', error);
                             const message = error;
                             Swal.fire({
@@ -1200,7 +889,7 @@
                 submitBtn.addEventListener('click', async () => {
                     const isValid = validateRequiredFormFields(submitBtn);
                     const internalAuthor = document.getElementById('is-internal');
-                    const externalAuthor = document.getElementById('is-external');
+                    const externalAuthor = document.getElementById('is-external-details');
 
                     if ((isValid && internalAuthor.checked || externalAuthor.checked)) {
                         await insertResearchConsultancyForm('<%- BASE_URL %>research/research-project-grant/insert');
@@ -1229,152 +918,41 @@
                 researchProjectConsultancyList.addEventListener('click', async function (event) {
                     console.log('clikedddd')
                     if (event.target.classList.contains('edit')) {
-
-                        let isExternalUpd = document.getElementById('is-external')
-                        let isExternalUpdNew = document.getElementById('is-external-update')
-
-                        let text = document.getElementById('external-text');
-                        let textnew = document.getElementById('external-text-upd');
-
-                        isExternalUpd.classList.add('d-none');
-                        isExternalUpdNew.classList.remove('d-none');
-
-                        text.classList.add('d-none');
-                        textnew.classList.remove('d-none');
-
-                        document.getElementById('name-class').classList.add('d-none');
-                        document.getElementById('dsg-class').classList.add('d-none');
-                        document.getElementById('id-class').classList.add('d-none');
-                        document.getElementById('address-class').classList.add('d-none');
-                        document.getElementById('add-btn').classList.add('d-none');
-
                         consultantRowToBeUpdated = event.target.closest('tr');
-                        consultantId = consultantRowToBeUpdated.getAttribute('data-consultancy-id');
-
-
-                        const campusIdsArray = consultantRowToBeUpdated.getAttribute('data-campus-ids').split(',').map(str => parseInt(str.trim(), 10));
-                        const schoolIdsArray = consultantRowToBeUpdated.getAttribute('data-school-ids').split(',').map(str => parseInt(str.trim(), 10));
-
-                        nmimsCampusStoredIds = { 'nmimsCampus': campusIdsArray }
-                        nmimsSchoolStoredIds = { 'nmimsSchool': schoolIdsArray };
-
-
-                        const nmimsSchoolList = document.getElementById('school-data-list').dataset.school;
-
-                        const schoolDataList = JSON.parse(nmimsSchoolList);
-
-                        let schoolArr = [];
-
-                        Array.from(schoolDataList).forEach(data => {
-                            Array.from(schoolIdsArray).forEach(sd => {
-                                if (data.id == sd) {
-                                    schoolArr.push(data.id)
-                                }
-                            })
-                        })
-
-                        const selectedSchool = schoolDataList.map(school => ({
-                            value: school.id,
-                            text: `${school.school_name}`
-                        }));
-
-                        new TomSelect("#nmims-school-list", {
-                            options: selectedSchool,
-                            items: schoolArr,
-                            // placeholder : "Select Options",
-                            hidePlaceholder: true,
-                            hidePlaceholder: true,
-                            create: false,
-                            plugins: ['remove_button'],
-                            onItemAdd: function () {
-                                this.setTextboxValue('');
-                                this.refreshOptions();
-                            },
-                            render: {
-                                option: function (data, escape) {
-                                    return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
-                                },
-                                item: function (data, escape) {
-                                    return '<div>' + escape(data.text) + '</div>';
-                                }
-                            }
-                        });
-
-                        const nmimsCampusList = document.getElementById('campus-data-list').dataset.campus;
-
-                        const campusDataList = JSON.parse(nmimsCampusList);
-
-                        let cmpArray = [];
-
-                        Array.from(campusDataList).forEach(data => {
-                            Array.from(campusIdsArray).forEach(cmp => {
-                                if (data.id == cmp) {
-                                    cmpArray.push(data.id)
-                                }
-                            })
-                        })
-
-                        const selectedCampus = campusDataList.map(campus => ({
-                            value: campus.id,
-                            text: `${campus.campus_name}`
-                        }));
-
-                        new TomSelect("#nmims-campus-list", {
-                            options: selectedCampus,
-                            items: cmpArray,
-                            // placeholder : "Select Options",
-                            hidePlaceholder: true,
-                            hidePlaceholder: true,
-                            create: false,
-                            plugins: ['remove_button'],
-                            onItemAdd: function () {
-                                this.setTextboxValue('');
-                                this.refreshOptions();
-                            },
-                            render: {
-                                option: function (data, escape) {
-                                    return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
-                                },
-                                item: function (data, escape) {
-                                    return '<div>' + escape(data.text) + '</div>';
-                                }
-                            }
-                        });
-
-
 
                         const employeesListData = document.getElementById('employees-list-data').dataset.employees;
                         const employeesDataObj = JSON.parse(employeesListData);
                         let employeeListArray = [];
 
-                        let internalEmp = JSON.parse('<%- JSON.stringify(internalFaculty) %>')
+                        const internalFaculyIdsArray = consultantRowToBeUpdated.getAttribute('data-internal-faculty-ids').split(',').map(str => parseInt(str.trim(), 10));
+                        console.log('internalFaculyIdsArray =====>>>>>', internalFaculyIdsArray);
+
+
+                        let internalEmp = JSON.parse('<%- JSON.stringify(InternalFaculty) %>')
 
 
 
                         let employeesList = internalEmp.filter(data => consultantId == data.research_project_grant_id).filter(consultant => consultant)
                         console.log('employee json ', JSON.stringify(internalEmp))
 
+                      //employee array list push
                         Array.from(employeesDataObj).forEach(data => {
-                            Array.from(employeesList).forEach(emp => {
-                                if (data.id == emp.faculty_id) {
-                                    employeeListArray.push(data.id)
-                                }
+                                Array.from(internalFaculyIdsArray).forEach(intrnl => {
+                                    if (data.id == intrnl) {
+                                        employeeListArray.push(data.id)
+                                    }
+                                })
                             })
-                        })
 
-
-                        // ajax for search bar to search employee name 
-                        const facultyOptions = employeesDataObj.map(faculty => ({
+                       // ajax for search bar to search employee name 
+                       const facultyOptions = employeesDataObj.map(faculty => ({
                             value: faculty.id,
                             text: ` ${faculty.employee_id}  ${faculty.faculty_name}`
                         }));
 
-                        console.log('emp array ', JSON.stringify(employeesList), consultantId)
-
 
                         // Initialize TomSelect dropdown with options containing id and faculty_name
-
-                        new TomSelect("#emp-name", {
+                       const consultancyInternalFaculty =  new TomSelect("#emp-name", {
                             options: facultyOptions,
                             items: employeeListArray,
                             // placeholder: "Select Employee Name",
@@ -1392,26 +970,64 @@
                                 item: function (data, escape) {
                                     return '<div>' + escape(data.text) + '</div>';
                                 }
+                            },
+                            onDelete: function (values) {
+                                console.log('Remove button clicked :::::', values);
+
+                                const message = values.length > 1
+                                    ? `Are you sure you want to remove these ${values.length} items?`
+                                    : `Are you sure you want to remove "${values[0]}"?`;
+
+                                Swal.fire({
+                                    title: 'Confirm Deletion',
+                                    text: message,
+                                    icon: 'warning',
+                                    showCancelButton: true,
+                                    confirmButtonColor: '#3085d6',
+                                    cancelButtonColor: '#d33',
+                                    confirmButtonText: 'Yes, delete it!'
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        fetch('<%- BASE_URL %>research/research-project-grant/consultancy-internal-faculty/delete', {
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type': 'application/json'
+                                            },
+                                            body: JSON.stringify({ internalId: values, consultantId: consultantId })
+                                        })
+                                            .then(response => response.json())
+                                            .then(data => {
+                                                console.log('data ====>>>>>>>', data);
+                                                if (data.status === "Done") {
+                                                    Swal.fire(
+                                                        'Deleted!',
+                                                        'Your item(s) has been deleted.',
+                                                        'success'
+                                                    );
+
+                                                    values.forEach(value => {
+                                                        consultancyInternalFaculty.removeOption(value);
+                                                    });
+                                                }
+                                            })
+                                            .catch(error => {
+                                                Swal.fire(
+                                                    'Error!',
+                                                    'There was a problem with the delete operation: ' + error.message,
+                                                    'error'
+                                                );
+                                            });
+                                    }
+                                });
+
+                                return false;
                             }
                         });
-
-
-
-                        //let externalFacultyDetails = JSON.parse('<%- JSON.stringify(externalDetails) %>');
-                        let externalFacultyDetails = await fetchFacultyData('<%- BASE_URL %>research/external/facultyDataForEdit');
-                        console.log('faculty JSON', JSON.stringify(externalFacultyDetails.facultyData))
-
 
                         $('#consultancy-modal').modal({
                             backdrop: 'static'
                         });
 
-                        console.log('clikedddd2');
-                        InternalAuthorValue = '';
-                        externalAuthorValue = '';
-                        storedFacultyValue = '';
-                        employeeList.classList.add('d-none');
-                        authorDetails.classList.add('d-none');
                         removeErrorMsg();
                         submitBtn.classList.add('d-none');
                         updateBtn.classList.remove('d-none');
@@ -1419,8 +1035,7 @@
                         document.querySelector('#supporting-documents').classList.add('d-none');
                         document.getElementById('researchProjectConsultancy').innerHTML = 'RESEARCH PROJECT EDIT';
                         $('#consultancy-modal').modal('show');
-                        //   consultantRowToBeUpdated = event.target.closest('tr');
-                        console.log('consultantRowToBeUpdated ==>>', consultantRowToBeUpdated);
+                        
 
 
                         // function call for download button
@@ -1443,43 +1058,8 @@
                         const externalAuthor = document.getElementById('is-external');
                         const supportingDocument = consultantRowToBeUpdated.getAttribute('data-supporting-documents');
 
-
-
-                        let externalFaculty = externalFacultyDetails.facultyData.filter(fdata => consultantId == fdata.research_project_grant_id).map(facultyData => facultyData);
-                        console.log('new external faculty ', JSON.stringify(externalFaculty))
-
-                        let appendFaculty = document.getElementById('appendFaculty');
-                        appendFaculty.innerHTML = ''
-
-                        // projectGrantId = externalFaculty[0].id;
-
-                        externalFaculty.forEach((ef, index) => {
-                            let htmlData = `<tr data-facultyId = ${ef.id}>
-                            
-                        <td>${index + 1}</td>
-                        <td><input id="updateFacultyName" type="text" value="${ef.faculty_name}" /></br><span style="color:red;" id='facultyUpdError'></span></td>
-                        <td ><input id="updateFacultyAddr" type="text" value="${ef.address}" /></br><span style="color:red;" id='addrUpdError'></span></td>
-                        <td ><input id="updateFacultyDes" type="text" value="${ef.designation}" /></br><span style="color:red;" id='desUpdError'></span></td>
-                        <td ><input id="updateFacultyId" type="text" value="${ef.employee_id}" /></br><span style="color:red;" id='empUpdError'></span></td>
-                        <td><button class="btn btn-primary updateFaculty">Update</button></td>
-                        </tr>`
-
-                            appendFaculty.insertAdjacentHTML('beforeEnd', htmlData);
-                        })
-
-                        let isExternal = document.getElementById('is-external');
-                        console.log('external ', isExternal)
-
-                        //let externalfacultyTable =document.getElementById(externalfacultyTable)
-
-                        //    if(isExternal.checked){
-                        //     document.getElementById('externalfacultyTable').classList.remove('d-none')
-                        //    }
-                        //    else{
-                        //     document.getElementById('externalfacultyTable').classList.add('d-none')
-
-                        //    }
-
+                        document.getElementById('nmims-school').value = consultantRowToBeUpdated.getAttribute('data-nmims-school');
+                        document.getElementById('nmims-campus').value = consultantRowToBeUpdated.getAttribute('data-nmims-campus');
 
                         // const facultyDept = consultantRowToBeUpdated.getAttribute('data-faculty-dept');
                         // console.log('facultyDept ====>>>>>', facultyDept)
@@ -1576,35 +1156,35 @@
                         storedFacultyValue = externalAuthorName;
                         console.log('storedFacultyValue ====>>>', storedFacultyValue)
                         // console.log('externalAuthorName ====>>>', externalAuthorName)
-                        if (authorTable === 'internalEmpList') {
-                            internalAuthor.checked = true;
-                        }
-                        else {
-                            externalAuthor.checked = true;
-                        }
+                  
                         const supportingDocuments = consultantRowToBeUpdated.getAttribute('data-supporting-documents');
                         console.log('supportingDocuments ==>>', supportingDocuments)
-                    }
 
-                    async function fetchFacultyData(url) {
-                        let requestDetails = {
-                            method: 'GET',
+                        fetch('<%- BASE_URL %>research/research-project-grant/external-details', {
+                            method: 'POST',
                             headers: {
-                                'Accept': 'application/json'
-                            }
-                        }
-
-                        let data;
-                        let response = await fetch(url, requestDetails);
-                        if (response.ok) {
-                            data = await response.json();
-                            return data;
-                        } else {
-                            throw new Error('Error in fetching data')
-                        }
+                                'content-type': 'application/json'
+                            },
+                            body: JSON.stringify({ consultantId })
+                        })
+                            .then((Response) => {
+                                return Response.ok ? Response.json() : "There was network issue"
+                            })
+                            .then((data) => {
+                                if (data.status === "Done") {
+                                    console.log('data ====>>>>', data);
+                                    const facultyHeader = ['faculty Name',
+                                        'Employee Id',
+                                        'Designation',
+                                        'Address',
+                                        'Action']
+                                    createTableRows('external-details-table', data.exetrnalData, 'external-faculty-data-details', 'delete-details', facultyHeader)
+                                }
+                            })
+                            .catch((error) => {
+                                console.error('error ===>>>>>', error)
+                            })
                     }
-
-
 
                     //for delete
                     if (event.target.classList.contains('delete')) {
@@ -1787,161 +1367,198 @@
                 })
 
                 const updateResearchConsultancy = async (url) => {
-                    console.log('clickeddd')
-                    const updatedConsultantData = new FormData();
-                    const updatedGrantProposalCategory = document.querySelector('input[name="grant-proposal"]:checked').value;
-                    const updatedTypeOfGrant = document.querySelector('input[name="type-of-grant"]:checked').value;
-                    const updatedTitleOfProject = document.getElementById('title-of-project').value;
-                    const updatedThurstAreaOfResearch = document.getElementById('thurst-area').value;
-                    console.log('updatedThurstAreaOfResearch ===>>>', updatedThurstAreaOfResearch)
-                    const updatedFundingAgency = document.getElementById('funding-agency').value;
-                    const updatedFundingAmount = document.getElementById('funding-amount').value;
-                    // const updateProjectDuration = document.getElementById('duration-of-project').value;
-                    const updatedStatusOfResearchProject = document.querySelector('input[name="research-project-status"]:checked').value;
-                    const updatedSubmissionGrantDate = document.getElementById('submission-grant-date').value;
-                    const updatedAuthorType = document.querySelector('input[name="author-type"]:checked').value;
-                    const updatedPaymentDate = document.getElementById('annual-payment-date').value;
-                    const updatedScheme = document.getElementById('scheme').value;
-                    const updatedAmount = document.getElementById('amount-received').value;
-                    const updatedDuration = document.getElementById('duration-date').value;
+                        console.log('clickeddd')
+                        const updatedConsultantData = new FormData();
+                        const grantProposalCategory = document.querySelector('input[name="grant-proposal"]:checked').value;
+                        const typeOfGrant = document.querySelector('input[name="type-of-grant"]:checked').value;
+                        const titleOfProject = document.getElementById('title-of-project').value;
+                        const thurstAreaOfResearch = document.getElementById('thurst-area').value;
+                        const fundingAgency = document.getElementById('funding-agency').value;
+                        const fundingAmount = document.getElementById('funding-amount').value;
+                        const amountRecieved = document.getElementById('amount-received').value;
+                        const scheme = document.getElementById('scheme').value;
+                        const annualPaymentDate = document.getElementById('annual-payment-date').value;
+                        const durationDate = document.getElementById('duration-date').value;
+                        const nmimsSchool = document.getElementById('nmims-school').value;
+                        const nmimsCampus = document.getElementById('nmims-campus').value;
 
+                        // const school = document.getElementById('school').value;
+                        // console.log('school ====>>>', school)
+                        // const campus = document.getElementById('campus').value;
+                        // // const industry =  document.getElementById('industry');
+                        // const facultyDept = document.getElementById('faculty-department').value;
+                        // const schemeName = document.getElementById('scheme-name').value;
+                        // const principalInvestigator = document.getElementById('principal-investigator').value;
+                        // const coInvestigator = document.getElementById('co-investigators').value;
+                        // const totalGrntSanctioRupee = document.getElementById('total-grant-sanction-rupees').value;
+                        // const recievedAmount =  document.getElementById('recieved-amount').value;
+                        // const recievedAmountDate = document.getElementById('amount-recieved-date').value;
+                        const statusOfResearchProject = document.querySelector('input[name="research-project-status"]:checked').value;
+                        const submissionGrantDate = document.getElementById('submission-grant-date').value;
+                        // const projectDuration = document.getElementById('duration-of-project').value
 
-                    console.log('updatedAuthorType ===>>>', updatedAuthorType)
-                    // const updatedSchool = document.getElementById('school').value;
-                    // const updatedCampus = document.getElementById('campus').value;
-                    // const updatedFacultyDept = document.getElementById('faculty-department').value;
-                    // const updatedSchemeName = document.getElementById('scheme-name').value;
-                    // const updatedPrincipalInvestigator = document.getElementById('principal-investigator').value;
-                    // const updatedCoInvestigator = document.getElementById('co-investigators').value;
-                    // const updatedTotalGrntSanctionRupee = document.getElementById('total-grant-sanction-rupees').value;
-                    // const updatedRecievedAount = document.getElementById('recieved-amount').value;
-                    // const updatedRecievedAountDate = document.getElementById('amount-recieved-date').value;
-                    await updateFacultyNameString(updatedAuthorType, updatedConsultantData, storedFacultyValue)
-                    const updatedSupportingDocument = document.getElementById('supporting-documents');
+                        const updatedSupportingDocument = document.getElementById('supporting-documents');
 
-                    let updatedConsultantFiles = updatedSupportingDocument.files;
-                    if (updatedConsultantFiles.length > 0) {
-                        for (let i = 0; i <= updatedConsultantFiles.length - 1; i++) {
-                            console.log('file name ==>>>', updatedConsultantFiles[i].name);
-                            if (updatedConsultantFiles[i].name) {
-                                updatedConsultantData.append('researchSupportingDocument', updatedConsultantFiles[i]);
+                        let updatedConsultantFiles = updatedSupportingDocument.files;
+                        if (updatedConsultantFiles.length > 0) {
+                            for (let i = 0; i <= updatedConsultantFiles.length - 1; i++) {
+                                console.log('file name ==>>>', updatedConsultantFiles[i].name);
+                                if (updatedConsultantFiles[i].name) {
+                                    updatedConsultantData.append('researchSupportingDocument', updatedConsultantFiles[i]);
+                                }
                             }
                         }
-                    }
-                    else {
-                        updatedConsultantFiles = null;
-                        updatedConsultantData.append('researchSupportingDocument', updatedConsultantFiles);
-                    }
+                        else {
+                            updatedConsultantFiles = null;
+                            updatedConsultantData.append('researchSupportingDocument', updatedConsultantFiles);
+                        }
 
-                    const nmimsSchoolArrayObject = nmimsSchoolIdsContainer[nmimsSchoolIdsContainer.length - 1];
-                    const nmimsCampusArrayObject = nmimsCampusIdsContainer[nmimsCampusIdsContainer.length - 1];
+                        // insert external new details
+                        let externalFacultyDetailsRow = document.querySelectorAll('.external-faculty-details');
+                        let externalFacultyDetails = [];
 
-                    const nmimsSchoolIds = nmimsSchoolArrayObject ? JSON.stringify(nmimsSchoolArrayObject) : JSON.stringify(nmimsSchoolStoredIds);
-                    const nmimsCampusIds = nmimsCampusArrayObject ? JSON.stringify(nmimsCampusArrayObject) : JSON.stringify(nmimsCampusStoredIds);
-
-                    updatedConsultantData.append('consultantId', consultantId);
-                    updatedConsultantData.append('grantProposalCategory', updatedGrantProposalCategory);
-                    updatedConsultantData.append('typeOfGrant', updatedTypeOfGrant);
-                    updatedConsultantData.append('titleOfProject', updatedTitleOfProject);
-                    updatedConsultantData.append('thurstAreaOfResearch', updatedThurstAreaOfResearch);
-                    updatedConsultantData.append('fundingAgency', updatedFundingAgency);
-                    updatedConsultantData.append('fundingAmount', updatedFundingAmount);
-                    updatedConsultantData.append('statusOfResearchProject', updatedStatusOfResearchProject);
-                    updatedConsultantData.append('submissionGrantDate', updatedSubmissionGrantDate);
-                    updatedConsultantData.append('durationDate', updatedDuration);
-                    updatedConsultantData.append('amountRecieved', updatedAmount);
-                    updatedConsultantData.append('scheme', updatedScheme);
-                    updatedConsultantData.append('paymentDate', updatedPaymentDate);
-                    updatedConsultantData.append('nmimsSchoolIds', nmimsSchoolIds);
-                    updatedConsultantData.append('nmimsCampusIds', nmimsCampusIds);
-
-                    // updatedConsultantData.append('school', updatedSchool);
-                    // updatedConsultantData.append('projectDuration' , updateProjectDuration);
-                    // updatedConsultantData.append('campus', updatedCampus);
-                    // updatedConsultantData.append('facultyDept', updatedFacultyDept);
-                    // updatedConsultantData.append('schemeName', updatedSchemeName);
-                    // updatedConsultantData.append('principalInvestigator', updatedPrincipalInvestigator);
-                    // updatedConsultantData.append('coInvestigator', updatedCoInvestigator);
-                    // updatedConsultantData.append('totalGrntSanctioRupee', updatedTotalGrntSanctionRupee);
-                    // updatedConsultantData.append('recievedAmount', updatedRecievedAount);
-                    // updatedConsultantData.append('recievedAmountDate', updatedRecievedAountDate);
-                    // updatedConsultantData.append('facultyType' , updatedFacultyType);
-
-                    fetch(url, {
-                        method: 'POST',
-                        body: updatedConsultantData
-                    })
-                        .then((result) => {
-                            return result.json()
-                        })
-                        .then((data) => {
-                            if (data.status === 'Done') {
-                                console.log('data captured ==>', JSON.stringify(data));
-                                consultantRowToBeUpdated.setAttribute('data-grant-type', data.updatedConsultant.typeOfGrant);
-                                consultantRowToBeUpdated.setAttribute('data-grant-proposal', data.updatedConsultant.grantProposalCategory)
-                                consultantRowToBeUpdated.setAttribute('data-submission-date', data.updatedConsultant.submissionGrantDate);
-                                consultantRowToBeUpdated.setAttribute('data-author-type', data.externalAuthorName);
-                                updatedConsultantFiles = updatedConsultantFiles ? consultantRowToBeUpdated.setAttribute('data-supporting-documents', data.updatedConsultantFilesString) : '';
-                                // consultantRowToBeUpdated.setAttribute('data-recieved-amount-date', data.updatedConsultant.recievedAmountDate);
-                                // consultantRowToBeUpdated.setAttribute('data-recieved-amount', data.updatedConsultant.recievedAmount);
-                                // consultantRowToBeUpdated.setAttribute('data-total-grant-sanction-rupee', data.updatedConsultant.totalGrntSanctioRupee);
-                                // consultantRowToBeUpdated.setAttribute('data-scheme-name', data.updatedConsultant.schemeName);
-                                // consultantRowToBeUpdated.setAttribute('data-project-duration', data.updatedConsultant.projectDuration);
-
-                                // consultantRowToBeUpdated.setAttribute('data-principal-investigator', data.updatedConsultant.principalInvestigator);
-                                // consultantRowToBeUpdated.setAttribute('data-co-investigator', data.updatedConsultant.coInvestigator);
-                                consultantRowToBeUpdated.querySelector('.title-of-project').innerText = data.updatedConsultant.titleOfProject;
-                                consultantRowToBeUpdated.querySelector('.thurst-area').innerText = data.updatedConsultant.thurstAreaOfResearch;
-                                consultantRowToBeUpdated.querySelector('.funding-agency').innerText = data.updatedConsultant.fundingAgency;
-                                consultantRowToBeUpdated.querySelector('.research-project-status').innerText = data.updatedConsultant.statusOfResearchProject;
-                                consultantRowToBeUpdated.querySelector('.grant-type').innerText = data.updatedConsultant.grantType;
-                                consultantRowToBeUpdated.querySelector('.grant-proposal').innerText = data.updatedConsultant.grantProposalCategory;
-                                Swal.fire({
-                                    position: "top-center",
-                                    icon: "success",
-                                    title: `${data.message}`,
-                                    showConfirmButton: true,
-                                    allowOutsideClick: false,
-                                    confirmButtonText: "OK",
-                                    confirmButtonColor: "#DD6B55",
-                                    timer: 1500
-                                }).then(() => {
-                                    document.location.reload();
-                                });
-                                $('#consultancy-modal').modal('hide');
+                        externalFacultyDetailsRow.forEach((field, index) => {
+                            if (field.value !== '') {
+                                externalFacultyDetails.push(field.value);
                             }
-                            else {
-                                const message = data.message;
-                                console.log('data ===>>>', data)
-                                console.log('message ==:::', message);
+                        });
+
+                        //update exeternal details 
+                        const updateExternalDetails = document.querySelectorAll('.external-faculty-data-details');
+                        const updateExternalFacultyData = [];
+
+                        updateExternalDetails.forEach((field, index) => {
+                            if (field.value !== '') {
+                                updateExternalFacultyData.push(field.value);
+                            }
+                            console.log('field ===>>>>>>', field.value);
+                        });
+
+                        const facultyIdsArray = facultyIdContainer ? facultyIdContainer[facultyIdContainer.length - 1] : null;
+                        const facultyContainer = facultyIdsArray ? JSON.stringify(facultyIdsArray) : null;
+                       //update external authors details 
+                        const updateExternalData = updateExternalFacultyData ? JSON.stringify(updateExternalFacultyData) : null;
+                        //insert external authors details
+                        const externalDataInsert = externalFacultyDetails ? JSON.stringify(externalFacultyDetails) : null;
+
+                        // appending into form
+                        updatedConsultantData.append('consultantId', consultantId);
+                        updatedConsultantData.append('nmimsSchool', nmimsSchool);
+                        updatedConsultantData.append('nmimsCampus', nmimsCampus);
+                        updatedConsultantData.append('facultyContainer', facultyContainer);
+                        updatedConsultantData.append('grantProposalCategory', grantProposalCategory);
+                        updatedConsultantData.append('typeOfGrant', typeOfGrant);
+                        updatedConsultantData.append('titleOfProject', titleOfProject);
+                        updatedConsultantData.append('thurstAreaOfResearch', thurstAreaOfResearch);
+                        updatedConsultantData.append('fundingAgency', fundingAgency);
+                        updatedConsultantData.append('fundingAmount', fundingAmount);
+                        updatedConsultantData.append('statusOfResearchProject', statusOfResearchProject);
+                        updatedConsultantData.append('submissionGrantDate', submissionGrantDate);
+                        updatedConsultantData.append('scheme', scheme);
+                        updatedConsultantData.append('durationDate', durationDate);
+                        updatedConsultantData.append('amountReceived', amountRecieved);
+                        updatedConsultantData.append('annualPaymentDate', annualPaymentDate);
+                        updatedConsultantData.append('externalFacultyDetails', externalDataInsert);
+                        updatedConsultantData.append('updateExternalData', updateExternalData);
+
+
+                        // const updatedSchool = document.getElementById('school').value;
+                        // const updatedCampus = document.getElementById('campus').value;
+                        // const updatedFacultyDept = document.getElementById('faculty-department').value;
+                        // const updatedSchemeName = document.getElementById('scheme-name').value;
+                        // const updatedPrincipalInvestigator = document.getElementById('principal-investigator').value;
+                        // const updatedCoInvestigator = document.getElementById('co-investigators').value;
+                        // const updatedTotalGrntSanctionRupee = document.getElementById('total-grant-sanction-rupees').value;
+                        // const updatedRecievedAount = document.getElementById('recieved-amount').value;
+                        // const updatedRecievedAountDate = document.getElementById('amount-recieved-date').value
+
+                        // updatedConsultantData.append('school', updatedSchool);
+                        // updatedConsultantData.append('projectDuration' , updateProjectDuration);
+                        // updatedConsultantData.append('campus', updatedCampus);
+                        // updatedConsultantData.append('facultyDept', updatedFacultyDept);
+                        // updatedConsultantData.append('schemeName', updatedSchemeName);
+                        // updatedConsultantData.append('principalInvestigator', updatedPrincipalInvestigator);
+                        // updatedConsultantData.append('coInvestigator', updatedCoInvestigator);
+                        // updatedConsultantData.append('totalGrntSanctioRupee', updatedTotalGrntSanctionRupee);
+                        // updatedConsultantData.append('recievedAmount', updatedRecievedAount);
+                        // updatedConsultantData.append('recievedAmountDate', updatedRecievedAountDate);
+                        // updatedConsultantData.append('facultyType' , updatedFacultyType);
+
+                        fetch(url, {
+                            method: 'POST',
+                            body: updatedConsultantData
+                        })
+                            .then((result) => {
+                                return result.json()
+                            })
+                            .then((data) => {
+                                if (data.status === 'Done') {
+                                    // consultantRowToBeUpdated.setAttribute('data-grant-type', data.updatedConsultant.typeOfGrant);
+                                    // consultantRowToBeUpdated.setAttribute('data-grant-proposal', data.updatedConsultant.grantProposalCategory)
+                                    // consultantRowToBeUpdated.setAttribute('data-submission-date', data.updatedConsultant.submissionGrantDate);
+                                    // consultantRowToBeUpdated.setAttribute('data-author-type', data.externalAuthorName);
+                                    // updatedConsultantFiles = updatedConsultantFiles ? consultantRowToBeUpdated.setAttribute('data-supporting-documents', data.updatedConsultantFilesString) : '';
+                                    // consultantRowToBeUpdated.setAttribute('data-recieved-amount-date', data.updatedConsultant.recievedAmountDate);
+                                    // consultantRowToBeUpdated.setAttribute('data-recieved-amount', data.updatedConsultant.recievedAmount);
+                                    // consultantRowToBeUpdated.setAttribute('data-total-grant-sanction-rupee', data.updatedConsultant.totalGrntSanctioRupee);
+                                    // consultantRowToBeUpdated.setAttribute('data-scheme-name', data.updatedConsultant.schemeName);
+                                    // consultantRowToBeUpdated.setAttribute('data-project-duration', data.updatedConsultant.projectDuration);
+
+                                    // consultantRowToBeUpdated.setAttribute('data-principal-investigator', data.updatedConsultant.principalInvestigator);
+                                    // consultantRowToBeUpdated.setAttribute('data-co-investigator', data.updatedConsultant.coInvestigator);
+                                    // consultantRowToBeUpdated.querySelector('.title-of-project').innerText = data.updatedConsultant.titleOfProject;
+                                    // consultantRowToBeUpdated.querySelector('.thurst-area').innerText = data.updatedConsultant.thurstAreaOfResearch;
+                                    // consultantRowToBeUpdated.querySelector('.funding-agency').innerText = data.updatedConsultant.fundingAgency;
+                                    // consultantRowToBeUpdated.querySelector('.research-project-status').innerText = data.updatedConsultant.statusOfResearchProject;
+                                    // consultantRowToBeUpdated.querySelector('.grant-type').innerText = data.updatedConsultant.grantType;
+                                    // consultantRowToBeUpdated.querySelector('.grant-proposal').innerText = data.updatedConsultant.grantProposalCategory;
+                                    Swal.fire({
+                                        position: "top-center",
+                                        icon: "success",
+                                        title: `${data.message}`,
+                                        showConfirmButton: true,
+                                        allowOutsideClick: false,
+                                        confirmButtonText: "OK",
+                                        confirmButtonColor: "#DD6B55",
+                                        // timer: 1500
+                                    })
+                                    .then(() => {
+                                        document.location.reload();
+                                    });
+                                    $('#consultancy-modal').modal('hide');
+                                }
+                                else {
+                                    const message = data.message;
+                                    console.log('data ===>>>', data)
+                                    console.log('message ==:::', message);
+                                    Swal.fire({
+                                        position: "top-center",
+                                        icon: "error",
+                                        title: `${data.errorCode}`,
+                                        color: "red",
+                                        with: "20PX",
+                                        html: `<span style="color: red;">${data.message}</span>`,
+                                        showConfirmButton: true,
+                                        allowOutsideClick: false,
+                                        confirmButtonText: "OK",
+                                        confirmButtonColor: "#DD6B55"
+                                    });
+                                }
+                            })
+                            .catch((error) => {
+                                const message = error
                                 Swal.fire({
                                     position: "top-center",
                                     icon: "error",
-                                    title: `${data.errorCode}`,
+                                    title: `${message}`,
                                     color: "red",
-                                    with: "20PX",
-                                    html: `<span style="color: red;">${data.message}</span>`,
                                     showConfirmButton: true,
                                     allowOutsideClick: false,
                                     confirmButtonText: "OK",
                                     confirmButtonColor: "#DD6B55"
                                 });
-                            }
-                        })
-                        .catch((error) => {
-                            const message = error
-                            Swal.fire({
-                                position: "top-center",
-                                icon: "error",
-                                title: `${message}`,
-                                color: "red",
-                                showConfirmButton: true,
-                                allowOutsideClick: false,
-                                confirmButtonText: "OK",
-                                confirmButtonColor: "#DD6B55"
-                            });
-                        })
-                };
+                            })
+                    };
 
                 updateBtn.addEventListener('click', async () => {
                     console.log('clickedddd')
@@ -2049,294 +1666,22 @@
 
                 const enternalText = document.getElementById('enternal-text');
 
-                // employeesListData data came from backend
-                // const employeesListData = document.getElementById('employees-list-data').dataset.employees;
-                // const employeesDataObj = JSON.parse(employeesListData);
-                // let employeeListArray = [];
-
-
-                // // ajax for search bar to search employee name 
-                // const facultyOptions = employeesDataObj.map(faculty => ({
-                //     value: faculty.id,
-                //     text: ` ${faculty.employee_id}  ${faculty.faculty_name}`
-                // }));
-
-
-                // // Initialize TomSelect dropdown with options containing id and faculty_name
-
-                // new TomSelect("#emp-name", {
-                //     options: facultyOptions,
-                //     placeholder: "Select Employee Name",
-                //     hidePlaceholder: true,
-                //     create: false,
-                //     plugins: ['remove_button'],
-                //     onItemAdd: function () {
-                //         this.setTextboxValue('');
-                //         this.refreshOptions();
-                //     },
-                //     render: {
-                //         option: function (data, escape) {
-                //             return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
-                //         },
-                //         item: function (data, escape) {
-                //             return '<div>' + escape(data.text) + '</div>';
-                //         }
-                //     }
-                // });
-                // function for select author name from drop down list
 
                 function handleEmployeeDropdownChange() {
-                    const selectedValues = Array.from(employeeDropdown.options)
-                        .filter(option => option.selected)
-                        .map(option => option.value);
-                    InternalAuthorValue = selectedValues.length === 0 ? "" : selectedValues;
-                    console.log('InternalAuthorValue ===>>>>>', InternalAuthorValue);
-                    if (!facultyIdContainer.some(author => author === InternalAuthorValue)) {
-                        facultyIdContainer.push({ 'internalFaculty': InternalAuthorValue });
+                        const selectedValues = Array.from(employeeDropdown.options)
+                            .filter(option => option.selected)
+                            .map(option => option.value);
+                        const facultyIds = selectedValues.length === 0 ? "" : selectedValues;
+                        console.log('facultyIds ===>>>>>', facultyIds);
+                        if (!facultyIdContainer.some(ids => ids === facultyIds)) {
+                            facultyIdContainer.push(facultyIds);
+                        }
+                        console.log("Selected employee values:", facultyIdContainer);
+
                     }
-                    console.log("Selected employee values:", facultyIdContainer);
-
-                }
-
-
-                //function for handle add more details for storing current value of clicked
-                // function handleAddMoreDetailsClick() {
-                //         // Define externalFacultyArray and externalFacultyData outside the function
-                //         const externalFacultyArray = [];
-                //         // Ensure externalFacultyData is defined and initialized
-                //         const dynamicRows = document.getElementById('dynamic-rows');
-                //         const newRow = document.createElement('div');
-                //         newRow.classList.add('col-lg-12');
-                //         newRow.innerHTML = `
-                //         <label class="form-check-label">Faculty Name</lable>
-                //         <input type="text" class="input-field external-faculty-name form-control"> <br>
-                //         <label class="form-check-label">Faculty Designation :</lable>
-                //         <input type="text" class="input-field external-faculty-designation form-control"> <br>
-                //         <label class="form-check-label external-faculty-address">Faculty Address</lable>
-                //         <input type="text" class="input-field form-control external-faculty-address"> <br>`;
-                //         dynamicRows.appendChild(newRow);
-                //         // Move the code below to a separate function
-                //         const facultyName = dynamicRows.querySelectorAll('.external-faculty-name');
-                //         facultyName.forEach(inputField => {
-                //             const inputValueName = inputField.value;
-                //             console.log('inputValue ====>>>>', inputValueName)
-                //             externalFacultyArray.push({'facultyName' : inputValueName})
-                //         });
-
-                //         const facultyDesignation = dynamicRows.querySelectorAll('.external-faculty-designation');
-                //         facultyDesignation.forEach(inputField => {
-                //             const inputValueDsg = inputField.value;
-                //             console.log('inputValueDsg ====>>>>', inputValueDsg)
-                //             externalFacultyArray.push({'facultyDsg' : inputValueDsg})
-                //         });
-
-                //         const facultyAddress = dynamicRows.querySelectorAll('.external-faculty-address');
-                //         facultyAddress.forEach(inputField => {
-                //             const inputValueAddr = inputField.value;
-                //             console.log('inputValueAddr ====>>>>', inputValueAddr)
-                //             externalFacultyArray.push({'facultyAddr' : inputValueAddr})
-                //         });
-
-                //         // After collecting all input values, join them into a string
-                //         console.log('externalFacultyArray ===>>>>', externalFacultyArray);
-                //         externalFacultyData.push(externalFacultyArray);
-                //         console.log("externalFacultyData:", externalFacultyData);
-
-                //     }
-
-                // addMoreDetailsButton.addEventListener("click", function() {
-                //     handleAddMoreDetailsClick();
-                // });
-                //function for insert external data faculty with fetch api
-                const insertExternalDetails = (url) => {
-                    // Define externalFacultyArray and externalFacultyData outside the function
-                    const externalFacultyDetails = {};
-                    externalFacultyDetails.facultyName = document.getElementById('faculty-name').value;
-                    externalFacultyDetails.facultyDsg = document.getElementById('faculty-designation').value;
-                    externalFacultyDetails.facultyAddr = document.getElementById('faculty-address').value;
-                    externalFacultyDetails.facultyEmpId = document.getElementById('faculty-emp-id').value;
-
-                    const payload = {
-                        externalFacultyDetails: externalFacultyDetails
-                    }
-
-                    console.log('payload ====>>>>>>', payload);
-
-                    fetch(url, {
-                        method: 'POST',
-                        headers: {
-                            'content-type': 'application/json'
-                        },
-                        body: JSON.stringify(payload)
-                    })
-                        .then((result) => {
-                            return result.json()
-                        })
-                        .then((data) => {
-                            if (data.status === 'Done') {
-                                console.log('data ===>>>>>', data);
-                                let rowCountInteger = parseInt(data.rowCount, 10);
-                                let indexCount = rowCountInteger;
-                                rowCountInteger = indexCount + rowCountInteger;
-                                console.log('rowCountInteger ===>>>>>>', rowCountInteger);
-                                externalFacultyIdArray.push(data.externalFacultyId);
-                                document.getElementById('name-class').classList.add('d-none');
-                                document.getElementById('dsg-class').classList.add('d-none');
-                                document.getElementById('id-class').classList.add('d-none');
-                                document.getElementById('address-class').classList.add('d-none');
-                                document.getElementById('insert-details').classList.add('d-none');
-                                document.getElementById('add-more-details').classList.remove('d-none');
-                                const newFacultyDataRow = document.createElement('tr');
-                                newFacultyDataRow.innerHTML = `
-                                <td class="name-class"> ${data.facultyData.facultyName} </td>
-                                <td class="dsg-class"> ${data.facultyData.facultyDsg} </td>
-                                <td class="id-class"> ${data.facultyData.facultyEmpId} </td>
-                                <td class="address-class"> ${data.facultyData.facultyAddr} </td>
-                    `
-                    facultyTableList.appendChild(newFacultyDataRow);
-                    
-                                Swal.fire({
-                                    position: "top-center",
-                                    icon: "success",
-                                    title: `${data.message}`,
-                                    showConfirmButton: true,
-                                    allowOutsideClick: false,
-                                    confirmButtonText: "OK",
-                                    confirmButtonColor: "#DD6B55"
-                                });
-                            }
-
-                        }).catch((error) => {
-                            console.error("ERROR:", error);
-                        })
-
-                    // event listner for insert exetrnal faculty details details
-                    document.getElementById('add-more-details').addEventListener('click', () => {
-                        console.log('clicked add more button');
-                        // making input field empty
-                        document.getElementById('faculty-name').value = '';
-                        document.getElementById('faculty-designation').value = '';
-                        document.getElementById('faculty-address').value = '';
-                        document.getElementById('faculty-emp-id').value = '';
-                        document.getElementById('name-class').classList.remove('d-none');
-                        document.getElementById('dsg-class').classList.remove('d-none');
-                        document.getElementById('id-class').classList.remove('d-none');
-                        document.getElementById('address-class').classList.remove('d-none');
-                        document.getElementById('insert-details').classList.remove('d-none');
-                        document.getElementById('add-more-details').classList.add('d-none');
-
-                    })
-
-                }
-
-                //  addEventListener   for insert external details
-                InsertDetails.addEventListener('click', async () => {
-
-                    const facultyName = document.getElementById('faculty-name').value;
-                    const facultyDsg = document.getElementById('faculty-designation').value;
-                    const facultyAddr = document.getElementById('faculty-address').value;
-                    const facultyEmpId = document.getElementById('faculty-emp-id').value;
-
-                    let addrError = (facultyAddr != '') ? true : false;
-                    if (addrError) {
-                        document.getElementById('addrError').innerText = '';
-                    } else {
-                        document.getElementById('addrError').innerText = 'Address is Required';
-                    }
-
-                    let facultyError = checkAlphabets(facultyName, 'facultyError');
-                    let designationError = checkAlphabets(facultyDsg, 'desError');
-                    let empError = checkEmpError(facultyEmpId, 'empError');
-
-                    let elements = document.querySelectorAll('.id-class');
-
-                    let newVal = document.getElementById('faculty-emp-id').value;
-                    for (var i = 0; i < elements.length; i++) {
-                        console.log("elements[i].textContent : ", elements[i].textContent);
-                        console.log("newVal : ", newVal);
-                        if (elements[i].textContent.trim() === newVal) {
-                            Swal.fire({
-                                position: "top-center",
-                                icon: "error",
-                                title: `Duplicate Faculty Id Not Allowed`,
-                                showConfirmButton: true,
-                                allowOutsideClick: false,
-                                confirmButtonText: "OK",
-                                confirmButtonColor: "#DD6B55"
-                            })
-                            return;
-                        };
-                    }
-
-                    if (facultyError && designationError && addrError && empError) {
-                        console.log('clickedd insert details buttons')
-                        await insertExternalDetails('<%- BASE_URL %>research/external/faculty-insert');
-                    }
-
-                });
 
                 employeeDropdown.addEventListener("change", handleEmployeeDropdownChange);
 
-                // function for add drop down list or  add new faculty data
-                async function insertFacultyNameString(researchConsultancyData) {
-                    console.log('externalFacultyIdArray in side my function ====>>>', externalFacultyIdArray);
-                    const externalFacultyDetails = externalFacultyIdArray;
-                    console.log('facultyIdContainer ====>>>>>', facultyIdContainer);
-                    const facultyDataContainerArray = [(facultyIdContainer[facultyIdContainer.length - 1])];
-                    facultyDataContainerArray.push({ 'externalEmpList': externalFacultyDetails });
-
-                    const facultyDataContainer = JSON.stringify(facultyDataContainerArray);
-                    console.log('facultyDataContainer ===>>>>', facultyDataContainer)
-                    researchConsultancyData.append('facultyDataContainer', facultyDataContainer);
-                }
-
-                // fuction for updated faculty type
-                async function updateFacultyNameString(updatedAuthorType, updatedConsultantData, storedFacultyValue) {
-                    console.log('externalFacultyIdArray in side my function ====>>>', externalFacultyIdArray);
-                    const externalFacultyDetails = externalFacultyIdArray;
-                    console.log('facultyIdContainer ====>>>>>', facultyIdContainer);
-                    const facultyDataContainerArray = [(facultyIdContainer[facultyIdContainer.length - 1])];
-                    facultyDataContainerArray.push({ 'externalEmpList': externalFacultyDetails });
-
-                    const facultyDataContainer = JSON.stringify(facultyDataContainerArray);
-                    console.log('facultyDataContainer ===>>>>', facultyDataContainer)
-                    updatedConsultantData.append('facultyDataContainer', facultyDataContainer);
-                }
-
-                function enternalFacultyDropDownList() {
-                    employeeList.classList.remove('d-none');
-                    authorDetails.classList.add('d-none');
-                    addMoreDetailsButton.classList.add('d-none');
-                    document.getElementById('name-class').classList.add('d-none');
-                    document.getElementById('dsg-class').classList.add('d-none');
-                    document.getElementById('id-class').classList.add('d-none');
-                    document.getElementById('address-class').classList.add('d-none');
-                    document.getElementById('add-btn').classList.add('d-none');
-
-                    document.getElementById('name-class-upd').classList.add('d-none');
-                    document.getElementById('dsg-class-upd').classList.add('d-none');
-                    document.getElementById('id-class-upd').classList.add('d-none');
-                    document.getElementById('address-class-upd').classList.add('d-none');
-                    document.getElementById('add-btn-upd').classList.add('d-none');
-
-                    document.getElementById('externalfacultyTable').classList.add('d-none')
-                }
-
-
-                function externalFacultyDetails() {
-                    employeeList.classList.add('d-none');
-                    addMoreDetailsButton.classList.add('d-none');
-                    document.getElementById('name-class').classList.remove('d-none');
-                    document.getElementById('dsg-class').classList.remove('d-none');
-                    document.getElementById('id-class').classList.remove('d-none');
-                    document.getElementById('address-class').classList.remove('d-none');
-                    document.getElementById('add-btn').classList.remove('d-none');
-                }
-
-                // making d-none external faculty
-                enternalFacultyType.addEventListener('click', enternalFacultyDropDownList)
-                //making d-none internal faculty
-                externalFacultyType.addEventListener('click', externalFacultyDetails)
 
                 $("#consultancy-list").DataTable({
 
@@ -2355,37 +1700,6 @@
                         document.querySelector('#supporting-documents').classList.add('d-none');
                     }
                 });
-
-
-                // document.getElementById('is-external').addEventListener('click', () => {
-                //     let is_checked = document.getElementById('is-external');
-                //     if (is_checked.checked) {
-                //         document.getElementById('externalfacultyTable').classList.remove('d-none')
-                //     } else {
-                //         document.getElementById('externalfacultyTable').classList.add('d-none')
-                //     }
-                // })
-
-                document.getElementById('is-external-update').addEventListener('click', () => {
-                    let is_checked = document.getElementById('is-external-update');
-                    console.log('check box checked')
-
-                    if (is_checked.checked) {
-                        document.getElementById('externalfacultyTable').classList.remove('d-none')
-                        document.getElementById('name-class-upd').classList.remove('d-none');
-                        document.getElementById('dsg-class-upd').classList.remove('d-none');
-                        document.getElementById('id-class-upd').classList.remove('d-none');
-                        document.getElementById('address-class-upd').classList.remove('d-none');
-                        document.getElementById('add-btn-upd').classList.remove('d-none');
-                    } else {
-                        document.getElementById('externalfacultyTable').classList.add('d-none')
-                        document.getElementById('faculty-table-list-upd').classList.add('d-none');
-
-                    }
-                })
-
-
-
 
                 function checkAlphabets(facultyName, idName) {
 
@@ -2450,216 +1764,6 @@
                     return bool;
                 }
 
-                document.addEventListener('click', (event) => {
-
-                    if (event.target.classList.contains('updateFaculty')) {
-                        let facultyId = event.target.closest('tr').getAttribute('data-facultyId')
-                        console.log('button clicked with id ', facultyId)
-                        let tr = event.target.closest('tr');
-                        let facultyName = tr.querySelector('#updateFacultyName').value
-                        let facultyDesignation = tr.querySelector('#updateFacultyDes').value
-                        let facultyAddr = tr.querySelector('#updateFacultyAddr').value
-                        let empId = tr.querySelector('#updateFacultyId').value
-
-                        let addrError = (facultyAddr != '') ? true : false;
-                        if (addrError) {
-                            document.getElementById('addrUpdError').innerText = '';
-                        } else {
-                            document.getElementById('addrUpdError').innerText = 'Address is Required';
-                        }
-
-                        let facultyError = checkAlphabets(facultyName, 'facultyUpdError');
-                        let designationError = checkAlphabets(facultyDesignation, 'desUpdError');
-                        let empError = checkEmpError(empId, 'empUpdError');
-                        let externalFacultyDetails;
-
-                        if (addrError && facultyError && designationError && empError) {
-
-                            externalFacultyDetails = {
-                                facultyId: facultyId, facultyName: facultyName,
-                                facultyDesignation: facultyDesignation, facultyAddr: facultyAddr, empId: empId
-                            }
-
-                            let obj = externalFacultyDetails
-                            upsertFacultyData('<%- BASE_URL %>research/external/faculty-updateData', obj, tr)
-                        }
-
-                    }
-                })
-
-
-                function upsertFacultyData(url, obj, tr) {
-                    fetch(url, {
-                        method: 'POST',
-                        headers: {
-                            'content-type': 'application/json'
-                        },
-                        body: JSON.stringify(obj)
-                    })
-                        .then((result) => {
-                            return result.json()
-                        })
-                        .then((data) => {
-                            if (data.status === 'Done') {
-
-                                console.log('response >> ', data)
-
-                                Swal.fire({
-                                    position: "top-center",
-                                    icon: "success",
-                                    title: `${data.message}`,
-                                    showConfirmButton: true,
-                                    allowOutsideClick: false,
-                                    confirmButtonText: "OK",
-                                    confirmButtonColor: "#DD6B55"
-                                }).then(() => {
-                                    console.log('object ', JSON.stringify(obj))
-                                    tr.querySelector('#updateFacultyName').value = obj.facultyName
-                                    tr.querySelector('#updateFacultyDes').value = obj.facultyDesignation
-                                    tr.querySelector('#updateFacultyAddr').value = obj.facultyAddr
-                                    tr.querySelector('#updateFacultyId').value = obj.empId
-                                })
-                            }
-                        })
-                }
-
-
-
-
-                const upsertExternalDetails = (url) => {
-                    let facultyNameUpd = document.getElementById('faculty-name-upd');
-                    let facultyDesignationUpd = document.getElementById('faculty-designation-upd');
-                    let facultyAddrUpd = document.getElementById('faculty-address-upd');
-                    let facultyEmpUpd = document.getElementById('faculty-emp-id-upd');
-
-                    let facultyName = facultyNameUpd.value;
-                    let facultyDesignation = facultyDesignationUpd.value;
-                    let facultyAddr = facultyAddrUpd.value;
-                    let facultyEmp = facultyEmpUpd.value;
-
-
-                    let externalFacultyDetails = {
-                        facultyEmpId: facultyEmp,
-                        facultyName: facultyName,
-                        facultyDsg: facultyDesignation,
-                        facultyAddr: facultyAddr,
-                        grantId: projectGrantId
-                    }
-
-                    console.log('json string ', JSON.stringify(externalFacultyDetails))
-
-                    let payload = { externalFacultyDetails, consultantId };
-
-                    fetch(url, {
-                        method: 'POST',
-                        headers: {
-                            'content-type': 'application/json'
-                        },
-                        body: JSON.stringify(payload)
-                    })
-                        .then((result) => {
-                            return result.json()
-                        })
-                        .then((data) => {
-                            if (data.status === 'Done') {
-
-                                console.log('response >> ', data)
-
-                                Swal.fire({
-                                    position: "top-center",
-                                    icon: "success",
-                                    title: `${data.message}`,
-                                    showConfirmButton: true,
-                                    allowOutsideClick: false,
-                                    confirmButtonText: "OK",
-                                    confirmButtonColor: "#DD6B55"
-                                }).then(() => {
-
-                                    let appendFaculty = document.getElementById('appendFaculty');
-                                    let allTds = appendFaculty.querySelectorAll('tr');
-
-                                    let htmlData = `<tr data-facultyId = ${data.researchGrantId}>
-
-                                    <td>${allTds.length + 1}</td>
-                                    <td><input id="updateFacultyName" type="text" value=${facultyName} /></br><span style="color:red;" id='facultyUpdError'></span></td>
-                                    <td ><input id="updateFacultyAddr" type="text" value=${facultyAddr} /></br><span style="color:red;" id='addrUpdError'></span></td>
-                                    <td ><input id="updateFacultyDes" type="text" value=${facultyDesignation} /></br><span style="color:red;" id='desUpdError'></span></td>
-                                    <td ><input id="updateFacultyId" type="text" value=${facultyEmp} /></br><span style="color:red;" id='empUpdError'></span></td>
-                                    <td>
-                                        <button class="btn btn-primary updateFaculty">Update</button>
-                                    
-                                        <button id="delete-faculty" class="delete-row  btn btn-danger delete-faculty">Delete</button>
-                                    </td>
-                                    </tr>`
-
-                                    appendFaculty.insertAdjacentHTML('beforeEnd', htmlData);
-                                    let deleteButton = document.querySelector('#delete-faculty').nextElementSibling.querySelector('.delete-row');
-                                    deleteButton.addEventListener('click', handleDeleteButtonClick);
-
-                                });
-                            }
-                        }).catch((error) => {
-                            console.error("ERROR:", error);
-                        })
-                }
-
-
-
-                document.getElementById('insert-details-upd').addEventListener('click', () => {
-
-                    console.log('button hitted ', projectGrantId)
-
-                    let facultyNameUpd = document.getElementById('faculty-name-upd');
-                    let facultyDesignationUpd = document.getElementById('faculty-designation-upd');
-                    let facultyAddrUpd = document.getElementById('faculty-address-upd');
-                    let facultyEmpUpd = document.getElementById('faculty-emp-id-upd');
-
-                    let facultyName = facultyNameUpd.value;
-                    let facultyDesignation = facultyDesignationUpd.value;
-                    let facultyAddr = facultyAddrUpd.value;
-                    let facultyEmp = facultyEmpUpd.value;
-
-                    let addrError = (facultyAddr != '') ? true : false;
-                    if (addrError) {
-                        document.getElementById('addrInsertError').innerText = '';
-                    } else {
-                        document.getElementById('addrInsertError').innerText = 'Address is Required';
-                    }
-
-                    let facultyError = checkAlphabets(facultyName, 'facultyInsertError');
-                    let designationError = checkAlphabets(facultyDesignation, 'desInsertError');
-                    let empError = checkEmpError(facultyEmp, 'empInsertError');
-
-                    let appendFaculty = document.getElementById('appendFaculty');
-                    let elements = appendFaculty.querySelectorAll('tr');
-
-                    for (var i = 0; i < elements.length; i++) {
-
-                        let facultyId = elements[i].querySelector('#updateFacultyId').value;
-                        console.log('faculty Id ', facultyId)
-
-                        if (facultyId === facultyEmp) {
-                            Swal.fire({
-                                position: "top-center",
-                                icon: "error",
-                                title: `Duplicate Faculty Id Not Allowed`,
-                                showConfirmButton: true,
-                                allowOutsideClick: false,
-                                confirmButtonText: "OK",
-                                confirmButtonColor: "#DD6B55"
-                            })
-                            return;
-                        };
-                    }
-
-
-                    if (addrError && facultyError && designationError && empError) {
-
-                        console.log('clickedd insert details buttons')
-                        upsertExternalDetails('<%- BASE_URL %>research/external/faculty-update');
-                    }
-                });
-
 
                 document.getElementById('headerClose').addEventListener('click', () => {
                     document.location.reload();
@@ -2670,48 +1774,235 @@
                 })
 
 
-                campusDropDown.addEventListener("change", handleCampusDropDownList);
-                schoolDropDown.addEventListener("change", handleSchoolDropDownList);
-
-
-                // function for  drop down list school 
-                function handleSchoolDropDownList() {
-                    const schoolOption = document.getElementById('school-option');
-                    console.log('schoolOption ankit ===>>>>>>', schoolOption.innerText);
-                    schoolOption.classList.add('d-none')
-                    // // schoolOption.removeAttribute('placeholder');
-                    // schoolOption.removeAttribute("placeholder");
-                    const selectedValues = Array.from(schoolDropDown.options)
-                        .filter(option => option.selected)
-                        .map(option => option.value);
-
-                    const schoolIds = selectedValues.length === 0 ? "" : selectedValues;
-                    console.log('schoolIds ===>>>>>', schoolIds);
-                    if (!nmimsSchoolIdsContainer.some(school => school === schoolIds)) {
-                        nmimsSchoolIdsContainer.push({ 'nmimsSchool': schoolIds });
+                function enternalFacultyDropDownList() {
+                        employeeList.classList.remove('d-none');
+                        document.getElementById("external-details-table").classList.add('d-none');
                     }
-                    console.log("nmimsSchoolIdsContainer ids :", nmimsSchoolIdsContainer);
-                }
 
+            
+                // addEventListener 
+                enternalFacultyType.addEventListener('click', enternalFacultyDropDownList)
 
+                 // for creating input field for table 
+                 document.querySelector('#is-external-details').addEventListener('click', () => {
+                        console.log('clickedd external author');
+                        document.getElementById("external-details-table").classList.remove('d-none');
+                        employeeList.classList.add('d-none');
+                        console.log("BUTTON CLICKED");
+                        let newRow = `
+                                <tr>
+                                    <td><input type="text"  class="external-faculty-details"></td>
+                                    <td><input type="number" class="external-faculty-details"></td>
+                                    <td><input type="text" class="external-faculty-details"></td>
+                                    <td><input type="text" class="external-faculty-details"></td>
+                                    <td><button class="delete-row  btn btn-danger">Delete</button></td>
+                                </tr> 
+                            `;
 
-                // function for invention type drop down list selectedTypeOfInvention
-                function handleCampusDropDownList() {
-                    const selectedValues = Array.from(campusDropDown.options)
-                        .filter(option => option.selected)
-                        .map(option => option.value);
-                    const campusIds = selectedValues.length === 0 ? "" : selectedValues;
-                    console.log('campusIds ===>>>>>', campusIds);
-                    if (!nmimsCampusIdsContainer.some(campus => campus === campusIds)) {
-                        nmimsCampusIdsContainer.push({ 'nmimsCampus': campusIds });
-                    }
-                    console.log(" nmimsCampusIdsContainer ids :", nmimsCampusIdsContainer);
-                }
+                        document.querySelector('#add-faculty-details').insertAdjacentHTML('afterend', newRow);
+                        let deleteButton = document.querySelector('#add-faculty-details').nextElementSibling.querySelector('.delete-row');
+                        deleteButton.addEventListener('click', handleDeleteButtonClick);
+                })
 
-                function handleDeleteButtonClick() {
+                 // foe delete empy input field 
+                 function handleDeleteButtonClick() {
                     this.parentNode.parentNode.remove();
                 }
 
+
+                function createTableRows(tableId, data, inputClassName, deleteId, headers) {
+                        console.log('data to create table ===>>>>>', data);
+                        let table = document.querySelector(`#${tableId}`);
+                        let tbody = table.querySelector('tbody');
+                        let thead = table.querySelector('thead');
+                        tbody.innerHTML = '';
+                        thead.innerHTML = '';
+
+                        let serialNumber = 1;
+
+                        // Create table header
+                        let headerRow = document.createElement('tr');
+
+                        // Serial number header
+                        // let serialHeader = document.createElement('th');
+                        // serialHeader.textContent = 'Serial';
+                        // headerRow.appendChild(serialHeader);
+
+                         // Create headers from the provided headers array
+                         headers.forEach(function (header) {
+                            let th = document.createElement('th');
+                            th.textContent = header;
+                            headerRow.appendChild(th);
+                        });
+                       
+                        
+
+                        //
+                        // if (data[0] && typeof data[0] === 'object') {
+                        //     Object.keys(data[0]).forEach(function (key) {
+                        //         if (key !== 'id') {
+                        //             let th = document.createElement('th');
+                        //             th.textContent = key;
+                        //             headerRow.appendChild(th);
+                        //         }
+                        //     });
+                        // } else {
+                        //     console.error('Data is not in the expected format.');
+                        // }
+
+                        // Add id header and hide it
+
+                        let idHeader = document.createElement('th');
+                        idHeader.textContent = 'ID';
+                        idHeader.classList.add('d-none');
+                        headerRow.appendChild(idHeader);
+                        // Add data cells based on headers
+                      
+
+                        thead.appendChild(headerRow);
+
+                        // Create table rows
+                        data.forEach(function (rowData) {
+                            let row = document.createElement('tr');
+                            row.setAttribute('data-table-id', rowData.id);
+
+                            // Add serial number cell
+                            // let serialCell = document.createElement('td');
+                            // serialCell.textContent = serialNumber++;
+                            // row.appendChild(serialCell);
+
+
+
+
+                            // Add data cells
+                            Object.keys(rowData).forEach(function (key) {
+                                if (key !== 'id') {
+                                    let cell = document.createElement('td');
+                                    let input = document.createElement('input');
+                                    input.type = 'text';
+                                    input.value = rowData[key];
+                                    if (inputClassName) {
+                                        input.classList.add(inputClassName);
+                                    }
+                                    cell.appendChild(input);
+                                    row.appendChild(cell);
+                                }
+                            });
+
+                            // Add hidden id cell
+                            let idCell = document.createElement('td');
+                            let idInput = document.createElement('input');
+                            idInput.type = 'text';
+                            idInput.value = rowData.id;
+                            idCell.classList.add('d-none');
+                            if (inputClassName) {
+                                idInput.classList.add(inputClassName);
+                            }
+                            idCell.appendChild(idInput);
+                            row.appendChild(idCell);
+
+                            // Add delete button cell
+                            let deleteCell = document.createElement('td');
+                            let deleteButton = document.createElement('button');
+                            console.log('rowData.id ====>>>>', rowData.id);
+                            deleteButton.setAttribute('data-table-id', rowData.id);
+
+                            const dataRecordId = rowData.id;
+                            deleteButton.classList.add(inputClassName);
+
+                            deleteButton.textContent = 'Delete';
+                            deleteButton.classList.add('btn', 'btn-danger');
+
+                            deleteButton.addEventListener('click', function () {
+                                // Find and remove the row after fetch confirmation
+                                document.querySelector(`button[data-table-id='${dataRecordId}']`).click();
+                            });
+
+                            deleteCell.appendChild(deleteButton);
+                            row.appendChild(deleteCell);
+
+                            // Append the row to the table body
+                            tbody.appendChild(row);
+                        });
+                    }
+                
+                //for delete exetrnal faculty record 
+                document.addEventListener('click', (event) => {
+                        const button = event.target.closest('button');
+                        if (!button) return;
+
+                        const relativeClass = button.className;
+                        const tableId = button.getAttribute('data-table-id');
+                        const specificClasses = ['external-faculty-data-details'];
+
+                        const classList = relativeClass.split(' ');
+
+                        specificClasses.forEach(specificClass => {
+                            if (classList.includes(specificClass)) {
+                                console.log(`Yes, the button contains the class: ${specificClass}`);
+                                let confirmDelete = `Do you want to delete the ${specificClass} ?`;
+                                if (confirmDelete) {
+                                    Swal.fire({
+                                        title: "Are you sure?",
+                                        text: "You won't be able to revert this!",
+                                        icon: "warning",
+                                        showCancelButton: true,
+                                        allowOutsideClick: false,
+                                        confirmButtonColor: "#3085d6",
+                                        cancelButtonColor: "#d33",
+                                        confirmButtonText: "Yes, delete it!"
+                                    }).then((result) => {
+                                        if (result.isConfirmed) {
+                                            // Execute fetch request here after confirmation
+                                            fetch(`<%- BASE_URL %>research/research-project-grant/${specificClass}/delete`, {
+                                                method: 'POST',
+                                                headers: {
+                                                    'content-type': 'application/json'
+                                                },
+                                                body: JSON.stringify({ tableId })
+                                            })
+                                                .then((result) => result.json())
+                                                .then((data) => {
+                                                    if (data.status === 'Done') {
+                                                        console.log('data ==>>', data);
+                                                        // Find the row and remove it
+                                                        const row = document.querySelector(`tr[data-table-id='${tableId}']`);
+                                                        if (row) {
+                                                            row.remove();
+                                                        }
+                                                        Swal.fire({
+                                                            title: "Deleted!",
+                                                            text: "Record has been deleted.",
+                                                            icon: "success",
+                                                            showConfirmButton: true,
+                                                            allowOutsideClick: false,
+                                                            confirmButtonText: "OK",
+                                                            confirmButtonColor: "#DD6B55"
+                                                        })
+                                                    }
+                                                })
+                                                .catch((error) => {
+                                                    console.error('Error:', error);
+                                                    const message = error;
+                                                    Swal.fire({
+                                                        position: "top-center",
+                                                        icon: "error",
+                                                        title: `${message}`,
+                                                        color: "red",
+                                                        showConfirmButton: true,
+                                                        allowOutsideClick: false,
+                                                        confirmButtonText: "OK",
+                                                        confirmButtonColor: "#DD6B55"
+                                                    });
+                                                });
+                                        }
+                                    });
+                                } else {
+                                    return;
+                                }
+                            }
+                        });
+                    });
 
                 
 

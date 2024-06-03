@@ -100,8 +100,8 @@
                                                 <td class="application-no col-lg-1"><%-
                                                         iprData.patent_application_number %></td>
                                                 <td class="applicant-name col-lg-1"><%- iprData.applicant_name %></td>
-                                                <td class="nmims-school"><%- iprData.associated_schools %></td>
-                                                <td class="nmims-campus"><%- iprData.associated_campuses %></td>
+                                                <td class="nmims-school"><%- iprData.nmims_school %></td>
+                                                <td class="nmims-campus"><%- iprData.nmims_campus %></td>
                                                 <!-- <td class="col-lg-1">
                                     <label class="view" data-ipr-id="<%- iprData.id %>"><i class="fa-solid fa-eye view text-danger"
                                         data-ipr-id="<%- iprData.id %>"></i></label>
@@ -213,7 +213,7 @@
                             <div class="row">
 
                                 <!-- nmims School-->
-                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                <!-- <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="nmims-school" class="form-label fw-bold">School <i style="color: red;">*</i></label>
                                     <select class="select-option" id="nmims-school-list" data-validate="isEmpty,isExist"
                                         data-err-msg="This field is required and select value" required multiple>
@@ -226,8 +226,8 @@
                                     </select>
                                 </div>
 
-                                <!-- nmims campus -->
-                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                nmims campus -->
+                                <!-- <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="nmims-campus" class="form-label fw-bold">Campus <i style="color: red;">*</i></label>
                                     <select class="select-option" id="nmims-campus-list" data-validate="isEmpty,isExist"
                                         data-err-msg="This field is required and select value" required multiple>
@@ -238,8 +238,22 @@
                                             </option>
                                             <% }); %>
                                     </select>
-                                </div>
+                                </div> -->
 
+                                <!-- NMIMS Campus - Author -->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="nmims-campus-authors" class="form-label fw-bold ">NMIMS Campus - Author <i style="color: red;">*</i></label>
+                                    <input type="url" name="web-link" id="nmims-campus"
+                                        data-validate="isEmpty,isAlphaNumericSpecial,isExist,isLength:2:255"
+                                        data-err-msg="Provide Valid Input" class="form-control" required />
+                                </div>
+                                <!--NMIMS School - Author-->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="nmims-school-authors" class="form-label fw-bold ">NMIMS School - Author <i style="color: red;">*</i></label>
+                                    <input type="url" name="web-link" id="nmims-school"
+                                        data-validate="isEmpty,isAlphaNumericSpecial,isExist,isLength:2:255"
+                                        data-err-msg="Provide Valid Input" class="form-control" required />
+                                </div>
                                 <!-- Sustainable Development Goals (SDG) [dropdown list to be added] ? -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="sdg-goals" class="form-label fw-bold ">Sustainable Development Goals
@@ -401,144 +415,46 @@
                                 </div>
                                 <!-- Details of Other Inventors -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <label for="is-internal" class="form-label fw-bold mb-3">Inventors Names <i style="color: red;">*</i></label>
+                                    <label for="investor-details" class="form-label fw-bold mb-3">Details of Inventors</label>
                                     <span style="color:red;" id="facultyTypeError"></span></br>
                                     <div class="form-check-inline">
-                                        <label for="internal" class="form-check-label enter-faculty-type">
-                                            <input type="radio" class="form-check-input enternal-type"
-                                                name="author-type" id="is-internal" value="Internal">
+                                        <label for="is-internal" class="form-check-label enter-faculty-type">
+                                            <input type="radio" class="form-check-input enternal-type" name="author-type" id="is-internal"
+                                                value="Internal">
                                             <span id="enternal-text">Internal</span>
                                         </label>
-                                        <div class="col-lg-1 p-6 w-100 d-none" id="employee-list">
-                                            <select id="emp-name" style="width: 200px;" multiple>
+                                        <div class=" col-lg-1 p-6 w-100 d-none" id="employee-list">
+                                            <select id="emp-name" class="internal-faculty-list-data" style="width: 200px;" multiple>
                                                 <option value="">select employee name</option>
                                                 <% internalFacultyData.forEach(function(employee) { %>
-                                                    <option value="<%= employee.employee_name %>">
-                                                        <%= employee.employee_name %>
+                                                    <option value="<%= employee.id %>">
+                                                        <%= employee.faculty_name %>
                                                     </option>
                                                     <% }); %>
                                             </select>
                                         </div>
                                     </div>
+                                
                                     <div class="form-check-inline">
-                                        <label for="is-external" class="form-check-label external-faculty">
-                                            <input type="radio" class="form-check-input" id="is-external"
-                                                name="author-type" value="External">
+                                        <label for="is-external-details" class="form-check-label external-faculty">
+                                            <input type="radio" class="form-check-input" id="is-external-details" name="author-type" value="External">
                                             <span id="external-text">External</span>
                                         </label>
-
-                                    </div>
-
-                                    <div class="form-check-inline">
-
-                                        <label for="is-external" class="form-check-label external-faculty">
-                                            <input type="radio" class="form-check-input d-none" id="is-external-update"
-                                                name="author-type" value="External">
-                                            <span id="external-text-upd" class="d-none">External</span>
-                                        </label>
-
-                                    </div>
-
-
-                                    <div>
-                                        <table style="width:100%;" class="table table-responsive-lg d-none "
-                                            id="externalfacultyTable">
-                                            <thead>
-                                                <th>Sr.No</th>
-                                                <th>Faculty Name</th>
-                                                <th>Faculty Address</th>
-                                                <th>Faculty Designation</th>
-                                                <th>Employee Id</th>
-                                                <th colspan>Action</th>
-                                            </thead>
-                                            <tbody id="appendFaculty">
-
-
-
-                                            </tbody>
-
-                                        </table>
                                     </div>
                                 </div>
-
-                                <div></div>
-                                <div></div>
-
-                                <table id="faculty-table-list-upd">
-                                    <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none" id="name-class-upd">
-                                        <label for="faculty-name-upd" class="form-label fw-bold">Faculty
-                                            Name</label>
-                                        <input type="text" class="form-control" id="faculty-name-upd" required>
-                                        <span style="color:red;" id="facultyInsertError"></span>
-                                    </div>
-                                    <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none" id="dsg-class-upd">
-                                        <label for="" class="form-label fw-bold">Faculty Designation :</label>
-                                        <input type="text" class="form-control" id="faculty-designation-upd" required>
-                                        <span style="color:red;" id="desInsertError"></span>
-                                    </div>
-                                    <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none" id="id-class-upd">
-                                        <label for="faculty-emp-id-upd" class="form-label fw-bold">Faculty Id
-                                        </label>
-                                        <input type="text" class="form-control" id="faculty-emp-id-upd">
-                                        <span style="color:red;" id="empInsertError"></span>
-
-                                    </div>
-                                    <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none"
-                                        id="address-class-upd">
-                                        <label for="faculty-address" class="form-label fw-bold">Faculty
-                                            Addres</label>
-                                        <input type="text" class="form-control" id="faculty-address-upd" required>
-                                        <span style="color:red;" id="addrInsertError"></span>
-                                    </div>
-
-                                    <div class="form-group col-lg-6 col-md-6 col-sm-12 mb-4 d-none" id="add-btn-upd">
-                                        <button id="insert-details-upd" data-bs-target="#"
-                                            class="btn col-lg-4 col-md-6 col-sm-12 btn-primary" type="button">Insert
-                                            Faculty Details</button>
-                                    </div>
+                                <table id="external-details-table"
+                                    class="table vertical-lines custom-table table-responsive research-pagination re d-none">
+                                    <thead>
+                                        <th class="col-lg-4 col-md-6 col-sm-12 mb-4">faculty Name </th>
+                                        <th class="col-lg-4 col-md-6 col-sm-12 mb-4">Employee Id</th>
+                                        <th class="col-lg-4 col-md-6 col-sm-12 mb-4">Designation</th>
+                                        <th class="col-lg-4 col-md-6 col-sm-12 mb-4">Address</th>
+                                        <th class="col-lg-4 col-md-6 col-sm-12 mb-4">Action</th>
+                                    </thead>
+                                    <tbody id="add-faculty-details">
+                                    </tbody>
                                 </table>
 
-
-
-                                <div id="author-details" class="form-group col-md-12 col-sm-12 mb-4 d-none">
-                                    <div class="author-details-section col-lg-12 col-md-8 col-sm-12">
-                                        <label for="author-name " class="form-label fw-bold col-lg-12"> External Authors
-                                            Details:</label>
-                                        <div id="dynamic-rows" class="col-lg-12 col-md-8 col-sm-12 mb-4">
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="research-pagination d-flex">
-                                    <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none" id="name-class">
-                                        <label for="faculty-name" class="form-label fw-bold">Faculty Name</lable>
-                                            <input type="text" class="form-control" id="faculty-name">
-                                    </div>
-                                    <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none" id="dsg-class">
-                                        <label for="" class="form-label fw-bold">Faculty Designation :</lable>
-                                            <input type="text" class="form-control" id="faculty-designation">
-                                    </div>
-                                    <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none" id="id-class">
-                                        <label for="faculty-emp-id" class="form-label fw-bold">Faculty Id
-                                            </lable>
-                                            <input type="text" class="form-control" id="faculty-emp-id">
-                                    </div>
-                                    <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none" id="address-class">
-                                        <label for="faculty-address" class="form-label fw-bold">Faculty Addres</lable>
-                                            <input type="text" class="form-control" id="faculty-address">
-                                    </div>
-                                </div>
-                                <div class="form-group col-lg-6 col-md-6 col-sm-12 mb-4 d-none" id="add-btn">
-                                    <button id="insert-details" data-bs-target="#"
-                                        class="btn col-lg-4 col-md-6 col-sm-12 btn-primary" type="button">Insert Faculty
-                                        Details</button>
-                                    <button id="add-more-details" data-bs-target="#"
-                                        class="btn col-lg-4 col-md-6 col-sm-12 btn-primary" type="button">Add More
-                                        Details</button>
-                                </div>
-                                <table id="faculty-table-list" class="table d-none">
-
-                                </table>
 
                             </div>
                         </div>
@@ -568,6 +484,23 @@
                         </div>
                         <div class="modal-body">
                             <div class="row">
+
+                                
+                                <!-- NMIMS School -->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="sub-title-text sub-title"> NMIMS School :</div>
+                                        <label class="view-content" id="view-nmims-school"></label>
+                                    </div>
+                                </div>
+
+                                <!-- NMIMS Campus -->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="sub-title-text sub-title"> NMIMS Campus :</div>
+                                        <label class="view-content" id="view-nmims-campus"></label>
+                                    </div>
+                                </div>
                                 <!-- type of invetion -->
                                 <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                                     <div class="box">
@@ -634,22 +567,6 @@
                                     </div>
                                 </div>
 
-                                <!-- NMIMS School -->
-                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                                    <div class="box">
-                                        <div class="sub-title-text sub-title"> NMIMS School :</div>
-                                        <label class="view-content" id="view-nmims-school"></label>
-                                    </div>
-                                </div>
-
-                                <!-- NMIMS Campus -->
-                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                                    <div class="box">
-                                        <div class="sub-title-text sub-title"> NMIMS Campus :</div>
-                                        <label class="view-content" id="view-nmims-campus"></label>
-                                    </div>
-                                </div>
-
                                 <!-- Patent/Invention Publication Number -->
                                 <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                                     <div class="box">
@@ -708,10 +625,10 @@
             <div id="sdg-goals-list" data-goals='<%- JSON.stringify(patentSdgGoalData) %>' style="display: none;"></div>
 
             <div id="patent-status-list" data-status='<%- JSON.stringify(patentStatus) %>' style="display: none;"></div>
-            <div id="school-data-list" data-school='<%- JSON.stringify(nmimsSchoolList) %>' style="display: none;">
+            <!-- <div id="school-data-list" data-school='<%- JSON.stringify(nmimsSchoolList) %>' style="display: none;">
             </div>
             <div id="campus-data-list" data-campus='<%- JSON.stringify(nmimsCampusList) %>' style="display: none;">
-            </div>
+            </div> -->
             <div id="employees-list-data" data-employees='<%- JSON.stringify(internalEmpList) %>'
                 style="display: none;"></div>
 
@@ -732,276 +649,366 @@
                 // const fileView = document.getElementById('file-view');
                 const downloadLink = document.getElementById('downloadLink');
                 const iprDataList = document.getElementById('ipr-data-list');
-                const employeeDropdown = document.getElementById("emp-name");
-                const inventionTypeDropDown = document.getElementById('type-of-invention');
+               
+                const facultyTableList = document.getElementById('faculty-table-list');
+
+                const enternalFacultyType = document.getElementById('is-internal');
+                const externalFacultyType = document.getElementById('is-external-details');
+                const employeeList = document.getElementById('employee-list');
+
+                const invnstiontypeDropDown = document.getElementById('type-of-invention');
                 const schoolDropDown = document.getElementById('nmims-school-list');
                 const campusDropDown = document.getElementById('nmims-campus-list');
                 const sdgGoalsDropDown = document.getElementById('sdg-goals-data');
-                const facultyTableList = document.getElementById('faculty-table-list')
+                const employeeDropdown = document.getElementById("emp-name");
+                const patentStageDropDown = document.getElementById('patent-stage');
 
-                const InsertDetails = document.getElementById('insert-details');
-                const addMoreDetailsButton = document.getElementById("add-more-details");
                 let iprId, rowToBeUpdated;
                 let storedFacultyValue, InternalAuthorValue, externalAuthorValue;
-                let externalFacultyIdArray = [];
+
                 let facultyIdContainer = [];
-                let typeOfInventionsIdContainer = [];
-                let nmimsSchoolIdsContainer = [];
-                let nmimsCampusIdsContainer = [];
+                let externalFacultyData = [];
                 let sdgGoalsIdContainer = [];
-                let storedCampusIds, storedSchoolIds, storedPatentStatusIds, storedInventionsIds
+                let typeOfInventionsIdContainer = [];
+                let patentStatusIdcontainer = [];
+                
+                let storedPatentStatusIds, storedInventionsIds
 
                 addIPRModal.addEventListener('click', function (event) {
-                    if (event.target.tagName === 'BUTTON' && event.target.classList.contains('add-modal') || event.target.classList.contains('plus')) {
-                        submitBtn.classList.remove('d-none');
-                        updateBtn.classList.add('d-none');
-                        document.getElementById('patent-study').innerHTML = 'Invention IPR';
-                        document.querySelector('#ipr-file').classList.remove('d-none');
-                        document.querySelector('#uploadNewSupportDocumentDiv').classList.add('d-none');
-                        document.querySelector('#uploadNewSupportDocument').checked = false;
-                        // document.querySelector('#case-study-doc-edit').classList.add('d-none');
-                        removeErrorMsg()
+                        if (event.target.tagName === 'BUTTON' && event.target.classList.contains('add-modal') || event.target.classList.contains('plus')) {
+                            submitBtn.classList.remove('d-none');
+                            updateBtn.classList.add('d-none');
+                            document.getElementById('patent-study').innerHTML = 'Invention IPR';
+                            document.querySelector('#ipr-file').classList.remove('d-none');
+                            document.querySelector('#uploadNewSupportDocumentDiv').classList.add('d-none');
+                            document.querySelector('#uploadNewSupportDocument').checked = false;
+                            // document.querySelector('#case-study-doc-edit').classList.add('d-none');
+                            removeErrorMsg()
 
 
-                        $('#edited-book-modal').modal({
-                            backdrop: 'static'
-                        });
-                        //d-none download button
-                        InternalAuthorValue = '';
-                        externalAuthorValue = '';
-                        storedFacultyValue = '';
-                        employeeList.classList.add('d-none');
-                        authorDetails.classList.add('d-none');
-                        const IPRDataFiles = document.querySelector('#ipr-data-file-edit');
-                        IPRDataFiles.classList.add('d-none');
-                        externalFacultyIdArray = [];
-                        typeOfInventionsIdContainer = [];
-                        nmimsSchoolIdsContainer = [];
-                        nmimsCampusIdsContainer = [];
-                        const supportingDocuments = document.querySelector('input[type="file"]');
-                        const isInternalFaculty = document.getElementById('is-internal');
-                        const isExternalFaculty = document.getElementById('is-external');
-                        document.getElementById('type-of-invention').value = '';
+                            $('#edited-book-modal').modal({
+                                backdrop: 'static'
+                            });
+                            //d-none download button
+                            InternalAuthorValue = '';
+                            externalAuthorValue = '';
+                            storedFacultyValue = '';
+                            employeeList.classList.add('d-none');
+                            // authorDetails.classList.add('d-none');
+                            const IPRDataFiles = document.querySelector('#ipr-data-file-edit');
+                            IPRDataFiles.classList.add('d-none');
 
-                        // Array.from(campusDropDown.options).forEach(option => {
-                        // option.selected = false;
-                        // });
+                            const supportingDocuments = document.querySelector('input[type="file"]');
+                            const isInternalFaculty = document.getElementById('is-internal');
+                            const isExternalFaculty = document.getElementById('is-external');
 
-                        // Array.from(schoolDropDown.options).forEach(option => {
-                        //     option.selected = false;
-                        // });
+                            // const patentInventionType = document.getElementById('invention-types').dataset.invention;
+                            // const inventionTypeData = JSON.parse(patentInventionType);
 
-                        // Array.from(inventionTypeDropDown.options).forEach(option => {
-                        // option.selected = false;
-                        // });
-
-                        // Hide all items with the 'item' class
-                        const selectItems = document.querySelectorAll('.item');
-                        selectItems.forEach(item => {
-                            item.classList.add('d-none');
-                        });
-
-                        // document.getElementById('nmims-school-list-ts-control').value = '';
-                        // document.getElementById('nmims-school-list').value = '';
-                        // // campusDropDown.removeEventListener("change", handleCampusDropDownList);
-                        document.getElementById('title-of-invention').value = '';
-                        document.getElementById('application-no').value = '';
-                        document.getElementById('patent-filed-date').value = '';
-                        document.getElementById('patent-grant-date').value = '';
-                        document.getElementById('patent-published-date').value = '';
-                        document.getElementById('patent-granted-number').value = '';
-                        document.getElementById('institute-affiliation').value = '';
-                        document.getElementById('nmims-school-list').value = '';
-                        document.getElementById('nmims-campus-list').value = '';
-                        document.getElementById('patent-published-number').value = '';
-                        document.getElementById('applicant-name').value = '';
-                        document.getElementById('patent-stage').value = '';
-
-                        isInternalFaculty.checked = false;
-                        isExternalFaculty.checked = false;
-
-                        const patentStatusList = document.getElementById('patent-status-list').dataset.status;
-                const patentInventionType = document.getElementById('invention-types').dataset.invention;
-                const nmimsSchoolList = document.getElementById('school-data-list').dataset.school;
-                const nmimsCampusList = document.getElementById('campus-data-list').dataset.campus;
-                const sdgGoalsList = document.getElementById('sdg-goals-list').dataset.goals;
-
-                // employeesListData data came from backend
-                const employeesListData = document.getElementById('employees-list-data').dataset.employees;
-                const employeesDataObj = JSON.parse(employeesListData);
-                const patentStatusData = JSON.parse(patentStatusList);
-                const inventionTypeData = JSON.parse(patentInventionType);
-                const schoolDataList = JSON.parse(nmimsSchoolList);
-                const campusDataList = JSON.parse(nmimsCampusList);
-                const sdgGoalsDataList = JSON.parse(sdgGoalsList);
-
-                let employeeListArray = [];
+                            //             // ajax for search bar to search status
+                            // const inventionTypeValue = inventionTypeData.map(invention => ({
+                            //     value: invention.id,
+                            //     text: `  ${invention.name}`
+                            // }));
 
 
-                // ajax for search bar to search status
-                const statusOptions = patentStatusData.map(status => ({
-                    value: status.id,
-                    text: `${status.name}`
-                }));
+                            // Hide all items with the 'item' class
+                            const selectItems = document.querySelectorAll('.item');
+                            selectItems.forEach(item => {
+                                item.classList.add('d-none');
+                            });
 
-                // ajax for search bar to search status
-                const inventionTypeValue = inventionTypeData.map(invention => ({
-                    value: invention.id,
-                    text: `  ${invention.name}`
-                }));
+                            // document.getElementById('nmims-school-list-ts-control').value = '';
+                            // document.getElementById('nmims-school-list').value = '';
+                            // // campusDropDown.removeEventListener("change", handleCampusDropDownList);
+                            document.getElementById('title-of-invention').value = '';
+                            document.getElementById('application-no').value = '';
+                            document.getElementById('patent-filed-date').value = '';
+                            document.getElementById('patent-grant-date').value = '';
+                            document.getElementById('patent-published-date').value = '';
+                            document.getElementById('patent-granted-number').value = '';
+                            document.getElementById('institute-affiliation').value = '';
+                            // document.getElementById('nmims-school-list').value = '';
+                            // document.getElementById('nmims-campus-list').value = '';
+                            document.getElementById('patent-published-number').value = '';
+                            document.getElementById('applicant-name').value = '';
+                            document.getElementById('patent-stage').value = '';
+                            document.getElementById('nmims-campus').value = '';
+                            document.getElementById('nmims-school').value = '';
 
-                // ajax for search bar to search status
-                const selectedSchool = schoolDataList.map(school => ({
-                    value: school.id,
-                    text: `${school.school_name}`
-                }));
+                            // isInternalFaculty.checked = false;
+                            // isExternalFaculty.checked = false;
 
-                // ajax for search bar to search status
-                const selectedCampus = campusDataList.map(campus => ({
-                    value: campus.id,
-                    text: `${campus.campus_name}`
-                }));
+                            // const patentStatusList = document.getElementById('patent-status-list').dataset.status;
+                            // const patentInventionType = document.getElementById('invention-types').dataset.invention;
+                            // const nmimsSchoolList = document.getElementById('school-data-list').dataset.school;
+                            // const nmimsCampusList = document.getElementById('campus-data-list').dataset.campus;
+                            // const sdgGoalsList = document.getElementById('sdg-goals-list').dataset.goals;
 
-                // ajax for search bar to search employee name 
-                const facultyOptions = employeesDataObj.map(faculty => ({
-                    value: faculty.id,
-                    text: ` ${faculty.employee_id}  ${faculty.faculty_name}`
-                }));
+                            // employeesListData data came from backend
+                            const employeesListData = document.getElementById('employees-list-data').dataset.employees;
+                            const employeesDataObj = JSON.parse(employeesListData);
+                            // const patentStatusData = JSON.parse(patentStatusList);
 
-                 // ajax for search bar to search employee name 
-                 const sdgOptions = sdgGoalsDataList.map(sdg => ({
-                            value: sdg.id,
-                            text: ` ${sdg.name}`
-                        }));
+                            // const schoolDataList = JSON.parse(nmimsSchoolList);
+                            // const campusDataList = JSON.parse(nmimsCampusList);
+                            // const sdgGoalsDataList = JSON.parse(sdgGoalsList);
 
-                new TomSelect("#patent-stage", {
-                    options: statusOptions,
-                    placeholder: "Select Options",
-                    plugins: ['remove_button'],
-                    hidePlaceholder: true
-                    ,
-                    create: false,
-                    onItemAdd: function () {
-                        this.setTextboxValue('');
-                        this.refreshOptions();
-                    },
-                    render: {
-                        option: function (data, escape) {
-                            return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
-                        },
-                        item: function (data, escape) {
-                            return '<div>' + escape(data.text) + '</div>';
-                        }
-                    }
-                });
+                            // let employeeListArray = [];
 
-                new TomSelect("#type-of-invention", {
-                    options: inventionTypeValue,
-                    placeholder: "Select Options",
-                    plugins: ['remove_button'],
-                    hidePlaceholder: true,
-                    create: false,
-                    onItemAdd: function () {
-                        this.setTextboxValue('');
-                        this.refreshOptions();
-                    },
-                    render: {
-                        option: function (data, escape) {
-                            return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
-                        },
-                        item: function (data, escape) {
-                            return '<div>' + escape(data.text) + '</div>';
-                        }
-                    }
-                });
 
-                new TomSelect("#nmims-campus-list", {
-                    options: selectedCampus,
-                    placeholder: "Select Options",
-                    hidePlaceholder: true,
-                    hidePlaceholder: true,
-                    create: false,
-                    plugins: ['remove_button'],
-                    onItemAdd: function () {
-                        this.setTextboxValue('');
-                        this.refreshOptions();
-                    },
-                    render: {
-                        option: function (data, escape) {
-                            return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
-                        },
-                        item: function (data, escape) {
-                            return '<div>' + escape(data.text) + '</div>';
-                        }
-                    }
-                });
+                            // ajax for search bar to search status
+                            // const statusOptions = patentStatusData.map(status => ({
+                            //     value: status.id,
+                            //     text: `${status.name}`
+                            // }));
 
-                new TomSelect("#nmims-school-list", {
-                    options: selectedSchool,
-                    placeholder: "Select Options",
-                    plugins: ['remove_button'],
-                    hidePlaceholder: true
-                    ,
-                    create: false,
-                    onItemAdd: function () {
-                        this.setTextboxValue('');
-                        this.refreshOptions();
-                    },
-                    render: {
-                        option: function (data, escape) {
-                            return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
-                        },
-                        item: function (data, escape) {
-                            return '<div>' + escape(data.text) + '</div>';
-                        }
-                    }
-                });
 
-                new TomSelect("#emp-name", {
-                    options: facultyOptions,
-                    placeholder: "Select Options",
-                    hidePlaceholder: true,
-                    create: false,
-                    plugins: ['remove_button'],
-                    onItemAdd: function () {
-                        this.setTextboxValue('');
-                        this.refreshOptions();
-                    },
-                    render: {
-                        option: function (data, escape) {
-                            return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
-                        },
-                        item: function (data, escape) {
-                            return '<div>' + escape(data.text) + '</div>';
-                        }
-                    }
-                });
-                
-               
-                 // Initialize TomSelect dropdown with options containing id and faculty_name
-                 new TomSelect("#sdg-goals-data", {
-                            options: sdgOptions,
-                            placeholder: "Select SDG Goals",
-                            hidePlaceholder: true,
-                            create: false,
-                            plugins: ['remove_button'],
-                            onItemAdd: function () {
-                                this.setTextboxValue('');
-                                this.refreshOptions();
-                            },
-                            render: {
-                                option: function (data, escape) {
-                                    return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+
+                            // ajax for search bar to search status
+                            // const selectedSchool = schoolDataList.map(school => ({
+                            //     value: school.id,
+                            //     text: `${school.school_name}`
+                            // }));
+
+                            // ajax for search bar to search status
+                            // const selectedCampus = campusDataList.map(campus => ({
+                            //     value: campus.id,
+                            //     text: `${campus.campus_name}`
+                            // }));
+
+                            // ajax for search bar to search employee name 
+                            const facultyOptions = employeesDataObj.map(faculty => ({
+                                value: faculty.id,
+                                text: ` ${faculty.employee_id}  ${faculty.faculty_name}`
+                            }));
+
+                            // ajax for search bar to search employee name 
+                            // const sdgOptions = sdgGoalsDataList.map(sdg => ({
+                            //             value: sdg.id,
+                            //             text: ` ${sdg.name}`
+                            //         }));
+
+                            // new TomSelect("#patent-stage", {
+                            //         options: statusOptions,
+                            //         placeholder: "Select Options",
+                            //         plugins: ['remove_button'],
+                            //         hidePlaceholder: true
+                            //         ,
+                            //         create: false,
+                            //         onItemAdd: function () {
+                            //             this.setTextboxValue('');
+                            //             this.refreshOptions();
+                            //         },
+                            //         render: {
+                            //             option: function (data, escape) {
+                            //                 return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                            //             },
+                            //             item: function (data, escape) {
+                            //                 return '<div>' + escape(data.text) + '</div>';
+                            //             }
+                            //         }
+                            //     });
+
+                            // new TomSelect("#type-of-invention", {
+                            //         options: inventionTypeValue,
+                            //         placeholder: "Select Options",
+                            //         plugins: ['remove_button'],
+                            //         hidePlaceholder: true,
+                            //         create: false,
+                            //         onItemAdd: function () {
+                            //             this.setTextboxValue('');
+                            //             this.refreshOptions();
+                            //         },
+                            //         render: {
+                            //             option: function (data, escape) {
+                            //                 return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                            //             },
+                            //             item: function (data, escape) {
+                            //                 return '<div>' + escape(data.text) + '</div>';
+                            //             }
+                            //         }
+                            //     });
+
+                            // new TomSelect("#nmims-campus-list", {
+                            //         options: selectedCampus,
+                            //         placeholder: "Select Options",
+                            //         hidePlaceholder: true,
+                            //         hidePlaceholder: true,
+                            //         create: false,
+                            //         plugins: ['remove_button'],
+                            //         onItemAdd: function () {
+                            //             this.setTextboxValue('');
+                            //             this.refreshOptions();
+                            //         },
+                            //         render: {
+                            //             option: function (data, escape) {
+                            //                 return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                            //             },
+                            //             item: function (data, escape) {
+                            //                 return '<div>' + escape(data.text) + '</div>';
+                            //             }
+                            //         }
+                            //     });
+
+                            // new TomSelect("#nmims-school-list", {
+                            //         options: selectedSchool,
+                            //         placeholder: "Select Options",
+                            //         plugins: ['remove_button'],
+                            //         hidePlaceholder: true
+                            //         ,
+                            //         create: false,
+                            //         onItemAdd: function () {
+                            //             this.setTextboxValue('');
+                            //             this.refreshOptions();
+                            //         },
+                            //         render: {
+                            //             option: function (data, escape) {
+                            //                 return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                            //             },
+                            //             item: function (data, escape) {
+                            //                 return '<div>' + escape(data.text) + '</div>';
+                            //             }
+                            //         }
+                            //     });
+
+                            const patentInventionType = document.getElementById('invention-types').dataset.invention;
+                            const inventionTypeData = JSON.parse(patentInventionType);
+
+                            // ajax for search bar to search status
+                            const inventionTypeValue = inventionTypeData.map(invention => ({
+                                value: invention.id,
+                                text: `  ${invention.name}`
+                            }));
+
+                            new TomSelect("#type-of-invention", {
+                                options: inventionTypeValue,
+                                placeholder: "Select Options",
+                                hidePlaceholder: true,
+                                create: false,
+                                plugins: ['remove_button'],
+                                onItemAdd: function () {
+                                    this.setTextboxValue('');
+                                    this.refreshOptions();
                                 },
-                                item: function (data, escape) {
-                                    return '<div>' + escape(data.text) + '</div>';
+                                render: {
+                                    option: function (data, escape) {
+                                        return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                                    },
+                                    item: function (data, escape) {
+                                        return '<div>' + escape(data.text) + '</div>';
+                                    }
                                 }
-                            }
-                        });
-                        
+                            });
 
-                    }
-                })
+
+                            const patentStatusList = document.getElementById('patent-status-list').dataset.status;
+
+                            const patentStatusData = JSON.parse(patentStatusList);
+
+                            // ajax for search bar to search status
+                            const statusOptions = patentStatusData.map(status => ({
+                                value: status.id,
+                                text: `${status.name}`
+                            }));
+
+                            new TomSelect("#patent-stage", {
+                                options: statusOptions,
+                                placeholder: "Select patent status",
+                                hidePlaceholder: true,
+                                create: false,
+                                plugins: ['remove_button'],
+                                onItemAdd: function () {
+                                    this.setTextboxValue('');
+                                    this.refreshOptions();
+                                },
+                                render: {
+                                    option: function (data, escape) {
+                                        return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                                    },
+                                    item: function (data, escape) {
+                                        return '<div>' + escape(data.text) + '</div>';
+                                    }
+                                }
+                            });
+
+
+                            const sdgGoalsList = document.getElementById('sdg-goals-list').dataset.goals;
+
+                            const sdgGoalsDataList = JSON.parse(sdgGoalsList);
+
+                            // ajax for search bar to search employee name 
+                            const sdgOptions = sdgGoalsDataList.map(sdg => ({
+                                value: sdg.id,
+                                text: ` ${sdg.name}`
+                            }));
+
+
+                            new TomSelect("#sdg-goals-data", {
+                                options: sdgOptions,
+                                placeholder: "Select SDG Goals",
+                                hidePlaceholder: true,
+                                create: false,
+                                plugins: ['remove_button'],
+                                onItemAdd: function () {
+                                    this.setTextboxValue('');
+                                    this.refreshOptions();
+                                },
+                                render: {
+                                    option: function (data, escape) {
+                                        return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                                    },
+                                    item: function (data, escape) {
+                                        return '<div>' + escape(data.text) + '</div>';
+                                    }
+                                }
+                            });
+
+                            new TomSelect("#emp-name", {
+                                options: facultyOptions,
+                                placeholder: "Select Options",
+                                hidePlaceholder: true,
+                                create: false,
+                                plugins: ['remove_button'],
+                                onItemAdd: function () {
+                                    this.setTextboxValue('');
+                                    this.refreshOptions();
+                                },
+                                render: {
+                                    option: function (data, escape) {
+                                        return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                                    },
+                                    item: function (data, escape) {
+                                        return '<div>' + escape(data.text) + '</div>';
+                                    }
+                                }
+                            });
+
+
+                            // Initialize TomSelect dropdown with options containing id and faculty_name
+                            // new TomSelect("#sdg-goals-data", {
+                            //     options: sdgOptions,
+                            //     placeholder: "Select SDG Goals",
+                            //     hidePlaceholder: true,
+                            //     create: false,
+                            //     plugins: ['remove_button'],
+                            //     onItemAdd: function () {
+                            //         this.setTextboxValue('');
+                            //         this.refreshOptions();
+                            //     },
+                            //     render: {
+                            //         option: function (data, escape) {
+                            //             return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                            //         },
+                            //         item: function (data, escape) {
+                            //             return '<div>' + escape(data.text) + '</div>';
+                            //         }
+                            //     }
+                            // });
+
+
+                        }
+                    })
 
                 const insertIPRforms = async (url) => {
                     const IPRData = new FormData();
@@ -1015,18 +1022,17 @@
                         IPRData.append('supportingDocuments', iprFilesData[i]);
                     }
 
-                    const inventionTypeArrayObject = typeOfInventionsIdContainer[typeOfInventionsIdContainer.length - 1];
-                    const inventionTypeContainer = JSON.stringify(inventionTypeArrayObject);
-                    console.log('inventionTypeContainer ====>>>>', inventionTypeContainer)
-                    const nmimsSchoolArrayObject = nmimsSchoolIdsContainer[nmimsSchoolIdsContainer.length - 1];
-                    const nmimsCampusArrayObject = nmimsCampusIdsContainer[nmimsCampusIdsContainer.length - 1];
-                    const nmimsSchoolIds = JSON.stringify(nmimsSchoolArrayObject);
-                    const nmimsCampusIds = JSON.stringify(nmimsCampusArrayObject);
-                    console.log('nmimsSchoolIds ===>>>>', nmimsSchoolIds);
-                    const sdgGoalsOjectArray = sdgGoalsIdContainer[sdgGoalsIdContainer.length - 1];
+
+                    const sdgGoalsOjectArray = sdgGoalsIdContainer[sdgGoalsIdContainer.length - 1]
+
                     const sdgGoalsContainer = sdgGoalsOjectArray ? JSON.stringify(sdgGoalsOjectArray) : null;
                     console.log('sdgGoalsContainer ===>>>>', sdgGoalsContainer);
+                    // patentSubmissionsData.append('sdgGoalsContainer', sdgGoalsContainer);
 
+                    const inventionTypeArrayObject = typeOfInventionsIdContainer[typeOfInventionsIdContainer.length - 1];
+                    const inventionTypeContainer = JSON.stringify(inventionTypeArrayObject);
+                    console.log('inventionTypeContainer ====>>>>', inventionTypeContainer);
+                    // patentSubmissionsData.append('typeOfInvention', inventionTypeContainer);
 
                     const titleOfInvention = document.getElementById('title-of-invention').value;
                     const selectPatentStatus = document.getElementById('patent-stage').value;
@@ -1038,15 +1044,27 @@
                     const patentGrantedNo = document.getElementById('patent-granted-number').value;
                     const instituteAffiliation = document.getElementById('institute-affiliation').value;
                     const applicantName = document.getElementById('applicant-name').value;
+                    const nmimsCampus = document.getElementById('nmims-campus').value;
+                    const nmimsSchool = document.getElementById('nmims-school').value;
 
                     const investorDetails = document.querySelector('input[name="investor-details"]:checked');
-                    //function call
-                    await insertFacultyNameString(investorDetails, IPRData);
 
-                    IPRData.append('nmimsSchoolIds', nmimsSchoolIds);
-                    IPRData.append('nmimsCampusIds', nmimsCampusIds);
-                    IPRData.append('typeOfInvention', inventionTypeContainer);
-                    IPRData.append('sdgGoalsContainer', sdgGoalsContainer);
+                    let externalFacultyDetailsRow = document.querySelectorAll('.external-faculty-details');
+                    let externalFacultyDetails = [];
+
+                    externalFacultyDetailsRow.forEach((field, index) => {
+                        if (field.value !== '') {
+                            externalFacultyDetails.push(field.value);
+                        }
+                    });
+
+                    const facultyIdsArray = facultyIdContainer ? facultyIdContainer[facultyIdContainer.length - 1] : null;
+                    const facultyContainer = facultyIdsArray ? JSON.stringify(facultyIdsArray) : null;
+
+
+                    IPRData.append('facultyContainer', facultyContainer);
+                    IPRData.append('nmimsCampus', nmimsCampus);
+                    IPRData.append('nmimsSchool', nmimsSchool);
                     IPRData.append('titleOfInvention', titleOfInvention);
                     IPRData.append('patentStage', selectPatentStatus);
                     IPRData.append('applicationNum', applicationNum);
@@ -1057,7 +1075,10 @@
                     IPRData.append('patentGrantedNo', patentGrantedNo);
                     IPRData.append('instituteAffiliation', instituteAffiliation);
                     IPRData.append('applicantName', applicantName);
-
+                    IPRData.append('externalFacultyDetails', JSON.stringify(externalFacultyDetails));
+                    IPRData.append('inventionTypeContainer', JSON.stringify(inventionTypeArrayObject)); 
+                    IPRData.append('sdgGoalsContainer', JSON.stringify(sdgGoalsOjectArray));
+                    
                     // fetch api call
                     fetch(url, {
                         method: 'POST',
@@ -1112,7 +1133,9 @@
                                     allowOutsideClick: false,
                                     confirmButtonColor: "#DD6B55"
                                     // timer: 1500
-                                }).then(() => {
+
+                                })
+                                .then(() => {
                                     document.location.reload()
                                 });
                             }
@@ -1153,7 +1176,7 @@
                 submitBtn.addEventListener('click', async () => {
                     const isValid = validateRequiredFormFields(submitBtn);
                     const internalAuthor = document.getElementById('is-internal');
-                    const externalAuthor = document.getElementById('is-external');
+                    const externalAuthor = document.getElementById('is-external-details');
                     const patentFiledDate = document.getElementById('patent-filed-date').value;
                     const patentGrantDate = document.getElementById('patent-grant-date').value;
                     const patentPublishedDate = document.getElementById('patent-published-date').value;
@@ -1209,58 +1232,12 @@
 
                         iprId = rowToBeUpdated.getAttribute('data-ipr-id');
 
-                        console.log('ipr id ', iprId)
-
-                        let isExternalUpd = document.getElementById('is-external')
-                        let isExternalUpdNew = document.getElementById('is-external-update')
-
-                        let text = document.getElementById('external-text');
-                        let textnew = document.getElementById('external-text-upd');
-
-                        isExternalUpd.classList.add('d-none');
-                        isExternalUpdNew.classList.remove('d-none');
-
-                        text.classList.add('d-none');
-                        textnew.classList.remove('d-none');
-
-                        document.getElementById('name-class').classList.add('d-none');
-                        document.getElementById('dsg-class').classList.add('d-none');
-                        document.getElementById('id-class').classList.add('d-none');
-                        document.getElementById('address-class').classList.add('d-none');
-                        document.getElementById('add-btn').classList.add('d-none');
-
-                        let externalFacultyDetails = await fetchFacultyData('<%- BASE_URL %>research/external/facultyDataForIPR');
-                        console.log('faculty JSON', JSON.stringify(externalFacultyDetails.facultyData))
-
-                        console.log('patentId ankit ====>>>>>', iprId)
-                        let externalFaculty = externalFacultyDetails.facultyData.filter(fdata => iprId == fdata.ipr_id).map(facultyData => facultyData);
-                        console.log('new external faculty ', JSON.stringify(externalFaculty))
-
-                        let appendFaculty = document.getElementById('appendFaculty');
-                        appendFaculty.innerHTML = ''
-
-
-                        externalFaculty.forEach((ef, index) => {
-                            let htmlData = `<tr data-facultyId = ${ef.id}>
-                            
-                        <td>${index + 1}</td>
-                        <td><input id="updateFacultyName" type="text" value="${ef.faculty_name}" /></br><span style="color:red;" id='facultyUpdError'></span></td>
-                        <td ><input id="updateFacultyAddr" type="text" value="${ef.address}" /></br><span style="color:red;" id='addrUpdError'></span></td>
-                        <td ><input id="updateFacultyDes" type="text" value="${ef.designation}" /></br><span style="color:red;" id='desUpdError'></span></td>
-                        <td ><input id="updateFacultyId" type="text" value="${ef.employee_id}" /></br><span style="color:red;" id='empUpdError'></span></td>
-                        <td><button class="btn btn-primary updateFaculty">Update</button></td>
-                        </tr>`
-
-                            appendFaculty.insertAdjacentHTML('beforeEnd', htmlData);
-                        })
-
-
+                        console.log('ipr id ', iprId);
 
                         submitBtn.classList.add('d-none');
                         updateBtn.classList.remove('d-none');
                         document.getElementById('patent-study').innerHTML = 'Invention IPR Edit';
                         employeeList.classList.add('d-none');
-                        authorDetails.classList.add('d-none');
                         document.querySelector('#ipr-file').classList.add('d-none');
                         document.querySelector('#uploadNewSupportDocumentDiv').classList.remove('d-none');
 
@@ -1268,14 +1245,12 @@
                             backdrop: 'static'
                         });
 
-                        InternalAuthorValue = '';
-                        externalAuthorValue = '';
-                        storedFacultyValue = '';
                         removeErrorMsg();
                         console.log('rowToBeUpdated in siode edit ====>>>', rowToBeUpdated);
 
                         // function call for download button
                         setFileNameAttributeToBeDownload(rowToBeUpdated);
+
                         console.log('Id For Updation', iprId);
                         const typeOfInvention = document.getElementById('type-of-invention')
                         const titleOfInvention = document.getElementById('title-of-invention');
@@ -1295,16 +1270,9 @@
                         const authorTable = rowToBeUpdated.getAttribute('data-author-table');
                         console.log('authorTable ====>>>', authorTable)
                         console.log('investorDetailsString ====>>>', investorDetailsString)
-                        if (authorTable === 'internalEmpList') {
-                            internalAuthor.checked = true;
-                        }
-                        else {
-                            externalAuthor.checked = true;
-                        }
+
                         const patentStatusList = document.getElementById('patent-status-list').dataset.status;
                         const patentInventionType = document.getElementById('invention-types').dataset.invention;
-                        const nmimsSchoolList = document.getElementById('school-data-list').dataset.school;
-                        const nmimsCampusList = document.getElementById('campus-data-list').dataset.campus;
                         const sdgGoalsList = document.getElementById('sdg-goals-list').dataset.goals;
 
                         // employeesListData data came from backend
@@ -1312,46 +1280,23 @@
                         const employeesDataObj = JSON.parse(employeesListData);
                         const patentStatusData = JSON.parse(patentStatusList);
                         const inventionTypeData = JSON.parse(patentInventionType);
-                        const schoolDataList = JSON.parse(nmimsSchoolList);
-                        const campusDataList = JSON.parse(nmimsCampusList);
+                        // const schoolDataList = JSON.parse(nmimsSchoolList);
+                        // const campusDataList = JSON.parse(nmimsCampusList);
                         const sdgGoalsDataList = JSON.parse(sdgGoalsList);
-                        const schoolIdsArray = rowToBeUpdated.getAttribute('data-school-ids').split(',').map(str => parseInt(str.trim(), 10));
-                        console.log('schoolIdsArray ===>>>>', schoolIdsArray);
-                        const campusIdsArray = rowToBeUpdated.getAttribute('data-campus-ids').split(',').map(str => parseInt(str.trim(), 10));
                         const patentStatusIdArr = rowToBeUpdated.getAttribute('data-status-ids').split(',').map(str => parseInt(str.trim(), 10));
                         const sdgGoalsIdArray = rowToBeUpdated.getAttribute('data-sdg-goals-ids').split(',').map(str => parseInt(str.trim(), 10));
                         const internalFaculyIdsArray = rowToBeUpdated.getAttribute('data-internal-faculty-ids').split(',').map(str => parseInt(str.trim(), 10));
-                        const inventionTypeIdsArray =rowToBeUpdated.getAttribute('data-invention-ids').split(',').map(str => parseInt(str.trim(), 10));
+                        const inventionTypeIdsArray = rowToBeUpdated.getAttribute('data-invention-ids').split(',').map(str => parseInt(str.trim(), 10));
 
                         let employeeListArray = [];
 
-                        let schoolArr = [];
-                        let cmpArray = [];
                         let statusArr = [];
                         let inventionArr = [];
                         let sdgArr = [];
                         let internalArr = [];
 
-                        //school array list push
-                        Array.from(schoolDataList).forEach(data => {
-                            Array.from(schoolIdsArray).forEach(sd => {
-                                if (data.id == sd) {
-                                    schoolArr.push(data.id)
-                                }
-                            })
-                        })
-
-                        //school array list push
-                        Array.from(campusDataList).forEach(data => {
-                            Array.from(campusIdsArray).forEach(cmp => {
-                                if (data.id == cmp) {
-                                    cmpArray.push(data.id)
-                                }
-                            })
-                        })
-
-                         //sdgGoalsDataList array list push
-                         Array.from(sdgGoalsDataList).forEach(data => {
+                        //sdgGoalsDataList array list push
+                        Array.from(sdgGoalsDataList).forEach(data => {
                             Array.from(sdgGoalsIdArray).forEach(sdg => {
                                 if (data.id == sdg) {
                                     sdgArr.push(data.id)
@@ -1359,8 +1304,8 @@
                             })
                         })
 
-                         //patent status array list push
-                         Array.from(patentStatusData).forEach(data => {
+                        //patent status array list push
+                        Array.from(patentStatusData).forEach(data => {
                             Array.from(patentStatusIdArr).forEach(status => {
                                 if (data.id == status) {
                                     statusArr.push(data.id)
@@ -1368,8 +1313,8 @@
                             })
                         })
 
-                         //school array list push
-                         Array.from(inventionTypeData).forEach(data => {
+                        //invention type array list push
+                        Array.from(inventionTypeData).forEach(data => {
                             Array.from(inventionTypeIdsArray).forEach(inv => {
                                 if (data.id == inv) {
                                     inventionArr.push(data.id)
@@ -1377,8 +1322,8 @@
                             })
                         })
 
-                         //employee array list push
-                         Array.from(employeesDataObj).forEach(data => {
+                        //employee array list push
+                        Array.from(employeesDataObj).forEach(data => {
                             Array.from(internalFaculyIdsArray).forEach(intrnl => {
                                 if (data.id == intrnl) {
                                     internalArr.push(data.id)
@@ -1386,18 +1331,6 @@
                             })
                         })
 
-
-
-                        console.log('schoolArr ====>>>>>', schoolArr);
-                        const selectedSchool = schoolDataList.map(school => ({
-                            value: school.id,
-                            text: `${school.school_name}`
-                        }));
-
-                        const selectedCampus = campusDataList.map(campus => ({
-                            value: campus.id,
-                            text: `${campus.campus_name}`
-                        }));
 
                         // ajax for search bar to search status
                         const statusOptions = patentStatusData.map(status => ({
@@ -1423,11 +1356,155 @@
                             text: ` ${sdg.name}`
                         }));
 
-                        new TomSelect("#nmims-school-list", {
-                            options: selectedSchool,
-                            items: schoolArr,
-                            // placeholder : "Select Options",
+
+                       const iprStatus =  new TomSelect("#patent-stage", {
+                            options: statusOptions,
+                            items: statusArr,
+                            // placeholder: "Select Options",
+                            plugins: ['remove_button'],
                             hidePlaceholder: true,
+                            create: false,
+                            onItemAdd: function () {
+                                this.setTextboxValue('');
+                                this.refreshOptions();
+                            },
+                            render: {
+                                option: function (data, escape) {
+                                    return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                                },
+                                item: function (data, escape) {
+                                    return '<div>' + escape(data.text) + '</div>';
+                                }
+                            },
+                            onDelete: function (values) {
+                                console.log('Remove button clicked :::::', values);
+
+                                const message = values.length > 1
+                                    ? `Are you sure you want to remove these ${values.length} items?`
+                                    : `Are you sure you want to remove "${values[0]}"?`;
+
+                                Swal.fire({
+                                    title: 'Confirm Deletion',
+                                    text: message,
+                                    icon: 'warning',
+                                    showCancelButton: true,
+                                    confirmButtonColor: '#3085d6',
+                                    cancelButtonColor: '#d33',
+                                    confirmButtonText: 'Yes, delete it!'
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        fetch('<%- BASE_URL %>research/IPR/patent-status/delete', {
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type': 'application/json'
+                                            },
+                                            body: JSON.stringify({ internalId: values, iprId: iprId })
+                                        })
+                                            .then(response => response.json())
+                                            .then(data => {
+                                                console.log('data ====>>>>>>>', data);
+                                                if (data.status === "Done") {
+                                                    Swal.fire(
+                                                        'Deleted!',
+                                                        'Your item(s) has been deleted.',
+                                                        'success'
+                                                    );
+
+                                                    values.forEach(value => {
+                                                        iprStatus.removeOption(value);
+                                                    });
+                                                }
+                                            })
+                                            .catch(error => {
+                                                Swal.fire(
+                                                    'Error!',
+                                                    'There was a problem with the delete operation: ' + error.message,
+                                                    'error'
+                                                );
+                                            });
+                                    }
+                                });
+
+                                return false;
+                            }
+                        });
+
+                       const iprInventionType =  new TomSelect("#type-of-invention", {
+                            options: inventionTypeValue,
+                            // placeholder: "Select Options",
+                            items: inventionArr,
+                            plugins: ['remove_button'],
+                            hidePlaceholder: true,
+                            create: false,
+                            onItemAdd: function () {
+                                this.setTextboxValue('');
+                                this.refreshOptions();
+                            },
+                            render: {
+                                option: function (data, escape) {
+                                    return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                                },
+                                item: function (data, escape) {
+                                    return '<div>' + escape(data.text) + '</div>';
+                                }
+                            },
+                            onDelete: function (values) {
+                                console.log('Remove button clicked :::::', values);
+
+                                const message = values.length > 1
+                                    ? `Are you sure you want to remove these ${values.length} items?`
+                                    : `Are you sure you want to remove "${values[0]}"?`;
+
+                                Swal.fire({
+                                    title: 'Confirm Deletion',
+                                    text: message,
+                                    icon: 'warning',
+                                    showCancelButton: true,
+                                    confirmButtonColor: '#3085d6',
+                                    cancelButtonColor: '#d33',
+                                    confirmButtonText: 'Yes, delete it!'
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        fetch('<%- BASE_URL %>research/IPR/ipr-invention-type/delete', {
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type': 'application/json'
+                                            },
+                                            body: JSON.stringify({ internalId: values, iprId: iprId })
+                                        })
+                                            .then(response => response.json())
+                                            .then(data => {
+                                                console.log('data ====>>>>>>>', data);
+                                                if (data.status === "Done") {
+                                                    Swal.fire(
+                                                        'Deleted!',
+                                                        'Your item(s) has been deleted.',
+                                                        'success'
+                                                    );
+
+                                                    values.forEach(value => {
+                                                        iprInventionType.removeOption(value);
+                                                    });
+                                                }
+                                            })
+                                            .catch(error => {
+                                                Swal.fire(
+                                                    'Error!',
+                                                    'There was a problem with the delete operation: ' + error.message,
+                                                    'error'
+                                                );
+                                            });
+                                    }
+                                });
+
+                                return false;
+                            }
+                        });
+
+                        const iprInternalFaculty =  new TomSelect("#emp-name", {
+                            options: facultyOptions,
+                            // placeholder: "Select Options",
+                            items: internalArr,
                             hidePlaceholder: true,
                             create: false,
                             plugins: ['remove_button'],
@@ -1442,103 +1519,62 @@
                                 item: function (data, escape) {
                                     return '<div>' + escape(data.text) + '</div>';
                                 }
-                            }
-                        });
-
-
-                       
-
-                        new TomSelect("#nmims-campus-list", {
-                            options: selectedCampus,
-                            items: cmpArray,
-                            // placeholder : "Select Options",
-                            hidePlaceholder: true,
-                            hidePlaceholder: true,
-                            create: false,
-                            plugins: ['remove_button'],
-                            onItemAdd: function () {
-                                this.setTextboxValue('');
-                                this.refreshOptions();
                             },
-                            render: {
-                                option: function (data, escape) {
-                                    return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
-                                },
-                                item: function (data, escape) {
-                                    return '<div>' + escape(data.text) + '</div>';
-                                }
+                            onDelete: function (values) {
+                                console.log('Remove button clicked :::::', values);
+
+                                const message = values.length > 1
+                                    ? `Are you sure you want to remove these ${values.length} items?`
+                                    : `Are you sure you want to remove "${values[0]}"?`;
+
+                                Swal.fire({
+                                    title: 'Confirm Deletion',
+                                    text: message,
+                                    icon: 'warning',
+                                    showCancelButton: true,
+                                    confirmButtonColor: '#3085d6',
+                                    cancelButtonColor: '#d33',
+                                    confirmButtonText: 'Yes, delete it!'
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        fetch('<%- BASE_URL %>research/IPR/ipr-internal-faculty/delete', {
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type': 'application/json'
+                                            },
+                                            body: JSON.stringify({ internalId: values, iprId: iprId })
+                                        })
+                                            .then(response => response.json())
+                                            .then(data => {
+                                                console.log('data ====>>>>>>>', data);
+                                                if (data.status === "Done") {
+                                                    Swal.fire(
+                                                        'Deleted!',
+                                                        'Your item(s) has been deleted.',
+                                                        'success'
+                                                    );
+
+                                                    values.forEach(value => {
+                                                        iprInternalFaculty.removeOption(value);
+                                                    });
+                                                }
+                                            })
+                                            .catch(error => {
+                                                Swal.fire(
+                                                    'Error!',
+                                                    'There was a problem with the delete operation: ' + error.message,
+                                                    'error'
+                                                );
+                                            });
+                                    }
+                                });
+
+                                return false;
                             }
                         });
 
-               
-
-                new TomSelect("#patent-stage", {
-                    options: statusOptions,
-                    items: statusArr,
-                    // placeholder: "Select Options",
-                    plugins: ['remove_button'],
-                    hidePlaceholder: true,
-                    create: false,
-                    onItemAdd: function () {
-                        this.setTextboxValue('');
-                        this.refreshOptions();
-                    },
-                    render: {
-                        option: function (data, escape) {
-                            return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
-                        },
-                        item: function (data, escape) {
-                            return '<div>' + escape(data.text) + '</div>';
-                        }
-                    }
-                });
-
-                new TomSelect("#type-of-invention", {
-                    options: inventionTypeValue,
-                    // placeholder: "Select Options",
-                    items: inventionArr,
-                    plugins: ['remove_button'],
-                    hidePlaceholder: true,
-                    create: false,
-                    onItemAdd: function () {
-                        this.setTextboxValue('');
-                        this.refreshOptions();
-                    },
-                    render: {
-                        option: function (data, escape) {
-                            return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
-                        },
-                        item: function (data, escape) {
-                            return '<div>' + escape(data.text) + '</div>';
-                        }
-                    }
-                });
-
-                
-                new TomSelect("#emp-name", {
-                    options: facultyOptions,
-                    // placeholder: "Select Options",
-                    items: internalArr,
-                    hidePlaceholder: true,
-                    create: false,
-                    plugins: ['remove_button'],
-                    onItemAdd: function () {
-                        this.setTextboxValue('');
-                        this.refreshOptions();
-                    },
-                    render: {
-                        option: function (data, escape) {
-                            return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
-                        },
-                        item: function (data, escape) {
-                            return '<div>' + escape(data.text) + '</div>';
-                        }
-                    }
-                });
-                
-               
-                 // Initialize TomSelect dropdown with options containing id and faculty_name
-                 new TomSelect("#sdg-goals-data", {
+                        // Initialize TomSelect dropdown with options containing id and faculty_name
+                        const iprSdgGoals = new TomSelect("#sdg-goals-data", {
                             options: sdgOptions,
                             // placeholder: "Select SDG Goals",
                             items: sdgArr,
@@ -1556,25 +1592,66 @@
                                 item: function (data, escape) {
                                     return '<div>' + escape(data.text) + '</div>';
                                 }
+                            },
+                            onDelete: function (values) {
+                                console.log('Remove button clicked :::::', values);
+
+                                const message = values.length > 1
+                                    ? `Are you sure you want to remove these ${values.length} items?`
+                                    : `Are you sure you want to remove "${values[0]}"?`;
+
+                                Swal.fire({
+                                    title: 'Confirm Deletion',
+                                    text: message,
+                                    icon: 'warning',
+                                    showCancelButton: true,
+                                    confirmButtonColor: '#3085d6',
+                                    cancelButtonColor: '#d33',
+                                    confirmButtonText: 'Yes, delete it!'
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        fetch('<%- BASE_URL %>research/IPR/ipr-sdg-goals/delete', {
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type': 'application/json'
+                                            },
+                                            body: JSON.stringify({ internalId: values, iprId: iprId })
+                                        })
+                                            .then(response => response.json())
+                                            .then(data => {
+                                                console.log('data ====>>>>>>>', data);
+                                                if (data.status === "Done") {
+                                                    Swal.fire(
+                                                        'Deleted!',
+                                                        'Your item(s) has been deleted.',
+                                                        'success'
+                                                    );
+
+                                                    values.forEach(value => {
+                                                        iprSdgGoals.removeOption(value);
+                                                    });
+                                                }
+                                            })
+                                            .catch(error => {
+                                                Swal.fire(
+                                                    'Error!',
+                                                    'There was a problem with the delete operation: ' + error.message,
+                                                    'error'
+                                                );
+                                            });
+                                    }
+                                });
+
+                                return false;
                             }
                         });
 
-                        const campusIdArray = rowToBeUpdated.getAttribute('data-campus-ids');
-                        const schoolIdsArayy = rowToBeUpdated.getAttribute('data-school-ids');
-                        storedPatentStatusIds = rowToBeUpdated.getAttribute('data-status-ids');
-                        const inventionIdsArray = rowToBeUpdated.getAttribute('data-invention-ids');
-                        storedCampusIds = campusIdArray.split(',').map(item => parseInt(item.trim(), 10));
-                        storedSchoolIds = schoolIdsArayy.split(',').map(item => parseInt(item.trim(), 10));
-                        // storedPatentStatusIds = patentStageArray.split(',').map(item => parseInt(item.trim(), 10));
-                        storedInventionsIds = inventionIdsArray.split(',').map(item => parseInt(item.trim(), 10));
-
-                        // console.log('nmimsCampusIds ====>>>>>>', nmimsCampusIds);
-                        // nmimsSchoolIds = rowToBeUpdated.getAttribute('data-school-ids');
-                        // inventionTypesIds = rowToBeUpdated.getAttribute('data-invention-ids');
                         titleOfInvention.value = rowToBeUpdated.querySelector('.title-of-invention').innerText;
                         patentStage.value = rowToBeUpdated.querySelector('.patent-stage').innerText;
                         applicationNum.value = rowToBeUpdated.querySelector('.application-no').innerText;
                         applicantName.value = rowToBeUpdated.querySelector('.applicant-name').innerText;
+                        document.getElementById('nmims-campus').value = rowToBeUpdated.querySelector('.nmims-campus').innerText;
+                        document.getElementById('nmims-school').value = rowToBeUpdated.querySelector('.nmims-school').innerText;
                         const fileDateData = rowToBeUpdated.getAttribute('data-filed-date');
                         const grantDateData = rowToBeUpdated.getAttribute('data-grant-date');
                         const publishedDateData = rowToBeUpdated.getAttribute('data-published-date');
@@ -1593,7 +1670,32 @@
 
 
                         iprDocuments = rowToBeUpdated.getAttribute('data-supporting-documents');
-                        console.log('iprDocuments ==>>>', iprDocuments)
+                        console.log('iprDocuments ==>>>', iprDocuments);
+
+                        fetch('<%- BASE_URL %>research/IPR/external-details', {
+                            method: 'POST',
+                            headers: {
+                                'content-type': 'application/json'
+                            },
+                            body: JSON.stringify({ iprId })
+                        })
+                            .then((Response) => {
+                                return Response.ok ? Response.json() : "There was network issue"
+                            })
+                            .then((data) => {
+                                if (data.status === "Done") {
+                                    console.log('data ====>>>>', data);
+                                    const facultyHeader = ['faculty Name',
+                                        'Employee Id',
+                                        'Designation',
+                                        'Address',
+                                        'Action']
+                                    createTableRows('external-details-table', data.exetrnalData, 'external-faculty-data-details', 'delete-details', facultyHeader)
+                                }
+                            })
+                            .catch((error) => {
+                                console.error('error ===>>>>>', error)
+                            })
 
                         $('#ipr-modal-form').modal('show');
 
@@ -1704,8 +1806,8 @@
                                     // document.getElementById('supporting-document').innerText = data.IPRData.supporting_documents;
                                     document.getElementById('view-institute-affiliation').innerText = data.IPRData.institutional_affiliation;
                                     // document.getElementById('view-investors-details').innerText = data.IPRData;
-                                    document.getElementById('view-nmims-school').innerText = data.IPRData.associated_schools;
-                                    document.getElementById('view-nmims-campus').innerText = data.IPRData.associated_campuses;
+                                    document.getElementById('view-nmims-school').innerText = data.IPRData.nmims_school;
+                                    document.getElementById('view-nmims-campus').innerText = data.IPRData.nmims_campus;
                                     document.getElementById('view-applicant-name').innerText = data.IPRData.applicant_name;
                                     document.getElementById('view-patent-stage').innerText = data.IPRData.patent_stage_statuses;
                                     document.getElementById('view-application-number').innerText = data.IPRData.patent_application_number;
@@ -1794,144 +1896,181 @@
                 });
                 // update function for update the record
                 const updatedIprData = async (url) => {
-                    console.log('clickedd');
-                    // const updatedTypeOfInvention = document.getElementById('type-of-invention').value;
-                    const updatedTitleOfInvention = document.getElementById('title-of-invention').value;
-                    const patentStatus = document.getElementById('patent-stage').value;
-                    const updatedPatentStage = patentStatus !== '' ? patentStatus : storedPatentStatusIds;
-                    const updatedPatentFiledDate = document.getElementById('patent-filed-date').value
-                    const updatedApplicationNum = document.getElementById('application-no').value;
-                    const updatedPatentGrantDate = document.getElementById('patent-grant-date').value;
-                    const updatedApplicantName = document.getElementById('applicant-name').value;
-                    const updatedPatentPublishedDate = document.getElementById('patent-published-date').value;
-                    const updatedPublishedNum = document.getElementById('patent-published-number').value;
-                    // console.log('updatedPublishedNum ===>>>', updatedPublishedNum)
-                    const updatedPatentGrantNum = document.getElementById('patent-granted-number').value;
-                    const updatedIntituteAffiliation = document.getElementById('institute-affiliation').value;
-                    const inventionTypeArrayObject = typeOfInventionsIdContainer.length !== 0 ? typeOfInventionsIdContainer[typeOfInventionsIdContainer.length - 1] : { 'typeOfInventions': storedInventionsIds };
-                    const inventionTypeContainer = JSON.stringify(inventionTypeArrayObject);
-                    // console.log('inventionTypeContainer ====>>>>', inventionTypeContainer);
-                    // console.log('nmimsCampusIds campus id in updated fucntion ==>>>', storedCampusIds);
-                    // console.log('nmimsCampusIdsContainer ===>>>>', nmimsCampusIdsContainer)
-                    const nmimsSchoolArrayObject = nmimsSchoolIdsContainer.length !== 0 ? nmimsSchoolIdsContainer[nmimsSchoolIdsContainer.length - 1] : { 'nmimsSchool': storedSchoolIds };
-                    const nmimsCampusArrayObject = nmimsCampusIdsContainer.length !== 0 ? nmimsCampusIdsContainer[nmimsCampusIdsContainer.length - 1] : { 'nmimsCampus': storedCampusIds };
-                    const nmimsSchoolIds = JSON.stringify(nmimsSchoolArrayObject);
-                    const nmimsCampusIds = JSON.stringify(nmimsCampusArrayObject);
 
-                    const sdgGoalsOjectArray = sdgGoalsIdContainer[sdgGoalsIdContainer.length - 1]
-                    const sdgGoalsContainer = JSON.stringify(sdgGoalsOjectArray);
-                    console.log('sdgGoalsOjectArray ==>>>', sdgGoalsOjectArray)
+                        const updatedIPRData = new FormData();
 
+                        const updatedIPRFiles = document.getElementById('ipr-file');
+                        console.log('updatedIPRFiles ==>>', updatedIPRFiles);
+                        let updatedIprFilesData = updatedIPRFiles.files;
 
-                    const updatedIPRData = new FormData();
-                    // Append the updated values to FormData
-                    const updatedIPRFiles = document.getElementById('ipr-file');
-                    // patentFile
-                    console.log('updatedIPRFiles ==>>', updatedIPRFiles);
-                    let updatedIprFilesData = updatedIPRFiles.files;
-                    console.log('updatediprFilesData ======>>>>', updatedIprFilesData);
-                    updatedIprFilesData ?
-                        Array.from(updatedIprFilesData).forEach(file => {
-                            console.log('file name  ==>>', file.name);
-                            updatedIPRData.append('supportingDocuments', file);
-                        }) :
-                        (updatedIprFilesData = null, updatedIPRData.append('supportingDocuments', updatedIprFilesData));
-                    console.log('iprId ===>>>>>>', iprId)
-                    updatedIPRData.append('iprId', iprId);
-                    updatedIPRData.append('nmimsSchoolIds', nmimsSchoolIds);
-                    updatedIPRData.append('nmimsCampusIds', nmimsCampusIds);
-                    updatedIPRData.append('typeOfInvention', inventionTypeContainer);
-                    updatedIPRData.append('titleOfInvention', updatedTitleOfInvention);
-                    updatedIPRData.append('patentStage', updatedPatentStage);
-                    updatedIPRData.append('sdgGoalsContainer', sdgGoalsContainer);
-                    updatedIPRData.append('applicationNum', updatedApplicationNum);
-                    updatedIPRData.append('patentFiledDate', updatedPatentFiledDate);
-                    updatedIPRData.append('patentGrantDate', updatedPatentGrantDate);
-                    updatedIPRData.append('patentPublishedDate', updatedPatentPublishedDate);
-                    updatedIPRData.append('patentPublishedNumber', updatedPublishedNum);
-                    updatedIPRData.append('patentGrantedNo', updatedPatentGrantNum);
-                    updatedIPRData.append('instituteAffiliation', updatedIntituteAffiliation);
-                    updatedIPRData.append('applicantName', updatedApplicantName);
+                        console.log('updatediprFilesData ======>>>>', updatedIprFilesData);
 
-                    //function call for set the value of radio button 
-                    await updateFacultyNameString(updatedIPRData, storedFacultyValue);
+                        updatedIprFilesData ?
+                            Array.from(updatedIprFilesData).forEach(file => {
+                                console.log('file name  ==>>', file.name);
+                                updatedIPRData.append('supportingDocuments', file);
+                            }) :
+                            (updatedIprFilesData = null, updatedIPRData.append('supportingDocuments', updatedIprFilesData));
+                        console.log('iprId ===>>>>>>', iprId);
 
-                    // fetch api
-                    fetch(url, {
-                        method: 'POST',
-                        body: updatedIPRData
-                    })
-                        .then((result) => {
-                            return result.json();
+                        const sdgGoalsOjectArray = sdgGoalsIdContainer[sdgGoalsIdContainer.length - 1]
+                        const sdgGoalsContainer = sdgGoalsOjectArray ? JSON.stringify(sdgGoalsOjectArray) : null;
 
-                        })
-                        .then((data) => {
-                            if (data.status === 'Done') {
-                                console.log('Updated Data ==> ', data)
-                                console.log('updated data title ===>', data.updatedIPRData.typeOfInvention);
-                                rowToBeUpdated.setAttribute('data-filed-date', data.updatedIPRData.patentFiledDate);
-                                rowToBeUpdated.setAttribute('data-published-date', data.updatedIPRData.patentPublishedDate);
-                                rowToBeUpdated.setAttribute('data-grant-number', data.updatedIPRData.patentGrantedNo)
-                                rowToBeUpdated.setAttribute('data-published-number', data.updatedIPRData.patentPublishedNumber);
-                                rowToBeUpdated.setAttribute('data-institute-affiliation', data.updatedIPRData.instituteAffiliation);
-                                rowToBeUpdated.setAttribute('data-supporting-documents', data.updatedIPRData.iprFilesString);
-                                rowToBeUpdated.setAttribute('data-investor-details', data.investorDetailsString);
-                                // if(updatedIprFilesData){
-                                //     rowToBeUpdated.setAttribute('data-supporting-documents').innerText = data.iprFilesString;
-                                // }
-                                updatedIprFilesData ? rowToBeUpdated.setAttribute('data-supporting-documents', data.iprFilesString) : null;
-                                rowToBeUpdated.querySelector('.type-of-invention').innerText = data.invetionTypeNames;
-                                rowToBeUpdated.querySelector(".title-of-invention").innerText = data.updatedIPRData.titleOfInvention;
-                                rowToBeUpdated.querySelector(".patent-stage").innerText = data.statusTypeName;
-                                rowToBeUpdated.querySelector(".application-no").innerText = data.updatedIPRData.applicationNum
-                                rowToBeUpdated.querySelector(".applicant-name").innerText = data.updatedIPRData.applicantName;
-                                rowToBeUpdated.querySelector(".nmims-school").innerText = data.schoolNames;
-                                rowToBeUpdated.querySelector(".nmims-campus").innerText = data.campusNames;
-                                Swal.fire({
-                                    position: "top-center",
-                                    icon: "success",
-                                    title: `${data.message}`,
-                                    showConfirmButton: true,
-                                    allowOutsideClick: false,
-                                    confirmButtonText: "OK",
-                                    confirmButtonColor: "#DD6B55",
-                                    timer: 1500
-                                });
-                                $('#ipr-modal-form').modal('hide');
+                        console.log('sdgGoalsContainer ===>>>>', sdgGoalsContainer);
+
+                        const inventionTypeArrayObject = typeOfInventionsIdContainer[typeOfInventionsIdContainer.length - 1];
+                        const inventionTypeContainer = JSON.stringify(inventionTypeArrayObject);
+
+                        console.log('inventionTypeContainer ====>>>>', inventionTypeContainer);
+
+                        const titleOfInvention = document.getElementById('title-of-invention').value;
+                        const selectPatentStatus = document.getElementById('patent-stage').value;
+                        const applicationNum = document.getElementById('application-no').value;
+                        const patentFiledDate = document.getElementById('patent-filed-date').value;
+                        const patentGrantDate = document.getElementById('patent-grant-date').value;
+                        const patentPublishedDate = document.getElementById('patent-published-date').value;
+                        const patentPublishedNumber = document.getElementById('patent-published-number').value;
+                        const patentGrantedNo = document.getElementById('patent-granted-number').value;
+                        const instituteAffiliation = document.getElementById('institute-affiliation').value;
+                        const applicantName = document.getElementById('applicant-name').value;
+                        const nmimsCampus = document.getElementById('nmims-campus').value;
+                        const nmimsSchool = document.getElementById('nmims-school').value;
+
+                        const investorDetails = document.querySelector('input[name="investor-details"]:checked');
+
+                        // insert external new details
+                        let externalFacultyDetailsRow = document.querySelectorAll('.external-faculty-details');
+                        let externalFacultyDetails = [];
+
+                        externalFacultyDetailsRow.forEach((field, index) => {
+                            if (field.value !== '') {
+                                externalFacultyDetails.push(field.value);
                             }
-                            else {
-                                const message = data.message;
-                                console.log('data ===>>>', data)
-                                console.log('message ==:::', message);
+                        });
+
+                        //update exeternal details 
+                        const updateExternalDetails = document.querySelectorAll('.external-faculty-data-details');
+                        const updateExternalFacultyData = [];
+
+                        updateExternalDetails.forEach((field, index) => {
+                            if (field.value !== '') {
+                                updateExternalFacultyData.push(field.value);
+                            }
+                            console.log('field ===>>>>>>', field.value);
+                        });
+
+                        console.log('updateExternalFacultyData ====>>>>>>', updateExternalFacultyData)
+
+                        const updateExternalData = updateExternalFacultyData ? JSON.stringify(updateExternalFacultyData) : null;
+                        // internal id container
+                        const facultyIdsArray = facultyIdContainer ? facultyIdContainer[facultyIdContainer.length - 1] : null;
+                        const facultyContainer = facultyIdsArray ? JSON.stringify(facultyIdsArray) : null;
+                        //exetrnal if there then
+                        const externalDataInsert = externalFacultyDetails ? JSON.stringify(externalFacultyDetails) : null;
+                        // invention type ids 
+                        const inventionTypeIds = inventionTypeArrayObject ? JSON.stringify(inventionTypeArrayObject) : null;
+                        //const sdg goals type ids
+                        const sdgGoalsIds = sdgGoalsOjectArray ? JSON.stringify(sdgGoalsOjectArray) : null;
+
+                        updatedIPRData.append('iprId', iprId);
+                        updatedIPRData.append('externalFacultyDetails', externalDataInsert);
+                        updatedIPRData.append('updateExternalData', updateExternalData);
+                        updatedIPRData.append('inventionTypeContainer', inventionTypeIds);
+                        updatedIPRData.append('sdgGoalsContainer', sdgGoalsIds);
+                        updatedIPRData.append('facultyContainer', facultyContainer);
+                        updatedIPRData.append('nmimsCampus', nmimsCampus);
+                        updatedIPRData.append('nmimsSchool', nmimsSchool);
+                        updatedIPRData.append('titleOfInvention', titleOfInvention);
+                        updatedIPRData.append('patentStage', selectPatentStatus);
+                        updatedIPRData.append('applicationNum', applicationNum);
+                        updatedIPRData.append('patentFiledDate', patentFiledDate);
+                        updatedIPRData.append('patentGrantDate', patentGrantDate);
+                        updatedIPRData.append('patentPublishedDate', patentPublishedDate);
+                        updatedIPRData.append('patentPublishedNumber', patentPublishedNumber);
+                        updatedIPRData.append('patentGrantedNo', patentGrantedNo);
+                        updatedIPRData.append('instituteAffiliation', instituteAffiliation);
+                        updatedIPRData.append('applicantName', applicantName);
+
+                        // fetch api
+                        fetch(url, {
+                            method: 'POST',
+                            body: updatedIPRData
+                        })
+                            .then((result) => {
+                                return result.json();
+
+                            })
+                            .then((data) => {
+                                if (data.status === 'Done') {
+                                    console.log('Updated Data ==> ', data)
+                                    // console.log('updated data title ===>', data.updatedIPRData.typeOfInvention);
+                                    // rowToBeUpdated.setAttribute('data-filed-date', data.updatedIPRData.patentFiledDate);
+                                    // rowToBeUpdated.setAttribute('data-published-date', data.updatedIPRData.patentPublishedDate);
+                                    // rowToBeUpdated.setAttribute('data-grant-number', data.updatedIPRData.patentGrantedNo)
+                                    // rowToBeUpdated.setAttribute('data-published-number', data.updatedIPRData.patentPublishedNumber);
+                                    // rowToBeUpdated.setAttribute('data-institute-affiliation', data.updatedIPRData.instituteAffiliation);
+                                    // rowToBeUpdated.setAttribute('data-supporting-documents', data.updatedIPRData.iprFilesString);
+                                    // rowToBeUpdated.setAttribute('data-investor-details', data.investorDetailsString);
+                                    // // if(updatedIprFilesData){
+                                    // //     rowToBeUpdated.setAttribute('data-supporting-documents').innerText = data.iprFilesString;
+                                    // // }
+                                    // updatedIprFilesData ? rowToBeUpdated.setAttribute('data-supporting-documents', data.iprFilesString) : null;
+                                    // rowToBeUpdated.querySelector('.type-of-invention').innerText = data.invetionTypeNames;
+                                    // rowToBeUpdated.querySelector(".title-of-invention").innerText = data.updatedIPRData.titleOfInvention;
+                                    // rowToBeUpdated.querySelector(".patent-stage").innerText = data.statusTypeName;
+                                    // rowToBeUpdated.querySelector(".application-no").innerText = data.updatedIPRData.applicationNum
+                                    // rowToBeUpdated.querySelector(".applicant-name").innerText = data.updatedIPRData.applicantName;
+                                    // rowToBeUpdated.querySelector(".nmims-school").innerText = data.schoolNames;
+                                    // rowToBeUpdated.querySelector(".nmims-campus").innerText = data.campusNames;
+
+                                    $('#ipr-modal-form').modal('hide');
+                                    Swal.fire({
+                                        position: "top-center",
+                                        icon: "success",
+                                        title: `${data.message}`,
+                                        showConfirmButton: true,
+                                        allowOutsideClick: false,
+                                        confirmButtonText: "OK",
+                                        confirmButtonColor: "#DD6B55",
+                                        timer: 1500
+                                    }).then(data => {
+                                        document.location.reload();
+                                    });
+
+                                }
+                                else {
+                                    const message = data.message;
+                                    console.log('data ===>>>', data)
+                                    console.log('message ==:::', message);
+                                    Swal.fire({
+                                        position: "top-center",
+                                        icon: "error",
+                                        title: `${data.errorCode}`,
+                                        color: "red",
+                                        with: "20PX",
+                                        html: `<span style="color: red;">${data.message}</span>`,
+                                        showConfirmButton: true,
+                                        allowOutsideClick: false,
+                                        confirmButtonText: "OK",
+                                        confirmButtonColor: "#DD6B55"
+                                    });
+                                }
+
+                            })
+                            .catch((error) => {
+                                const message = error
                                 Swal.fire({
                                     position: "top-center",
                                     icon: "error",
-                                    title: `${data.errorCode}`,
+                                    title: `${message}`,
                                     color: "red",
-                                    with: "20PX",
-                                    html: `<span style="color: red;">${data.message}</span>`,
                                     showConfirmButton: true,
                                     allowOutsideClick: false,
                                     confirmButtonText: "OK",
                                     confirmButtonColor: "#DD6B55"
                                 });
-                            }
-
-                        })
-                        .catch((error) => {
-                            const message = error
-                            Swal.fire({
-                                position: "top-center",
-                                icon: "error",
-                                title: `${message}`,
-                                color: "red",
-                                showConfirmButton: true,
-                                allowOutsideClick: false,
-                                confirmButtonText: "OK",
-                                confirmButtonColor: "#DD6B55"
-                            });
-                        })
-                };
+                            })
+                    };
 
                 updateBtn.addEventListener('click', async () => {
                     formGroup = updateBtn.closest('.validate-input')
@@ -1988,7 +2127,6 @@
                     }
                 })
 
-
                 //  set file string into button
                 function setFileNameInButtons(data) {
                     console.log('data ==>>>', data);
@@ -2041,464 +2179,90 @@
 
                 // set string file value into button
                 function setFileNameAttributeToBeDownload(data) {
-                    console.log('data row in side function ===>>', data);
-                    const IPRDataFiles = document.getElementById('ipr-data-file-edit');
-                    IPRDataFiles.classList.remove('d-none');
-                    const IPRDataString = data.getAttribute('data-supporting-documents');
+                        console.log('data row in side function ===>>', data);
+                        const IPRDataFiles = document.getElementById('ipr-data-file-edit');
+                        IPRDataFiles.classList.remove('d-none');
+                        const IPRDataString = data.getAttribute('data-supporting-documents');
 
-                    // setAttribute into button
-                    IPRDataFiles.setAttribute('data-filename', IPRDataString);
+                        // setAttribute into button
+                        IPRDataFiles.setAttribute('data-filename', IPRDataString);
 
-                };
+                    };
 
-                // EVENT LIST THAT WILL USE USE TO OPEN DROP DOWN LIST  
-                const externaltype = document.querySelector('.external-faculty');
-                const enternalFacultyType = document.getElementById('is-internal');
-                const externalFacultyType = document.getElementById('is-external');
-                const employeeList = document.getElementById('employee-list');
-                const authorDetails = document.getElementById('author-details');
-
-                let additionalDetails = [];
-
-                const enternalText = document.getElementById('enternal-text');
-                // const patentStatusList = document.getElementById('patent-status-list').dataset.status;
-                // const patentInventionType = document.getElementById('invention-types').dataset.invention;
-                // const nmimsSchoolList = document.getElementById('school-data-list').dataset.school;
-                // const nmimsCampusList = document.getElementById('campus-data-list').dataset.campus;
-                // const sdgGoalsList = document.getElementById('sdg-goals-list').dataset.goals;
-
-                // // employeesListData data came from backend
-                // const employeesListData = document.getElementById('employees-list-data').dataset.employees;
-                // const employeesDataObj = JSON.parse(employeesListData);
-                // const patentStatusData = JSON.parse(patentStatusList);
-                // const inventionTypeData = JSON.parse(patentInventionType);
-                // const schoolDataList = JSON.parse(nmimsSchoolList);
-                // const campusDataList = JSON.parse(nmimsCampusList);
-                // const sdgGoalsDataList = JSON.parse(sdgGoalsList);
-
-                // let employeeListArray = [];
-
-
-                // // ajax for search bar to search status
-                // const statusOptions = patentStatusData.map(status => ({
-                //     value: status.id,
-                //     text: `${status.name}`
-                // }));
-
-                // // ajax for search bar to search status
-                // const inventionTypeValue = inventionTypeData.map(invention => ({
-                //     value: invention.id,
-                //     text: `  ${invention.name}`
-                // }));
-
-                // // ajax for search bar to search status
-                // const selectedSchool = schoolDataList.map(school => ({
-                //     value: school.id,
-                //     text: `${school.school_name}`
-                // }));
-
-                // // ajax for search bar to search status
-                // const selectedCampus = campusDataList.map(campus => ({
-                //     value: campus.id,
-                //     text: `${campus.campus_name}`
-                // }));
-
-                // // ajax for search bar to search employee name 
-                // const facultyOptions = employeesDataObj.map(faculty => ({
-                //     value: faculty.id,
-                //     text: ` ${faculty.employee_id}  ${faculty.faculty_name}`
-                // }));
-
-                //  // ajax for search bar to search employee name 
-                //  const sdgOptions = sdgGoalsDataList.map(sdg => ({
-                //             value: sdg.id,
-                //             text: ` ${sdg.name}`
-                //         }));
-
-                // new TomSelect("#patent-stage", {
-                //     options: statusOptions,
-                //     placeholder: "Select Options",
-                //     plugins: ['remove_button'],
-                //     hidePlaceholder: true
-                //     ,
-                //     create: true,
-                //     onItemAdd: function () {
-                //         this.setTextboxValue('');
-                //         this.refreshOptions();
-                //     },
-                //     render: {
-                //         option: function (data, escape) {
-                //             return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
-                //         },
-                //         item: function (data, escape) {
-                //             return '<div>' + escape(data.text) + '</div>';
-                //         }
-                //     }
-                // });
-
-                // new TomSelect("#type-of-invention", {
-                //     options: inventionTypeValue,
-                //     placeholder: "Select Options",
-                //     plugins: ['remove_button'],
-                //     hidePlaceholder: true
-                //     ,
-                //     create: true,
-                //     onItemAdd: function () {
-                //         this.setTextboxValue('');
-                //         this.refreshOptions();
-                //     },
-                //     render: {
-                //         option: function (data, escape) {
-                //             return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
-                //         },
-                //         item: function (data, escape) {
-                //             return '<div>' + escape(data.text) + '</div>';
-                //         }
-                //     }
-                // });
-
-                // new TomSelect("#nmims-campus-list", {
-                //     options: selectedCampus,
-                //     placeholder: "Select Options",
-                //     hidePlaceholder: true,
-                //     hidePlaceholder: true,
-                //     create: true,
-                //     plugins: ['remove_button'],
-                //     onItemAdd: function () {
-                //         this.setTextboxValue('');
-                //         this.refreshOptions();
-                //     },
-                //     render: {
-                //         option: function (data, escape) {
-                //             return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
-                //         },
-                //         item: function (data, escape) {
-                //             return '<div>' + escape(data.text) + '</div>';
-                //         }
-                //     }
-                // });
-
-                // new TomSelect("#nmims-school-list", {
-                //     options: selectedSchool,
-                //     placeholder: "Select Options",
-                //     plugins: ['remove_button'],
-                //     hidePlaceholder: true
-                //     ,
-                //     create: true,
-                //     onItemAdd: function () {
-                //         this.setTextboxValue('');
-                //         this.refreshOptions();
-                //     },
-                //     render: {
-                //         option: function (data, escape) {
-                //             return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
-                //         },
-                //         item: function (data, escape) {
-                //             return '<div>' + escape(data.text) + '</div>';
-                //         }
-                //     }
-                // });
-
-                // new TomSelect("#emp-name", {
-                //     options: facultyOptions,
-                //     placeholder: "Select Options",
-                //     hidePlaceholder: true,
-                //     create: true,
-                //     plugins: ['remove_button'],
-                //     onItemAdd: function () {
-                //         this.setTextboxValue('');
-                //         this.refreshOptions();
-                //     },
-                //     render: {
-                //         option: function (data, escape) {
-                //             return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
-                //         },
-                //         item: function (data, escape) {
-                //             return '<div>' + escape(data.text) + '</div>';
-                //         }
-                //     }
-                // });
-                
-               
-                //  // Initialize TomSelect dropdown with options containing id and faculty_name
-                //  new TomSelect("#sdg-goals-data", {
-                //             options: sdgOptions,
-                //             placeholder: "Select SDG Goals",
-                //             hidePlaceholder: true,
-                //             create: true,
-                //             plugins: ['remove_button'],
-                //             onItemAdd: function () {
-                //                 this.setTextboxValue('');
-                //                 this.refreshOptions();
-                //             },
-                //             render: {
-                //                 option: function (data, escape) {
-                //                     return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
-                //                 },
-                //                 item: function (data, escape) {
-                //                     return '<div>' + escape(data.text) + '</div>';
-                //                 }
-                //             }
-                //         });
-
-                // function for select author name from drop down list
+        
+                // function for invention type drop down list selectedTypeOfInvention
                 function handleEmployeeDropdownChange() {
-                    const selectedValues = Array.from(employeeDropdown.options)
-                        .filter(option => option.selected)
-                        .map(option => option.value);
-                    InternalAuthorValue = selectedValues.length === 0 ? "" : selectedValues;
-                    console.log('InternalAuthorValue ===>>>>>', InternalAuthorValue);
-                    if (!facultyIdContainer.some(author => author === InternalAuthorValue)) {
-                        facultyIdContainer.push({ 'internalFaculty': InternalAuthorValue });
+                        const selectedValues = Array.from(employeeDropdown.options)
+                            .filter(option => option.selected)
+                            .map(option => option.value);
+                        const facultyIds = selectedValues.length === 0 ? "" : selectedValues;
+                        console.log('facultyIds ===>>>>>', facultyIds);
+                        if (!facultyIdContainer.some(ids => ids === facultyIds)) {
+                            facultyIdContainer.push(facultyIds);
+                        }
+                        console.log("Selected employee values:", facultyIdContainer);
+
                     }
-                    console.log("Selected employee values:", facultyIdContainer);
 
-                }
-
-                // function for invention type drop down list selectedTypeOfInvention
-                function handleInventionsTypeDropDownChange() {
-                    const selectedValues = Array.from(inventionTypeDropDown.options)
-                        .filter(option => option.selected)
-                        .map(option => option.value);
-                    const inventionsTypeValues = selectedValues.length === 0 ? "" : selectedValues;
-                    console.log('inventionsTypeValues ===>>>>>', inventionsTypeValues);
-                    if (!typeOfInventionsIdContainer.some(inventions => inventions === inventionsTypeValues)) {
-                        typeOfInventionsIdContainer.push({ 'typeOfInventions': inventionsTypeValues });
-                    }
-                    console.log("Selected typeOfInventionsIdContainer ids :", typeOfInventionsIdContainer);
-                }
-
-                // function for invention type drop down list selectedTypeOfInvention
-                function handleCampusDropDownList() {
-                    const selectedValues = Array.from(campusDropDown.options)
-                        .filter(option => option.selected)
-                        .map(option => option.value);
-                    const campusIds = selectedValues.length === 0 ? "" : selectedValues;
-                    console.log('campusIds ===>>>>>', campusIds);
-                    if (!nmimsCampusIdsContainer.some(campus => campus === campusIds)) {
-                        nmimsCampusIdsContainer.push({ 'nmimsCampus': campusIds });
-                    }
-                    console.log(" nmimsCampusIdsContainer ids :", nmimsCampusIdsContainer);
-                }
-
-
-                // function for invention type drop down list selectedTypeOfInvention
-                function handleSchoolDropDownList() {
-                    const selectedValues = Array.from(schoolDropDown.options)
-                        .filter(option => option.selected)
-                        .map(option => option.value);
-                    const schoolIds = selectedValues.length === 0 ? "" : selectedValues;
-                    console.log('schoolIds ===>>>>>', schoolIds);
-                    if (!nmimsSchoolIdsContainer.some(school => school === schoolIds)) {
-                        nmimsSchoolIdsContainer.push({ 'nmimsSchool': schoolIds });
-                    }
-                    console.log("nmimsSchoolIdsContainer ids :", nmimsSchoolIdsContainer);
-                }
 
                 // function for Sustainable Development Goals drop down list
                 function handleSdgGoalsDropDownChange() {
-                    const selectedValues = Array.from(sdgGoalsDropDown.options)
-                        .filter(option => option.selected)
-                        .map(option => option.value);
-                    const sdgGoalsValues = selectedValues.length === 0 ? "" : selectedValues;
-                    console.log('sdgGoalsValues ===>>>>>', sdgGoalsValues);
-                    if (!sdgGoalsIdContainer.some(goals => goals === sdgGoalsValues)) {
-                        sdgGoalsIdContainer.push(sdgGoalsValues);
-                    }
-                    console.log("Selected sdgGoalsIdContainer ids :", sdgGoalsIdContainer);
+                        const selectedValues = Array.from(sdgGoalsDropDown.options)
+                            .filter(option => option.selected)
+                            .map(option => option.value);
+                        const sdgGoalsValues = selectedValues.length === 0 ? "" : selectedValues;
+                        console.log('sdgGoalsValues ===>>>>>', sdgGoalsValues);
+                        if (!sdgGoalsIdContainer.some(goals => goals === sdgGoalsValues)) {
+                            sdgGoalsIdContainer.push(sdgGoalsValues);
+                        }
+                        console.log("Selected sdgGoalsIdContainer ids :", sdgGoalsIdContainer);
 
-                }
-
-                sdgGoalsDropDown.addEventListener("change", handleSdgGoalsDropDownChange);
-
-                //function for insert external data faculty with fetch api
-                const insertExternalDetails = (url) => {
-                    // Define externalFacultyArray and externalFacultyData outside the function
-                    const externalFacultyDetails = {};
-                    externalFacultyDetails.facultyName = document.getElementById('faculty-name').value;
-                    externalFacultyDetails.facultyDsg = document.getElementById('faculty-designation').value;
-                    externalFacultyDetails.facultyAddr = document.getElementById('faculty-address').value;
-                    externalFacultyDetails.facultyEmpId = document.getElementById('faculty-emp-id').value;
-
-                    const payload = {
-                        externalFacultyDetails: externalFacultyDetails
                     }
 
-                    console.log('payload ====>>>>>>', payload);
+                //function for patent status drop down list
+                function handlePatentSatgeDropDownChange() {
+                        const selectedValues = Array.from(patentStageDropDown.options)
+                            .filter(option => option.selected)
+                            .map(option => option.value);
+                        const patentStatus = selectedValues.length === 0 ? "" : selectedValues;
+                        console.log('patentStatus ===>>>>>', patentStatus);
+                        if (!patentStatusIdcontainer.some(status => status === patentStatus)) {
+                            patentStatusIdcontainer.push(patentStatus);
+                        }
+                        console.log("Selected status  ids :", patentStatusIdcontainer);
 
-                    fetch(url, {
-                        method: 'POST',
-                        headers: {
-                            'content-type': 'application/json'
-                        },
-                        body: JSON.stringify(payload)
-                    })
-                        .then((result) => {
-                            return result.json()
-                        })
-                        .then((data) => {
-                            if (data.status === 'Done') {
-                                console.log('data ===>>>>>', data);
-                                let rowCountInteger = parseInt(data.rowCount, 10);
-                                let indexCount = rowCountInteger;
-                                rowCountInteger = indexCount + rowCountInteger;
-                                console.log('rowCountInteger ===>>>>>>', rowCountInteger);
-                                externalFacultyIdArray.push(data.externalFacultyId);
-                                document.getElementById('name-class').classList.add('d-none');
-                                document.getElementById('dsg-class').classList.add('d-none');
-                                document.getElementById('id-class').classList.add('d-none');
-                                document.getElementById('address-class').classList.add('d-none');
-                                document.getElementById('insert-details').classList.add('d-none');
-                                document.getElementById('add-more-details').classList.remove('d-none');
-                                const newFacultyDataRow = document.createElement('tr');
-                                newFacultyDataRow.innerHTML = `
-                    <td class="name-class"> ${data.facultyData.facultyName} </td>
-                    <td class="dsg-class"> ${data.facultyData.facultyDsg} </td>
-                    <td class="id-class"> ${data.facultyData.facultyEmpId} </td>
-                    <td class="address-class"> ${data.facultyData.facultyAddr} </td>
-                    `
-                                facultyTableList.classList.remove('d-none')
-                                facultyTableList.appendChild(newFacultyDataRow);
-                                Swal.fire({
-                                    position: "top-center",
-                                    icon: "success",
-                                    title: `${data.message}`,
-                                    showConfirmButton: true,
-                                    allowOutsideClick: false,
-                                    confirmButtonText: "OK",
-                                    confirmButtonColor: "#DD6B55"
-                                });
-                            }
-
-                        }).catch((error) => {
-                            console.error("ERROR:", error);
-                        })
-
-                    // event listner for insert exetrnal faculty details details
-                    document.getElementById('add-more-details').addEventListener('click', () => {
-
-                        console.log('clicked add more button');
-                        // making input field empty
-                        document.getElementById('faculty-name').value = '';
-                        document.getElementById('faculty-designation').value = '';
-                        document.getElementById('faculty-address').value = '';
-                        document.getElementById('faculty-emp-id').value = '';
-                        document.getElementById('name-class').classList.remove('d-none');
-                        document.getElementById('dsg-class').classList.remove('d-none');
-                        document.getElementById('id-class').classList.remove('d-none');
-                        document.getElementById('address-class').classList.remove('d-none');
-                        document.getElementById('insert-details').classList.remove('d-none');
-                        document.getElementById('add-more-details').classList.add('d-none');
-
-                    })
-                }
-
-                //  addEventListener   for insert external details
-                InsertDetails.addEventListener('click', async () => {
-                    console.log('clickedd insert details buttons')
-
-                    let elements = document.querySelectorAll('.id-class');
-                            
-                            let newVal = document.getElementById('faculty-emp-id').value;
-                            for (var i = 0; i < elements.length; i++) {
-                                console.log("elements[i].textContent : ",elements[i].textContent);
-                                console.log("newVal : ",newVal);
-                                if(elements[i].textContent.trim() === newVal) {
-                                    Swal.fire({
-                                            position: "top-center",
-                                            icon: "error",
-                                            title: `Duplicate Faculty Id Not Allowed`,
-                                            showConfirmButton: true,
-                                            allowOutsideClick: false,
-                                            confirmButtonText: "OK",
-                                            confirmButtonColor: "#DD6B55"
-                                    })
-                                    return;
-                                };
-                            }
+                    }
 
 
-                    await insertExternalDetails('<%- BASE_URL %>research/external/faculty-insert');
+                // function for invention type drop down list selectedTypeOfInvention
+                function handleInventionsTypeDropDownChange() {
+                        const selectedValues = Array.from(invnstiontypeDropDown.options)
+                            .filter(option => option.selected)
+                            .map(option => option.value);
+                        const inventionsTypeValues = selectedValues.length === 0 ? "" : selectedValues;
+                        console.log('inventionsTypeValues ===>>>>>', inventionsTypeValues);
+                        if (!typeOfInventionsIdContainer.some(inventions => inventions === inventionsTypeValues)) {
+                            typeOfInventionsIdContainer.push(inventionsTypeValues);
+                        }
+                        console.log("Selected typeOfInventionsIdContainer ids :", typeOfInventionsIdContainer);
+                    }
 
-                });
 
-
-
-                //function for handle add more details for storing current value of clicked
-                function handleAddMoreDetailsClick() {
-                    const nameStringArray = [];
-                    const investorDetails = document.getElementById("author-name").value;
-                    console.log('investorDetails ====>>>>', investorDetails)
-                    nameStringArray.push(investorDetails);
-                    externalAuthorValue = ',' + nameStringArray.join(",");
-                    console.log('nameStringArray ====>>>', nameStringArray.join(","))
-                    investorDetailsArray.push({ 'externalEmpList': externalAuthorValue });
-                    console.log("Stored external author names:", externalAuthorValue);
-                }
-                //event listner for handleAddMoreDetailsClick and handleEmployeeDropdownChange
-                addMoreDetailsButton.addEventListener("click", handleAddMoreDetailsClick);
                 employeeDropdown.addEventListener("change", handleEmployeeDropdownChange);
-
-                // function for add drop down list or  add new faculty data
-                async function insertFacultyNameString(investorDetails, IPRData) {
-                    console.log('externalFacultyIdArray in side my function ====>>>', externalFacultyIdArray);
-                    const externalFacultyDetails = externalFacultyIdArray;
-                    console.log('facultyIdContainer ====>>>>>', facultyIdContainer);
-                    const facultyDataContainerArray = [(facultyIdContainer[facultyIdContainer.length - 1])];
-                    facultyDataContainerArray.push({ 'externalEmpList': externalFacultyDetails });
-
-                    const facultyDataContainer = JSON.stringify(facultyDataContainerArray);
-                    console.log('facultyDataContainer ===>>>>', facultyDataContainer)
-                    IPRData.append('facultyDataContainer', facultyDataContainer);
-                }
-
-                // fuction for updated faculty type
-                async function updateFacultyNameString(updatedIPRData, storedFacultyValue) {
-                    console.log('externalFacultyIdArray in side my function ====>>>', externalFacultyIdArray);
-                    const externalFacultyDetails = externalFacultyIdArray;
-                    console.log('facultyIdContainer ====>>>>>', facultyIdContainer);
-                    const facultyDataContainerArray = [(facultyIdContainer[facultyIdContainer.length - 1])];
-                    facultyDataContainerArray.push({ 'externalEmpList': externalFacultyDetails });
-
-                    const facultyDataContainer = JSON.stringify(facultyDataContainerArray);
-                    console.log('facultyDataContainer ===>>>>', facultyDataContainer)
-                    updatedIPRData.append('facultyDataContainer', facultyDataContainer);
-
-                }
-
+                sdgGoalsDropDown.addEventListener("change", handleSdgGoalsDropDownChange);
+                invnstiontypeDropDown.addEventListener("change", handleInventionsTypeDropDownChange);
+                patentStageDropDown.addEventListener("change", handlePatentSatgeDropDownChange);
+             
                 function enternalFacultyDropDownList() {
-                    employeeList.classList.remove('d-none');
-                    authorDetails.classList.add('d-none');
-                    document.getElementById('name-class').classList.add('d-none');
-                    document.getElementById('dsg-class').classList.add('d-none');
-                    document.getElementById('id-class').classList.add('d-none');
-                    document.getElementById('address-class').classList.add('d-none');
-                    document.getElementById('insert-details').classList.add('d-none');
-                    document.getElementById('add-more-details').classList.add('d-none');
-                }
+                        employeeList.classList.remove('d-none');
+                        document.getElementById("external-details-table").classList.add('d-none');
+                    }
 
-                // function externalFacultyDetails(){
-                //     employeeList.classList.add('d-none');
-                //     authorDetails.classList.remove('d-none');
-                // }
-
-                function externalFacultyDetails() {
-                    employeeList.classList.add('d-none');
-                    addMoreDetailsButton.classList.add('d-none');
-                    document.getElementById('insert-details').classList.remove('d-none');
-                    document.getElementById('name-class').classList.remove('d-none')
-                    document.getElementById('dsg-class').classList.remove('d-none')
-                    document.getElementById('id-class').classList.remove('d-none')
-                    document.getElementById('address-class').classList.remove('d-none');
-                    document.getElementById('add-btn').classList.remove('d-none')
-                }
-
+            
                 // addEventListener 
                 enternalFacultyType.addEventListener('click', enternalFacultyDropDownList)
-                externalFacultyType.addEventListener('click', externalFacultyDetails);
-                inventionTypeDropDown.addEventListener("change", handleInventionsTypeDropDownChange);
-                campusDropDown.addEventListener("change", handleCampusDropDownList);
-                schoolDropDown.addEventListener("change", handleSchoolDropDownList);
+                // externalFacultyType.addEventListener('click', externalFacultyDetails);
+              
 
 
                 function compareDates(date1, date2) {
@@ -2527,99 +2291,6 @@
                     "pageLength": 5,
                     "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
                 })
-
-
-                document.getElementById('is-external-update').addEventListener('click', () => {
-                    let is_checked = document.getElementById('is-external-update');
-                    console.log('check box checked')
-
-                    if (is_checked.checked) {
-                        document.getElementById('externalfacultyTable').classList.remove('d-none')
-                        document.getElementById('name-class-upd').classList.remove('d-none');
-                        document.getElementById('dsg-class-upd').classList.remove('d-none');
-                        document.getElementById('id-class-upd').classList.remove('d-none');
-                        document.getElementById('address-class-upd').classList.remove('d-none');
-                        document.getElementById('add-btn-upd').classList.remove('d-none');
-                    } else {
-                        document.getElementById('externalfacultyTable').classList.add('d-none')
-                        document.getElementById('faculty-table-list-upd').classList.add('d-none');
-
-                    }
-                })
-
-
-                document.addEventListener('click', (event) => {
-
-                    if (event.target.classList.contains('updateFaculty')) {
-                        let facultyId = event.target.closest('tr').getAttribute('data-facultyId')
-                        console.log('button clicked with id ', facultyId)
-                        let tr = event.target.closest('tr');
-                        let facultyName = tr.querySelector('#updateFacultyName').value
-                        let facultyDesignation = tr.querySelector('#updateFacultyDes').value
-                        let facultyAddr = tr.querySelector('#updateFacultyAddr').value
-                        let empId = tr.querySelector('#updateFacultyId').value
-
-                        let addrError = (facultyAddr != '') ? true : false;
-                        if (addrError) {
-                            document.getElementById('addrUpdError').innerText = '';
-                        } else {
-                            document.getElementById('addrUpdError').innerText = 'Address is Required';
-                        }
-
-                        let facultyError = checkAlphabets(facultyName, 'facultyUpdError');
-                        let designationError = checkAlphabets(facultyDesignation, 'desUpdError');
-                        let empError = checkEmpError(empId, 'empUpdError');
-                        let externalFacultyDetails;
-
-                        if (addrError && facultyError && designationError && empError) {
-
-                            externalFacultyDetails = {
-                                facultyId: facultyId, facultyName: facultyName,
-                                facultyDesignation: facultyDesignation, facultyAddr: facultyAddr, empId: empId
-                            }
-
-                            let obj = externalFacultyDetails
-                            upsertFacultyData('<%- BASE_URL %>research/external/faculty-updateData', obj, tr)
-                        }
-
-                    }
-                })
-
-
-                function upsertFacultyData(url, obj, tr) {
-                    fetch(url, {
-                        method: 'POST',
-                        headers: {
-                            'content-type': 'application/json'
-                        },
-                        body: JSON.stringify(obj)
-                    })
-                        .then((result) => {
-                            return result.json()
-                        })
-                        .then((data) => {
-                            if (data.status === 'Done') {
-
-                                console.log('response >> ', data)
-
-                                Swal.fire({
-                                    position: "top-center",
-                                    icon: "success",
-                                    title: `${data.message}`,
-                                    showConfirmButton: true,
-                                    allowOutsideClick: false,
-                                    confirmButtonText: "OK",
-                                    confirmButtonColor: "#DD6B55"
-                                }).then(() => {
-                                    console.log('object ', JSON.stringify(obj))
-                                    tr.querySelector('#updateFacultyName').value = obj.facultyName
-                                    tr.querySelector('#updateFacultyDes').value = obj.facultyDesignation
-                                    tr.querySelector('#updateFacultyAddr').value = obj.facultyAddr
-                                    tr.querySelector('#updateFacultyId').value = obj.empId
-                                })
-                            }
-                        })
-                }
 
                 function checkAlphabets(facultyName, idName) {
 
@@ -2684,233 +2355,235 @@
                     return bool;
                 }
 
-                async function fetchFacultyData(url) {
-                    let requestDetails = {
-                        method: 'GET',
-                        headers: {
-                            'Accept': 'application/json'
-                        }
-                    }
-
-                    let data;
-                    let response = await fetch(url, requestDetails);
-                    if (response.ok) {
-                        data = await response.json();
-                        return data;
-                    } else {
-                        throw new Error('Error in fetching data')
-                    }
-                }
-
-                document.addEventListener('click', (event) => {
-
-                    if (event.target.classList.contains('updateFaculty')) {
-                        let facultyId = event.target.closest('tr').getAttribute('data-facultyId')
-                        console.log('button clicked with id ', facultyId)
-                        let tr = event.target.closest('tr');
-                        let facultyName = tr.querySelector('#updateFacultyName').value
-                        let facultyDesignation = tr.querySelector('#updateFacultyDes').value
-                        let facultyAddr = tr.querySelector('#updateFacultyAddr').value
-                        let empId = tr.querySelector('#updateFacultyId').value
-
-                        let addrError = (facultyAddr != '') ? true : false;
-                        if (addrError) {
-                            document.getElementById('addrUpdError').innerText = '';
-                        } else {
-                            document.getElementById('addrUpdError').innerText = 'Address is Required';
-                        }
-
-                        let facultyError = checkAlphabets(facultyName, 'facultyUpdError');
-                        let designationError = checkAlphabets(facultyDesignation, 'desUpdError');
-                        let empError = checkEmpError(empId, 'empUpdError');
-                        let externalFacultyDetails;
-
-                        if (addrError && facultyError && designationError && empError) {
-
-                            externalFacultyDetails = {
-                                facultyId: facultyId, facultyName: facultyName,
-                                facultyDesignation: facultyDesignation, facultyAddr: facultyAddr, empId: empId
-                            }
-
-                            let obj = externalFacultyDetails
-                            upsertFacultyData('<%- BASE_URL %>research/external/faculty-updateData', obj, tr)
-                        }
-
-                    }
-                })
-
-
-                function upsertFacultyData(url, obj, tr) {
-                    fetch(url, {
-                        method: 'POST',
-                        headers: {
-                            'content-type': 'application/json'
-                        },
-                        body: JSON.stringify(obj)
-                    })
-                        .then((result) => {
-                            return result.json()
-                        })
-                        .then((data) => {
-                            if (data.status === 'Done') {
-
-                                console.log('response >> ', data)
-
-                                Swal.fire({
-                                    position: "top-center",
-                                    icon: "success",
-                                    title: `${data.message}`,
-                                    showConfirmButton: true,
-                                    allowOutsideClick: false,
-                                    confirmButtonText: "OK",
-                                    confirmButtonColor: "#DD6B55"
-                                }).then(() => {
-                                    console.log('object ', JSON.stringify(obj))
-                                    tr.querySelector('#updateFacultyName').value = obj.facultyName
-                                    tr.querySelector('#updateFacultyDes').value = obj.facultyDesignation
-                                    tr.querySelector('#updateFacultyAddr').value = obj.facultyAddr
-                                    tr.querySelector('#updateFacultyId').value = obj.empId
-                                })
-                            }
-                        })
-                }
-
-
-                document.getElementById('insert-details-upd').addEventListener('click', () => {
-
-
-                    let facultyNameUpd = document.getElementById('faculty-name-upd');
-                    let facultyDesignationUpd = document.getElementById('faculty-designation-upd');
-                    let facultyAddrUpd = document.getElementById('faculty-address-upd');
-                    let facultyEmpUpd = document.getElementById('faculty-emp-id-upd');
-
-                    let facultyName = facultyNameUpd.value;
-                    let facultyDesignation = facultyDesignationUpd.value;
-                    let facultyAddr = facultyAddrUpd.value;
-                    let facultyEmp = facultyEmpUpd.value;
-
-                    let addrError = (facultyAddr != '') ? true : false;
-                    if (addrError) {
-                        document.getElementById('addrInsertError').innerText = '';
-                    } else {
-                        document.getElementById('addrInsertError').innerText = 'Address is Required';
-                    }
-
-                    let facultyError = checkAlphabets(facultyName, 'facultyInsertError');
-                    let designationError = checkAlphabets(facultyDesignation, 'desInsertError');
-                    let empError = checkEmpError(facultyEmp, 'empInsertError');
-
-
-                    let appendFaculty = document.getElementById('appendFaculty');
-                    let elements = appendFaculty.querySelectorAll('tr');
-
-                    for (var i = 0; i < elements.length; i++) {
-
-                        let facultyId = elements[i].querySelector('#updateFacultyId').value;
-                        console.log('faculty Id ', facultyId)
-
-                        if (facultyId === facultyEmp) {
-                            Swal.fire({
-                                position: "top-center",
-                                icon: "error",
-                                title: `Duplicate Faculty Id Not Allowed`,
-                                showConfirmButton: true,
-                                allowOutsideClick: false,
-                                confirmButtonText: "OK",
-                                confirmButtonColor: "#DD6B55"
-                            })
-                            return;
-                        };
-                    }
-
-                    if (addrError && facultyError && designationError && empError) {
-
-                        console.log('clickedd insert details buttons')
-                        upsertExternalDetails('<%- BASE_URL %>research/external/faculty-IprInsert');
-                    }
-                });
-
-
-                const upsertExternalDetails = (url) => {
-                    let facultyNameUpd = document.getElementById('faculty-name-upd');
-                    let facultyDesignationUpd = document.getElementById('faculty-designation-upd');
-                    let facultyAddrUpd = document.getElementById('faculty-address-upd');
-                    let facultyEmpUpd = document.getElementById('faculty-emp-id-upd');
-
-                    let facultyName = facultyNameUpd.value;
-                    let facultyDesignation = facultyDesignationUpd.value;
-                    let facultyAddr = facultyAddrUpd.value;
-                    let facultyEmp = facultyEmpUpd.value;
-
-
-                    let externalFacultyDetails = {
-                        facultyEmpId: facultyEmp,
-                        facultyName: facultyName,
-                        facultyDsg: facultyDesignation,
-                        facultyAddr: facultyAddr,
-                    }
-
-                    console.log('json string ', JSON.stringify(externalFacultyDetails))
-
-                    let payload = { externalFacultyDetails, iprId };
-
-                    fetch(url, {
-                        method: 'POST',
-                        headers: {
-                            'content-type': 'application/json'
-                        },
-                        body: JSON.stringify(payload)
-                    })
-                        .then((result) => {
-                            return result.json()
-                        })
-                        .then((data) => {
-                            if (data.status === 'Done') {
-
-                                console.log('response >> ', data)
-
-                                Swal.fire({
-                                    position: "top-center",
-                                    icon: "success",
-                                    title: `${data.message}`,
-                                    showConfirmButton: true,
-                                    allowOutsideClick: false,
-                                    confirmButtonText: "OK",
-                                    confirmButtonColor: "#DD6B55"
-                                }).then(() => {
-
-                                    let appendFaculty = document.getElementById('appendFaculty');
-                                    let allTds = appendFaculty.querySelectorAll('tr');
-
-                                    let htmlData = `<tr data-facultyId = ${data.researchGrantId}>
-
-                                                                        <td>${allTds.length + 1}</td>
-                                                                        <td><input id="updateFacultyName" type="text" value=${facultyName} /></br><span style="color:red;" id='facultyUpdError'></span></td>
-                                                                        <td ><input id="updateFacultyAddr" type="text" value=${facultyAddr} /></br><span style="color:red;" id='addrUpdError'></span></td>
-                                                                        <td ><input id="updateFacultyDes" type="text" value=${facultyDesignation} /></br><span style="color:red;" id='desUpdError'></span></td>
-                                                                        <td ><input id="updateFacultyId" type="text" value=${facultyEmp} /></br><span style="color:red;" id='empUpdError'></span></td>
-                                                                        <td><button class="btn btn-primary updateFaculty">Update</button></td>
-                                                                        </tr>`
-
-                                    appendFaculty.insertAdjacentHTML('beforeEnd', htmlData);
-
-
-
-                                });
-                            }
-                        }).catch((error) => {
-                            console.error("ERROR:", error);
-                        })
-                }
-
-
                 document.getElementById('headerClose').addEventListener('click', () => {
                     document.location.reload();
                 })
 
                 document.getElementById('footerClose').addEventListener('click', () => {
                     document.location.reload();
+                });
+
+               
+                // for creating input field for table 
+                document.querySelector('#is-external-details').addEventListener('click', () => {
+                        console.log('clickedd external author');
+                        document.getElementById("external-details-table").classList.remove('d-none');
+                        employeeList.classList.add('d-none');
+                        console.log("BUTTON CLICKED");
+                        let newRow = `
+                                <tr>
+                                    <td><input type="text"  class="external-faculty-details"></td>
+                                    <td><input type="number" class="external-faculty-details"></td>
+                                    <td><input type="text" class="external-faculty-details"></td>
+                                    <td><input type="text" class="external-faculty-details"></td>
+                                    <td><button class="delete-row  btn btn-danger">Delete</button></td>
+                                </tr> 
+                            `;
+
+                        document.querySelector('#add-faculty-details').insertAdjacentHTML('afterend', newRow);
+                        let deleteButton = document.querySelector('#add-faculty-details').nextElementSibling.querySelector('.delete-row');
+                        deleteButton.addEventListener('click', handleDeleteButtonClick);
                 })
+
+                 // foe delete empy input field 
+                 function handleDeleteButtonClick() {
+                    this.parentNode.parentNode.remove();
+                }
+
+                function createTableRows(tableId, data, inputClassName, deleteId, headers) {
+                        console.log('data to create table ===>>>>>', data);
+                        let table = document.querySelector(`#${tableId}`);
+                        let tbody = table.querySelector('tbody');
+                        let thead = table.querySelector('thead');
+                        tbody.innerHTML = '';
+                        thead.innerHTML = '';
+
+                        let serialNumber = 1;
+
+                        // Create table header
+                        let headerRow = document.createElement('tr');
+
+                        // Serial number header
+                        // let serialHeader = document.createElement('th');
+                        // serialHeader.textContent = 'Serial';
+                        // headerRow.appendChild(serialHeader);
+
+                         // Create headers from the provided headers array
+                         headers.forEach(function (header) {
+                            let th = document.createElement('th');
+                            th.textContent = header;
+                            headerRow.appendChild(th);
+                        });
+                       
+                        
+
+                        //
+                        // if (data[0] && typeof data[0] === 'object') {
+                        //     Object.keys(data[0]).forEach(function (key) {
+                        //         if (key !== 'id') {
+                        //             let th = document.createElement('th');
+                        //             th.textContent = key;
+                        //             headerRow.appendChild(th);
+                        //         }
+                        //     });
+                        // } else {
+                        //     console.error('Data is not in the expected format.');
+                        // }
+
+                        // Add id header and hide it
+
+                        let idHeader = document.createElement('th');
+                        idHeader.textContent = 'ID';
+                        idHeader.classList.add('d-none');
+                        headerRow.appendChild(idHeader);
+                        // Add data cells based on headers
+                      
+
+                        thead.appendChild(headerRow);
+
+                        // Create table rows
+                        data.forEach(function (rowData) {
+                            let row = document.createElement('tr');
+                            row.setAttribute('data-table-id', rowData.id);
+
+                            // Add serial number cell
+                            // let serialCell = document.createElement('td');
+                            // serialCell.textContent = serialNumber++;
+                            // row.appendChild(serialCell);
+
+
+
+
+                            // Add data cells
+                            Object.keys(rowData).forEach(function (key) {
+                                if (key !== 'id') {
+                                    let cell = document.createElement('td');
+                                    let input = document.createElement('input');
+                                    input.type = 'text';
+                                    input.value = rowData[key];
+                                    if (inputClassName) {
+                                        input.classList.add(inputClassName);
+                                    }
+                                    cell.appendChild(input);
+                                    row.appendChild(cell);
+                                }
+                            });
+
+                            // Add hidden id cell
+                            let idCell = document.createElement('td');
+                            let idInput = document.createElement('input');
+                            idInput.type = 'text';
+                            idInput.value = rowData.id;
+                            idCell.classList.add('d-none');
+                            if (inputClassName) {
+                                idInput.classList.add(inputClassName);
+                            }
+                            idCell.appendChild(idInput);
+                            row.appendChild(idCell);
+
+                            // Add delete button cell
+                            let deleteCell = document.createElement('td');
+                            let deleteButton = document.createElement('button');
+                            console.log('rowData.id ====>>>>', rowData.id);
+                            deleteButton.setAttribute('data-table-id', rowData.id);
+
+                            const dataRecordId = rowData.id;
+                            deleteButton.classList.add(inputClassName);
+
+                            deleteButton.textContent = 'Delete';
+                            deleteButton.classList.add('btn', 'btn-danger');
+
+                            deleteButton.addEventListener('click', function () {
+                                // Find and remove the row after fetch confirmation
+                                document.querySelector(`button[data-table-id='${dataRecordId}']`).click();
+                            });
+
+                            deleteCell.appendChild(deleteButton);
+                            row.appendChild(deleteCell);
+
+                            // Append the row to the table body
+                            tbody.appendChild(row);
+                        });
+                    }
+                
+                //for delete exetrnal faculty record 
+                document.addEventListener('click', (event) => {
+                        const button = event.target.closest('button');
+                        if (!button) return;
+
+                        const relativeClass = button.className;
+                        const tableId = button.getAttribute('data-table-id');
+                        const specificClasses = ['external-faculty-data-details'];
+
+                        const classList = relativeClass.split(' ');
+
+                        specificClasses.forEach(specificClass => {
+                            if (classList.includes(specificClass)) {
+                                console.log(`Yes, the button contains the class: ${specificClass}`);
+                                let confirmDelete = `Do you want to delete the ${specificClass} ?`;
+                                if (confirmDelete) {
+                                    Swal.fire({
+                                        title: "Are you sure?",
+                                        text: "You won't be able to revert this!",
+                                        icon: "warning",
+                                        showCancelButton: true,
+                                        allowOutsideClick: false,
+                                        confirmButtonColor: "#3085d6",
+                                        cancelButtonColor: "#d33",
+                                        confirmButtonText: "Yes, delete it!"
+                                    }).then((result) => {
+                                        if (result.isConfirmed) {
+                                            // Execute fetch request here after confirmation
+                                            fetch(`<%- BASE_URL %>research/IPR/${specificClass}/delete`, {
+                                                method: 'POST',
+                                                headers: {
+                                                    'content-type': 'application/json'
+                                                },
+                                                body: JSON.stringify({ tableId })
+                                            })
+                                                .then((result) => result.json())
+                                                .then((data) => {
+                                                    if (data.status === 'Done') {
+                                                        console.log('data ==>>', data);
+                                                        // Find the row and remove it
+                                                        const row = document.querySelector(`tr[data-table-id='${tableId}']`);
+                                                        if (row) {
+                                                            row.remove();
+                                                        }
+                                                        Swal.fire({
+                                                            title: "Deleted!",
+                                                            text: "Record has been deleted.",
+                                                            icon: "success",
+                                                            showConfirmButton: true,
+                                                            allowOutsideClick: false,
+                                                            confirmButtonText: "OK",
+                                                            confirmButtonColor: "#DD6B55"
+                                                        })
+                                                    }
+                                                })
+                                                .catch((error) => {
+                                                    console.error('Error:', error);
+                                                    const message = error;
+                                                    Swal.fire({
+                                                        position: "top-center",
+                                                        icon: "error",
+                                                        title: `${message}`,
+                                                        color: "red",
+                                                        showConfirmButton: true,
+                                                        allowOutsideClick: false,
+                                                        confirmButtonText: "OK",
+                                                        confirmButtonColor: "#DD6B55"
+                                                    });
+                                                });
+                                        }
+                                    });
+                                } else {
+                                    return;
+                                }
+                            }
+                        });
+                    });
+                
             </script>
             <!-- footer section -->
             <!-- <%- include('./partials/pagination') %> -->
