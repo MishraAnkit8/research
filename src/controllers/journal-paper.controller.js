@@ -202,7 +202,7 @@ module.exports.deleteJournalArticlePolicyCadre = async(req, res, next) => {
     console.log('Data Comming from Template' , req.body);
     console.log('userName ====>>>>>>', userName);
 
-    const deleteInternalAuthorsStatus = await journalPaperService.deleteNmimsAuthorsDetails(req.body, userName);
+    const deleteInternalAuthorsStatus = await journalPaperService.deletePolicyDetails(req.body, userName);
 
     console.log('deleteInternalAuthorsStatus ===>>>>>>', deleteInternalAuthorsStatus);
 
@@ -221,7 +221,7 @@ module.exports.deleteJournalArticleIntrenalFaculty = async(req, res, next) => {
     console.log('Data Comming from Template' , req.body);
     console.log('userName ====>>>>>>', userName);
 
-    const deleteAllAuthorsStatus = await journalPaperService.deleteAllauthorsDetails(req.body, userName);
+    const deleteAllAuthorsStatus = await journalPaperService.deleteNmimsAuthorsDetails(req.body, userName);
 
     console.log('deleteAllAuthorsStatus ===>>>>>>', deleteAllAuthorsStatus);
     const statusCode = deleteAllAuthorsStatus.status === "Done" ? 200 : (deleteAllAuthorsStatus.errorCode ? 400 : 500);
@@ -239,7 +239,7 @@ module.exports.deleteJournalArticleAllAuthors = async(req, res, next) => {
     console.log('Data Comming from Template' , req.body);
     console.log('userName ====>>>>>>', userName);
 
-    const deletePolicyCadreStatus = await journalPaperService.deletePolicyDetails(req.body, userName) ;
+    const deletePolicyCadreStatus = await journalPaperService.deleteAllauthorsDetails(req.body, userName) ;
 
     console.log('deletePolicyCadreStatus ===>>>>>>', deletePolicyCadreStatus);
     const statusCode = deletePolicyCadreStatus.status === "Done" ? 200 : (deletePolicyCadreStatus.errorCode ? 400 : 500);

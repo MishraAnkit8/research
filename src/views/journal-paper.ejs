@@ -106,8 +106,8 @@
                                             data-all-authors="<%- journalPaper.all_article_authors_names  %>"
                                             data-nmims-faculty-ids="<%- journalPaper.nmims_facilty_id %>"
                                             data-article-faculties-ids="<%- journalPaper.articles_faculties_ids %>"
-                                            data-campus-ids="<%- journalPaper.campus_id %>"
-                                            data-school-ids="<%- journalPaper.school_id %>"
+                                            data-nmims-campus="<%- journalPaper.nmims_campus %>"
+                                            data-nmims-school="<%- journalPaper.nmims_school %>"
                                             data-policy-cadre-ids="<%- journalPaper.policy_cadre_ids %>"
                                             data-policy-cadre="<%- journalPaper.policy_cadre %>"
                                             data-impact-factors="<%- journalPaper.impact_factor %>"
@@ -120,8 +120,8 @@
                                             data-no-nmims-student-author="<%- journalPaper.no_nmims_student_author %>">
                                             <td class=""> <%- index + 1 %> </td>
                                             <td class="year col-lg-1"> <%- journalPaper.year %> </td>
-                                            <td class="school col-lg-1"> <%- journalPaper.associated_schools %> </td>
-                                            <td class="campus col-lg-1"> <%- journalPaper.associated_campuses %> </td>
+                                            <td class="school col-lg-1"> <%- journalPaper.nmims_school %> </td>
+                                            <td class="campus col-lg-1"> <%- journalPaper.nmims_campus %> </td>
                                             <td class="policy-cadre col-lg-1"><%- journalPaper.policy_cadre %></td>
                                             <td class="impcat-factor col-lg-1"><%- journalPaper.impact_factor %></td>
                                             <td class="publisher col-lg-1"><%- journalPaper.publisher %></td>
@@ -233,6 +233,20 @@
                         </div>
                         <div class="modal-body">
                             <div class="row">
+
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="nmims-campus-authors" class="form-label fw-bold ">NMIMS Campus<i style="color: red;">*</i></label>
+                                    <input type="url" name="" id="nmims-campus"
+                                        data-validate="isEmpty,isAlphaNumericSpecial,isExist,isLength:2:255"
+                                        data-err-msg="Provide Valid Input" class="form-control" required />
+                                </div>
+                                <!--NMIMS School - Author-->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="nmims-school-authors" class="form-label fw-bold ">NMIMS School <i style="color: red;">*</i></label>
+                                    <input type="url" name="" id="nmims-school"
+                                        data-validate="isEmpty,isAlphaNumericSpecial,isExist,isLength:2:255"
+                                        data-err-msg="Provide Valid Input" class="form-control" required />
+                                </div>
                                 <!-- year -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="year" class="form-label fw-bold">Year Of Publishing <i style="color: red;">*</i></label>
@@ -242,7 +256,7 @@
                                         required />
                                 </div>
                                 <!-- nmims School-->
-                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                <!-- <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="nmims-school" class="form-label fw-bold">School <i style="color: red;">*</i></label>
                                     <select class="select-option drop-list" id="nmims-school-list"
                                         data-validate="isEmpty,isExist"
@@ -256,10 +270,10 @@
                                             </option>
                                             <% }); %>
                                     </select>
-                                </div>
+                                </div> -->
 
                                 <!-- nmims campus -->
-                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                <!-- <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="nmims-campus" class="form-label fw-bold">Campus<i style="color: red;">*</i></label>
                                     <select class="select-option" id="nmims-campus-list" data-validate="isEmpty,isExist"
                                         data-err-msg="This field is required and select value" required multiple>
@@ -270,7 +284,7 @@
                                             </option>
                                             <% }); %>
                                     </select>
-                                </div>
+                                </div> -->
                                 <!-- Policy Cadre
                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                         <label for="policyCadre" class="form-label fw-bold"> Policy Cadre </label>
@@ -840,12 +854,12 @@
             <!-- inline Javascript -->
             <div id="employees-list-data" data-employees='<%- JSON.stringify(internalEmpList) %>'
                 style="display: none;"></div>
-            <div id="school-data-list" data-school='<%- JSON.stringify(nmimsSchoolList) %>' style="display: none;">
-            </div>
+            <!-- <div id="school-data-list" data-school='<%- JSON.stringify(nmimsSchoolList) %>' style="display: none;">
+            </div> -->
             <div id="all-author-data-list" data-author='<%- JSON.stringify(allAuthorList) %>' style="display: none;">
             </div>
-            <div id="campus-data-list" data-campus='<%- JSON.stringify(nmimsCampusList) %>' style="display: none;">
-            </div>
+            <!-- <div id="campus-data-list" data-campus='<%- JSON.stringify(nmimsCampusList) %>' style="display: none;">
+            </div> -->
             <div id="policy-cadre-data-list" data-policy='<%- JSON.stringify(policyCadre) %>' style="display: none;">
             </div>
             <div id="impact-factor-data-list" data-factor='<%- JSON.stringify(impactFactor) %>' style="display: none;">
@@ -879,14 +893,14 @@
                 const updateBtn = document.getElementById('update-btn');
                 // const closeBtn = document.getElementById('close-btn');
                 const journalPaperAddModal = document.getElementById('journal-paper-add-modal');
-                const schoolDropDown = document.getElementById('nmims-school-list');
-                const campusDropDown = document.getElementById('nmims-campus-list');
+                // const schoolDropDown = document.getElementById('nmims-school-list');
+                // const campusDropDown = document.getElementById('nmims-campus-list');
                 const policyCadreDropDown = document.getElementById('policy-cadre-list');
                 const impactFactorDropDown = document.getElementById('impact-factor-list');
                 const internalFacultyDropDown = document.getElementById('internal-faculty-list');
                 const allAuthorsDropDown = document.getElementById('all-author-list');
-                let nmimsSchoolIdsContainer = [];
-                let nmimsCampusIdsContainer = [];
+                // let nmimsSchoolIdsContainer = [];
+                // let nmimsCampusIdsContainer = [];
                 let policyCadreContainer = [];
                 let impactFactorContainer = [];
                 let facltyContainer = [];
@@ -928,8 +942,10 @@
                         document.getElementById('uid').value = '';
                         document.getElementById('date-of-publishing').value = '';
                         document.getElementById('title-of-paper').value = '';
-                        nmimsSchoolIdsContainer = [];
-                        nmimsCampusIdsContainer = [];
+                        document.getElementById('nmims-campus').value = '';
+                        document.getElementById('nmims-school').value = '';
+                        // nmimsSchoolIdsContainer = [];
+                        // nmimsCampusIdsContainer = [];
                         policyCadreContainer = [];
                         impactFactorContainer = [];
                         facltyContainer = [];
@@ -955,66 +971,66 @@
                         // 
                         document.getElementById('nmims-authors-count').value = '';
 
-                        const nmimsSchoolList = document.getElementById('school-data-list').dataset.school;
+                        // const nmimsSchoolList = document.getElementById('school-data-list').dataset.school;
 
-                        const schoolDataList = JSON.parse(nmimsSchoolList);
+                        // const schoolDataList = JSON.parse(nmimsSchoolList);
 
-                        const selectedSchool = schoolDataList.map(school => ({
-                            value: school.id,
-                            text: `${school.school_name}`
-                        }));
+                        // const selectedSchool = schoolDataList.map(school => ({
+                        //     value: school.id,
+                        //     text: `${school.school_name}`
+                        // }));
 
-                        new TomSelect("#nmims-school-list", {
-                            options: selectedSchool,
-                            placeholder: "Select Options",
-                            hidePlaceholder: true,
-                            hidePlaceholder: true,
-                            create: false,
-                            plugins: ['remove_button'],
-                            onItemAdd: function () {
-                                this.setTextboxValue('');
-                                this.refreshOptions();
-                            },
-                            render: {
-                                option: function (data, escape) {
-                                    return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
-                                },
-                                item: function (data, escape) {
-                                    return '<div>' + escape(data.text) + '</div>';
-                                }
-                            }
-                        });
+                        // new TomSelect("#nmims-school-list", {
+                        //     options: selectedSchool,
+                        //     placeholder: "Select Options",
+                        //     hidePlaceholder: true,
+                        //     hidePlaceholder: true,
+                        //     create: false,
+                        //     plugins: ['remove_button'],
+                        //     onItemAdd: function () {
+                        //         this.setTextboxValue('');
+                        //         this.refreshOptions();
+                        //     },
+                        //     render: {
+                        //         option: function (data, escape) {
+                        //             return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                        //         },
+                        //         item: function (data, escape) {
+                        //             return '<div>' + escape(data.text) + '</div>';
+                        //         }
+                        //     }
+                        // });
 
 
-                        const nmimsCampusList = document.getElementById('campus-data-list').dataset.campus;
+                        // const nmimsCampusList = document.getElementById('campus-data-list').dataset.campus;
 
-                        const campusDataList = JSON.parse(nmimsCampusList);
+                        // const campusDataList = JSON.parse(nmimsCampusList);
 
-                        const selectedCampus = campusDataList.map(campus => ({
-                            value: campus.id,
-                            text: `${campus.campus_name}`
-                        }));
+                        // const selectedCampus = campusDataList.map(campus => ({
+                        //     value: campus.id,
+                        //     text: `${campus.campus_name}`
+                        // }));
 
-                        new TomSelect("#nmims-campus-list", {
-                            options: selectedCampus,
-                            placeholder: "Select Options",
-                            hidePlaceholder: true,
-                            hidePlaceholder: true,
-                            create: false,
-                            plugins: ['remove_button'],
-                            onItemAdd: function () {
-                                this.setTextboxValue('');
-                                this.refreshOptions();
-                            },
-                            render: {
-                                option: function (data, escape) {
-                                    return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
-                                },
-                                item: function (data, escape) {
-                                    return '<div>' + escape(data.text) + '</div>';
-                                }
-                            }
-                        });
+                        // new TomSelect("#nmims-campus-list", {
+                        //     options: selectedCampus,
+                        //     placeholder: "Select Options",
+                        //     hidePlaceholder: true,
+                        //     hidePlaceholder: true,
+                        //     create: false,
+                        //     plugins: ['remove_button'],
+                        //     onItemAdd: function () {
+                        //         this.setTextboxValue('');
+                        //         this.refreshOptions();
+                        //     },
+                        //     render: {
+                        //         option: function (data, escape) {
+                        //             return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                        //         },
+                        //         item: function (data, escape) {
+                        //             return '<div>' + escape(data.text) + '</div>';
+                        //         }
+                        //     }
+                        // });
 
 
                         const policyCadreList = document.getElementById('policy-cadre-data-list').dataset.policy;
@@ -1165,6 +1181,8 @@
                     const scsCiteScore = document.getElementById('scs-cite-score').value;
                     const gsIndex = document.getElementById('gs-indexed').value;
                     const impactFactor = document.getElementById('impact-factor').value
+                    const nmimsSchool = document.getElementById('nmims-school').value;
+                    const nmimsCampus = document.getElementById('nmims-campus').value;
 
                     const wosIndexedCategory = document.querySelector('input[name="wos-index-category"]:checked').value;
                     const abdcIndexedCategory = document.getElementById('abdc-index-category').value;
@@ -1182,15 +1200,15 @@
                     const foreignAuthorsName = document.getElementById('foreign-authors-name').value;
                     const noNmimsStudentAuthor = document.getElementById('no-nmims-student-author').value;
                     const nmimsStudentForeignAuthors = document.getElementById('nmims-student-foreign-authors').value;
-                    const nmimsSchoolArrayObject = nmimsSchoolIdsContainer[nmimsSchoolIdsContainer.length - 1];
-                    const nmimsCampusArrayObject = nmimsCampusIdsContainer[nmimsCampusIdsContainer.length - 1];
+                    // const nmimsSchoolArrayObject = nmimsSchoolIdsContainer[nmimsSchoolIdsContainer.length - 1];
+                    // const nmimsCampusArrayObject = nmimsCampusIdsContainer[nmimsCampusIdsContainer.length - 1];
                     const nmimsFacultyArrayObject = facltyContainer[facltyContainer.length - 1];
                     const allAuthorsArrayObject = allAuthorContainer[allAuthorContainer.length - 1];
                     // const impactFactorArrayObject = impactFactorContainer[impactFactorContainer.length - 1];
                     const policyCadreArrayObject = policyCadreContainer[policyCadreContainer.length - 1];
 
-                    const nmimsSchoolIds = JSON.stringify(nmimsSchoolArrayObject);
-                    const nmimsCampusIds = JSON.stringify(nmimsCampusArrayObject);
+                    // const nmimsSchoolIds = JSON.stringify(nmimsSchoolArrayObject);
+                    // const nmimsCampusIds = JSON.stringify(nmimsCampusArrayObject);
                     const nmimsFacultiesIds = JSON.stringify(nmimsFacultyArrayObject);
                     const allAuthorsIds = JSON.stringify(allAuthorsArrayObject);
                     // const impactFactorIds = JSON.stringify(impactFactorArrayObject);
@@ -1208,6 +1226,8 @@
                     journalDetails.append('year', year);
                     journalDetails.append('scsIndex', scsIndex);
                     journalDetails.append('publisher', publisher);
+                    journalDetails.append('nmimsSchool', nmimsSchool);
+                    journalDetails.append('nmimsCampus', nmimsCampus);
                     journalDetails.append('foreignAuhtorNo', foreignAuhtorNo);
                     journalDetails.append('foreignAuthorsName', foreignAuthorsName);
                     journalDetails.append('noNmimsStudentAuthor', noNmimsStudentAuthor);
@@ -1229,8 +1249,8 @@
                     journalDetails.append('titleOfPaper', titleOfPaper);
                     journalDetails.append('journalCategory', journalCategory);
                     journalDetails.append('nmimsAuthorsCount', nmimsAuthorsCount);
-                    journalDetails.append('nmimsSchoolIds', nmimsSchoolIds);
-                    journalDetails.append('nmimsCampusIds', nmimsCampusIds);
+                    // journalDetails.append('nmimsSchoolIds', nmimsSchoolIds);
+                    // journalDetails.append('nmimsCampusIds', nmimsCampusIds);
                     journalDetails.append('nmimsFacultiesIds', nmimsFacultiesIds);
                     journalDetails.append('allAuthorsIds', allAuthorsIds);
                     journalDetails.append('impactFactor', impactFactor);
@@ -1456,8 +1476,8 @@
                         document.querySelector('#uploadNewSupportDocumentDiv').classList.remove('d-none');
                         document.querySelector('#journal-data-file-edit').classList.remove('d-none');
 
-                        const schoolDataIdsStored = rowToBeUpdated.getAttribute('data-school-ids');
-                        console.log('schoolDataIdsStored ===>>>>>', schoolDataIdsStored);
+                        // const schoolDataIdsStored = rowToBeUpdated.getAttribute('data-school-ids');
+                        // console.log('schoolDataIdsStored ===>>>>>', schoolDataIdsStored);
 
                         // for button visualization
                         submitBtn.classList.add('d-none');
@@ -1472,6 +1492,9 @@
                         const pages = rowToBeUpdated.getAttribute('data-pages');
                         const issnNo = rowToBeUpdated.getAttribute('data-issn-no');
                         const dateOfPublishing = rowToBeUpdated.getAttribute('data-date-of-publishing');
+                        document.getElementById('nmims-campus').value = rowToBeUpdated.getAttribute('data-nmims-campus');
+                        document.getElementById('nmims-school').value = rowToBeUpdated.getAttribute('data-nmims-school');
+
                         document.getElementById('impact-factor').value = rowToBeUpdated.getAttribute('data-impact-factors');
                         document.getElementById('foreign-author-no').value = rowToBeUpdated.getAttribute('data-foreign-auhtor-no')
                         document.getElementById('foreign-authors-name').value = rowToBeUpdated.getAttribute('data-foreign-authors-name')
@@ -1519,22 +1542,22 @@
                         document.getElementById('nmims-authors-count').value = rowToBeUpdated.getAttribute('data-nmims-author-count');
                         // const campusValuesIds = rowToBeUpdated.getAttribute('data-campus-ids');
                         // console.log('campusValuesIds ===>>>>>>', campusValuesIds);
-                        const campusValuesIds = rowToBeUpdated.getAttribute('data-campus-ids').split(',');
-                        const selectElement = document.getElementById("nmims-campus-list");
+                        // const campusValuesIds = rowToBeUpdated.getAttribute('data-campus-ids').split(',');
+                        // const selectElement = document.getElementById("nmims-campus-list");
 
-                        for (const option of selectElement.options) {
-                            option.selected = campusValuesIds.includes(option.value);
-                        }
+                        // for (const option of selectElement.options) {
+                        //     option.selected = campusValuesIds.includes(option.value);
+                        // }
 
-                        const campusIdsArray = rowToBeUpdated.getAttribute('data-campus-ids').split(',').map(str => parseInt(str.trim(), 10));
-                        const schoolIdsArray = rowToBeUpdated.getAttribute('data-school-ids').split(',').map(str => parseInt(str.trim(), 10));
+                        // const campusIdsArray = rowToBeUpdated.getAttribute('data-campus-ids').split(',').map(str => parseInt(str.trim(), 10));
+                        // const schoolIdsArray = rowToBeUpdated.getAttribute('data-school-ids').split(',').map(str => parseInt(str.trim(), 10));
 
                         const nmimsAuthorsIdsArray = rowToBeUpdated.getAttribute('data-nmims-faculty-ids').split(',').map(str => parseInt(str.trim(), 10));
                         const allArticleAuthorsIdsArray = rowToBeUpdated.getAttribute('data-article-faculties-ids').split(',').map(str => parseInt(str.trim(), 10));
                         const policyCadreIdsArray = rowToBeUpdated.getAttribute('data-policy-cadre-ids').split(',').map(str => parseInt(str.trim(), 10));
                         // const impactFactorIdsArray = rowToBeUpdated.getAttribute('data-imapcat-factor-ids').split(',').map(str => parseInt(str.trim(), 10));
-                        nmimsCampusStoredIds = { 'nmimsCampus': campusIdsArray }
-                        nmimsSchoolStoredIds = { 'nmimsSchool': schoolIdsArray };
+                        // nmimsCampusStoredIds = { 'nmimsCampus': campusIdsArray }
+                        // nmimsSchoolStoredIds = { 'nmimsSchool': schoolIdsArray };
                         nmimsAuthorsStoredIds = { 'nmimsInternalFaculty': nmimsAuthorsIdsArray };
                         journalArtileAllAothorsIds = { 'authorsList': allArticleAuthorsIdsArray };
                         policyCadreStoredIds = { 'policyCadre': policyCadreIdsArray };
@@ -1561,190 +1584,190 @@
                         ugcIndexedNo.checked = ugcIndexedCategory !== 'Yes';
 
 
-                        const nmimsSchoolList = document.getElementById('school-data-list').dataset.school;
+                        // const nmimsSchoolList = document.getElementById('school-data-list').dataset.school;
 
-                        const schoolDataList = JSON.parse(nmimsSchoolList);
+                        // const schoolDataList = JSON.parse(nmimsSchoolList);
 
-                        let schoolArr = [];
+                        // let schoolArr = [];
 
-                        Array.from(schoolDataList).forEach(data => {
-                            Array.from(schoolIdsArray).forEach(sd => {
-                                if (data.id == sd) {
-                                    schoolArr.push(data.id)
-                                }
-                            })
-                        })
+                        // Array.from(schoolDataList).forEach(data => {
+                        //     Array.from(schoolIdsArray).forEach(sd => {
+                        //         if (data.id == sd) {
+                        //             schoolArr.push(data.id)
+                        //         }
+                        //     })
+                        // })
 
-                        const selectedSchool = schoolDataList.map(school => ({
-                            value: school.id,
-                            text: `${school.school_name}`
-                        }));
+                        // const selectedSchool = schoolDataList.map(school => ({
+                        //     value: school.id,
+                        //     text: `${school.school_name}`
+                        // }));
 
                         //school tom select
-                        const schholTomSelectlist = new TomSelect("#nmims-school-list", {
-                            options: selectedSchool,
-                            items: schoolArr,
-                            // placeholder : "Select Options",
-                            hidePlaceholder: true,
-                            create: false,
-                            plugins: ['remove_button'],
-                            onItemAdd: function () {
-                                this.setTextboxValue('');
-                                this.refreshOptions();
-                            },
-                            render: {
-                                option: function (data, escape) {
-                                    return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
-                                },
-                                item: function (data, escape) {
-                                    return '<div>' + escape(data.text) + '</div>';
-                                }
-                            },
-                            onDelete: function (values) {
-                                console.log('Remove button clicked :::::', values);
+                        // const schholTomSelectlist = new TomSelect("#nmims-school-list", {
+                        //     options: selectedSchool,
+                        //     items: schoolArr,
+                        //     // placeholder : "Select Options",
+                        //     hidePlaceholder: true,
+                        //     create: false,
+                        //     plugins: ['remove_button'],
+                        //     onItemAdd: function () {
+                        //         this.setTextboxValue('');
+                        //         this.refreshOptions();
+                        //     },
+                        //     render: {
+                        //         option: function (data, escape) {
+                        //             return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                        //         },
+                        //         item: function (data, escape) {
+                        //             return '<div>' + escape(data.text) + '</div>';
+                        //         }
+                        //     },
+                        //     onDelete: function (values) {
+                        //         console.log('Remove button clicked :::::', values);
 
-                                const message = values.length > 1
-                                    ? `Are you sure you want to remove these ${values.length} items?`
-                                    : `Are you sure you want to remove "${values[0]}"?`;
+                        //         const message = values.length > 1
+                        //             ? `Are you sure you want to remove these ${values.length} items?`
+                        //             : `Are you sure you want to remove "${values[0]}"?`;
 
-                                Swal.fire({
-                                    title: 'Confirm Deletion',
-                                    text: message,
-                                    icon: 'warning',
-                                    showCancelButton: true,
-                                    confirmButtonColor: '#3085d6',
-                                    cancelButtonColor: '#d33',
-                                    confirmButtonText: 'Yes, delete it!'
-                                }).then((result) => {
-                                    if (result.isConfirmed) {
-                                        fetch('<%- BASE_URL %>research/journal-articles-school/nmims-school/delete', {
-                                            method: 'POST',
-                                            headers: {
-                                                'Content-Type': 'application/json'
-                                            },
-                                            body: JSON.stringify({ internalId: values, journalPaperId: journalPaperId })
-                                        })
-                                            .then(response => response.json())
-                                            .then(data => {
-                                                console.log('data ====>>>>>>>', data);
-                                                if (data.status === "Done") {
-                                                    Swal.fire(
-                                                        'Deleted!',
-                                                        'Your item(s) has been deleted.',
-                                                        'success'
-                                                    );
+                        //         Swal.fire({
+                        //             title: 'Confirm Deletion',
+                        //             text: message,
+                        //             icon: 'warning',
+                        //             showCancelButton: true,
+                        //             confirmButtonColor: '#3085d6',
+                        //             cancelButtonColor: '#d33',
+                        //             confirmButtonText: 'Yes, delete it!'
+                        //         }).then((result) => {
+                        //             if (result.isConfirmed) {
+                        //                 fetch('<%- BASE_URL %>research/journal-articles-school/nmims-school/delete', {
+                        //                     method: 'POST',
+                        //                     headers: {
+                        //                         'Content-Type': 'application/json'
+                        //                     },
+                        //                     body: JSON.stringify({ internalId: values, journalPaperId: journalPaperId })
+                        //                 })
+                        //                     .then(response => response.json())
+                        //                     .then(data => {
+                        //                         console.log('data ====>>>>>>>', data);
+                        //                         if (data.status === "Done") {
+                        //                             Swal.fire(
+                        //                                 'Deleted!',
+                        //                                 'Your item(s) has been deleted.',
+                        //                                 'success'
+                        //                             );
 
-                                                    values.forEach(value => {
-                                                        schholTomSelectlist.removeOption(value);
-                                                    });
-                                                }
-                                            })
-                                            .catch(error => {
-                                                Swal.fire(
-                                                    'Error!',
-                                                    'There was a problem with the delete operation: ' + error.message,
-                                                    'error'
-                                                );
-                                            });
-                                    }
-                                });
+                        //                             values.forEach(value => {
+                        //                                 schholTomSelectlist.removeOption(value);
+                        //                             });
+                        //                         }
+                        //                     })
+                        //                     .catch(error => {
+                        //                         Swal.fire(
+                        //                             'Error!',
+                        //                             'There was a problem with the delete operation: ' + error.message,
+                        //                             'error'
+                        //                         );
+                        //                     });
+                        //             }
+                        //         });
 
-                                return false;
-                            }
-                        });
+                        //         return false;
+                        //     }
+                        // });
 
-                        const nmimsCampusList = document.getElementById('campus-data-list').dataset.campus;
+                        // const nmimsCampusList = document.getElementById('campus-data-list').dataset.campus;
 
-                        const campusDataList = JSON.parse(nmimsCampusList);
+                        // const campusDataList = JSON.parse(nmimsCampusList);
 
-                        let cmpArray = [];
+                        // let cmpArray = [];
 
-                        Array.from(campusDataList).forEach(data => {
-                            Array.from(campusIdsArray).forEach(cmp => {
-                                if (data.id == cmp) {
-                                    cmpArray.push(data.id)
-                                }
-                            })
-                        })
+                        // Array.from(campusDataList).forEach(data => {
+                        //     Array.from(campusIdsArray).forEach(cmp => {
+                        //         if (data.id == cmp) {
+                        //             cmpArray.push(data.id)
+                        //         }
+                        //     })
+                        // })
 
-                        const selectedCampus = campusDataList.map(campus => ({
-                            value: campus.id,
-                            text: `${campus.campus_name}`
-                        }));
+                        // const selectedCampus = campusDataList.map(campus => ({
+                        //     value: campus.id,
+                        //     text: `${campus.campus_name}`
+                        // }));
 
                         //campus tom select
-                        const articleCampuslist = new TomSelect("#nmims-campus-list", {
-                            options: selectedCampus,
-                            items: cmpArray,
-                            // placeholder : "Select Options",
-                            hidePlaceholder: true,
-                            hidePlaceholder: true,
-                            create: false,
-                            plugins: ['remove_button'],
-                            onItemAdd: function () {
-                                this.setTextboxValue('');
-                                this.refreshOptions();
-                            },
-                            render: {
-                                option: function (data, escape) {
-                                    return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
-                                },
-                                item: function (data, escape) {
-                                    return '<div>' + escape(data.text) + '</div>';
-                                }
-                            },
-                            onDelete: function (values) {
-                                console.log('Remove button clicked :::::', values);
+                        // const articleCampuslist = new TomSelect("#nmims-campus-list", {
+                        //     options: selectedCampus,
+                        //     items: cmpArray,
+                        //     // placeholder : "Select Options",
+                        //     hidePlaceholder: true,
+                        //     hidePlaceholder: true,
+                        //     create: false,
+                        //     plugins: ['remove_button'],
+                        //     onItemAdd: function () {
+                        //         this.setTextboxValue('');
+                        //         this.refreshOptions();
+                        //     },
+                        //     render: {
+                        //         option: function (data, escape) {
+                        //             return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                        //         },
+                        //         item: function (data, escape) {
+                        //             return '<div>' + escape(data.text) + '</div>';
+                        //         }
+                        //     },
+                        //     onDelete: function (values) {
+                        //         console.log('Remove button clicked :::::', values);
 
-                                const message = values.length > 1
-                                    ? `Are you sure you want to remove these ${values.length} items?`
-                                    : `Are you sure you want to remove "${values[0]}"?`;
+                        //         const message = values.length > 1
+                        //             ? `Are you sure you want to remove these ${values.length} items?`
+                        //             : `Are you sure you want to remove "${values[0]}"?`;
 
-                                Swal.fire({
-                                    title: 'Confirm Deletion',
-                                    text: message,
-                                    icon: 'warning',
-                                    showCancelButton: true,
-                                    confirmButtonColor: '#3085d6',
-                                    cancelButtonColor: '#d33',
-                                    confirmButtonText: 'Yes, delete it!'
-                                }).then((result) => {
-                                    if (result.isConfirmed) {
-                                        fetch('<%- BASE_URL %>research/journal-articles-campus/nmims-campus/delete', {
-                                            method: 'POST',
-                                            headers: {
-                                                'Content-Type': 'application/json'
-                                            },
-                                            body: JSON.stringify({ internalId: values, journalPaperId: journalPaperId })
-                                        })
-                                            .then(response => response.json())
-                                            .then(data => {
-                                                console.log('data ====>>>>>>>', data);
-                                                if (data.status === "Done") {
-                                                    Swal.fire(
-                                                        'Deleted!',
-                                                        'Your item(s) has been deleted.',
-                                                        'success'
-                                                    );
+                        //         Swal.fire({
+                        //             title: 'Confirm Deletion',
+                        //             text: message,
+                        //             icon: 'warning',
+                        //             showCancelButton: true,
+                        //             confirmButtonColor: '#3085d6',
+                        //             cancelButtonColor: '#d33',
+                        //             confirmButtonText: 'Yes, delete it!'
+                        //         }).then((result) => {
+                        //             if (result.isConfirmed) {
+                        //                 fetch('<%- BASE_URL %>research/journal-articles-campus/nmims-campus/delete', {
+                        //                     method: 'POST',
+                        //                     headers: {
+                        //                         'Content-Type': 'application/json'
+                        //                     },
+                        //                     body: JSON.stringify({ internalId: values, journalPaperId: journalPaperId })
+                        //                 })
+                        //                     .then(response => response.json())
+                        //                     .then(data => {
+                        //                         console.log('data ====>>>>>>>', data);
+                        //                         if (data.status === "Done") {
+                        //                             Swal.fire(
+                        //                                 'Deleted!',
+                        //                                 'Your item(s) has been deleted.',
+                        //                                 'success'
+                        //                             );
 
-                                                    values.forEach(value => {
-                                                        articleCampuslist.removeOption(value);
-                                                    });
-                                                }
-                                            })
-                                            .catch(error => {
-                                                Swal.fire(
-                                                    'Error!',
-                                                    'There was a problem with the delete operation: ' + error.message,
-                                                    'error'
-                                                );
-                                            });
-                                    }
-                                });
+                        //                             values.forEach(value => {
+                        //                                 articleCampuslist.removeOption(value);
+                        //                             });
+                        //                         }
+                        //                     })
+                        //                     .catch(error => {
+                        //                         Swal.fire(
+                        //                             'Error!',
+                        //                             'There was a problem with the delete operation: ' + error.message,
+                        //                             'error'
+                        //                         );
+                        //                     });
+                        //             }
+                        //         });
 
-                                return false;
-                            }
-                        });
+                        //         return false;
+                        //     }
+                        // });
 
 
                         const policyCadreList = document.getElementById('policy-cadre-data-list').dataset.policy;
@@ -2111,8 +2134,8 @@
                                     console.log('data fetched')
                                     setFileNameInButtons(data)
                                     document.getElementById('view-year').innerText = data.journalAricleData.year;
-                                    document.getElementById('view-school').innerText = data.journalAricleData.associated_schools;
-                                    document.getElementById('view-campus').innerText = data.journalAricleData.associated_campuses;;
+                                    document.getElementById('view-school').innerText = data.journalAricleData.nmims_school;
+                                    document.getElementById('view-campus').innerText = data.journalAricleData.nmims_campus;;
                                     document.getElementById('view-all-authors').innerText = data.journalAricleData.all_article_authors_names;
                                     document.getElementById('view-publisher').innerText = data.journalAricleData.publisher;
                                     document.getElementById('view-nmims-authors').innerText = data.journalAricleData.internal_faculty_names;
@@ -2202,6 +2225,8 @@
                     const issnNo = document.getElementById('issn-no').value;
                     const scsCiteScore = document.getElementById('scs-cite-score').value;
                     const gsIndex = document.getElementById('gs-indexed').value;
+                    const nmimsSchool = document.getElementById('nmims-school').value;
+                    const nmimsCampus = document.getElementById('nmims-campus').value;
 
                     const foreignAuhtorNo = document.getElementById('foreign-author-no').value;
                     const foreignAuthorsName = document.getElementById('foreign-authors-name').value;
@@ -2220,15 +2245,15 @@
                     const nmimsAuthorsCount = document.getElementById('nmims-authors-count').value;
                     const impactFactor = document.getElementById('impact-factor').value;
 
-                    const nmimsSchoolArrayObject = nmimsSchoolIdsContainer[nmimsSchoolIdsContainer.length - 1];
-                    const nmimsCampusArrayObject = nmimsCampusIdsContainer[nmimsCampusIdsContainer.length - 1];
+                    // const nmimsSchoolArrayObject = nmimsSchoolIdsContainer[nmimsSchoolIdsContainer.length - 1];
+                    // const nmimsCampusArrayObject = nmimsCampusIdsContainer[nmimsCampusIdsContainer.length - 1];
                     const nmimsFacultyArrayObject = facltyContainer[facltyContainer.length - 1];
                     const allAuthorsArrayObject = allAuthorContainer[allAuthorContainer.length - 1];
                     // const impactFactorArrayObject = impactFactorContainer[impactFactorContainer.length - 1];
                     const policyCadreArrayObject = policyCadreContainer[policyCadreContainer.length - 1];
 
-                    const nmimsSchoolIds = nmimsSchoolArrayObject ? JSON.stringify(nmimsSchoolArrayObject) : JSON.stringify(nmimsSchoolStoredIds);
-                    const nmimsCampusIds = nmimsCampusArrayObject ? JSON.stringify(nmimsCampusArrayObject) : JSON.stringify(nmimsCampusStoredIds);
+                    // const nmimsSchoolIds = nmimsSchoolArrayObject ? JSON.stringify(nmimsSchoolArrayObject) : JSON.stringify(nmimsSchoolStoredIds);
+                    // const nmimsCampusIds = nmimsCampusArrayObject ? JSON.stringify(nmimsCampusArrayObject) : JSON.stringify(nmimsCampusStoredIds);
                     const nmimsFacultiesIds = nmimsFacultyArrayObject ? JSON.stringify(nmimsFacultyArrayObject) : JSON.stringify(nmimsAuthorsStoredIds);
                     const allAuthorsIds = allAuthorsArrayObject ? JSON.stringify(allAuthorsArrayObject) : JSON.stringify(journalArtileAllAothorsIds);
                     // const impactFactorIds = impactFactorArrayObject ? JSON.stringify(impactFactorArrayObject) : JSON.stringify(impactFactorStoredIds);
@@ -2238,6 +2263,8 @@
                     updatedJournalPaperDetails.append('year', year);
                     updatedJournalPaperDetails.append('scsIndex', scsIndex);
                     updatedJournalPaperDetails.append('publisher', publisher);
+                    updatedJournalPaperDetails.append('nmimsSchool', nmimsSchool);
+                    updatedJournalPaperDetails.append('nmimsCampus', nmimsCampus);
                     updatedJournalPaperDetails.append('foreignAuhtorNo', foreignAuhtorNo);
                     updatedJournalPaperDetails.append('foreignAuthorsName', foreignAuthorsName);
                     updatedJournalPaperDetails.append('noNmimsStudentAuthor', noNmimsStudentAuthor);
@@ -2259,8 +2286,8 @@
                     updatedJournalPaperDetails.append('titleOfPaper', titleOfPaper);
                     updatedJournalPaperDetails.append('journalCategory', journalCategory);
                     updatedJournalPaperDetails.append('nmimsAuthorsCount', nmimsAuthorsCount);
-                    updatedJournalPaperDetails.append('nmimsSchoolIds', nmimsSchoolIds);
-                    updatedJournalPaperDetails.append('nmimsCampusIds', nmimsCampusIds);
+                    // updatedJournalPaperDetails.append('nmimsSchoolIds', nmimsSchoolIds);
+                    // updatedJournalPaperDetails.append('nmimsCampusIds', nmimsCampusIds);
                     updatedJournalPaperDetails.append('nmimsFacultiesIds', nmimsFacultiesIds);
                     updatedJournalPaperDetails.append('allAuthorsIds', allAuthorsIds);
                     updatedJournalPaperDetails.append('impactFactor', impactFactor);
@@ -2571,17 +2598,17 @@
                 // });
 
                 // function for invention type drop down list selectedTypeOfInvention
-                function handleCampusDropDownList() {
-                    const selectedValues = Array.from(campusDropDown.options)
-                        .filter(option => option.selected)
-                        .map(option => option.value);
-                    const campusIds = selectedValues.length === 0 ? "" : selectedValues;
-                    console.log('campusIds ===>>>>>', campusIds);
-                    if (!nmimsCampusIdsContainer.some(campus => campus === campusIds)) {
-                        nmimsCampusIdsContainer.push({ 'nmimsCampus': campusIds });
-                    }
-                    console.log(" nmimsCampusIdsContainer ids :", nmimsCampusIdsContainer);
-                }
+                // function handleCampusDropDownList() {
+                //     const selectedValues = Array.from(campusDropDown.options)
+                //         .filter(option => option.selected)
+                //         .map(option => option.value);
+                //     const campusIds = selectedValues.length === 0 ? "" : selectedValues;
+                //     console.log('campusIds ===>>>>>', campusIds);
+                //     if (!nmimsCampusIdsContainer.some(campus => campus === campusIds)) {
+                //         nmimsCampusIdsContainer.push({ 'nmimsCampus': campusIds });
+                //     }
+                //     console.log(" nmimsCampusIdsContainer ids :", nmimsCampusIdsContainer);
+                // }
 
                 // function for handleCampusDropDownList drop down list 
                 function handlePolicyCadreDropDown() {
@@ -2598,23 +2625,23 @@
 
 
                 // function for  drop down list school 
-                function handleSchoolDropDownList() {
-                    const schoolOption = document.getElementById('school-option');
-                    console.log('schoolOption ankit ===>>>>>>', schoolOption.innerText);
-                    schoolOption.classList.add('d-none')
-                    // // schoolOption.removeAttribute('placeholder');
-                    // schoolOption.removeAttribute("placeholder");
-                    const selectedValues = Array.from(schoolDropDown.options)
-                        .filter(option => option.selected)
-                        .map(option => option.value);
+                // function handleSchoolDropDownList() {
+                //     const schoolOption = document.getElementById('school-option');
+                //     console.log('schoolOption ankit ===>>>>>>', schoolOption.innerText);
+                //     schoolOption.classList.add('d-none')
+                //     // // schoolOption.removeAttribute('placeholder');
+                //     // schoolOption.removeAttribute("placeholder");
+                //     const selectedValues = Array.from(schoolDropDown.options)
+                //         .filter(option => option.selected)
+                //         .map(option => option.value);
 
-                    const schoolIds = selectedValues.length === 0 ? "" : selectedValues;
-                    console.log('schoolIds ===>>>>>', schoolIds);
-                    if (!nmimsSchoolIdsContainer.some(school => school === schoolIds)) {
-                        nmimsSchoolIdsContainer.push({ 'nmimsSchool': schoolIds });
-                    }
-                    console.log("nmimsSchoolIdsContainer ids :", nmimsSchoolIdsContainer);
-                }
+                //     const schoolIds = selectedValues.length === 0 ? "" : selectedValues;
+                //     console.log('schoolIds ===>>>>>', schoolIds);
+                //     if (!nmimsSchoolIdsContainer.some(school => school === schoolIds)) {
+                //         nmimsSchoolIdsContainer.push({ 'nmimsSchool': schoolIds });
+                //     }
+                //     console.log("nmimsSchoolIdsContainer ids :", nmimsSchoolIdsContainer);
+                // }
 
                 // function for drop down list impact factor
                 // function handleImpactFactorDropDownList() {
@@ -2656,8 +2683,8 @@
 
                 }
 
-                campusDropDown.addEventListener("change", handleCampusDropDownList);
-                schoolDropDown.addEventListener("change", handleSchoolDropDownList);
+                // campusDropDown.addEventListener("change", handleCampusDropDownList);
+                // schoolDropDown.addEventListener("change", handleSchoolDropDownList);
                 policyCadreDropDown.addEventListener("change", handlePolicyCadreDropDown);
                 // impactFactorDropDown.addEventListener("change", handleImpactFactorDropDownList);
                 allAuthorsDropDown.addEventListener("change", handleAuthorsList);

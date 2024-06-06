@@ -46,34 +46,36 @@ module.exports.insertJournalPapper = async (body, files, userName) => {
     console.log('journalFiles =====>>>>>>', journalFiles)
     console.log('articleFilesNameArray ===>>>>>>', articleFilesNameArray);
     const nmimsFacultiesIds = JSON.parse(journalDetails.nmimsFacultiesIds);
-    const nmimsSchoolIds = JSON.parse(journalDetails.nmimsSchoolIds);
-    const nmimsCampusIds = JSON.parse(journalDetails.nmimsCampusIds);
+    // const nmimsSchoolIds = JSON.parse(journalDetails.nmimsSchoolIds);
+    // const nmimsCampusIds = JSON.parse(journalDetails.nmimsCampusIds);
     // const impactFactorIds = JSON.parse(journalDetails.impactFactorIds);
     const policyCadreIds = JSON.parse(journalDetails.policyCadreIds);
     const allAuthorsIds = JSON.parse(journalDetails.allAuthorsIds);
-    const schoolIdsArray = (nmimsSchoolIds.nmimsSchool || []).map(id => parseInt(id));
-    const campusIdsArray = (nmimsCampusIds.nmimsCampus || []).map(id => parseInt(id));
+
+    // const schoolIdsArray = (nmimsSchoolIds.nmimsSchool || []).map(id => parseInt(id));
+    // const campusIdsArray = (nmimsCampusIds.nmimsCampus || []).map(id => parseInt(id));
     const nmimsAuthorsArray = (nmimsFacultiesIds.nmimsInternalFaculty || []).map(id => parseInt(id));
     // const impactFactorArray = (impactFactorIds.impactFactor || []).map(id => parseInt(id));
     const policyCadreArray = (policyCadreIds.policyCadre || []).map(id => parseInt(id));
     const allAuthorsArray = (allAuthorsIds.authorsList || []).map(id => parseInt(id));
 
-    console.log('schoolIdsArray ===>>>>', schoolIdsArray);
-    console.log('campusIdsArray ===>>>>', campusIdsArray);
+    // console.log('schoolIdsArray ===>>>>', schoolIdsArray);
+    // console.log('campusIdsArray ===>>>>', campusIdsArray);
+
     console.log('nmimsAuthorsArray ===>>>>', nmimsAuthorsArray);
     // console.log('impactFactorArray ===>>>>', impactFactorArray);
     console.log('policyCadreArray ===>>>>', policyCadreArray);
     console.log('allAuthorsArray ===>>>>', allAuthorsArray);
 
-    const schoolsIdsStrings = schoolIdsArray.join(',')
-    const campusIdsString = campusIdsArray.join(',');
+    // const schoolsIdsStrings = schoolIdsArray.join(',')
+    // const campusIdsString = campusIdsArray.join(',');
     const policadreIdsstring = policyCadreArray.join(',');
     // const impacatFactorIdsString = impactFactorArray.join(',');
     const nmisAuthorIdsstring = nmimsAuthorsArray.join(',');
     const allAuthorsIdsString = allAuthorsArray.join(',');
     
 
-    const newJournalPaper = await journalPaperModel.insertJournalArticle(journalDetails, articleFilesNameArray, schoolIdsArray, campusIdsArray,
+    const newJournalPaper = await journalPaperModel.insertJournalArticle(journalDetails, articleFilesNameArray,
          policyCadreArray, allAuthorsArray, nmimsAuthorsArray, journalFiles, userName);
 
     console.log('newJournalPaper ==>>', newJournalPaper);
@@ -152,34 +154,34 @@ module.exports.updateJournalPaper = async (body, files, userName) => {
     console.log('updatedArticleFilesNameArray ===>>>>>>', updatedArticleFilesNameArray);
 
     const updateNmimsFacultiesIds = JSON.parse(updateJournalDetails.nmimsFacultiesIds);
-    const updateNmimsSchoolIds = JSON.parse(updateJournalDetails.nmimsSchoolIds);
-    const updateNmimsCampusIds = JSON.parse(updateJournalDetails.nmimsCampusIds);
+    // const updateNmimsSchoolIds = JSON.parse(updateJournalDetails.nmimsSchoolIds);
+    // const updateNmimsCampusIds = JSON.parse(updateJournalDetails.nmimsCampusIds);
     // const updateImpactFactorIds = JSON.parse(updateJournalDetails.impactFactorIds);
     const updatePolicyCadreIds = JSON.parse(updateJournalDetails.policyCadreIds);
     const updateAllAuthorsIds = JSON.parse(updateJournalDetails.allAuthorsIds);
 
-    const updateSchoolIdsArray = (updateNmimsSchoolIds.nmimsSchool || []).map(id => parseInt(id));
-    const updateCampusIdsArray = (updateNmimsCampusIds.nmimsCampus || []).map(id => parseInt(id));
+    // const updateSchoolIdsArray = (updateNmimsSchoolIds.nmimsSchool || []).map(id => parseInt(id));
+    // const updateCampusIdsArray = (updateNmimsCampusIds.nmimsCampus || []).map(id => parseInt(id));
     const updateNmimsAuthorsArray = (updateNmimsFacultiesIds.nmimsInternalFaculty || []).map(id => parseInt(id));
     // const updateImpactFactorArray = (updateImpactFactorIds.impactFactor || []).map(id => parseInt(id));
     const updatePolicyCadreArray = (updatePolicyCadreIds.policyCadre || []).map(id => parseInt(id));
     const updateAllAuthorsArray = (updateAllAuthorsIds.authorsList || []).map(id => parseInt(id));
 
-    console.log('updateSchoolIdsArray ===>>>>', updateSchoolIdsArray);
-    console.log('updateCampusIdsArray ===>>>>', updateCampusIdsArray);
+    // console.log('updateSchoolIdsArray ===>>>>', updateSchoolIdsArray);
+    // console.log('updateCampusIdsArray ===>>>>', updateCampusIdsArray);
     console.log('updateNmimsAuthorsArray ===>>>>', updateNmimsAuthorsArray);
     // console.log('updateImpactFactorArray ===>>>>', updateImpactFactorArray);
     console.log('updatePolicyCadreArray ===>>>>', updatePolicyCadreArray);
     console.log('updateAllAuthorsArray ===>>>>', updateAllAuthorsArray);
 
-    const schoolsIdsStrings = updateSchoolIdsArray.join(',')
-    const campusIdsString = updateCampusIdsArray.join(',');
+    // const schoolsIdsStrings = updateSchoolIdsArray.join(',')
+    // const campusIdsString = updateCampusIdsArray.join(',');
     const policadreIdsstring = updatePolicyCadreArray.join(',');
     // const impacatFactorIdsString = updateImpactFactorArray.join(',');
     const nmisAuthorIdsstring = updateNmimsAuthorsArray.join(',');
     const allAuthorsIdsString = updateAllAuthorsArray.join(',');
 
-    const updatedJournalData = await journalPaperModel.updateJournalPaperData(journalPaperId, updateJournalDetails, updateSchoolIdsArray, updateCampusIdsArray, updateNmimsAuthorsArray,
+    const updatedJournalData = await journalPaperModel.updateJournalPaperData(journalPaperId, updateJournalDetails, updateNmimsAuthorsArray,
          updatePolicyCadreArray, updateAllAuthorsArray, updatedArticleFilesNameArray, journalFiles, userName);
 
     console.log('data is service ==>>>', updatedJournalData);
