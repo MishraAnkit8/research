@@ -9,7 +9,8 @@ module.exports.renderMeetingStackholders = async(req, res, next) => {
     const meetingData = await meetingServices.fetchMeetingData(userName);
     res.render('meeting-stackholders' , {
         meetingData : meetingData.rows,
-        rowCount : meetingData.rowCount
+        rowCount : meetingData.rowCount,
+        userName : userName
     })
 }
 

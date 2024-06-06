@@ -9,6 +9,7 @@ module.exports.renderTeachingExecellance = async (req, res, next) => {
   console.log("teachingExecellance ==>>", teachingExecellance.rows);
   res.render("teaching-excellance", {
     teachingExecellance: teachingExecellance.rows,
+    userName : userName,
     rowCount: teachingExecellance.rowCount,
   });
 };

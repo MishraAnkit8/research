@@ -41,6 +41,7 @@ module.exports.renderChronicleEditionPage = async(req, res, next)  => {
       res.status(200).render("chronicle-edition-data", {
         status: "Done",
         viewDataById,
+        userName : userName
       });
     } else {
       console.log("Data not found for ID:", dataId);
@@ -59,6 +60,7 @@ module.exports.renderChronicleEditionPage = async(req, res, next)  => {
       res.status(200).render("chronicle-edition-data", {
         status: "Done",
         viewDataById,
+        userName : userName
       });
     } else {
       console.log("Data not found for ID:", dataId);

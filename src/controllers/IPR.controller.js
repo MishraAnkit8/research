@@ -24,7 +24,8 @@ module.exports.renderIPR = async(req, res, next) => {
             patentStatus : iprList.patentStatus,
             nmimsSchoolList : iprList.schoolList,
             nmimsCampusList : iprList.campusList,
-            patentSdgGoalData : iprList.patentSdgGoalData
+            patentSdgGoalData : iprList.patentSdgGoalData,
+            userName : userName
 
         })
 }

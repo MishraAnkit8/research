@@ -19,6 +19,7 @@ module.exports.renderPatentSubMissionAndGrant = async (req, res, next) => {
     internalFacultyData: patentSubmissionList.internalFacultyData,
     patentSdgGoalData: patentSubmissionList.patentSdgGoalData,
     patentInventionTypeData: patentSubmissionList.patentInventionTypeData,
+    userName : userName,
     errorCode: patentSubmissionList.errorCode,
   });
 };

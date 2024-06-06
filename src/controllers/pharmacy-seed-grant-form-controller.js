@@ -15,6 +15,7 @@ module.exports.renderPharmacySeedGrantform = async(req, res, next) => {
         message : pharmacySeedDetails.message,
         rowCount : pharmacySeedDetails.rowCount,
         pharmacyData : pharmacySeedDetails.pharmacyData,
+        userName : userName,
         errorCode : pharmacySeedDetails.errorCode
 
     })

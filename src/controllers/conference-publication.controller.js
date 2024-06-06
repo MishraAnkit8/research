@@ -14,6 +14,7 @@ module.exports.renderConferencePage = async (req, res, next) => {
     conferenceData: conferenceData.conferenceDataList,
     rowCount: conferenceData.rowCount,
     internalEmpList: conferenceData.internalEmpList,
+    userName : userName,
     internalFaculty: conferenceData.internalFaculty,
   });
 };

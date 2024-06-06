@@ -10,7 +10,8 @@ module.exports.renderEdietedBookPublication = async(req, res, next) => {
     if(editedBookPublicationData){
         res.render('edited-book-publication' , {
             editedBookList : editedBookPublicationData.rows,
-            rowCount : editedBookPublicationData.rowCount
+            rowCount : editedBookPublicationData.rowCount,
+            userName : userName
         })
     }
 }

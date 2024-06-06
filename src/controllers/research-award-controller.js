@@ -10,6 +10,7 @@ module.exports.renderResearchAward = async(req, res, next) => {
         status : researchAwardRenderedData.status,
         message : researchAwardRenderedData.message,
         rowCount : researchAwardRenderedData.rowCount,
+        userName : userName,
         researchAwardData : researchAwardRenderedData.researchAwardData ? researchAwardRenderedData.researchAwardData : null
     })
 }

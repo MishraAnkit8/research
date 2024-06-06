@@ -93,7 +93,8 @@ module.exports.renderChronicleEdition = async (req, res, next) => {
   const rowCount = vcRowCount + researchCount + meetingRowCount + brandingRowCount;
   res.render("chronicle-edition", {
     chronicleEditorData,
-    rowCount
+    rowCount,
+    userName : userName
   });
 };
 
