@@ -6,6 +6,7 @@ const { asyncErrorHandler } = require('../middleware/error.middleware');
 const { validateCaseStudy } = require('../middleware/express-validator/case-study.validator');
 const { validateJournalPaper } = require('../middleware/express-validator/journal-paper.validators');
 const { validateResearchSeminar } = require('../middleware/express-validator/research-seminar.validators');
+const { validateConference } = require('../middleware/express-validator/conference.validator');
 
 //middleware for download file
 const downloadFileService = require('../middleware/download-file.middleware');
@@ -48,6 +49,14 @@ router.get('/journal-paper', asyncErrorHandler(authMiddleware), asyncErrorHandle
 router.post('/journal-paper/insert', upload.array('articlesDocuments', 5), asyncErrorHandler(authMiddleware), asyncErrorHandler(journalController.insertJournalPapperDetails));
 router.post('/journal-paper/update', upload.array('articlesDocuments', 5), asyncErrorHandler(authMiddleware), asyncErrorHandler(journalController.updateJournalPaper));
 router.post('/journal-paper/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(journalController.delJournalPaper));
+//delete form drop down list
+router.post('/journal-articles-school/nmims-school/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(journalController.deleteJournalArticleSchool));
+router.post('/journal-articles-campus/nmims-campus/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(journalController.deleteJournalArticleCampus));
+router.post('/journal-articles-policy-cadre/nmims-policy-cadre/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(journalController.deleteJournalArticlePolicyCadre));
+router.post('/journal-articles-internal-nmims-authors/internal-nmims-authors/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(journalController.deleteJournalArticleIntrenalFaculty));
+router.post('/journal-articles-all-authors/all-authors/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(journalController.deleteJournalArticleAllAuthors));
+
+
 router.post('/journal-paper/view', asyncErrorHandler(authMiddleware), asyncErrorHandler(journalController.viewJournalPaper));
 router.get('/journal-paper/download/:fileName', asyncErrorHandler(authMiddleware), downloadFileService.downloadFile);
 
@@ -74,6 +83,13 @@ router.post('/conference-publication/update', upload.fields([
     { name: 'conferenceDocument', maxCount: 5 },
     { name: 'conferenceProof', maxCount: 5 }])
     , asyncErrorHandler(authMiddleware), asyncErrorHandler(conferenceController.updateConferencePublication));
+
+
+router.post('/conference-publication/external-details', asyncErrorHandler(conferenceController.retriveExternalDetails));
+router.post('/conference-publication/external-faculty-data-details/delete', asyncErrorHandler(conferenceController.deleteExternalFacultyDetails));
+router.post('/conference-publication/internal-faculty-data-details/delete', asyncErrorHandler(conferenceController.deleteInternalId));
+
+
 router.get('/conference-publication/download/:fileName', downloadFileService.downloadFile);
 router.get('/conference-publication/viewing/:fileName', downloadFileService.viewFile);
 
@@ -83,6 +99,15 @@ router.post('/patent-submission/insert', upload.array('patentFilesData', 5), asy
 router.post('/patent-submission/update', upload.array('patentFilesData', 5), asyncErrorHandler(authMiddleware), asyncErrorHandler(patentSubmission.updatePatentSubMissiom));
 router.post('/patent-submission/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(patentSubmission.deletePatentData));
 router.post('/patent-submission/view', asyncErrorHandler(authMiddleware), asyncErrorHandler(patentSubmission.viewPatentSubmissionData));
+
+router.post('/patent-submission/external-details', asyncErrorHandler(patentSubmission.retriveExternalDetails));
+router.post('/patent-submission/invention-type-details/delete', asyncErrorHandler(patentSubmission.deletePatentInvetionType));
+router.post('/patent-submission/patent-stage/delete', asyncErrorHandler(patentSubmission.detelePatentStatus));
+router.post('/patent-submission/patent-sdg-goals/delete', asyncErrorHandler(patentSubmission.deletePatentSdgGoals));
+router.post('/patent-submission/internal-faculty/delete', asyncErrorHandler(patentSubmission.deletePatentInternalFaculty));
+router.post('/patent-submission/external-faculty-data-details/delete', asyncErrorHandler(patentSubmission.deletePatentExternalFaculty));
+
+
 router.get('/patent-submission/download/:fileName', downloadFileService.downloadFile);
 router.get('/patent-submission/viewing/:fileName', downloadFileService.viewFile);
 
@@ -92,7 +117,10 @@ router.post('/research-project-grant/insert', upload.array('researchSupportingDo
 router.post('/research-project-grant/update', upload.array('researchSupportingDocument', 5), asyncErrorHandler(researchProjGrantController.updatedConsultantData));
 router.post('/research-project-grant/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(researchProjGrantController.deleteResearchConsultant));
 router.post('/research-project-grant/view', asyncErrorHandler(authMiddleware), asyncErrorHandler(researchProjGrantController.viewResearchProjectConsultancy));
-// router.post('/research-project-grant/faculty-insert', asyncErrorHandler(researchProjGrantController.insertExternalFacultyDetails));
+router.post('/research-project-grant/external-details', asyncErrorHandler(researchProjGrantController.retriveExternalDetails));
+router.post('/research-project-grant/external-faculty-data-details/delete', asyncErrorHandler(researchProjGrantController.deleteExternalFacultyData));
+router.post('/research-project-grant/consultancy-internal-faculty/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(researchProjGrantController.deleteInternalFaculty));
+
 
 router.get('/research-project-grant/download/:fileName', downloadFileService.downloadFile);
 router.get('/research-project-grant/viewing/:fileName', downloadFileService.viewFile);
@@ -116,7 +144,16 @@ router.get('/IPR', asyncErrorHandler(authMiddleware), asyncErrorHandler(IPRContr
 router.post('/IPR/insert', upload.array('supportingDocuments', 5), asyncErrorHandler(authMiddleware), asyncErrorHandler(IPRController.IPRInsertedData));
 router.post('/IPR/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(IPRController.deleteIPRData));
 router.post('/IPR/update', upload.array('supportingDocuments', 5), asyncErrorHandler(authMiddleware),asyncErrorHandler(IPRController.updateIPRRowData));
+router.post('/IPR/external-details', asyncErrorHandler(IPRController.retriveExternalDetails));
+router.post('/IPR/external-faculty-data-details/delete', asyncErrorHandler(IPRController.deletePatentExternalFaculty));
 router.post('/IPR/view', asyncErrorHandler(IPRController.viewIprRecordData));
+
+//delete form drop down list
+router.post('/IPR/patent-status/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(IPRController.deletePatentStage));
+router.post('/IPR/ipr-invention-type/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(IPRController.deleteInventionDetails));
+router.post('/IPR/ipr-internal-faculty/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(IPRController.deleteInternalFaculty));
+router.post('/IPR/ipr-sdg-goals/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(IPRController.deleteSdgGoals));
+
 router.get('/IPR/download/:fileName', downloadFileService.downloadFile);
 router.get('/IPR/viewing/:fileName', downloadFileService.viewFile);
 
@@ -169,6 +206,22 @@ router.post('/pharmacy-seed-grant-form/investigator-research-implementation/inse
 router.post('/pharmacy-seed-grant-form/investigator-research-completed/insert', asyncErrorHandler(authMiddleware), asyncErrorHandler(pharmacySeedGrantForm.investigatorResearchCompleted));
 router.post('/pharmacy-seed-grant-form/details', asyncErrorHandler(authMiddleware), asyncErrorHandler(pharmacySeedGrantForm.retriveDetailsDataPharamacy));
 router.post('/pharmacy-seed-grant-form/update', asyncErrorHandler(authMiddleware), asyncErrorHandler(pharmacySeedGrantForm.updatePharmacyDetailsData));
+
+//delete pharamy main row record 
+router.post('/pharmacy-seed-grant-form/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(pharmacySeedGrantForm.deletePharmcySeedDetails));
+
+// delete formacy details like education experience
+
+router.post('/pharmacy-seed-grant-form/education-details/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(pharmacySeedGrantForm.deleteEducationalDetails));
+router.post('/pharmacy-seed-grant-form/experience-details/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(pharmacySeedGrantForm.deleteExperienceDetails));
+router.post('/pharmacy-seed-grant-form/book-details/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(pharmacySeedGrantForm.deleteBookDetails));
+router.post('/pharmacy-seed-grant-form/book-chapter-details/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(pharmacySeedGrantForm.deleteBookChapterDetails));
+router.post('/pharmacy-seed-grant-form/publication-details/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(pharmacySeedGrantForm.deletePublicationDetails));
+router.post('/pharmacy-seed-grant-form/patent-details/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(pharmacySeedGrantForm.deletePatentDetails));
+router.post('/pharmacy-seed-grant-form/implementation-details/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(pharmacySeedGrantForm.deleteImplementationDetails));
+router.post('/pharmacy-seed-grant-form/completed-details/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(pharmacySeedGrantForm.deleteCompleteDetails));
+
+
 
 
 

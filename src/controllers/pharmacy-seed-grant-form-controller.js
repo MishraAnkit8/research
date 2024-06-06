@@ -15,6 +15,7 @@ module.exports.renderPharmacySeedGrantform = async(req, res, next) => {
         message : pharmacySeedDetails.message,
         rowCount : pharmacySeedDetails.rowCount,
         pharmacyData : pharmacySeedDetails.pharmacyData,
+        userName : userName,
         errorCode : pharmacySeedDetails.errorCode
 
     })
@@ -288,4 +289,155 @@ module.exports.updatePharmacyDetailsData = async(req, res, next) => {
         message : updatePharmacyDetail.message,
         errorCode : updatePharmacyDetail.errorCode ? updatePharmacyDetail.errorCode : null
     })
+}
+
+
+module.exports.deleteEducationalDetails = async(req, res, next) => {
+    console.log(' data in controller for deleteEducationalDetails ===>>>>>', req.body);
+    const  userName = req.body.username;
+    console.log('userName in controller  ===>>>>>>', userName);
+    const deleteEducationalResponce = await pharmacyService.deleteEducationalData(req.body, userName);
+
+    console.log('deleteEducationalResponce ====>>>>', deleteEducationalResponce)
+
+    const statusCode = deleteEducationalResponce.status === 'Done' ? 200 : (deleteEducationalResponce.errorCode ? 400 : 500);
+    res.status(statusCode).send({
+        status : deleteEducationalResponce.status,
+        message : deleteEducationalResponce.message,
+        errorCode : deleteEducationalResponce.errorCode ? deleteEducationalResponce.errorCode : null
+    })
+}
+
+module.exports.deleteExperienceDetails = async(req, res, next) => {
+    console.log(' data in controller for deleteExperienceDetails ===>>>>>', req.body);
+    const  userName = req.body.username;
+    console.log('userName in controller  ===>>>>>>', userName);
+    const deleteExperienceResponce = await pharmacyService.deleteExperienceData(req.body, userName);
+
+    console.log('deleteExperienceResponce ====>>>>', deleteExperienceResponce)
+
+    const statusCode = deleteExperienceResponce.status === 'Done' ? 200 : (deleteExperienceResponce.errorCode ? 400 : 500);
+    res.status(statusCode).send({
+        status : deleteExperienceResponce.status,
+        message : deleteExperienceResponce.message,
+        errorCode : deleteExperienceResponce.errorCode ? deleteExperienceResponce.errorCode : null
+    })
+}
+
+module.exports.deleteBookDetails = async(req, res, next) => {
+    console.log(' data in controller for deleteBookDetails ===>>>>>', req.body);
+    const  userName = req.body.username;
+    console.log('userName in controller  ===>>>>>>', userName);
+    const deleteBookDetailsResponce = await pharmacyService.deleteBookData(req.body, userName);
+
+    console.log('deleteBookDetailsResponce ====>>>>', deleteBookDetailsResponce)
+
+    const statusCode = deleteBookDetailsResponce.status === 'Done' ? 200 : (deleteBookDetailsResponce.errorCode ? 400 : 500);
+    res.status(statusCode).send({
+        status : deleteBookDetailsResponce.status,
+        message : deleteBookDetailsResponce.message,
+        errorCode : deleteBookDetailsResponce.errorCode ? deleteBookDetailsResponce.errorCode : null
+    })
+}
+
+module.exports.deleteBookChapterDetails = async(req, res, next) => {
+    console.log(' data in controller for deleteBookChapterDetails ===>>>>>', req.body);
+    const  userName = req.body.username;
+    console.log('userName in controller  ===>>>>>>', userName);
+    const deleteBookChapterResponce = await pharmacyService.deleteBookChapterData(req.body, userName);
+
+    console.log('deleteBookChapterResponce ====>>>>', deleteBookChapterResponce)
+
+    const statusCode = deleteBookChapterResponce.status === 'Done' ? 200 : (deleteBookChapterResponce.errorCode ? 400 : 500);
+    res.status(statusCode).send({
+        status : deleteBookChapterResponce.status,
+        message : deleteBookChapterResponce.message,
+        errorCode : deleteBookChapterResponce.errorCode ? deleteBookChapterResponce.errorCode : null
+    })
+}
+
+module.exports.deletePublicationDetails = async(req, res, next) => {
+    console.log(' data in controller for deletePublicationDetails ===>>>>>', req.body);
+    const  userName = req.body.username;
+    console.log('userName in controller  ===>>>>>>', userName);
+
+    const deletePublicationResponce = await pharmacyService.deletePublicationData(req.body, userName);
+
+    console.log('deletePublicationResponce ====>>>>', deletePublicationResponce)
+
+    const statusCode = deletePublicationResponce.status === 'Done' ? 200 : (deletePublicationResponce.errorCode ? 400 : 500);
+    res.status(statusCode).send({
+        status : deletePublicationResponce.status,
+        message : deletePublicationResponce.message,
+        errorCode : deletePublicationResponce.errorCode ? deletePublicationResponce.errorCode : null
+    })
+}
+
+module.exports.deletePatentDetails = async(req, res, next) => {
+    console.log(' data in controller for deletePatentDetails ===>>>>>', req.body);
+    const  userName = req.body.username;
+    console.log('userName in controller  ===>>>>>>', userName);
+    const deletePatentResponce = await pharmacyService.deletePatentData(req.body, userName);
+
+    console.log('deletePatentResponce ====>>>>', deletePatentResponce)
+
+    const statusCode = deletePatentResponce.status === 'Done' ? 200 : (deletePatentResponce.errorCode ? 400 : 500);
+    res.status(statusCode).send({
+        status : deletePatentResponce.status,
+        message : deletePatentResponce.message,
+        errorCode : deletePatentResponce.errorCode ? deletePatentResponce.errorCode : null
+    })
+}
+
+module.exports.deleteImplementationDetails = async(req, res, next) => {
+    console.log(' data in controller for deleteImplementationDetails ===>>>>>', req.body);
+    const  userName = req.body.username;
+    console.log('userName in controller  ===>>>>>>', userName);
+    const deleteImpleResponce = await pharmacyService.deleteImplementationData(req.body, userName);
+
+    console.log('deleteImpleResponce ====>>>>', deleteImpleResponce)
+
+    const statusCode = deleteImpleResponce.status === 'Done' ? 200 : (deleteImpleResponce.errorCode ? 400 : 500);
+    res.status(statusCode).send({
+        status : deleteImpleResponce.status,
+        message : deleteImpleResponce.message,
+        errorCode : deleteImpleResponce.errorCode ? deleteImpleResponce.errorCode : null
+    })
+}
+
+module.exports.deleteCompleteDetails = async(req, res, next) => {
+    console.log(' data in controller for deleteCompleteDetails ===>>>>>', req.body);
+    const  userName = req.body.username;
+    console.log('userName in controller  ===>>>>>>', userName);
+    const deleteResCompletedResponce = await pharmacyService.deleteCompleteDetails(req.body, userName);
+
+    console.log('deleteResCompletedResponce ====>>>>', deleteResCompletedResponce)
+
+    const statusCode = deleteResCompletedResponce.status === 'Done' ? 200 : (deleteResCompletedResponce.errorCode ? 400 : 500);
+    res.status(statusCode).send({
+        status : deleteResCompletedResponce.status,
+        message : deleteResCompletedResponce.message,
+        errorCode : deleteResCompletedResponce.errorCode ? deleteResCompletedResponce.errorCode : null
+    })
+}
+
+
+
+module.exports.deletePharmcySeedDetails = async(req, res, next) => {
+
+    console.log(' data in controller for deletePharmcySeedDetails ===>>>>>', req.body);
+    const  userName = req.body.username;
+    console.log('userName in controller  ===>>>>>>', userName);
+
+    const deletePharmacyData = await pharmacyService.deletePharmacyDetails(req.body, userName);
+
+    console.log('deletePharmacyData ====>>>>', deletePharmacyData)
+
+    const statusCode = deletePharmacyData.status === 'Done' ? 200 : (deletePharmacyData.errorCode ? 400 : 500);
+    res.status(statusCode).send({
+        status : deletePharmacyData.status,
+        message : deletePharmacyData.message,
+        errorCode : deletePharmacyData.errorCode ? deletePharmacyData.errorCode : null
+    })
+
 }

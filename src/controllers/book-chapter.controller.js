@@ -11,7 +11,7 @@ module.exports.renderBookChapterPublication = async (req, res, next) => {
     res.render("book-chapter-publication", {
       bookChapterData: bookChapterData.rows,
       rowCount: bookChapterData.rowCount,
-      userName,
+      userName : userName
     });
   }
 };

@@ -10,7 +10,8 @@ module.exports.renderBookPublication = async(req, res, next) => {
     if(fetchBookPublicationData){
         res.render('book-publication' , {
             bookPublicationList : fetchBookPublicationData.rows,
-            rowCount : fetchBookPublicationData.rowCount
+            rowCount : fetchBookPublicationData.rowCount,
+            userName : userName
         })
     }
 }

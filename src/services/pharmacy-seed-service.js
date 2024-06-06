@@ -490,13 +490,179 @@ module.exports.updatePharmacyData = async(body, userName) => {
 
 
 
-// function splitArrayIntoChunks(arr, chunkSize) {
-//     const result = [];
-//     for (let i = 0; i < arr.length; i += chunkSize) {
-//       result.push(arr.slice(i, i + chunkSize));
-//     }
-//     return result;
-//   }
+module.exports.deleteEducationalData = async(body, userName) => {
+    console.log('body in service ====>>>>>', body);
+    const relatedTableRowId = body.tableId;
+    console.log('userName in service ====>>>>>', userName);
+    const educationalData = await pharmacySeedModels.deleteEducationalDetails(relatedTableRowId, userName);
+
+    console.log('educationalData ====>>>>>>', educationalData);
+    return educationalData.status === "Done" ? {
+        status : educationalData.status,
+        message : educationalData.message,
+        rowCount : educationalData.rowCount
+    } : {
+        status : educationalData.status,
+        message : educationalData.message,
+        errorCode : educationalData.errorCode
+    }
+
+    
+}
+
+module.exports.deleteExperienceData = async(body, userName) => {
+    console.log('body in service ====>>>>>', body);
+    const relatedTableRowId = body.tableId;
+    console.log('userName in service ====>>>>>', userName);
+    const experienceData = await pharmacySeedModels.deleteExperienceDetails(relatedTableRowId, userName);
+
+    console.log('experienceData ====>>>>>>', experienceData);
+    return experienceData.status === "Done" ? {
+        status : experienceData.status,
+        message : experienceData.message,
+        rowCount : experienceData.rowCount
+    } : {
+        status : experienceData.status,
+        message : experienceData.message,
+        errorCode : experienceData.errorCode
+    }
+    
+}
+
+module.exports.deleteBookData = async(body, userName) => {
+    console.log('body in service ====>>>>>', body);
+    const relatedTableRowId = body.tableId;
+    console.log('userName in service ====>>>>>', userName);
+    const bookData = await pharmacySeedModels.deleteBookDetails(relatedTableRowId, userName);
+
+    console.log('bookData ====>>>>>>', bookData);
+    return bookData.status === "Done" ? {
+        status : bookData.status,
+        message : bookData.message,
+        rowCount : bookData.rowCount
+    } : {
+        status : bookData.status,
+        message : bookData.message,
+        errorCode : bookData.errorCode
+    }
+    
+}
+
+module.exports.deleteBookChapterData = async(body, userName) => {
+    console.log('body in service ====>>>>>', body);
+    const relatedTableRowId = body.tableId;
+    console.log('userName in service ====>>>>>', userName);
+    const bookChapterData = await pharmacySeedModels.deleteBookChapterDetails(relatedTableRowId, userName);
+
+    console.log('bookChapterData ====>>>>>>', bookChapterData);
+    return bookChapterData.status === "Done" ? {
+        status : bookChapterData.status,
+        message : bookChapterData.message,
+        rowCount : bookChapterData.rowCount
+    } : {
+        status : bookChapterData.status,
+        message : bookChapterData.message,
+        errorCode : bookChapterData.errorCode
+    }
+   
+}
+
+module.exports.deletePublicationData = async(body, userName) => {
+    console.log('body in service ====>>>>>', body);
+    const relatedTableRowId = body.tableId;
+    console.log('userName in service ====>>>>>', userName);
+    const publicationData = await pharmacySeedModels.deletePublicationDetails(relatedTableRowId, userName);
+
+    console.log('publicationData ====>>>>>>', publicationData);
+    return publicationData.status === "Done" ? {
+        status : publicationData.status,
+        message : publicationData.message,
+        rowCount : publicationData.rowCount
+    } : {
+        status : publicationData.status,
+        message : publicationData.message,
+        errorCode : publicationData.errorCode
+    }
+        
+}
+
+module.exports.deletePatentData = async(body, userName) => {
+    console.log('body in service ====>>>>>', body);
+    const relatedTableRowId = body.tableId;
+    console.log('userName in service ====>>>>>', userName);
+    const patentData = await pharmacySeedModels.deletePatentDetails(relatedTableRowId, userName);
+
+    console.log('patentData ====>>>>>>', patentData);
+    return patentData.status === "Done" ? {
+        status : patentData.status,
+        message : patentData.message,
+        rowCount : patentData.rowCount
+    } : {
+        status : patentData.status,
+        message : patentData.message,
+        errorCode : patentData.errorCode
+    }
+   
+}
+
+module.exports.deleteImplementationData = async(body, userName) => {
+    console.log('body in service ====>>>>>', body);
+    const relatedTableRowId = body.tableId;
+    console.log('userName in service ====>>>>>', userName);
+    const researchImplementationData = await pharmacySeedModels.deleteImplementationDetails(relatedTableRowId, userName);
+
+    console.log('researchImplementationData ====>>>>>>', researchImplementationData);
+    return researchImplementationData.status === "Done" ? {
+        status : researchImplementationData.status,
+        message : researchImplementationData.message,
+        rowCount : researchImplementationData.rowCount
+    } : {
+        status : researchImplementationData.status,
+        message : researchImplementationData.message,
+        errorCode : researchImplementationData.errorCode
+    }
+
+
+   
+}
+
+module.exports.deleteCompleteData = async(body, userName) => {
+    console.log('body in service ====>>>>>', body);
+    const relatedTableRowId = body.tableId;
+    console.log('userName in service ====>>>>>', userName);
+    const researchCompletedRes = await pharmacySeedModels.deleteCompleteDetails(relatedTableRowId, userName);
+
+    console.log('researchCompletedRes ====>>>>>>', researchCompletedRes);
+   return researchCompletedRes.status === "Done" ? {
+        status : researchCompletedRes.status,
+        message : researchCompletedRes.message,
+        rowCount : researchCompletedRes.rowCount
+    } : {
+        status : researchCompletedRes.status,
+        message : researchCompletedRes.message,
+        errorCode : researchCompletedRes.errorCode
+    }
+   
+}
+
+module.exports.deletePharmacyDetails = async(body, userName) => {
+    const pharmacyId = body.pharmacyId;
+
+    const pharamcySeedDbResponse = await pharmacySeedModels.deletePharmacySeedData(pharmacyId, userName);
+
+    console.log('pharamcySeedDbResponse ====>>>>', pharamcySeedDbResponse);
+    return pharamcySeedDbResponse.status === "Done" ? {
+        status : pharamcySeedDbResponse.status,
+        message : pharamcySeedDbResponse.message,
+        rowCount : pharamcySeedDbResponse.rowCount
+    } : {
+        status : pharamcySeedDbResponse.status,
+        message : pharamcySeedDbResponse.message,
+        errorCode : pharamcySeedDbResponse.errorCode
+    }
+
+}
+
 
 function groupArrayIntoChunks(array, chunkSize) {
     let groupedArray = [];

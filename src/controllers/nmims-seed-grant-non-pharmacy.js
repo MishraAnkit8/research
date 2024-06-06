@@ -14,6 +14,7 @@ module.exports.renderNmimsSeedGrantNonFormacy = async(req, res, next) => {
       rowCount: renderSeedGrantFormData.rowCount,
       facultyData: renderSeedGrantFormData.facultyData,
       totalPayment: renderSeedGrantFormData.totalPayment,
+      userName : userName,
       errorCode: renderSeedGrantFormData.errorCode
         ? renderSeedGrantFormData.errorCode
         : null,

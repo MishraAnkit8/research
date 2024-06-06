@@ -1,10 +1,17 @@
 const chronicleEditionService = require('../services/chronicle-editor.service');
 
+const { getRedisData } = require('../../utils/redis.utils');
+
 module.exports.renderChronicleEditionPage = async(req, res, next)  => {
   const dataId = req.params.id;
   console.log('dataId ====>>>', dataId);
 
-  const chronicleDataController = await chronicleEditionService.renderChronicleEdition();
+  const sessionid = req.cookies.session;
+  let sessionData = await getRedisData(`${sessionid}:session`)
+  const  userName = sessionData.username;
+  console.log('userName in controller  ===>>>>>>', userName);
+
+  const chronicleDataController = await chronicleEditionService.renderChronicleEdition(userName);
 
   console.log(' supporting text ===>>>', req.params.textdata)
   // for vc data
@@ -34,6 +41,7 @@ module.exports.renderChronicleEditionPage = async(req, res, next)  => {
       res.status(200).render("chronicle-edition-data", {
         status: "Done",
         viewDataById,
+        userName : userName
       });
     } else {
       console.log("Data not found for ID:", dataId);
@@ -52,6 +60,7 @@ module.exports.renderChronicleEditionPage = async(req, res, next)  => {
       res.status(200).render("chronicle-edition-data", {
         status: "Done",
         viewDataById,
+        userName : userName
       });
     } else {
       console.log("Data not found for ID:", dataId);

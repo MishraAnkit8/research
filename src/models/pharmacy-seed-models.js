@@ -1,7 +1,7 @@
 const { research_read_db, research_write_db } = require('../../config/db-configs');
 const dbPoolManager = require('../../config/db-pool-manager');
 const moment = require('moment');
-// const { investigatorPublication } = require('../controllers/pharmacy-seed-grant-form-controller');
+// const { investigatorPublication } = require('../modelss/pharmacy-seed-grant-form-models');
 
 const researchDbR = dbPoolManager.get('researchDbR', research_read_db);
 const researchDbW = dbPoolManager.get('researchDbW', research_write_db);
@@ -47,6 +47,8 @@ module.exports.renderPharmacyData = async(userName) => {
         ps.pharmacy_references,
         ps.project_background,
         ps.hypothesis,
+        ps.experience_years,
+        ps.experience_months,
         ps.updated_by AS pharmacy_seed_updated_by,
         ps.created_by AS pharmacy_seed_created_by,
         ps.created_at AS pharmacy_seed_created_at,
@@ -311,7 +313,7 @@ module.exports.insertPharmacyDetails = async (pharmacySeedGrantDetails, userName
         chemicalsAmount, chemicalsJustification, biomarkersReferenceAmount, biomarkersReferenceJustifications, hplcAmount,
         hplcJustification, experimentalAnimalsAmount, experimentalAnimalsJustification, cellLinesAmount, cellLinesJustifications,
         kitsAnalysisAmount, kitsAnalysisJustifications, evaluationAnalysisAmount, evaluationAnalysisJustification, proposedOutCome,
-        previousProjectExplaination, references, projectBackGround, hypothesis
+        previousProjectExplaination, references, projectBackGround, hypothesis, experienceYears, experienceMonths
         
       } = pharmacySeedGrantDetails;
       
@@ -327,10 +329,10 @@ module.exports.insertPharmacyDetails = async (pharmacySeedGrantDetails, userName
                   hplc_justification, experimental_animals_amount, experimental_animals_justification,
                   cell_lines_amount, cell_lines_justifications, kits_analysis_amount, kits_analysis_justifications,
                   evaluation_analysis_amount, evaluation_analysis_justification, proposed_out_come,
-                  previous_project_explaination, pharmacy_references, project_background, hypothesis, created_by, active
+                  previous_project_explaination, pharmacy_references, project_background, hypothesis, experience_years, experience_months, created_by, active
               ) VALUES (
                   $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18,
-                  $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33, $34, $35, $36, $37, $38
+                  $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33, $34, $35, $36, $37, $38, $39, $40
               ) RETURNING id`,
         values: [ 
           summaryTitle, summaryProjectTitle, projectDuration, totalCost,
@@ -341,7 +343,7 @@ module.exports.insertPharmacyDetails = async (pharmacySeedGrantDetails, userName
           hplcJustification, experimentalAnimalsAmount, experimentalAnimalsJustification, 
           cellLinesAmount, cellLinesJustifications, kitsAnalysisAmount, kitsAnalysisJustifications, 
           evaluationAnalysisAmount, evaluationAnalysisJustification, proposedOutCome, 
-          previousProjectExplaination, references, projectBackGround, hypothesis, userName, true
+          previousProjectExplaination, references, projectBackGround, hypothesis, experienceYears, experienceMonths, userName, true
         ]
       };
     console.log('sql =====>>>>>>', sql);
@@ -709,6 +711,8 @@ module.exports.viewPharmacyGrantData = async(pharmacyId, userName) => {
         ps.pharmacy_references,
         ps.project_background,
         ps.hypothesis,
+        ps.experience_years,
+        ps.experience_months,
         ps.updated_by AS pharmacy_seed_updated_by,
         ps.created_by AS pharmacy_seed_created_by,
         ps.created_at AS pharmacy_seed_created_at,
@@ -1029,7 +1033,7 @@ module.exports.updatePharmacySeedData = async(
       chemicalsAmount, chemicalsJustification, biomarkersReferenceAmount, biomarkersReferenceJustifications, hplcAmount,
       hplcJustification, experimentalAnimalsAmount, experimentalAnimalsJustification, cellLinesAmount, cellLinesJustifications,
       kitsAnalysisAmount, kitsAnalysisJustifications, evaluationAnalysisAmount, evaluationAnalysisJustification, proposedOutCome,
-      previousProjectExplaination, references, projectBackGround, hypothesis
+      previousProjectExplaination, references, projectBackGround, hypothesis, experienceYears, experienceMonths
       
     } = updatePharmacyDetails;
     
@@ -1045,7 +1049,7 @@ module.exports.updatePharmacySeedData = async(
                 hplc_justification = $24, experimental_animals_amount = $25, experimental_animals_justification = $26,
                 cell_lines_amount = $27, cell_lines_justifications = $28, kits_analysis_amount = $29, kits_analysis_justifications = $30,
                 evaluation_analysis_amount = $31, evaluation_analysis_justification = $32, proposed_out_come = $33,
-                previous_project_explaination = $34, pharmacy_references = $35, project_background = $36, hypothesis = $37, updated_by = $38 WHERE id = $1
+                previous_project_explaination = $34, pharmacy_references = $35, project_background = $36, hypothesis = $37, experience_years = $38, experience_months = $39, updated_by = $40 WHERE id = $1
             `,
       values: [ pharmacyId,
         summaryTitle, summaryProjectTitle, projectDuration, totalCost,
@@ -1056,7 +1060,7 @@ module.exports.updatePharmacySeedData = async(
         hplcJustification, experimentalAnimalsAmount, experimentalAnimalsJustification, 
         cellLinesAmount, cellLinesJustifications, kitsAnalysisAmount, kitsAnalysisJustifications, 
         evaluationAnalysisAmount, evaluationAnalysisJustification, proposedOutCome, 
-        previousProjectExplaination, references, projectBackGround, hypothesis, userName
+        previousProjectExplaination, references, projectBackGround, hypothesis, experienceYears, experienceMonths, userName
       ]
     };
   console.log('sql =====>>>>>>', sql);
@@ -1327,6 +1331,428 @@ const  insertOrUpdateRecords = async (pharmacyId, data, tableName, pharmacyTable
   }
 };
 
+
+
+module.exports.deleteEducationalDetails = async( relatedTableRowId, userName) => {
+  console.log(' data in models for deleteEducationalDetails ===>>>>>', relatedTableRowId);
+  console.log('userName in models  ===>>>>>>', userName);
+  let sql = {
+    text : `UPDATE investigator_education SET active=false WHERE id = $1 AND created_by = $2`,
+    values : [relatedTableRowId, userName]
+  }
+
+  console.log('sql ====>>>>>', sql);
+  const deleteQuery = await researchDbW.query(sql)
+  let deletePromises = [deleteQuery]
+
+  return Promise.all(deletePromises)
+    .then(([deleteQuery]) => {
+      return {
+        status: "Done",
+        message: "Record(s) Deleted Successfully",
+        rowCount : deleteQuery.rowCount
+      };
+    })
+    .catch((error) => {
+      console.error("Error:", error.message);
+      return {
+        status: "Failed",
+        message: error.message,
+        errorCode: error.code,
+      };
+    });
+
+}
+
+module.exports.deleteExperienceDetails = async( relatedTableRowId, userName) => {
+  console.log(' data in models for deleteExperienceDetails ===>>>>>', relatedTableRowId);
+  console.log('userName in models  ===>>>>>>', userName);
+
+  let sql = {
+    text : `UPDATE investigator_experience SET active=false WHERE id = $1 AND created_by = $2`,
+    values : [relatedTableRowId, userName]
+  }
+
+  console.log('sql ====>>>>>', sql);
+  const deleteQuery = await researchDbW.query(sql)
+  let deletePromises = [deleteQuery]
+
+  return Promise.all(deletePromises)
+    .then(([deleteQuery]) => {
+      return {
+        status: "Done",
+        message: "Record(s) Deleted Successfully",
+        rowCount : deleteQuery.rowCount
+      };
+    })
+    .catch((error) => {
+      console.error("Error:", error.message);
+      return {
+        status: "Failed",
+        message: error.message,
+        errorCode: error.code,
+      };
+    });
+}
+
+module.exports.deleteBookDetails = async( relatedTableRowId, userName) => {
+  console.log(' data in models for deleteBookDetails ===>>>>>', relatedTableRowId);
+  console.log('userName in models  ===>>>>>>', userName);
+
+  let sql = {
+    text : `UPDATE investigator_book SET active=false WHERE id = $1 AND created_by = $2`,
+    values : [relatedTableRowId, userName]
+  }
+
+  console.log('sql ====>>>>>', sql);
+  const deleteQuery = await researchDbW.query(sql)
+  let deletePromises = [deleteQuery]
+
+  return Promise.all(deletePromises)
+    .then(([deleteQuery]) => {
+      return {
+        status: "Done",
+        message: "Record(s) Deleted Successfully",
+        rowCount : deleteQuery.rowCount
+      };
+    })
+    .catch((error) => {
+      console.error("Error:", error.message);
+      return {
+        status: "Failed",
+        message: error.message,
+        errorCode: error.code,
+      };
+    });
+}
+
+module.exports.deleteBookChapterDetails = async( relatedTableRowId, userName) => {
+  console.log(' data in models for deleteBookChapterDetails ===>>>>>', relatedTableRowId);
+  console.log('userName in models  ===>>>>>>', userName);
+
+  let sql = {
+    text : `UPDATE investigator_book_chapter SET active=false WHERE id = $1 AND created_by = $2`,
+    values : [relatedTableRowId, userName]
+  }
+
+  console.log('sql ====>>>>>', sql);
+  const deleteQuery = await researchDbW.query(sql)
+  let deletePromises = [deleteQuery]
+
+  return Promise.all(deletePromises)
+    .then(([deleteQuery]) => {
+      return {
+        status: "Done",
+        message: "Record(s) Deleted Successfully",
+        rowCount : deleteQuery.rowCount
+      };
+    })
+    .catch((error) => {
+      console.error("Error:", error.message);
+      return {
+        status: "Failed",
+        message: error.message,
+        errorCode: error.code,
+      };
+    });
+}
+
+module.exports.deletePublicationDetails = async( relatedTableRowId, userName) => {
+  console.log(' data in models for deletePublicationDetails ===>>>>>', relatedTableRowId);
+  console.log('userName in models  ===>>>>>>', userName);
+
+  let sql = {
+    text : `UPDATE investigator_publication SET active=false WHERE id = $1 AND created_by = $2`,
+    values : [relatedTableRowId, userName]
+  }
+
+  console.log('sql ====>>>>>', sql);
+  const deleteQuery = await researchDbW.query(sql)
+  let deletePromises = [deleteQuery]
+
+  return Promise.all(deletePromises)
+    .then(([deleteQuery]) => {
+      return {
+        status: "Done",
+        message: "Record(s) Deleted Successfully",
+        rowCount : deleteQuery.rowCount
+      };
+    })
+    .catch((error) => {
+      console.error("Error:", error.message);
+      return {
+        status: "Failed",
+        message: error.message,
+        errorCode: error.code,
+      };
+    });
+
+}
+
+module.exports.deletePatentDetails = async( relatedTableRowId, userName) => {
+  console.log(' data in models for deletePatentDetails ===>>>>>', relatedTableRowId);
+  console.log('userName in models  ===>>>>>>', userName);
+
+  let sql = {
+    text : `UPDATE investigator_patent SET active=false WHERE id = $1 AND created_by = $2`,
+    values : [relatedTableRowId, userName]
+  }
+
+  console.log('sql ====>>>>>', sql);
+  const deleteQuery = await researchDbW.query(sql)
+  let deletePromises = [deleteQuery]
+
+  return Promise.all(deletePromises)
+    .then(([deleteQuery]) => {
+      return {
+        status: "Done",
+        message: "Record(s) Deleted Successfully",
+        rowCount : deleteQuery.rowCount
+      };
+    })
+    .catch((error) => {
+      console.error("Error:", error.message);
+      return {
+        status: "Failed",
+        message: error.message,
+        errorCode: error.code,
+      };
+    });
+
+}
+ 
+module.exports.deleteImplementationDetails = async( relatedTableRowId, userName) => {
+  console.log(' data in models for deleteImplementationDetails ===>>>>>', relatedTableRowId);
+  console.log('userName in models  ===>>>>>>', userName);
+
+  let sql = {
+    text : `UPDATE investigator_research_implementation SET active=false WHERE id = $1 AND created_by = $2`,
+    values : [relatedTableRowId, userName]
+  }
+
+  console.log('sql ====>>>>>', sql);
+  const deleteQuery = await researchDbW.query(sql)
+  let deletePromises = [deleteQuery]
+
+  return Promise.all(deletePromises)
+    .then(([deleteQuery]) => {
+      return {
+        status: "Done",
+        message: "Record(s) Deleted Successfully",
+        rowCount : deleteQuery.rowCount
+      };
+    })
+    .catch((error) => {
+      console.error("Error:", error.message);
+      return {
+        status: "Failed",
+        message: error.message,
+        errorCode: error.code,
+      };
+    });
+
+}
+
+module.exports.deleteCompleteDetails = async( relatedTableRowId, userName) => {
+  console.log(' data in models for deleteCompleteDetails ===>>>>>', relatedTableRowId);
+  console.log('userName in models  ===>>>>>>', userName);
+
+  let sql = {
+    text : `UPDATE investigator_research_complete SET active=false WHERE id = $1 AND created_by = $2`,
+    values : [relatedTableRowId, userName]
+  }
+
+  console.log('sql ====>>>>>', sql);
+  const deleteQuery = await researchDbW.query(sql)
+  let deletePromises = [deleteQuery]
+
+  return Promise.all(deletePromises)
+    .then(([deleteQuery]) => {
+      return {
+        status: "Done",
+        message: "Record(s) Deleted Successfully",
+        rowCount : deleteQuery.rowCount
+      };
+    })
+    .catch((error) => {
+      console.error("Error:", error.message);
+      return {
+        status: "Failed",
+        message: error.message,
+        errorCode: error.code,
+      };
+    });
+
+
+}
+
+module.exports.deletePharmacySeedData = async(pharmacyId, userName) => {
+
+  console.log('pharmacyId and userName in models ====>>>>', pharmacyId,userName);
+
+  let pharmacyEduSql = {
+    text : `UPDATE pharmacy_investigator_education SET active=false WHERE pharmacy_seed_id = $1 AND created_by = $2`,
+    values : [pharmacyId, userName]
+  }
+
+  let pharmacyExpSql = {
+    text : `UPDATE pharmacy_investigator_experience SET active=false WHERE pharmacy_seed_id = $1 AND created_by = $2`,
+    values : [pharmacyId, userName]
+  }
+
+  let pharmacyBookSql = {
+    text : `UPDATE pharmacy_investigator_book SET active=false WHERE pharmacy_seed_id = $1 AND created_by = $2`,
+    values : [pharmacyId, userName]
+  }
+
+  let pharmacyBookChapterSql = {
+    text : `UPDATE pharmacy_investigator_book_chapter SET active=false WHERE pharmacy_seed_id = $1 AND created_by = $2`,
+    values : [pharmacyId, userName]
+  }
+
+  let pharmacyPatentSql = {
+    text : `UPDATE pharmacy_investigator_patent SET active=false WHERE pharmacy_seed_id = $1 AND created_by = $2`,
+    values : [pharmacyId, userName]
+  }
+  let pharmacyPublicationSql = {
+    text : `UPDATE pharmacy_investigator_publication SET active=false WHERE pharmacy_seed_id = $1 AND created_by = $2`,
+    values : [pharmacyId, userName]
+  } 
+
+  let pharmacyImpleSql = {
+    text : `UPDATE pharmacy_investigator_research_implementation SET active=false WHERE pharmacy_seed_id = $1 AND created_by = $2`,
+    values : [pharmacyId, userName]
+  }
+
+  let pharmacyCompSql = {
+    text : `UPDATE pharmacy_investigator_research_complete SET active=false WHERE pharmacy_seed_id = $1 AND created_by = $2`,
+    values : [pharmacyId, userName]
+  }
+
+  let pharmacyInvestigatorSql = {
+    text: `
+      WITH updated_investigators AS (
+        UPDATE investigator
+        SET active = false
+        FROM pharmacy_investigator
+        WHERE 
+          pharmacy_investigator.investigator_id = investigator.id
+          AND pharmacy_investigator.pharmacy_seed_id = $1
+          AND investigator.active = true
+          AND pharmacy_investigator.active = true
+        RETURNING investigator.id
+      )
+      UPDATE pharmacy_investigator
+      SET active = false
+      WHERE 
+        investigator_id IN (SELECT id FROM updated_investigators)
+        AND pharmacy_seed_id = $1
+        AND active = true`,
+    values: [pharmacyId]
+  };
+
+  let pharmacyPrincipalInvSql = {
+    text: `
+      WITH updated_principal_investigators AS (
+        UPDATE principal_investigator
+        SET active = false
+        FROM pharmacy_principal_investigator
+        WHERE 
+          pharmacy_principal_investigator.principal_investigator_id = principal_investigator.id
+          AND pharmacy_principal_investigator.pharmacy_seed_id = $1
+          AND principal_investigator.active = true
+          AND pharmacy_principal_investigator.active = true
+        RETURNING principal_investigator.id
+      )
+      UPDATE pharmacy_principal_investigator
+      SET active = false
+      WHERE 
+        principal_investigator_id IN (SELECT id FROM updated_principal_investigators)
+        AND pharmacy_seed_id = $1
+        AND active = true`,
+    values: [pharmacyId]
+  };
+
+  let pharmacyCoSql = {
+    text: `
+      WITH updated_co_investigator_details AS (
+        UPDATE co_investigator_details
+        SET active = false
+        FROM pharmacy_co_investigator
+        WHERE 
+          pharmacy_co_investigator.co_investigator_details_id = co_investigator_details.id
+          AND pharmacy_co_investigator.pharmacy_seed_id = $1
+          AND co_investigator_details.active = true
+          AND pharmacy_co_investigator.active = true
+        RETURNING co_investigator_details.id
+      )
+      UPDATE pharmacy_co_investigator
+      SET active = false
+      WHERE 
+        co_investigator_details_id IN (SELECT id FROM updated_co_investigator_details)
+        AND pharmacy_seed_id = $1
+        AND active = true`,
+    values: [pharmacyId]
+  };
+  
+  
+  
+
+  let pharmacySql = {
+    text : `UPDATE pharmacy_seed SET active=false WHERE id = $1 AND created_by = $2`,
+    values : [pharmacyId, userName]
+  }
+
+  const pharmacyEduction = await researchDbW.query(pharmacyEduSql);
+  const pharmacyExperience = await researchDbW.query(pharmacyExpSql);
+  const pharmacyBook = await researchDbW.query(pharmacyBookSql);
+  const pharmacyBookchapter = await researchDbW.query(pharmacyBookChapterSql);
+  const pharmacyPublication = await researchDbW.query(pharmacyPublicationSql);
+  const pharmacyPatent = await researchDbW.query(pharmacyPatentSql);
+  const pharmacyImplementation = await researchDbW.query(pharmacyImpleSql);
+  const pharmacyCompleted = await researchDbW.query(pharmacyCompSql);
+  const investigator = await researchDbW.query(pharmacyInvestigatorSql);
+  const coInvestigator = await researchDbW.query(pharmacyCoSql);
+  const principalInvestigator = await researchDbW.query(pharmacyPrincipalInvSql);
+  const pharmacySeed = await researchDbW.query(pharmacySql);
+
+  const promises = [pharmacyEduction, pharmacyExperience, pharmacyBook, pharmacyBookchapter, pharmacyPublication,  pharmacyPatent,
+    pharmacyImplementation, pharmacyCompleted, investigator, coInvestigator, principalInvestigator, pharmacySeed
+  ];
+
+  return Promise.all(promises).then(([pharmacyEduction, pharmacyExperience, pharmacyBook, pharmacyBookchapter, pharmacyPublication,  pharmacyPatent,
+    pharmacyImplementation, pharmacyCompleted, investigator, coInvestigator, principalInvestigator, pharmacySeed
+  ]) => {
+    return {
+      status : "Done",
+      message : 'Record Deleted Successfully',
+      pharmacyEductionRowCount : pharmacyEduction.rowCount,
+      pharmacyExperienceRowCount : pharmacyExperience.rowCount,
+      pharmacyBookRowCount : pharmacyBook.rowCount,
+      pharmacyBookchapterRowCount : pharmacyBookchapter.rowCount,
+      pharmacyPublicationRowCount : pharmacyPublication.rowCount,
+      pharmacyPatentRowCount : pharmacyPatent.rowCount,
+      pharmacyImplementationRowCount : pharmacyImplementation.rowCount,
+      pharmacyCompletedRowCount : pharmacyCompleted.rowCount,
+      investigatorRowCount : investigator.rowCount,
+      coInvestigatorRowCount : coInvestigator.rowCount,
+      principalInvestigatorRowCount : principalInvestigator.rowCount,
+      pharmacySeedRowCount : pharmacySeed.rowCount
+
+    }
+  })
+  .catch((error) => {
+    console.error("Error:", error.message);
+    return {
+      status: "Failed",
+      message: error.message,
+      errorCode: error.code,
+    };
+  });
+  
+  
+
+}
 
 
 

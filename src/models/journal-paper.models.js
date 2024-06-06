@@ -15,14 +15,17 @@ module.exports.fetchJournalPaper = async (userName) => {
                     jpa.id AS article_id,
                     jpa.title_of_paper,
                     jpa.total_authors,
-                    jpa.count_other_faculty,
+                    jpa.others_authers,
                     jpa.nmims_authors_count,
                     jpa.journal_name,
                     jpa.publisher,
                     jpa.pages,
                     jpa.issn_no,
                     jpa.uid,
+                    jpa.nmims_campus,
+                    jpa.nmims_school,
                     jpa.year,
+                    jpa.impact_factor,
                     jpa.jorunal_article_type_id,
                     jpa.date_of_publishing,
                     jpa.scs_cite_score,
@@ -35,9 +38,8 @@ module.exports.fetchJournalPaper = async (userName) => {
                     jpa.nmims_student_foreign_authors,
                     jpa.foreign_authors_name,
                     jpa.foreign_auhtor_no,
+                    jpa.article_supporting_documents,
                     jpa.no_nmims_student_author,
-                    string_agg(DISTINCT jaf.impact_factor, ', ') AS impact_factors,
-                    string_agg(DISTINCT jaf.id::text, ', ') AS impact_factors_ids,
                     string_agg(DISTINCT sd.documents_name, ', ') AS supporting_documents,
                     string_agg(DISTINCT sd.id::text, ', ') AS supporting_documents_ids,
                     string_agg(DISTINCT pc.cadre_name, ', ') AS policy_cadre,
@@ -45,25 +47,11 @@ module.exports.fetchJournalPaper = async (userName) => {
                     string_agg(DISTINCT f.faculty_name, ', ') AS internal_faculty_names,
                     string_agg(DISTINCT f.id::text, ', ') AS nmims_facilty_id,
                     string_agg(DISTINCT a.faculty_name, ', ') AS all_article_authors_names,
-                    string_agg(DISTINCT a.id::text, ', ') AS articles_faculties_ids,
-                    string_agg(DISTINCT ns.school_name, ', ') AS associated_schools,
-                    string_agg(DISTINCT ns.id::text, ', ') AS school_id,
-                    string_agg(DISTINCT nc.campus_name, ', ') AS associated_campuses,
-                    string_agg(DISTINCT nc.id::text, ', ') AS campus_id
+                    string_agg(DISTINCT a.id::text, ', ') AS articles_faculties_ids
+                    
                 FROM
                     journal_paper_article jpa
-                LEFT JOIN
-                    journal_article_school jas ON jpa.id = jas.journal_article_id
-                LEFT JOIN
-                    nmims_school ns ON jas.school_id = ns.id
-                LEFT JOIN
-                    journal_article_campus jac ON jpa.id = jac.journal_article_id
-                LEFT JOIN
-                    nmims_campus nc ON jac.campus_id = nc.id
-                LEFT JOIN
-                    journal_article_impact_factor jaif ON jpa.id = jaif.journal_article_id
-                LEFT JOIN
-                    impact_factor jaf ON jaif.impact_factor_id = jaf.id
+
                 LEFT JOIN
                     nmims_faculties nf ON jpa.id = nf.journal_article_id
                 LEFT JOIN
@@ -80,10 +68,10 @@ module.exports.fetchJournalPaper = async (userName) => {
                     journal_article_policy_cadre japc ON jpa.id = japc.journal_article_id
                 LEFT JOIN
                     policy_cadre pc ON japc.policy_cadre_id = pc.id
-                where created_by = $1 and pc.active=true and japc.active=true and sd.active=true
+                where jpa.created_by = $1 and pc.active=true and japc.active=true and sd.active=true
                 and jad.active=true and a.active=true and aa.active=true and f.active=true 
-                and nf.active=true and jaf.active=true and jaif.active=true and nc.active=true 
-                and jac.active=true and ns.active=true and jpa.active=true and jas.active=true
+                and nf.active=true
+                and jpa.active=true
                    
                 GROUP BY
                     jpa.id,
@@ -95,6 +83,9 @@ module.exports.fetchJournalPaper = async (userName) => {
                     jpa.pages,
                     jpa.issn_no,
                     jpa.year,
+                    jpa.nmims_campus,
+                    jpa.nmims_school,
+                    jpa.impact_factor,
                     jpa.jorunal_article_type_id,
                     jpa.date_of_publishing,
                     jpa.scs_cite_score,
@@ -106,7 +97,8 @@ module.exports.fetchJournalPaper = async (userName) => {
                     jpa.foreign_authors_name,
                     jpa.foreign_auhtor_no,
                     jpa.no_nmims_student_author,
-                    jpa.web_link_doi
+                    jpa.web_link_doi,
+                    jpa.article_supporting_documents
                 ORDER BY
                     jpa.id desc`,
     values: [userName],
@@ -204,21 +196,21 @@ module.exports.fetchJournalPaper = async (userName) => {
 module.exports.insertJournalArticle = async (
   journalDetails,
   articleFilesNameArray,
-  schoolIdsArray,
-  campusIdsArray,
-  impactFactorArray,
   policyCadreArray,
   allAuthorsArray,
   nmimsAuthorsArray,
+  journalFiles,
   userName
 ) => {
   console.log("journalDetails in models ==>>", journalDetails);
   const {
+    nmimsSchool,
+    nmimsCampus,
     year,
     publisher,
     totalAuthors,
     journalName,
-    countOtherFaculty,
+    otherAuthorsNames,
     pages,
     issnNo,
     scsCiteScore,
@@ -237,20 +229,23 @@ module.exports.insertJournalArticle = async (
     foreignAuhtorNo,
     noNmimsStudentAuthor,
     scsIndex,
+    impactFactor,
   } = journalDetails;
 
   let articleSql = {
-    text: `INSERT INTO journal_paper_article (year, publisher, total_authors, journal_name, count_other_faculty, pages, issn_no, scs_cite_score, wos_indexed,
+    text: `INSERT INTO journal_paper_article (nmims_school, nmims_campus, year, publisher, total_authors, journal_name, others_authers, pages, issn_no, scs_cite_score, wos_indexed,
                 abdc_indexed, ugc_indexed, web_link_doi, uid, date_of_publishing, title_of_paper, jorunal_article_type_id, nmims_authors_count, gs_index, nmims_student_foreign_authors,
-                foreign_authors_name, foreign_auhtor_no, no_nmims_student_author, scs_indexed, created_by)
-                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24) RETURNING id`,
+                foreign_authors_name, foreign_auhtor_no, no_nmims_student_author, scs_indexed, article_supporting_documents, impact_factor, created_by)
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28) RETURNING id`,
 
     values: [
+      nmimsSchool,
+      nmimsCampus,
       year,
       publisher,
       totalAuthors,
       journalName,
-      countOtherFaculty,
+      otherAuthorsNames,
       pages,
       issnNo,
       scsCiteScore,
@@ -269,6 +264,8 @@ module.exports.insertJournalArticle = async (
       foreignAuhtorNo,
       noNmimsStudentAuthor,
       scsIndex,
+      journalFiles,
+      impactFactor,
       userName,
     ],
   };
@@ -302,14 +299,14 @@ module.exports.insertJournalArticle = async (
     return researchDbW.query(articleDocumentSql);
   });
 
-  const insertArticleFactor = impactFactorArray.map((element) => {
-    const articleFactorSql = {
-      text: `INSERT INTO journal_article_impact_factor (journal_article_id, impact_factor_id) VALUES ($1, $2) RETURNING id`,
-      values: [journalPaperId, element],
-    };
-    // console.log('articleFactorSql ====>>>>>', articleFactorSql);
-    return researchDbW.query(articleFactorSql);
-  });
+  // const insertArticleFactor = impactFactorArray.map((element) => {
+  //   const articleFactorSql = {
+  //     text: `INSERT INTO journal_article_impact_factor (journal_article_id, impact_factor_id) VALUES ($1, $2) RETURNING id`,
+  //     values: [journalPaperId, element],
+  //   };
+  //   // console.log('articleFactorSql ====>>>>>', articleFactorSql);
+  //   return researchDbW.query(articleFactorSql);
+  // });
 
   const insertJournalPolicy = policyCadreArray.map((element) => {
     const journalPolicySql = {
@@ -321,24 +318,24 @@ module.exports.insertJournalArticle = async (
     return researchDbW.query(journalPolicySql);
   });
 
-  const insertJournalSchool = schoolIdsArray.map((element) => {
-    const journalSchoolSql = {
-      text: `INSERT INTO journal_article_school (journal_article_id, school_id) VALUES ($1, $2) RETURNING id`,
-      values: [journalPaperId, element],
-    };
+  // const insertJournalSchool = schoolIdsArray.map((element) => {
+  //   const journalSchoolSql = {
+  //     text: `INSERT INTO journal_article_school (journal_article_id, school_id) VALUES ($1, $2) RETURNING id`,
+  //     values: [journalPaperId, element],
+  //   };
 
     // console.log('journalSchoolSql ===>>>>>>', journalSchoolSql);
-    return researchDbW.query(journalSchoolSql);
-  });
+  //   return researchDbW.query(journalSchoolSql);
+  // });
 
-  const insertJournalCampus = campusIdsArray.map((element) => {
-    const journalCampusSql = {
-      text: `INSERT INTO journal_article_campus (journal_article_id, campus_id) VALUES ($1, $2) RETURNING id`,
-      values: [journalPaperId, element],
-    };
-    // console.log('journalCampusSql ===>>>>>>', journalCampusSql);
-    return researchDbW.query(journalCampusSql);
-  });
+  // const insertJournalCampus = campusIdsArray.map((element) => {
+  //   const journalCampusSql = {
+  //     text: `INSERT INTO journal_article_campus (journal_article_id, campus_id) VALUES ($1, $2) RETURNING id`,
+  //     values: [journalPaperId, element],
+  //   };
+  //   // console.log('journalCampusSql ===>>>>>>', journalCampusSql);
+  //   return researchDbW.query(journalCampusSql);
+  // });
 
   const insertAllarticlAuthors = allAuthorsArray.map((element) => {
     const allAuthorsSql = {
@@ -358,34 +355,34 @@ module.exports.insertJournalArticle = async (
     return researchDbW.query(nmimsAuthorsSql);
   });
 
-  const selectSchoolDataPromises = schoolIdsArray.map(async (schoolId) => {
-    const schoolSql = {
-      text: `SELECT * FROM nmims_school WHERE id = $1 and active = true`,
-      values: [schoolId],
-    };
-    const schoolResult = await researchDbR.query(schoolSql);
-    return schoolResult.rows[0];
-  });
+  // const selectSchoolDataPromises = schoolIdsArray.map(async (schoolId) => {
+  //   const schoolSql = {
+  //     text: `SELECT * FROM nmims_school WHERE id = $1 and active = true`,
+  //     values: [schoolId],
+  //   };
+  //   const schoolResult = await researchDbR.query(schoolSql);
+  //   return schoolResult.rows[0];
+  // });
 
-  const selectCampusDataPromises = campusIdsArray.map(async (campusId) => {
-    const campusSql = {
-      text: `SELECT * FROM nmims_campus WHERE id = $1 and active = true`,
-      values: [campusId],
-    };
-    const campusResult = await researchDbR.query(campusSql);
-    return campusResult.rows[0];
-  });
+  // const selectCampusDataPromises = campusIdsArray.map(async (campusId) => {
+  //   const campusSql = {
+  //     text: `SELECT * FROM nmims_campus WHERE id = $1 and active = true`,
+  //     values: [campusId],
+  //   };
+  //   const campusResult = await researchDbR.query(campusSql);
+  //   return campusResult.rows[0];
+  // });
 
-  const selectImpactFactorData = impactFactorArray.map(
-    async (impactFactorId) => {
-      const impactSql = {
-        text: `SELECT * FROM impact_factor WHERE id = $1 and active = true`,
-        values: [impactFactorId],
-      };
-      const impactData = await researchDbR.query(impactSql);
-      return impactData.rows[0];
-    }
-  );
+  // const selectImpactFactorData = impactFactorArray.map(
+  //   async (impactFactorId) => {
+  //     const impactSql = {
+  //       text: `SELECT * FROM impact_factor WHERE id = $1 and active = true`,
+  //       values: [impactFactorId],
+  //     };
+  //     const impactData = await researchDbR.query(impactSql);
+  //     return impactData.rows[0];
+  //   }
+  // );
 
   const selectPolicyCadreData = policyCadreArray.map(async (policyId) => {
     const policySql = {
@@ -397,24 +394,18 @@ module.exports.insertJournalArticle = async (
   });
 
   const articleFileLength = articleFilesNameArray.length;
-  const impactFactorLength = impactFactorArray.length;
+  // const impactFactorLength = impactFactorArray.length;
   const policyCadreLength = policyCadreArray.length;
-  const schoolIdsLength = schoolIdsArray.length;
-  const campusIdsLength = campusIdsArray.length;
+  // const schoolIdsLength = schoolIdsArray.length;
+  // const campusIdsLength = campusIdsArray.length;
   const allAuthorsIdsLength = allAuthorsArray.length;
   const nmimsAuthorsLength = nmimsAuthorsArray.length;
 
   return Promise.all([
     ...insertJournalArticleDocuments,
-    ...insertArticleFactor,
     ...insertJournalPolicy,
-    ...insertJournalSchool,
-    ...insertJournalCampus,
     ...insertNmimsAuthors,
     ...insertAllarticlAuthors,
-    ...selectSchoolDataPromises,
-    ...selectCampusDataPromises,
-    ...selectImpactFactorData,
     ...selectPolicyCadreData,
   ])
     .then((results) => {
@@ -427,84 +418,73 @@ module.exports.insertJournalArticle = async (
       };
 
       const articledocumentsIds = extractIds(0, articleFileLength);
-      const articlImpactFactorIds = extractIds(
-        articleFileLength,
-        impactFactorLength
-      );
+      // const articlImpactFactorIds = extractIds(
+      //   articleFileLength,
+      // );
       const articlePolicyCadreIds = extractIds(
-        articleFileLength + impactFactorLength,
-        policyCadreLength
+        articleFileLength,
+        policyCadreLength  
       );
-      const articleSchoolIds = extractIds(
-        articleFileLength + impactFactorLength + policyCadreLength,
-        schoolIdsLength
-      );
-      const articleCampusIds = extractIds(
-        articleFileLength +
-          impactFactorLength +
-          policyCadreLength +
-          schoolIdsLength,
-        campusIdsLength
-      );
+      // const articleSchoolIds = extractIds(
+      //   articleFileLength  + policyCadreLength,
+      //   schoolIdsLength
+      // );
+      // const articleCampusIds = extractIds(
+      //   articleFileLength +
+      //     policyCadreLength +
+      //     schoolIdsLength,
+      //   campusIdsLength
+      // );
       const journalAuthorsIds = extractIds(
         articleFileLength +
-          impactFactorLength +
-          policyCadreLength +
-          schoolIdsLength +
-          campusIdsLength,
+          policyCadreLength,
         nmimsAuthorsLength
       );
       const allArticleAuthorIds = extractIds(
         articleFileLength +
-          impactFactorLength +
           policyCadreLength +
-          schoolIdsLength +
-          campusIdsLength +
           nmimsAuthorsLength,
         allAuthorsIdsLength
       );
 
-      const schoolList = results
-        .slice(
-          articleFileLength + impactFactorLength + policyCadreLength,
-          articleFileLength +
-            impactFactorLength +
-            policyCadreLength +
-            schoolIdsLength +
-            campusIdsLength
-        )
-        .map((result) => result[0]);
-      const campusList = results
-        .slice(
-          articleFileLength +
-            impactFactorLength +
-            policyCadreLength +
-            schoolIdsLength,
-          articleFileLength +
-            impactFactorLength +
-            policyCadreLength +
-            schoolIdsLength +
-            campusIdsLength
-        )
-        .map((result) => result[0]);
-      const schoolNames = [];
-      const campusNames = [];
+      // const schoolList = results
+      //   .slice(
+      //     articleFileLength + policyCadreLength,
+      //     articleFileLength +
+      //       policyCadreLength +
+      //       schoolIdsLength +
+      //       campusIdsLength
+      //   )
+      //   .map((result) => result[0]);
+      // const campusList = results
+      //   .slice(
+      //     articleFileLength +
+      //       policyCadreLength +
+      //       schoolIdsLength,
+      //     articleFileLength +
+      //       policyCadreLength +
+      //       schoolIdsLength +
+      //       campusIdsLength
+      //   )
+      //   .map((result) => result[0]);
+      // const schoolNames = [];
+      // const campusNames = [];
       const impactFactorNames = [];
       const policyCadreNames = [];
 
       results.forEach((result) => {
-        if (result.school_name) {
-          schoolNames.push(result.school_name);
-        }
+        // if (result.school_name) {
+        //   schoolNames.push(result.school_name);
+        // }
         if (result.cadre_name) {
           policyCadreNames.push(result.cadre_name);
         }
-        if (result.campus_name) {
-          campusNames.push(result.campus_name);
-        }
-        if (result.impact_factor) {
-          impactFactorNames.push(result.impact_factor);
-        }
+        // if (result.campus_name) {
+        //   campusNames.push(result.campus_name);
+        // }
+        // if (result.impact_factor) {
+        //   impactFactorNames.push(result.impact_factor);
+        // }
       });
 
       // console.log("School Names:", schoolNames);
@@ -519,15 +499,15 @@ module.exports.insertJournalArticle = async (
         rowCount: insertJournalRecord.rowCount,
         documentIds: documentIds,
         articledocumentsIds: articledocumentsIds,
-        articlImpactFactorIds: articlImpactFactorIds,
+        // articlImpactFactorIds: articlImpactFactorIds,
         articlePolicyCadreIds: articlePolicyCadreIds,
-        articleSchoolIds: articleSchoolIds,
-        articleCampusIds: articleCampusIds,
+        // articleSchoolIds: articleSchoolIds,
+        // articleCampusIds: articleCampusIds,
         journalAuthorsIds: journalAuthorsIds,
         allArticleAuthorIds: allArticleAuthorIds,
-        schoolList: schoolNames,
-        campusList: campusNames,
-        impactFactorList: impactFactorNames,
+        // schoolList: schoolNames,
+        // campusList: campusNames,
+        // impactFactorList: impactFactorNames,
         policyCadreList: policyCadreNames,
       };
     })
@@ -562,12 +542,12 @@ module.exports.deleteJournalPaper = async ({ journalPaperId }) => {
     values: [journalPaperId],
   };
 
-  const articleFactorSql = {
-    // text : `DELETE FROM journal_article_impact_factor WHERE journal_article_id = $1 `,
-    text: `update journal_article_impact_factor set active=false WHERE journal_article_id = $1 `,
+  // const articleFactorSql = {
+  //   // text : `DELETE FROM journal_article_impact_factor WHERE journal_article_id = $1 `,
+  //   text: `update journal_article_impact_factor set active=false WHERE journal_article_id = $1 `,
 
-    values: [journalPaperId],
-  };
+  //   values: [journalPaperId],
+  // };
 
   const articlePolicySql = {
     // text : `DELETE FROM journal_article_policy_cadre WHERE journal_article_id = $1 `,
@@ -596,7 +576,7 @@ module.exports.deleteJournalPaper = async ({ journalPaperId }) => {
   const deleteArticleDocuments = await researchDbW.query(articleDocSql);
   const deleteArticleSchools = await researchDbW.query(articlSchSql);
   const deleteArticleCampus = await researchDbW.query(articleCamSql);
-  const deleteArlicleFactor = await researchDbW.query(articleFactorSql);
+  // const deleteArlicleFactor = await researchDbW.query(articleFactorSql);
   const deleteArticlePolicy = await researchDbW.query(articlePolicySql);
 
   const deletePromises = [
@@ -605,7 +585,7 @@ module.exports.deleteJournalPaper = async ({ journalPaperId }) => {
     deleteNmimsArticleAuthors,
     deleteArticleSchools,
     deleteArticleCampus,
-    deleteArlicleFactor,
+    // deleteArlicleFactor,
     deleteArticlePolicy,
   ];
 
@@ -628,7 +608,7 @@ module.exports.deleteJournalPaper = async ({ journalPaperId }) => {
         documentsRowCount: deleteArticleDocuments.rowCount,
         campusRowCount: deleteArticleCampus.rowCount,
         schoolRowcount: deleteArticleSchools.rowCount,
-        factorRowCount: deleteArlicleFactor.rowCount,
+        // factorRowCount: deleteArlicleFactor.rowCount,
         policyRowCount: deleteArticlePolicy.rowCount,
       };
     })
@@ -644,17 +624,15 @@ module.exports.deleteJournalPaper = async ({ journalPaperId }) => {
 module.exports.updateJournalPaperData = async (
   journalPaperId,
   updateJournalDetails,
-  updateSchoolIdsArray,
-  updateCampusIdsArray,
   updateNmimsAuthorsArray,
-  updateImpactFactorArray,
   updatePolicyCadreArray,
   updateAllAuthorsArray,
   updatedArticleFilesNameArray,
+  journalFiles,
   userName
 ) => {
   console.log("updateJournalDetails in models:", updateJournalDetails);
-  console.log("journalPaperId ===>>>>", journalPaperId);
+  console.log("journalFiles ===>>>>", journalFiles);
 
   // Extract variables from updateJournalDetails
   const {
@@ -662,7 +640,7 @@ module.exports.updateJournalPaperData = async (
     publisher,
     totalAuthors,
     journalName,
-    countOtherFaculty,
+    otherAuthorsNames,
     pages,
     issnNo,
     scsCiteScore,
@@ -681,47 +659,61 @@ module.exports.updateJournalPaperData = async (
     noNmimsStudentAuthor,
     nmimsStudentForeignAuthors,
     scsIndex,
+    impactFactor,
+    nmimsSchool,
+    nmimsCampus
   } = updateJournalDetails;
 
-  let sql = {
-    text: `UPDATE journal_paper_article 
-                SET year = $2, publisher = $3, total_authors = $4,journal_name = $5,count_other_faculty = $6,
+  // const supportingDocument = journalFiles || null;
+
+  let baseQuery =  `UPDATE journal_paper_article 
+                SET year = $2, publisher = $3, total_authors = $4,journal_name = $5,others_authers = $6,
                     pages = $7,issn_no = $8,scs_cite_score = $9,wos_indexed = $10,abdc_indexed = $11,
                     ugc_indexed = $12, web_link_doi = $13,uid = $14,date_of_publishing = $15,
                     title_of_paper = $16,jorunal_article_type_id = $17,nmims_authors_count = $18,gs_index = $19,
                     foreign_auhtor_no = $20, foreign_authors_name = $21, no_nmims_student_author = $22, nmims_student_foreign_authors = $23,
-                    scs_indexed = $24 ,updated_by = $25
-                WHERE
-                    id = $1;`,
-    values: [
-      journalPaperId,
-      year,
-      publisher,
-      totalAuthors,
-      journalName,
-      countOtherFaculty,
-      pages,
-      issnNo,
-      scsCiteScore,
-      wosIndexedCategory,
-      abdcIndexedCategory,
-      ugcIndexedCategory,
-      webLinkNumber,
-      uid,
-      dateOfPublishing,
-      titleOfPaper,
-      journalCategory,
-      nmimsAuthorsCount,
-      gsIndex,
-      foreignAuhtorNo,
-      foreignAuthorsName,
-      noNmimsStudentAuthor,
-      nmimsStudentForeignAuthors,
-      scsIndex,
-      userName,
-    ],
+                    scs_indexed = $24 , impact_factor = $25, nmims_school = $26, nmims_campus = $27, updated_by = $28`;
+
+ let documentsQuery = journalFiles ?  `, article_supporting_documents = $29` : '';
+ let queryText = baseQuery + documentsQuery + ` WHERE id = $1`;
+
+let values = [
+                      journalPaperId,
+                      year,
+                      publisher,
+                      totalAuthors,
+                      journalName,
+                      otherAuthorsNames,
+                      pages,
+                      issnNo,
+                      scsCiteScore,
+                      wosIndexedCategory,
+                      abdcIndexedCategory,
+                      ugcIndexedCategory,
+                      webLinkNumber,
+                      uid,
+                      dateOfPublishing,
+                      titleOfPaper,
+                      journalCategory,
+                      nmimsAuthorsCount,
+                      gsIndex,
+                      foreignAuhtorNo,
+                      foreignAuthorsName,
+                      noNmimsStudentAuthor,
+                      nmimsStudentForeignAuthors,
+                      scsIndex,
+                      impactFactor,
+                      nmimsSchool,
+                      nmimsCampus,
+                      userName,
+                      ...(journalFiles ? [journalFiles] : [])
+                    ]
+
+  let sql = {
+    text: queryText,
+    values: values,
   };
-  console.log("sql ====>>>", sql);
+   
   const updateJournalarticles = await researchDbW.query(sql);
   console.log("AFTER UPDATE>>>>>>>>>>>>");
   const insertDocumentPromises = updatedArticleFilesNameArray
@@ -747,23 +739,23 @@ module.exports.updateJournalPaperData = async (
     return researchDbW.query(articleDocumentSql);
   });
 
-  const insertArticleFactor = updateImpactFactorArray
-    ? updateImpactFactorArray.map(async (factorId) => {
-        const existingRecord = await researchDbW.query({
-          text: `SELECT id FROM journal_article_impact_factor WHERE journal_article_id = $1 AND impact_factor_id = $2 and active = true`,
-          values: [journalPaperId, factorId],
-        });
+  // const insertArticleFactor = updateImpactFactorArray
+  //   ? updateImpactFactorArray.map(async (factorId) => {
+  //       const existingRecord = await researchDbW.query({
+  //         text: `SELECT id FROM journal_article_impact_factor WHERE journal_article_id = $1 AND impact_factor_id = $2 and active = true`,
+  //         values: [journalPaperId, factorId],
+  //       });
 
-        return existingRecord.rows.length === 0
-          ? researchDbW.query({
-              text: `INSERT INTO journal_article_impact_factor (journal_article_id, impact_factor_id) VALUES ($1, $2) RETURNING id`,
-              values: [journalPaperId, factorId],
-            })
-          : Promise.resolve({ rows: [{ id: existingRecord.rows[0].id }] });
-      })
-    : [];
+  //       return existingRecord.rows.length === 0
+  //         ? researchDbW.query({
+  //             text: `INSERT INTO journal_article_impact_factor (journal_article_id, impact_factor_id) VALUES ($1, $2) RETURNING id`,
+  //             values: [journalPaperId, factorId],
+  //           })
+  //         : Promise.resolve({ rows: [{ id: existingRecord.rows[0].id }] });
+  //     })
+  //   : [];
 
-  console.log("insertArticleFactor ====>>>>>>", insertArticleFactor);
+  // console.log("insertArticleFactor ====>>>>>>", insertArticleFactor);
 
   const insertJournalPolicy = updatePolicyCadreArray
     ? updatePolicyCadreArray.map(async (policyId) => {
@@ -781,37 +773,37 @@ module.exports.updateJournalPaperData = async (
       })
     : [];
 
-  const insertJournalSchool = updateSchoolIdsArray
-    ? updateSchoolIdsArray.map(async (schoolId) => {
-        const existingRecord = await researchDbW.query({
-          text: `SELECT id FROM journal_article_school WHERE journal_article_id = $1 AND school_id = $2 and active = true`,
-          values: [journalPaperId, schoolId],
-        });
+  // const insertJournalSchool = updateSchoolIdsArray
+  //   ? updateSchoolIdsArray.map(async (schoolId) => {
+  //       const existingRecord = await researchDbW.query({
+  //         text: `SELECT id FROM journal_article_school WHERE journal_article_id = $1 AND school_id = $2 and active = true`,
+  //         values: [journalPaperId, schoolId],
+  //       });
 
-        return existingRecord.rows.length === 0
-          ? researchDbW.query({
-              text: `INSERT INTO journal_article_school (journal_article_id, school_id) VALUES ($1, $2) RETURNING id`,
-              values: [journalPaperId, schoolId],
-            })
-          : Promise.resolve({ rows: [{ id: existingRecord.rows[0].id }] });
-      })
-    : [];
+  //       return existingRecord.rows.length === 0
+  //         ? researchDbW.query({
+  //             text: `INSERT INTO journal_article_school (journal_article_id, school_id) VALUES ($1, $2) RETURNING id`,
+  //             values: [journalPaperId, schoolId],
+  //           })
+  //         : Promise.resolve({ rows: [{ id: existingRecord.rows[0].id }] });
+  //     })
+  //   : [];
 
-  const insertJournalCampus = updateCampusIdsArray
-    ? updateCampusIdsArray.map(async (campusId) => {
-        const existingRecord = await researchDbW.query({
-          text: `SELECT id FROM journal_article_campus WHERE journal_article_id = $1 AND campus_id = $2 and active = true`,
-          values: [journalPaperId, campusId],
-        });
+  // const insertJournalCampus = updateCampusIdsArray
+  //   ? updateCampusIdsArray.map(async (campusId) => {
+  //       const existingRecord = await researchDbW.query({
+  //         text: `SELECT id FROM journal_article_campus WHERE journal_article_id = $1 AND campus_id = $2 and active = true`,
+  //         values: [journalPaperId, campusId],
+  //       });
 
-        return existingRecord.rows.length === 0
-          ? researchDbW.query({
-              text: `INSERT INTO journal_article_campus (journal_article_id, campus_id) VALUES ($1, $2) RETURNING id`,
-              values: [journalPaperId, campusId],
-            })
-          : Promise.resolve({ rows: [{ id: existingRecord.rows[0].id }] });
-      })
-    : [];
+  //       return existingRecord.rows.length === 0
+  //         ? researchDbW.query({
+  //             text: `INSERT INTO journal_article_campus (journal_article_id, campus_id) VALUES ($1, $2) RETURNING id`,
+  //             values: [journalPaperId, campusId],
+  //           })
+  //         : Promise.resolve({ rows: [{ id: existingRecord.rows[0].id }] });
+  //     })
+  //   : [];
 
   const insertAllarticlAuthors = updateAllAuthorsArray
     ? updateAllAuthorsArray.map(async (facultyId) => {
@@ -845,38 +837,38 @@ module.exports.updateJournalPaperData = async (
       })
     : [];
 
-  const selectSchoolDataPromises = updateSchoolIdsArray
-    ? updateSchoolIdsArray.map(async (schoolId) => {
-        const schoolSql = {
-          text: `SELECT * FROM nmims_school WHERE id = $1 and active = true`,
-          values: [schoolId],
-        };
-        const schoolResult = await researchDbR.query(schoolSql);
-        return schoolResult.rows[0];
-      })
-    : [];
+  // const selectSchoolDataPromises = updateSchoolIdsArray
+  //   ? updateSchoolIdsArray.map(async (schoolId) => {
+  //       const schoolSql = {
+  //         text: `SELECT * FROM nmims_school WHERE id = $1 and active = true`,
+  //         values: [schoolId],
+  //       };
+  //       const schoolResult = await researchDbR.query(schoolSql);
+  //       return schoolResult.rows[0];
+  //     })
+  //   : [];
 
-  const selectCampusDataPromises = updateCampusIdsArray
-    ? updateCampusIdsArray.map(async (campusId) => {
-        const campusSql = {
-          text: `SELECT * FROM nmims_campus WHERE id = $1 and active = true`,
-          values: [campusId],
-        };
-        const campusResult = await researchDbR.query(campusSql);
-        return campusResult.rows[0];
-      })
-    : [];
+  // const selectCampusDataPromises = updateCampusIdsArray
+  //   ? updateCampusIdsArray.map(async (campusId) => {
+  //       const campusSql = {
+  //         text: `SELECT * FROM nmims_campus WHERE id = $1 and active = true`,
+  //         values: [campusId],
+  //       };
+  //       const campusResult = await researchDbR.query(campusSql);
+  //       return campusResult.rows[0];
+  //     })
+  //   : [];
 
-  const selectImpactFactorData = updateImpactFactorArray
-    ? updateImpactFactorArray.map(async (impactFactorId) => {
-        const impactSql = {
-          text: `SELECT * FROM impact_factor WHERE id = $1 and active = true`,
-          values: [impactFactorId],
-        };
-        const impactData = await researchDbR.query(impactSql);
-        return impactData.rows[0];
-      })
-    : [];
+  // const selectImpactFactorData = updateImpactFactorArray
+  //   ? updateImpactFactorArray.map(async (impactFactorId) => {
+  //       const impactSql = {
+  //         text: `SELECT * FROM impact_factor WHERE id = $1 and active = true`,
+  //         values: [impactFactorId],
+  //       };
+  //       const impactData = await researchDbR.query(impactSql);
+  //       return impactData.rows[0];
+  //     })
+  //   : [];
 
   const selectPolicyCadreData = updatePolicyCadreArray
     ? updatePolicyCadreArray.map(async (policyId) => {
@@ -890,24 +882,18 @@ module.exports.updateJournalPaperData = async (
     : [];
 
   const articleFileLength = updatedArticleFilesNameArray.length;
-  const impactFactorLength = updateImpactFactorArray.length;
+  // const impactFactorLength = updateImpactFactorArray.length;
   const policyCadreLength = updatePolicyCadreArray.length;
-  const schoolIdsLength = updateSchoolIdsArray.length;
-  const campusIdsLength = updateCampusIdsArray.length;
+  // const schoolIdsLength = updateSchoolIdsArray.length;
+  // const campusIdsLength = updateCampusIdsArray.length;
   const allAuthorsIdsLength = updateAllAuthorsArray.length;
   const nmimsAuthorsLength = updateNmimsAuthorsArray.length;
 
   return Promise.all([
     ...insertJournalArticleDocuments,
-    ...insertArticleFactor,
     ...insertJournalPolicy,
-    ...insertJournalSchool,
-    ...insertJournalCampus,
     ...insertNmimsAuthors,
     ...insertAllarticlAuthors,
-    ...selectSchoolDataPromises,
-    ...selectCampusDataPromises,
-    ...selectImpactFactorData,
     ...selectPolicyCadreData,
   ])
     .then((results) => {
@@ -921,88 +907,77 @@ module.exports.updateJournalPaperData = async (
 
       const articledocumentsIds = extractIds(0, articleFileLength);
       const articlImpactFactorIds = extractIds(
-        articleFileLength,
-        impactFactorLength
+        articleFileLength
       );
       const articlePolicyCadreIds = extractIds(
-        articleFileLength + impactFactorLength,
+        articleFileLength,
         policyCadreLength
       );
-      const articleSchoolIds = extractIds(
-        articleFileLength + impactFactorLength + policyCadreLength,
-        schoolIdsLength
-      );
-      const articleCampusIds = extractIds(
-        articleFileLength +
-          impactFactorLength +
-          policyCadreLength +
-          schoolIdsLength,
-        campusIdsLength
-      );
+      // const articleSchoolIds = extractIds(
+      //   articleFileLength  + policyCadreLength,
+      //   schoolIdsLength
+      // );
+      // const articleCampusIds = extractIds(
+      //   articleFileLength  +
+      //     policyCadreLength +
+      //     schoolIdsLength,
+      //   campusIdsLength
+      // );
       const journalAuthorsIds = extractIds(
         articleFileLength +
-          impactFactorLength +
-          policyCadreLength +
-          schoolIdsLength +
-          campusIdsLength,
+          policyCadreLength,
         nmimsAuthorsLength
       );
       const allArticleAuthorIds = extractIds(
         articleFileLength +
-          impactFactorLength +
           policyCadreLength +
-          schoolIdsLength +
-          campusIdsLength +
           nmimsAuthorsLength,
         allAuthorsIdsLength
       );
 
-      const schoolList = results
-        .slice(
-          articleFileLength + impactFactorLength + policyCadreLength,
-          articleFileLength +
-            impactFactorLength +
-            policyCadreLength +
-            schoolIdsLength +
-            campusIdsLength
-        )
-        .map((result) => result[0]);
-      const campusList = results
-        .slice(
-          articleFileLength +
-            impactFactorLength +
-            policyCadreLength +
-            schoolIdsLength,
-          articleFileLength +
-            impactFactorLength +
-            policyCadreLength +
-            schoolIdsLength +
-            campusIdsLength
-        )
-        .map((result) => result[0]);
-      const schoolNames = [];
-      const campusNames = [];
+      // const schoolList = results
+      //   .slice(
+      //     articleFileLength + policyCadreLength,
+      //     articleFileLength +
+      //       policyCadreLength +
+      //       schoolIdsLength +
+      //       campusIdsLength
+      //   )
+      //   .map((result) => result[0]);
+      // const campusList = results
+      //   .slice(
+      //     articleFileLength +
+      //       policyCadreLength +
+      //       schoolIdsLength,
+      //     articleFileLength +
+      //       policyCadreLength +
+      //       schoolIdsLength +
+      //       campusIdsLength
+      //   )
+      //   .map((result) => result[0]);
+      // const schoolNames = [];
+      // const campusNames = [];
       const impactFactorNames = [];
       const policyCadreNames = [];
 
       results.forEach((result) => {
-        if (result.school_name) {
-          schoolNames.push(result.school_name);
-        }
+        // if (result.school_name) {
+        //   schoolNames.push(result.school_name);
+        // }
         if (result.cadre_name) {
           policyCadreNames.push(result.cadre_name);
         }
-        if (result.campus_name) {
-          campusNames.push(result.campus_name);
-        }
-        if (result.impact_factor) {
-          impactFactorNames.push(result.impact_factor);
-        }
+        // if (result.campus_name) {
+        //   campusNames.push(result.campus_name);
+        // }
+        // if (result.impact_factor) {
+        //   impactFactorNames.push(result.impact_factor);
+        // }
       });
 
-      console.log("School Names:", schoolNames);
-      console.log("Campus Names:", campusNames);
-      console.log("Impact Factors:", impactFactorNames);
+      // console.log("School Names:", schoolNames);
+      // console.log("Campus Names:", campusNames);
+      // console.log("Impact Factors:", impactFactorNames);
       console.log("policy Cadre:", impactFactorNames);
 
       return {
@@ -1013,13 +988,13 @@ module.exports.updateJournalPaperData = async (
         articledocumentsIds: articledocumentsIds,
         articlImpactFactorIds: articlImpactFactorIds,
         articlePolicyCadreIds: articlePolicyCadreIds,
-        articleSchoolIds: articleSchoolIds,
-        articleCampusIds: articleCampusIds,
+        // articleSchoolIds: articleSchoolIds,
+        // articleCampusIds: articleCampusIds,
         journalAuthorsIds: journalAuthorsIds,
         allArticleAuthorIds: allArticleAuthorIds,
-        schoolList: schoolNames,
-        campusList: campusNames,
-        impactFactorList: impactFactorNames,
+        // schoolList: schoolNames,
+        // campusList: campusNames,
+        // impactFactorList: impactFactorNames,
         policyCadreList: policyCadreNames,
       };
     })
@@ -1040,8 +1015,10 @@ module.exports.viewJournalPaperData = async (journalPaperId, userName) => {
                     jpa.title_of_paper,
                     jpa.created_by AS created_by,
                     jpa.total_authors,
-                    jpa.count_other_faculty,
+                    jpa.others_authers,
                     jpa.nmims_authors_count,
+                    jpa.nmims_campus,
+                    jpa.nmims_school,
                     jpa.journal_name,
                     jpa.publisher,
                     jpa.pages,
@@ -1057,38 +1034,20 @@ module.exports.viewJournalPaperData = async (journalPaperId, userName) => {
                     jpa.wos_indexed,
                     jpa.ugc_indexed,
                     jpa.web_link_doi,
+                    jpa.impact_factor,
                     jpa.nmims_student_foreign_authors,
                     jpa.foreign_authors_name,
                     jpa.foreign_auhtor_no,
+                    jpa.article_supporting_documents,
                     jpa.no_nmims_student_author,
-                    string_agg(DISTINCT jaf.impact_factor, ', ') AS impact_factors,
-                    string_agg(DISTINCT jaf.id::text, ', ') AS impact_factors_ids,
-                    string_agg(DISTINCT sd.documents_name, ', ') AS supporting_documents,
-                    string_agg(DISTINCT sd.id::text, ', ') AS supporting_documents_ids,
                     string_agg(DISTINCT pc.cadre_name, ', ') AS policy_cadre,
                     string_agg(DISTINCT pc.id::text, ', ') AS policy_cadre_ids,
                     string_agg(DISTINCT f.faculty_name, ', ') AS internal_faculty_names,
                     string_agg(DISTINCT f.id::text, ', ') AS nmims_facilty_id,
                     string_agg(DISTINCT a.faculty_name, ', ') AS all_article_authors_names,
-                    string_agg(DISTINCT a.id::text, ', ') AS articles_faculties_ids,
-                    string_agg(DISTINCT ns.school_name, ', ') AS associated_schools,
-                    string_agg(DISTINCT ns.id::text, ', ') AS school_id,
-                    string_agg(DISTINCT nc.campus_name, ', ') AS associated_campuses,
-                    string_agg(DISTINCT nc.id::text, ', ') AS campus_id
+                    string_agg(DISTINCT a.id::text, ', ') AS articles_faculties_ids
                 FROM
                     journal_paper_article jpa
-                LEFT JOIN
-                    journal_article_school jas ON jpa.id = jas.journal_article_id
-                LEFT JOIN
-                    nmims_school ns ON jas.school_id = ns.id
-                LEFT JOIN
-                    journal_article_campus jac ON jpa.id = jac.journal_article_id
-                LEFT JOIN
-                    nmims_campus nc ON jac.campus_id = nc.id
-                LEFT JOIN
-                    journal_article_impact_factor jaif ON jpa.id = jaif.journal_article_id
-                LEFT JOIN
-                    impact_factor jaf ON jaif.impact_factor_id = jaf.id
                 LEFT JOIN
                     nmims_faculties nf ON jpa.id = nf.journal_article_id
                 LEFT JOIN
@@ -1098,18 +1057,13 @@ module.exports.viewJournalPaperData = async (journalPaperId, userName) => {
                 LEFT JOIN
                     faculties a ON aa.faculty_id = a.id
                 LEFT JOIN
-                    journal_article_documents jad ON jpa.id = jad.journal_article_id
-                LEFT JOIN
-                    supporting_documents sd ON jad.supporting_documents_id = sd.id
-                LEFT JOIN
                     journal_article_policy_cadre japc ON jpa.id = japc.journal_article_id
                 LEFT JOIN
                     policy_cadre pc ON japc.policy_cadre_id = pc.id
                 WHERE 
-                         jpa.id = $1 AND created_by = $2 
-                         and pc.active = true and japc.active = true and sd.active = true and jad.active = true and a.active = true 
-                         and f.active = true and nf.active = true and jaf.active = true and jaif.active = true and nc.active = true 
-                         and jac.active = true and ns.active = true and jas.active = true and jpa.active = true
+                         jpa.id = $1 AND jpa.created_by = $2 
+                         and pc.active = true and japc.active = true and a.active = true 
+                         and f.active = true and nf.active = true and jpa.active = true
                 GROUP BY
                     jpa.id,
                     jpa.title_of_paper,
@@ -1120,18 +1074,25 @@ module.exports.viewJournalPaperData = async (journalPaperId, userName) => {
                     jpa.pages,
                     jpa.issn_no,
                     jpa.year,
+                    jpa.nmims_campus,
+                    jpa.nmims_school,
+                    jpa.impact_factor,
                     jpa.jorunal_article_type_id,
                     jpa.date_of_publishing,
                     jpa.scs_cite_score,
                     jpa.scs_indexed,
                     jpa.abdc_indexed,
                     jpa.wos_indexed,
+                    jpa.nmims_campus,
+                    jpa.nmims_school,
                     jpa.ugc_indexed,
                     jpa.web_link_doi,
                     jpa.nmims_student_foreign_authors,
                     jpa.foreign_authors_name,
                     jpa.foreign_auhtor_no,
-                    jpa.no_nmims_student_author`,
+                    jpa.no_nmims_student_author,
+                    jpa.article_supporting_documents`,
+                   
 
     values: [journalPaperId, userName],
   };
@@ -1170,18 +1131,18 @@ module.exports.viewJournalPaperData = async (journalPaperId, userName) => {
     values: [journalPaperId],
   };
 
-  const factorSql = {
-    text: `SELECT 
-                    imf.impact_factor,
-                    imf.id
-                FROM 
-                journal_article_impact_factor aimf 
-                JOIN 
-                impact_factor imf ON aimf.impact_factor_id =  imf.id
-                WHERE 
-                aimf.journal_article_id = $1 and aimf.active = true and imf.active = true `,
-    values: [journalPaperId],
-  };
+  // const factorSql = {
+  //   text: `SELECT 
+  //                   imf.impact_factor,
+  //                   imf.id
+  //               FROM 
+  //               journal_article_impact_factor aimf 
+  //               JOIN 
+  //               impact_factor imf ON aimf.impact_factor_id =  imf.id
+  //               WHERE 
+  //               aimf.journal_article_id = $1 and aimf.active = true and imf.active = true `,
+  //   values: [journalPaperId],
+  // };
 
   const policyCadreSql = {
     text: `SELECT 
@@ -1241,7 +1202,7 @@ module.exports.viewJournalPaperData = async (journalPaperId, userName) => {
   const articleSchoolData = await researchDbR.query(articleSchoolSql);
   const articleCampusData = await researchDbR.query(articleCampusSql);
   const articleDocuments = await researchDbR.query(articleDocumentsSql);
-  const articleImpactFactor = await researchDbR.query(factorSql);
+  // const articleImpactFactor = await researchDbR.query(factorSql);
   const articlePolicyCadre = await researchDbR.query(policyCadreSql);
 
   const viewPromises = [
@@ -1251,7 +1212,7 @@ module.exports.viewJournalPaperData = async (journalPaperId, userName) => {
     articleSchoolData,
     articleCampusData,
     articleDocuments,
-    articleImpactFactor,
+    // articleImpactFactor,
     articlePolicyCadre,
   ];
 
@@ -1264,7 +1225,7 @@ module.exports.viewJournalPaperData = async (journalPaperId, userName) => {
         articleSchoolData,
         articleCampusData,
         articleDocuments,
-        articleImpactFactor,
+        // articleImpactFactor,
         articlePolicyCadre,
       ]) => {
         return {
@@ -1276,7 +1237,7 @@ module.exports.viewJournalPaperData = async (journalPaperId, userName) => {
           articleSchoolData: articleSchoolData.rows,
           articleCampusData: articleCampusData.rows,
           articleDocuments: articleDocuments.rows,
-          articleImpactFactor: articleImpactFactor.rows,
+          // articleImpactFactor: articleImpactFactor.rows,
           articlePolicyCadre: articlePolicyCadre.rows,
         };
       }
@@ -1289,3 +1250,153 @@ module.exports.viewJournalPaperData = async (journalPaperId, userName) => {
       };
     });
 };
+
+//all authors 
+module.exports.deleteAllAuthorsDetails = async(externalId, journalPaperId, userName) => {
+  console.log('externalId in models  =====>>>>>>>', externalId);
+
+  const allAuthorsDetails = externalId.map(async(externalId) => {
+    let externalSql = {
+      text : `UPDATE all_article_authors SET active=false WHERE faculty_id = $1 AND journal_article_id = $2`,
+      values : [externalId, journalPaperId]
+    }
+    console.log('externalSql', externalSql);
+  
+    return await researchDbW.query(externalSql);
+
+  });
+
+  return Promise.all(allAuthorsDetails).then((result) => {
+    return {
+      status : "Done",
+      message : "Record Deleted successfully",
+      result : result
+    } 
+  }).catch((error) => {
+    return {
+      status: "Failed",
+      message: error.message,
+      errorCode: error.code,
+    };
+  });
+
+
+}
+
+//nmims internal  authors 
+module.exports.deleteInternalFaculty = async(internalId, journalPaperId, userName) => {
+  console.log("internalId in models ====>>>>>>", internalId);
+
+  const internalNmimsDetails = internalId.map(async(internalId) => {
+    let sql = {
+      text: `UPDATE  nmims_faculties  SET active = false WHERE faculty_id = $1 And journal_article_id = $2`,
+      values: [internalId, journalPaperId],
+    };
+    console.log("sql ===>>>>>>>>>", sql);
+    return await researchDbW.query(sql)
+
+  })
+ 
+  return Promise.all(internalNmimsDetails).then((result) => {
+    return {
+      status : "Done",
+      message : "Record Deleted successfully",
+      result : result
+    } 
+  }).catch((error) => {
+    return {
+      status: "Failed",
+      message: error.message,
+      errorCode: error.code,
+    };
+  });
+
+}
+
+//nmims school
+module.exports.deleteNmimsSchool = async (internalId, journalPaperId, userName) => {
+  console.log("internalId in models ====>>>>>>", internalId);
+
+  const nmimsArticleSchoolsPromises = internalId.map(async (id) => {
+    let sql = {
+      text: `UPDATE journal_article_school SET active = false WHERE school_id = $1 And journal_article_id = $2`,
+      values: [id, journalPaperId],
+    };
+
+    return await researchDbW.query(sql);
+  });
+
+  return await Promise.all(nmimsArticleSchoolsPromises)
+    .then((result) => {
+      return {
+        status: "Done",
+        message: "Record Deleted successfully",
+        result: result,
+      };
+    })
+    .catch((error) => {
+      return {
+        status: "Failed",
+        message: error.message,
+        errorCode: error.code,
+      };
+    });
+};
+
+//nmims campus
+module.exports.deleteNmimsCampus = async(internalId, journalPaperId, userName) => {
+
+  console.log("internalId in models ====>>>>>>", internalId);
+  const articleCampus = internalId.map(async(internalId) => {
+    let sql = {
+      text: `UPDATE  journal_article_campus  SET active = false WHERE campus_id = $1 And journal_article_id = $2`,
+      values: [internalId, journalPaperId],
+    };
+    console.log("sql ===>>>>>>>>>", sql);
+    return await researchDbW.query(sql);
+
+  })
+  
+  return Promise.all(articleCampus).then((result) => {
+    return {
+      status : "Done",
+      message : "Record Deleted successfully",
+      result : result
+    } 
+  }).catch((error) => {
+    return {
+      status: "Failed",
+      message: error.message,
+      errorCode: error.code,
+    };
+  });
+
+}
+//nmims policy cadre
+module.exports.deletPolicyCadre = async(internalId, journalPaperId, userName) => {
+  console.log('internalId in models ====>>>>>>', internalId);
+
+  const articlePolicyCadre = internalId.map(async(internalId) => {
+    let policysql = {
+      text: `UPDATE  journal_article_policy_cadre  SET active = false WHERE policy_cadre_id = $1 And journal_article_id = $2`,
+      values: [internalId, journalPaperId]
+    };
+
+    console.log('policysql ===>>>>>>', policysql);
+    return await researchDbW.query(policysql);
+  })
+
+  return Promise.all(articlePolicyCadre).then((result) => {
+      return {
+        status : "Done",
+        message : "Record Deleted successfully",
+        result : result
+      } 
+    }).catch((error) => {
+      return {
+        status: "Failed",
+        message: error.message,
+        errorCode: error.code,
+      };
+    });
+}

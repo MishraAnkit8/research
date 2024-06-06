@@ -12,6 +12,7 @@ module.exports.renderNmimsConsultancyForm = async(req, res, next) => {
         consultancyFormData : renderConsultancyData.consultancyFormData,
         rowCount : renderConsultancyData.rowCount,
         facultyData : renderConsultancyData.facultyData,
+        userName : userName,
         errorCode : renderConsultancyData.errorCode ? renderConsultancyData.errorCode : null
     })
 }

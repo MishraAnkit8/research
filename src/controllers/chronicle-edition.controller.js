@@ -1,4 +1,5 @@
 const chronicleService = require("../services/chronicle-editor.service");
+const { getRedisData } = require('../../utils/redis.utils');
 
 
 function formatDate(dateString) {
@@ -11,8 +12,14 @@ function formatDate(dateString) {
 
 module.exports.renderChronicleEdition = async (req, res, next) => {
   const dataId = req.params.id;
-  console.log('dataId ====>>>', dataId)
-  const chronicleData = await chronicleService.renderChronicleEdition();
+  console.log('dataId ====>>>', dataId);
+
+   const sessionid = req.cookies.session;
+    let sessionData = await getRedisData(`${sessionid}:session`)
+    const  userName = sessionData.username;
+    console.log('userName in controller  ===>>>>>>', userName);
+
+  const chronicleData = await chronicleService.renderChronicleEdition(userName);
   // console.log("chronicleData in fetchVcOfficeData ==>>", chronicleData.fetchVcOfficeData);
   // console.log("chronicleData in fetchResearchData ==>>", chronicleData.fetchResearchData);
   // console.log("chronicleData in fetchMeetingData ==>>", chronicleData.fetchMeetingData);
@@ -86,16 +93,27 @@ module.exports.renderChronicleEdition = async (req, res, next) => {
   const rowCount = vcRowCount + researchCount + meetingRowCount + brandingRowCount;
   res.render("chronicle-edition", {
     chronicleEditorData,
-    rowCount
+    rowCount,
+    userName : userName
   });
 };
 
 module.exports.renderVcOfficeChronicle = async(req, res, next) => {
+   const sessionid = req.cookies.session;
+    let sessionData = await getRedisData(`${sessionid}:session`)
+    const  userName = sessionData.username;
+    console.log('userName in controller  ===>>>>>>', userName);
+
   const vcOfficeRenderdData = await chronicleService.renderVcOfficeData();
   console.log('vcOfficeRenderdData in controller ===>>>', vcOfficeRenderdData);
 }
 
 module.exports.insertVcData = async (req, res, next) => {
+   const sessionid = req.cookies.session;
+    let sessionData = await getRedisData(`${sessionid}:session`)
+    const  userName = sessionData.username;
+    console.log('userName in controller  ===>>>>>>', userName);
+
   // console.log("data comming from frontend in insertVcData  ==>>", req.body);
   const chronicleEditorData = req.body.chronicleEditorData;
   const chronicleDateDate = req.body.chronicleDate;
@@ -104,7 +122,7 @@ module.exports.insertVcData = async (req, res, next) => {
   const updatedAt = formatDate(currentDate);
   const editorType = "From Vice Chancellor's Desk";
   // const chronicleId = req.body.chronicleId;
-  const insertVcEditorData = await chronicleService.insertVcDataService(req.body);
+  const insertVcEditorData = await chronicleService.insertVcDataService(req.body, userName);
   console.log("insertVcEditorData vc data controller ==>>", insertVcEditorData);
   const chronicleId = insertVcEditorData[0].id;
   if (insertVcEditorData) {
@@ -128,13 +146,20 @@ module.exports.insertVcData = async (req, res, next) => {
 
 module.exports.insertResearchData = async (req, res, next) => {
   // console.log("data comming from frontend in insertResearchData  ==>>",req.body);
+  
   const chronicleEditorData = req.body.chronicleEditorData;
   const chronicleDateDate = req.body.chronicleDate;
+
+   const sessionid = req.cookies.session;
+    let sessionData = await getRedisData(`${sessionid}:session`)
+    const  userName = sessionData.username;
+    console.log('userName in controller  ===>>>>>>', userName);
+
   const chronicleDate  = formatDate(chronicleDateDate);
   const currentDate = new Date();
   const updatedAt = formatDate(currentDate);
   const editorType = 'Research';
-  const insertResearchEditorData = await chronicleService.insertResearchDataService(req.body);
+  const insertResearchEditorData = await chronicleService.insertResearchDataService(req.body, userName);
   console.log("chronicleDataToBeInserted in controller ==>>", insertResearchEditorData);
   const chronicleId = insertResearchEditorData[0].id;
   if (insertResearchEditorData) {
@@ -153,11 +178,17 @@ module.exports.insertMeetingData = async (req, res, next) => {
   // console.log("data comming from frontend in insertMeetingData  ==>>",req.body);
   const chronicleEditorData = req.body.chronicleEditorData;
   const chronicleDateDate = req.body.chronicleDate;
+
+   const sessionid = req.cookies.session;
+    let sessionData = await getRedisData(`${sessionid}:session`)
+    const  userName = sessionData.username;
+    console.log('userName in controller  ===>>>>>>', userName);
+
   const chronicleDate  = formatDate(chronicleDateDate);
   const currentDate = new Date();
   const updatedAt = formatDate(currentDate);
   const editorType = "Meeting Stakeholders Aspiration";
-  const insertMeetingEditorData = await chronicleService.insertMeetingDataService(req.body);
+  const insertMeetingEditorData = await chronicleService.insertMeetingDataService(req.body, userName);
   // console.log("chronicleDataToBeInserted in controller ==>>", insertMeetingEditorData);
   const chronicleId = insertMeetingEditorData[0].id;
   if (insertMeetingEditorData) {
@@ -177,10 +208,16 @@ module.exports.insertBrandingData = async (req, res, next) => {
   const chronicleEditorData = req.body.chronicleEditorData;
   const chronicleDateDate = req.body.chronicleDate;
   const chronicleDate  = formatDate(chronicleDateDate);
+
+   const sessionid = req.cookies.session;
+    let sessionData = await getRedisData(`${sessionid}:session`)
+    const  userName = sessionData.username;
+    console.log('userName in controller  ===>>>>>>', userName);
+
   const currentDate = new Date();
   const updatedAt = formatDate(currentDate);
   const editorType = "Branding";
-  const insertBrandingEditorData = await chronicleService.insertBrandingDataService(req.body);
+  const insertBrandingEditorData = await chronicleService.insertBrandingDataService(req.body, userName);
   // console.log("chronicleDataToBeInserted in controller ==>>", insertBrandingEditorData);
   const chronicleId = insertBrandingEditorData[0].id;
   console.log('chronicleId id in controller ==>>>>', chronicleId);
@@ -200,12 +237,18 @@ module.exports.insertBrandingData = async (req, res, next) => {
 module.exports.updateVcData = async(req, res, next) => {
   const updatedChronicleEditorData = req.body.updatedChronicleEditorData;
   const updatedChronicleDate = req.body.updatedChronicleDate;
-  const chronicleDate  = formatDate(updatedChronicleDate)
+  const chronicleDate  = formatDate(updatedChronicleDate);
+
+   const sessionid = req.cookies.session;
+    let sessionData = await getRedisData(`${sessionid}:session`)
+    const  userName = sessionData.username;
+    console.log('userName in controller  ===>>>>>>', userName);
+
   const chronicleId = req.body.chronicleId;
   const currentDate = new Date();
   const updatedAt = formatDate(currentDate);
   // console.log('data comming from frontend ====>>>', req.body);
-  const updatedVcData = await chronicleService.updatedVcOfficeData(req.body);
+  const updatedVcData = await chronicleService.updatedVcOfficeData(req.body, userName);
   if(updatedVcData){
     res.status(200).send({
       status : 'done',
@@ -227,11 +270,17 @@ module.exports.updateMeetingData = async(req, res, next) => {
   console.log(' meeting data in controller ', req.body);
   const updatedChronicleEditorData = req.body.updatedChronicleEditorData;
   const updatedChronicleDate = req.body.updatedChronicleDate;
-  const chronicleDate  = formatDate(updatedChronicleDate)
+  const chronicleDate  = formatDate(updatedChronicleDate);
+
+   const sessionid = req.cookies.session;
+    let sessionData = await getRedisData(`${sessionid}:session`)
+    const  userName = sessionData.username;
+    console.log('userName in controller  ===>>>>>>', userName);
+
   const chronicleId = req.body.chronicleId;
   const currentDate = new Date();
   const updatedAt = formatDate(currentDate);
-  const updatedMeetingData = await chronicleService.updatedMeetingStackholder(req.body);
+  const updatedMeetingData = await chronicleService.updatedMeetingStackholder(req.body, userName);
   if(updatedMeetingData){
     res.status(200).send({
       status : 'done',
@@ -255,11 +304,17 @@ module.exports.updateResearchData = async(req, res, next) => {
   console.log('research  data in controller ', req.body);
   const updatedChronicleEditorData = req.body.updatedChronicleEditorData;
   const updatedChronicleDate = req.body.updatedChronicleDate;
-  const chronicleDate  = formatDate(updatedChronicleDate)
+  const chronicleDate  = formatDate(updatedChronicleDate);
+
+   const sessionid = req.cookies.session;
+    let sessionData = await getRedisData(`${sessionid}:session`)
+    const  userName = sessionData.username;
+    console.log('userName in controller  ===>>>>>>', userName);
+
   const chronicleId = req.body.chronicleId;
   const currentDate = new Date();
   const updatedAt = formatDate(currentDate);
-  const updatedResearchData = await chronicleService.updatedResearch(req.body);
+  const updatedResearchData = await chronicleService.updatedResearch(req.body, userName);
   console.log('updatedResearchData ====>>>>>>', updatedResearchData);
   if(updatedResearchData){
     res.status(200).send({
@@ -283,12 +338,18 @@ module.exports.updateBrandingData = async(req, res, next) => {
   console.log(' branding data in controller ', req.body);
   const updatedChronicleEditorData = req.body.updatedChronicleEditorData;
   const updatedChronicleDate = req.body.updatedChronicleDate;
-  const chronicleDate  = formatDate(updatedChronicleDate)
+  const chronicleDate  = formatDate(updatedChronicleDate);
+
+   const sessionid = req.cookies.session;
+    let sessionData = await getRedisData(`${sessionid}:session`)
+    const  userName = sessionData.username;
+    console.log('userName in controller  ===>>>>>>', userName);
+
   const chronicleId = req.body.chronicleId;
   const currentDate = new Date();
   const updatedAt = formatDate(currentDate);
   
-  const updatedBrandingData = await chronicleService.updatedBrandingAdvertising(req.body);
+  const updatedBrandingData = await chronicleService.updatedBrandingAdvertising(req.body, userName);
   if(updatedBrandingData){
     res.status(200).send({
       status : 'done',
@@ -309,7 +370,13 @@ module.exports.updateBrandingData = async(req, res, next) => {
 
 module.exports.deleteVcData = async(req, res, next) => {
   console.log('data in controller ===>>>', req.body);
-  const deleteVcEditor = await chronicleService.deleteVcContent(req.body);
+
+   const sessionid = req.cookies.session;
+    let sessionData = await getRedisData(`${sessionid}:session`)
+    const  userName = sessionData.username;
+    console.log('userName in controller  ===>>>>>>', userName);
+
+  const deleteVcEditor = await chronicleService.deleteVcContent(req.body, userName);
   if(deleteVcEditor){
     res.status(200).send({
       status : 'done'
@@ -319,7 +386,13 @@ module.exports.deleteVcData = async(req, res, next) => {
 
 module.exports.deleteResearchData = async(req, res, next) => {
   console.log('data in controller ===>>>', req.body);
-  const deleteResearchEditor = await chronicleService.deleteResearchContent(req.body);
+
+   const sessionid = req.cookies.session;
+    let sessionData = await getRedisData(`${sessionid}:session`)
+    const  userName = sessionData.username;
+    console.log('userName in controller  ===>>>>>>', userName);
+
+  const deleteResearchEditor = await chronicleService.deleteResearchContent(req.body, userName);
   if(deleteResearchEditor){
     res.status(200).send({
       status : 'done'
@@ -330,7 +403,13 @@ module.exports.deleteResearchData = async(req, res, next) => {
 
 module.exports.deleteMeetingData = async(req, res, next) => {
   console.log('data in controller ===>>>', req.body);
-  const deleteMeetingEditor = await chronicleService.deleteMeetingContent(req.body);
+
+   const sessionid = req.cookies.session;
+    let sessionData = await getRedisData(`${sessionid}:session`)
+    const  userName = sessionData.username;
+    console.log('userName in controller  ===>>>>>>', userName);
+
+  const deleteMeetingEditor = await chronicleService.deleteMeetingContent(req.body, userName);
   if(deleteMeetingEditor){
     res.status(200).send({
       status : 'done'
@@ -341,7 +420,13 @@ module.exports.deleteMeetingData = async(req, res, next) => {
 
 module.exports.deleteBrandingData = async(req, res, next) => {
   console.log('data in controller ===>>>', req.body);
-  const deleteBrandingEditor = await chronicleService.deleteBrandingContent(req.body);
+
+   const sessionid = req.cookies.session;
+    let sessionData = await getRedisData(`${sessionid}:session`)
+    const  userName = sessionData.username;
+    console.log('userName in controller  ===>>>>>>', userName);
+
+  const deleteBrandingEditor = await chronicleService.deleteBrandingContent(req.body, userName);
   if(deleteBrandingEditor){
     res.status(200).send({
       status : 'done'

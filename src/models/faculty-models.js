@@ -395,36 +395,36 @@ module.exports.insertFacultyIpr = async (externalFacultyDetails, iprId) => {
     });
 };
 
-// module.exports.insertGrantFaculty = async (grantId) => {
+module.exports.insertGrantFaculty = async (grantId) => {
 
-//     let facultysql = {
-//         text: `INSERT INTO faculties (faculty_type_id, employee_id, faculty_name, designation, address) VALUES ($1, $2, $3, $4, $5) RETURNING id`,
-//         values: [2, facultyEmp, facultyName, facultyDesignation, facultyAddr],
-//       };
-//     const facultyPromise = await researchDbW.query(facultysql);
-//     const facultyId = facultyPromise.rows.id;
-//     if(facultyId) {
-//          let sql = {
-//            text: `INSERT INTO research_project_grant_faculty (research_project_grant_id,faculty_id) VALUES ($1, $2)`,
-//            values: [grantId, facultyId],
-//          };
-//     }
+    let facultysql = {
+        text: `INSERT INTO faculties (faculty_type_id, employee_id, faculty_name, designation, address) VALUES ($1, $2, $3, $4, $5) RETURNING id`,
+        values: [2, facultyEmp, facultyName, facultyDesignation, facultyAddr],
+      };
+    const facultyPromise = await researchDbW.query(facultysql);
+    const facultyId = facultyPromise.rows.id;
+    if(facultyId) {
+         let sql = {
+           text: `INSERT INTO research_project_grant_faculty (research_project_grant_id,faculty_id) VALUES ($1, $2)`,
+           values: [grantId, facultyId],
+         };
+    }
 
-//   const insertFacultyDetails = await researchDbW.query(sql);
-//   const promises = [insertFacultyDetails];
-//   return Promise.all(promises)
-//     .then(([insertFacultyDetails]) => {
-//       return {
-//         status: "Done",
-//         message: "Faculty Record Inserted Successfully",
-//         rowCount: insertFacultyDetails.rowCount,
-//       };
-//     })
-//     .catch((error) => {
-//       return {
-//         status: "Failed",
-//         message: error.message,
-//         errorCode: error.code,
-//       };
-//     });
-// };
+  const insertFacultyDetails = await researchDbW.query(sql);
+  const promises = [insertFacultyDetails];
+  return Promise.all(promises)
+    .then(([insertFacultyDetails]) => {
+      return {
+        status: "Done",
+        message: "Faculty Record Inserted Successfully",
+        rowCount: insertFacultyDetails.rowCount,
+      };
+    })
+    .catch((error) => {
+      return {
+        status: "Failed",
+        message: error.message,
+        errorCode: error.code,
+      };
+    });
+};

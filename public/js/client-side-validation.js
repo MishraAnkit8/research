@@ -45,6 +45,34 @@ function validateRequiredFormFields(actionBtn) {
         }
       }
 
+      if (validate === "isDecimalNumber") {
+        const isValid = isDecimalNumber(elemVal);
+        if (!isValid) {
+          isValidElem = false;
+          validationState = false;
+          break;
+        }
+      }
+
+      
+      if (validate === "isValidMobileNumber") {
+        const isValid = isValidMobileNumber(elemVal);
+        if (!isValid) {
+          isValidElem = false;
+          validationState = false;
+          break;
+        }
+      }
+
+      if (validate === "isSpecialSymbol") {
+        const isValid = isSpecialSymbol(elemVal);
+        if (!isValid) {
+          isValidElem = false;
+          validationState = false;
+          break;
+        }
+      }
+
       if (validate === "isAllNumeric") {
         const isValid = isAllNumeric(elemVal);
         if (!isValid) {
@@ -56,6 +84,15 @@ function validateRequiredFormFields(actionBtn) {
 
       if (validate === "isValidYear") {
         const isValid = isValidYear(elemVal);
+        if (!isValid) {
+          isValidElem = false;
+          validationState = false;
+          break;
+        }
+      }
+
+      if (validate === "isValidMonth") {
+        const isValid = isValidMonth(elemVal);
         if (!isValid) {
           isValidElem = false;
           validationState = false;
@@ -166,8 +203,34 @@ function validateRequiredFormFields(actionBtn) {
         }
       }
 
+      if (validate === "isAlphaNumericSpecial") {
+        const isValid = isAlphaNumericSpecial(elemVal);
+        if (!isValid) {
+          isValidElem = false;
+          validationState = false;
+          break;
+        }
+      }
+
+      if (validate === "isAlphaNumericWithSpace") {
+        const isValid = isAlphaNumericWithSpace(elemVal);
+        if (!isValid) {
+          isValidElem = false;
+          validationState = false;
+          break;
+        }
+      }
+
       if (validate === "isValidHttpUrl") {
         const isValid = isValidHttpUrl(elemVal);
+        if (!isValid) {
+          isValidElem = false;
+          validationState = false;
+          break;
+        }
+      }
+      if (validate === "isSpace") {
+        const isValid = isSpace(elemVal);
         if (!isValid) {
           isValidElem = false;
           validationState = false;
@@ -185,6 +248,9 @@ function validateRequiredFormFields(actionBtn) {
         }
       }
     }
+
+   
+  
 
     toggleErrorState(formGroup, errorMsg, errorElem, isValidElem);
   }
@@ -302,8 +368,129 @@ function isNumber(input) {
   return true;
 }
 
+function isDecimalNumber(input) {
+  if (!input || input === "") {
+    return false;
+  }
+
+  if (input.includes("-") || input.includes("*")) {
+    return false;
+  }
+
+  if (input.startsWith("+")) {
+    return false;
+  }
+
+  let decimalPointCount = 0;
+  for (let i = 0; i < input.length; i++) {
+    const charCode = input.charCodeAt(i);
+
+    if ((charCode < 48 || charCode > 57) && charCode !== 46) {
+      return false;
+    }
+
+    // Count the decimal points
+    if (charCode === 46) {
+      decimalPointCount++;
+    }
+
+    if (decimalPointCount > 1) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+
+function isSpecialSymbol(input) {
+  if (!input || input === "") {
+    return false;
+  }
+
+  for (let i = 0; i < input.length; i++) {
+    const charCode = input.charCodeAt(i);
+    
+    if ((charCode >= 32 && charCode <= 47) ||
+        (charCode >= 58 && charCode <= 64) || 
+        (charCode >= 91 && charCode <= 96) ||
+        (charCode >= 123 && charCode <= 126)) { 
+      continue; 
+    } else {
+      return false;
+    }
+  }
+
+  return true; 
+}
+
+function isAlphaNumericSpecial(input) {
+  if (!input || input === "") {
+    return false;
+  }
+
+  const firstChar = input.charCodeAt(0);
+  if ((firstChar >= 48 && firstChar <= 57) ||
+      (firstChar >= 32 && firstChar <= 47) ||
+      (firstChar >= 58 && firstChar <= 64) ||
+      (firstChar >= 91 && firstChar <= 96) || 
+      (firstChar >= 123 && firstChar <= 126)) {
+    return false;
+  }
+
+  for (let i = 0; i < input.length; i++) {
+    const charCode = input.charCodeAt(i);
+    if ((charCode >= 48 && charCode <= 57) ||
+        (charCode >= 65 && charCode <= 90) ||
+        (charCode >= 97 && charCode <= 122) ||
+        (charCode >= 32 && charCode <= 47) ||
+        (charCode >= 58 && charCode <= 64) ||
+        (charCode >= 91 && charCode <= 96) ||
+        (charCode >= 123 && charCode <= 126)) { 
+      continue;
+    } else {
+      return false;
+    }
+  }
+
+  return true;
+}
+
 function isNotNumber(input) {
   return !isNumber(input);
+}
+
+function isAlphaNumericWithSpace(input) {
+  if (!input || input === "") {
+    return false;
+  }
+
+
+  const firstChar = input.charCodeAt(0);
+  if (!((firstChar >= 65 && firstChar <= 90) || // A-Z
+        (firstChar >= 97 && firstChar <= 122))) { // a-z
+    return false;
+  }
+
+  for (let i = 0; i < input.length; i++) {
+    const charCode = input.charCodeAt(i);
+    if ((charCode >= 48 && charCode <= 57) || 
+        (charCode >= 65 && charCode <= 90) ||
+        (charCode >= 97 && charCode <= 122) || 
+        charCode === 32) { // space
+      continue;
+    } else {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+
+
+function isSpace(input) {
+  return input === ' ';
 }
 
 function isValidYear(year) {
@@ -315,6 +502,17 @@ function isValidYear(year) {
   }
 
   return numericYear >= 1900 && numericYear <= 3000;
+}
+
+function isValidMonth(month) {
+  const numericMonth = parseInt(month, 10);
+
+  if (isNaN(numericMonth)) {
+    // Not a valid numeric month
+    return false;
+  }
+
+  return numericMonth >= 0 && numericMonth <= 11;
 }
 
 function isFloatingNumber(input) {
@@ -343,6 +541,57 @@ function isAlphabet(input) {
   }
   return true;
 }
+
+function isValidEmail(email) {
+  if (typeof email !== 'string') {
+    return false;
+  }
+
+  const atIndex = email.indexOf('@');
+  if (atIndex === -1 || atIndex === 0 || atIndex === email.length - 1) {
+    return false;
+  }
+
+  if (email.indexOf('@', atIndex + 1) !== -1) {
+    return false;
+  }
+
+  const lastDotIndex = email.lastIndexOf('.');
+  if (lastDotIndex === -1 || lastDotIndex <= atIndex + 1 || lastDotIndex === email.length - 1) {
+    return false;
+  }
+
+  if (email.length - lastDotIndex - 1 < 2) {
+    return false;
+  }
+
+  return true;
+}
+
+
+function isValidMobileNumber(mobileNumber) {
+  if (typeof mobileNumber !== 'string') {
+    return false;
+  }
+
+  if (mobileNumber.length !== 10) {
+    return false;
+  }
+
+  const firstChar = mobileNumber.charAt(0);
+  if (firstChar < '6' || firstChar > '9') {
+    return false;
+  }
+  for (let i = 0; i < mobileNumber.length; i++) {
+    const charCode = mobileNumber.charCodeAt(i);
+    if (charCode < 48 || charCode > 57) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
 
 function isValidHttpUrl(string) {
   try {

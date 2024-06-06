@@ -17,7 +17,7 @@ app.set('views', './src/views');
 
 //For using static file 
 app.use(express.static('public'));
-app.use((req, res, next) => {
+app.use(async (req, res, next) => {
   res.locals.BASE_URL = process.env.BASE_URL;
   next();
 })

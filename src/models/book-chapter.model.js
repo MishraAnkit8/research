@@ -27,7 +27,7 @@ module.exports.insertBookChapterData = async (
     authorName,
     bookTitle,
     edition,
-    editorName,
+    // editorName,
     bookEditor,
     chapterTitle,
     volumeNumber,
@@ -45,14 +45,14 @@ module.exports.insertBookChapterData = async (
   } = bookChapter;
   // const doiBookIdParsed = doiBookId === "" ? null : parseInt(doiBookId, 10);
   let sql = {
-    text: `INSERT INTO book_chapter_publications (author_name, book_title, edition, editor_name, book_editor, chapter_title, volume_number, publisher_category, page_number, publisher_name, 
+    text: `INSERT INTO book_chapter_publications (author_name, book_title, edition, book_editor, chapter_title, volume_number, publisher_category, page_number, publisher_name, 
             publication_year, book_url, doi_id, isbn, number_of_nmims_authors, nmims_authors, nmims_campus_authors, nmims_school_authors, supporting_documents, created_by)
-            VALUES ($1, $2 , $3 ,$4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20) RETURNING id `,
+            VALUES ($1, $2 , $3 ,$4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19) RETURNING id `,
     values: [
       authorName,
       bookTitle,
       edition,
-      editorName,
+      // editorName,
       bookEditor,
       chapterTitle,
       volumeNumber,
@@ -87,7 +87,7 @@ module.exports.insertBookChapterData = async (
       console.log("error.constraint ====>>>>>", error.constraint);
       console.log("error.message ====>>>", error.message);
       const message =
-        error.code === "23505" ? "Doi Id Of Book should Uniq" : error.message;
+        error.code === "23505" ? "Weblink of The Book Chapter should Uniq" : error.message;
       console.log("message =====>>>>>>", message);
       return {
         status: "Failed",
@@ -107,7 +107,6 @@ module.exports.updatedBookChapter = async (
     authorName,
     bookTitle,
     edition,
-    editorName,
     bookEditor,
     chapterTitle,
     volumeNumber,
@@ -128,14 +127,13 @@ module.exports.updatedBookChapter = async (
   const supportingDocuments = updateBookChapterDataFiles || null;
 
   const sql = {
-    text: `UPDATE book_chapter_publications SET author_name = $2, book_title = $3, edition = $4, editor_name = $5, book_editor = $6, chapter_title = $7, volume_number = $8, publisher_category = $9, page_number = $10, publisher_name = $11,
-               publication_year = $12, book_url = $13, doi_id = $14, isbn = $15, number_of_nmims_authors = $16, nmims_authors = $17, nmims_campus_authors = $18, nmims_school_authors = $19, supporting_documents = $20, updated_by = $21 WHERE id = $1`,
+    text: `UPDATE book_chapter_publications SET author_name = $2, book_title = $3, edition = $4, book_editor = $5, chapter_title = $6, volume_number = $7, publisher_category = $8, page_number = $9, publisher_name = $10,
+               publication_year = $11, book_url = $12, doi_id = $13, isbn = $14, number_of_nmims_authors = $15, nmims_authors = $16, nmims_campus_authors = $17, nmims_school_authors = $18, supporting_documents = $19, updated_by = $20 WHERE id = $1`,
     values: [
       bookChapterId,
       authorName,
       bookTitle,
       edition,
-      editorName,
       bookEditor,
       chapterTitle,
       volumeNumber,
@@ -169,7 +167,7 @@ module.exports.updatedBookChapter = async (
       console.log("error.constraint ====>>>>>", error.constraint);
       console.log("error.message ====>>>", error.message);
       const message =
-        error.code === "23505" ? "Doi Id Of Book should Uniq" : error.message;
+        error.code === "23505" ? "Weblink of The Book Chapter should be uniq" : error.message;
       console.log("message =====>>>>>>", message);
       return {
         status: "Failed",

@@ -216,3 +216,8 @@ module.exports.facultyIprInsert = async (req, res, next) => {
       : null,
   });
 };
+
+
+module.exports.deleteInternalId = async(req, res, next) => {
+  console.log('data comming from frontend ======>>>>>', req.body)
+}

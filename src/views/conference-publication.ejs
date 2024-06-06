@@ -1,5 +1,7 @@
 <%- include('./partials/head') %>
     <!-- inline csss -->
+    <style>
+    </style>
     <!-- Navbar section -->
     <%- include('./partials/header') %>
         <!-- This is left sidebar  -->
@@ -75,8 +77,7 @@
                                 </thead>
                                 <tbody class="data-list">
                                     <% conferenceData.forEach(function(conference,index) { %>
-                                        <% const externalEmp=externalEmpList[index]; %>
-                                            <tr data-conference-id="<%- conference.id %>"
+                                            <tr data-conference-id="<%- conference.conference_presentation_id %>"
                                                 data-is-presenter="<%- conference.is_presenter %>"
                                                 data-presenting-author="<%- conference.presenting_authors %>"
                                                 data-organizing-body="<%- conference.organizing_body %>"
@@ -90,7 +91,8 @@
                                                 data-conference-place="<%- conference.conference_place%>"
                                                 data-conference-type="<%- conference.conference_type %>"
                                                 data-publication-date="<%- conference.publication_date %>"
-                                                data-upload-proof="<%- conference.upload_proof %>">
+                                                data-upload-proof="<%- conference.upload_proof %>"
+                                                data-internal-faculty="<%- conference.faculty_id %>">
                                                 <td><%- index+1 %> </td>
                                                 <td class="col-lg-1 campus"><%- conference.nmims_campus %></td>
                                                 <td class="col-lg-1 school"><%- conference.nmims_school %></td>
@@ -223,45 +225,45 @@
                             <div class="row">
                                 <!-- Campus -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <label for="application-no" class="form-label fw-bold"> NMIMS Campus </label>
-                                    <input type="text" id="nmims-campus" data-validate="isEmpty,isExist,isAlphabeticWords
-                                        data data-err-msg=" Provide Valid Input" class="form-control number" required>
+                                    <label for="application-no" class="form-label fw-bold"> NMIMS Campus <i style="color: red;">*</i></label>
+                                    <input type="text" id="nmims-campus" data-validate="isEmpty,isExist,isLength:2:255"
+                                         data-err-msg=" Provide Valid Input" class="form-control number" required>
                                 </div>
                                 <!-- school -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <label for="application-no" class="form-label fw-bold"> NMIMS School </label>
+                                    <label for="application-no" class="form-label fw-bold"> NMIMS School <i style="color: red;">*</i></label>
                                     <input type="text" id="nmims-school"
-                                        data-validate="isEmpty,isExist,isAlphabeticWords" data
+                                        data-validate="isEmpty,isExist,isLength:2:255" data
                                         data-err-msg="Provide Valid Input" class="form-control number" required>
                                 </div>
                                 <!--  Title of the Paper -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <label for="title-of-paper" class="form-label  fw-bold">Title Of The Paper</label>
+                                    <label for="title-of-paper" class="form-label  fw-bold">Title Of The Paper <i style="color: red;">*</i></label>
                                     <input type="text" name="title-project" id="title-of-paper" class="form-control"
                                         data-validate="isEmpty,isAllNumeric,isExist,isLength:2:255"
                                         data-err-msg="Provide Valid Input" required />
                                 </div>
                                 <!-- Name of Conferencend  -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <label for="conference-name" class="form-label  fw-bold"> Name of Conference
+                                    <label for="conference-name" class="form-label  fw-bold"> Name of Conference <i style="color: red;">*</i>
                                     </label>
                                     <input type="text" name="conference-name" id="conference-name"
-                                        data-validate="isEmpty,isAlphabeticWords,isExist,isLength:2:255"
+                                        data-validate="isEmpty,isExist,isLength:2:255"
                                         data-err-msg="Provide Valid Input" class="form-control" required />
                                 </div>
 
                                 <!-- Author's Name  -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <label for="conference-name" class="form-label  fw-bold">Author's Name
+                                    <label for="conference-name" class="form-label  fw-bold"> All Authors Names<i style="color: red;">*</i>
                                     </label>
                                     <input type="text" name="conference-name" id="author-name"
-                                        data-validate="isEmpty,isAlphabeticWords,isExist,isLength:2:255"
+                                        data-validate="isEmpty,isExist,isLength:2:255"
                                         data-err-msg="Provide Valid Input" class="form-control" required />
                                 </div>
 
                                 <!-- Place of Conferencend  -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <label for="conference-name" class="form-label  fw-bold"> Place of Conference
+                                    <label for="conference-name" class="form-label  fw-bold"> Place of Conference <i style="color: red;">*</i>
                                     </label>
                                     <input type="text" name="conference-name" id="conference-place"
                                         data-validate="isEmpty,isExist,isLength:2:255"
@@ -326,26 +328,26 @@
                                 <!-- Presenting Author-->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="presenting-author" class="form-label fw-bold">
-                                        Presenting Author
+                                        Presenting Author <i style="color: red;">*</i>
                                     </label>
                                     <input type="text" name="presenting-author" id="presenting-author"
-                                        data-validate="isEmpty,isAlphabeticWords,isExist,isLength:2:255"
+                                        data-validate="isEmpty,isExist,isLength:2:255"
                                         data-err-msg="Provide Valid Input" class="form-control" required>
                                 </div>
 
                                 <!-- Organizing Body -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="organizing-body" class="form-label fw-bold">
-                                        Organizing Body
+                                        Organizing Body<i style="color: red;">*</i>
                                     </label>
                                     <input type="text" name="publicaton-detail" id="organizing-body"
-                                        data-validate="isEmpty,isNotNumber,isExist,isLength:2:255"
+                                        data-validate="isEmpty,isExist,isLength:2:255"
                                         data-err-msg="Provide Valid Input" class="form-control" required>
                                 </div>
                                 <!-- Any award for presentation -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12  mb-4">
                                     <label for="award-for-presentation" class="form-label fw-bold mb-3">Any Award For
-                                        Presentation (Upload Proof,If Any)</label><br>
+                                        Presentation (Upload Proof,If Any)<i style="color: red;">*</i></label><br>
                                     <div class="form-check-inline">
                                         <label for="award-yes" class="form-check-label">
                                             <input type="radio" class="form-check-input" id="is-award-yes"
@@ -366,27 +368,27 @@
                                     <label for="volAndIssue" class="form-label fw-bold">
                                         Vol and issue no [e.g 9 (12)]
                                     </label>
-                                    <input type="number" name="vol-issues" id="vol-and-issue-no"
-                                        data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required."
-                                        class="form-control" required>
+                                    <input type="text" name="vol-issues" id="vol-and-issue-no"
+                                        data-validate="isEmpty,isAlphaNumericSpecial" data-err-msg="Provide valid input."
+                                        class="form-control" >
                                 </div>
                                 <!-- ISSN/ISNB No -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="issn-isbn-no" class="form-label fw-bold">
                                         ISSN/ISNB No.
                                     </label>
-                                    <input type="number" name="ISBN-Number" id="issn-isbn-no"
-                                        data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required."
-                                        class="form-control" required>
+                                    <input type="text" name="ISBN-Number" id="issn-isbn-no"
+                                        data-validate="isEmpty,isAlphaNumeric" data-err-msg="Provide valid input."
+                                        class="form-control">
                                 </div>
                                 <!-- DOI/Weblink of paper -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="doi-weblink" class="form-label  fw-bold">
-                                        DOI/Weblink of paper ID
+                                        DOI/Weblink of paper ID <i style="color: red;">*</i>
                                     </label>
                                     <input data-validate="isEmpty,isExist"
                                         data-err-msg="Link is required and provide valid input" type="text"
-                                        name="web-link" id="doi-weblink-id" class="form-control" required />
+                                        name="web-link" id="doi-weblink-id" class="form-control" />
                                 </div>
 
                                 <!-- Sponsored By NMIMS/Other -->
@@ -411,16 +413,16 @@
 
                                 <!-- Amount spent In Rs. -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <label for="conference-place" class="form-label  fw-bold"> Amount spent In Rs.
-                                    </label>
+                                    <label for="conference-place" class="form-label  fw-bold"> Amount spent By NMIMS Rs.
+                                        <i style="color: red;">*</i></label>
                                     <input type="number" name="conference-place" id="spent-amount"
-                                        data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required."
+                                        data-validate="isEmpty,isDecimal" data-err-msg="Provide valid input."
                                         class="form-control" required />
                                 </div>
 
                                 <!-- Publication Date. -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <label for="conference-place" class="form-label  fw-bold"> Publication Date </label>
+                                    <label for="conference-place" class="form-label  fw-bold"> Publication Date <i style="color: red;">*</i></label>
                                     <input type="Date" name="conference-place" id="publication-date"
                                         data-validate="isEmpty,isExist" data-err-msg="Date is required"
                                         class="form-control" required />
@@ -428,7 +430,7 @@
 
                                 <!-- Upload Files -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <label for="upload" class="form-label fw-bold ">Upload Files
+                                    <label for="upload" class="form-label fw-bold ">Upload Files <i style="color: red;">*</i>
                                         <div id="uploadNewSupportDocumentDiv">
                                             <label for="uploadNewSupportDocument"><small>Click to Upload New
                                                     File</small></label>
@@ -447,7 +449,7 @@
                                 <!-- upload proof -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
 
-                                    <label for="upload" class="form-label fw-bold ">Upload Proof
+                                    <label for="upload" class="form-label fw-bold ">Upload Proof <i style="color: red;">*</i>
                                         <div id="uploadNewSupportDocumentDivOne">
                                             <label for="uploadNewSupportDocument"><small>Click to Upload New
                                                     File</small></label>
@@ -466,11 +468,9 @@
                                 </div>
 
                                 <!-- Faculty Type -->
-
-                                <!-- Inventor -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="investor-details" class="form-label fw-bold mb-3">Name Of
-                                        Co-Authors</label>
+                                        Co-Authors <i style="color: red;">*</i></label>
                                     <span style="color:red;" id="facultyTypeError"></span></br>
                                     <div class="form-check-inline">
                                         <label for="is-internal" class="form-check-label enter-faculty-type">
@@ -479,7 +479,7 @@
                                             <span id="enternal-text">Internal</span>
                                         </label>
                                         <div class=" col-lg-1 p-6 w-100 d-none" id="employee-list">
-                                            <select id="emp-name" style="width: 200px;" multiple>
+                                            <select id="emp-name" class="internal-faculty-list-data" style="width: 200px;" multiple>
                                                 <option value="">select employee name</option>
                                                 <% internalEmpList.forEach(function(employee) { %>
                                                     <option value="<%= employee.id %>">
@@ -491,133 +491,24 @@
                                     </div>
 
                                     <div class="form-check-inline">
-
-                                        <label for="is-external" class="form-check-label external-faculty">
-                                            <input type="radio" class="form-check-input" id="is-external"
+                                        <label for="is-external-details" class="form-check-label external-faculty">
+                                            <input type="radio" class="form-check-input" id="is-external-details"
                                                 name="author-type" value="External">
                                             <span id="external-text">External</span>
                                         </label>
-
-                                    </div>
-
-
-                                    <div class="form-check-inline">
-
-                                        <label for="is-external" class="form-check-label external-faculty">
-                                            <input type="radio" class="form-check-input d-none" id="is-external-update"
-                                                name="author-type" value="External">
-                                            <span id="external-text-upd" class="d-none">External</span>
-                                        </label>
-
-                                    </div>
-
-                                    <div>
-                                        <table style="width:100%;" class="table table-responsive-lg d-none "
-                                            id="externalfacultyTable">
-                                            <thead>
-                                                <th>Sr.No</th>
-                                                <th>Faculty Name</th>
-                                                <th>Faculty Address</th>
-                                                <th>Faculty Designation</th>
-                                                <th>Employee Id</th>
-                                                <th colspan>Action</th>
-                                            </thead>
-                                            <tbody id="appendFaculty">
-
-
-
-                                            </tbody>
-
-                                        </table>
                                     </div>
                                 </div>
-
-                                <div></div>
-                                <div></div>
-
-                                <table id="faculty-table-list-upd">
-                                    <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none" id="name-class-upd">
-                                        <label for="faculty-name-upd" class="form-label fw-bold">Faculty
-                                            Name</label>
-                                        <input type="text" class="form-control" id="faculty-name-upd" required>
-                                        <span style="color:red;" id="facultyInsertError"></span>
-                                    </div>
-                                    <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none" id="dsg-class-upd">
-                                        <label for="" class="form-label fw-bold">Faculty Designation :</label>
-                                        <input type="text" class="form-control" id="faculty-designation-upd" required>
-                                        <span style="color:red;" id="desInsertError"></span>
-                                    </div>
-                                    <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none" id="id-class-upd">
-                                        <label for="faculty-emp-id-upd" class="form-label fw-bold">Faculty Id
-                                        </label>
-                                        <input type="text" class="form-control" id="faculty-emp-id-upd">
-                                        <span style="color:red;" id="empInsertError"></span>
-
-                                    </div>
-                                    <div class="form-group col-lg-3 col-md-6 col-sm-12 mb-4 d-none"
-                                        id="address-class-upd">
-                                        <label for="faculty-address" class="form-label fw-bold">Faculty
-                                            Address</label>
-                                        <input type="text" class="form-control" id="faculty-address-upd" required>
-                                        <span style="color:red;" id="addrInsertError"></span>
-                                    </div>
-
-                                    <div class="form-group col-lg-6 col-md-6 col-sm-12 mb-4 d-none" id="add-btn-upd">
-                                        <button id="insert-details-upd" data-bs-target="#"
-                                            class="btn col-lg-4 col-md-6 col-sm-12 btn-primary" type="button">Insert
-                                            Faculty Details</button>
-                                    </div>
-                                </table>
-
-                                <div id="author-details" class="form-group col-md-12 col-sm-12 mb-4 d-none">
-                                    <div class="author-details-section col-lg-12 col-md-8 col-sm-12">
-                                        <label for="author-name " class="form-label fw-bold col-lg-12"> External Authors
-                                            Details:</label>
-                                        <div id="dynamic-rows" class="col-lg-12 col-md-8 col-sm-12 mb-4">
-                                        </div>
-                                    </div>
-                                </div>
-                                <table class="table custom-table table-responsive research-pagination"
-                                    id="faculty-table-list">
-                                    <div class="form-group col-lg-2 col-md-6 col-sm-12 mb-4 d-none" id="name-class">
-                                        <label for="faculty-name" class="form-label fw-bold">Faculty Name</lable>
-                                            <input type="text" class="form-control" id="faculty-name">
-                                    </div>
-                                    <div class="form-group col-lg-2 col-md-6 col-sm-12 mb-4 d-none" id="dsg-class">
-                                        <label for="" class="form-label fw-bold">Faculty Designation :</lable>
-                                            <input type="text" class="form-control" id="faculty-designation">
-                                    </div>
-                                    <div class="form-group col-lg-2 col-md-6 col-sm-12 mb-4 d-none" id="id-class">
-                                        <label for="faculty-emp-id" class="form-label fw-bold">Faculty Id
-                                            </lable>
-                                            <input type="text" class="form-control" id="faculty-emp-id">
-                                    </div>
-                                    <div class="form-group col-lg-2 col-md-6 col-sm-12 mb-4 d-none" id="address-class">
-                                        <label for="faculty-address" class="form-label fw-bold">Faculty Address</lable>
-                                            <input type="text" class="form-control" id="faculty-address">
-                                    </div>
-
-                                    <div class="form-group col-lg- col-md-6 col-sm-12 mb-4 d-none" id="add-btn">
-                                        <button id="insert-details" data-bs-target="#"
-                                            class="btn col-lg-4 col-md-6 col-sm-12 btn-primary" type="button">Insert
-                                            Faculty Details</button>
-                                        <button id="add-more-details" data-bs-target="#"
-                                            class="btn col-lg-4 col-md-6 col-sm-12 btn-primary" type="button">Add More
-                                            Details</button>
-
-                                    </div>
-                                </table>
-                                <div id="author-details" class="form-group col-lg-6 col-md-8 col-sm-12 mb-4 d-none">
-                                    <div class="author-details-section col-lg-6 col-md-8 col-sm-12">
-                                        <label for="author-name " class="form-label fw-bold">Author Name:</label>
-                                        <input type="text" id="author-name" class="col-md-12 form-control"
-                                            placeholder="Enter author name">
-                                        <button id="add-more-details"
-                                            class="btn col-md-12 btn-md btn-primary submit-btn update-btn"
-                                            type="button">Add
-                                            More Details</button>
-                                    </div>
-                                </div>
+                            <table id="external-details-table" class="table vertical-lines custom-table table-responsive research-pagination re d-none">
+                                <thead>
+                                    <th class="col-lg-4 col-md-6 col-sm-12 mb-4">faculty Name </th>
+                                    <th class="col-lg-4 col-md-6 col-sm-12 mb-4">Employee Id</th>
+                                    <th class="col-lg-4 col-md-6 col-sm-12 mb-4">Designation</th>
+                                    <th class="col-lg-4 col-md-6 col-sm-12 mb-4">Address</th>
+                                    <th class="col-lg-4 col-md-6 col-sm-12 mb-4">Action</th>
+                                </thead>
+                                <tbody id="add-faculty-details">
+                                </tbody>
+                            </table>
                             </div>
                         </div>
                         <!-- footer button -->
@@ -679,7 +570,7 @@
                                 <!-- Name  Authors-->
                                 <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                                     <div class="box">
-                                        <div class="task-sub-title sub-title-text">Author's Name:</div>
+                                        <div class="task-sub-title sub-title-text">All Authors Names:</div>
                                         <label class="view-content" id="view-author-name"></label>
                                     </div>
                                 </div>
@@ -773,7 +664,7 @@
                                 <!-- Amount spent In Rs. -->
                                 <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                                     <div class="box">
-                                        <div class="task-sub-title sub-title-text">Amount spent In Rs.:</div>
+                                        <div class="task-sub-title sub-title-text">Amount spent By NMIMS RS.:</div>
                                         <label class="view-content" id="view-spent-amount"></label>
                                     </div>
                                 </div>
@@ -833,18 +724,13 @@
                 crossorigin="anonymous" referrerpolicy="no-referrer"></script>
             <!-- inline script -->
             <script>
-                //   for index icrement
-                const rowCount = document.getElementById('row-count');
                 const InsertDetails = document.getElementById('insert-details');
                 let externalFacultyIdArray = [];
-                let facultycontainer = []
-                let rowIndex = rowCount.innerText;
-                let indexValue = parseInt(rowIndex, 10);
-                const facultyTableList = document.getElementById('faculty-table-list')
-                console.log('indexValue ==>', indexValue)
+                let facultycontainer = [];
+                let internalUpdate = []
+
                 const conferencePublicationList = document.getElementById('conference-publication-list');
                 const employeeDropdown = document.getElementById("emp-name");
-                const addMoreDetailsButton = document.getElementById("add-more-details");
                 let conferenceId, conferenceRowToBeUpdated, storedFacultyValue, InternalAuthorValue, externalAuthorValue;
                 const conferenceAddModal = document.getElementById('confrence-modal-form');
                 const submitBtn = document.getElementById('submit-btn');
@@ -853,9 +739,6 @@
 
                 //modal for button visualization
                 conferenceAddModal.addEventListener('click', function (event) {
-
-                    //    let proofError = document.getElementById('proofError');
-                    //    proofError.innerText= '';
 
                     if (event.target.tagName === 'BUTTON' && event.target.classList.contains('add-modal') || event.target.classList.contains('plus')) {
 
@@ -885,7 +768,7 @@
                         // downloadConferenceProof.classList.add('d-none');
                         // for downloadfile button
                         employeeList.classList.add('d-none');
-                        authorDetails.classList.add('d-none');
+                        // authorDetails.classList.add('d-none');
                         const conferenceDocFiles = document.querySelector('#conference-file-edit');
                         const conferenceProofFiles = document.querySelector('#conference-proof-edit');
                         conferenceDocFiles.classList.add('d-none');
@@ -910,7 +793,7 @@
                         document.getElementById('doi-weblink-id').value = '';
                         document.getElementById('author-name').value = '';
                         employeeList.classList.add('d-none');
-                        authorDetails.classList.add('d-none');
+                        // authorDetails.classList.add('d-none');
                         titleOfPaper.value = '';
                         publicationDetails.value = '';
                         volAndIssueNo.value = '';
@@ -933,7 +816,7 @@
                             options: facultyOptions,
                             placeholder: "Select Employee Name",
                             hidePlaceholder: true,
-                            create: true,
+                            create: false,
                             plugins: ['remove_button'],
                             onItemAdd: function () {
                                 this.setTextboxValue('');
@@ -973,33 +856,24 @@
                     const conferenceType = document.querySelector('input[name="conference-type"]:checked').value;
 
                     const presentationAward = document.querySelector('input[name="award-for-presentation"]:checked').value;
-                    // function call 
-                    await insertFacultyNameString(authorType, conferenceData);
+                    
+
+                    let externalFacultyDetailsRow = document.querySelectorAll('.external-faculty-details');
+                    let externalFacultyDetails = [];
+
+                    externalFacultyDetailsRow.forEach((field, index) => {
+                        if (field.value !== '') {
+                            externalFacultyDetails.push(field.value);
+                        }
+                    });
+
                     const conferenceDocument = document.getElementById('conference-documnets');
                     const conferenceProof = document.getElementById('conference-proofs');
                     const conferenceDocumentsData = conferenceDocument.files;
                     const conferenceProofsData = conferenceProof.files;
                     conferenceDocumentsData ? Array.from(conferenceDocumentsData).forEach(file => conferenceData.append('conferenceDocument', file)) : conferenceData.append('conferenceDocument', null);
                     conferenceProofsData ? Array.from(conferenceProofsData).forEach(file => conferenceData.append('conferenceProof', file)) : conferenceData.append('conferenceProof', null);
-                    // for conference documents
-                    // if(conferenceDocumentsData.length > 0){
-                    //     for(let i = 0; i <= conferenceDocumentsData.length - 1; i++){
-                    //         console.log('conferenceDocumentsData file name ==>>', conferenceDocumentsData[i].name);
-                    //         if(conferenceDocumentsData[i].name){
-                    //             conferenceData.append('conferenceDocument' , conferenceDocumentsData[i]);
-                    //         }
-                    //     }
-                    // }
-                    // // for conference proof
-                    // if(conferenceProofsData.length > 0){
-                    //     for(let i = 0; i <= conferenceProofsData.length - 1; i++){
-                    //         console.log('conferenceProofsData file name ==>', conferenceProofsData[i].name);
-                    //         if(conferenceProofsData[i].name){
-                    //             conferenceData.append('conferenceProof' , conferenceProofsData[i]);
-                    //         }
-                    //     }
-                    // }
-
+              
                     // for setup of key value paire to send form data
 
                     conferenceData.append('facultycontainer', JSON.stringify(facultycontainer))
@@ -1021,7 +895,8 @@
                     conferenceData.append('presentingAuthor', presentingAuthor);
                     conferenceData.append('nmimsCampus', nmimsCampus);
                     conferenceData.append('nmimsSchool', nmimsSchool);
-                    conferenceData.append('authorsName', authorsName)
+                    conferenceData.append('authorsName', authorsName);
+                    conferenceData.append('externalFacultyDetails', JSON.stringify(externalFacultyDetails));
 
                     fetch(url, {
                         method: 'POST',
@@ -1032,7 +907,7 @@
                         })
                         .then((data) => {
                             if (data.status == 'Done') {
-                                //                 console.log('data ==>>', data);
+                                console.log('data ==>>', data);
                                 //                 const rowCountInteger = parseInt(data.rowCount, 10);
                                 //                 const IndexEntry = rowCountInteger + indexValue
                                 //                 console.log('IndexEntry ===>>>', IndexEntry);
@@ -1091,7 +966,8 @@
                                     confirmButtonText: "OK",
                                     confirmButtonColor: "#DD6B55"
                                     // timer: 1500
-                                }).then(() => {
+                                })
+                                .then(() => {
                                     document.location.reload()
                                 });
                             }
@@ -1130,7 +1006,7 @@
                 submitBtn.addEventListener('click', async () => {
                     const isValid = validateRequiredFormFields(submitBtn);
                     const internalAuthor = document.getElementById('is-internal');
-                    const externalAuthor = document.getElementById('is-external');
+                    const externalAuthor = document.getElementById('is-external-details');
 
                     if (isValid && internalAuthor.checked || externalAuthor.checked) {
                         await insertConferencePublicationForm('<%- BASE_URL %>research/conference-publication/insert');
@@ -1157,139 +1033,140 @@
 
                 // for delete
                 conferencePublicationList.addEventListener('click', async (event) => {
-                    if (event.target.classList.contains('delete')) {
-                        conferenceId = event.target.getAttribute('data-conference-id');
-                        console.log('id for deletion ==>', conferenceId);
-                        conferenceRowToBeDelete = event.target.closest('tr');
-                        let confirmDelete = "Do you want to delete the Book  Publication?";
-                        if (confirmDelete) {
-                            Swal.fire({
-                                title: "Are you sure?",
-                                text: "You won't be able to revert this!",
-                                icon: "warning",
-                                showCancelButton: true,
-                                confirmButtonColor: "#3085d6",
-                                cancelButtonColor: "#d33",
-                                confirmButtonText: "Yes, delete it!"
-                            }).then((result) => {
-                                if (result.isConfirmed) {
-                                    // Execute fetch request here after confirmation
-                                    fetch('<%- BASE_URL %>research/conference-publication/delete', {
-                                        method: 'POST',
-                                        headers: {
-                                            'content-type': 'application/json'
-                                        },
-                                        body: JSON.stringify({ conferenceId })
-                                    })
-                                        .then((result) => result.json())
-                                        .then((data) => {
-                                            if (data.status === 'Done') {
-                                                console.log('data ==>>', data);
-                                                conferenceRowToBeDelete.remove();
+                        if (event.target.classList.contains('delete')) {
+                            
+                            conferenceRowToBeDelete = event.target.closest('tr');
+                            conferenceId = conferenceRowToBeDelete.getAttribute('data-conference-id');
+                            console.log('id for deletion ==>', conferenceId);
+                            let confirmDelete = "Do you want to delete the Book  Publication?";
+                            if (confirmDelete) {
+                                Swal.fire({
+                                    title: "Are you sure?",
+                                    text: "You won't be able to revert this!",
+                                    icon: "warning",
+                                    showCancelButton: true,
+                                    confirmButtonColor: "#3085d6",
+                                    cancelButtonColor: "#d33",
+                                    confirmButtonText: "Yes, delete it!"
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        // Execute fetch request here after confirmation
+                                        fetch('<%- BASE_URL %>research/conference-publication/delete', {
+                                            method: 'POST',
+                                            headers: {
+                                                'content-type': 'application/json'
+                                            },
+                                            body: JSON.stringify({ conferenceId })
+                                        })
+                                            .then((result) => result.json())
+                                            .then((data) => {
+                                                if (data.status === 'Done') {
+                                                    console.log('data ==>>', data);
+                                                    conferenceRowToBeDelete.remove();
+                                                    Swal.fire({
+                                                        title: "Deleted!",
+                                                        text: "Record has been deleted.",
+                                                        icon: "success",
+                                                        showConfirmButton: true,
+                                                        confirmButtonText: "OK",
+                                                        confirmButtonColor: "#DD6B55"
+                                                    }).then(() => {
+                                                        location.reload();
+                                                    });
+                                                }
+                                            })
+                                            .catch((error) => {
+                                                console.error('Error:', error);
+                                                const message = error;
                                                 Swal.fire({
-                                                    title: "Deleted!",
-                                                    text: "Record has been deleted.",
-                                                    icon: "success",
+                                                    position: "top-center",
+                                                    icon: "error",
+                                                    title: `${message}`,
+                                                    color: "red",
                                                     showConfirmButton: true,
                                                     confirmButtonText: "OK",
                                                     confirmButtonColor: "#DD6B55"
-                                                }).then(() => {
-                                                    location.reload();
                                                 });
-                                            }
-                                        })
-                                        .catch((error) => {
-                                            console.error('Error:', error);
-                                            const message = error;
-                                            Swal.fire({
-                                                position: "top-center",
-                                                icon: "error",
-                                                title: `${message}`,
-                                                color: "red",
-                                                showConfirmButton: true,
-                                                confirmButtonText: "OK",
-                                                confirmButtonColor: "#DD6B55"
                                             });
-                                        });
-                                }
+                                    }
+                                });
+                            }
+                            else {
+                                return
+                            }
+                        }
+
+                        // for view the form data
+                        if (event.target.classList.contains('view')) {
+                            console.log('clickeddd');
+                            $('#conference-publication-view-modal').modal({
+                                backdrop: 'static'
                             });
-                        }
-                        else {
-                            return
-                        }
-                    }
-
-                    // for view the form data
-                    if (event.target.classList.contains('view')) {
-                        console.log('clickeddd');
-                        $('#conference-publication-view-modal').modal({
-                            backdrop: 'static'
-                        });
-                        const conferenceRowToBeViewed = event.target.closest('tr');
-                        conferenceId = event.target.getAttribute('data-conference-id');
-                        console.log('conferenceId ==>>', conferenceId);
-                        const viewConferenceDocument = document.getElementById('view-conference-document');
-                        const viewConferenceProof = document.getElementById('view-conference-proof');
-                        const viewTitleOfPaper = document.getElementById('view-title-of-paper');
-                        const viewConferenceName = document.getElementById('view-conference-name');
-                        const viewConferencePlace = document.getElementById('view-conference-place');
-                        const viewProcedingDetail = document.getElementById('view-proceedings-detail');
-                        const viewSponsored = document.getElementById('view-sponsored');
-                        const viewVolAndIssueNo = document.getElementById('view-vol-and-issue-no');
-                        const viewIssnIsbnNo = document.getElementById('view-issn-isbn-no');
-                        const viewDoiWebLinkId = document.getElementById('view-doi-weblink-id');
-                        const viewConferenceType = document.getElementById('view-conference-type');
-                        const viewIsPresenter = document.getElementById('view-is-presenter');
-                        const viewAuthortype = document.getElementById('view-author-type');
-                        const viewAward = document.getElementById('view-award-for-presentation');
-                        const viewPresentingAuthor = document.getElementById('view-presenting-author')
-                        const viewOrganizationBoy = document.getElementById('view-organization-body');
-                        const viewSpentAmount = document.getElementById('view-spent-amount');
-                        const viewPublicationDate = document.getElementById('view-publication-date');
-                        const viewNmimsCampus = document.getElementById('view-campus');
-                        const viewNmimsSchool = document.getElementById('view-school')
+                            const conferenceRowToBeViewed = event.target.closest('tr');
+                            conferenceId = conferenceRowToBeViewed.getAttribute('data-conference-id');
+                            console.log('conferenceId ==>>', conferenceId);
+                            const viewConferenceDocument = document.getElementById('view-conference-document');
+                            const viewConferenceProof = document.getElementById('view-conference-proof');
+                            const viewTitleOfPaper = document.getElementById('view-title-of-paper');
+                            const viewConferenceName = document.getElementById('view-conference-name');
+                            const viewConferencePlace = document.getElementById('view-conference-place');
+                            const viewProcedingDetail = document.getElementById('view-proceedings-detail');
+                            const viewSponsored = document.getElementById('view-sponsored');
+                            const viewVolAndIssueNo = document.getElementById('view-vol-and-issue-no');
+                            const viewIssnIsbnNo = document.getElementById('view-issn-isbn-no');
+                            const viewDoiWebLinkId = document.getElementById('view-doi-weblink-id');
+                            const viewConferenceType = document.getElementById('view-conference-type');
+                            const viewIsPresenter = document.getElementById('view-is-presenter');
+                            const viewAuthortype = document.getElementById('view-author-type');
+                            const viewAward = document.getElementById('view-award-for-presentation');
+                            const viewPresentingAuthor = document.getElementById('view-presenting-author')
+                            const viewOrganizationBoy = document.getElementById('view-organization-body');
+                            const viewSpentAmount = document.getElementById('view-spent-amount');
+                            const viewPublicationDate = document.getElementById('view-publication-date');
+                            const viewNmimsCampus = document.getElementById('view-campus');
+                            const viewNmimsSchool = document.getElementById('view-school')
 
 
-                        fetch('<%- BASE_URL %>research/conference-publication/view', {
-                            method: 'POST',
-                            headers: {
-                                'content-type': 'application/json'
-                            },
-                            body: JSON.stringify({ conferenceId })
-                        })
-                            .then((result) => {
-                                return result.json()
+                            fetch('<%- BASE_URL %>research/conference-publication/view', {
+                                method: 'POST',
+                                headers: {
+                                    'content-type': 'application/json'
+                                },
+                                body: JSON.stringify({ conferenceId })
                             })
-                            .then((data) => {
-                                if (data.status === 'Done') {
-                                    console.log('data ==>>', data);
-                                    setFileNameInButtons(data);
-                                    // viewConferenceDocumentd = data.viewConferenceData[0].upload_files; 
-                                    // viewConferenceProofd = data.viewConferenceData[0].upload_proof;
-                                    viewNmimsCampus.innerText = data.viewConferenceData[0].nmims_campus;
-                                    viewNmimsSchool.innerText = data.viewConferenceData[0].nmims_school;
-                                    viewTitleOfPaper.innerText = data.viewConferenceData[0].title_of_paper;
-                                    viewConferenceName.innerText = data.viewConferenceData[0].conference_name;
-                                    viewConferencePlace.innerText = data.viewConferenceData[0].conference_place;
-                                    viewProcedingDetail.innerText = data.viewConferenceData[0].proceedings_detail;
-                                    viewSponsored.innerText = data.viewConferenceData[0].sponsored;
-                                    viewVolAndIssueNo.innerText = data.viewConferenceData[0].vol_and_issue_no;
-                                    viewIssnIsbnNo.innerText = data.viewConferenceData[0].issn_isbn_no;
-                                    viewDoiWebLinkId.innerText = data.viewConferenceData[0].doi_id;
-                                    viewConferenceType.innerText = data.viewConferenceData[0].conference_type;
-                                    viewIsPresenter.innerText = data.viewConferenceData[0].is_presenter;
-                                    document.getElementById('view-author-name').innerText = data.viewConferenceData[0].authors_name;
-                                    // viewAuthortype.innerText = data.viewConferenceData[0].author_type.replace(/,/g, ' ');
+                                .then((result) => {
+                                    return result.json()
+                                })
+                                .then((data) => {
+                                    if (data.status === 'Done') {
+                                        console.log('data ==>>', data);
+                                        setFileNameInButtons(data);
+                                        // viewConferenceDocumentd = data.viewConferenceData[0].upload_files; 
+                                        // viewConferenceProofd = data.viewConferenceData[0].upload_proof;
+                                        viewNmimsCampus.innerText = data.viewConferenceData[0].nmims_campus;
+                                        viewNmimsSchool.innerText = data.viewConferenceData[0].nmims_school;
+                                        viewTitleOfPaper.innerText = data.viewConferenceData[0].title_of_paper;
+                                        viewConferenceName.innerText = data.viewConferenceData[0].conference_name;
+                                        viewConferencePlace.innerText = data.viewConferenceData[0].conference_place;
+                                        viewProcedingDetail.innerText = data.viewConferenceData[0].proceedings_detail;
+                                        viewSponsored.innerText = data.viewConferenceData[0].sponsored;
+                                        viewVolAndIssueNo.innerText = data.viewConferenceData[0].vol_and_issue_no;
+                                        viewIssnIsbnNo.innerText = data.viewConferenceData[0].issn_isbn_no;
+                                        viewDoiWebLinkId.innerText = data.viewConferenceData[0].doi_id;
+                                        viewConferenceType.innerText = data.viewConferenceData[0].conference_type;
+                                        viewIsPresenter.innerText = data.viewConferenceData[0].is_presenter;
+                                        document.getElementById('view-author-name').innerText = data.viewConferenceData[0].authors_name;
+                                        // viewAuthortype.innerText = data.viewConferenceData[0].author_type.replace(/,/g, ' ');
 
 
 
-                                    viewAward.innerText = data.viewConferenceData[0].award_for_presentation;
-                                    viewPresentingAuthor.innerText = data.viewConferenceData[0].presenting_authors;
-                                    viewOrganizationBoy.innerText = data.viewConferenceData[0].organizing_body;
-                                    viewSpentAmount.innerText = data.viewConferenceData[0].spent_amount;
-                                    viewPublicationDate.innerText = formatDateToYYYYMMDD(data.viewConferenceData[0].publication_date);
+                                        viewAward.innerText = data.viewConferenceData[0].award_for_presentation;
+                                        viewPresentingAuthor.innerText = data.viewConferenceData[0].presenting_authors;
+                                        viewOrganizationBoy.innerText = data.viewConferenceData[0].organizing_body;
+                                        viewSpentAmount.innerText = data.viewConferenceData[0].spent_amount;
+                                        viewPublicationDate.innerText = formatDateToYYYYMMDD(data.viewConferenceData[0].publication_date);
 
-                                    let facultyDetailsHTML = `
+                                        let facultyDetailsHTML = `
                                         <table class="table" border='1px'>
                                             <thead>
                                                 <th>#</th>
@@ -1300,8 +1177,8 @@
                                             </thead>
                                             <tbody>`;
 
-                                    data.facultyDetails.forEach((faculty, index) => {
-                                        facultyDetailsHTML += `
+                                        data.facultyDetails.forEach((faculty, index) => {
+                                            facultyDetailsHTML += `
                             <tr>
                                 <td class="view-content">${index + 1}</td>
                                 <td class="view-content">${faculty.faculty_name}</td>
@@ -1309,89 +1186,53 @@
                                 <td class="view-content">${faculty.address}</td>
                                 <td class="view-content">${faculty.employee_id}</td>
                             </tr>`;
-                                    });
+                                        });
 
-                                    facultyDetailsHTML += `
+                                        facultyDetailsHTML += `
                             </tbody>
                         </table>`;
 
-                                    // Set the generated faculty details HTML
-                                    document.getElementById('faculty-details-container').innerHTML = facultyDetailsHTML;
+                                        // Set the generated faculty details HTML
+                                        document.getElementById('faculty-details-container').innerHTML = facultyDetailsHTML;
 
 
-                                }
-                            })
-                            .catch((error) => {
-                                console.log('error ==>>', error);
-                            })
+                                    }
+                                })
+                                .catch((error) => {
+                                    console.log('error ==>>', error);
+                                })
 
 
-                        $('#conference-publication-view-modal').modal('show');
+                            $('#conference-publication-view-modal').modal('show');
 
 
-                    }
-                    // for update
-                    if (event.target.classList.contains('edit')) {
-                        conferenceId = event.target.getAttribute('data-conference-id');
+                        }
+                        // for update
+                        if (event.target.classList.contains('edit')) {
 
-                        let isExternalUpd = document.getElementById('is-external')
-                        let isExternalUpdNew = document.getElementById('is-external-update')
-
-                        let text = document.getElementById('external-text');
-                        let textnew = document.getElementById('external-text-upd');
-
-                        isExternalUpd.classList.add('d-none');
-                        isExternalUpdNew.classList.remove('d-none');
-
-                        text.classList.add('d-none');
-                        textnew.classList.remove('d-none');
-
-                        document.getElementById('name-class').classList.add('d-none');
-                        document.getElementById('dsg-class').classList.add('d-none');
-                        document.getElementById('id-class').classList.add('d-none');
-                        document.getElementById('address-class').classList.add('d-none');
-                        document.getElementById('add-btn').classList.add('d-none');
-
-                        let externalFacultyDetails = await fetchFacultyData('<%- BASE_URL %>research/external/facultyDataForConference');
-                        console.log('faculty JSON', JSON.stringify(externalFacultyDetails.facultyData))
-
-                        console.log('patentId ankit ====>>>>>', conferenceId)
-                        let externalFaculty = externalFacultyDetails.facultyData.filter(fdata => conferenceId == fdata.conference_id).map(facultyData => facultyData);
-                        console.log('new external faculty ', JSON.stringify(externalFaculty))
-
-                        let appendFaculty = document.getElementById('appendFaculty');
-                        appendFaculty.innerHTML = ''
-
-
-                        externalFaculty.forEach((ef, index) => {
-                            let htmlData = `<tr data-facultyId = ${ef.id}>
-                            
-                        <td>${index + 1}</td>
-                        <td><input id="updateFacultyName" type="text" value="${ef.faculty_name}" /></br><span style="color:red;" id='facultyUpdError'></span></td>
-                        <td ><input id="updateFacultyAddr" type="text" value="${ef.address}" /></br><span style="color:red;" id='addrUpdError'></span></td>
-                        <td ><input id="updateFacultyDes" type="text" value="${ef.designation}" /></br><span style="color:red;" id='desUpdError'></span></td>
-                        <td ><input id="updateFacultyId" type="text" value="${ef.employee_id}" /></br><span style="color:red;" id='empUpdError'></span></td>
-                        <td><button class="btn btn-primary updateFaculty">Update</button></td>
-                        </tr>`
-
-                            appendFaculty.insertAdjacentHTML('beforeEnd', htmlData);
-                        })
-
-
-
-
+                        conferenceRowToBeUpdated = event.target.closest('tr');
+                        console.log('conferenceRowToBeUpdated ====>>>>>', conferenceRowToBeUpdated)
+                        
+                        conferenceId = conferenceRowToBeUpdated.getAttribute('data-conference-id');
+                        console.log('ID ==>>', conferenceId);
 
                         const employeesListData = document.getElementById('employees-list-data').dataset.employees;
                         const employeesDataObj = JSON.parse(employeesListData);
                         let employeeListArray = [];
 
-                        const internalFaculty = JSON.parse('<%- JSON.stringify(internalFaculty) %>')
-                        let confEmp = internalFaculty.filter(data => conferenceId == data.conference_id).map(emp => emp)
+                        const internalFaculty = JSON.parse('<%- JSON.stringify(internalEmpList) %>')
+
+                        const internalFaculyIdsArray = conferenceRowToBeUpdated.getAttribute('data-internal-faculty').split(',').map(str => parseInt(str.trim(), 10));
+                        console.log('internalFaculyIdsArray =====>>>>>', internalFaculyIdsArray);
+                        
+
+                        let confEmp = [];
 
                         Array.from(employeesDataObj).forEach(data => {
-                            Array.from(confEmp).forEach(emp => {
-                                if (data.id == emp.faculty_id) {
-                                    employeeListArray.push(data.id)
+                            Array.from(internalFaculyIdsArray).forEach(emp => {
+                                if (data.id == emp) {
+                                    confEmp.push(data.id)
+                                    internalUpdate.push(data.id)
                                 }
                             })
                         })
@@ -1399,38 +1240,56 @@
                         // ajax for search bar to search employee name 
                         const facultyOptions = employeesDataObj.map(faculty => ({
                             value: faculty.id,
-                            text: ` ${faculty.faculty_name}`
+                            text: ` ${faculty.employee_id}  ${faculty.faculty_name}`
                         }));
                         new TomSelect("#emp-name", {
-                            options: facultyOptions,
-                            items: employeeListArray,
-                            // placeholder: "Select Employee Name",
-                            hidePlaceholder: true,
-                            create: true,
-                            plugins: ['remove_button'],
-                            onItemAdd: function () {
-                                this.setTextboxValue('');
-                                this.refreshOptions();
-                            },
-                            render: {
-                                option: function (data, escape) {
-                                    return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                                options: facultyOptions,
+                                // placeholder: "Select Options",
+                                items: confEmp,
+                                hidePlaceholder: true,
+                                create: false,
+                                plugins: ['remove_button'],
+                                onItemAdd: function () {
+                                    this.setTextboxValue('');
+                                    this.refreshOptions();
                                 },
-                                item: function (data, escape) {
-                                    return '<div>' + escape(data.text) + '</div>';
+                                render: {
+                                    option: function (data, escape) {
+                                        return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
+                                    },
+                                    item: function (data, escape) {
+                                        return '<div>' + escape(data.text) + '</div>';
+                                    }
+                                },
+                                onItemRemove: function (value) {
+                                    console.log('Remove button clicked for item:', value);
+
+                                    fetch('<%- BASE_URL %>research/conference-publication/internal-faculty-data-details/delete', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify({ internalId: value, conferenceId : conferenceId })
+                                    })
+                                        .then(response => {
+                                            if (!response.ok) {
+                                                throw new Error('Network response was not ok');
+                                            }
+                                            return response.json();
+                                        })
+                                        .then(data => {
+                                            console.log('Item removed successfully:', data);
+                                        })
+                                        .catch(error => {
+                                            console.error('There was a problem with the fetch operation:', error);
+                                        });
                                 }
-                            }
-                        });
-
-
-
+                        
+                            });
 
                         document.getElementById('conference-publication').innerText = 'CONFERENCE Edit';
                         console.log('clickedddd');
-                        $('#conference-publication-modal').modal({
-                            backdrop: 'static'
-                        });
-
+                       
                         document.querySelector('#uploadNewSupportDocumentDiv').classList.remove('d-none');
                         document.querySelector('#uploadNewSupportDocumentDivOne').classList.remove('d-none');
                         document.querySelector('#conference-documnets').classList.add('d-none');
@@ -1439,15 +1298,17 @@
                         InternalAuthorValue = '';
                         externalAuthorValue = '';
                         storedFacultyValue = '';
-                        conferenceRowToBeUpdated = event.target.closest('tr');
-                        console.log('conferenceRowToBeUpdated ====>>>>>', conferenceRowToBeUpdated)
-                        console.log('ID ==>>', conferenceId);
+
                         $('#conference-publication-modal').modal('show');
+
+                        $('#conference-publication-modal').modal({
+                            backdrop: 'static'
+                        });
+
                         updateBtn.classList.remove('d-none');
-                        // document.querySelector('#conferenceHeader').innerHTML = 'Conference Edit';
                         submitBtn.classList.add('d-none');
                         employeeList.classList.add('d-none');
-                        authorDetails.classList.add('d-none');
+
                         setFileNameAttributeToBeDownload(conferenceRowToBeUpdated);
                         const titleOfPaper = document.getElementById('title-of-paper');
                         const volAndIssueNo = document.getElementById('vol-and-issue-no');
@@ -1502,11 +1363,12 @@
                         presentationAward === 'Yes' ? isAwardYes.checked = true : isAwardno.checked = true;
                         const sponsored = conferenceRowToBeUpdated.getAttribute('data-sponsored');
                         sponsored === 'NMIMS' ? isNmimsSponsored.checked = true : isOtherSponsored.checked = true;
-                        const authorType = conferenceRowToBeUpdated.getAttribute('data-author-type');
-                        authorType === 'External' ? externalAuthor.checked = true : internalAuthor.checked = true;
-                        console.log('authorType ===>>>', authorType);
 
-                        storedFacultyValue = authorType;
+                        // const authorType = conferenceRowToBeUpdated.getAttribute('data-author-type');
+                        // authorType === 'External' ? externalAuthor.checked = true : internalAuthor.checked = true;
+                        // console.log('authorType ===>>>', authorType);
+
+                        // storedFacultyValue = authorType;
 
                         let conferenceDocumentData = conferenceRowToBeUpdated.getAttribute('data-upload-files');
                         const conferenceFileName = document.getElementById('conference-file-name');
@@ -1519,143 +1381,192 @@
                         if (conferenceProofName && conferenceProof) {
                             conferenceProofName.textContent = conferenceProof
                         }
+
+                        fetch('<%- BASE_URL %>research/conference-publication/external-details', {
+                            method : "POST",
+                            headers: {
+                                'content-type': 'application/json'
+                            },
+                            body: JSON.stringify({ conferenceId })
+
+                        })
+                        .then((Response) => {
+                            return Response.ok ? Response.json() : "There was network issue"
+                        })
+                        .then((data) => {
+                            if(data.status === "Done"){
+                                console.log('data ====>>>>>', data);
+                                const facultyHeader = ['faculty Name',
+                                        'Employee Id',
+                                        'Designation',
+                                        'Address',
+                                        'Action']
+                                createTableRows('external-details-table', data.exetrnalData, 'external-faculty-data-details', 'delete-details', facultyHeader)
+
+                            }
+                        })
+                        .catch((error) => {
+                            console.error('error ===>>>>>', error)
+                        })
                     }
-                });
+
+                    });
 
 
 
                 const updateConferencePublication = async (url) => {
-                    console.log('clickedddd')
-                    const updatedConferenceData = new FormData();
-                    const updatedAuthorType = document.querySelector('input[name="author-type"]:checked');
-                    const titleOfPaper = document.getElementById('title-of-paper').value;
-                    const volAndIssueNo = document.getElementById('vol-and-issue-no').value;
-                    const issnIsbnNo = document.getElementById('issn-isbn-no').value;
-                    const doiWebLinkId = document.getElementById('doi-weblink-id').value;
-                    // const isPresenter = document.querySelector('input[name="is-presenter"]:checked').value;
-                    const authorType = document.querySelector('input[name="author-type"]:checked');
-                    const nmimsCampus = document.getElementById('nmims-campus').value;
-                    const nmimsSchool = document.getElementById('nmims-school').value;
-                    const conferenceName = document.getElementById('conference-name').value;
-                    const conferencePlace = document.getElementById('conference-place').value;
-                    const publicationDate = document.getElementById('publication-date').value;
-                    const presentingAuthor = document.getElementById('presenting-author').value;
-                    const organizingBody = document.getElementById('organizing-body').value;
-                    const spentAmount = document.getElementById('spent-amount').value;
-                    const sponsored = document.querySelector('input[name="sponsored"]:checked').value;
-                    const procedingDetail = document.querySelector('input[name="Proceedings-details"]:checked').value;
-                    const conferenceType = document.querySelector('input[name="conference-type"]:checked').value;
-                    const presentationAward = document.querySelector('input[name="award-for-presentation"]:checked').value;
-                    const authorsName = document.getElementById('author-name').value;
+                        console.log('clickedddd')
+                        const updatedConferenceData = new FormData();
+                        const updatedAuthorType = document.querySelector('input[name="author-type"]:checked');
+                        const titleOfPaper = document.getElementById('title-of-paper').value;
+                        const volAndIssueNo = document.getElementById('vol-and-issue-no').value;
+                        const issnIsbnNo = document.getElementById('issn-isbn-no').value;
+                        const doiWebLinkId = document.getElementById('doi-weblink-id').value;
+                        // const isPresenter = document.querySelector('input[name="is-presenter"]:checked').value;
+                        const authorType = document.querySelector('input[name="author-type"]:checked');
 
-                    console.log('storedFacultyValue ===>>>>', storedFacultyValue)
-                    //function call 
-                    await updateFacultyNameString(updatedAuthorType, updatedConferenceData, storedFacultyValue);
-                    const updatedConferenceFiles = document.getElementById('conference-documnets');
-                    const updatedConferenceProof = document.getElementById('conference-proofs');
-                    const updatedConferenceFilesData = updatedConferenceFiles.files;
-                    const updatedConferenceProofsData = updatedConferenceProof.files;
+                        const nmimsCampus = document.getElementById('nmims-campus').value;
+                        const nmimsSchool = document.getElementById('nmims-school').value;
+                        const conferenceName = document.getElementById('conference-name').value;
+                        const conferencePlace = document.getElementById('conference-place').value;
+                        const publicationDate = document.getElementById('publication-date').value;
+                        const presentingAuthor = document.getElementById('presenting-author').value;
+                        const organizingBody = document.getElementById('organizing-body').value;
+                        const spentAmount = document.getElementById('spent-amount').value;
+                        const sponsored = document.querySelector('input[name="sponsored"]:checked').value;
+                        const procedingDetail = document.querySelector('input[name="Proceedings-details"]:checked').value;
+                        const conferenceType = document.querySelector('input[name="conference-type"]:checked').value;
+                        const presentationAward = document.querySelector('input[name="award-for-presentation"]:checked').value;
+                        const authorsName = document.getElementById('author-name').value
 
-                    //appending key and value in object updatedConferenceData
-                    updatedConferenceFilesData ? Array.from(updatedConferenceFilesData).forEach(file => updatedConferenceData.append('conferenceDocument', file)) : updatedConferenceData.append('conferenceDocument', null);
-                    updatedConferenceProofsData ? Array.from(updatedConferenceProofsData).forEach(file => updatedConferenceData.append('conferenceProof', file)) : updatedConferenceData.append('conferenceProof', null);
+                        let externalFacultyDetailsRow = document.querySelectorAll('.external-faculty-details');
+                        let externalFacultyDetails = [];
 
-                    updatedConferenceData.append('conferenceId', conferenceId)
-                    updatedConferenceData.append('titleOfPaper', titleOfPaper);
-                    updatedConferenceData.append('conferenceName', conferenceName);
-                    updatedConferenceData.append('procedingDetail', procedingDetail);
-                    updatedConferenceData.append('conferencePlace', conferencePlace);
-                    updatedConferenceData.append('volAndIssueNo', volAndIssueNo);
-                    updatedConferenceData.append('issnIsbnNo', issnIsbnNo);
-                    updatedConferenceData.append('doiWebLinkId', doiWebLinkId);
-                    updatedConferenceData.append('conferenceType', conferenceType);
-                    // updatedConferenceData.append('isPresenter', isPresenter);
-                    updatedConferenceData.append('publicationDate', publicationDate);
-                    updatedConferenceData.append('spentAmount', spentAmount);
-                    updatedConferenceData.append('authorsName', authorsName);
-                    updatedConferenceData.append('presentationAward', presentationAward);
-                    updatedConferenceData.append('sponsored', sponsored);
-                    updatedConferenceData.append('organizingBody', organizingBody);
-                    updatedConferenceData.append('presentingAuthor', presentingAuthor);
-                    updatedConferenceData.append('nmimsCampus', nmimsCampus);
-                    updatedConferenceData.append('nmimsSchool', nmimsSchool);
-
-                    fetch(url, {
-                        method: 'POST',
-                        body: updatedConferenceData
-                    })
-                        .then((result) => {
-                            return result.json()
-                        })
-                        .then((data) => {
-                            if (data.status === "Done") {
-                                console.log('updated Data ==>>', data);
-                                conferenceRowToBeUpdated.querySelector('.school').innerText = data.upadtedConferenceData.nmimsSchool;
-                                conferenceRowToBeUpdated.querySelector('.campus').innerText = data.upadtedConferenceData.nmimsCampus;
-                                conferenceRowToBeUpdated.querySelector('.title-of-paper').innerText = data.upadtedConferenceData.titleOfPaper;
-                                conferenceRowToBeUpdated.querySelector('.conference-name').innerText = data.upadtedConferenceData.conferenceName;
-                                conferenceRowToBeUpdated.querySelector('.proceedings-detail').innerText = data.upadtedConferenceData.procedingDetail;
-                                conferenceRowToBeUpdated.querySelector('.issn-isbn-no').innerText = data.upadtedConferenceData.issnIsbnNo;
-                                conferenceRowToBeUpdated.setAttribute('data-is-presenter', data.upadtedConferenceData.isPresenter);
-                                conferenceRowToBeUpdated.setAttribute('data-author-type', data.upadtedConferenceData.authorType);
-                                conferenceRowToBeUpdated.setAttribute('data-presenting-author', data.upadtedConferenceData.presentingAuthor);
-                                conferenceRowToBeUpdated.setAttribute('data-vol-and-issue-no', data.upadtedConferenceData.volAndIssueNo);
-                                conferenceRowToBeUpdated.setAttribute('data-doi-weblink', data.upadtedConferenceData.doiWebLinkId);
-                                conferenceRowToBeUpdated.setAttribute('data-upload-files', data.conferenceDocument);
-                                conferenceRowToBeUpdated.setAttribute('data-award-for-presentation', data.upadtedConferenceData.isPresenter);
-                                conferenceRowToBeUpdated.setAttribute('data-upload-proof', data.conferenceProofFile);
-                                conferenceRowToBeUpdated.setAttribute('data-organizing-body', data.upadtedConferenceData.organizingBody);
-                                conferenceRowToBeUpdated.setAttribute('data-spent-amount', data.upadtedConferenceData.spentAmount);
-                                conferenceRowToBeUpdated.setAttribute('data-conference-place', data.upadtedConferenceData.conferencePlace);
-                                conferenceRowToBeUpdated.setAttribute('data-conference-type', data.upadtedConferenceData.conferenceType);
-                                conferenceRowToBeUpdated.setAttribute('data-publication-date', data.upadtedConferenceData.publicationDate);
-                                updatedConferenceFiles.files ? conferenceRowToBeUpdated.setAttribute('data-upload-files', data.confernceDocString) : null;
-                                updatedConferenceProof.files ? conferenceRowToBeUpdated.setAttribute('data-upload-proof', data.conferenceProofString) : null;
-
-                                Swal.fire({
-                                    position: "top-center",
-                                    icon: "success",
-                                    title: `${data.message}`,
-                                    showConfirmButton: true,
-                                    confirmButtonText: "OK",
-                                    confirmButtonColor: "#DD6B55",
-                                    timer: 1500
-                                }).then(() => {
-                                    document.location.reload()
-                                });
-                                $('#conference-publication-modal').modal('hide');
+                        externalFacultyDetailsRow.forEach((field, index) => {
+                            if (field.value !== '') {
+                                externalFacultyDetails.push(field.value);
                             }
-                            else {
-                                const message = data.message;
-                                console.log('data ===>>>', data)
-                                console.log('message ==:::', message);
+                        });
+                        let upadteExternalDetails = document.querySelectorAll('.external-faculty-data-details');
+                        let updateExternalFacultyData = [];
+
+                        upadteExternalDetails.forEach((field, index) => {
+                            if (field.value !== '') {
+                                updateExternalFacultyData.push(field.value);
+                            }
+                        });
+                      
+                        const updatedConferenceFiles = document.getElementById('conference-documnets');
+                        const updatedConferenceProof = document.getElementById('conference-proofs');
+                        const updatedConferenceFilesData = updatedConferenceFiles.files;
+                        const updatedConferenceProofsData = updatedConferenceProof.files;
+
+                        //appending key and value in object updatedConferenceData
+                        updatedConferenceFilesData ? Array.from(updatedConferenceFilesData).forEach(file => updatedConferenceData.append('conferenceDocument', file)) : updatedConferenceData.append('conferenceDocument', null);
+                        updatedConferenceProofsData ? Array.from(updatedConferenceProofsData).forEach(file => updatedConferenceData.append('conferenceProof', file)) : updatedConferenceData.append('conferenceProof', null);
+
+                        updatedConferenceData.append('conferenceId', conferenceId)
+                        updatedConferenceData.append('titleOfPaper', titleOfPaper);
+                        updatedConferenceData.append('authorsName', authorsName);
+                        
+                        updatedConferenceData.append('conferenceName', conferenceName);
+                        updatedConferenceData.append('procedingDetail', procedingDetail);
+                        updatedConferenceData.append('conferencePlace', conferencePlace);
+                        updatedConferenceData.append('volAndIssueNo', volAndIssueNo);
+                        updatedConferenceData.append('issnIsbnNo', issnIsbnNo);
+                        updatedConferenceData.append('doiWebLinkId', doiWebLinkId);
+                        updatedConferenceData.append('conferenceType', conferenceType);
+                        // updatedConferenceData.append('isPresenter', isPresenter);
+                        updatedConferenceData.append('publicationDate', publicationDate);
+                        updatedConferenceData.append('spentAmount', spentAmount);
+                        updatedConferenceData.append('presentationAward', presentationAward);
+                        updatedConferenceData.append('sponsored', sponsored);
+                        updatedConferenceData.append('organizingBody', organizingBody);
+                        updatedConferenceData.append('presentingAuthor', presentingAuthor);
+                        updatedConferenceData.append('nmimsCampus', nmimsCampus);
+                        updatedConferenceData.append('nmimsSchool', nmimsSchool);
+                        updatedConferenceData.append('externalFacultyDetails', JSON.stringify(externalFacultyDetails));
+                        updatedConferenceData.append('externalFacultyUpdate', JSON.stringify(updateExternalFacultyData));
+
+                        facultycontainer.length > 0 ?  updatedConferenceData.append('facultycontainer', JSON.stringify(facultycontainer)) : updatedConferenceData.append('internalUpdate' , JSON.stringify(internalUpdate))
+
+
+                        fetch(url, {
+                            method: 'POST',
+                            body: updatedConferenceData
+                        })
+                            .then((result) => {
+                                return result.json()
+                            })
+                            .then((data) => {
+                                if (data.status === "Done") {
+                                    console.log('updated Data ==>>', data);
+                                    // conferenceRowToBeUpdated.querySelector('.school').innerText = data.upadtedConferenceData.nmimsSchool;
+                                    // conferenceRowToBeUpdated.querySelector('.campus').innerText = data.upadtedConferenceData.nmimsCampus;
+                                    // conferenceRowToBeUpdated.querySelector('.title-of-paper').innerText = data.upadtedConferenceData.titleOfPaper;
+                                    // conferenceRowToBeUpdated.querySelector('.conference-name').innerText = data.upadtedConferenceData.conferenceName;
+                                    // conferenceRowToBeUpdated.querySelector('.proceedings-detail').innerText = data.upadtedConferenceData.procedingDetail;
+                                    // conferenceRowToBeUpdated.querySelector('.issn-isbn-no').innerText = data.upadtedConferenceData.issnIsbnNo;
+                                    // conferenceRowToBeUpdated.setAttribute('data-is-presenter', data.upadtedConferenceData.isPresenter);
+                                    // conferenceRowToBeUpdated.setAttribute('data-author-type', data.upadtedConferenceData.authorType);
+                                    // conferenceRowToBeUpdated.setAttribute('data-presenting-author', data.upadtedConferenceData.presentingAuthor);
+                                    // conferenceRowToBeUpdated.setAttribute('data-vol-and-issue-no', data.upadtedConferenceData.volAndIssueNo);
+                                    // conferenceRowToBeUpdated.setAttribute('data-doi-weblink', data.upadtedConferenceData.doiWebLinkId);
+                                    // conferenceRowToBeUpdated.setAttribute('data-upload-files', data.conferenceDocument);
+                                    // conferenceRowToBeUpdated.setAttribute('data-award-for-presentation', data.upadtedConferenceData.isPresenter);
+                                    // conferenceRowToBeUpdated.setAttribute('data-upload-proof', data.conferenceProofFile);
+                                    // conferenceRowToBeUpdated.setAttribute('data-organizing-body', data.upadtedConferenceData.organizingBody);
+                                    // conferenceRowToBeUpdated.setAttribute('data-spent-amount', data.upadtedConferenceData.spentAmount);
+                                    // conferenceRowToBeUpdated.setAttribute('data-conference-place', data.upadtedConferenceData.conferencePlace);
+                                    // conferenceRowToBeUpdated.setAttribute('data-conference-type', data.upadtedConferenceData.conferenceType);
+                                    // conferenceRowToBeUpdated.setAttribute('data-publication-date', data.upadtedConferenceData.publicationDate);
+                                    // updatedConferenceFiles.files ? conferenceRowToBeUpdated.setAttribute('data-upload-files', data.confernceDocString) : null;
+                                    // updatedConferenceProof.files ? conferenceRowToBeUpdated.setAttribute('data-upload-proof', data.conferenceProofString) : null;
+
+                                    Swal.fire({
+                                        position: "top-center",
+                                        icon: "success",
+                                        title: `${data.message}`,
+                                        showConfirmButton: true,
+                                        confirmButtonText: "OK",
+                                        confirmButtonColor: "#DD6B55",
+                                        // timer: 1500
+                                    }).then(() => {
+                                        document.location.reload()
+                                    });
+                                    $('#conference-publication-modal').modal('hide');
+                                }
+                                else {
+                                    const message = data.message;
+                                    console.log('data ===>>>', data)
+                                    console.log('message ==:::', message);
+                                    Swal.fire({
+                                        position: "top-center",
+                                        icon: "error",
+                                        title: `${data.errorCode}`,
+                                        color: "red",
+                                        with: "20PX",
+                                        html: `<span style="color: red;">${data.message}</span>`,
+                                        showConfirmButton: true,
+                                        confirmButtonText: "OK",
+                                        confirmButtonColor: "#DD6B55"
+                                    })
+                                }
+
+                            }).catch((error) => {
+                                const message = error
                                 Swal.fire({
                                     position: "top-center",
                                     icon: "error",
-                                    title: `${data.errorCode}`,
+                                    title: `${message}`,
                                     color: "red",
-                                    with: "20PX",
-                                    html: `<span style="color: red;">${data.message}</span>`,
                                     showConfirmButton: true,
                                     confirmButtonText: "OK",
                                     confirmButtonColor: "#DD6B55"
                                 });
-                            }
+                            })
 
-                        }).catch((error) => {
-                            const message = error
-                            Swal.fire({
-                                position: "top-center",
-                                icon: "error",
-                                title: `${message}`,
-                                color: "red",
-                                showConfirmButton: true,
-                                confirmButtonText: "OK",
-                                confirmButtonColor: "#DD6B55"
-                            });
-                        })
-
-                };
+                    };
 
                 updateBtn.addEventListener('click', async () => {
                     formGroup = updateBtn.closest('.validate-input')
@@ -1762,46 +1673,18 @@
                 // EVENT LIST THAT WILL USE USE TO OPEN DROP DOWN LIST  
                 const externaltype = document.querySelector('.external-faculty');
                 const enternalFacultyType = document.getElementById('is-internal');
-                const externalFacultyType = document.getElementById('is-external');
+                const externalFacultyType = document.getElementById('is-external-details');
                 const employeeList = document.getElementById('employee-list');
-                const authorDetails = document.getElementById('author-details');
+                // const authorDetails = document.getElementById('author-details');
 
                 // let storedSelectedValue;
                 let additionalDetails = [];
 
                 const enternalText = document.getElementById('enternal-text');
 
-                // employeesListData data came from backend
-                // const employeesListData = document.getElementById('employees-list-data').dataset.employees;
-                // const employeesDataObj = JSON.parse(employeesListData);
-                // let employeeListArray = [];
-
-
-                // // ajax for search bar to search employee name 
-                // const facultyOptions = employeesDataObj.map(faculty => ({
-                //     value: faculty.id,
-                //     text: ` ${faculty.faculty_name}`
-                // }));
-                // new TomSelect("#emp-name", {
-                //     options: facultyOptions,
-                //     placeholder: "Select Employee Name",
-                //     hidePlaceholder: true,
-                //     create: true,
-                //     plugins: ['remove_button'],
-                //     onItemAdd: function () {
-                //         this.setTextboxValue('');
-                //         this.refreshOptions();
-                //     },
-                //     render: {
-                //         option: function (data, escape) {
-                //             return '<div class=""><span>' + escape(data.value) + ' - </span><span class="ms-auto text-muted">' + escape(data.text) + '</span></div>';
-                //         },
-                //         item: function (data, escape) {
-                //             return '<div>' + escape(data.text) + '</div>';
-                //         }
-                //     }
-                // });
+                            
                 const authorNamesArray = [];
+
                 // function for select author name from drop down list
                 function handleEmployeeDropdownChange() {
                     const selectedValues = Array.from(employeeDropdown.options)
@@ -1811,86 +1694,23 @@
                     authorNamesArray.push({ 'internalEmpList': InternalAuthorValue })
                     facultycontainer.push(InternalAuthorValue)
                     console.log("Selected employee values:", InternalAuthorValue);
+                    
 
                 }
 
-                //function for handle add more details for storing current value of clicked
-                function handleAddMoreDetailsClick() {
-                    const nameStringArray = [];
-                    const authorName = document.getElementById("author-name").value;
-                    console.log('authorName ====>>>>', authorName)
-                    nameStringArray.push(authorName);
-                    externalAuthorValue = ',' + nameStringArray.join(",");
-                    console.log('nameStringArray ====>>>', nameStringArray.join(","))
-                    authorNamesArray.push({ 'externalEmpList': externalAuthorValue });
-                    console.log("Stored external author names:", externalAuthorValue);
-                }
-                //event listner for handleAddMoreDetailsClick and handleEmployeeDropdownChange
-                addMoreDetailsButton.addEventListener("click", handleAddMoreDetailsClick);
+              
                 employeeDropdown.addEventListener("change", handleEmployeeDropdownChange);
 
-                // function for add drop down list or  add new faculty data
-                async function insertFacultyNameString(authorType, conferenceData) {
-                    console.log('authorType in side my function ====>>>', authorType);
-                    // console.log('InternalAuthorValue ====>>>>>', InternalAuthorValue);
-                    // console.log('externalAuthorValue ===>>>', externalAuthorValue)
-                    const facultytype = authorType.value;
-                    console.log('facultytype ===>>>', facultytype);
-                    console.log('authorNamesArray ===>>>>', authorNamesArray)
-                    const authorNameSting = JSON.stringify(authorNamesArray);
-                    conferenceData.append('authorName', authorNameSting);
-                }
-
-                // fuction for updated faculty type
-                async function updateFacultyNameString(updatedAuthorType, updatedConferenceData, storedFacultyValue) {
-                    console.log('storedFacultyValue in side update function ===>>>', storedFacultyValue)
-                    console.log('updatedAuthorType ====>>>', updatedAuthorType);
-                    console.log('externalAuthorValue ===>>>', externalAuthorValue);
-                    console.log('InternalAuthorValue ====>>>>>', InternalAuthorValue);
-                    console.log('storedFacultyValue ====>>> ', storedFacultyValue);
-                    const updatedAuthorNameArrays = [];
-                    if (!externalAuthorValue && !InternalAuthorValue) {
-                        updatedAuthorNameArrays.push({ 'existingNameValue': storedFacultyValue })
-                        const updatedAuthorNameString = JSON.stringify(updatedAuthorNameArrays);
-                        updatedConferenceData.append('authorName', updatedAuthorNameString)
-                    }
-                    else {
-                        updatedAuthorNameArrays.push({ 'externalEmpList': externalAuthorValue })
-                        updatedAuthorNameArrays.push({ 'internalEmpList': InternalAuthorValue })
-                        const updatedAuthorNameString = JSON.stringify(updatedAuthorNameArrays);
-                        console.log('updatedAuthorNameString ===>>>>', updatedAuthorNameString);
-                        updatedConferenceData.append('authorName', updatedAuthorNameString)
-                    }
-                }
 
                 function enternalFacultyDropDownList() {
                     employeeList.classList.remove('d-none');
-                    authorDetails.classList.add('d-none');
+                    document.getElementById("external-details-table").classList.add('d-none');
                 }
 
-                function externalFacultyDetails() {
-                    employeeList.classList.add('d-none');
-                    addMoreDetailsButton.classList.add('d-none');
-                    document.getElementById('insert-details').classList.remove('d-none');
-                    document.getElementById('name-class').classList.remove('d-none')
-                    document.getElementById('dsg-class').classList.remove('d-none')
-                    document.getElementById('id-class').classList.remove('d-none')
-                    document.getElementById('address-class').classList.remove('d-none');
-                    document.getElementById('add-btn').classList.remove('d-none')
-
-                    document.getElementById('name-class-upd').classList.add('d-none');
-                    document.getElementById('dsg-class-upd').classList.add('d-none');
-                    document.getElementById('id-class-upd').classList.add('d-none');
-                    document.getElementById('address-class-upd').classList.add('d-none');
-                    document.getElementById('add-btn-upd').classList.add('d-none');
-
-                    document.getElementById('externalfacultyTable').classList.add('d-none')
-                }
 
                 // making d-none external faculty
                 enternalFacultyType.addEventListener('click', enternalFacultyDropDownList)
-                //making d-none internal faculty
-                externalFacultyType.addEventListener('click', externalFacultyDetails)
+               
 
                 $("#conference-publication-list").DataTable({
                     "pageLength": 5,
@@ -1932,129 +1752,7 @@
                     }
                 });
 
-                const insertExternalDetails = async (url) => {
-                    // Define externalFacultyArray and externalFacultyData outside the function
-                    const externalFacultyDetails = {};
-                    externalFacultyDetails.facultyName = document.getElementById('faculty-name').value;
-                    externalFacultyDetails.facultyDsg = document.getElementById('faculty-designation').value;
-                    externalFacultyDetails.facultyAddr = document.getElementById('faculty-address').value;
-                    externalFacultyDetails.facultyEmpId = document.getElementById('faculty-emp-id').value;
-
-                    const payload = {
-                        externalFacultyDetails: externalFacultyDetails
-                    }
-
-                    console.log('payload ====>>>>>>', payload);
-
-                    fetch(url, {
-                        method: 'POST',
-                        headers: {
-                            'content-type': 'application/json'
-                        },
-                        body: JSON.stringify(payload)
-                    })
-                        .then((result) => {
-                            return result.json()
-                        })
-                        .then((data) => {
-                            console.log('data ===>>>>> ankit ', data);
-
-                            if (data.status === 'Done') {
-                                console.log('data ===>>>>> ankit ', data);
-                                facultycontainer.push(data.externalFacultyId)
-                                // let rowCountInteger = parseInt(data.rowCount, 10);
-                                // let indexCount = rowCountInteger;
-                                // rowCountInteger = indexCount + rowCountInteger;
-                                // console.log('rowCountInteger ===>>>>>>', rowCountInteger);
-
-                                externalFacultyIdArray.push(data.externalFacultyId);
-                                document.getElementById('name-class').classList.add('d-none');
-                                document.getElementById('dsg-class').classList.add('d-none');
-                                document.getElementById('id-class').classList.add('d-none');
-                                document.getElementById('address-class').classList.add('d-none');
-                                document.getElementById('insert-details').classList.add('d-none');
-                                document.getElementById('add-more-details').classList.remove('d-none');
-                                const newFacultyDataRow = document.createElement('tr');
-                                newFacultyDataRow.innerHTML = `
-                                <td class="name-class"> ${data.facultyData.facultyName} </td>
-                                <td class="dsg-class"> ${data.facultyData.facultyDsg} </td>
-                                <td class="id-class"> ${data.facultyData.facultyEmpId} </td>
-                                <td class="address-class"> ${data.facultyData.facultyAddr} </td>
-                    `
-                                facultyTableList.classList.remove('d-none')
-                                facultyTableList.appendChild(newFacultyDataRow);
-                                Swal.fire({
-                                    position: "top-center",
-                                    icon: "success",
-                                    title: `${data.message}`,
-                                    showConfirmButton: true,
-                                    confirmButtonText: "OK",
-                                    confirmButtonColor: "#DD6B55"
-                                    // timer: 1500
-                                })
-                            }
-
-
-                        }).catch((error) => {
-                            console.log('error ===>>>>>', error);
-                            Swal.fire({
-                                position: "center",
-                                icon: "error",
-                                title: "Failed to insert",
-                                color: "red",
-                                showConfirmButton: true,
-                                confirmButtonText: "OK",
-                                confirmButtonColor: "#DD6B55"
-                            });
-                        })
-
-                    // event listner for insert exetrnal faculty details details
-                    document.getElementById('add-more-details').addEventListener('click', () => {
-
-                        console.log('clicked add more button');
-                        // making input field empty
-                        document.getElementById('faculty-name').value = '';
-                        document.getElementById('faculty-designation').value = '';
-                        document.getElementById('faculty-address').value = '';
-                        document.getElementById('faculty-emp-id').value = '';
-                        document.getElementById('name-class').classList.remove('d-none');
-                        document.getElementById('dsg-class').classList.remove('d-none');
-                        document.getElementById('id-class').classList.remove('d-none');
-                        document.getElementById('address-class').classList.remove('d-none');
-                        document.getElementById('insert-details').classList.remove('d-none');
-                        document.getElementById('add-more-details').classList.add('d-none');
-
-                    })
-                }
-
-                //  addEventListener   for insert external details
-                InsertDetails.addEventListener('click', async () => {
-                    console.log('clickedd insert details buttons')
-
-                    let elements = document.querySelectorAll('.id-class');
-
-                    let newVal = document.getElementById('faculty-emp-id').value;
-                    for (var i = 0; i < elements.length; i++) {
-                        console.log("elements[i].textContent : ", elements[i].textContent);
-                        console.log("newVal : ", newVal);
-                        if (elements[i].textContent.trim() === newVal) {
-                            Swal.fire({
-                                position: "top-center",
-                                icon: "error",
-                                title: `Duplicate Faculty Id Not Allowed`,
-                                showConfirmButton: true,
-                                allowOutsideClick: false,
-                                confirmButtonText: "OK",
-                                confirmButtonColor: "#DD6B55"
-                            })
-                            return;
-                        };
-                    }
-
-                    await insertExternalDetails('<%- BASE_URL %>research/external/faculty-insert');
-
-                });
-
+              
 
                 document.querySelector('#uploadNewSupportDocumentOne').addEventListener('click', function (e) {
                     let is_checked = document.querySelector('#uploadNewSupportDocumentOne').checked;
@@ -2066,305 +1764,227 @@
                     }
                 });
 
-                document.getElementById('is-external-update').addEventListener('click', () => {
-                    let is_checked = document.getElementById('is-external-update');
-                    console.log('check box checked')
 
-                    if (is_checked.checked) {
-                        document.getElementById('externalfacultyTable').classList.remove('d-none')
-                        document.getElementById('name-class-upd').classList.remove('d-none');
-                        document.getElementById('dsg-class-upd').classList.remove('d-none');
-                        document.getElementById('id-class-upd').classList.remove('d-none');
-                        document.getElementById('address-class-upd').classList.remove('d-none');
-                        document.getElementById('add-btn-upd').classList.remove('d-none');
-                    } else {
-                        document.getElementById('externalfacultyTable').classList.add('d-none')
-                        document.getElementById('faculty-table-list-upd').classList.add('d-none');
+                document.querySelector('#is-external-details').addEventListener('click', () => {
+                    console.log('clickedd external author');
+                    document.getElementById("external-details-table").classList.remove('d-none');
+                    employeeList.classList.add('d-none');
+                    console.log("BUTTON CLICKED");
+                    let newRow = `
+                            <tr>
+                                <td><input type="text"  class="external-faculty-details"></td>
+                                <td><input type="number" class="external-faculty-details"></td>
+                                <td><input type="text" class="external-faculty-details"></td>
+                                <td><input type="text" class="external-faculty-details"></td>
+                                <td><button class="delete-row  btn btn-danger">Delete</button></td>
+                            </tr> 
+                        `;
 
-                    }
+                    document.querySelector('#add-faculty-details').insertAdjacentHTML('afterend', newRow);
+                    let deleteButton = document.querySelector('#add-faculty-details').nextElementSibling.querySelector('.delete-row');
+                    deleteButton.addEventListener('click', handleDeleteButtonClick);
                 })
 
-                document.addEventListener('click', (event) => {
+                function handleDeleteButtonClick() {
+                    this.parentNode.parentNode.remove();
+                }
 
-                    if (event.target.classList.contains('updateFaculty')) {
-                        let facultyId = event.target.closest('tr').getAttribute('data-facultyId')
-                        console.log('button clicked with id ', facultyId)
-                        let tr = event.target.closest('tr');
-                        let facultyName = tr.querySelector('#updateFacultyName').value
-                        let facultyDesignation = tr.querySelector('#updateFacultyDes').value
-                        let facultyAddr = tr.querySelector('#updateFacultyAddr').value
-                        let empId = tr.querySelector('#updateFacultyId').value
+                function createTableRows(tableId, data, inputClassName, deleteId, headers) {
+                        console.log('data to create table ===>>>>>', data);
+                        let table = document.querySelector(`#${tableId}`);
+                        let tbody = table.querySelector('tbody');
+                        let thead = table.querySelector('thead');
+                        tbody.innerHTML = '';
+                        thead.innerHTML = '';
 
-                        let addrError = (facultyAddr != '') ? true : false;
-                        if (addrError) {
-                            document.getElementById('addrUpdError').innerText = '';
-                        } else {
-                            document.getElementById('addrUpdError').innerText = 'Address is Required';
-                        }
+                        let serialNumber = 1;
 
-                        let facultyError = checkAlphabets(facultyName, 'facultyUpdError');
-                        let designationError = checkAlphabets(facultyDesignation, 'desUpdError');
-                        let empError = checkEmpError(empId, 'empUpdError');
-                        let externalFacultyDetails;
+                        // Create table header
+                        let headerRow = document.createElement('tr');
 
-                        if (addrError && facultyError && designationError && empError) {
+                        // Serial number header
+                        // let serialHeader = document.createElement('th');
+                        // serialHeader.textContent = 'Serial';
+                        // headerRow.appendChild(serialHeader);
 
-                            externalFacultyDetails = {
-                                facultyId: facultyId, facultyName: facultyName,
-                                facultyDesignation: facultyDesignation, facultyAddr: facultyAddr, empId: empId
+                         // Create headers from the provided headers array
+                         headers.forEach(function (header) {
+                            let th = document.createElement('th');
+                            th.textContent = header;
+                            headerRow.appendChild(th);
+                        });
+                       
+                        
+
+                        //
+                        // if (data[0] && typeof data[0] === 'object') {
+                        //     Object.keys(data[0]).forEach(function (key) {
+                        //         if (key !== 'id') {
+                        //             let th = document.createElement('th');
+                        //             th.textContent = key;
+                        //             headerRow.appendChild(th);
+                        //         }
+                        //     });
+                        // } else {
+                        //     console.error('Data is not in the expected format.');
+                        // }
+
+                        // Add id header and hide it
+
+                        let idHeader = document.createElement('th');
+                        idHeader.textContent = 'ID';
+                        idHeader.classList.add('d-none');
+                        headerRow.appendChild(idHeader);
+                        // Add data cells based on headers
+                      
+
+                        thead.appendChild(headerRow);
+
+                        // Create table rows
+                        data.forEach(function (rowData) {
+                            let row = document.createElement('tr');
+                            row.setAttribute('data-table-id', rowData.id);
+
+                            // Add serial number cell
+                            // let serialCell = document.createElement('td');
+                            // serialCell.textContent = serialNumber++;
+                            // row.appendChild(serialCell);
+
+
+
+
+                            // Add data cells
+                            Object.keys(rowData).forEach(function (key) {
+                                if (key !== 'id') {
+                                    let cell = document.createElement('td');
+                                    let input = document.createElement('input');
+                                    input.type = 'text';
+                                    input.value = rowData[key];
+                                    if (inputClassName) {
+                                        input.classList.add(inputClassName);
+                                    }
+                                    cell.appendChild(input);
+                                    row.appendChild(cell);
+                                }
+                            });
+
+                            // Add hidden id cell
+                            let idCell = document.createElement('td');
+                            let idInput = document.createElement('input');
+                            idInput.type = 'text';
+                            idInput.value = rowData.id;
+                            idCell.classList.add('d-none');
+                            if (inputClassName) {
+                                idInput.classList.add(inputClassName);
                             }
+                            idCell.appendChild(idInput);
+                            row.appendChild(idCell);
 
-                            let obj = externalFacultyDetails
-                            upsertFacultyData('<%- BASE_URL %>research/external/faculty-updateData', obj, tr)
-                        }
+                            // Add delete button cell
+                            let deleteCell = document.createElement('td');
+                            let deleteButton = document.createElement('button');
+                            console.log('rowData.id ====>>>>', rowData.id);
+                            deleteButton.setAttribute('data-table-id', rowData.id);
 
+                            const dataRecordId = rowData.id;
+                            deleteButton.classList.add(inputClassName);
+
+                            deleteButton.textContent = 'Delete';
+                            deleteButton.classList.add('btn', 'btn-danger');
+
+                            deleteButton.addEventListener('click', function () {
+                                // Find and remove the row after fetch confirmation
+                                document.querySelector(`button[data-table-id='${dataRecordId}']`).click();
+                            });
+
+                            deleteCell.appendChild(deleteButton);
+                            row.appendChild(deleteCell);
+
+                            // Append the row to the table body
+                            tbody.appendChild(row);
+                        });
                     }
-                })
+                
+                    //for delete exetrnal faculty record 
 
+                    document.addEventListener('click', (event) => {
+                        const button = event.target.closest('button');
+                        if (!button) return;
 
-                function upsertFacultyData(url, obj, tr) {
-                    fetch(url, {
-                        method: 'POST',
-                        headers: {
-                            'content-type': 'application/json'
-                        },
-                        body: JSON.stringify(obj)
-                    })
-                        .then((result) => {
-                            return result.json()
-                        })
-                        .then((data) => {
-                            if (data.status === 'Done') {
+                        const relativeClass = button.className;
+                        const tableId = button.getAttribute('data-table-id');
+                        const specificClasses = ['external-faculty-data-details'];
 
-                                console.log('response >> ', data)
+                        const classList = relativeClass.split(' ');
 
-                                Swal.fire({
-                                    position: "top-center",
-                                    icon: "success",
-                                    title: `${data.message}`,
-                                    showConfirmButton: true,
-                                    confirmButtonText: "OK",
-                                    confirmButtonColor: "#DD6B55"
-                                }).then(() => {
-                                    console.log('object ', JSON.stringify(obj))
-                                    tr.querySelector('#updateFacultyName').value = obj.facultyName
-                                    tr.querySelector('#updateFacultyDes').value = obj.facultyDesignation
-                                    tr.querySelector('#updateFacultyAddr').value = obj.facultyAddr
-                                    tr.querySelector('#updateFacultyId').value = obj.empId
-                                })
+                        specificClasses.forEach(specificClass => {
+                            if (classList.includes(specificClass)) {
+                                console.log(`Yes, the button contains the class: ${specificClass}`);
+                                let confirmDelete = `Do you want to delete the ${specificClass} ?`;
+                                if (confirmDelete) {
+                                    Swal.fire({
+                                        title: "Are you sure?",
+                                        text: "You won't be able to revert this!",
+                                        icon: "warning",
+                                        showCancelButton: true,
+                                        allowOutsideClick: false,
+                                        confirmButtonColor: "#3085d6",
+                                        cancelButtonColor: "#d33",
+                                        confirmButtonText: "Yes, delete it!"
+                                    }).then((result) => {
+                                        if (result.isConfirmed) {
+                                            // Execute fetch request here after confirmation
+                                            fetch(`<%- BASE_URL %>research/conference-publication/${specificClass}/delete`, {
+                                                method: 'POST',
+                                                headers: {
+                                                    'content-type': 'application/json'
+                                                },
+                                                body: JSON.stringify({ tableId })
+                                            })
+                                                .then((result) => result.json())
+                                                .then((data) => {
+                                                    if (data.status === 'Done') {
+                                                        console.log('data ==>>', data);
+                                                        // Find the row and remove it
+                                                        const row = document.querySelector(`tr[data-table-id='${tableId}']`);
+                                                        if (row) {
+                                                            row.remove();
+                                                        }
+                                                        Swal.fire({
+                                                            title: "Deleted!",
+                                                            text: "Record has been deleted.",
+                                                            icon: "success",
+                                                            showConfirmButton: true,
+                                                            allowOutsideClick: false,
+                                                            confirmButtonText: "OK",
+                                                            confirmButtonColor: "#DD6B55"
+                                                        })
+                                                    }
+                                                })
+                                                .catch((error) => {
+                                                    console.error('Error:', error);
+                                                    const message = error;
+                                                    Swal.fire({
+                                                        position: "top-center",
+                                                        icon: "error",
+                                                        title: `${message}`,
+                                                        color: "red",
+                                                        showConfirmButton: true,
+                                                        allowOutsideClick: false,
+                                                        confirmButtonText: "OK",
+                                                        confirmButtonColor: "#DD6B55"
+                                                    });
+                                                });
+                                        }
+                                    });
+                                } else {
+                                    return;
+                                }
                             }
-                        })
-                }
+                        });
+                    });
 
-                function checkAlphabets(facultyName, idName) {
-
-                    let facultyError = document.getElementById(idName);
-
-                    // if (facultyName.length == 0 && idName === 'facultyError' || ) {
-                    //     facultyError.innerText = "Name is Required";
-                    //     return false;
-                    // }
-
-                    // if (facultyName.length == 0 && idName === 'desError') {
-                    //     facultyError.innerText = "Designation is Required";
-                    //     return false;
-                    // }
-
-                    if (!facultyName || facultyName.trim() === "") {
-                        facultyError.innerText = "Provide Valid Input";
-                        return false;
-                    }
-
-                    const words = facultyName.split(" ");
-
-                    for (const word of words) {
-                        for (let i = 0; i < word.length; i++) {
-                            const charCode = word.charCodeAt(i);
-                            if (
-                                (charCode < 65 || charCode > 90) &&
-                                (charCode < 97 || charCode > 122)
-                            ) {
-                                facultyError.innerText = "Provide Valid Input";
-                                return false;
-                            }
-                        }
-                    }
-
-                    facultyError.innerText = "";
-                    return true;
-                }
-
-                function checkEmpError(facultyEmpId, errid) {
-                    let empError = document.getElementById(errid);
-                    let bool = true;
-
-                    if (facultyEmpId.length === 0) {
-                        empError.innerText = 'Provide Valid Input';
-                        return false;
-                    }
-
-                    for (let i = 0; i < facultyEmpId.length; i++) {
-                        const charCode = facultyEmpId.charAt(i);
-                        if (!(charCode >= '0' && charCode <= '9')) {
-                            empError.innerText = 'Provide Valid Input';
-                            bool = false;
-                            break;
-                        }
-                    }
-
-                    if (bool) {
-                        empError.innerText = '';
-                    }
-
-                    return bool;
-                }
-
-
-                document.getElementById('insert-details-upd').addEventListener('click', () => {
-
-
-                    let facultyNameUpd = document.getElementById('faculty-name-upd');
-                    let facultyDesignationUpd = document.getElementById('faculty-designation-upd');
-                    let facultyAddrUpd = document.getElementById('faculty-address-upd');
-                    let facultyEmpUpd = document.getElementById('faculty-emp-id-upd');
-
-                    let facultyName = facultyNameUpd.value;
-                    let facultyDesignation = facultyDesignationUpd.value;
-                    let facultyAddr = facultyAddrUpd.value;
-                    let facultyEmp = facultyEmpUpd.value;
-
-                    let addrError = (facultyAddr != '') ? true : false;
-                    if (addrError) {
-                        document.getElementById('addrInsertError').innerText = '';
-                    } else {
-                        document.getElementById('addrInsertError').innerText = 'Address is Required';
-                    }
-
-                    let facultyError = checkAlphabets(facultyName, 'facultyInsertError');
-                    let designationError = checkAlphabets(facultyDesignation, 'desInsertError');
-                    let empError = checkEmpError(facultyEmp, 'empInsertError');
-
-                    let appendFaculty = document.getElementById('appendFaculty');
-                    let elements = appendFaculty.querySelectorAll('tr');
-
-                    for (var i = 0; i < elements.length; i++) {
-
-                        let facultyId = elements[i].querySelector('#updateFacultyId').value;
-                        console.log('faculty Id ', facultyId)
-
-                        if (facultyId === facultyEmp) {
-                            Swal.fire({
-                                position: "top-center",
-                                icon: "error",
-                                title: `Duplicate Faculty Id Not Allowed`,
-                                showConfirmButton: true,
-                                allowOutsideClick: false,
-                                confirmButtonText: "OK",
-                                confirmButtonColor: "#DD6B55"
-                            })
-                            return;
-                        };
-                    }
-
-
-                    if (addrError && facultyError && designationError && empError) {
-
-                        console.log('clickedd insert details buttons')
-                        upsertExternalDetails('<%- BASE_URL %>research/external/faculty-conferenceInsert');
-                    }
-                });
-
-
-                const upsertExternalDetails = (url) => {
-                    let facultyNameUpd = document.getElementById('faculty-name-upd');
-                    let facultyDesignationUpd = document.getElementById('faculty-designation-upd');
-                    let facultyAddrUpd = document.getElementById('faculty-address-upd');
-                    let facultyEmpUpd = document.getElementById('faculty-emp-id-upd');
-
-                    let facultyName = facultyNameUpd.value;
-                    let facultyDesignation = facultyDesignationUpd.value;
-                    let facultyAddr = facultyAddrUpd.value;
-                    let facultyEmp = facultyEmpUpd.value;
-
-
-                    let externalFacultyDetails = {
-                        facultyEmpId: facultyEmp,
-                        facultyName: facultyName,
-                        facultyDsg: facultyDesignation,
-                        facultyAddr: facultyAddr,
-                    }
-
-                    console.log('json string ', JSON.stringify(externalFacultyDetails))
-
-                    let payload = { externalFacultyDetails, conferenceId };
-
-                    fetch(url, {
-                        method: 'POST',
-                        headers: {
-                            'content-type': 'application/json'
-                        },
-                        body: JSON.stringify(payload)
-                    })
-                        .then((result) => {
-                            return result.json()
-                        })
-                        .then((data) => {
-                            if (data.status === 'Done') {
-
-                                console.log('response >> ', data)
-
-                                Swal.fire({
-                                    position: "top-center",
-                                    icon: "success",
-                                    title: `${data.message}`,
-                                    showConfirmButton: true,
-                                    confirmButtonText: "OK",
-                                    confirmButtonColor: "#DD6B55"
-                                }).then(() => {
-
-                                    let appendFaculty = document.getElementById('appendFaculty');
-                                    let allTds = appendFaculty.querySelectorAll('tr');
-
-                                    let htmlData = `<tr data-facultyId = ${data.conferenceId}>
-
-                                                                        <td>${allTds.length + 1}</td>
-                                                                        <td><input id="updateFacultyName" type="text" value=${facultyName} /></br><span style="color:red;" id='facultyUpdError'></span></td>
-                                                                        <td ><input id="updateFacultyAddr" type="text" value=${facultyAddr} /></br><span style="color:red;" id='addrUpdError'></span></td>
-                                                                        <td ><input id="updateFacultyDes" type="text" value=${facultyDesignation} /></br><span style="color:red;" id='desUpdError'></span></td>
-                                                                        <td ><input id="updateFacultyId" type="text" value=${facultyEmp} /></br><span style="color:red;" id='empUpdError'></span></td>
-                                                                        <td><button class="btn btn-primary updateFaculty">Update</button></td>
-                                                                        </tr>`
-
-                                    appendFaculty.insertAdjacentHTML('beforeEnd', htmlData);
-
-
-
-                                });
-                            }
-                        }).catch((error) => {
-                            console.error("ERROR:", error);
-                        })
-                }
-
-
-                async function fetchFacultyData(url) {
-                    let requestDetails = {
-                        method: 'GET',
-                        headers: {
-                            'Accept': 'application/json'
-                        }
-                    }
-
-                    let data;
-                    let response = await fetch(url, requestDetails);
-                    if (response.ok) {
-                        data = await response.json();
-                        return data;
-                    } else {
-                        throw new Error('Error in fetching data')
-                    }
-                }
-
+                   
 
 
 

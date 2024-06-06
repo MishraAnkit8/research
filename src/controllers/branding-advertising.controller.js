@@ -1,3 +1,4 @@
+const { use } = require('../routes/dashboard.route');
 const brandingAndAdvertisingServices = require('../services/branding-advertising.service');
 
 module.exports.renderBrandingAndAdvertising = async(req, res, next) => {
@@ -8,7 +9,8 @@ module.exports.renderBrandingAndAdvertising = async(req, res, next) => {
     if(brandingAndAdvertising){
         res.render('branding-advertising' , {
             advertisingData : brandingAndAdvertising.rows,
-            rowCount : brandingAndAdvertising.rowCount
+            rowCount : brandingAndAdvertising.rowCount,
+            userName : userName
         })
     }
 }

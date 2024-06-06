@@ -15,6 +15,7 @@ module.exports.renderResearchSeminar = async (req, res, next) => {
         statusCode : statusCode,
         message : seminarList.message,
         rowCount : seminarList.rowCount,
+        userName : userName,
         seminarData : seminarList.seminarData,
         errorCode : seminarList.errorCode
     });
