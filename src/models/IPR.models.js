@@ -1039,7 +1039,7 @@ module.exports.deletIprInventionType = async(internalId, iprId, userName) => {
     return await researchDbW.query(sql);
   })
 
-  return Promise.all(articlePolicyCadre).then((result) => {
+  return Promise.all(iprInventionType).then((result) => {
       return {
         status : "Done",
         message : "Record Deleted successfully",
