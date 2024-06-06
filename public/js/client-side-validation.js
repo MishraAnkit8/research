@@ -54,6 +54,16 @@ function validateRequiredFormFields(actionBtn) {
         }
       }
 
+      
+      if (validate === "isValidMobileNumber") {
+        const isValid = isValidMobileNumber(elemVal);
+        if (!isValid) {
+          isValidElem = false;
+          validationState = false;
+          break;
+        }
+      }
+
       if (validate === "isSpecialSymbol") {
         const isValid = isSpecialSymbol(elemVal);
         if (!isValid) {
@@ -531,6 +541,57 @@ function isAlphabet(input) {
   }
   return true;
 }
+
+function isValidEmail(email) {
+  if (typeof email !== 'string') {
+    return false;
+  }
+
+  const atIndex = email.indexOf('@');
+  if (atIndex === -1 || atIndex === 0 || atIndex === email.length - 1) {
+    return false;
+  }
+
+  if (email.indexOf('@', atIndex + 1) !== -1) {
+    return false;
+  }
+
+  const lastDotIndex = email.lastIndexOf('.');
+  if (lastDotIndex === -1 || lastDotIndex <= atIndex + 1 || lastDotIndex === email.length - 1) {
+    return false;
+  }
+
+  if (email.length - lastDotIndex - 1 < 2) {
+    return false;
+  }
+
+  return true;
+}
+
+
+function isValidMobileNumber(mobileNumber) {
+  if (typeof mobileNumber !== 'string') {
+    return false;
+  }
+
+  if (mobileNumber.length !== 10) {
+    return false;
+  }
+
+  const firstChar = mobileNumber.charAt(0);
+  if (firstChar < '6' || firstChar > '9') {
+    return false;
+  }
+  for (let i = 0; i < mobileNumber.length; i++) {
+    const charCode = mobileNumber.charCodeAt(i);
+    if (charCode < 48 || charCode > 57) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
 
 function isValidHttpUrl(string) {
   try {
