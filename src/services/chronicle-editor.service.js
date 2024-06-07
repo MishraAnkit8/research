@@ -23,7 +23,8 @@ module.exports.renderChronicleEdition = async(userName) => {
 // module.exports.renderVcOfficeData = async() => {
 //     const fetchVcOfficeData = await chronicleModels.fetchVcOfficeData()
 //     return fetchVcOfficeData
-// }
+// } 
+
 
 module.exports.insertVcDataService = async (body, username) => {
     console.log("data in service ==>>>", body);

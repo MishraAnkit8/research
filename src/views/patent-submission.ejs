@@ -958,39 +958,51 @@
                                                 ? `Are you sure you want to remove these ${values.length} items?`
                                                 : `Are you sure you want to remove "${values[0]}"?`;
 
-                                            if (confirm(message)) {
-                                                fetch('<%- BASE_URL %>research/patent-submission/invention-type-details/delete', {
-                                                    method: 'POST',
-                                                    headers: {
-                                                        'Content-Type': 'application/json'
-                                                    },
-                                                    body: JSON.stringify({ internalId: values, patentId: patentId })
-                                                })
-                                                    .then(response => response.json())
-                                                    .then(data => {
-                                                        console.log('data ====>>>>>>>', data);
-                                                        if (data.status === "Done") {
-                                                            Swal.fire(
-                                                                'Deleted!',
-                                                                'Your item(s) has been deleted.',
-                                                                'success'
-                                                            );
-
-                                                            values.forEach(value => {
-                                                                tomSelectInvention.removeOption(value);
-                                                            });
-                                                        }
+                                            Swal.fire({
+                                                title: 'Confirm Deletion',
+                                                text: message,
+                                                icon: 'warning',
+                                                showCancelButton: true,
+                                                confirmButtonColor: '#3085d6',
+                                                cancelButtonColor: '#d33',
+                                                confirmButtonText: 'Yes, delete it!'
+                                            }).then((result) => {
+                                                if (result.isConfirmed) {
+                                                    fetch('<%- BASE_URL %>research/patent-submission/invention-type-details/delete', {
+                                                        method: 'POST',
+                                                        headers: {
+                                                            'Content-Type': 'application/json'
+                                                        },
+                                                        body: JSON.stringify({ internalId: values, patentId: patentId })
                                                     })
-                                                    .catch(error => {
-                                                        Swal.fire(
-                                                            'Error!',
-                                                            'There was a problem with the delete operation: ' + error.message,
-                                                            'error'
-                                                        );
-                                                    });
-                                            }
+                                                        .then(response => response.json())
+                                                        .then(data => {
+                                                            console.log('data ====>>>>>>>', data);
+                                                            if (data.status === "Done") {
+                                                                Swal.fire(
+                                                                    'Deleted!',
+                                                                    'Your item(s) has been deleted.',
+                                                                    'success'
+                                                                );
+
+                                                                values.forEach(value => {
+                                                                    tomSelectInvention.removeOption(value);
+                                                                });
+                                                            }
+                                                        })
+                                                        .catch(error => {
+                                                            Swal.fire(
+                                                                'Error!',
+                                                                'There was a problem with the delete operation: ' + error.message,
+                                                                'error'
+                                                            );
+                                                        });
+                                                }
+                                            });
+
                                             return false;
                                         }
+
                                     });
                                         
                                     // pateng stage
@@ -1036,40 +1048,50 @@
                                                 ? `Are you sure you want to remove these ${values.length} items?`
                                                 : `Are you sure you want to remove "${values[0]}"?`;
 
-                                            if (confirm(message)) {
-                                                fetch('<%- BASE_URL %>research/patent-submission/patent-stage/delete', {
-                                                    method: 'POST',
-                                                    headers: {
-                                                        'Content-Type': 'application/json'
-                                                    },
-                                                    body: JSON.stringify({ internalId: values, patentId: patentId })
-                                                })
-                                                    .then(response => response.json())
-                                                    .then(data => {
-                                                        console.log('data ====>>>>>>>', data);
-                                                        if (data.status === "Done") {
-                                                            Swal.fire(
-                                                                'Deleted!',
-                                                                'Your item(s) has been deleted.',
-                                                                'success'
-                                                            );
-
-                                                            values.forEach(value => {
-                                                                tomSelectStatus.removeOption(value);
-                                                            });
-                                                        }
+                                            Swal.fire({
+                                                title: 'Confirm Deletion',
+                                                text: message,
+                                                icon: 'warning',
+                                                showCancelButton: true,
+                                                confirmButtonColor: '#3085d6',
+                                                cancelButtonColor: '#d33',
+                                                confirmButtonText: 'Yes, delete it!'
+                                            }).then((result) => {
+                                                if (result.isConfirmed) {
+                                                    fetch('<%- BASE_URL %>research/patent-submission/patent-stage/delete', {
+                                                        method: 'POST',
+                                                        headers: {
+                                                            'Content-Type': 'application/json'
+                                                        },
+                                                        body: JSON.stringify({ internalId: values, patentId: patentId })
                                                     })
-                                                    .catch(error => {
-                                                        Swal.fire(
-                                                            'Error!',
-                                                            'There was a problem with the delete operation: ' + error.message,
-                                                            'error'
-                                                        );
-                                                    });
-                                            }
+                                                        .then(response => response.json())
+                                                        .then(data => {
+                                                            console.log('data ====>>>>>>>', data);
+                                                            if (data.status === "Done") {
+                                                                Swal.fire(
+                                                                    'Deleted!',
+                                                                    'Your item(s) has been deleted.',
+                                                                    'success'
+                                                                );
+
+                                                                values.forEach(value => {
+                                                                    tomSelectStatus.removeOption(value);
+                                                                });
+                                                            }
+                                                        })
+                                                        .catch(error => {
+                                                            Swal.fire(
+                                                                'Error!',
+                                                                'There was a problem with the delete operation: ' + error.message,
+                                                                'error'
+                                                            );
+                                                        });
+                                                }
+                                            });
+
                                             return false;
                                         }
-                                        
                                     });
 
                                     //sdg goals 
@@ -1092,7 +1114,7 @@
                                     // console.log('sdg goals ', JSON.stringify(selectedSdg));
 
                                     // Initialize Tom Select
-                                  const tomSelectSdg =   new TomSelect("#sdg-goals-data", {
+                                  const tomSelectSdg = new TomSelect("#sdg-goals-data", {
                                         options: sdgOptions,
                                         items: sdgGoalsIdsData,
                                         hidePlaceholder: true,
@@ -1117,38 +1139,48 @@
                                                 ? `Are you sure you want to remove these ${values.length} items?`
                                                 : `Are you sure you want to remove "${values[0]}"?`;
 
-                                            if (confirm(message)) {
-                                                fetch('<%- BASE_URL %>research/patent-submission/patent-sdg-goals/delete', {
-                                                    method: 'POST',
-                                                    headers: {
-                                                        'Content-Type': 'application/json'
-                                                    },
-                                                    body: JSON.stringify({ internalId: values, patentId: patentId })
-                                                })
-                                                    .then(response => response.json())
-                                                    .then(data => {
-                                                        console.log('data ====>>>>>>>', data);
-                                                        if (data.status === "Done") {
-                                                            Swal.fire(
-                                                                'Deleted!',
-                                                                'Your item(s) has been deleted.',
-                                                                'success'
-                                                            );
-
-                                                            // Remove deleted items from the dropdown options
-                                                            values.forEach(value => {
-                                                                tomSelectSdg.removeOption(value);
-                                                            });
-                                                        }
+                                            Swal.fire({
+                                                title: 'Confirm Deletion',
+                                                text: message,
+                                                icon: 'warning',
+                                                showCancelButton: true,
+                                                confirmButtonColor: '#3085d6',
+                                                cancelButtonColor: '#d33',
+                                                confirmButtonText: 'Yes, delete it!'
+                                            }).then((result) => {
+                                                if (result.isConfirmed) {
+                                                    fetch('<%- BASE_URL %>research/patent-submission/patent-sdg-goals/delete', {
+                                                        method: 'POST',
+                                                        headers: {
+                                                            'Content-Type': 'application/json'
+                                                        },
+                                                        body: JSON.stringify({ internalId: values, patentId: patentId })
                                                     })
-                                                    .catch(error => {
-                                                        Swal.fire(
-                                                            'Error!',
-                                                            'There was a problem with the delete operation: ' + error.message,
-                                                            'error'
-                                                        );
-                                                    });
-                                            }
+                                                        .then(response => response.json())
+                                                        .then(data => {
+                                                            console.log('data ====>>>>>>>', data);
+                                                            if (data.status === "Done") {
+                                                                Swal.fire(
+                                                                    'Deleted!',
+                                                                    'Your item(s) has been deleted.',
+                                                                    'success'
+                                                                );
+
+                                                                values.forEach(value => {
+                                                                    tomSelectSdg.removeOption(value);
+                                                                });
+                                                            }
+                                                        })
+                                                        .catch(error => {
+                                                            Swal.fire(
+                                                                'Error!',
+                                                                'There was a problem with the delete operation: ' + error.message,
+                                                                'error'
+                                                            );
+                                                        });
+                                                }
+                                            });
+
                                             return false;
                                         }
                                     });
@@ -1172,7 +1204,7 @@
 
 
                                     // Initialize Tom Select dropdown with options containing id and faculty_name
-                                   const tomSelectFacultu =  new TomSelect("#emp-name", {
+                                   const tomSelectFaculty = new TomSelect("#emp-name", {
                                         options: facultyOptions,
                                         items: internalFaculty,
                                         hidePlaceholder: true,
@@ -1197,38 +1229,48 @@
                                                 ? `Are you sure you want to remove these ${values.length} items?`
                                                 : `Are you sure you want to remove "${values[0]}"?`;
 
-                                            if (confirm(message)) {
-                                                fetch('<%- BASE_URL %>research/patent-submission/internal-faculty/delete', {
-                                                    method: 'POST',
-                                                    headers: {
-                                                        'Content-Type': 'application/json'
-                                                    },
-                                                    body: JSON.stringify({ internalId: values, patentId: patentId })
-                                                })
-                                                    .then(response => response.json())
-                                                    .then(data => {
-                                                        console.log('data ====>>>>>>>', data);
-                                                        if (data.status === "Done") {
-                                                            Swal.fire(
-                                                                'Deleted!',
-                                                                'Your item(s) has been deleted.',
-                                                                'success'
-                                                            );
-
-                                                            // Remove deleted items from the dropdown options
-                                                            values.forEach(value => {
-                                                                tomSelectFacultu.removeOption(value);
-                                                            });
-                                                        }
+                                            Swal.fire({
+                                                title: 'Confirm Deletion',
+                                                text: message,
+                                                icon: 'warning',
+                                                showCancelButton: true,
+                                                confirmButtonColor: '#3085d6',
+                                                cancelButtonColor: '#d33',
+                                                confirmButtonText: 'Yes, delete it!'
+                                            }).then((result) => {
+                                                if (result.isConfirmed) {
+                                                    fetch('<%- BASE_URL %>research/patent-submission/internal-faculty/delete', {
+                                                        method: 'POST',
+                                                        headers: {
+                                                            'Content-Type': 'application/json'
+                                                        },
+                                                        body: JSON.stringify({ internalId: values, patentId: patentId })
                                                     })
-                                                    .catch(error => {
-                                                        Swal.fire(
-                                                            'Error!',
-                                                            'There was a problem with the delete operation: ' + error.message,
-                                                            'error'
-                                                        );
-                                                    });
-                                            }
+                                                        .then(response => response.json())
+                                                        .then(data => {
+                                                            console.log('data ====>>>>>>>', data);
+                                                            if (data.status === "Done") {
+                                                                Swal.fire(
+                                                                    'Deleted!',
+                                                                    'Your item(s) has been deleted.',
+                                                                    'success'
+                                                                );
+
+                                                                values.forEach(value => {
+                                                                    tomSelectFaculty.removeOption(value);
+                                                                });
+                                                            }
+                                                        })
+                                                        .catch(error => {
+                                                            Swal.fire(
+                                                                'Error!',
+                                                                'There was a problem with the delete operation: ' + error.message,
+                                                                'error'
+                                                            );
+                                                        });
+                                                }
+                                            });
+
                                             return false;
                                         }
                                     });

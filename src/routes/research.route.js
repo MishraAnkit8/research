@@ -85,7 +85,7 @@ router.post('/conference-publication/update', upload.fields([
     , asyncErrorHandler(authMiddleware), asyncErrorHandler(conferenceController.updateConferencePublication));
 
 
-router.post('/conference-publication/external-details', asyncErrorHandler(conferenceController.retriveExternalDetails));
+router.post('/conference-publication/external-details', asyncErrorHandler(authMiddleware), asyncErrorHandler(conferenceController.retriveExternalDetails));
 router.post('/conference-publication/external-faculty-data-details/delete', asyncErrorHandler(conferenceController.deleteExternalFacultyDetails));
 router.post('/conference-publication/internal-faculty-data-details/delete', asyncErrorHandler(conferenceController.deleteInternalId));
 

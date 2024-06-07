@@ -430,7 +430,8 @@ function isAlphaNumericSpecial(input) {
   }
 
   const firstChar = input.charCodeAt(0);
-  if ((firstChar >= 48 && firstChar <= 57) ||
+  if (
+    // (firstChar >= 48 && firstChar <= 57) ||
       (firstChar >= 32 && firstChar <= 47) ||
       (firstChar >= 58 && firstChar <= 64) ||
       (firstChar >= 91 && firstChar <= 96) || 
