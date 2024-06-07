@@ -92,63 +92,59 @@
             <div class="card-body table-responsive">
                 <table class="table vertical-lines custom-table" id="chronicle-list">
                   <thead>
-                    <tr>
                       <th class="col-lg-1 text-start">Serial</th>
                       <th class="col-lg-1">Type</th>
                       <th class="col-lg-1">Created By</th>
                       <th class="col-lg-1">Created Date</th>
                       <th class="col-lg-1">Updated Date</th>
                       <th class="col-lg-1">Action</th>
-                    </tr>
                   </thead>
-                  <tbody>
-                    <% for (let i=0; i < chronicleEditorData.length; i++) { %>
-                      <tr  data-chronicle-id="<%= chronicleEditorData[i][0] %>"
-                        editor-data-content="<%= chronicleEditorData[i][5] %>">
+                    <% chronicleEditorData.forEach(function(chronicleEditor, index) { %>
+                      <tr  data-chronicle-id="<%= chronicleEditor.id %>"
+                        editor-data-content="<%= chronicleEditor.editorData %>">
                         <td class="col-lg-1 text-start">
-                          <%= i + 1 %>
+                          <%= index + 1 %>
                         </td>
                         <td class="col-lg-1 head-text editor-type">
-                          <%= chronicleEditorData[i][1] %>
+                          <%= chronicleEditor.type %>
                         </td>
                         <td class="col-lg-1 head-text created-by">
-                          <%= chronicleEditorData[i][2] %>
+                          <%= chronicleEditor.createdBy %>
                         </td>
                         <td class="col-lg-1 head-text created-date">
-                          <%= chronicleEditorData[i][3] %>
+                          <%= chronicleEditor.date %>
                         </td>
                         <td class="col-lg-1 head-text updated-at">
-                          <%= chronicleEditorData[i][4] %>
+                          <%= chronicleEditor.updatedAt %>
                         </td>
                         <td class="col-lg-1">
-                          <label class="view" data-chronicle-id="<%= chronicleEditorData[i][0] %>">
-                            <i class="fa-solid fa-eye view text-danger" data-chronicle-id="<%= chronicleEditorData[i][0] %>"></i>
+                          <label class="view" data-chronicle-id="<%= chronicleEditor.id %>">
+                            <i class="fa-solid fa-eye view text-danger" data-chronicle-id="<%= chronicleEditor.id %>"></i>
                           </label>
-                          <label class="edit" data-chronicle-id="<%= chronicleEditorData[i][0] %>">
-                            <i class="fa fa-edit edit text-danger" data-chronicle-id="<%= chronicleEditorData[i][0] %>"></i>
+                          <label class="edit" data-chronicle-id="<%= chronicleEditor.id %>">
+                            <i class="fa fa-edit edit text-danger" data-chronicle-id="<%= chronicleEditor.id %>"></i>
                           </label>
-                          <label class="delete" data-chronicle-id="<%= chronicleEditorData[i][0] %>">
-                            <i class="fa-solid fa-trash delete text-danger" data-chronicle-id="<%= chronicleEditorData[i][0] %>"></i>
+                          <label class="delete" data-chronicle-id="<%= chronicleEditor.id %>">
+                            <i class="fa-solid fa-trash delete text-danger" data-chronicle-id="<%= chronicleEditor.id %>"></i>
                           </label>
                         </td>
                         
                         <!-- <td style="display:flex;justify-content: center;">
                           <b title="View" class="view border-right-0" style="cursor: pointer;"
-                            data-chronicle-id="<%= chronicleEditorData[i][0] %>">
+                            data-chronicle-id="<%= chronicleEditor.id %>">
                             &#128065;
                           </b>&ensp;&ensp;&ensp;
                           <b title="Edit" class="edit border-right-0" style="cursor: pointer;"
-                            data-chronicle-id="<%= chronicleEditorData[i][0] %>">
+                            data-chronicle-id="<%= chronicleEditor.id %>">
                             &#9998;
                           </b>&ensp;&ensp;&ensp;
                           <b title="Delete" class="delete border-right-0" style="cursor: pointer;"
-                            data-chronicle-id="<%= chronicleEditorData[i][0] %>">
+                            data-chronicle-id="<%= chronicleEditor.id %>">
                             &#128465;
                           </b>
                         </td> -->
                       </tr>
-                  </tbody>
-                  <% } %>
+                  <% }) %>
                 </table>
             </div>
         </div>
@@ -364,10 +360,9 @@
 
 
 
-
       <script src="https://cdn.ckeditor.com/ckeditor5/41.1.0/super-build/ckeditor.js"></script>
       <!-- <script src="https://cdn.ckeditor.com/ckeditor5/41.1.0/classic/ckeditor.js"></script> -->
-
+  
       <script>
         // const totalEntriess = document.getElementById('total-entries');
         // let innerValue = totalEntriess.innerText;
@@ -1052,30 +1047,66 @@
               chronicleId: chronicleId
             }
 
-            let confirmDelete = confirm(`Do you want to delete the ${editorTypeCategory}?`);
-            if (!confirmDelete) {
-              return;
-            }
 
-            fetch(`<%- BASE_URL %>chronicle-edition/${editorTypeCategory}/delete`, {
-              method: 'POST',
-              headers: {
-                'content-type': 'application/json'
-              },
-              body: JSON.stringify(chronicleTableToBeDelete)
-            })
-              .then((response) => {
-                if (response.ok) {
-                  return response.json()
+            let confirmDelete = `Do you want to delete the ${editorTypeCategory}?`;
+            if (confirmDelete) {
+              Swal.fire({
+                title: "Are you sure?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                allowOutsideClick: false,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete it!"
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  // Execute fetch request here after confirmation
+                  fetch(`<%- BASE_URL %>chronicle-edition/${editorTypeCategory}/delete`, {
+                    method: 'POST',
+                    headers: {
+                      'content-type': 'application/json'
+                    },
+                    body: JSON.stringify(chronicleTableToBeDelete)
+                  })
+                    .then((result) => result.json())
+                    .then((data) => {
+                      if (data.status === 'done') {
+                        console.log('data ==>>', data);
+                        rowToBeDeleted.remove();
+                        Swal.fire({
+                          title: "Deleted!",
+                          text: "Record has been deleted.",
+                          icon: "success",
+                          showConfirmButton: true,
+                          allowOutsideClick: false,
+                          confirmButtonText: "OK",
+                          confirmButtonColor: "#DD6B55"
+                        }).then(() => {
+                          location.reload();
+                        });
+                      }
+                    })
+                    .catch((error) => {
+                      console.error('Error:', error);
+                      const message = error;
+                      Swal.fire({
+                        position: "top-center",
+                        icon: "error",
+                        title: `${message}`,
+                        color: "red",
+                        showConfirmButton: true,
+                        allowOutsideClick: false,
+                        confirmButtonText: "OK",
+                        confirmButtonColor: "#DD6B55"
+                      });
+                    });
                 }
-              })
-              .then((data) => {
-                if (data.status === "done") {
-                  console.log('data', data);
-                  rowToBeDeleted.remove();
-                  location.reload();
-                }
-              })
+              });
+            }
+            else {
+              return
+            }
 
           }
         });
@@ -1296,29 +1327,27 @@
 
         });
 
-        // function for date input that input will accept by html  input filed for display stopred value
         function formatDateForInput(dateStr) {
-          const parts = dateStr.split('/'); // Split the string into parts using "/"
+          const parts = dateStr.split('/'); 
           const year = parts[2];
-          const month = parts[1].padStart(2, '0'); // Ensure two digits for month
-          const day = parts[0].padStart(2, '0'); // Ensure two digits for day
+          const month = parts[1].padStart(2, '0'); 
+          const day = parts[0].padStart(2, '0'); 
 
           // Construct the ISO formatted date string (YYYY-MM-DD)
           const isoDateStr = `${year}-${month}-${day}`;
           return isoDateStr;
         }
 
-        // $("#chronicle-list").DataTable({
-        //   "pageLength": 5,
-        //   "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
-        // });
+  
 
-        $(document).ready(function () {
-            $('#chronicle-list').DataTable({
-              "pageLength": 5,
-              "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
-            });
-          });
+
+   $("#chronicle-list").DataTable({
+      "pageLength": 5,
+      "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+    })
+
+
+ 
 
 
       </script>
