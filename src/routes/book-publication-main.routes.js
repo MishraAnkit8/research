@@ -37,11 +37,11 @@ router.get('/', asyncErrorHandler(bookPublicationMainController.renderBookPublic
 
 // book publication
 router.get('/book-publication', asyncErrorHandler(authMiddleware), asyncErrorHandler(bookPublicationController.renderBookPublication));
-router.post('/book-publication/insert', upload.array('researchSupportingDocument' , 5), validateBookPublication,  asyncErrorHandler(authMiddleware), asyncErrorHandler(bookPublicationController.insertBookPublication), (req, res) => {
+router.post('/book-publication/insert', upload.array('researchSupportingDocument' , 5),  asyncErrorHandler(authMiddleware), asyncErrorHandler(bookPublicationController.insertBookPublication), (req, res) => {
     const filePath = req.file.path;
     res.send(`File uploaded to 'uploads/bookPublication'. Path: ${filePath}`);
 });
-router.post('/book-publication/update',  upload.array('researchSupportingDocument', 5), validateBookPublication, asyncErrorHandler(authMiddleware), asyncErrorHandler(bookPublicationController.updateBookPublication));
+router.post('/book-publication/update',  upload.array('researchSupportingDocument', 5), asyncErrorHandler(authMiddleware), asyncErrorHandler(bookPublicationController.updateBookPublication));
 router.post('/book-publication/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(bookPublicationController.deleteBookPublication));
 router.post('/book-publication/view', asyncErrorHandler(bookPublicationController.viewBookPublication));
 router.get('/book-publication/download/:fileName', downloadFileService.downloadFile);
@@ -50,8 +50,8 @@ router.get('/book-publication/viewing/:fileName', downloadFileService.viewFile);
 //edited book publication
 
 router.get('/edited-book-publication',  asyncErrorHandler(authMiddleware), asyncErrorHandler(editedBookPublication.renderEdietedBookPublication));
-router.post('/edited-book-publication/insert',  asyncErrorHandler(authMiddleware), upload.array('researchSupportingDocument', 5), validateEditedBook, asyncErrorHandler(editedBookPublication.insertEditedBookPublication));
-router.post('/edited-book-publication/update',  asyncErrorHandler(authMiddleware), upload.array('researchSupportingDocument', 5),  validateEditedBook, asyncErrorHandler(editedBookPublication.updateEditedBookPublication));
+router.post('/edited-book-publication/insert',  asyncErrorHandler(authMiddleware), upload.array('researchSupportingDocument', 5), asyncErrorHandler(editedBookPublication.insertEditedBookPublication));
+router.post('/edited-book-publication/update',  asyncErrorHandler(authMiddleware), upload.array('researchSupportingDocument', 5), asyncErrorHandler(editedBookPublication.updateEditedBookPublication));
 router.post('/edited-book-publication/view', asyncErrorHandler(authMiddleware),  asyncErrorHandler(editedBookPublication.viewEditedBookPublication));
 router.post('/edited-book-publication/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(editedBookPublication.deleteEditedBookPublication));
 router.get('/edited-book-publication/download/:fileName', downloadFileService.downloadFile);
@@ -60,8 +60,8 @@ router.get('/edited-book-publication/viewing/:fileName', downloadFileService.vie
 //book chapter
 
 router.get('/book-chapter-publication', asyncErrorHandler(authMiddleware), asyncErrorHandler(bookChapterController.renderBookChapterPublication));
-router.post('/book-chapter-publication/insert', asyncErrorHandler(authMiddleware), upload.array('researchSupportingDocument' , 5), validateBookChapter, asyncErrorHandler(bookChapterController.insertBookChapterPublication));
-router.post('/book-chapter-publication/update', asyncErrorHandler(authMiddleware),  upload.array('researchSupportingDocument' , 5), validateBookChapter, asyncErrorHandler(bookChapterController.updateBookChapterData));
+router.post('/book-chapter-publication/insert', asyncErrorHandler(authMiddleware), upload.array('researchSupportingDocument' , 5), asyncErrorHandler(bookChapterController.insertBookChapterPublication));
+router.post('/book-chapter-publication/update', asyncErrorHandler(authMiddleware),  upload.array('researchSupportingDocument' , 5), asyncErrorHandler(bookChapterController.updateBookChapterData));
 router.post('/book-chapter-publication/view',  asyncErrorHandler(authMiddleware), asyncErrorHandler(bookChapterController.viewBookChapterData));
 router.post('/book-chapter-publication/delete',  asyncErrorHandler(authMiddleware), asyncErrorHandler(bookChapterController.deleteBookChapterData));
 router.get('/book-chapter-publication/download/:fileName', downloadFileService.downloadFile);
