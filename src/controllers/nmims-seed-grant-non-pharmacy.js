@@ -1,9 +1,13 @@
 
 const seedGrantNonForphacyService = require('../services/nmims-seed-grant-non-pharmacy.service');
+const { getRedisData } = require("../../utils/redis.utils");
+
 
 module.exports.renderNmimsSeedGrantNonFormacy = async(req, res, next) => {
-    const  userName = req.body.username;
-    console.log('userName in controller  ===>>>>>>', userName);
+    const sessionid = req.cookies.session;
+    let sessionData = await getRedisData(`${sessionid}:session`)
+    const  userName = sessionData.username;
+    console.log('userName in in dashboard controller  ===>>>>>>', userName);
 
     const renderSeedGrantFormData = await seedGrantNonForphacyService.fetchNoFormacyForm(userName);
     console.log('renderSeedGrantFormData in controller ===>>>>', renderSeedGrantFormData.seedGrantFormData)
@@ -24,8 +28,10 @@ module.exports.renderNmimsSeedGrantNonFormacy = async(req, res, next) => {
 
 module.exports.viewNonformacyForm = async(req, res, next) => {
     console.log('grantedSeedId id in controller ===>>>>', req.body);
-    const  userName = req.body.username;
-    console.log('userName in controller  ===>>>>>>', userName);
+    const sessionid = req.cookies.session;
+    let sessionData = await getRedisData(`${sessionid}:session`)
+    const  userName = sessionData.username;
+    console.log('userName in in dashboard controller  ===>>>>>>', userName);
 
     const constViewGrantedSeedForm = await seedGrantNonForphacyService.viewGrantedSeedNonFormacyData(req.body, userName) ;
 
@@ -56,8 +62,10 @@ module.exports.viewNonformacyForm = async(req, res, next) => {
 
 module.exports.insertGrantedSeedNonFormacyForm = async(req, res, next) => {
     console.log('req.body in controller ankit ====>>>>>', req.body);
-    const  userName = req.body.username;
-    console.log('userName in controller  ===>>>>>>', userName);
+    const sessionid = req.cookies.session;
+    let sessionData = await getRedisData(`${sessionid}:session`)
+    const  userName = sessionData.username;
+    console.log('userName in in dashboard controller  ===>>>>>>', userName);
 
     const insertNonFormacyFormdata = await seedGrantNonForphacyService.insertSeedGrantNonFormacy(req.body, req.files, userName);
 
@@ -77,8 +85,10 @@ module.exports.insertGrantedSeedNonFormacyForm = async(req, res, next) => {
 
 module.exports.updatedNonFormacyform = async(req, res, next) => {
     console.log('data in controller ====>>>>', req.body);
-    const  userName = req.body.username;
-    console.log('userName in controller  ===>>>>>>', userName);
+    const sessionid = req.cookies.session;
+    let sessionData = await getRedisData(`${sessionid}:session`)
+    const  userName = sessionData.username;
+    console.log('userName in in dashboard controller  ===>>>>>>', userName);
     console.log('files in controller =====>>>>', req.files);
 
     const updatedNonFormacyDataFormacyFormData = await seedGrantNonForphacyService.updateSeedGrantNonFormacyData(req.body, req.files,userName);

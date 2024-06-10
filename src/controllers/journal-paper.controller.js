@@ -3,8 +3,10 @@ const { getRedisData } = require('../../utils/redis.utils');
 
 
 module.exports.renderJournalPaper = async (req, res, next) => {
-    const  userName = req.body.username;
-    console.log('userName in controller  ===>>>>>>', userName);
+    const sessionid = req.cookies.session;
+    let sessionData = await getRedisData(`${sessionid}:session`)
+    const  userName = sessionData.username;
+    console.log('userName in in dashboard controller  ===>>>>>>', userName);
 
     const journalList = await journalPaperService.renderJournalPaper(userName);
 
@@ -30,8 +32,10 @@ module.exports.renderJournalPaper = async (req, res, next) => {
 
 module.exports.insertJournalPapperDetails = async (req, res, next) => {
 
-    const  userName = req.body.username;
-    console.log('userName in controller  ===>>>>>>', userName);
+    const sessionid = req.cookies.session;
+    let sessionData = await getRedisData(`${sessionid}:session`)
+    const  userName = sessionData.username;
+    console.log('userName in in dashboard controller  ===>>>>>>', userName);
 
     const journalPaperData = await journalPaperService.insertJournalPapper(req.body, req.files, userName);
 
@@ -88,7 +92,10 @@ module.exports.delJournalPaper = async (req, res, next) => {
  
 
 module.exports.updateJournalPaper = async (req, res, next) => {
-    const  userName = req.body.username;
+    const sessionid = req.cookies.session;
+    let sessionData = await getRedisData(`${sessionid}:session`)
+    const  userName = sessionData.username;
+    console.log('userName in in dashboard controller  ===>>>>>>', userName);
     // console.log('data is comming from template ==>>>>>', JSON.stringify(req.body));
 
     console.log('files in conteroller ===>>>>', req.files);
@@ -132,7 +139,11 @@ module.exports.updateJournalPaper = async (req, res, next) => {
 };
 
 module.exports.viewJournalPaper = async(req, res, next) => {
-    const  userName = req.body.username;
+    
+    const sessionid = req.cookies.session;
+    let sessionData = await getRedisData(`${sessionid}:session`)
+    const  userName = sessionData.username;
+    console.log('userName in in dashboard controller  ===>>>>>>', userName);
     const journalPaperId = req.body.journalPaperId;
     console.log('journalPaperId for View' , journalPaperId);
 

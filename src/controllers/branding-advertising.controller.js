@@ -1,9 +1,12 @@
 const { use } = require('../routes/dashboard.route');
 const brandingAndAdvertisingServices = require('../services/branding-advertising.service');
+const { getRedisData } = require("../../utils/redis.utils");
 
 module.exports.renderBrandingAndAdvertising = async(req, res, next) => {
-    const  userName = req.body.username;
-    console.log('userName in controller  ===>>>>>>', userName);
+    const sessionid = req.cookies.session;
+    let sessionData = await getRedisData(`${sessionid}:session`)
+    const  userName = sessionData.username;
+    console.log('userName in in dashboard controller  ===>>>>>>', userName);
 
     const brandingAndAdvertising = await brandingAndAdvertisingServices.fetchBrandingandAdvertisingData(userName);
     if(brandingAndAdvertising){
@@ -16,8 +19,10 @@ module.exports.renderBrandingAndAdvertising = async(req, res, next) => {
 }
 
 module.exports.insertBrandingAndAdvertising = async(req, res, next) => {
-    const  userName = req.body.username;
-    console.log('userName in controller  ===>>>>>>', userName);
+    const sessionid = req.cookies.session;
+    let sessionData = await getRedisData(`${sessionid}:session`)
+    const  userName = sessionData.username;
+    console.log('userName in in dashboard controller  ===>>>>>>', userName);
 
     const advertisingData = req.body;
     console.log('data comming from frontend ==>>', advertisingData);
@@ -76,8 +81,10 @@ module.exports.insertBrandingAndAdvertising = async(req, res, next) => {
 }
 
 module.exports.updateBrandingAdvertising = async(req, res, next) => {
-    const  userName = req.body.username;
-    console.log('userName in controller  ===>>>>>>', userName);
+    const sessionid = req.cookies.session;
+    let sessionData = await getRedisData(`${sessionid}:session`)
+    const  userName = sessionData.username;
+    console.log('userName in in dashboard controller  ===>>>>>>', userName);
 
     const updatedAdvertisingData = req.body;
     const advertisingId = req.body.advertisingId;
@@ -137,8 +144,10 @@ module.exports.updateBrandingAdvertising = async(req, res, next) => {
 }
 
 module.exports.viewBrandingadvertising = async(req, res, next) => {
-    const  userName = req.body.username;
-    console.log('userName in controller  ===>>>>>>', userName);
+    const sessionid = req.cookies.session;
+    let sessionData = await getRedisData(`${sessionid}:session`)
+    const  userName = sessionData.username;
+    console.log('userName in in dashboard controller  ===>>>>>>', userName);
 
     console.log('id ==>>', req.body)
     const {advertisingId} = req.body;

@@ -194,7 +194,7 @@ module.exports.insertResearhcProjectConstancyData = async (researchCunsultancyDa
     const [facultyName, facultyEmpId, facultyDsg, facultyAddr ] = detailsData
   
     let sql = {
-        text: `INSERT INTO faculties (faculty_type_id, faculty_name, employee_id, designation, address, created_by) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`,
+        text: `INSERT INTO faculties (faculty_type_id, faculty_name, designation, institution_name, address, created_by) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`,
         values: [2, facultyName,facultyEmpId, facultyDsg, facultyAddr, userName]
     };
   
@@ -323,7 +323,7 @@ module.exports.updateResearchConsultantData = async (consultantId, updatedResear
     const [facultyName, facultyEmpId, facultyDsg, facultyAddr] = detailsData;
 
     let sql = {
-      text: `INSERT INTO faculties (faculty_type_id, faculty_name, employee_id, designation, address, created_by) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`,
+      text: `INSERT INTO faculties (faculty_type_id, faculty_name, designation, institution_name, address, created_by) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`,
       values: [2, facultyName, facultyEmpId, facultyDsg, facultyAddr, userName],
     };
 
@@ -366,7 +366,7 @@ module.exports.updateResearchConsultantData = async (consultantId, updatedResear
     const [facultyName, facultyEmpId, facultyDsg, facultyAddr, id] = detailsData;
 
     let sql = {
-      text: `UPDATE faculties SET faculty_type_id = $1, faculty_name = $2, employee_id = $3, designation = $4, 
+      text: `UPDATE faculties SET faculty_type_id = $1, faculty_name = $2, designation = $3, institution_name = $4, 
             address = $5, created_by = $6 WHERE id = $7 
              RETURNING id`,
       values: [2, facultyName, facultyEmpId, facultyDsg, facultyAddr, userName, id],
@@ -449,8 +449,8 @@ module.exports.viewResearchConsultancy = async (consultantId, userName) => {
             rg.*,
             f.faculty_name,
             f.designation,
-            f.address,
-            f.employee_id
+            f.institution_name,
+            f.address
         FROM
             research_project_grant rg
         LEFT JOIN
@@ -492,8 +492,8 @@ module.exports.retriveExternalDetails = async(consultantId, userName) => {
     text: `
     SELECT
         f.faculty_name,
-        f.employee_id,
         f.designation,
+        f.institution_name,
         f.address,
         f.id
     FROM

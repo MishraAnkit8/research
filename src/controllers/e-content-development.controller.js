@@ -1,8 +1,12 @@
 const eContentService = require('../services/e-content-development.service')
+const { getRedisData } = require('../../utils/redis.utils');
+
 
 module.exports.renderEContentDevelopmentPage = async(req, res, next) => {
-    const  userName = req.body.username;
-    console.log('userName in controller  ===>>>>>>', userName);
+    const sessionid = req.cookies.session;
+    let sessionData = await getRedisData(`${sessionid}:session`)
+    const  userName = sessionData.username;
+    console.log('userName in in dashboard controller  ===>>>>>>', userName);
 
     const renderEcontentData = await eContentService.renderEContentDevelopmentModel(userName);
 
@@ -17,8 +21,11 @@ module.exports.renderEContentDevelopmentPage = async(req, res, next) => {
 
 
 module.exports.insertEContentData = async (req, res, next) => {
-    const  userName = req.body.username;
-    console.log('userName in controller  ===>>>>>>', userName);
+    const sessionid = req.cookies.session;
+    let sessionData = await getRedisData(`${sessionid}:session`)
+    const  userName = sessionData.username;
+    console.log('userName in in dashboard controller  ===>>>>>>', userName);
+
     console.log('Data in controller req.body ====>>>', req.body);
 
     const insertDataEcontentDeveolpment = await eContentService.insertEcontentRow(req.body, userName);
@@ -37,8 +44,11 @@ module.exports.insertEContentData = async (req, res, next) => {
 
 
 module.exports.updateEcontentData = async(req, res, next) => {
-    const  userName = req.body.username;
-    console.log('userName in controller  ===>>>>>>', userName);
+    const sessionid = req.cookies.session;
+    let sessionData = await getRedisData(`${sessionid}:session`)
+    const  userName = sessionData.username;
+    console.log('userName in in dashboard controller  ===>>>>>>', userName);
+
     console.log('data in controllerrr ====>>>>', req.body)
 
     const updateEContentRowData = await eContentService.updateEContentReconrd(req.body, userName);
@@ -71,8 +81,11 @@ module.exports.deleteEcontentRowData = async(req, res, next) => {
 }
 
 module.exports.viewEContentData = async(req, res, next) => {
-    const  userName = req.body.username;
-    console.log('userName in controller  ===>>>>>>', userName);
+    const sessionid = req.cookies.session;
+    let sessionData = await getRedisData(`${sessionid}:session`)
+    const  userName = sessionData.username;
+    console.log('userName in in dashboard controller  ===>>>>>>', userName);
+    
     console.log('id in controller  ===>>>>>', req.body);
 
     const eContentData = await eContentService.viewEContentRecordData(req.body, userName);

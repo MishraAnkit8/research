@@ -1,8 +1,12 @@
 const teachingExecellanceService = require("../services/teaching-excellance.service");
+const { getRedisData } = require("../../utils/redis.utils");
+
 
 module.exports.renderTeachingExecellance = async (req, res, next) => {
-  const userName = req.body.username;
-  console.log("userName in controller  ===>>>>>>", userName);
+  const sessionid = req.cookies.session;
+  let sessionData = await getRedisData(`${sessionid}:session`)
+  const  userName = sessionData.username;
+  console.log('userName in in dashboard controller  ===>>>>>>', userName);
 
   const teachingExecellance =
     await teachingExecellanceService.fetchTeachingExecellanceData(userName);
@@ -15,8 +19,10 @@ module.exports.renderTeachingExecellance = async (req, res, next) => {
 };
 
 module.exports.insertTeachingExecellance = async (req, res, next) => {
-  const userName = req.body.username;
-  console.log("userName in controller  ===>>>>>>", userName);
+  const sessionid = req.cookies.session;
+  let sessionData = await getRedisData(`${sessionid}:session`)
+  const  userName = sessionData.username;
+  console.log('userName in in dashboard controller  ===>>>>>>', userName);
 
   console.log("data ===>>", req.body);
   const teachingExecellance = req.body;
@@ -60,8 +66,10 @@ module.exports.insertTeachingExecellance = async (req, res, next) => {
 };
 
 module.exports.updatTeachingData = async (req, res, next) => {
-  const userName = req.body.username;
-  console.log("userName in controller  ===>>>>>>", userName);
+  const sessionid = req.cookies.session;
+  let sessionData = await getRedisData(`${sessionid}:session`)
+  const  userName = sessionData.username;
+  console.log('userName in in dashboard controller  ===>>>>>>', userName);
 
   console.log("id ==>", req.body.teachingId);
   const teachingId = req.body.teachingId;
@@ -122,8 +130,10 @@ module.exports.deleteTeachingExecellance = async (req, res, next) => {
 };
 
 module.exports.viewTeachingExecellance = async (req, res, next) => {
-  // userName = req.body.username;
-  //   console.log("userName in controller teaching excellance ===>>>>>>", userName);
+  const sessionid = req.cookies.session;
+  let sessionData = await getRedisData(`${sessionid}:session`)
+  const  userName = sessionData.username;
+  console.log('userName in in dashboard controller  ===>>>>>>', userName);
 
   console.log("Id ==>>", req.body);
   const { teachingId } = req.body;

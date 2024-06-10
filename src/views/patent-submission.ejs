@@ -245,7 +245,7 @@
                                     <label for="title" class="form-label fw-bold">Title of Invention</label>
                                     <input type="text" name="titleInvention" id="title-of-invention" data
                                         data-err-msg="Provide Valid Input" class="form-control fname"
-                                        data-validate="isEmpty,isAllNumeric,isExist" required>
+                                        data-validate="isEmpty,isAlphaNumericWithSpaceNoLeadingSpace,isExist" required>
                                 </div>
                                 <!-- Patent Stage -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
@@ -350,8 +350,8 @@
                                 <table id="external-details-table" class="table vertical-lines custom-table table-responsive research-pagination re d-none">
                                     <thead>
                                         <th class="col-lg-4 col-md-6 col-sm-12 mb-4">faculty Name </th>
-                                        <!-- <th class="col-lg-4 col-md-6 col-sm-12 mb-4">Employee Id</th> -->
                                         <th class="col-lg-4 col-md-6 col-sm-12 mb-4">Designation</th>
+                                        <th class="col-lg-4 col-md-6 col-sm-12 mb-4">Institution Name</th>
                                         <th class="col-lg-4 col-md-6 col-sm-12 mb-4">Address</th>
                                         <th class="col-lg-4 col-md-6 col-sm-12 mb-4">Action</th>
                                     </thead>
@@ -658,7 +658,7 @@
                                     // Map employees to options
                                     const facultyOptions = employeesDataObj.map(faculty => ({
                                         value: faculty.id,
-                                        text: ` ${faculty.employee_id}  ${faculty.faculty_name}`
+                                        text: `   ${faculty.faculty_name}`
                                     }));
 
                                     // Initialize Tom Select dropdown with options containing id and faculty_name
@@ -1194,7 +1194,7 @@
                                     // Map employees to options
                                     const facultyOptions = employeesDataObj.map(faculty => ({
                                         value: faculty.id,
-                                        text: ` ${faculty.employee_id}  ${faculty.faculty_name}`
+                                        text: `   ${faculty.faculty_name}`
                                     }));
 
                                     // Filter and map selected employees
@@ -1321,6 +1321,7 @@
                                             console.log('data ====>>>>', data);
                                             const facultyHeader = ['faculty Name',
                                                         'Designation',
+                                                        'Institution Name',
                                                         'Address',
                                                         'Action']
                                             createTableRows('external-details-table', data.exetrnalData, 'external-faculty-data-details', 'delete-details', facultyHeader)
@@ -1448,8 +1449,8 @@
                                     <th>#</th>
                                     <th>Faculty Name</th>
                                     <th>Designation</th>
+                                    <th>Institution Name',</th>
                                     <th>Address</th>
-                                    <th>Employee ID</th>
                                     <th>Faculty type</th>
                                 </thead>
                                 <tbody>`;
@@ -1460,8 +1461,8 @@
                                 <td class="view-content">${index + 1}</td>
                                 <td class="view-content">${faculty.faculty_name}</td>
                                 <td class="view-content">${faculty.designation}</td>
+                                <td class="view-content">${faculty.institution_name}</td>
                                 <td class="view-content">${faculty.address}</td>
-                                
                                 <td class="view-content">${faculty.faculty_type}</td>
                             </tr>`;
                                                 });
@@ -1944,6 +1945,7 @@
                         let newRow = `
                                 <tr>
                                     <td><input type="text"  class="external-faculty-details"></td>
+                                    <td><input type="text" class="external-faculty-details"></td>
                                     <td><input type="text" class="external-faculty-details"></td>
                                     <td><input type="text" class="external-faculty-details"></td>
                                     <td><button class="delete-row  btn btn-danger">Delete</button></td>

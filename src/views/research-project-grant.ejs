@@ -222,14 +222,14 @@
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="nmims-campus-authors" class="form-label fw-bold ">NMIMS Campus<i style="color: red;">*</i></label>
                                     <input type="url" name="web-link" id="nmims-campus"
-                                        data-validate="isEmpty,isAlphaNumericSpecial,isExist,isLength:2:255"
+                                        data-validate="isEmpty,isAlphaNumericWithSpaceNoLeadingSpace,isExist,isLength:2:255"
                                         data-err-msg="Provide Valid Input" class="form-control" required />
                                 </div>
                                 <!--NMIMS School - Author-->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="nmims-school-authors" class="form-label fw-bold ">NMIMS School <i style="color: red;">*</i></label>
                                     <input type="url" name="web-link" id="nmims-school"
-                                        data-validate="isEmpty,isAlphaNumericSpecial,isExist,isLength:2:255"
+                                        data-validate="isEmpty,isAlphaNumericWithSpaceNoLeadingSpace,isExist,isLength:2:255"
                                         data-err-msg="Provide Valid Input" class="form-control" required />
                                 </div>
   
@@ -276,7 +276,7 @@
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="title-of-project" class="form-label fw-bold">Title of Project <i style="color: red;">*</i></label>
                                     <input type="text" name="titleOfProject" id="title-of-project"
-                                        data-validate="isEmpty,isNotNumber,isExist,isLength:2:255" data-err-msg="Provide Valid Input"
+                                        data-validate="isEmpty,isExist,isLength:2:255" data-err-msg="Provide Valid Input"
                                         class="form-control" required>
                                 </div>
                             
@@ -286,7 +286,7 @@
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="thurst-area" class="form-label fw-bold">Thrust area of Research <i style="color: red;">*</i></label>
                                     <input type="text" name="thurst-area" id="thurst-area"
-                                        data-validate="isEmpty,isAlphabeticWords,isExist,isLength:2:255" data-err-msg="Provide Valid Input"
+                                        data-validate="isEmpty,isAlphaNumericWithSpaceNoLeadingSpace,isExist,isLength:2:255" data-err-msg="Provide Valid Input"
                                         class="form-control" required>
                                 </div>
                                 <!-- Name of Funding Agency -->
@@ -449,6 +449,7 @@
                                     <thead>
                                         <th class="col-lg-4 col-md-6 col-sm-12 mb-4">faculty Name </th>
                                         <th class="col-lg-4 col-md-6 col-sm-12 mb-4">Designation</th>
+                                        <th class="col-lg-4 col-md-6 col-sm-12 mb-4">Institution Name</th>
                                         <th class="col-lg-4 col-md-6 col-sm-12 mb-4">Address</th>
                                         <th class="col-lg-4 col-md-6 col-sm-12 mb-4">Action</th>
                                     </thead>
@@ -707,7 +708,7 @@
                         // ajax for search bar to search employee name 
                         const facultyOptions = employeesDataObj.map(faculty => ({
                             value: faculty.id,
-                            text: ` ${faculty.employee_id}  ${faculty.faculty_name}`
+                            text: `   ${faculty.faculty_name}`
                         }));
 
                         new TomSelect("#emp-name", {
@@ -986,7 +987,7 @@
                        // ajax for search bar to search employee name 
                        const facultyOptions = employeesDataObj.map(faculty => ({
                             value: faculty.id,
-                            text: ` ${faculty.employee_id}  ${faculty.faculty_name}`
+                            text: `   ${faculty.faculty_name}`
                         }));
 
 
@@ -1214,6 +1215,7 @@
                                     console.log('data ====>>>>', data);
                                     const facultyHeader = ['faculty Name',
                                         'Designation',
+                                        'Institution Name',
                                         'Address',
                                         'Action']
                                     createTableRows('external-details-table', data.exetrnalData, 'external-faculty-data-details', 'delete-details', facultyHeader)
@@ -1366,6 +1368,7 @@
                                     <th>#</th>
                                     <th>Faculty Name</th>
                                     <th>Designation</th>
+                                    <th>Institution Name</th>
                                     <th>Address</th>
                                 </thead>
                                 <tbody>`;
@@ -1833,7 +1836,7 @@
                         let newRow = `
                                 <tr>
                                     <td><input type="text"  class="external-faculty-details"></td>
-                                    <td><input type="number" class="external-faculty-details"></td>
+                                    <td><input type="text" class="external-faculty-details"></td>
                                     <td><input type="text" class="external-faculty-details"></td>
                                     <td><input type="text" class="external-faculty-details"></td>
                                     <td><button class="delete-row  btn btn-danger">Delete</button></td>

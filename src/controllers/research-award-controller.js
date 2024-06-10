@@ -1,8 +1,12 @@
 
 const researchAwardServices = require('../services/research-award.services');
+const { getRedisData } = require("../../utils/redis.utils");
+
 module.exports.renderResearchAward = async(req, res, next) => {
-    const  userName = req.body.username;
-    console.log('userName in controller  ===>>>>>>', userName);
+    const sessionid = req.cookies.session;
+    let sessionData = await getRedisData(`${sessionid}:session`)
+    const  userName = sessionData.username;
+    console.log('userName in in dashboard controller  ===>>>>>>', userName);
     
     const researchAwardRenderedData = await researchAwardServices.renderResearchAwardData(userName);
     console.log('researchAwardRenderedData :::::', researchAwardRenderedData);
@@ -17,8 +21,10 @@ module.exports.renderResearchAward = async(req, res, next) => {
 
 
 module.exports.insertResearchAwardFormData = async(req, res, next) => {
-    const  userName = req.body.username;
-    console.log('userName in controller  ===>>>>>>', userName);
+    const sessionid = req.cookies.session;
+    let sessionData = await getRedisData(`${sessionid}:session`)
+    const  userName = sessionData.username;
+    console.log('userName in in dashboard controller  ===>>>>>>', userName);
 
     console.log('data in controller ===>>>>>', req.body);
 
@@ -39,8 +45,10 @@ module.exports.insertResearchAwardFormData = async(req, res, next) => {
 }
 
 module.exports.updateResearchAwardData = async(req, res, next) => {
-    const  userName = req.body.username;
-    console.log('userName in controller  ===>>>>>>', userName);
+    const sessionid = req.cookies.session;
+    let sessionData = await getRedisData(`${sessionid}:session`)
+    const  userName = sessionData.username;
+    console.log('userName in in dashboard controller  ===>>>>>>', userName);
 
     console.log('Data Comming From Template ===>>>', req.body);
 
@@ -74,8 +82,10 @@ module.exports.deleteResearchAwardRow = async(req, res, next) => {
 }
 
 module.exports.viewResearchAwardData = async(req,res, next) => {
-    const  userName = req.body.username;
-    console.log('userName in controller  ===>>>>>>', userName);
+    const sessionid = req.cookies.session;
+    let sessionData = await getRedisData(`${sessionid}:session`)
+    const  userName = sessionData.username;
+    console.log('userName in in dashboard controller  ===>>>>>>', userName);
 
     console.log('award Id In Controller ===>>>', req.body);
 

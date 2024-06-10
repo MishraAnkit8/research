@@ -2,8 +2,10 @@ const bookChapterServices = require("../services/book-chapter.service");
 const { getRedisData } = require("../../utils/redis.utils");
 
 module.exports.renderBookChapterPublication = async (req, res, next) => {
-  const userName = req.body.username;
-  console.log("userName in book chapter controller  ===>>>>>>", userName);
+  const sessionid = req.cookies.session;
+  let sessionData = await getRedisData(`${sessionid}:session`)
+  const  userName = sessionData.username;
+  console.log('userName in in dashboard controller  ===>>>>>>', userName);
 
   const bookChapterData = await bookChapterServices.fetchBookChapter(userName);
   // console.log('bookChapterData in controller ==>>', bookChapterData);
@@ -78,8 +80,10 @@ module.exports.insertBookChapterPublication = async (req, res, next) => {
 
 // for updating book chapter
 module.exports.updateBookChapterData = async (req, res, next) => {
-  const userName = req.body.username;
-  console.log("userName in controller  ===>>>>>>", userName);
+  const sessionid = req.cookies.session;
+  let sessionData = await getRedisData(`${sessionid}:session`)
+  const  userName = sessionData.username;
+  console.log('userName in in dashboard controller  ===>>>>>>', userName);
 
   console.log("data comming from frontend ==>>", req.body);
   const bookChapterId = req.body.bookChapterId;
@@ -140,8 +144,10 @@ module.exports.deleteBookChapterData = async (req, res, next) => {
 };
 
 module.exports.viewBookChapterData = async (req, res, next) => {
-  const userName = req.body.username;
-  console.log("userName in controller  ===>>>>>>", userName);
+  const sessionid = req.cookies.session;
+  let sessionData = await getRedisData(`${sessionid}:session`)
+  const  userName = sessionData.username;
+  console.log('userName in in dashboard controller  ===>>>>>>', userName);
 
   const { bookChapterId } = req.body;
   const bookChapterView = await bookChapterServices.viewBookChapterData(

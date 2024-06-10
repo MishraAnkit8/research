@@ -52,6 +52,15 @@ function validateRequiredFormFields(actionBtn) {
           validationState = false;
           break;
         }
+      } 
+
+      if (validate === "isAlphaNumericWithSpaceNoLeadingSpace") {
+        const isValid = isAlphaNumericWithSpaceNoLeadingSpace(elemVal);
+        if (!isValid) {
+          isValidElem = false;
+          validationState = false;
+          break;
+        }
       }
 
       
@@ -481,6 +490,29 @@ function isAlphaNumericWithSpace(input) {
         charCode === 32) { // space
       continue;
     } else {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+function isAlphaNumericWithSpaceNoLeadingSpace(input) {
+  if (!input || input === "") {
+    return false;
+  }
+
+  // Check if the first character is a space
+  if (input.charCodeAt(0) === 32) {
+    return false;
+  }
+
+  for (let i = 0; i < input.length; i++) {
+    const charCode = input.charCodeAt(i);
+    if (!((charCode >= 48 && charCode <= 57) || // 0-9
+          (charCode >= 65 && charCode <= 90) || // A-Z
+          (charCode >= 97 && charCode <= 122) || // a-z
+          charCode === 32)) { // space
       return false;
     }
   }

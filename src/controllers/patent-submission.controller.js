@@ -3,8 +3,10 @@ const { getRedisData } = require('../../utils/redis.utils');
 
 module.exports.renderPatentSubMissionAndGrant = async (req, res, next) => {
   console.log("data in controller ");
-  const userName = req.body.username;
-  console.log("userName in controller  ===>>>>>>", userName);
+  const sessionid = req.cookies.session;
+    let sessionData = await getRedisData(`${sessionid}:session`)
+    const  userName = sessionData.username;
+    console.log('userName in in dashboard controller  ===>>>>>>', userName);
 
   const patentSubmissionList = await patentSubmissionservice.fetchPatentForm(userName);
 
@@ -27,8 +29,10 @@ module.exports.renderPatentSubMissionAndGrant = async (req, res, next) => {
 module.exports.insertPatentsubmission = async (req, res, next) => {
   console.log("patentData in Controller", req.body);
   console.log("patentFilesData ===>>>>::::", req.files);
-  const userName = req.body.username;
-  console.log("userName in controller  ===>>>>>>", userName);
+  const sessionid = req.cookies.session;
+  let sessionData = await getRedisData(`${sessionid}:session`)
+  const  userName = sessionData.username;
+  console.log('userName in in dashboard controller  ===>>>>>>', userName);
 
   const patentDataSubmission = await patentSubmissionservice.insertPatentFormData(req.body, req.files, userName);
 
@@ -53,7 +57,9 @@ module.exports.insertPatentsubmission = async (req, res, next) => {
 module.exports.updatePatentSubMissiom = async (req, res, next) => {
   console.log("data in controller", req.body);
   console.log("ID in controller ==>", req.body.patentId);
-  const userName = req.body.username;
+  const sessionid = req.cookies.session;
+  let sessionData = await getRedisData(`${sessionid}:session`)
+  const  userName = sessionData.username;
   console.log("userName in controller  ===>>>>>>", userName);
 
   const patentId = req.body.patentId;
@@ -107,8 +113,10 @@ module.exports.deletePatentData = async (req, res, next) => {
 };
 
 module.exports.viewPatentSubmissionData = async (req, res, next) => {
-  const userName = req.body.username;
-  console.log("userName in controller  ===>>>>>>", userName);
+  const sessionid = req.cookies.session;
+  let sessionData = await getRedisData(`${sessionid}:session`)
+  const  userName = sessionData.username;
+  console.log('userName in in dashboard controller  ===>>>>>>', userName);
 
   const { patentId } = req.body;
   console.log("patentId in controller  ===>>>>", patentId);

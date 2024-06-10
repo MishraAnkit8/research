@@ -3,8 +3,10 @@ const { getRedisData } = require('../../utils/redis.utils');
 const { use } = require("../routes/book-publication-main.routes");
 
 module.exports.renderConferencePage = async (req, res, next) => {
-  const userName = req.body.username;
-  console.log("userName in controller in conference  ===>>>>>>", userName);
+  const sessionid = req.cookies.session;
+  let sessionData = await getRedisData(`${sessionid}:session`)
+  const  userName = sessionData.username;
+  console.log('userName in in dashboard controller  ===>>>>>>', userName);
 
   const conferenceData = await conferencePublicationServices.fetchConferencePublication(userName);
 
@@ -20,8 +22,10 @@ module.exports.renderConferencePage = async (req, res, next) => {
 };
 
 module.exports.insertConferencePublicationSData = async (req, res, next) => {
-  const userName = req.body.username;
-  console.log("userName in controller  ===>>>>>>", userName);
+  const sessionid = req.cookies.session;
+  let sessionData = await getRedisData(`${sessionid}:session`)
+  const  userName = sessionData.username;
+  console.log('userName in in dashboard controller  ===>>>>>>', userName);
   console.log('data comming from template in controller =====>>>>>', req.body);
 
 
@@ -62,8 +66,10 @@ module.exports.deleteConferencePublication = async (req, res, next) => {
 };
 
 module.exports.updateConferencePublication = async (req, res, next) => {
-  const userName = req.body.username;
-  console.log("userName in controller  ===>>>>>>", userName);
+  const sessionid = req.cookies.session;
+  let sessionData = await getRedisData(`${sessionid}:session`)
+  const  userName = sessionData.username;
+  console.log('userName in in dashboard controller  ===>>>>>>', userName);
 
   const conferenceId = req.body.id;
   console.log("id for updation", conferenceId);
@@ -83,8 +89,10 @@ module.exports.updateConferencePublication = async (req, res, next) => {
 };
 
 module.exports.viewConferencePublication = async (req, res, next) => {
-  const userName = req.body.username;
-  console.log("userName in controller  ===>>>>>>", userName);
+  const sessionid = req.cookies.session;
+  let sessionData = await getRedisData(`${sessionid}:session`)
+  const  userName = sessionData.username;
+  console.log('userName in in dashboard controller  ===>>>>>>', userName);
 
   console.log("data Id in Controller", req.body);
   const { conferenceId } = req.body;

@@ -173,11 +173,11 @@ module.exports.insertPatentData = async (
         // insert external faculties
     const insertexternalDetails = externalFacultyData ? externalFacultyData.map( async(detailsData) => {
         console.log('detailsData ======>>>>>>>>>', detailsData);
-        const [facultyName, facultyEmpId, facultyDsg, facultyAddr ] = detailsData
+        const [facultyName, facultyDsg, facultyAddr ] = detailsData
       
         let sql = {
-            text: `INSERT INTO faculties (faculty_type_id, faculty_name, employee_id, designation, address, created_by) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`,
-            values: [2, facultyName,facultyEmpId, facultyDsg, facultyAddr, userName]
+            text: `INSERT INTO faculties (faculty_type_id, faculty_name, designation, address, created_by) VALUES ($1, $2, $3, $4, $5) RETURNING id`,
+            values: [2, facultyName, facultyDsg, facultyAddr, userName]
         };
       
         console.log('sql external faculty data', sql);
@@ -390,11 +390,11 @@ module.exports.updatePatentsubmissionData = async (patentId, updatedPatentData, 
   // insert external faculties
   const insertexternalDetails = externalFacultyData ? externalFacultyData.map( async(detailsData) => {
     console.log('detailsData ======>>>>>>>>>', detailsData);
-    const [facultyName, facultyEmpId, facultyDsg, facultyAddr ] = detailsData
+    const [facultyName, facultyDsg, institutionName, facultyAddr ] = detailsData
       
     let sql = {
-        text: `INSERT INTO faculties (faculty_type_id, faculty_name, employee_id, designation, address, created_by) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`,
-        values: [2, facultyName,facultyEmpId, facultyDsg, facultyAddr, userName]
+        text: `INSERT INTO faculties (faculty_type_id, faculty_name, designation, institution_name, address, created_by) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`,
+        values: [2, facultyName, facultyDsg, institutionName, facultyAddr, userName]
     };
       
     console.log('sql external faculty data', sql);
@@ -410,11 +410,11 @@ module.exports.updatePatentsubmissionData = async (patentId, updatedPatentData, 
   const updateExternalFaculty = externalDetailsUpdate
   ? externalDetailsUpdate.map((externalDetails) => {
       console.log('externalDetails =====>>>>>>>', externalDetails);
-      const [facultyName, facultyEmpId, facultyDsg, facultyAddr, id] = externalDetails;
+      const [facultyName, facultyDsg, institutionName, facultyAddr, id] = externalDetails;
 
       let sql = {
-        text: `UPDATE faculties SET faculty_type_id = $1, faculty_name = $2, employee_id = $3, designation = $4, address = $5,  updated_by = $6 WHERE id = $7`,
-        values: [2, facultyName, facultyEmpId, facultyDsg, facultyAddr, userName, id]
+        text: `UPDATE faculties SET faculty_type_id = $1, faculty_name = $2, designation = $3, institutionName = $4, address = $5,  updated_by = $6 WHERE id = $7`,
+        values: [2, facultyName, facultyDsg, institutionName, facultyAddr, userName, id]
       };
 
       console.log('sql external faculty data', sql);
@@ -582,8 +582,9 @@ module.exports.viewPatentSubmission = async (patentId, userName) => {
             pss.id AS patent_stage_status_Id,
             f.faculty_name,
             f.designation,
+            f.institution_name,
             f.address,
-            f.employee_id,
+            
             psf.id AS patent_submission_faculty_id
         FROM 
             patent_submission_grant psg
@@ -631,8 +632,8 @@ module.exports.viewPatentSubmission = async (patentId, userName) => {
     text: `SELECT
             f.faculty_name,
             f.designation,
+            f.institution_name,
             f.address,
-            f.employee_id,
             ft.name AS faculty_type
         FROM
             patent_submission_faculty psf
@@ -695,8 +696,8 @@ module.exports.retriveExternalDetails = async(patentId, userName) => {
     text: `
     SELECT
         f.faculty_name,
-        f.employee_id,
         f.designation,
+        f.institution_name,
         f.address,
         f.id
     FROM

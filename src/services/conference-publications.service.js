@@ -22,19 +22,11 @@ module.exports.insertConferenceData = async(body , files, userName) => {
     console.log('files in service ==>' , files);
     const conferencePublications = body;
 
-    const facultycontainer = JSON.parse(body.facultycontainer);
-    // console.log('facultycontainer =====>>>>>>', facultycontainer);
-
-    // Step 2: Flatten the nested array
-    const facultyLastElement = facultycontainer[facultycontainer.length - 1];
-    // console.log('facultyLastElement ====>>>>>>>', facultyLastElement);
-    const facultyIds = facultyLastElement.flat();
-
-    // console.log('facultyIds ======>>>>>>>>>>', facultyIds);
-
-    // Step 3: Convert each element to an integer and subtract 2
-    const facultyIdscontainer = facultyIds.map(element => parseInt(element));
-    // console.log('facultyIdscontainer ===>>>>>', facultyIdscontainer);
+    const facultyInternalIds =  body.facultycontainer ? JSON.parse(body.facultycontainer) : null;
+    console.log('facultyInternalIds ====>>>>>', facultyInternalIds);
+    const internalFacultyArray = facultyInternalIds ? (facultyInternalIds || []) : null;
+    const facultyIdscontainer = internalFacultyArray.map(Number);
+    
 
     const externalData =  JSON.parse(body.externalFacultyDetails);;
     const externalFacultyData = groupArrayIntoChunks(externalData, 4);

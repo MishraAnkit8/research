@@ -25,7 +25,7 @@ module.exports.insertResearchConsultancyData = async (body, files, userName) => 
   const facultyInternalIds = researchCunsultancyData.facultyContainer ? JSON.parse(researchCunsultancyData.facultyContainer) : null;
   console.log('facultyInternalIds ====>>>>>', facultyInternalIds);
   const internalFacultyArray = facultyInternalIds ? (facultyInternalIds || []) : null;
-  const facultyIdsContainer = internalFacultyArray.map(Number);
+  const facultyIdsContainer = internalFacultyArray ?  (internalFacultyArray.map(Number)) : [];
 
   console.log('facultyIdsContainer =====>>>>>>>', facultyIdsContainer);
  

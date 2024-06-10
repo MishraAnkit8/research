@@ -2,8 +2,10 @@ const { getRedisData } = require('../../utils/redis.utils');
 const iprServices = require('../services/IPR.services');
 
 module.exports.renderIPR = async(req, res, next) => {
-    const  userName = req.body.username;
-    console.log('userName in controller  ===>>>>>>', userName);
+    const sessionid = req.cookies.session;
+    let sessionData = await getRedisData(`${sessionid}:session`)
+    const  userName = sessionData.username;
+    console.log('userName in in dashboard controller  ===>>>>>>', userName);
 
     const iprList = await iprServices.fetchPatentForm(userName);
 
@@ -32,8 +34,10 @@ module.exports.renderIPR = async(req, res, next) => {
 
 
 module.exports.IPRInsertedData = async(req, res, next) => {
-    const  userName = req.body.username;
-    console.log('userName in controller  ===>>>>>>', userName);
+    const sessionid = req.cookies.session;
+    let sessionData = await getRedisData(`${sessionid}:session`)
+    const  userName = sessionData.username;
+    console.log('userName in in dashboard controller  ===>>>>>>', userName);
 
     console.log('data in controller ====>>>>', req.body);
     console.log('files in controller ===>>>>>', req.files);
@@ -76,8 +80,11 @@ module.exports.deleteIPRData = async(req, res, next) => {
 }
 
 module.exports.updateIPRRowData = async(req, res, next) => {
-    const  userName = req.body.username;
-    console.log('userName in controller  ===>>>>>>', userName);
+    const sessionid = req.cookies.session;
+    let sessionData = await getRedisData(`${sessionid}:session`)
+    const  userName = sessionData.username;
+    console.log('userName in in dashboard controller  ===>>>>>>', userName);
+    
     console.log('data in controller ===>>>', req.body);
 
     const iprId = req.body.iprId;

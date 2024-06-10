@@ -342,45 +342,45 @@
                                 <!-- Date of Grant -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="patent-grant-date" class="form-label fw-bold">
-                                        Patent Grant Date <i style="color: red;">*</i>
+                                        Patent Grant Date
                                     </label>
                                     <input type="date" name="patent-grant-date" id="patent-grant-date"
                                         data-validate="isEmpty,isExist" data-err-msg="Date is required"
-                                        class="form-control patent-grant-date" required>
-                                    <span style="color:red;" id="patentGrantError"></span>
+                                        class="form-control patent-grant-date" >
+                                    <!-- <span style="color:red;" id="patentGrantError"></span> -->
 
                                 </div>
 
                                 <!-- Date of Published -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="patent-published-date" class="form-label fw-bold">
-                                        Patent /Invention Published Date <i style="color: red;">*</i>
+                                        Patent /Invention Published Date 
                                     </label><span id="patent-published-date-span"
                                         style="color: red; padding: 2px;"></span>
                                     <input type="date" name="GrantDate" id="patent-published-date"
                                         data-validate="isEmpty,isExist" data-err-msg="Date is required"
-                                        class="form-control patent-published-date" required>
-                                    <span style="color:red;" id="patentPublishError"></span>
+                                        class="form-control patent-published-date" >
+                                    <!-- <span style="color:red;" id="patentPublishError"></span> -->
                                 </div>
 
                                 <!-- Patent Publication Number -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="patent-published-number" class="form-label fw-bold">
-                                        Patent/Invention Publication Number <i style="color: red;">*</i>
+                                        Patent/Invention Publication Number
                                     </label>
                                     <input type="number" name="patent-published-number" id="patent-published-number"
                                         data-validate="isEmpty,isNumber" data-err-msg="Numeric Value is required."
-                                        class="form-control" required>
+                                        class="form-control">
                                 </div>
 
                                 <!-- Patent Granted Number -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="patent-granted-number" class="form-label fw-bold">
-                                        Patent/Invention Granted Number <i style="color: red;">*</i>
+                                        Patent/Invention Granted Number
                                     </label>
                                     <input type="number" name="granted-number" id="patent-granted-number"
                                         data-validate="isEmpty,isNumber" data-err-msg="Numeric Value is required."
-                                        class="form-control" required>
+                                        class="form-control">
                                 </div>
 
                                 <!-- Institite Affiliation -->
@@ -780,7 +780,7 @@
                             // ajax for search bar to search employee name 
                             const facultyOptions = employeesDataObj.map(faculty => ({
                                 value: faculty.id,
-                                text: ` ${faculty.employee_id}  ${faculty.faculty_name}`
+                                text: `  ${faculty.faculty_name}`
                             }));
 
                             // ajax for search bar to search employee name 
@@ -1177,18 +1177,18 @@
                     const isValid = validateRequiredFormFields(submitBtn);
                     const internalAuthor = document.getElementById('is-internal');
                     const externalAuthor = document.getElementById('is-external-details');
-                    const patentFiledDate = document.getElementById('patent-filed-date').value;
-                    const patentGrantDate = document.getElementById('patent-grant-date').value;
-                    const patentPublishedDate = document.getElementById('patent-published-date').value;
+                    // const patentFiledDate = document.getElementById('patent-filed-date').value;
+                    // const patentGrantDate = document.getElementById('patent-grant-date').value;
+                    // const patentPublishedDate = document.getElementById('patent-published-date').value;
 
 
-                    let date1 = new Date(patentFiledDate);
-                    let date2 = new Date(patentGrantDate);
-                    let date3 = new Date(patentPublishedDate);
+                    // let date1 = new Date(patentFiledDate);
+                    // let date2 = new Date(patentGrantDate);
+                    // let date3 = new Date(patentPublishedDate);
 
-                    let dateValidate = date1 < date2 && date2 < date3;
+                    // let dateValidate = date1 < date2 && date2 < date3;
 
-                    if (isValid && dateValidate && internalAuthor.checked || externalAuthor.checked) {
+                    if (isValid && internalAuthor.checked || externalAuthor.checked) {
                         await insertIPRforms('<%- BASE_URL %>research/IPR/insert');
 
                     }
@@ -1203,24 +1203,26 @@
                             confirmButtonText: "OK",
                             confirmButtonColor: "#DD6B55"
                         }).then(() => {
-                            if (date1 > date2) {
-                                document.getElementById('patentFiledError').innerText = 'Patent Filed Date Must Be Smaller Than Grant Date'
-                            } else {
-                                document.getElementById('patentFiledError').innerText = ''
-
-                            }
-
-                            if (date2 > date3) {
-                                document.getElementById('patentGrantError').innerText = 'Patent Grant Date Must Be Smaller Than Published Date'
-                            } else {
-                                document.getElementById('patentGrantError').innerText = ''
-
-                            }
                             if (internalAuthor.checked || externalAuthor.checked) {
                                 document.getElementById('facultyTypeError').innerText = ''
                             } else {
                                 document.getElementById('facultyTypeError').innerText = 'Select One Of The Faculty Type'
                             }
+
+                            // if (date1 > date2) {
+                            //     document.getElementById('patentFiledError').innerText = 'Patent Filed Date Must Be Smaller Than Grant Date'
+                            // } else {
+                            //     document.getElementById('patentFiledError').innerText = ''
+
+                            // }
+
+                            // if (date2 > date3) {
+                            //     document.getElementById('patentGrantError').innerText = 'Patent Grant Date Must Be Smaller Than Published Date'
+                            // } else {
+                            //     document.getElementById('patentGrantError').innerText = ''
+
+                            // }
+                           
                         });
                     }
                 });
@@ -1347,7 +1349,7 @@
                         // ajax for search bar to search employee name 
                         const facultyOptions = employeesDataObj.map(faculty => ({
                             value: faculty.id,
-                            text: ` ${faculty.employee_id}  ${faculty.faculty_name}`
+                            text: `  ${faculty.faculty_name}`
                         }));
 
                         // ajax for search bar to search employee name 
@@ -1816,8 +1818,8 @@
                                     <th>#</th>
                                     <th>Faculty Name</th>
                                     <th>Designation</th>
+                                    <th>Institution Name</th>
                                     <th>Address</th>
-                                    <th>Employee ID</th>
                                     <th>Faculty type</th>
                                 </thead>
                                 <tbody>`;
@@ -1828,6 +1830,7 @@
                                 <td class="view-content">${index + 1}</td>
                                 <td class="view-content">${faculty.faculty_name}</td>
                                 <td class="view-content">${faculty.designation}</td>
+                                <td class="view-content">${faculty.institution_name}</td>
                                 <td class="view-content">${faculty.address}</td>
                                 <td class="view-content">${faculty.faculty_type}</td>
                             </tr>`;
@@ -2084,17 +2087,17 @@
                     const isValid = validateRequiredFormFields(updateBtn);
                     // const internalAuthor = document.getElementById('is-internal');
                     // const externalAuthor = document.getElementById('is-external-update');
-                    const patentFiledDate = document.getElementById('patent-filed-date').value;
-					const patentGrantDate = document.getElementById('patent-grant-date').value;
-					const patentPublishedDate = document.getElementById('patent-published-date').value;
+                    // const patentFiledDate = document.getElementById('patent-filed-date').value;
+					// const patentGrantDate = document.getElementById('patent-grant-date').value;
+					// const patentPublishedDate = document.getElementById('patent-published-date').value;
 
 
-                    let date1 = new Date(patentFiledDate);
-                    let date2 = new Date(patentGrantDate);
-                    let date3 = new Date(patentPublishedDate);
+                    // let date1 = new Date(patentFiledDate);
+                    // let date2 = new Date(patentGrantDate);
+                    // let date3 = new Date(patentPublishedDate);
 
-                    let dateValidate = date1 < date2 && date2 < date3;
-                    if (isValid && dateValidate) {
+                    // let dateValidate = date1 < date2 && date2 < date3;
+                    if (isValid) {
                         await updatedIprData('<%- BASE_URL %>research/IPR/update');
                     }
                     else {
@@ -2107,21 +2110,22 @@
                             allowOutsideClick: false,
                             confirmButtonText: "OK",
                             confirmButtonColor: "#DD6B55"
-                        }).then(() => {
-                            if (date1 > date2) {
-                                document.getElementById('patentFiledError').innerText = 'Patent Filed Date Must Be Smaller Than Grant Date'
-                            } else {
-                                document.getElementById('patentFiledError').innerText = ''
+                        })
+                        // .then(() => {
+                        //     if (date1 > date2) {
+                        //         document.getElementById('patentFiledError').innerText = 'Patent Filed Date Must Be Smaller Than Grant Date'
+                        //     } else {
+                        //         document.getElementById('patentFiledError').innerText = ''
 
-                            }
+                        //     }
 
-                            if(date2 > date3){
-                                document.getElementById('patentGrantError').innerText='Patent Grant Date Must Be Smaller Than Published Date'
-                            }else{
-                                document.getElementById('patentGrantError').innerText=''
+                        //     if(date2 > date3){
+                        //         document.getElementById('patentGrantError').innerText='Patent Grant Date Must Be Smaller Than Published Date'
+                        //     }else{
+                        //         document.getElementById('patentGrantError').innerText=''
 
-                            }
-                        });
+                        //     }
+                        // });
                     }
                 })
 
@@ -2371,7 +2375,7 @@
                         let newRow = `
                                 <tr>
                                     <td><input type="text"  class="external-faculty-details"></td>
-                                    <td><input type="number" class="external-faculty-details"></td>
+                                    <td><input type="text" class="external-faculty-details"></td>
                                     <td><input type="text" class="external-faculty-details"></td>
                                     <td><input type="text" class="external-faculty-details"></td>
                                     <td><button class="delete-row  btn btn-danger">Delete</button></td>

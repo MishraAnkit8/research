@@ -49,7 +49,7 @@ module.exports.insertPatentFormData = async(body , files, userName) => {
     const facultyInternalIds = patentData.facultyContainer ? JSON.parse(patentData.facultyContainer) : null;
     console.log('facultyInternalIds ====>>>>>', facultyInternalIds);
     const internalFacultyArray = facultyInternalIds ? (facultyInternalIds || []) : null;
-    const facultyIdsContainer = internalFacultyArray.map(Number);
+    const facultyIdsContainer = internalFacultyArray ?  (internalFacultyArray.map(Number)) : [];
 
     console.log('facultyIdsContainer =====>>>>>>>', facultyIdsContainer);
    
@@ -113,6 +113,7 @@ module.exports.updatPatentSubmission = async(body, patentId, files, userName) =>
     const facultyIdsContainer =  internalFacultyArray ? internalFacultyArray.map(Number) : [];
 
     console.log("facultyIdsContainer =====>>>>>>>", facultyIdsContainer);
+    
 
     const externalData = JSON.parse(body.externalFacultyDetails);
     const externalFacultyData = groupArrayIntoChunks(externalData, 4);

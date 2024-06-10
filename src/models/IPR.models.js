@@ -268,11 +268,11 @@ module.exports.InsetIPRDataModels = async (
 
   const insertexternalDetails = externalFacultyData ? externalFacultyData.map( async(detailsData) => {
     console.log('detailsData ======>>>>>>>>>', detailsData);
-    const [facultyName, facultyEmpId, facultyDsg, facultyAddr ] = detailsData
+    const [facultyName, facultyDsg, facultyAddr ] = detailsData
   
     let sql = {
-        text: `INSERT INTO faculties (faculty_type_id, faculty_name, employee_id, designation, address, created_by) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`,
-        values: [2, facultyName,facultyEmpId, facultyDsg, facultyAddr, userName]
+        text: `INSERT INTO faculties (faculty_type_id, faculty_name, designation, institution_name, address, created_by) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`,
+        values: [2, facultyNam, facultyDsg, facultyAddr, userName]
     };
   
     console.log('sql external faculty data', sql);
@@ -529,11 +529,11 @@ module.exports.updateIPRRecordData = async (
 
   const insertexternalDetails = externalFacultyData ? externalFacultyData.map(async(detailsData) => {
     console.log('External Faculty Data:', detailsData);
-    const [facultyName, facultyEmpId, facultyDsg, facultyAddr] = detailsData;
+    const [facultyName, facultyDsg, institutionName, facultyAddr] = detailsData;
 
     let sql = {
-      text: `INSERT INTO faculties (faculty_type_id, faculty_name, employee_id, designation, address, created_by) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`,
-      values: [2, facultyName, facultyEmpId, facultyDsg, facultyAddr, userName],
+      text: `INSERT INTO faculties (faculty_type_id, faculty_name, designation, institution_name, address, created_by) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`,
+      values: [2, facultyName, facultyDsg, institutionName, facultyAddr, userName],
     };
 
     console.log('SQL for external faculty data:', sql);
@@ -601,13 +601,13 @@ module.exports.updateIPRRecordData = async (
 
   const updateExternalFaculty = updateExternalDetailsArray ? updateExternalDetailsArray.map(async(detailsData) => {
     console.log('Details Data for Updating External Faculty:', detailsData);
-    const [facultyName, facultyEmpId, facultyDsg, facultyAddr, id] = detailsData;
+    const [facultyName, facultyDsg, institutionName,  facultyAddr, id] = detailsData;
 
     let sql = {
-      text: `UPDATE faculties SET faculty_type_id = $1, faculty_name = $2, employee_id = $3, designation = $4, 
+      text: `UPDATE faculties SET faculty_type_id = $1, faculty_name = $2, designation = $3, institution_name = $4,
             address = $5, created_by = $6 WHERE id = $7 
              RETURNING id`,
-      values: [2, facultyName, facultyEmpId, facultyDsg, facultyAddr, userName, id],
+      values: [2, facultyName, facultyDsg, institutionName, facultyAddr, userName, id],
     };
 
     console.log('SQL for updating external faculty data:', sql);
@@ -720,8 +720,8 @@ GROUP BY
     text: `SELECT
                 f.faculty_name,
                 f.designation,
+                f.institution_name
                 f.address,
-                f.employee_id,
                 ft.name AS faculty_type
             FROM
                 ipr_faculty ipf
@@ -866,8 +866,8 @@ module.exports.retriveExternalDetails = async(iprId, userName) => {
     text: `
     SELECT
         f.faculty_name,
-        f.employee_id,
         f.designation,
+        f.institution_name,
         f.address,
         f.id
     FROM

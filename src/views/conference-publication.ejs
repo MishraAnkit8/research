@@ -363,7 +363,7 @@
                                         Vol and issue no [e.g 9 (12)]
                                     </label>
                                     <input type="text" name="vol-issues" id="vol-and-issue-no"
-                                        data-validate="isEmpty,isAlphaNumericSpecial" data-err-msg="Provide valid input."
+                                        data-validate="isEmpty,isExist,isLength:2:255" data-err-msg="Provide valid input."
                                         class="form-control" >
                                 </div>
                                 <!-- ISSN/ISNB No -->
@@ -496,6 +496,7 @@
                                 <thead>
                                     <th class="col-lg-4 col-md-6 col-sm-12 mb-4">faculty Name </th>
                                     <th class="col-lg-4 col-md-6 col-sm-12 mb-4">Designation</th>
+                                    <th class="col-lg-4 col-md-6 col-sm-12 mb-4">Institution Name</th>
                                     <th class="col-lg-4 col-md-6 col-sm-12 mb-4">Address</th>
                                     <th class="col-lg-4 col-md-6 col-sm-12 mb-4">Action</th>
                                 </thead>
@@ -1165,8 +1166,8 @@
                                                 <th>#</th>
                                                 <th>Faculty Name</th>
                                                 <th>Designation</th>
+                                                <th>Institution Name</th>
                                                 <th>Address</th>
-                                                <th>Employee ID</th>
                                             </thead>
                                             <tbody>`;
 
@@ -1176,8 +1177,8 @@
                                 <td class="view-content">${index + 1}</td>
                                 <td class="view-content">${faculty.faculty_name}</td>
                                 <td class="view-content">${faculty.designation}</td>
+                                <td class="view-content">${faculty.institution_name}</td>
                                 <td class="view-content">${faculty.address}</td>
-                                <td class="view-content">${faculty.employee_id}</td>
                             </tr>`;
                                         });
 
@@ -1233,7 +1234,7 @@
                         // ajax for search bar to search employee name 
                         const facultyOptions = employeesDataObj.map(faculty => ({
                             value: faculty.id,
-                            text: ` ${faculty.employee_id}  ${faculty.faculty_name}`
+                            text: `${faculty.faculty_name}`
                         }));
                         new TomSelect("#emp-name", {
                                 options: facultyOptions,
@@ -1391,6 +1392,7 @@
                                 console.log('data ====>>>>>', data);
                                 const facultyHeader = ['faculty Name',
                                         'Designation',
+                                        'Institution Name',
                                         'Address',
                                         'Action']
                                 createTableRows('external-details-table', data.exetrnalData, 'external-faculty-data-details', 'delete-details', facultyHeader)
@@ -1765,6 +1767,7 @@
                     let newRow = `
                             <tr>
                                 <td><input type="text"  class="external-faculty-details"></td>
+                                <td><input type="text" class="external-faculty-details"></td>
                                 <td><input type="text" class="external-faculty-details"></td>
                                 <td><input type="text" class="external-faculty-details"></td>
                                 <td><button class="delete-row  btn btn-danger">Delete</button></td>

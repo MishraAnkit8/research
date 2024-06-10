@@ -172,11 +172,11 @@ module.exports.insertConferencePublication = async (
   // insert external faculties
   const insertexternalDetails = externalFacultyData ? externalFacultyData.map( async(detailsData) => {
     console.log('detailsData ======>>>>>>>>>', detailsData);
-    const [facultyName, facultyEmpId, facultyDsg, facultyAddr ] = detailsData
+    const [facultyName, facultyDsg, institutionName, facultyAddr ] = detailsData
 
     let sql = {
-      text: `INSERT INTO faculties (faculty_type_id, faculty_name, employee_id, designation, address, created_by) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`,
-      values: [2, facultyName,facultyEmpId, facultyDsg, facultyAddr, userName]
+      text: `INSERT INTO faculties (faculty_type_id, faculty_name, designation, institution_name, address, created_by) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`,
+      values: [2, facultyName, facultyDsg, institutionName, facultyAddr, userName]
     };
 
     console.log('sql external faculty data', sql);
@@ -187,8 +187,9 @@ module.exports.insertConferencePublication = async (
 
   const externalIds = await Promise.all(insertexternalDetails);
   console.log('externalIds =======>>>>>>>>', externalIds);
+  facultyIdscontainer.push(...externalIds);
   // insert external conference  faculties
-  const insertConferenceFaculty = externalIds ? externalIds.map(async(element) => {
+  const insertConferenceFaculty = facultyIdscontainer ? facultyIdscontainer.map(async(element) => {
     let sql = {
       text: `INSERT INTO conference_faculty (conference_id, faculty_id, created_by, active) VALUES ($1, $2, $3, $4) RETURNING id`,
       values: [conferenceId, element, userName, true]
@@ -201,27 +202,30 @@ module.exports.insertConferencePublication = async (
 
   const extConFaculty = await Promise.all(insertConferenceFaculty);
   console.log('extConFaculty =====>>>>>', extConFaculty);
+  // facultyIdscontainer.push(...extConFaculty);
 
-  let conferenceFacultiesIds = [];
 
 // insert internal conference  faculties
-  await Promise.all(facultyIdscontainer.map(async (element) => {
-      let confacultySql = {
-        text: `INSERT INTO conference_faculty (conference_id, faculty_id, created_by, active) VALUES ($1, $2, $3, $4) RETURNING id`,
-        values: [conferenceId, element, userName, true],
-      };
-      let conferenceFaculty = await researchDbW.query(confacultySql);
-      let conFacIds = conferenceFaculty.rows[0].id;
-      conferenceFacultiesIds.push(conFacIds);
-    })
-  );
+//  const conferenceFacultiesIds = facultyIdscontainer ?    (facultyIdscontainer.map(async (element) => {
+//       let confacultySql = {
+//         text: `INSERT INTO conference_faculty (conference_id, faculty_id, created_by, active) VALUES ($1, $2, $3, $4) RETURNING id`,
+//         values: [conferenceId, element, userName, true],
+//       };
+//       let conferenceFaculty = await researchDbW.query(confacultySql);
+//       let conFacIds = conferenceFaculty.rows[0].id;
+//       conferenceFacultiesIds.push(conFacIds);
+//     })
+//   ) : null;
+
+  // const  conferencrFacultyIds = await Promise.all(conferenceFacultiesIds);
+  // console.log('conferencrFacultyIds ====>>>>>>', conferencrFacultyIds);
 
 
   return {
     status: "Done",
     message: "Record Inserted Successfully",
     conferenceId,
-    conferenceFacultiesIds,
+    extConFaculty,
     rowCount,
   };
 };
@@ -321,11 +325,11 @@ module.exports.updateConferencePublication = async (
 
     const insertExternalDetails = insertExternalData ? insertExternalData.map(async (detailsData) => {
       console.log('detailsData ======>>>>>>>>>', detailsData);
-      const [facultyName, facultyEmpId, facultyDsg, facultyAddr] = detailsData;
+      const [facultyName, facultyDsg, facultyAddr] = detailsData;
     
       let sql = {
-        text: `INSERT INTO faculties (faculty_type_id, faculty_name, employee_id, designation, address, created_by) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`,
-        values: [2, facultyName, facultyEmpId, facultyDsg, facultyAddr, userName]
+        text: `INSERT INTO faculties (faculty_type_id, faculty_name, designation, institution_name, address, created_by) VALUES ($1, $2, $3, $4, $5) RETURNING id`,
+        values: [2, facultyName, facultyDsg, facultyAddr, userName]
       };
     
       console.log('sql external faculty data', sql);
@@ -338,11 +342,11 @@ module.exports.updateConferencePublication = async (
     
     const updateExternalDetails = externalFacultyDataUpdate ? externalFacultyDataUpdate.map(async (detailsData) => {
       console.log('detailsData ======>>>>>>>>>', detailsData);
-      const [facultyName, facultyEmpId, facultyDsg, facultyAddr, id] = detailsData;
+      const [facultyName, facultyDsg, institutionName, facultyAddr, id] = detailsData;
     
       let sql = {
-        text: `UPDATE faculties SET faculty_type_id = $1, faculty_name = $2, employee_id = $3, designation = $4, address = $5 WHERE id = $6 AND updated_by = $7`,
-        values: [2, facultyName, facultyEmpId, facultyDsg, facultyAddr, id, userName]
+        text: `UPDATE faculties SET faculty_type_id = $1, faculty_name = $2, designation = $3, institution_name = $4,  address = $5 WHERE id = $6 AND updated_by = $7`,
+        values: [2, facultyName, facultyDsg, institutionName, facultyAddr, id, userName]
       };
     
       console.log('sql external faculty data', sql);
@@ -437,7 +441,7 @@ module.exports.viewConferencePublication = async (conferenceId, userName) => {
     f.id,
     f.faculty_name,
     f.designation,
-    f.employee_id,
+    f.institution_name,
     f.address 
 from 
     conference_faculty cf 
@@ -483,8 +487,8 @@ module.exports.retriveExternalDetails = async(conferenceId, userName) => {
     SELECT
         
         f.faculty_name,
-        f.employee_id,
         f.designation,
+        f.institution_name,
         f.address,
         f.id
     FROM

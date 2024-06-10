@@ -1,9 +1,12 @@
 const caseStudyService = require('../services/case-study.service');
 const validator = require('../middleware/express-validator/case-study.validator');
+const { getRedisData } = require("../../utils/redis.utils");
 
 module.exports.renderCaseStudy = async(req, res, next) => {
-    const  userName = req.body.username;
-    console.log('userName in controller  ===>>>>>>', userName);
+    const sessionid = req.cookies.session;
+    let sessionData = await getRedisData(`${sessionid}:session`)
+    const  userName = sessionData.username;
+    console.log('userName in in dashboard controller  ===>>>>>>', userName);
 
     const caseStudiesDataList = await caseStudyService.createCaseStudy(userName);
     console.log('data in controller' , caseStudiesDataList);
@@ -15,8 +18,11 @@ module.exports.renderCaseStudy = async(req, res, next) => {
 };
 
 module.exports.insertCaseStudies  = async(req, res, next) => {
-    const  userName = req.body.username;
-    console.log('userName in controller  ===>>>>>>', userName);
+    const sessionid = req.cookies.session;
+    let sessionData = await getRedisData(`${sessionid}:session`)
+    const  userName = sessionData.username;
+    console.log('userName in in dashboard controller  ===>>>>>>', userName);
+
     console.log('caseStudy template data ==>>', req.body);
 
     const insertCaseStudy = await caseStudyService.insertCaseStudies(req.body, req.files, userName);
@@ -69,8 +75,10 @@ module.exports.delCaseStudies = async(req, res, next) => {
 }
 
 module.exports.caseStudyView = async (req, res, next) => {
-    const  userName = req.body.username;
-    console.log('userName in controller  ===>>>>>>', userName);
+    const sessionid = req.cookies.session;
+    let sessionData = await getRedisData(`${sessionid}:session`)
+    const  userName = sessionData.username;
+    console.log('userName in in dashboard controller  ===>>>>>>', userName);
 
     const casestudyId = req.body.caseStudyId;
     console.log('CaseID For View' ,casestudyId);
@@ -98,8 +106,10 @@ module.exports.caseStudyView = async (req, res, next) => {
 }
 
 module.exports.updatedCaseStudies = async(req, res, next) => {
-    const  userName = req.body.username;
-    console.log('userName in controller  ===>>>>>>', userName);
+    const sessionid = req.cookies.session;
+    let sessionData = await getRedisData(`${sessionid}:session`)
+    const  userName = sessionData.username;
+    console.log('userName in in dashboard controller  ===>>>>>>', userName);
 
     const updatedCaseStudies = req.body;
     console.log('updatedCaseStudies ====>>>>>>>>', updatedCaseStudies);
