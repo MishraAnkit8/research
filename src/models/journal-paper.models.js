@@ -1101,8 +1101,9 @@ module.exports.viewJournalPaperData = async (journalPaperId, userName) => {
     text: `SELECT
                     f.faculty_name,
                     f.designation,
-                    f.address,
-                    f.employee_id
+                    f.institution_name,
+                    f.address
+                    
                 FROM
                     nmims_faculties nf
                 JOIN
@@ -1117,8 +1118,8 @@ module.exports.viewJournalPaperData = async (journalPaperId, userName) => {
     text: `SELECT
                     f.faculty_name,
                     f.designation,
+                    f.institution_name,
                     f.address,
-                    f.employee_id,
                     ft.name AS faculty_type
                 FROM
                 all_article_authors aaa
