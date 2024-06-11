@@ -181,17 +181,30 @@ function validateRequiredFormFields(actionBtn) {
       }
 
       if (validate.includes("isFile")) {
-        const arr = ["pdf", "xlsx", "xlsm", "xls","docx"]
+        const allowedExtensions = ["pdf", "xlsx", "xlsm", "xls", "docx"];
         let ext = elemVal.substring(elemVal.lastIndexOf('.') + 1);
-        let isValid = arr.includes(ext?.toLowerCase())
-
-        if(!isValid) {
-          isValidElem = false;
-          validationState = false;
-          errorMsg = `Invalid File Type only ${arr.join(", ")} are allowed`;
-          break;
+        let isValidExtension = allowedExtensions.includes(ext?.toLowerCase());
+    
+        // Extract the file name from the full path
+        let fileName = elemVal.substring(elemVal.lastIndexOf('/') + 1);
+    
+        let containsComma = fileName.includes(',');
+    
+        if (!isValidExtension) {
+            isValidElem = false;
+            validationState = false;
+            errorMsg = `Invalid File Type. Only ${allowedExtensions.join(", ")} are allowed.`;
+            break;
         }
-      }
+    
+        if (containsComma) {
+            isValidElem = false;
+            validationState = false;
+            errorMsg = "Invalid File Name. The file name should not contain a comma.";
+            break;
+        }
+    }
+    
 
       if (validate === "isNotSpecialChar") {
         const isValid = isNotSpecialChar(elemVal);
@@ -512,13 +525,15 @@ function isAlphaNumericWithSpaceNoLeadingSpace(input) {
     if (!((charCode >= 48 && charCode <= 57) || // 0-9
           (charCode >= 65 && charCode <= 90) || // A-Z
           (charCode >= 97 && charCode <= 122) || // a-z
-          charCode === 32)) { // space
+          charCode === 32 || // space
+          charCode === 44)) { // comma
       return false;
     }
   }
 
   return true;
 }
+
 
 
 

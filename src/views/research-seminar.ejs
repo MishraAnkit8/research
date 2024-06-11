@@ -262,7 +262,7 @@
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="scs-cite-score" class="form-label fw-bold">Scopus Cite Score</label>
                                     <input type="text" name="scsCiteScores" id="scs-cite-score"
-                                        data-validate="isEmpty,isExist:2:255" data-err-msg="Provide valid input."
+                                        data-validate="isEmpty,isExist:1:255" data-err-msg="Provide valid input."
                                         class="form-control" >
                                 </div>
                                 <!-- Impact Factor -->
@@ -362,14 +362,14 @@
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="web-link" class="form-label fw-bold">WebLink /DOI No.</label>
                                     <input type="text" name="webLinks" id="web-link" class="form-control"
-                                        data-validate="isEmpty,isAlphaNumericSpecial,isLength:2:255" data-err-msg="Provide valid input." >
+                                        data-validate="isEmpty,isAlphaNumericSpecial,isLength:1:255" data-err-msg="Provide valid input." >
                                 </div>
 
                                 <!-- UID -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="uid" class="form-label fw-bold">UID <i style="color: red;">*</i></label>
-                                    <input type="number" name="uid-number" id="uid" class="form-control"
-                                        data-validate="isEmpty,isNumber" data-err-msg="Provide valid input."
+                                    <input type="text" name="uid-number" id="uid" class="form-control"
+                                        data-validate="isEmpty,isLength:1:255" data-err-msg="Provide valid input."
                                         required>
                                 </div>
 
@@ -1240,8 +1240,15 @@
                     formGroup = updateBtn.closest('.validate-input')
                     console.log("formGroup::::::::", formGroup)
                     formGroup.querySelectorAll('input[type="file"]')?.forEach(elm => {
-                        console.log("elm:::::::::", elm);
-                        elm.removeAttribute('data-validate')
+                        if(elm.files.length > 0){
+                            const validate = elm.getAttribute('data-validate');
+                            const elemVal = elm.value;
+                        }
+                        
+                        else{
+                            elm.removeAttribute('data-validate')
+                        }
+                        
                     })
 
                     const isValid = validateRequiredFormFields(submitBtn);

@@ -1736,39 +1736,46 @@
                         };
 
                         updateBtn.addEventListener('click', async () => {
-                            formGroup = updateBtn.closest('.validate-input')
-                            console.log("formGroup::::::::", formGroup)
-                            formGroup.querySelectorAll('input[type="file"]')?.forEach(elm => {
-                                console.log("elm:::::::::", elm);
-                                elm.removeAttribute('data-validate')
-                            })
-                            const isValid = validateRequiredFormFields(updateBtn);
-                            // const internalAuthor = document.getElementById('is-internal');
-                            // const externalAuthor = document.getElementById('is-external-update');
+                                formGroup = updateBtn.closest('.validate-input')
+                                console.log("formGroup::::::::", formGroup)
+                                formGroup.querySelectorAll('input[type="file"]')?.forEach(elm => {
+                                    if (elm.files.length > 0) {
+                                        const validate = elm.getAttribute('data-validate');
+                                        const elemVal = elm.value;
+                                    }
 
-                            if (isValid) {
-                                await updatePatentSubmissiom('<%- BASE_URL %>research/patent-submission/update');
-                            }
-                            else {
-                                Swal.fire({
-                                    position: "top-center",
-                                    icon: "error",
-                                    title: "Validation Failed",
-                                    color: "red",
-                                    showConfirmButton: true,
-                                    allowOutsideClick: false,
-                                    confirmButtonText: "OK",
-                                    confirmButtonColor: "#DD6B55"
+                                    else {
+                                        elm.removeAttribute('data-validate')
+                                    }
+
                                 })
-                                // }).then(() => {
-                                //     if(internalAuthor.checked || externalAuthor.checked){
-                                //     document.getElementById('facultyTypeError').innerText=''
-                                //     }else{
-                                //     document.getElementById('facultyTypeError').innerText='Select One Of The Faculty Type'
-                                //     }
-                                // });
-                            }
-                        })
+                                const isValid = validateRequiredFormFields(updateBtn);
+                                // const internalAuthor = document.getElementById('is-internal');
+                                // const externalAuthor = document.getElementById('is-external-update');
+
+                                if (isValid) {
+                                    await updatePatentSubmissiom('<%- BASE_URL %>research/patent-submission/update');
+                                }
+                                else {
+                                    Swal.fire({
+                                        position: "top-center",
+                                        icon: "error",
+                                        title: "Validation Failed",
+                                        color: "red",
+                                        showConfirmButton: true,
+                                        allowOutsideClick: false,
+                                        confirmButtonText: "OK",
+                                        confirmButtonColor: "#DD6B55"
+                                    })
+                                    // }).then(() => {
+                                    //     if(internalAuthor.checked || externalAuthor.checked){
+                                    //     document.getElementById('facultyTypeError').innerText=''
+                                    //     }else{
+                                    //     document.getElementById('facultyTypeError').innerText='Select One Of The Faculty Type'
+                                    //     }
+                                    // });
+                                }
+                            })
 
 
                         //  set file string into button
