@@ -112,7 +112,7 @@ module.exports.insertConferencePublication = async (
     conferenceType,
     isPresenter,
     organizingBody,
-    presentationAward,
+    // presentationAward,
     volAndIssueNo,
     issnIsbnNo,
     doiWebLinkId,
@@ -136,9 +136,9 @@ module.exports.insertConferencePublication = async (
 
   let conferenceSql = {
     text: `INSERT INTO conference_presentation(nmims_campus, nmims_school, title_of_paper, conference_name, conference_place, proceedings_detail, conference_type,
-                        is_presenter, organizing_body, award_for_presentation, vol_and_issue_no, issn_isbn_no, doi_id,
+                        is_presenter, organizing_body, vol_and_issue_no, issn_isbn_no, doi_id,
                         sponsored, spent_amount, publication_date, presenting_authors, authors_name, upload_proof, upload_files, created_by)
-                       VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21) RETURNING id `,
+                       VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20) RETURNING id `,
     values: [
       nmimsCampus,
       nmimsSchool,
@@ -149,7 +149,7 @@ module.exports.insertConferencePublication = async (
       conferenceType,
       isPresenter,
       organizingBody,
-      presentationAward,
+      // presentationAward,
       volAndIssueNo,
       issnIsbnNo,
       doiWebLinkId,
@@ -277,7 +277,7 @@ module.exports.updateConferencePublication = async (
     conferenceType,
     isPresenter,
     organizingBody,
-    presentationAward,
+    // presentationAward,
     volAndIssueNo,
     issnIsbnNo,
     doiWebLinkId,
@@ -289,14 +289,30 @@ module.exports.updateConferencePublication = async (
   } = upadtedConferenceData;
   const conferenceFilesarray = { confernceDocString, conferenceProofString };
   console.log("conferenceFiles  =>>", conferenceFilesarray);
-
-
+  
   const conferenceDocument = confernceDocString || null;
   const conferenceProofe = conferenceProofString || null;
+  
+  // Base query
   let sql = {
-    text: `UPDATE conference_presentation SET nmims_campus = $2, nmims_school = $3, title_of_paper = $4, conference_name = $5, conference_place = $6, proceedings_detail = $7, conference_type = $8,
-            is_presenter = $9, organizing_body = $10, award_for_presentation = $11, vol_and_issue_no = $12, issn_isbn_no = $13, doi_id = $14,
-            sponsored = $15, spent_amount = $16, publication_date = $17, presenting_authors = $18, authors_name = $19, upload_proof = $20, upload_files = $21,  updated_by = $22 WHERE id = $1`,
+    text: `UPDATE conference_presentation SET 
+              nmims_campus = $2, 
+              nmims_school = $3, 
+              title_of_paper = $4, 
+              conference_name = $5, 
+              conference_place = $6, 
+              proceedings_detail = $7, 
+              conference_type = $8,
+              organizing_body = $9, 
+              vol_and_issue_no = $10, 
+              issn_isbn_no = $11, 
+              doi_id = $12,
+              sponsored = $13, 
+              spent_amount = $14, 
+              publication_date = $15, 
+              presenting_authors = $16, 
+              authors_name = $17, 
+              updated_by = $18`,
     values: [
       conferenceId,
       nmimsCampus,
@@ -306,9 +322,7 @@ module.exports.updateConferencePublication = async (
       conferencePlace,
       procedingDetail,
       conferenceType,
-      isPresenter,
       organizingBody,
-      presentationAward,
       volAndIssueNo,
       issnIsbnNo,
       doiWebLinkId,
@@ -317,11 +331,30 @@ module.exports.updateConferencePublication = async (
       publicationDate,
       presentingAuthor,
       authorsName,
-      conferenceProofe,
-      conferenceDocument,
-      userName,
-    ],
+      userName
+    ]
   };
+  
+  let nextIndex = 19; 
+
+if (conferenceProofe) {
+  sql.text += `, upload_proof = $${nextIndex}`;
+  sql.values.push(conferenceProofe);
+  nextIndex++;
+}
+
+if (conferenceDocument) {
+  sql.text += `, upload_files = $${nextIndex}`;
+  sql.values.push(conferenceDocument);
+}
+
+sql.text += ` WHERE id = $1`;
+
+console.log("SQL Query:", sql.text);
+console.log("SQL Values:", sql.values);
+  
+  console.log("SQL Query:", sql.text);
+  console.log("SQL Values:", sql.values);
 
     const insertExternalDetails = insertExternalData ? insertExternalData.map(async (detailsData) => {
       console.log('detailsData ======>>>>>>>>>', detailsData);
