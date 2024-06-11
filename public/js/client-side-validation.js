@@ -7,7 +7,9 @@ function validateRequiredFormFields(actionBtn) {
   for (let elem of elemToBeValidated) {
     let isValidElem = true;
     const elemVal = elem.value.trim();
+    const multiFileUpload = elem.files;
 
+    console.log("fileName ==>>", multiFileUpload);
     console.log("elemVal ==>>", elemVal);
     const formGroup = elem.closest(".form-group");
     const isRequired = elem.required;
@@ -181,14 +183,43 @@ function validateRequiredFormFields(actionBtn) {
       }
 
       if (validate.includes("isFile")) {
+
         const allowedExtensions = ["pdf", "xlsx", "xlsm", "xls", "docx"];
         let ext = elemVal.substring(elemVal.lastIndexOf('.') + 1);
+        console.log('elemVal ====>>>>>>>', elemVal)
         let isValidExtension = allowedExtensions.includes(ext?.toLowerCase());
     
         // Extract the file name from the full path
         let fileName = elemVal.substring(elemVal.lastIndexOf('/') + 1);
-    
         let containsComma = fileName.includes(',');
+        
+
+        if(multiFileUpload){
+          for (const fl of multiFileUpload) {
+              let multiFileName = fl.name
+              let multiExt = multiFileName.substring(multiFileName.lastIndexOf('.') + 1);
+              let multiIsValidExtension = allowedExtensions.includes(multiExt?.toLowerCase());
+              let multiContainsComma = multiFileName.includes(',');
+              console.log("multiExt :::::::::::::::::",multiExt);
+              if (!multiIsValidExtension) {
+                isValidElem = false;
+                validationState = false;
+                errorMsg = `Invalid File Type. Only ${allowedExtensions.join(", ")} are allowed.`;
+                break;
+            }
+            if (multiContainsComma) {
+              isValidElem = false;
+              validationState = false;
+              errorMsg = "Invalid File Name. The file name should not contain a comma.";
+              break;
+          }
+          }
+        }
+
+
+        
+        
+        
     
         if (!isValidExtension) {
             isValidElem = false;
