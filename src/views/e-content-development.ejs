@@ -616,6 +616,7 @@
                         console.log('rowToBeViewed ===>>>>>', rowToBeViewed);
                         eContentId = rowToBeViewed.getAttribute('data-e-content-id');
                         $('#view-econtent-development-modal').modal('show');
+                        const viewDocumentLink = document.getElementById('view-document-link');
 
                         fetch('<%- BASE_URL %>research/e-content/view', {
                             method: 'POST',
@@ -638,7 +639,12 @@
                                     document.getElementById('view-platform-name').innerText = data.viewEcontentData[0].platform;
                                     // document.getElementById('view-launching-date').innerText = data.viewEcontentData[0].launch_date;
                                     document.getElementById('view-launching-date').innerText = launchDate;
-                                    document.getElementById('view-document-link').innerText = data.viewEcontentData[0].document_links;
+                                    // document.getElementById('view-document-link').innerText = data.viewEcontentData[0].document_links;
+                                    let documentLinks = document.createElement('a');
+                                    documentLinks.href = data.viewEcontentData[0].document_links;
+                                    documentLinks.target = "_blank"; 
+                                    documentLinks.innerText = data.viewEcontentData[0].document_links;
+                                    viewDocumentLink.appendChild(documentLinks);
                                     document.getElementById('view-e-content-facility-list').innerText = data.viewEcontentData[0].content_development_facilities;
                                     document.getElementById('view-media-center-link').innerText = data.viewEcontentData[0].media_centre_video_link;
 
