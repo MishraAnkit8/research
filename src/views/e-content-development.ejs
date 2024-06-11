@@ -278,7 +278,7 @@
                     <div class="modal-content modal-content-data">
                         <div class="modal-header">
                             <h5 class="modal-title" id="conference-publication">E-Content Development </h5>
-                            <div class="close" data-dismiss="modal" aria-label="Close">
+                            <div class="close" data-dismiss="modal" id="close-cross-button" aria-label="Close">
                                 <span type="button"><i class="fas fa-times "></i></span>
                             </div>
                         </div>
@@ -343,7 +343,7 @@
                         </div>
                         <!-- footer button -->
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-danger" id="footer-close-view" data-dismiss="modal">Close</button>
                         </div>
                     </div>
                 </div>
@@ -616,7 +616,7 @@
                         console.log('rowToBeViewed ===>>>>>', rowToBeViewed);
                         eContentId = rowToBeViewed.getAttribute('data-e-content-id');
                         $('#view-econtent-development-modal').modal('show');
-                        const viewDocumentLink = document.getElementById('view-document-link');
+                        
 
                         fetch('<%- BASE_URL %>research/e-content/view', {
                             method: 'POST',
@@ -631,6 +631,7 @@
                             .then((data) => {
                                 if (data.status === "Done") {
                                     console.log('data ====>>>>>', data);
+                                    const viewDocumentLink = document.getElementById('view-document-link');
 
                                     let launchDate = formatDateToYYYYMMDD(data.viewEcontentData[0].launch_date);
 
@@ -767,6 +768,14 @@
                         });
                     }
                 })
+
+                document.getElementById('footer-close-view').addEventListener('click', () => {
+                    document.location.reload();
+                });
+                
+                document.getElementById('close-cross-button').addEventListener('click', () => {
+                    document.location.reload();
+                });
 
                 $("#e-content-development-list").DataTable({
                     "pageLength": 5,
