@@ -507,6 +507,7 @@
                         const externalFacultyType = document.getElementById('is-external-details');
                         const employeeList = document.getElementById('employee-list');
                         const authorDetails = document.getElementById('author-details');
+                        let externalFacultyDetails = [];
                         let patentId, rowToBeUpdated, supportingDocument;
                         let storedFacultyValue, InternalAuthorValue, externalAuthorValue;
 
@@ -740,7 +741,7 @@
                                 patentSubmissionsData.append('subMissionDate', subMissionDate);
 
                                 let externalFacultyDetailsRow = document.querySelectorAll('.external-faculty-details');
-                                let externalFacultyDetails = [];
+                                
 
                                 externalFacultyDetailsRow.forEach((field, index) => {
                                     if (field.value !== '') {
@@ -850,9 +851,11 @@
 
                                 const internalAuthor = document.getElementById('is-internal');
                                 const externalAuthor = document.getElementById('is-external-details');
+                                
 
-                                if (isValid && internalAuthor.checked || externalAuthor.checked) {
-                                    await insertPatentforms('<%- BASE_URL %>research/patent-submission/insert');
+                                if (isValid && externalFacultyDetails.length > 0 || facultyIdContainer.length > 0) {
+                                        await insertPatentforms('<%- BASE_URL %>research/patent-submission/insert');
+
                                 }
                                 else {
                                     Swal.fire({
