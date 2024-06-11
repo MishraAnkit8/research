@@ -720,7 +720,7 @@ GROUP BY
     text: `SELECT
                 f.faculty_name,
                 f.designation,
-                f.institution_name
+                f.institution_name,
                 f.address,
                 ft.name AS faculty_type
             FROM
