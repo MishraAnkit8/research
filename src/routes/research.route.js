@@ -97,8 +97,8 @@ router.get('/conference-publication/viewing/:fileName', downloadFileService.view
 
 //patent submission form
 router.get('/patent-submission', asyncErrorHandler(authMiddleware), asyncErrorHandler(patentSubmission.renderPatentSubMissionAndGrant));
-router.post('/patent-submission/insert', asyncErrorHandler(authMiddleware), upload.array('patentFilesData', 5), validateFaculty, asyncErrorHandler(patentSubmission.insertPatentsubmission));
-router.post('/patent-submission/update', asyncErrorHandler(authMiddleware), upload.array('patentFilesData', 5), updateValidateFaculty,  asyncErrorHandler(patentSubmission.updatePatentSubMissiom));
+router.post('/patent-submission/insert', asyncErrorHandler(authMiddleware), upload.array('patentFilesData', 5), asyncErrorHandler(patentSubmission.insertPatentsubmission));
+router.post('/patent-submission/update', asyncErrorHandler(authMiddleware), upload.array('patentFilesData', 5),  asyncErrorHandler(patentSubmission.updatePatentSubMissiom));
 router.post('/patent-submission/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(patentSubmission.deletePatentData));
 router.post('/patent-submission/view', asyncErrorHandler(authMiddleware), asyncErrorHandler(patentSubmission.viewPatentSubmissionData));
 
