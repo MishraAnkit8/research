@@ -135,8 +135,8 @@ module.exports.viewReseachProjectData = async (consultantId, userName) => {
       ? researchConsultancy.researchData.map((row) => ({
           facultyName: row.faculty_name,
           designation: row.designation,
+          institutionName: row.institution_name,
           address: row.address,
-          employeeId: row.employee_id,
         }))
       : null;
 
