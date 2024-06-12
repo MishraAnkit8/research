@@ -500,6 +500,8 @@
                         const sdgGoalsDropDown = document.getElementById('sdg-goals-data');
                         const statusDropDown = document.getElementById('patent-stage');
                         const invnstiontypeDropDown = document.getElementById('type-of-invention');
+                        let externalFacultyDetailsRow = document.querySelectorAll('.external-faculty-details');
+
 
                         const facultyTableList = document.getElementById('faculty-table-list')
                         const externaltype = document.querySelector('.external-faculty');
@@ -516,7 +518,10 @@
                         let sdgGoalsIdContainer = [];
                         let typeOfInventionsIdContainer = [];
                         let patentStatusIdcontainer = [];
+                        let updateExternalFacultyData = [];
                         let selectEmp = [];
+
+                        var facultyFlag
 
                         addNewPatentSubmission.addEventListener('click', function (event) {
                                 if (event.target.tagName === 'BUTTON' && event.target.classList.contains('add-modal') || event.target.classList.contains('plus')) {
@@ -711,26 +716,26 @@
                                 patentSubmissionsData.append('titleOfInvention', titleOfInvention);
 
 
-                                const sdgGoalsOjectArray = sdgGoalsIdContainer[sdgGoalsIdContainer.length - 1]
+                                // const sdgGoalsOjectArray = sdgGoalsIdContainer[sdgGoalsIdContainer.length - 1]
 
-                                const sdgGoalsContainer = sdgGoalsOjectArray ? JSON.stringify(sdgGoalsOjectArray) : null;
+                                const sdgGoalsContainer = JSON.stringify(sdgGoalsIdContainer);
                                 console.log('sdgGoalsContainer ===>>>>', sdgGoalsContainer);
                                 patentSubmissionsData.append('sdgGoalsContainer', sdgGoalsContainer);
 
-                                const inventionTypeArrayObject = typeOfInventionsIdContainer[typeOfInventionsIdContainer.length - 1];
-                                const inventionTypeContainer = JSON.stringify(inventionTypeArrayObject);
+                                // const inventionTypeArrayObject = typeOfInventionsIdContainer[typeOfInventionsIdContainer.length - 1];
+                                const inventionTypeContainer = JSON.stringify(typeOfInventionsIdContainer);
                                 console.log('inventionTypeContainer ====>>>>', inventionTypeContainer);
                                 patentSubmissionsData.append('typeOfInvention', inventionTypeContainer);
 
-                                const facultyIdsArray = facultyIdContainer ? facultyIdContainer[facultyIdContainer.length - 1] : null;
-                                const facultyContainer = facultyIdsArray ? JSON.stringify(facultyIdsArray) : null;
+                                // const facultyIdsArray = facultyIdContainer ? facultyIdContainer[facultyIdContainer.length - 1] : null;
+                                const facultyContainer = facultyIdContainer ? JSON.stringify(facultyIdContainer) : null;
 
                                 patentSubmissionsData.append('facultyContainer', facultyContainer);
 
                                 const selectPatentStage = document.getElementById('patent-stage').value;
                                 console.log('selectPatentStage ====>>>', selectPatentStage);
-                                const patentStatusIds = patentStatusIdcontainer ? patentStatusIdcontainer[patentStatusIdcontainer.length - 1] : null;
-                                const patentStatusIdsArray = JSON.stringify(patentStatusIds)
+                                // const patentStatusIds = patentStatusIdcontainer ? patentStatusIdcontainer[patentStatusIdcontainer.length - 1] : null;
+                                const patentStatusIdsArray = JSON.stringify(patentStatusIdcontainer)
                                 patentSubmissionsData.append('patentStatusIdsArray', patentStatusIdsArray);
 
                                 const applicationNum = document.getElementById('application-no').value;
@@ -764,6 +769,7 @@
                                     })
                                     .then((data) => {
                                         if (data.status === 'Done') {
+                                            facultyFlag = true
                                             //                 console.log('data >>>', data);
                                             //                 patentId = data.patentId;
                                             //                 const rowCountInteger = parseInt(data.rowCount, 10);
@@ -812,6 +818,7 @@
                                             // rowCount.innerText = `Total entries : ${IndexEntry}`
                                         }
                                         else {
+                                            facultyFlag = false;
                                             console.log('data ====>>>>>', data);
                                             Swal.fire({
                                                 position: "top-center",
@@ -846,14 +853,18 @@
                                     });
                             };
 
+                            
+                        
+                        
                         submitBtn.addEventListener('click', async () => {
                                 const isValid = validateRequiredFormFields(submitBtn);
 
                                 const internalAuthor = document.getElementById('is-internal');
                                 const externalAuthor = document.getElementById('is-external-details');
-                                
+                                console.log('externalFacultyDetails ===>>>>>>>', externalFacultyDetails);
+                                console.log('externalAuthor ===>>>>>', externalAuthor)
 
-                                if (isValid && (externalFacultyDetails.length > 0 || facultyIdContainer.length > 0)) {
+                                if (isValid && (externalAuthor.checked || facultyIdContainer.length > 0)) {
                                         await insertPatentforms('<%- BASE_URL %>research/patent-submission/insert');
 
                                 }
@@ -868,7 +879,7 @@
                                         confirmButtonText: "OK",
                                         confirmButtonColor: "#DD6B55"
                                     }).then(() => {
-                                        if (internalAuthor.checked || externalAuthor.checked) {
+                                        if ((externalAuthor.checked || facultyIdContainer.length > 0)) {
                                             document.getElementById('facultyTypeError').innerText = ''
                                         } else {
                                             document.getElementById('facultyTypeError').innerText = 'Select One Of The Faculty Type'
@@ -1595,7 +1606,7 @@
                         }
 
                         // update function for update the record
-                        const updatePatentSubmissiom = async (url) => {
+                        const updatePatentSubmission = async (url) => {
                             console.log('clickedd');
                             const updatedTitleOfInvention = document.getElementById('title-of-invention').value;
                             const updatedApplicationNum = document.getElementById('application-no').value;
@@ -1606,44 +1617,47 @@
                             const updatedPatentData = new FormData();
 
 
-                            const sdgGoalsOjectArray = sdgGoalsIdContainer[sdgGoalsIdContainer.length - 1]
+                            // const sdgGoalsOjectArray = sdgGoalsIdContainer[sdgGoalsIdContainer.length - 1]
 
-                            const sdgGoalsContainer = sdgGoalsOjectArray ? JSON.stringify(sdgGoalsOjectArray) : null;
+                            const sdgGoalsContainer = sdgGoalsIdContainer ? JSON.stringify(sdgGoalsIdContainer) : null;
                             console.log('sdgGoalsContainer ===>>>>', sdgGoalsContainer);
                             updatedPatentData.append('sdgGoalsContainer', sdgGoalsContainer);
 
-                            const inventionTypeArrayObject = typeOfInventionsIdContainer[typeOfInventionsIdContainer.length - 1];
-                            const inventionTypeContainer = inventionTypeArrayObject ? JSON.stringify(inventionTypeArrayObject) : null;
+                            // const inventionTypeArrayObject = typeOfInventionsIdContainer[typeOfInventionsIdContainer.length - 1];
+                            const inventionTypeContainer = typeOfInventionsIdContainer ? JSON.stringify(typeOfInventionsIdContainer) : null;
                             console.log('inventionTypeContainer ====>>>>', inventionTypeContainer);
                             updatedPatentData.append('typeOfInvention', inventionTypeContainer);
 
-                            const facultyIdsArray = facultyIdContainer ? facultyIdContainer[facultyIdContainer.length - 1] : null;
-                            const facultyContainer = facultyIdsArray ? JSON.stringify(facultyIdsArray) : null;
+                            // const facultyIdsArray = facultyIdContainer ? facultyIdContainer[facultyIdContainer.length - 1] : null;
+                            const facultyContainer = facultyIdContainer ? JSON.stringify(facultyIdContainer) : null;
 
                             updatedPatentData.append('facultyContainer', facultyContainer);
 
                             const selectPatentStage = document.getElementById('patent-stage').value;
                             console.log('selectPatentStage ====>>>', selectPatentStage);
-                            const patentStatusIds = patentStatusIdcontainer ? patentStatusIdcontainer[patentStatusIdcontainer.length - 1] : null;
-                            const patentStatusIdsArray =  patentStatusIds ? JSON.stringify(patentStatusIds) : null;
+                            // const patentStatusIds = patentStatusIdcontainer ? patentStatusIdcontainer[patentStatusIdcontainer.length - 1] : null;
+                            const patentStatusIdsArray =  patentStatusIdcontainer ? JSON.stringify(patentStatusIdcontainer) : null;
                             updatedPatentData.append('patentStatusIdsArray', patentStatusIdsArray);
 
 
+                            // let externalFacultyDetails = [];
                             let externalFacultyDetailsRow = document.querySelectorAll('.external-faculty-details');
-                            let externalFacultyDetails = [];
+
 
                             externalFacultyDetailsRow.forEach((field, index) => {
                                 if (field.value !== '') {
+                                    console.log('filed in case of insert ==>>>>', field)
                                     externalFacultyDetails.push(field.value);
                                 }
                             });
 
                             updatedPatentData.append('externalFacultyDetails', JSON.stringify(externalFacultyDetails));
                             let upadteExternalDetails = document.querySelectorAll('.external-faculty-data-details');
-                            let updateExternalFacultyData = [];
+                            
 
                             upadteExternalDetails.forEach((field, index) => {
                                 if (field.value !== '') {
+                                    console.log('field ankit mishra ==>>>>', field)
                                     updateExternalFacultyData.push(field.value);
                                 }
                             });
@@ -1682,6 +1696,7 @@
                                 })
                                 .then((data) => {
                                     if (data.status === 'Done') {
+                                        facultyFlag = true
                                         // console.log('Updated Data ==> ', data)
                                         // console.log('updated data title ===>', data.updatedPatentData.typeOfInvention);
                                         // rowToBeUpdated.querySelector('.title-of-invention').innerText = data.updatedPatentData.titleOfInvention;
@@ -1705,13 +1720,14 @@
                                         $('#patent-submission-modal').modal('hide');
                                     }
                                     else {
+                                        facultyFlag = false
                                         const message = data.message;
                                         console.log('data ===>>>', data)
                                         console.log('message ==:::', message);
                                         Swal.fire({
                                             position: "top-center",
                                             icon: "error",
-                                            title: `${data.errorCode}`,
+                                            title: `${data.httpstatus}`,
                                             color: "red",
                                             with: "20PX",
                                             html: `<span style="color: red;">${data.message}</span>`,
@@ -1752,12 +1768,17 @@
                                     }
 
                                 })
+
                                 const isValid = validateRequiredFormFields(updateBtn);
-                                // const internalAuthor = document.getElementById('is-internal');
-                                // const externalAuthor = document.getElementById('is-external-update');
+                                const internalAuthor = document.getElementById('is-internal');
+                                const externalAuthor = document.getElementById('is-external-details');
+                                console.log('externalAuthor ===>>>>>', externalAuthor);
+
+                                console.log('facultyFlag ===>>>>>', facultyFlag)
+                               
 
                                 if (isValid) {
-                                    await updatePatentSubmissiom('<%- BASE_URL %>research/patent-submission/update');
+                                    await updatePatentSubmission('<%- BASE_URL %>research/patent-submission/update');
                                 }
                                 else {
                                     Swal.fire({
@@ -1770,13 +1791,14 @@
                                         confirmButtonText: "OK",
                                         confirmButtonColor: "#DD6B55"
                                     })
-                                    // }).then(() => {
-                                    //     if(internalAuthor.checked || externalAuthor.checked){
-                                    //     document.getElementById('facultyTypeError').innerText=''
-                                    //     }else{
-                                    //     document.getElementById('facultyTypeError').innerText='Select One Of The Faculty Type'
-                                    //     }
-                                    // });
+                                   .then(() => {
+                                    if(facultyFlag){
+                                        
+                                         document.getElementById('facultyTypeError').innerText=''
+                                        }else{
+                                        document.getElementById('facultyTypeError').innerText='Select One Of The Faculty Type'
+                                        }
+                                    });
                                 }
                             })
 
@@ -1844,46 +1866,58 @@
                         };
 
 
-                                    
+                               
+                        
                         // function for select author name from drop down list
                         function handleEmployeeDropdownChange() {
-                                const selectedValues = Array.from(employeeDropdown.options)
+                            facultyIdContainer = Array.from(employeeDropdown.options)
                                     .filter(option => option.selected)
                                     .map(option => option.value);
-                                const facultyIds = selectedValues.length === 0 ? "" : selectedValues;
-                                console.log('facultyIds ===>>>>>', facultyIds);
-                                if (!facultyIdContainer.some(ids => ids === facultyIds)) {
-                                    facultyIdContainer.push(facultyIds);
-                                }
-                                console.log("Selected employee values:", facultyIdContainer);
+                                // const facultyIds = selectedValues.length === 0 ? "" : selectedValues;
+                                console.log('facultyIdContainer ===>>>>>', facultyIdContainer);
+                                // if (!facultyIdContainer.some(ids => ids === facultyIds)) {
+                                //     facultyIdContainer.push(facultyIds);
+                                // }
+                                // console.log("Selected employee values:", facultyIdContainer);
 
                             }
 
+                        // handle external details 
+
+                        function handleExternalDetails () {
+                            let externalFacultyDetailsRow = document.querySelectorAll('.external-faculty-details');
+                                externalFacultyDetailsRow.forEach((field, index) => {
+                                    if (field.value !== '') {
+                                        externalFacultyDetails.push(field.value);
+                                    }
+                                });
+
+                        }
 
                         // function for Sustainable Development Goals drop down list
                         function handleSdgGoalsDropDownChange() {
-                            const selectedValues = Array.from(sdgGoalsDropDown.options)
+                            sdgGoalsIdContainer = Array.from(sdgGoalsDropDown.options)
                                 .filter(option => option.selected)
                                 .map(option => option.value);
-                            const sdgGoalsValues = selectedValues.length === 0 ? "" : selectedValues;
-                            console.log('sdgGoalsValues ===>>>>>', sdgGoalsValues);
-                            if (!sdgGoalsIdContainer.some(goals => goals === sdgGoalsValues)) {
-                                sdgGoalsIdContainer.push(sdgGoalsValues);
-                            }
+                            // const sdgGoalsValues = selectedValues.length === 0 ? "" : selectedValues;
+                            // console.log('sdgGoalsValues ===>>>>>', sdgGoalsValues);
+                            // if (!sdgGoalsIdContainer.some(goals => goals === sdgGoalsValues)) {
+                            //     sdgGoalsIdContainer.push(sdgGoalsValues);
+                            // }
                             console.log("Selected sdgGoalsIdContainer ids :", sdgGoalsIdContainer);
 
                         }
 
                         //function for patent status drop down list
                         function handlePatentSatgeDropDownChange() {
-                            const selectedValues = Array.from(patentStageDropDown.options)
+                            patentStatusIdcontainer = Array.from(patentStageDropDown.options)
                                 .filter(option => option.selected)
                                 .map(option => option.value);
-                            const patentStatus = selectedValues.length === 0 ? "" : selectedValues;
-                            console.log('patentStatus ===>>>>>', patentStatus);
-                            if (!patentStatusIdcontainer.some(status => status  === patentStatus)) {
-                                patentStatusIdcontainer.push(patentStatus);
-                            }
+                            // const patentStatus = selectedValues.length === 0 ? "" : selectedValues;
+                            // console.log('patentStatus ===>>>>>', patentStatus);
+                            // if (!patentStatusIdcontainer.some(status => status  === patentStatus)) {
+                            //     patentStatusIdcontainer.push(patentStatus);
+                            // }
                             console.log("Selected status  ids :", patentStatusIdcontainer);
 
                         }
@@ -1891,14 +1925,14 @@
 
                         // function for invention type drop down list selectedTypeOfInvention
                         function handleInventionsTypeDropDownChange() {
-                            const selectedValues = Array.from(invnstiontypeDropDown.options)
+                            typeOfInventionsIdContainer = Array.from(invnstiontypeDropDown.options)
                                 .filter(option => option.selected)
                                 .map(option => option.value);
-                            const inventionsTypeValues = selectedValues.length === 0 ? "" : selectedValues;
-                            console.log('inventionsTypeValues ===>>>>>', inventionsTypeValues);
-                            if (!typeOfInventionsIdContainer.some(inventions => inventions === inventionsTypeValues)) {
-                                typeOfInventionsIdContainer.push(inventionsTypeValues);
-                            }
+                            // const inventionsTypeValues = selectedValues.length === 0 ? "" : selectedValues;
+                            // console.log('inventionsTypeValues ===>>>>>', inventionsTypeValues);
+                            // if (!typeOfInventionsIdContainer.some(inventions => inventions === inventionsTypeValues)) {
+                            //     typeOfInventionsIdContainer.push(inventionsTypeValues);
+                            // }
                             console.log("Selected sdgGoalsIdContainer ids :", typeOfInventionsIdContainer);
                         }
 
@@ -1967,11 +2001,11 @@
                         deleteButton.addEventListener('click', handleDeleteButtonClick);
                 })
 
-                        function handleDeleteButtonClick() {
+                function handleDeleteButtonClick() {
                     this.parentNode.parentNode.remove();
                 }
 
-                     function createTableRows(tableId, data, inputClassName, deleteId, headers) {
+                function createTableRows(tableId, data, inputClassName, deleteId, headers) {
                         console.log('data to create table ===>>>>>', data);
                         let table = document.querySelector(`#${tableId}`);
                         let tbody = table.querySelector('tbody');
@@ -2165,6 +2199,9 @@
                             }
                         });
                     });
+
+
+                    
             
             </script>
                     

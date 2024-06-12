@@ -43,7 +43,7 @@ module.exports.fetchPatentSubMissionForms = async (userName) => {
           LEFT JOIN 
             faculties f ON psf.faculty_id = f.id
           WHERE
-            psg.created_by = $1 and f.active=true and f.faculty_type_id = 1  and psf.active=true and pss.active=true and psss.active=true
+            psg.created_by = $1 and f.active=true  and psf.active=true and pss.active=true and psss.active=true
             and it.active=true and psit.active=true and sg.active=true and pssg.active=true
           GROUP BY
             psg.id, psg.innovation_title,
@@ -173,11 +173,11 @@ module.exports.insertPatentData = async (
         // insert external faculties
     const insertexternalDetails = externalFacultyData ? externalFacultyData.map( async(detailsData) => {
         console.log('detailsData ======>>>>>>>>>', detailsData);
-        const [facultyName, facultyDsg, facultyAddr ] = detailsData
+        const [facultyName, facultyDsg, institutionName, facultyAddr ] = detailsData
       
         let sql = {
-            text: `INSERT INTO faculties (faculty_type_id, faculty_name, designation, address, created_by) VALUES ($1, $2, $3, $4, $5) RETURNING id`,
-            values: [2, facultyName, facultyDsg, facultyAddr, userName]
+            text: `INSERT INTO faculties (faculty_type_id, faculty_name, designation, institution_name, address, created_by) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`,
+            values: [2, facultyName, facultyDsg, institutionName, facultyAddr, userName]
         };
       
         console.log('sql external faculty data', sql);

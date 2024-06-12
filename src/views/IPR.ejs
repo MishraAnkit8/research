@@ -449,6 +449,7 @@
                                     <thead>
                                         <th class="col-lg-4 col-md-6 col-sm-12 mb-4">faculty Name </th>
                                         <th class="col-lg-4 col-md-6 col-sm-12 mb-4">Designation</th>
+                                        <th class="col-lg-4 col-md-6 col-sm-12 mb-4">Institution Name</th>
                                         <th class="col-lg-4 col-md-6 col-sm-12 mb-4">Address</th>
                                         <th class="col-lg-4 col-md-6 col-sm-12 mb-4">Action</th>
                                     </thead>
@@ -983,8 +984,12 @@
                                     item: function (data, escape) {
                                         return '<div>' + escape(data.text) + '</div>';
                                     }
+                                },
+                                onDelete: function (values) {
+                                    return facultyIdContainer.pop();
+                                    ;
                                 }
-                            });
+                                              });
 
 
                             // Initialize TomSelect dropdown with options containing id and faculty_name
@@ -1060,8 +1065,8 @@
                         }
                     });
 
-                    const facultyIdsArray = facultyIdContainer ? facultyIdContainer[facultyIdContainer.length - 1] : null;
-                    const facultyContainer = facultyIdsArray ? JSON.stringify(facultyIdsArray) : null;
+                    // const facultyIdsArray = facultyIdContainer ? facultyIdContainer[facultyIdContainer.length - 1] : null;
+                    const facultyContainer = facultyIdContainer.length > 0 ? JSON.stringify(facultyIdContainer) : null;
 
 
                     IPRData.append('facultyContainer', facultyContainer);
@@ -2203,15 +2208,16 @@
         
                 // function for invention type drop down list selectedTypeOfInvention
                 function handleEmployeeDropdownChange() {
-                        const selectedValues = Array.from(employeeDropdown.options)
+                        facultyIdContainer = Array.from(employeeDropdown.options)
                             .filter(option => option.selected)
                             .map(option => option.value);
-                        const facultyIds = selectedValues.length === 0 ? "" : selectedValues;
-                        console.log('facultyIds ===>>>>>', facultyIds);
-                        if (!facultyIdContainer.some(ids => ids === facultyIds)) {
-                            facultyIdContainer.push(facultyIds);
-                        }
-                        console.log("Selected employee values:", facultyIdContainer);
+                        console.log('facultyIdContainer inside function ===>>>:::::', facultyIdContainer)
+                        // const facultyIds = selectedValues.length === 0 ? "" : selectedValues;
+                        // console.log('facultyIds ===>>>>>', facultyIds);
+                        // if (!facultyIdContainer.some(ids => ids === facultyIds)) {
+                        //     facultyIdContainer.push(facultyIds);
+                        // }
+                        // console.log("Selected employee values:", facultyIdContainer);
 
                     }
 

@@ -7,6 +7,8 @@ const { validateCaseStudy } = require('../middleware/express-validator/case-stud
 const { validateJournalPaper } = require('../middleware/express-validator/journal-paper.validators');
 const { validateResearchSeminar } = require('../middleware/express-validator/research-seminar.validators');
 const { validateConference } = require('../middleware/express-validator/conference.validator');
+const { validateFaculty } = require('../middleware/express-validator/faculty-validator');
+const {updateValidateFaculty} = require('../middleware/express-validator/faculty-validator-update');
 
 //middleware for download file
 const downloadFileService = require('../middleware/download-file.middleware');
@@ -95,8 +97,8 @@ router.get('/conference-publication/viewing/:fileName', downloadFileService.view
 
 //patent submission form
 router.get('/patent-submission', asyncErrorHandler(authMiddleware), asyncErrorHandler(patentSubmission.renderPatentSubMissionAndGrant));
-router.post('/patent-submission/insert', asyncErrorHandler(authMiddleware), upload.array('patentFilesData', 5), asyncErrorHandler(patentSubmission.insertPatentsubmission));
-router.post('/patent-submission/update', asyncErrorHandler(authMiddleware), upload.array('patentFilesData', 5),  asyncErrorHandler(patentSubmission.updatePatentSubMissiom));
+router.post('/patent-submission/insert', asyncErrorHandler(authMiddleware), upload.array('patentFilesData', 5), validateFaculty, asyncErrorHandler(patentSubmission.insertPatentsubmission));
+router.post('/patent-submission/update', asyncErrorHandler(authMiddleware), upload.array('patentFilesData', 5), updateValidateFaculty,  asyncErrorHandler(patentSubmission.updatePatentSubMissiom));
 router.post('/patent-submission/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(patentSubmission.deletePatentData));
 router.post('/patent-submission/view', asyncErrorHandler(authMiddleware), asyncErrorHandler(patentSubmission.viewPatentSubmissionData));
 
