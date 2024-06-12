@@ -26,7 +26,7 @@ module.exports.fetchJournalPaper = async (userName) => {
                     jpa.nmims_school,
                     jpa.year,
                     jpa.impact_factor,
-                    jpa.jorunal_article_type_id,
+                    jpa.article_type,
                     jpa.date_of_publishing,
                     jpa.scs_cite_score,
                     jpa.scs_indexed,
@@ -86,7 +86,7 @@ module.exports.fetchJournalPaper = async (userName) => {
                     jpa.nmims_campus,
                     jpa.nmims_school,
                     jpa.impact_factor,
-                    jpa.jorunal_article_type_id,
+                    jpa.article_type,
                     jpa.date_of_publishing,
                     jpa.scs_cite_score,
                     jpa.scs_indexed,
@@ -234,7 +234,7 @@ module.exports.insertJournalArticle = async (
 
   let articleSql = {
     text: `INSERT INTO journal_paper_article (nmims_school, nmims_campus, year, publisher, total_authors, journal_name, others_authers, pages, issn_no, scs_cite_score, wos_indexed,
-                abdc_indexed, ugc_indexed, web_link_doi, uid, date_of_publishing, title_of_paper, jorunal_article_type_id, nmims_authors_count, gs_index, nmims_student_foreign_authors,
+                abdc_indexed, ugc_indexed, web_link_doi, uid, date_of_publishing, title_of_paper, article_type, nmims_authors_count, gs_index, nmims_student_foreign_authors,
                 foreign_authors_name, foreign_auhtor_no, no_nmims_student_author, scs_indexed, article_supporting_documents, impact_factor, created_by)
                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28) RETURNING id`,
 
@@ -670,7 +670,7 @@ module.exports.updateJournalPaperData = async (
                 SET year = $2, publisher = $3, total_authors = $4,journal_name = $5,others_authers = $6,
                     pages = $7,issn_no = $8,scs_cite_score = $9,wos_indexed = $10,abdc_indexed = $11,
                     ugc_indexed = $12, web_link_doi = $13,uid = $14,date_of_publishing = $15,
-                    title_of_paper = $16,jorunal_article_type_id = $17,nmims_authors_count = $18,gs_index = $19,
+                    title_of_paper = $16,article_type = $17,nmims_authors_count = $18,gs_index = $19,
                     foreign_auhtor_no = $20, foreign_authors_name = $21, no_nmims_student_author = $22, nmims_student_foreign_authors = $23,
                     scs_indexed = $24 , impact_factor = $25, nmims_school = $26, nmims_campus = $27, updated_by = $28`;
 
@@ -1025,7 +1025,7 @@ module.exports.viewJournalPaperData = async (journalPaperId, userName) => {
                     jpa.issn_no,
                     jpa.uid,
                     jpa.year,
-                    jpa.jorunal_article_type_id,
+                    jpa.article_type,
                     jpa.date_of_publishing,
                     jpa.scs_cite_score,
                     jpa.scs_indexed,
@@ -1077,7 +1077,7 @@ module.exports.viewJournalPaperData = async (journalPaperId, userName) => {
                     jpa.nmims_campus,
                     jpa.nmims_school,
                     jpa.impact_factor,
-                    jpa.jorunal_article_type_id,
+                    jpa.article_type,
                     jpa.date_of_publishing,
                     jpa.scs_cite_score,
                     jpa.scs_indexed,

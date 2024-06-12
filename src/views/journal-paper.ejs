@@ -74,7 +74,7 @@
                                             data-ugc-indexed="<%- journalPaper.ugc_indexed %>"
                                             data-web-link-number="<%- journalPaper.web_link_doi %>"
                                             data-date-of-publishing="<%- journalPaper.date_of_publishing %>"
-                                            data-journal-category="<%- journalPaper.jorunal_article_type_id %>"
+                                            data-journal-category="<%- journalPaper.article_type %>"
                                             data-all-authors="<%- journalPaper.all_article_authors_names  %>"
                                             data-nmims-faculty-ids="<%- journalPaper.nmims_facilty_id %>"
                                             data-article-faculties-ids="<%- journalPaper.articles_faculties_ids %>"
@@ -439,26 +439,7 @@
                                         required>
                                 </div>
 
-                                <!-- Upload Supporting Documents-->
-                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <label for="supporting-documents" class="form-label fw-bold ">
-                                        Upload Supporting Documents <i style="color: red;">*</i>
-                                        <div id="uploadNewSupportDocumentDiv">
-                                            <label for="uploadNewSupportDocument"><small>Click to Upload New
-                                                    File</small></label>
-                                            <input type="checkbox" name="uploadNewSupportDocument"
-                                                id="uploadNewSupportDocument">
-                                        </div>
-                                    </label>
-                                    <div class="d-flex">
-                                        <input type="file" name="journal-article-documents"
-                                            id="journal-article-documents" class="col-md-8 form-control"
-                                            data-validate="isEmpty,isExist,isFile" data-err-msg="File is required." required
-                                            multiple>
-                                        <button class="download-btn download-file d-none" id="journal-data-file-edit"><i
-                                                class="fas fa-download text-danger"></i>Download</button>
-                                    </div>
-                                </div>
+                             
                                 <!-- GS Indexed -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="gs-index" class="form-label fw-bold">GS Indexed</label>
@@ -474,13 +455,13 @@
                                     <div class="form-check-inline">
                                         <label for="inter-national" class="form-check-label">
                                             <input type="radio" class="form-check-input" id="inter-national"
-                                                name="journal-category" value="2"> International
+                                                name="journal-category" value="International"> International
                                         </label>
                                     </div>
                                     <div class="form-check-inline">
                                         <label for="national" class="form-check-label">
                                             <input type="radio" class="form-check-input" id="national"
-                                                name="journal-category" value="1" checked> National
+                                                name="journal-category" value="National" checked> National
                                         </label>
                                     </div>
                                 </div>
@@ -586,6 +567,27 @@
                                         </label>
                                     </div>
                                 </div>
+
+                                   <!-- Upload Supporting Documents-->
+                                   <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="supporting-documents" class="form-label fw-bold ">
+                                        Upload Supporting Documents <i style="color: red;">*</i>
+                                        <div id="uploadNewSupportDocumentDiv">
+                                            <label for="uploadNewSupportDocument"><small>Click to Upload New
+                                                    File</small></label>
+                                            <input type="checkbox" name="uploadNewSupportDocument"
+                                                id="uploadNewSupportDocument">
+                                        </div>
+                                    </label>
+                                    <div class="d-flex">
+                                        <input type="file" name="journal-article-documents"
+                                            id="journal-article-documents" class="col-md-8 form-control"
+                                            data-validate="isEmpty,isExist,isFile" data-err-msg="File is required." required
+                                            multiple>
+                                        <button class="download-btn download-file d-none" id="journal-data-file-edit"><i
+                                                class="fas fa-download text-danger"></i>Download</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -628,7 +630,7 @@
                                  <!-- Year -->
                                  <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                                     <div class="box">
-                                        <div class="sub-title-text sub-title">Year:</div>
+                                        <div class="sub-title-text sub-title">Year Of Publishing:</div>
                                         <label class="view-content" id="view-year"></label>
 
                                     </div>
@@ -643,7 +645,7 @@
                                 <!-- All authors -->
                                 <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                                     <div class="box">
-                                        <div class="sub-title-text sub-title">All Authors:</div>
+                                        <div class="sub-title-text sub-title">Names Of All Authors:</div>
                                         <label class="view-content" id="view-all-authors"></label>
                                     </div>
                                 </div>
@@ -661,11 +663,27 @@
                                         <label class="view-content" id="view-nmims-authors"></label>
                                     </div>
                                 </div>
+
+                                   <!--nmims_authors_count -->
+                                   <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="sub-title-text sub-title">No. Of NMIMS Authors :</div>
+                                        <label class="view-content" id="view-nmims-authors-count"></label>
+                                    </div>
+                                </div>
                                 <!-- Journal Name -->
                                 <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                                     <div class="box">
                                         <div class="sub-title-text sub-title">Journal Name:</div>
                                         <label class="view-content" id="view-journal-name"></label>
+                                    </div>
+                                </div>
+
+                                 <!-- UID -->
+                                 <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="sub-title-text sub-title">UID:</div>
+                                        <label class="view-content" id="view-uid"></label>
                                     </div>
                                 </div>
                                 <!-- Publisher -->
@@ -678,8 +696,23 @@
                                 <!-- Count Faculty -->
                                 <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                                     <div class="box">
-                                        <div class="sub-title-text sub-title">NoN-NMIMS Authors:</div>
+                                        <div class="sub-title-text sub-title">Names-Others Authors:</div>
                                         <label class="view-content" id="view-count-of-other-faculty"></label>
+                                    </div>
+                                </div>
+
+                                  <!--date-of-publishing -->
+                                  <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="sub-title-text sub-title">Date Of Publishing:</div>
+                                        <label class="view-content" id="view-date-of-publishing"></label>
+                                    </div>
+                                </div>
+                                <!--Title of Paper -->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="sub-title-text sub-title">Title Of Paper :</div>
+                                        <label class="view-content" id="view-title-of-paper"></label>
                                     </div>
                                 </div>
                                 <!-- iss -number -->
@@ -692,7 +725,7 @@
                                 <!-- pages -->
                                 <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                                     <div class="box">
-                                        <div class="sub-title-text sub-title">Pages:</div>
+                                        <div class="sub-title-text sub-title">Vol,Issue,Page No.:</div>
                                         <label class="view-content" id="view-pages"></label>
                                     </div>
                                 </div>
@@ -727,7 +760,7 @@
                                 <!--NAMES OF FOREIGN AUTHORS-->
                                 <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                                     <div class="box">
-                                        <div class="sub-title-text sub-title">Name Of Foreign Authors:</div>
+                                        <div class="sub-title-text sub-title">Names Of Foreign Authors:</div>
                                         <label class="view-content" id="view-foreign-authors"></label>
                                     </div>
                                 </div>
@@ -735,7 +768,7 @@
                                 <!--Names of NMIMS Student  Author-->
                                 <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                                     <div class="box">
-                                        <div class="sub-title-text sub-title">Names Of NMIMS Student Author:</div>
+                                        <div class="sub-title-text sub-title">Names Of NMIMS Student Authors:</div>
                                         <label class="view-content" id="view-names-nmims-student-author"></label>
                                     </div>
                                 </div>
@@ -743,7 +776,7 @@
                                 <!--NO. OF NMIMS Student  Authors-->
                                 <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                                     <div class="box">
-                                        <div class="sub-title-text sub-title">NO. Of NMIMS Student Authors:</div>
+                                        <div class="sub-title-text sub-title">No. Of NMIMS Student Authors:</div>
                                         <label class="view-content" id="view-no-nmims-student-author"></label>
                                     </div>
                                 </div>
@@ -772,38 +805,19 @@
                                 <!--NO. OF FOREIGN AUTHORS -->
                                 <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                                     <div class="box">
-                                        <div class="sub-title-text sub-title">No Of Foreign Authors:</div>
+                                        <div class="sub-title-text sub-title">No. Of Foreign Authors:</div>
                                         <label class="view-content" id="view-foreign-authors-number"></label>
                                     </div>
                                 </div>
-                                <!--date-of-publishing -->
-                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                                    <div class="box">
-                                        <div class="sub-title-text sub-title">Date Of Publishing:</div>
-                                        <label class="view-content" id="view-date-of-publishing"></label>
-                                    </div>
-                                </div>
-                                <!--Title of Paper -->
-                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                                    <div class="box">
-                                        <div class="sub-title-text sub-title">Title Of Paper :</div>
-                                        <label class="view-content" id="view-title-of-paper"></label>
-                                    </div>
-                                </div>
+                              
                                 <!--Research Journal Paper -->
                                 <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                                     <div class="box">
-                                        <div class="sub-title-text sub-title">Research Journal Paper:</div>
+                                        <div class="sub-title-text sub-title"> International/National Journal:</div>
                                         <label class="view-content" id="view-journal-category"></label>
                                     </div>
                                 </div>
-                                <!--nmims_authors_count -->
-                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                                    <div class="box">
-                                        <div class="sub-title-text sub-title">No. Of NMIMS Authors :</div>
-                                        <label class="view-content" id="view-nmims-authors-count"></label>
-                                    </div>
-                                </div>
+                             
                                 <!-- //documestns -->
                                 <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                                     <div class="box">
@@ -2120,6 +2134,7 @@
                                     document.getElementById('view-abdc-indexed-category').innerText = data.journalAricleData.abdc_indexed;
                                     viewWebLink.innerText = data.journalAricleData.web_link_doi;
                                     viewWebLink.setAttribute('href', viewWebLink.innerText)
+                                    document.getElementById('view-uid').innerText = data.journalAricleData.uid
                                     // document.getElementById('view-web-link-doi-number').innerText = data.journalAricleData.web_link_doi;
                                     document.getElementById('view-pages').innerText = data.journalAricleData.pages;
                                     document.getElementById('view-scs-cite-score').innerText = data.journalAricleData.scs_cite_score;
@@ -2129,7 +2144,7 @@
                                     document.getElementById('view-ugc-indexed-category').innerText = data.journalAricleData.ugc_indexed;
                                     document.getElementById('view-date-of-publishing').innerText = formatDateToYYYYMMDD(data.journalAricleData.date_of_publishing);
                                     document.getElementById('view-title-of-paper').innerText = data.journalAricleData.title_of_paper;
-                                    document.getElementById('view-journal-category').innerText = data.journalAricleData.jorunal_article_type_id;
+                                    document.getElementById('view-journal-category').innerText = data.journalAricleData.article_type;
                                     document.getElementById('view-nmims-authors-count').innerText = data.journalAricleData.nmims_authors_count;
                                     document.getElementById('view-foreign-authors').innerText = data.journalAricleData.foreign_authors_name;
                                     document.getElementById('view-names-nmims-student-author').innerText = data.journalAricleData.nmims_student_foreign_authors;
