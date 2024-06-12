@@ -136,11 +136,18 @@ module.exports.updatedIprData = async(iprId, body, files, userName) => {
 
     
     
-    const facultyInternalIds = JSON.parse(updatedIPRData.facultyContainer);
+    // const facultyInternalIds = JSON.parse(updatedIPRData.facultyContainer);
+    // console.log('facultyInternalIds ====>>>>>', facultyInternalIds);
+    // const internalFacultyArray = facultyInternalIds || [];
+    // const facultyIdsContainer =  internalFacultyArray ? internalFacultyArray.map(Number) : [];
+   
+    
+    // console.log("facultyInternalIds ====>>>>>", facultyInternalIds);
+    const facultyInternalIds = updatedIPRData.facultyContainer ? JSON.parse(updatedIPRData.facultyContainer) : null;
     console.log('facultyInternalIds ====>>>>>', facultyInternalIds);
-    const internalFacultyArray = facultyInternalIds || [];
-    const facultyIdsContainer = internalFacultyArray.map(Number);
-    console.log('facultyIdsContainer =====>>>>>>>', facultyIdsContainer);
+    const internalFacultyArray = facultyInternalIds ? (facultyInternalIds || []) : [];
+    console.log('internalFacultyArray ===>>>>>', internalFacultyArray)
+    const facultyIdsContainer =  internalFacultyArray ? internalFacultyArray.map(Number) : [];
     
     const externalData =  JSON.parse(body.externalFacultyDetails);
     const externalFacultyData = groupArrayIntoChunks(externalData, 4);

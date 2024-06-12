@@ -411,7 +411,7 @@
                                     <label for="conference-place" class="form-label  fw-bold"> Amount Spent In RS. By NMIMS
                                         <i style="color: red;">*</i></label>
                                     <input type="number" name="conference-place" id="spent-amount"
-                                        data-validate="isEmpty,isDecimal" data-err-msg="Provide valid input."
+                                        data-validate="isEmpty,isExist,isDecimal" data-err-msg="Provide valid input."
                                         class="form-control" required />
                                 </div>
 
@@ -1007,7 +1007,7 @@
                     const externalAuthor = document.getElementById('is-external-details');
                     console.log('facultycontainer ===>>>>>', facultycontainer)
 
-                    if (isValid && (internalAuthor.checked || externalAuthor.checked)) {
+                    if (isValid && (facultycontainer.length > 0|| externalAuthor.checked)) {
                         await insertConferencePublicationForm('<%- BASE_URL %>research/conference-publication/insert');
                     }
                     else {
@@ -1021,7 +1021,7 @@
                             confirmButtonText: "OK",
                             confirmButtonColor: "#DD6B55"
                         }).then(() => {
-                            if (internalAuthor.checked || externalAuthor.checked) {
+                            if (facultycontainer.length > 0 || externalAuthor.checked) {
                                 document.getElementById('facultyTypeError').innerText = ''
                             } else {
                                 document.getElementById('facultyTypeError').innerText = 'Select One Of The Faculty Type'

@@ -557,7 +557,8 @@ function isAlphaNumericWithSpaceNoLeadingSpace(input) {
           (charCode >= 65 && charCode <= 90) || // A-Z
           (charCode >= 97 && charCode <= 122) || // a-z
           charCode === 32 || // space
-          charCode === 44)) { // comma
+          charCode === 44 || 
+          charCode  === 45)) { // comma
       return false;
     }
   }

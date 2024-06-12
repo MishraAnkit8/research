@@ -40,7 +40,7 @@ module.exports.fetchResearchConsultancy = async (userName) => {
     LEFT JOIN 
         faculty_types AS ft ON f.faculty_type_id = ft.id          
     WHERE
-       r.created_by = $1 and r.active=true and rf.active=true and f.active=true and ft.active=true and f.faculty_type_id=1 
+       r.created_by = $1 and r.active=true and rf.active=true and f.active=true and ft.active=true 
     GROUP BY
         r.id ,
         r.title_of_project,

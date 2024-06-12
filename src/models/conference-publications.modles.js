@@ -45,7 +45,7 @@ module.exports.fetchConferencePublication = async (userName) => {
             faculties f ON cf.faculty_id = f.id
         WHERE
             cp.active = true AND
-            f.active = true AND f.faculty_type_id = 1 AND
+            f.active = true AND
             cf.active = true AND
             cf.created_by = $1
         GROUP BY
