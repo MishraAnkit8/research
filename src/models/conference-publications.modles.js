@@ -358,11 +358,11 @@ console.log("SQL Values:", sql.values);
 
     const insertExternalDetails = insertExternalData ? insertExternalData.map(async (detailsData) => {
       console.log('detailsData ======>>>>>>>>>', detailsData);
-      const [facultyName, facultyDsg, facultyAddr] = detailsData;
+      const [facultyName, facultyDsg, institutionName, facultyAddr] = detailsData;
     
       let sql = {
-        text: `INSERT INTO faculties (faculty_type_id, faculty_name, designation, institution_name, address, created_by) VALUES ($1, $2, $3, $4, $5) RETURNING id`,
-        values: [2, facultyName, facultyDsg, facultyAddr, userName]
+        text: `INSERT INTO faculties (faculty_type_id, faculty_name, designation, institution_name, address, created_by) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`,
+        values: [2, facultyName, facultyDsg, institutionName, facultyAddr, userName]
       };
     
       console.log('sql external faculty data', sql);
