@@ -55,7 +55,7 @@ module.exports.fetchIPRData = async (userName) => {
             WHERE
                 ipr.created_by = $1 and ipr.active=true and iit.active=true and it.active=true and 
                 ist.active=true and isdg.active=true and sdg.active=true and ps.active=true and
-                iprf.active=true and  intr.active=true and intr.faculty_type_id=1
+                iprf.active=true and  intr.active=true
             GROUP BY
                 ipr.id,
                 ipr.patent_title,

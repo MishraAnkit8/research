@@ -59,7 +59,7 @@ module.exports.IprInsertDataService = async(body, files, userName) => {
     const facultyInternalIds = IprData.facultyContainer ? JSON.parse(IprData.facultyContainer) : null;
     console.log('facultyInternalIds ====>>>>>', facultyInternalIds);
     const internalFacultyArray = facultyInternalIds ? (facultyInternalIds || []) : null;
-    const facultyIdsContainer = internalFacultyArray.map(Number);
+    const facultyIdsContainer =  internalFacultyArray ? internalFacultyArray.map(Number) : [];
 
     console.log('facultyIdsContainer =====>>>>>>>', facultyIdsContainer);
    
