@@ -56,10 +56,10 @@ module.exports.IprInsertDataService = async(body, files, userName) => {
     console.log("patentStatus ===>>>>>>>", patentStatus);
   
 
-    const facultyInternalIds = IprData.facultyContainer ? JSON.parse(IprData.facultyContainer) : null;
+    const facultyInternalIds = body.facultyContainer ? JSON.parse(body.facultyContainer) : null;
     console.log('facultyInternalIds ====>>>>>', facultyInternalIds);
     const internalFacultyArray = facultyInternalIds ? (facultyInternalIds || []) : null;
-    const facultyIdsContainer =  internalFacultyArray ? internalFacultyArray.map(Number) : [];
+    const facultyIdsContainer = internalFacultyArray ?  (internalFacultyArray.map(Number)) : [];
 
     console.log('facultyIdsContainer =====>>>>>>>', facultyIdsContainer);
    
@@ -143,11 +143,17 @@ module.exports.updatedIprData = async(iprId, body, files, userName) => {
    
     
     // console.log("facultyInternalIds ====>>>>>", facultyInternalIds);
-    const facultyInternalIds = updatedIPRData.facultyContainer ? JSON.parse(updatedIPRData.facultyContainer) : null;
-    console.log('facultyInternalIds ====>>>>>', facultyInternalIds);
-    const internalFacultyArray = facultyInternalIds ? (facultyInternalIds || []) : [];
-    console.log('internalFacultyArray ===>>>>>', internalFacultyArray)
-    const facultyIdsContainer =  internalFacultyArray ? internalFacultyArray.map(Number) : [];
+    const facultyInternalIds = body.facultyContainer ? JSON.parse(body.facultyContainer)
+    : null;
+  const facultyIds = facultyInternalIds || [];
+  const facultyIdsArray = facultyIds.map(Number);
+  console.log("facultyIdsArray ==>>>>", facultyIdsArray);
+  
+  console.log("facultyInternalIds ====>>>>>", facultyInternalIds);
+  const internalFacultyArray = facultyInternalIds ? facultyInternalIds || [] : [];
+  const facultyIdsContainer =  internalFacultyArray ? internalFacultyArray.map(Number) : [];
+
+  console.log("facultyIdsContainer =====>>>>>>>", facultyIdsContainer);
     
     const externalData =  JSON.parse(body.externalFacultyDetails);
     const externalFacultyData = groupArrayIntoChunks(externalData, 4);
