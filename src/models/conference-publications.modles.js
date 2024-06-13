@@ -96,7 +96,7 @@ module.exports.insertConferencePublication = async (
   conferencePublications,
   conferenceDocument,
   conferenceProofFile,
-  facultyIdscontainer,
+  facultyIdsContainer,
   externalFacultyData,
   userName
 ) => {
@@ -123,7 +123,7 @@ module.exports.insertConferencePublication = async (
   console.log(
     "conferencePublications data in models",
     conferencePublications,
-    JSON.stringify(facultyIdscontainer)
+    JSON.stringify(facultyIdsContainer)
   );
 
   console.log('externalFacultyData in models ====>>>>>>>>', externalFacultyData)
@@ -185,9 +185,9 @@ module.exports.insertConferencePublication = async (
 
   const externalIds = await Promise.all(insertexternalDetails);
   console.log('externalIds =======>>>>>>>>', externalIds);
-  facultyIdscontainer.push(...externalIds);
+  facultyIdsContainer.push(...externalIds);
   // insert external conference  faculties
-  const insertConferenceFaculty = facultyIdscontainer ? facultyIdscontainer.map(async(element) => {
+  const insertConferenceFaculty = facultyIdsContainer ? facultyIdsContainer.map(async(element) => {
     let sql = {
       text: `INSERT INTO conference_faculty (conference_id, faculty_id, created_by, active) VALUES ($1, $2, $3, $4) RETURNING id`,
       values: [conferenceId, element, userName, true]
@@ -200,11 +200,11 @@ module.exports.insertConferencePublication = async (
 
   const extConFaculty = await Promise.all(insertConferenceFaculty);
   console.log('extConFaculty =====>>>>>', extConFaculty);
-  // facultyIdscontainer.push(...extConFaculty);
+  // facultyIdsContainer.push(...extConFaculty);
 
 
 // insert internal conference  faculties
-//  const conferenceFacultiesIds = facultyIdscontainer ?    (facultyIdscontainer.map(async (element) => {
+//  const conferenceFacultiesIds = facultyIdsContainer ?    (facultyIdsContainer.map(async (element) => {
 //       let confacultySql = {
 //         text: `INSERT INTO conference_faculty (conference_id, faculty_id, created_by, active) VALUES ($1, $2, $3, $4) RETURNING id`,
 //         values: [conferenceId, element, userName, true],
@@ -257,12 +257,12 @@ module.exports.DeleteConference = async ({ conferenceId }) => {
 
 module.exports.updateConferencePublication = async (
   upadtedConferenceData, conferenceId, confernceDocString, conferenceProofString,
-  insertExternalData, externalFacultyDataUpdate, facultyIdscontainer, userName
+  insertExternalData, externalFacultyDataUpdate, facultyIdsContainer, userName
 ) => {
   console.log("Id for Updation in models ==>>>", conferenceId);
   console.log('insertExternalData models ===>>>>>>>', insertExternalData);
   console.log('externalFacultyDataUpdate models ===>>>>>>>', externalFacultyDataUpdate);
-  console.log('facultyIdscontainer models ===>>>>>>>', facultyIdscontainer);
+  console.log('facultyIdsContainer models ===>>>>>>>', facultyIdsContainer);
 
 
   const {
@@ -370,6 +370,7 @@ console.log("SQL Values:", sql.values);
     
     const insertedExternalIds = await Promise.all(insertExternalDetails);
     console.log('insertedExternalIds ====>>>>>>>', insertedExternalIds);
+
     
     const updateExternalDetails = externalFacultyDataUpdate ? externalFacultyDataUpdate.map(async (detailsData) => {
       console.log('detailsData ======>>>>>>>>>', detailsData);
@@ -412,7 +413,7 @@ console.log("SQL Values:", sql.values);
 
   // const externalIds = await Promise.all(insertedExternalIds)
 
-  const insertConferenceFaculty = facultyIdscontainer && Array.isArray(facultyIdscontainer) ? facultyIdscontainer.map(async (element) => {
+  const insertConferenceFaculty = facultyIdsContainer && Array.isArray(facultyIdsContainer) ? facultyIdsContainer.map(async (element) => {
     let sql = {
       text: `INSERT INTO conference_faculty (conference_id, faculty_id, created_by, active) VALUES ($1, $2, $3, $4) RETURNING id`,
       values: [conferenceId, element, userName, true]
