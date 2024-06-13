@@ -22,10 +22,12 @@ module.exports.insertConferenceData = async(body , files, userName) => {
     console.log('files in service ==>' , files);
     const conferencePublications = body;
 
-    const facultyInternalIds =  body.facultycontainer ? JSON.parse(body.facultycontainer) : null;
+    const facultyInternalIds = body.facultyContainer ? JSON.parse(body.facultyContainer) : null;
     console.log('facultyInternalIds ====>>>>>', facultyInternalIds);
     const internalFacultyArray = facultyInternalIds ? (facultyInternalIds || []) : null;
-    const facultyIdscontainer = internalFacultyArray.map(Number);
+    const facultyIdscontainer = internalFacultyArray ?  (internalFacultyArray.map(Number)) : [];
+
+    console.log('facultyIdscontainer =====>>>>>>>', facultyIdscontainer);
     
 
     const externalData =  JSON.parse(body.externalFacultyDetails);;
@@ -90,14 +92,12 @@ module.exports.updatedConferencePublication = async (body, files, userName) => {
     // console.log('internalUpdate ====>>>>>>', internalUpdate);
 
     // Step 2: Flatten the nested array
-    const facultyLastElement =  facultycontainer ? facultycontainer[facultycontainer.length - 1] : null;
-    // console.log('facultyLastElement ====>>>>>>>', facultyLastElement);
-    const facultyIds = facultyLastElement ? facultyLastElement.flat() : null;
+    const facultyInternalIds = body.facultyContainer ? JSON.parse(body.facultyContainer) : null;
+    console.log('facultyInternalIds ====>>>>>', facultyInternalIds);
+    const internalFacultyArray = facultyInternalIds ? (facultyInternalIds || []) : null;
+    const facultyIdscontainer = internalFacultyArray ?  (internalFacultyArray.map(Number)) : [];
 
-    // console.log('facultyIds ======>>>>>>>>>>', facultyIds);
-
-    // Step 3: Convert each element to an integer and subtract 2
-    const facultyIdscontainer = facultyIds ? facultyIds.map(element => parseInt(element)) : null;
+    console.log('facultyIdscontainer =====>>>>>>>', facultyIdscontainer);
     // console.log('facultyIdscontainer ===>>>>>', facultyIdscontainer);
 
     const externalFacultyUpdate =  JSON.parse(body.externalFacultyUpdate);
