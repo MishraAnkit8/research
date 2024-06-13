@@ -89,7 +89,7 @@ module.exports.insertEditedBook = async (
       const errorCode = error.code;
       console.log("errorCode +>>>>>>>", errorCode);
       const message =
-        error.code === "23505" ? "Doi Id Of Book should Uniq" : error.message;
+        error.code === "23505" ? "This WebLink /DOI No. already used with another form " : error.message;
       console.log("message =====>>>>>>", message);
       return {
         status: "Failed",
@@ -178,7 +178,7 @@ module.exports.updatedEditedBookPublication = async (
       const errorCode = error.code;
       console.log("errorCode +>>>>>>>", errorCode);
       const message =
-        error.code === "23505" ? "Doi Id Of Book should Uniq" : error.message;
+        error.code === "23505" ? "This WebLink /DOI No. already used with another form " : error.message;
       console.log("message =====>>>>>>", message);
       return {
         status: "Failed",

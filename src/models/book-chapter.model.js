@@ -87,7 +87,7 @@ module.exports.insertBookChapterData = async (
       console.log("error.constraint ====>>>>>", error.constraint);
       console.log("error.message ====>>>", error.message);
       const message =
-        error.code === "23505" ? "Weblink of The Book Chapter should Uniq" : error.message;
+        error.code === "23505" ? " This WebLink /DOI No. already used with another form " : error.message;
       console.log("message =====>>>>>>", message);
       return {
         status: "Failed",
@@ -167,7 +167,7 @@ module.exports.updatedBookChapter = async (
       console.log("error.constraint ====>>>>>", error.constraint);
       console.log("error.message ====>>>", error.message);
       const message =
-        error.code === "23505" ? "Weblink of The Book Chapter should be uniq" : error.message;
+        error.code === "23505" ? "This WebLink /DOI No. already used with another form " : error.message;
       console.log("message =====>>>>>>", message);
       return {
         status: "Failed",
