@@ -84,6 +84,8 @@ module.exports.updateTeachingExecellance = async (
   teachingDocumentToBeUpdate,
   userName
 ) => {
+
+  console.log('teachingDocumentToBeUpdate in models ==>>>>>', teachingDocumentToBeUpdate)
   const {
     pedagogyInnovation,
     pedagogyLink,

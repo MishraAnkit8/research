@@ -100,14 +100,17 @@ module.exports.updateMeetingStackholders = async(meetingId, updateMeetingData, f
     console.log('data in service ==>>', updateMeetingData)
     // console.log('files data in in service ===>>>', files);
     let updatedMeetingFilesData = {};
-    if(Object.keys(files).length > 0){
+
+    if (Object.keys(files).length > 0) {
       console.log('files in services ===>>>', files);
-      const rankingDocumentsData = files.rankingDocuments;
-      const accreditationFilesData = files.accreditationFile;
-      const achievementsFilesData = files.achievementsFile;
-      const convocationFilesData = files.convocationFile;
-      const inauguralProgramFilesData = files.inauguralProgramFile;
-      const  eventFilesData = files.eventFile;
+
+      const rankingDocumentsData = files.rankingDocuments || [];
+      const accreditationFilesData = files.accreditationFile || [];
+      const achievementsFilesData = files.achievementsFile || [];
+      const convocationFilesData = files.convocationFile || [];
+      const inauguralProgramFilesData = files.inauguralProgramFile || [];
+      const eventFilesData = files.eventFile || [];
+
       const containerArray = [
         rankingDocumentsData,
         accreditationFilesData,
@@ -125,31 +128,35 @@ module.exports.updateMeetingStackholders = async(meetingId, updateMeetingData, f
         'achievementsFile',
         'convocationFile',
         'inauguralProgramFile',
-        'eventFile',
+        'eventFile'
       ];
 
       let meetingFilesArrayStringValue = [];
-      if(containerArray.length > 0){
-        for(let file = 0; file <= containerArray.length - 1; file++){
-            var fileString = '';
-            if(containerArray[file]){
-              for(let i = 0; i  <= containerArray[file].length - 1; i++){
-                if(containerArray[file][i].filename){
-                  console.log('filename inside loop ===>>>', containerArray[file][i].filename);
-                  fileString += containerArray[file][i].filename + ',';
-                }
+
+      if (containerArray.length > 0) {
+        for (let file = 0; file < containerArray.length; file++) {
+          let fileString = '';
+          if (containerArray[file].length > 0) {
+            for (let i = 0; i < containerArray[file].length; i++) {
+              if (containerArray[file][i].filename) {
+                console.log('filename inside loop ===>>>', containerArray[file][i].filename);
+                fileString += containerArray[file][i].filename + ',';
               }
-              meetingFilesArrayStringValue.push(fileString);
             }
+            // Remove the trailing comma
+            fileString = fileString.slice(0, -1);
+          }
+          meetingFilesArrayStringValue.push(fileString);
         }
       }
-      console.log('meetingFilesArrayStringValue ===>>>', meetingFilesArrayStringValue);
-      for(let i =0; i <= meetingFilesDataKeys.length - 1; i++){
-          const keys = meetingFilesDataKeys[i];
-          const values = meetingFilesArrayStringValue[i];
-          updatedMeetingFilesData[keys] = values;
-      }
 
+      console.log('meetingFilesArrayStringValue ===>>>', meetingFilesArrayStringValue);
+
+      for (let i = 0; i < meetingFilesDataKeys.length; i++) {
+        const key = meetingFilesDataKeys[i];
+        const value = meetingFilesArrayStringValue[i] || '';
+        updatedMeetingFilesData[key] = value;
+      }
     }
     console.log('updatedMeetingFilesData in serices ==>>>', updatedMeetingFilesData)
     const updatedMeeting = await meetingModels.updateMeetingData(meetingId, updateMeetingData, updatedMeetingFilesData, userName);

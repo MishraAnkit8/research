@@ -87,7 +87,8 @@ module.exports.updatedTeachingExecellance = async(teachingId, updatedTeachingExe
     console.log('files for updat in services ==>>>', files);
     let teachingDocumentToBeUpdate = {};
     console.log('length of files ==>>>', Object.keys(files).length);
-    if(Object.keys(files).length > 0){
+
+    if (Object.keys(files).length > 0) {
       let arrayNameStringKeys = [
         'pedagogyInnovationFileString',
         'fdpProgramFileString',
@@ -95,64 +96,57 @@ module.exports.updatedTeachingExecellance = async(teachingId, updatedTeachingExe
         'invitingFacultyFileString',
         'programOrientationFileString'
       ];
-  
-      // store values means string as an array
+
+      // Store values as an array
       let fileArrayStringValues = [];
-  
-      const pedagogyInnovationFilesData = files.pedagogyInnovationFile;
-      const fdpProgramFilesData = files.fdpProgramFile;
-      const workShopFilesData = files.workShopFile;
-      const invitingFacultyFilesData = files.invitingFacultyFile;
-      const programOrientationFilesData = files.programOrientationFile;
-  
-      // files data array
+
+      const pedagogyInnovationFilesData = files.pedagogyInnovationFile || [];
+      const fdpProgramFilesData = files.fdpProgramFile || [];
+      const workShopFilesData = files.workShopFile || [];
+      const invitingFacultyFilesData = files.invitingFacultyFile || [];
+      const programOrientationFilesData = files.programOrientationFile || [];
+
+      // Files data array
       let filesDataArray = [
         pedagogyInnovationFilesData,
         fdpProgramFilesData,
         workShopFilesData,
         invitingFacultyFilesData,
         programOrientationFilesData
-      ]
-  
+      ];
+
       console.log("filesDataArray in service ==>>>", filesDataArray);
-      // if values is there then only it will push string value in fileArrayStringValues
-      if (filesDataArray.length > 0) {
-        for (let file = 0; file <= filesDataArray.length - 1; file++) {
-          console.log("filesDataArray ==>>", filesDataArray[file]);
-          //here we checked if filesDataArray.length is not undefined 
-          if (filesDataArray[file] !== undefined) {
-            var fileStringName = "";
-            console.log(
-              "fileArrayStringValues ===>>>",
-              fileArrayStringValues[file]
-            );
-            for (let i = 0; i <= filesDataArray[file].length - 1; i++) {
-              if (filesDataArray[file][i].filename) {
-                console.log(
-                  "filesDataArray[file][i].filename ==>>",
-                  filesDataArray[file][i].filename
-                );
-                fileStringName += filesDataArray[file][i].filename + ",";
-                console.log("fileStringName ===>>>", fileStringName);
-              }
+
+      // If values are present, push string value in fileArrayStringValues
+      for (let file = 0; file < filesDataArray.length; file++) {
+        let fileStringName = "";
+        console.log("filesDataArray ==>>", filesDataArray[file]);
+
+        if (filesDataArray[file].length > 0) {
+          for (let i = 0; i < filesDataArray[file].length; i++) {
+            if (filesDataArray[file][i].filename) {
+              console.log("filesDataArray[file][i].filename ==>>", filesDataArray[file][i].filename);
+              fileStringName += filesDataArray[file][i].filename + ",";
+              console.log("fileStringName ===>>>", fileStringName);
             }
-            fileArrayStringValues.push(fileStringName);
           }
+          // Remove trailing comma
+          fileStringName = fileStringName.slice(0, -1);
         }
+        fileArrayStringValues.push(fileStringName);
       }
-      //store file array nmae as key and valiue as file string
-      for(let i = 0; i <= fileArrayStringValues.length - 1; i++){
+
+      // Store file array name as key and value as file string
+      for (let i = 0; i < fileArrayStringValues.length; i++) {
         const key = arrayNameStringKeys[i];
         const value = fileArrayStringValues[i];
-        teachingDocumentToBeUpdate[key] = value
+        teachingDocumentToBeUpdate[key] = value;
       }
-  
-      console.log(' upadetd arrayNameStringKeys  ===>>>', arrayNameStringKeys);
-      console.log(' updated fileArrayStringValues ===>>>', fileArrayStringValues);
-      console.log(' updated teachingFilesArrayData ===>>', teachingDocumentToBeUpdate);
+
+      console.log('updated arrayNameStringKeys ===>>>', arrayNameStringKeys);
+      console.log('updated fileArrayStringValues ===>>>', fileArrayStringValues);
+      console.log('updated teachingFilesArrayData ===>>', teachingDocumentToBeUpdate);
     }
-  
-  
     const updatedTeachingExecellanceData = await teachingExecellanceModel.updateTeachingExecellance(teachingId, updatedTeachingExecellance, teachingDocumentToBeUpdate, userName);
     console.log('updated data in services ==>>>::::', updatedTeachingExecellanceData);
     if(updatedTeachingExecellanceData && updatedTeachingExecellanceData.rowCount === 1){
