@@ -117,7 +117,7 @@ module.exports.fetchJournalPaper = async (userName) => {
   };
 
   let allAuthorsSql = {
-    text: `select *  FROM faculties  where active=true  ORDER BY id`,
+    text: `select id,faculty_name,faculty_type_id  FROM faculties  where active=true  ORDER BY id`,
   };
 
   let nmimsSchoolSql = {
