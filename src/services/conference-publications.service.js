@@ -198,6 +198,11 @@ module.exports.deleteInternalData = async(body, userName) => {
   const deleteInternalDetails = await conferencePublicationModels.deleteInternalFaculty(internalId, conferenceId, userName);
   console.log('deleteInternalDetails ====>>>>', deleteInternalDetails);
 
+  return {
+    status : deleteInternalDetails.status,
+    message : deleteInternalDetails.message,
+  }
+
 }
 
 function groupArrayIntoChunks(array, chunkSize) {

@@ -45,7 +45,9 @@ module.exports.fetchConferencePublication = async (userName) => {
             faculties f ON cf.faculty_id = f.id
         WHERE
             cp.active = true AND
-            cp.created_by = $1
+            cp.created_by = $1 AND 
+            cf.active=true AND 
+            f.active=true
         GROUP BY
             cp.id, cp.nmims_campus, cp.nmims_school, cp.title_of_paper, cp.conference_name, 
             cp.conference_place, cp.proceedings_detail, cp.conference_type, cp.is_presenter, 
@@ -533,6 +535,7 @@ module.exports.retriveExternalDetails = async(conferenceId, userName) => {
         f.active = true AND
         f.faculty_type_id = 2 AND
         cp.id = $1 AND f.created_by = $2
+        AND cf.active=true AND cp.active=true
     `,
     values: [conferenceId, userName],
 };
@@ -593,7 +596,7 @@ module.exports.deleteInternalFaculty = async(internalId, conferenceId) => {
   console.log('internalId in models ====>>>>>>', internalId);
   let sql = {
     text: `UPDATE  conference_faculty  SET active = false WHERE faculty_id = $1 And conference_id = $2`,
-    values: [internalId, conferenceId]
+    values: [parseInt(internalId), parseInt(conferenceId)]
   }
   console.log('sql ====>>>>', sql);
 

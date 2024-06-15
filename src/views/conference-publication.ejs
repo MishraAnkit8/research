@@ -1244,7 +1244,7 @@
                             value: faculty.id,
                             text: `${faculty.faculty_name}`
                         }));
-                        new TomSelect("#emp-name", {
+                        const tomSelectInvention =  new TomSelect("#emp-name", {
                                 options: facultyOptions,
                                 // placeholder: "Select Options",
                                 items: confEmp,
@@ -1263,29 +1263,87 @@
                                         return '<div>' + escape(data.text) + '</div>';
                                     }
                                 },
-                                onItemRemove: function (value) {
-                                    console.log('Remove button clicked for item:', value);
+                                onDelete: function (value) {
+                                    // console.log('Remove button clicked for item:', value);
 
-                                    fetch('<%- BASE_URL %>research/conference-publication/internal-faculty-data-details/delete', {
-                                        method: 'POST',
-                                        headers: {
-                                            'Content-Type': 'application/json'
-                                        },
-                                        body: JSON.stringify({ internalId: value, conferenceId : conferenceId })
-                                    })
-                                        .then(response => {
-                                            if (!response.ok) {
-                                                throw new Error('Network response was not ok');
-                                            }
-                                            return response.json();
-                                        })
-                                        .then(data => {
-                                            console.log('Item removed successfully:', data);
-                                        })
-                                        .catch(error => {
-                                            console.error('There was a problem with the fetch operation:', error);
-                                        });
-                                }
+                                    // fetch('<%- BASE_URL %>research/conference-publication/internal-faculty-data-details/delete', {
+                                    //     method: 'POST',
+                                    //     headers: {
+                                    //         'Content-Type': 'application/json'
+                                    //     },
+                                    //     body: JSON.stringify({ internalId: value, conferenceId : conferenceId })
+                                    // })
+                                    //     .then(response => {
+                                    //         console.log('response ',JSON.stringify(response))
+                                    //         if (!response.ok) {
+                                    //             throw new Error('Network response was not ok');
+                                    //         }
+                                    //         return response.json();
+                                    //     })
+                                    //     .then(data => {
+                                    //         console.log('Item removed successfully:', JSON.stringify(data));
+                                    //     })
+                                    //     .catch(error => {
+                                    //         console.error('There was a problem with the fetch operation:', error);
+                                    //     });
+
+                                    console.log('Remove button clicked :::::', value);
+
+                                            const message = value.length > 1
+                                                ? `Are you sure you want to remove these ${value.length} items?`
+                                                : `Are you sure you want to remove "${value[0]}"?`;
+
+                                            Swal.fire({
+                                                title: 'Confirm Deletion',
+                                                text: message,
+                                                icon: 'warning',
+                                                showCancelButton: true,
+                                                confirmButtonColor: '#3085d6',
+                                                cancelButtonColor: '#d33',
+                                                confirmButtonText: 'Yes, delete it!'
+                                            }).then(async (result) => {
+                                                console.log('result ',result)
+                                                if (result.isConfirmed == true) {
+                                                    console.log('result ',result)
+
+                                                   await fetch('<%- BASE_URL %>research/conference-publication/internal-faculty-data-details/delete', {
+                                                        method: 'POST',
+                                                        headers: {
+                                                            'Content-Type': 'application/json'
+                                                        },
+                                                        body: JSON.stringify({ internalId: value, conferenceId : conferenceId})
+                                                    })
+                                                        .then(response =>{ 
+                                                            console.log('user response ',JSON.stringify(response))
+                                                            return response.json()})
+                                                        .then(data => {
+                                                            console.log('data for tomselect ====>>>>>>>', JSON.stringify(data));
+                                                            if (data.status === "Done") {
+
+                                                                console.log('inside my tomselect')
+                                                                Swal.fire(
+                                                                    'Deleted!',
+                                                                    'Your item(s) has been deleted.',
+                                                                    'success'
+                                                                );
+
+                                                                value.forEach(value => {
+                                                                    tomSelectInvention.removeOption(value);
+                                                                });
+                                                            }
+                                                        })
+                                                        .catch(error => {
+                                                            Swal.fire(
+                                                                'Error!',
+                                                                'There was a problem with the delete operation: ' + error.message,
+                                                                'error'
+                                                            );
+                                                        });
+                                                }
+                                            });
+
+                                            return false;
+                              }
                         
                             });
 

@@ -123,6 +123,11 @@ module.exports.deleteInternalId = async(req, res, next) => {
   console.log('userName in controller  ===>>>>>>', userName);
 
   const deleteInternalFacultyDetails = await conferencePublicationServices.deleteInternalData(req.body, userName);
+  console.log('tested internal ',JSON.stringify(deleteInternalFacultyDetails))
+  return res.status(200).json({
+    status : deleteInternalFacultyDetails.status,
+    message : deleteInternalFacultyDetails.message,
+  })
 }
 
 
