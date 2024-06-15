@@ -11,7 +11,7 @@ module.exports.renderJournalPaper = async (req, res, next) => {
     const journalList = await journalPaperService.renderJournalPaper(userName);
 
     // console.log('journalList in controller ====>>>>', journalList.rowCount);
-    // console.log('journalList.allAuthorList ===>>>>>>>', journalList.allAuthorList)
+     console.log('journalList.allAuthorList ===>>>>>>>', journalList.allAuthorList)
     
     res.render('journal-paper', {
         status : journalList.status,
