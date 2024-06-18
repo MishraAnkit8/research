@@ -193,19 +193,26 @@ module.exports.viewPatentsubmission = async(patentId, userName) => {
     const facultyData =  patentDataViewed.facultyData;
     const sdgGoalsData = patentDataViewed.sdgGoalsData;
     const inventionTypeData = patentDataViewed.inventionTypeData;
+    const inventionTypeNames = inventionTypeData
+      .map((inv) => inv.name)
+      .join(", ");
 
-    return patentDataViewed.status === "Done" ? {
-        status : patentDataViewed.status,
-        message : patentDataViewed.message,
-        facultyData : facultyData,
-        sdgGoalsData : sdgGoalsData,
-        inventionTypeData : inventionTypeData,
-        patentSubmissionsData : patentSubmissionsData
-    } : {
-        status : patentDataViewed.status,
-        message : patentDataViewed.message,
-        errorCode : patentDataViewed.errorCode
-    }
+    return patentDataViewed.status === "Done"
+      ? {
+          status: patentDataViewed.status,
+          message: patentDataViewed.message,
+          facultyData: facultyData,
+          sdgGoalsData: sdgGoalsData,
+          inventionTypeData: inventionTypeData,
+          patentSubmissionsData: patentSubmissionsData,
+          inventionTypeNames: inventionTypeNames,
+          
+        }
+      : {
+          status: patentDataViewed.status,
+          message: patentDataViewed.message,
+          errorCode: patentDataViewed.errorCode,
+        };
 
 }
 

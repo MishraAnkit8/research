@@ -139,6 +139,7 @@ module.exports.viewPatentSubmissionData = async (req, res, next) => {
     sdgGoalsData: viewPatentsubmissionData.sdgGoalsData,
     inventionTypeData: viewPatentsubmissionData.inventionTypeData,
     patentSubmissionsData: viewPatentsubmissionData.patentSubmissionsData,
+    inventionTypeNames: viewPatentsubmissionData.inventionTypeNames,
     errorCode: viewPatentsubmissionData.errorCode
       ? viewPatentsubmissionData.errorCode
       : null,

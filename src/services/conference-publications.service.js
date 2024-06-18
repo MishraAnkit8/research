@@ -95,9 +95,11 @@ module.exports.updatedConferencePublication = async (body, files, userName) => {
     const facultyInternalIds = body.facultyContainer ? JSON.parse(body.facultyContainer) : null;
     console.log('facultyInternalIds ====>>>>>', facultyInternalIds);
     const internalFacultyArray = facultyInternalIds ? (facultyInternalIds || []) : null;
-    const facultyIdscontainer = internalFacultyArray ?  (internalFacultyArray.map(Number)) : [];
+    const facultyIdsContainer = internalFacultyArray
+      ? internalFacultyArray.map(Number)
+      : [];
 
-    console.log('facultyIdscontainer =====>>>>>>>', facultyIdscontainer);
+    console.log("facultyIdscontainer =====>>>>>>>", facultyIdsContainer);
     // console.log('facultyIdscontainer ===>>>>>', facultyIdscontainer);
 
     const externalFacultyUpdate =  JSON.parse(body.externalFacultyUpdate);
@@ -112,11 +114,15 @@ module.exports.updatedConferencePublication = async (body, files, userName) => {
     // console.log('confernceDocString in service ==>>', confernceDocString);
     // console.log('conferenceProofString in service ==>>', conferenceProofString);
 
-    const updateConferencePublicationData = await conferencePublicationModels.updateConferencePublication(upadtedConferenceData, conferenceId, confernceDocString,
+    const updateConferencePublicationData =
+      await conferencePublicationModels.updateConferencePublication(
+        upadtedConferenceData,
+        conferenceId,
+        confernceDocString,
         conferenceProofString,
         insertExternalData,
         externalFacultyDataUpdate,
-        facultyIdscontainer,
+        facultyIdsContainer,
         userName
       );
     console.log('updateConferencePublicationData  in service ===>>>>', updateConferencePublicationData);
