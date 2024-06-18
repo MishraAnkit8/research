@@ -14,27 +14,16 @@ module.exports.renderChronicleEdition = async (req, res, next) => {
   const dataId = req.params.id;
   console.log('dataId ====>>>', dataId);
 
-   const sessionid = req.cookies.session;
-    let sessionData = await getRedisData(`${sessionid}:session`)
-    const  userName = sessionData.username;
-    console.log('userName in controller  ===>>>>>>', userName);
+  const sessionid = req.cookies.session;
+  let sessionData = await getRedisData(`${sessionid}:session`);
+  const userName = sessionData.username;
+  console.log('userName in controller  ===>>>>>>', userName);
 
   const chronicleData = await chronicleService.renderChronicleEdition(userName);
-  // console.log("chronicleData in fetchVcOfficeData ==>>", chronicleData.fetchVcOfficeData);
-  // console.log("chronicleData in fetchResearchData ==>>", chronicleData.fetchResearchData);
-  // console.log("chronicleData in fetchMeetingData ==>>", chronicleData.fetchMeetingData);
-  // console.log("chronicleData in controller ==>>", chronicleData.fetchBrandingData);
-  // for vc data
-  
-  // const date = vcOfficeData[0].date; 
-  // const createdBy = vcOfficeData[0].created_by;
-  // console.log('createdBy ===>>>', createdBy)
-  // console.log('vcId ===>>>', vcId)
+
   const chronicleEditorData = [];
 
-  // function for frmate date and time
-
-  // type  of editor container array
+  // type of editor container array
   const typeContainerArray = [
     "From Vice Chancellor's Desk",
     "Research",
@@ -42,7 +31,7 @@ module.exports.renderChronicleEdition = async (req, res, next) => {
     "Branding"
   ];
 
-   // for vc data
+  // for vc data
   const vcOfficeEditor = chronicleData.fetchVcOfficeData;
   const vcOfficeData = vcOfficeEditor.rows;
   let vcRowCount = parseInt(vcOfficeEditor.rowCount);
@@ -52,50 +41,55 @@ module.exports.renderChronicleEdition = async (req, res, next) => {
   const researchEditor = chronicleData.fetchResearchData;
   const researchData = researchEditor.rows;
   let researchCount = parseInt(researchEditor.rowCount);
+
   // for meetingEditor
   const meetingEditor = chronicleData.fetchMeetingData;
   const meetingData = meetingEditor.rows;
   let meetingRowCount = parseInt(meetingEditor.rowCount);
-  // console.log('meetingData ===>>', meetingData);
 
   // for brandingEditor
   const brandingEditor = chronicleData.fetchBrandingData;
   const brandingData = brandingEditor.rows;
   let brandingRowCount = parseInt(brandingEditor.rowCount);
-  // console.log('brandingEditor ===>>>>', brandingData)
-  //editor date container array
+
   const dataContainerArray = [vcOfficeData, researchData, meetingData, brandingData];
-  // append data in chronicleEditorData 
+
+  // append data in chronicleEditorData
   for (let i = 0; i < dataContainerArray.length; i++) {
     const relatedEditorData = dataContainerArray[i];
-    
+
     for (const item of relatedEditorData) {
       const type = typeContainerArray[i];
-      chronicleEditorData.push([item.id, type, item.created_by, formatDate(item.date), formatDate(item.updated_at), item.editor_data]);
+      chronicleEditorData.push({
+        id: item.id,
+        type: type,
+        createdBy: item.created_by,
+        date: formatDate(item.date),
+        updatedAt: formatDate(item.updated_at),
+        editorData: item.editor_data
+      });
     }
   }
 
-  // sort chronicleEditorData by date 
+  // sort chronicleEditorData by date
   function sortByDate(a, b) {
-    const dateA = new Date(a[3].split('/').reverse().join('/')); 
-    const dateB = new Date(b[3].split('/').reverse().join('/'));
+    const dateA = new Date(a.date.split('/').reverse().join('/'));
+    const dateB = new Date(b.date.split('/').reverse().join('/'));
     return dateA - dateB;
   };
 
   chronicleEditorData.sort(sortByDate);
   console.log('chronicleEditorData Data ==>>>:', chronicleEditorData);
 
-  // console.log('dataContainerArray ===>>>',dataContainerArray)
-  // console.log('vcOfficeData ===>>>', dataContainerArray.vcOfficeData)
-  // const totalRowCount = vcRowCount + researchCount + meetingRowCount + brandingRowCount;
-  // console.log('totalRowCount ====>>>', totalRowCount)
-
   const rowCount = vcRowCount + researchCount + meetingRowCount + brandingRowCount;
   res.render("chronicle-edition", {
     chronicleEditorData,
-    rowCount
+    rowCount,
+    userName: userName
   });
 };
+
+
 
 module.exports.renderVcOfficeChronicle = async(req, res, next) => {
    const sessionid = req.cookies.session;

@@ -27,10 +27,10 @@ module.exports.insertEditedBook = async (
     bookTitle,
     edition,
     editorName,
-    chapterTitle,
+    // chapterTitle,
     publicationPlace,
     publisherCategory,
-    pageNumber,
+    // pageNumber,
     publisherName,
     publicationYear,
     bookUrl,
@@ -45,18 +45,18 @@ module.exports.insertEditedBook = async (
   // const doiIdParsed = doiBookId === "" ? null : parseInt(doiBookId, 10);
 
   let sql = {
-    text: `INSERT INTO edited_book_publications (author_name, book_title, edition, editor_name, chapter_title, publication_place, publisher_category, page_number, publisher_name, 
+    text: `INSERT INTO edited_book_publications (author_name, book_title, edition, editor_name, publication_place, publisher_category, publisher_name, 
             publication_year, book_url, doi_id, isbn_no, number_of_nmims_authors, nmims_authors, nmims_campus_authors, nmims_school_authors, supporting_documents, created_by)
-            VALUES ($1, $2 , $3 ,$4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19) RETURNING id `,
+            VALUES ($1, $2 , $3 ,$4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17) RETURNING id `,
     values: [
       authorName,
       bookTitle,
       edition,
       editorName,
-      chapterTitle,
+      // chapterTitle,
       publicationPlace,
       publisherCategory,
-      pageNumber,
+      // pageNumber,
       publisherName,
       publicationYear,
       bookUrl,
@@ -89,7 +89,7 @@ module.exports.insertEditedBook = async (
       const errorCode = error.code;
       console.log("errorCode +>>>>>>>", errorCode);
       const message =
-        error.code === "23505" ? "Doi Id Of Book should Uniq" : error.message;
+        error.code === "23505" ? "This WebLink /DOI No. already used with another form " : error.message;
       console.log("message =====>>>>>>", message);
       return {
         status: "Failed",
@@ -110,10 +110,10 @@ module.exports.updatedEditedBookPublication = async (
     bookTitle,
     edition,
     editorName,
-    chapterTitle,
+    // chapterTitle,
     publicationPlace,
     publisherCategory,
-    pageNumber,
+    // pageNumber,
     publisherName,
     publicationYear,
     bookUrl,
@@ -128,10 +128,10 @@ module.exports.updatedEditedBookPublication = async (
     ? updatedEditedBookFiles
     : null;
   // const doiIdParsed = doiBookId === "" ? null : parseInt(doiBookId, 10);
-  let querywithOutDoc = `UPDATE edited_book_publications SET author_name = $2, book_title = $3, edition = $4, editor_name = $5, chapter_title = $6, publication_place = $7, publisher_category = $8, page_number = $9, publisher_name = $10, 
-                            publication_year = $11, book_url = $12, doi_id = $13, isbn_no = $14, number_of_nmims_authors = $15, nmims_authors = $16, nmims_campus_authors = $17, nmims_school_authors = $18,  updated_by = $19`;
+  let querywithOutDoc = `UPDATE edited_book_publications SET author_name = $2, book_title = $3, edition = $4, editor_name = $5, publication_place = $6, publisher_category = $7, publisher_name = $8, 
+                            publication_year = $9, book_url = $10, doi_id = $11, isbn_no = $12, number_of_nmims_authors = $13, nmims_authors = $14, nmims_campus_authors = $15, nmims_school_authors = $16,  updated_by = $17`;
   console.log("querywithOutDoc ====>>>", querywithOutDoc);
-  let docQuery = supportingDocumentString ? `, supporting_documents = $20` : "";
+  let docQuery = supportingDocumentString ? `, supporting_documents = $18` : "";
 
   let queryText = querywithOutDoc + docQuery + ` WHERE id = $1`;
   console.log("queryText ====>>>>", queryText);
@@ -141,10 +141,10 @@ module.exports.updatedEditedBookPublication = async (
     bookTitle,
     edition,
     editorName,
-    chapterTitle,
+    // chapterTitle,
     publicationPlace,
     publisherCategory,
-    pageNumber,
+    // pageNumber,
     publisherName,
     publicationYear,
     bookUrl,
@@ -178,7 +178,7 @@ module.exports.updatedEditedBookPublication = async (
       const errorCode = error.code;
       console.log("errorCode +>>>>>>>", errorCode);
       const message =
-        error.code === "23505" ? "Doi Id Of Book should Uniq" : error.message;
+        error.code === "23505" ? "This WebLink /DOI No. already used with another form " : error.message;
       console.log("message =====>>>>>>", message);
       return {
         status: "Failed",

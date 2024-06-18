@@ -29,64 +29,58 @@ module.exports.fetchPatentForm = async(userName) => {
 
 
 module.exports.IprInsertDataService = async(body, files, userName) => {
-    const iprFilesNamesArray = files ?.map(file => file.filename);
+    const iprFilesNamesArray = files ?.map(file => file.filename).join(',');
     console.log('iprFilesNamesArray ====>>>>', iprFilesNamesArray);
     const IprData = body;
 
-    console.log('IprData in services ===>>>>', IprData);
-    const statusIds = [parseInt(IprData.patentStage)];
-    console.log('statusIds ===>>>>>', statusIds);
-    //parsing data coming from frontend 
-    const facultyData = JSON.parse(IprData.facultyDataContainer);
-    const inventionTypeData = JSON.parse(IprData.typeOfInvention);
-    const nmimsSchoolIds = JSON.parse(IprData.nmimsSchoolIds);
-    const nmimsCampusIds = JSON.parse(IprData.nmimsCampusIds);
     const sdgDataIds = JSON.parse(IprData.sdgGoalsContainer);
+    // console.log('sdgDataIds ====>>>>>', sdgDataIds);
     const sdgGoalsData = sdgDataIds || []
     const sdgGoalsIdArray = sdgGoalsData.map(Number);
     console.log('sdgGoalsIdArray:', sdgGoalsIdArray);
 
-    // Extract internalFaculty and externalEmpList arrays
-    const internalFaculty = facultyData.find(item => item !== null && item.internalFaculty)?.internalFaculty || [];
-    const externalEmpList = facultyData.find(item => item  !== null && item.externalEmpList )?.externalEmpList || [];
-    const internalFacultyList =  internalFaculty.map(Number)
-    const FacultydataArray = [...externalEmpList, ...internalFacultyList];
-    const patentStatus = [parseInt(IprData.patentStage)];
 
-    const schoolIdsArray = (nmimsSchoolIds.nmimsSchool || []).map(id => parseInt(id));
-    const campusIdsArray = (nmimsCampusIds.nmimsCampus || []).map(id => parseInt(id));
-    const inventionTypeIdsArray = (inventionTypeData.typeOfInventions || []).map(id => parseInt(id));
+    const inventionTypesData = JSON.parse(IprData.inventionTypeContainer);
+    const invetionIds = inventionTypesData || [];
+    const inventionIdsArray = invetionIds.map(Number);
 
+    console.log('inventionIdsArray ===>>>>>', inventionIdsArray);
+    // patentStatusIdsArray
 
-    console.log('schoolIdsArray ===>>>>>', schoolIdsArray);
-    console.log('campusIdsArray ===>>>>>', campusIdsArray);
-    console.log('inventionTypeIdsArray ===>>>>>', inventionTypeIdsArray);
+    const patentStatusId = body.patentStage;
+    console.log("patentStatusId ===>>>>>>>", patentStatusId);
 
-    const insertIprData = await IPRModels.InsetIPRDataModels(IprData, iprFilesNamesArray, FacultydataArray, schoolIdsArray, campusIdsArray, inventionTypeIdsArray, patentStatus, sdgGoalsIdArray, userName);
+    const patentStatusArray = Array.isArray(patentStatusId)? patentStatusId : [patentStatusId];
+    const patentStatus = patentStatusArray.map(Number);
+
+    console.log("patentStatus ===>>>>>>>", patentStatus);
+  
+
+    const facultyInternalIds = body.facultyContainer ? JSON.parse(body.facultyContainer) : null;
+    console.log('facultyInternalIds ====>>>>>', facultyInternalIds);
+    const internalFacultyArray = facultyInternalIds ? (facultyInternalIds || []) : null;
+    const facultyIdsContainer = internalFacultyArray ?  (internalFacultyArray.map(Number)) : [];
+
+    console.log('facultyIdsContainer =====>>>>>>>', facultyIdsContainer);
+   
+    const externalData =  JSON.parse(body.externalFacultyDetails);;
+    const externalFacultyData = groupArrayIntoChunks(externalData, 4);
+    console.log('externalFacultyData ====>>>>>>', externalFacultyData);
+
+    const insertIprData = await IPRModels.InsetIPRDataModels(IprData, iprFilesNamesArray, sdgGoalsIdArray, inventionIdsArray, patentStatus, facultyIdsContainer, externalFacultyData, userName);
 
     console.log('insertIprData ===>>>>', insertIprData);
-    console.log('schoolDataList ===>>>>', insertIprData.schoolNames);
-
     
     return insertIprData.status === "Done" ? {
         status : insertIprData.status ,
         message : insertIprData.message,
-        rowCount : insertIprData.rowCount,
-        iprId : insertIprData.iprId,
-        iprGrantsIds : insertIprData.insertIprFacultyIds,
-        iprSchoolIds : insertIprData.insertIprSchoolIds,
-        iprCampusIds : insertIprData.insertIprCampusIds,
-        insertIprInventiontypeIds : insertIprData.insertIprInventiontypeIds,
-        iprstatusIds : insertIprData.insertIprStatusIds,
-        documentIds : insertIprData.documentIds,
-        iprFilesNamesArray : iprFilesNamesArray,
-        iprDocumentsIds : insertIprData.iprDocumentsIds,
-        IprData : IprData,
-        schoolNames : insertIprData.schoolNames,
-        campusNames : insertIprData.campusNames,
-        invetionTypeNames : insertIprData.invetionTypeNames,
-        statusTypeName : insertIprData.statusTypeName,
-        statusIds : IprData.patentStage
+        // rowCount : insertIprData.rowCount,
+        // iprId : insertIprData.iprId,
+        // iprFacultyIds : insertIprData.iprFacultyIds,
+        // iprSdgGoalsIds : insertIprData.iprSdgGoalsIds,
+        // iprInventionIds : insertIprData.iprInventionIds,
+        // iprStatusIds : insertIprData.iprStatusIds,
+        // externalIds : insertIprData.externalIds
 
     } : {
         status : insertIprData.status,
@@ -115,56 +109,76 @@ module.exports.deleteIPRRow = async(iprId) => {
 
 module.exports.updatedIprData = async(iprId, body, files, userName) => {
     console.log('iprId in service ===>>>', iprId);
-    const iprFilesNamesArray = files ?.map(file => file.filename);
+    const iprFilesNamesArray = files ?.map(file => file.filename).join(',');
+
     console.log('iprFilesNamesArray ====>>>>', iprFilesNamesArray);
     const updatedIPRData = body;
-    // const statusIds = updatedIPRData.patentStage !== '' ? [parseInt(updatedIPRData.patentStage)] : null;
-    // console.log('statusIds ===>>>>>', statusIds);
-    //parsing data coming from frontend 
-    const facultyData = JSON.parse(updatedIPRData.facultyDataContainer);
-    const inventionTypeData =  updatedIPRData.typeOfInvention !== 'undefined' ?  JSON.parse(updatedIPRData.typeOfInvention) : null;
-    const nmimsSchoolIds = updatedIPRData.nmimsSchoolIds !== 'undefined' ? JSON.parse(updatedIPRData.nmimsSchoolIds) : null;
-    const nmimsCampusIds = updatedIPRData.nmimsCampusIds !== 'undefined' ? JSON.parse(updatedIPRData.nmimsCampusIds) : null;
-
-    const sdgDataIds =  updatedIPRData.sdgGoalsContainer !== 'undefined' || null ? JSON.parse(updatedIPRData.sdgGoalsContainer) : null;
-    const sdgGoalsData = sdgDataIds !== 'undefined' || null ? sdgDataIds || [] : null;
-    console.log('sdgGoalsData ===>>>',sdgGoalsData);
+    const sdgDataIds = JSON.parse(updatedIPRData.sdgGoalsContainer);
+    // console.log('sdgDataIds ====>>>>>', sdgDataIds);
+    const sdgGoalsData = sdgDataIds || []
     const sdgGoalsIdArray = sdgGoalsData.map(Number);
     console.log('sdgGoalsIdArray:', sdgGoalsIdArray);
+    
+    
+    const inventionTypesData = JSON.parse(updatedIPRData.inventionTypeContainer);
+    const invetionIds = inventionTypesData || [];
+    const inventionIdsArray = invetionIds.map(Number);
+    console.log('inventionIdsArray ===>>>>>', inventionIdsArray);
 
-    // Extract internalFaculty and externalEmpList arrays
-    const internalFaculty = facultyData.find(item => item !== null && item.internalFaculty)?.internalFaculty || [];
-    const externalEmpList = facultyData.find(item => item  !== null && item.externalEmpList )?.externalEmpList || [];
-    const internalFacultyList =  internalFaculty.map(Number)
-    const FacultydataArray = [...externalEmpList, ...internalFacultyList];
-    const patentStatus =  updatedIPRData.patentStage !== '' ? [parseInt(updatedIPRData.patentStage)] : [];
+    // patentStatusIdsArray
+    const patentStatusId = body.patentStage;
+    console.log("patentStatusId ===>>>>>>>", patentStatusId);
 
-    const schoolIdsArray = updatedIPRData.nmimsSchoolIds !== 'undefined' ? (nmimsSchoolIds.nmimsSchool || []).map(id => parseInt(id)) : [];
-    const campusIdsArray = updatedIPRData.nmimsCampusIds !== 'undefined' ? (nmimsCampusIds.nmimsCampus || []).map(id => parseInt(id)) : [];
-    const inventionTypeIdsArray = updatedIPRData.typeOfInvention !== 'undefined' ? (inventionTypeData.typeOfInventions || []).map(id => parseInt(id)) : [];
+    const patentStatusArray = Array.isArray(patentStatusId) ? patentStatusId : [patentStatusId];
+    console.log("patentStatusArray ===>>>>>", patentStatusArray);
+    const patentStatus = patentStatusArray.filter((item) => item !== "").map(Number);
+    console.log("patentStatus ===>>>>>>>", patentStatus);
 
-    // console.log('schoolIdsArray ===>>>>>', schoolIdsArray);
-    // console.log('campusIdsArray ===>>>>>', campusIdsArray);
-    // console.log('inventionTypeIdsArray ===>>>>>', inventionTypeIdsArray);
+    
+    
+    // const facultyInternalIds = JSON.parse(updatedIPRData.facultyContainer);
+    // console.log('facultyInternalIds ====>>>>>', facultyInternalIds);
+    // const internalFacultyArray = facultyInternalIds || [];
+    // const facultyIdsContainer =  internalFacultyArray ? internalFacultyArray.map(Number) : [];
    
-    const iprDataToBeUpdated = await IPRModels.updateIPRRecordData(iprId, updatedIPRData,  iprFilesNamesArray, FacultydataArray, schoolIdsArray, campusIdsArray, inventionTypeIdsArray, patentStatus, sdgGoalsIdArray,  userName);
+    
+    // console.log("facultyInternalIds ====>>>>>", facultyInternalIds);
+    const facultyInternalIds = body.facultyContainer ? JSON.parse(body.facultyContainer)
+    : null;
+  const facultyIds = facultyInternalIds || [];
+  const facultyIdsArray = facultyIds.map(Number);
+  console.log("facultyIdsArray ==>>>>", facultyIdsArray);
+  
+  console.log("facultyInternalIds ====>>>>>", facultyInternalIds);
+  const internalFacultyArray = facultyInternalIds ? facultyInternalIds || [] : [];
+  const facultyIdsContainer =  internalFacultyArray ? internalFacultyArray.map(Number) : [];
+
+  console.log("facultyIdsContainer =====>>>>>>>", facultyIdsContainer);
+    
+    const externalData =  JSON.parse(body.externalFacultyDetails);
+    const externalFacultyData = groupArrayIntoChunks(externalData, 4);
+    console.log('externalFacultyData ====>>>>>>', externalFacultyData);
+
+    const updateExeternalDetails = JSON.parse(body.updateExternalData);
+    const updateExternalDetailsArray = groupArrayIntoChunks(updateExeternalDetails, 5);
+    console.log('updateExternalDetailsArray ====>>>>>>>', updateExternalDetailsArray);
+
+   
+    const iprDataToBeUpdated = await IPRModels.updateIPRRecordData(iprId, updatedIPRData, iprFilesNamesArray, sdgGoalsIdArray, inventionIdsArray, patentStatus,
+        externalFacultyData, updateExternalDetailsArray, facultyIdsContainer, userName);
 
     console.log('iprDataToBeUpdated ====>>>>', iprDataToBeUpdated);
 
     return iprDataToBeUpdated.status === "Done" ? {
         status : iprDataToBeUpdated.status,
         message : iprDataToBeUpdated.message,
-        iprDocumentsIds : iprDataToBeUpdated.iprDocumentsIds,
-        insertIprCampusIds: iprDataToBeUpdated.insertIprCampusIds,
-        insertIprInventiontypeIds: iprDataToBeUpdated.insertIprInventiontypeIds,
-        insertIprStatusIds: iprDataToBeUpdated.insertIprStatusIds,
-        schoolNames: iprDataToBeUpdated.schoolNames,
-        campusNames: iprDataToBeUpdated.campusNames,
-        documentIds: iprDataToBeUpdated.documentIds,
-        invetionTypeNames: iprDataToBeUpdated.invetionTypeNames,
-        statusTypeName: iprDataToBeUpdated.statusTypeName,
-        updatedIPRData : updatedIPRData,
-        
+        iprFacultyIds : iprDataToBeUpdated.iprFacultyIds,
+        iprSdgGoalsIds : iprDataToBeUpdated.iprSdgGoalsIds,
+        iprInventionIds : iprDataToBeUpdated.iprInventionIds,
+        iprStatusIds : iprDataToBeUpdated.iprStatusIds,
+        externalIds : iprDataToBeUpdated.externalIds,
+        iprRowCount: iprDataToBeUpdated.iprRowCount, 
+        updatedFacultyRowCount: iprDataToBeUpdated.updatedFacultyRowCount       
 
     } : {
         status : iprDataToBeUpdated.status,
@@ -199,3 +213,130 @@ module.exports.viewIprRecordDataRecord = async(iprId, userName) => {
         errorCode : viewIprRowData.errorCode
     };
 }
+
+
+module.exports.retriveExternalData = async(body, userName) => {
+    const iprId = body.iprId;
+    const externalFacultyDetails = await IPRModels.retriveExternalDetails(iprId, userName);
+  
+    console.log('externalFacultyDetails =====>>>>>>', externalFacultyDetails);
+    return externalFacultyDetails.status === "Done" ? {
+      status : externalFacultyDetails.status,
+      message : externalFacultyDetails.message,
+      exetrnalData : externalFacultyDetails.exetrnalData,
+      rowCount : externalFacultyDetails.rowCount
+    } : {
+      status : externalFacultyDetails.status,
+      message : externalFacultyDetails.message,
+      errorCode : externalFacultyDetails.errorCode
+    }
+  }
+
+module.exports.deleteExternalFacultyDetails = async(body, userName) => {
+    const externalId = body.tableId;
+    console.log('externalId =====>>>>>>>', externalId);
+  
+    const deleteExternalDetails = await IPRModels.deletedPatentExternalDetails(externalId, userName);
+    
+    console.log('deleteExternalDetails ====>>>>>>>', deleteExternalDetails);
+  
+    return deleteExternalDetails.status === "Done" ? {
+      status : deleteExternalDetails.status,
+      message : deleteExternalDetails.message,
+      rowCount : deleteExternalDetails.rowCount
+    } : {
+      status : deleteExternalDetails.status,
+      message : deleteExternalDetails.message,
+      errorCode : deleteExternalDetails.errorCode
+    }
+  
+  }
+
+// service for dropdown school
+module.exports.deleteIprInternalFaculty = async(body, userName) => {
+    console.log('body in service school ====>>>>', body);
+
+    const iprId = body.iprId;
+    const internalId = body.internalId;
+    console.log('internalId ===>>>>>', internalId);
+
+    const result = await IPRModels.deleteInternalFaculty(internalId, iprId, userName);
+    console.log('result ===>>>>>>>', result);
+    return result.status === "Done" ? {
+        status : result.status,
+        message : result.message
+    } : {
+        status : result.status,
+        message : result.message,
+        errorCode : result.errorCode
+    }
+}
+
+// service for dropdown campus
+module.exports.deleteIprSdgDetails = async(body, userName) => {
+    console.log('body in service campus ====>>>>', body);
+    const iprId = body.iprId;
+    const internalId = body.internalId;
+    console.log('internalId ===>>>>>', internalId);
+
+    const result = await IPRModels.deleteIprSdgGoals(internalId, iprId, userName);
+    console.log('result ===>>>>>>>', result);
+    return result.status === "Done" ? {
+        status : result.status,
+        message : result.message
+    } : {
+        status : result.status,
+        message : result.message,
+        errorCode : result.errorCode
+    }
+}
+
+// service for dropdown internal nmims faculty
+module.exports.deleteIprStatusData = async(body, userName) => {
+    console.log('body in service internal authors ====>>>>', body);
+    const iprId = body.iprId;
+    const internalId = body.internalId;
+    console.log('internalId ===>>>>>', internalId);
+
+    const result = await IPRModels.deleteIprPatentStatus(internalId, iprId, userName);
+
+    console.log('result ===>>>>>>>', result);
+    return result.status === "Done" ? {
+        status : result.status,
+        message : result.message
+    } : {
+        status : result.status,
+        message : result.message,
+        errorCode : result.errorCode
+    }
+}
+
+// service for dropdown all authors
+module.exports.deleteIprInventionTypeData = async(body, userName) => {
+    console.log('body in service  all authors ====>>>>', body);
+    const iprId = body.iprId;
+    const internalId = body.internalId;
+    console.log('internalId ===>>>>>', internalId);
+
+
+    const result = await IPRModels.deletIprInventionType(internalId, iprId, userName);
+
+    console.log('result ===>>>>>>>', result);
+    return result.status === "Done" ? {
+        status : result.status,
+        message : result.message
+    } : {
+        status : result.status,
+        message : result.message,
+        errorCode : result.errorCode
+    }
+}
+
+
+function groupArrayIntoChunks(array, chunkSize) {
+    let groupedArray = [];
+    for (let i = 0; i < array.length; i += chunkSize) {
+        groupedArray.push(array.slice(i, i + chunkSize));
+    }
+    return groupedArray;
+  }

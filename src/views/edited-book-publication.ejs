@@ -23,7 +23,6 @@
                             <li class="breadcrumb-link"> Edited Book Publication </li>
                         </ul>
                     </div>
-                    <!-- <div class="card table-card"></div> -->
                     <div>
                         <div class="table-card-header text-uppercase d-flex align-items-center justify-content-between">
                             <div class="list-header">
@@ -37,38 +36,12 @@
                             </div>
                         </div>
                         <div class="card-body table-responsive">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <!-- <label>Show Entries</label>
-                                    <select class="form-select" id="changeEntry">
-                                        <option value="5">5</option>
-                                        <option value="10">10</option>
-                                        <option value="25">25</option>
-                                        <option value="50">50</option>
-                                        <option value="100">100</option>
-                                        <option value="150">150</option>
-                                        <option value="200">200</option>
-                                        <option value="250">250</option>
-                                        <option value="300">300</option>
-                                        <option value="350">350</option>
-                                        <option value="400">400</option>
-                                        <option value="500">500</option>
-                                        <option value="800">800</option>
-                                        <option value="1000">1000</option>
-                                    </select> -->
-                                </div>
-                                <div>
-                                    <!-- <div class="table-searchbar-container">
-                                        <button type="button" id="searchBtn"><i class="fas fa-search"></i></button>
-                                        <input type="search" id="searchKeyword" placeholder="Enter keywords"
-                                            class="table-searchbar">
-                                    </div> -->
-                                </div>
-                            </div>
-                            <table class="table vertical-lines custom-table  research-pagination" id="edited-book-list">
+                            <table class="table vertical-lines custom-table  table-responsive" id="edited-book-list">
                                 <thead>
                                     <th class="col-lg-1">Serial no</th>
                                     <th class="col-lg-1">Author's name</th>
+                                    <th class="col-lg-1">NMIMS Campus - Author</th>
+                                    <th class="col-lg-1">NMIMS School - Author</th>
                                     <th class="col-lg-1">Publication year</th>
                                     <th class="col-lg-1">Book title</th>
                                     <th class="col-lg-1">ISBN Number</th>
@@ -78,7 +51,6 @@
                                 <tbody class="data-list">
                                     <% editedBookList.forEach(function(editedBook,index) { %>
                                         <tr row="scope" data-editedBook-id="<%- editedBook.id %>"
-                                            data-page-number="<%- editedBook.page_number %>"
                                             data-edition="<%- editedBook.edition %>"
                                             data-publication-place="<%- editedBook.publication_place %>"
                                             data-publisher-category="<%- editedBook.publisher_category %>"
@@ -89,24 +61,28 @@
                                             data-nmims-campus-authors="<%- editedBook.nmims_campus_authors %>"
                                             data-nmims-school-authors="<%- editedBook.nmims_school_authors %>"
                                             data-supporting-documents="<%- editedBook.supporting_documents %>"
-                                            data-chapter-title="<%- editedBook.chapter_title %>"
+                                            
                                             data-editor-name="<%-editedBook.editor_name %>">
                                             <td class="row-count col-lg-1"><%- index+1 %></td>
                                             <td class="author-first-name col-lg-1"><%- editedBook.author_name %></td>
+                                            <td class="nmims-campus col-lg-1"><%- editedBook.nmims_campus_authors %>
+                                            </td>
+                                            <td class="nmims-school col-lg-1"><%- editedBook.nmims_school_authors %>
+                                            </td>
                                             <td class="publication-year col-lg-1"><%- editedBook.publication_year %>
                                             </td>
                                             <td class="book-title col-lg-1"><%- editedBook.book_title %></td>
                                             <td class="isbn-no col-lg-1"><%- editedBook.isbn_no %></td>
                                             <td class="publisher-name col-lg-1"><%- editedBook.publisher_name %></td>
-                                            <!-- <td class="col-lg-1">
-                                <label class="view" data-editedBook-id="<%- editedBook.id %>"><i class="fa-solid fa-eye view text-danger"
-                                    data-editedBook-id="<%- editedBook.id %>"></i></label>
-                                <label class="edit" data-editedBook-id="<%- editedBook.id %>"><i class="fa fa-edit edit text-danger"
-                                    data-editedBook-id="<%- editedBook.id %>"></i></label>
-                                <label class="delete" data-editedBook-id="<%- editedBook.id %>"><i
-                                    class="fa-solid fa-trash delete text-danger" data-editedBook-id="<%- editedBook.id %>"></i></label>
-                            </td> -->
-                                            <td style="display: flex;justify-content: center;">
+                                            <td class="col-lg-1">
+                                                <label class="view" data-editedBook-id="<%- editedBook.id %>"><i class="fa-solid fa-eye view text-danger"
+                                                        data-editedBook-id="<%- editedBook.id %>"></i></label>
+                                                <label class="edit" data-editedBook-id="<%- editedBook.id %>"><i class="fa fa-edit edit text-danger"
+                                                        data-editedBook-id="<%- editedBook.id %>"></i></label>
+                                                <label class="delete" data-editedBook-id="<%- editedBook.id %>"><i class="fa-solid fa-trash delete text-danger"
+                                                        data-editedBook-id="<%- editedBook.id %>"></i></label>
+                                            </td>
+                                            <!-- <td style="display: flex;justify-content: center;">
                                                 <b title="View" class="view border-right-0" style="cursor: pointer;"
                                                     data-editedBook-id="<%- editedBook.id %>">
                                                     &#128065;
@@ -120,7 +96,7 @@
                                                     &#128465;
 
                                                 </b>
-                                            </td>
+                                            </td> -->
                                         </tr>
                                         <% }); %>
                                 </tbody>
@@ -138,11 +114,7 @@
                             <label id="total-row-count"></label>
                             <label class="d-none" id="row-count"></label>
                         </div>
-                        <div>
-                            <!-- <button id="prevBtn" class="btn btn-primary">Previous</button>
-                            <button id="nextBtn" class="btn btn-primary">Next</button>
-                            <p id="pagination" class="pagination-search"></p> -->
-                        </div>
+                        
                     </div>
                     <!--Import Modal -->
                     <div class="modal fade" id="open-program-modal" tabindex="-1" aria-labelledby="open-program-modal"
@@ -201,56 +173,75 @@
                         </div>
                         <div class="modal-body">
                             <div class="row">
+                                   <!--NMIMS School - Author-->
+                                   <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="nmims-school-authors" class="form-label fw-bold ">NMIMS School  - Author <i style="color: red;">*</i></label>
+                                    <input type="text" name="nmimsSchoolAuthors" id="nmims-school-authors"
+                                        data-validate="isEmpty,isLength:2:255,isLength:2:255"
+                                        data-err-msg="Provide Valid Input" class="form-control " required />
+                                </div>
+                                       <!-- NMIMS Campus - Author -->
+                                       <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                        <label for="nmims-campus-authors" class="form-label fw-bold ">NMIMS Campus  - Author <i style="color: red;">*</i></label>
+                                        <input type="url" name="nmimsCampusAuthors" id="nmims-campus-authors"
+                                            data-validate="isEmpty,isLength:2:255,isLength:2:255"
+                                            data-err-msg="Provide Valid Input" class="form-control " required />
+                                    </div>
+                                 
                                 <!-- author's first name -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <label for="author-first-name" class="form-label  fw-bold">All authors names
-                                    </label>
+                                    <label for="author-first-name" class="form-label  fw-bold">All Authors Names
+                                        <i style="color: red;">*</i></label>
                                     <input type="text" name="author-first-name"
-                                        data-validate="isEmpty,isAlphabeticWords,isLength:2:255"
+                                        data-validate="isEmpty,isExist,isLength:2:255"
                                         data-err-msg="Provide Valid Input" id="author-first-name" class="form-control"
                                         required>
                                 </div>
+
+                           
+
+                               
                                 <!-- Title of edited book -->
-                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                <!-- <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="chapter-title" class="form-label fw-bold">Title Of Chapeter</label>
                                     <input type="text" name="titleOfBook" id="chapter-title"
                                         data-validate="isEmpty,isNotNumber,isExist,isLength:2:255"
                                         data-err-msg="Provide Valid Input" class="form-control" required>
-                                </div>
+                                </div> -->
                                 <!-- Title of BOOK -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <label for="book-title" class="form-label fw-bold">Title of book</label>
+                                    <label for="book-title" class="form-label fw-bold">Title Of book <i style="color: red;">*</i></label>
                                     <input type="text" name="titleOfBook" id="book-title"
-                                        data-validate="isEmpty,isNotNumber,isExist,isLength:2:255"
+                                        data-validate="isEmpty,isExist,isLength:2:255"
                                         data-err-msg="Provide Valid Input" class="form-control" required>
                                 </div>
                                 <!-- Edition -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="edition" class="form-label fw-bold">Edition (if it isn't the
-                                        first)</label>
+                                        first) <i style="color: red;">*</i></label>
                                     <input type="text" name="edition" id="edition"
-                                        data-validate="isEmpty,isAlphaNumeric"
+                                        data-validate="isEmpty,isLength:1:255"
                                         data-err-msg="AlphaNumeric value is required." class="form-control" required>
                                 </div>
                                 <!-- EDITOR NAME -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <label for="edition" class="form-label fw-bold">Editor(s) Of The Book</label>
-                                    <input type="text" name="editor" data-validate="isEmpty,isAlphabeticWords"
+                                    <label for="edition" class="form-label fw-bold">Editor(s) Of The Book <i style="color: red;">*</i></label>
+                                    <input type="text" name="editor" data-validate="isEmpty,AlphaNumeric"
                                         data-err-msg="Provide Valid Input" id="editor-name" class="form-control"
                                         required>
                                 </div>
                                 <!-- PAGE number -->
-                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                <!-- <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="Volume" class="form-label fw-bold">Page number</label>
                                     <input type="number" name="vol" id="page-number"
                                         data-validate="isEmpty,isNumber,isLength:2:255"
                                         data-err-msg="Numeric value is required." class="form-control" required>
-                                </div>
+                                </div> -->
                                 <!-- Publisher Name -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <label for="publisherName" class="form-label fw-bold">Publisher Name</label>
+                                    <label for="publisherName" class="form-label fw-bold">Publisher Name <i style="color: red;">*</i></label>
                                     <input type="text" name="vol" id="publisher-name"
-                                        data-validate="isEmpty,isAlphabeticWords,isLength:2:255"
+                                        data-validate="isEmpty,isLength:2:255"
                                         data-err-msg="Provide Valid Input" class="form-control" required>
                                 </div>
                                 <!-- Publisher Category  -->
@@ -272,77 +263,62 @@
                                 </div>
                                 <!-- Publication Year -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <label for="publicationYear" class="form-label fw-bold">Publication Year</label>
+                                    <label for="publicationYear" class="form-label fw-bold">Publication Year <i style="color: red;">*</i></label>
                                     <input type="number" name="Year" id="publication-year"
-                                        data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required."
+                                        data-validate="isEmpty,isExist,isValidYear" data-err-msg="Year  is required."
                                         class="form-control" required>
                                 </div>
                                 <!-- URL of the book publication -->
-                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <label for="URL of book" class="form-label fw-bold">URL Of Book</label>
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4 d-none">
+                                    <label for="URL of book" class="form-label fw-bold">URL Of Book <i style="color: red;">*</i></label>
                                     <input type="text" name="URL" id="book-url"
-                                        data-validate="isEmpty,isNotNumber,isExist,isLength:2:255"
-                                        data-err-msg="Provide Valid Input" class="form-control" required>
+                                        data-validate="isEmpty,isLength:2:255,isExist,isLength:2:255"
+                                        data-err-msg="Provide Valid Input" class="form-control">
                                 </div>
                                 <!-- ISBN Number -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <label for="caseStudy" class="form-label fw-bold">ISBN Number</label>
+                                    <label for="caseStudy" class="form-label fw-bold">ISBN Number <i style="color: red;">*</i></label>
                                     <input type="text" name="ISBN-Number" id="isbn-no" 
-                                    data-validate="isEmpty,isExist"
+                                    data-validate="isEmpty,isExist,isLength:1:255"
                                     data-err-msg="Provide Valid Input" class="form-control" class="form-control" required>
                                 </div>
                                 <!-- DOI of book -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <label for="doi-book-id" class="form-label fw-bold">DOI ID of book</label>
+                                    <label for="doi-book-id" class="form-label fw-bold">DOI ID/ WebLink <i style="color: red;">*</i></label>
                                     <input type="text" name="doi-book-id" id="doi-book-id"
-                                    data-validate="isEmpty,isExist,isLength:2:255"
-                                    data-err-msg="Provide Valid Input" class="form-control" class="form-control" req>
+                                    data-validate="isEmpty,isExist,isLength:1:255"
+                                    data-err-msg="Provide Valid Input" class="form-control" class="form-control" required>
                                 </div>
                                 <!-- Place of Publication -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <label for="publication-place" class="form-label fw-bold">Place of
-                                        Publication</label>
+                                    <label for="publication-place" class="form-label fw-bold">Place Of
+                                        Publication <i style="color: red;">*</i></label>
                                     <input type="text" name="publication-place" id="publication-place"
-                                        data-validate="isEmpty,isNotNumber,isExist,isLength:2:255"
+                                        data-validate="isEmpty,isExist,isLength:2:255"
                                         data-err-msg="Provide Valid Input" class="form-control" required>
                                 </div>
                                 <!-- No. of NMIMS Authors -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <label for="number-of-nmims-authors" class="form-label fw-bold ">No. of NMIMS
-                                        Authors</label>
+                                    <label for="number-of-nmims-authors" class="form-label fw-bold ">No. Of NMIMS
+                                        Authors <i style="color: red;">*</i></label>
                                     <input type="number" name="nmims-authors" id="number-of-nmims-authors"
                                         data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required."
                                         class="form-control " required />
                                 </div>
                                 <!-- Name of NMIMS Authors -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <label for="nmims-authors" class="form-label fw-bold ">Name of NMIMS Authors
-                                    </label>
+                                    <label for="nmims-authors" class="form-label fw-bold ">Name Of NMIMS Authors
+                                        <i style="color: red;">*</i></label>
                                     <input type="text" name="nmimsAuthors" id="nmims-authors"
-                                        data-validate="isEmpty,isAlphabeticWords,isLength:2:255"
+                                        data-validate="isEmpty,isLength:2:255"
                                         data-err-msg="Provide Valid Input" class="form-control " required />
                                 </div>
-                                <!-- NMIMS Campus - Author -->
-                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <label for="nmims-campus-authors" class="form-label fw-bold ">Campus of
-                                        Author</label>
-                                    <input type="url" name="nmimsCampusAuthors" id="nmims-campus-authors"
-                                        data-validate="isEmpty,isAlphabeticWords,isLength:2:255"
-                                        data-err-msg="Provide Valid Input" class="form-control " required />
-                                </div>
-                                <!--NMIMS School - Author-->
-                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <label for="nmims-school-authors" class="form-label fw-bold ">School of
-                                        Author</label>
-                                    <input type="text" name="nmimsSchoolAuthors" id="nmims-school-authors"
-                                        data-validate="isEmpty,isAlphabeticWords,isLength:2:255"
-                                        data-err-msg="Provide Valid Input" class="form-control " required />
-                                </div>
+                              
                                 <!-- Upload Supporting Documents-->
                                 <div class="form-group col-lg-6 col-md-8 col-sm-12 mb-4">
                                     <div class="col-lg-6 col-md-8 col-sm-12">
                                         <label class="form-label fw-bold ">
-                                            Upload Supporting Documents
+                                            Upload Supporting Documents<i style="color: red;">*</i>
                                             <div id="uploadNewSupportDocumentDiv">
                                                 <label for="uploadNewSupportDocument"><small>Click to Upload New
                                                         File</small></label>
@@ -382,21 +358,37 @@
                     <div class="modal-content modal-content-data">
                         <div class="modal-header">
                             <h5 class="modal-title" id="case-study">EDITED BOOK VIEW</h5>
-                            <div class="close" data-dismiss="modal" aria-label="Close">
-                                <span style="font-size: 24px; font-weight: normal;" type="button" aria-hidden="true"><i
+                            <div class="close" id="close-cross-button" data-dismiss="modal" aria-label="Close">
+                                <span style="font-size: 24px; font-weight: normal;"  type="button" aria-hidden="true"><i
                                         class="fas fa-times fa"></i></span>
                             </div>
                         </div>
                         <div class="modal-body">
                             <div class="row">
+                                <!-- NMIMS SCHOOL AUTHOR -->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="task-sub-title sub-title-text">NMIMS School  - Author :</div>
+                                        <label class="view-content" id="view-nmims-school-authors"></label>
+                                    </div>
+                                </div>
+                                  <!-- NMIMS CAMPUS AUTHOR -->
+                                  <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="task-sub-title sub-title-text">NMIMS Campus - Author :</div>
+                                        <label class="view-content" id="view-nmims-campus-authors"></label>
+                                    </div>
+                                </div>
+                                
+                             
                                 <!-- author's first name -->
                                 <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                                     <div class="box">
-                                        <div class="task-sub-title sub-title-text">Author's Name :</div>
+                                        <div class="task-sub-title sub-title-text">All Authors Names :</div>
                                         <label class="view-content" id="view-first-name"></label>
                                     </div>
                                 </div>
-                                <!-- Title of case study -->
+                                <!-- le of case study  -->
                                 <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                                     <div class="box">
                                         <div class="task-sub-title sub-title-text">Title Of Book :</div>
@@ -420,17 +412,18 @@
                                 <!-- Editor name -->
                                 <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                                     <div class="box">
-                                        <div class="task-sub-title sub-title-text">Editor Name :</div>
+                                        <div class="task-sub-title sub-title-text">
+                                            Editor(s) Of The Book  :</div>
                                         <label class="view-content" id="view-editor-name"></label>
                                     </div>
                                 </div>
                                 <!-- chapter title -->
-                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                <!-- <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                                     <div class="box">
                                         <div class="task-sub-title sub-title-text">Chapter Title :</div>
                                         <label class="view-content" id="view-chapter-title"></label>
                                     </div>
-                                </div>
+                                </div> -->
                                 <!-- publisher category -->
                                 <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                                     <div class="box">
@@ -439,16 +432,16 @@
                                     </div>
                                 </div>
                                 <!-- page number -->
-                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                <!-- <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                                     <div class="box">
                                         <div class="task-sub-title sub-title-text">Page Number:</div>
                                         <label class="view-content" id="view-page-number"></label>
                                     </div>
-                                </div>
+                                </div> -->
                                 <!-- doi book id -->
                                 <div class="col-lg-4 col-md-6  col-sm-12 p-3 doi-book-id">
                                     <div class="box">
-                                        <div class="task-sub-title sub-title-text">DOI ID Of Book :</div>
+                                        <div class="task-sub-title sub-title-text">WebLink /DOI No. :</div>
                                         <label class="view-content" id="view-doi-book-id"></label>
                                     </div>
                                 </div>
@@ -475,7 +468,7 @@
                                     </div>
                                 </div>
                                 <!-- URL OF BOOK -->
-                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3 d-none">
                                     <div class="box">
                                         <div class="task-sub-title sub-title-text"> URL Of Book:</div>
                                         <label class="view-content" id="view-book-url"></label>
@@ -495,20 +488,7 @@
                                         <label class="view-content" id="view-nmims-authors"></label>
                                     </div>
                                 </div>
-                                <!-- NMIMS CAMPUS AUTHOR -->
-                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                                    <div class="box">
-                                        <div class="task-sub-title sub-title-text">NMIMS Campus Authors:</div>
-                                        <label class="view-content" id="view-nmims-campus-authors"></label>
-                                    </div>
-                                </div>
-                                <!-- NMIMS SCHOOL AUTHOR -->
-                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                                    <div class="box">
-                                        <div class="task-sub-title sub-title-text">School of Author :</div>
-                                        <label class="view-content" id="view-nmims-school-authors"></label>
-                                    </div>
-                                </div>
+                              
                                 <!-- Supporting Document -->
                                 <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                                     <div class="box">
@@ -524,7 +504,7 @@
                         </div>
                         <!-- footer button -->
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-danger" id="footer-close-view" data-dismiss="modal">Close</button>
                         </div>
                     </div>
                 </div>
@@ -570,12 +550,12 @@
                         const bookTitle = document.getElementById('book-title');
                         const edition = document.getElementById('edition');
                         const editorName = document.getElementById('editor-name');
-                        const chapterTitle = document.getElementById('chapter-title');
+                        // const chapterTitle = document.getElementById('chapter-title');
                         const isbnNo = document.getElementById('isbn-no');
                         const publicationPlace = document.getElementById('publication-place');
                         const publisherCategoryNational = document.getElementById('national');
                         const publisherCategoryInternational = document.getElementById('inter-national');
-                        const pageNumber = document.getElementById('page-number');
+                        // const pageNumber = document.getElementById('page-number');
                         const publisherName = document.getElementById('publisher-name');
                         const publicationYear = document.getElementById('publication-year');
                         const bookUrl = document.getElementById('book-url');
@@ -591,12 +571,12 @@
                         bookTitle.value = '';
                         edition.value = '';
                         editorName.value = '';
-                        chapterTitle.value = '';
+                        // chapterTitle.value = '';
                         isbnNo.value = '';
                         // publicationPlace.checked = false;
                         //  publisherCategoryNational.checked = false
                         //  publisherCategoryInternational.checked = false;
-                        pageNumber.value = '';
+                        // pageNumber.value = '';
                         publisherName.value = '';
                         publicationYear.value = '';
                         bookUrl.value = '';
@@ -617,12 +597,12 @@
                     const edition = document.getElementById('edition').value;
                     const isbnNo = document.getElementById('isbn-no').value;
                     const editorName = document.getElementById('editor-name').value;
-                    const chapterTitle = document.getElementById('chapter-title').value;
+                    // const chapterTitle = document.getElementById('chapter-title').value;
                     const publicationPlace = document.getElementById('publication-place').value;
                     const publisherCategory = document.querySelector('input[name="publisher-category"]:checked').value;
                     console.log('publisherCategory ==>>', publisherCategory)
-                    const pageNumber = document.getElementById('page-number').value;
-                    console.log('pageNumber ==>>', pageNumber)
+                    // const pageNumber = document.getElementById('page-number').value;
+                    // console.log('pageNumber ==>>', pageNumber)
                     const publisherName = document.getElementById('publisher-name').value;
                     const publicationYear = document.getElementById('publication-year').value;
                     const bookUrl = document.getElementById('book-url').value;
@@ -649,10 +629,10 @@
                     editedBook.append('edition', edition);
                     editedBook.append('isbnNo', isbnNo);
                     editedBook.append('editorName', editorName);
-                    editedBook.append('chapterTitle', chapterTitle);
+                    // editedBook.append('chapterTitle', chapterTitle);
                     editedBook.append('publicationPlace', publicationPlace);
                     editedBook.append('publisherCategory', publisherCategory);
-                    editedBook.append('pageNumber', pageNumber);
+                    // editedBook.append('pageNumber', pageNumber);
                     editedBook.append('publisherName', publisherName);
                     editedBook.append('publicationYear', publicationYear);
                     editedBook.append('bookUrl', bookUrl);
@@ -834,7 +814,7 @@
                         bookTitle.value = editedBookRowToBeUpdated.querySelector('.book-title').innerText;
                         edition.value = editedBookRowToBeUpdated.getAttribute('data-edition');
                         editorName.value = editedBookRowToBeUpdated.getAttribute('data-editor-name');
-                        chapterTitle.value = editedBookRowToBeUpdated.getAttribute('data-chapter-title');
+                        // chapterTitle.value = editedBookRowToBeUpdated.getAttribute('data-chapter-title');
                         publisherName.value = editedBookRowToBeUpdated.querySelector('.publisher-name').innerText;
                         isbnNo.value = editedBookRowToBeUpdated.querySelector('.isbn-no').innerText;
                         publicationPlace.value = editedBookRowToBeUpdated.getAttribute('data-publication-place');
@@ -845,7 +825,7 @@
                         else {
                             publisherCategoryInternational.checked = true;
                         }
-                        pageNumber.value = editedBookRowToBeUpdated.getAttribute('data-page-number');
+                        // pageNumber.value = editedBookRowToBeUpdated.getAttribute('data-page-number');
                         publicationYear.value = editedBookRowToBeUpdated.querySelector('.publication-year').innerText;
                         bookUrl.value = editedBookRowToBeUpdated.getAttribute('data-book-url');
                         doiBookId.value = editedBookRowToBeUpdated.getAttribute('data-doi-book-id');
@@ -953,12 +933,12 @@
                         const viewauthorName = document.getElementById('view-first-name');
                         const viewBookTitle = document.getElementById('view-book-title');
                         const viewEditorName = document.getElementById('view-editor-name');
-                        const viewChapterTitle = document.getElementById('view-chapter-title');
+                        // const viewChapterTitle = document.getElementById('view-chapter-title');
                         const viewEdition = document.getElementById('view-edition');
                         const viewIsbnNo = document.getElementById('view-isbn-no');
                         const viewPublicationPlace = document.getElementById('view-publication-place');
                         const viewPublisherCategory = document.getElementById('view-publisher-category');
-                        const viewPageNumber = document.getElementById('view-page-number');
+                        // const viewPageNumber = document.getElementById('view-page-number');
                         const viewPublisherName = document.getElementById('view-publisher-name');
                         const viewPublicationYear = document.getElementById('view-publication-year');
                         const viewBookUrl = document.getElementById('view-book-url');
@@ -987,11 +967,11 @@
                                     viewBookTitle.innerText = data.editedBookView.book_title;
                                     viewEdition.innerText = data.editedBookView.edition;
                                     viewEditorName.innerText = data.editedBookView.editor_name;
-                                    viewChapterTitle.innerText = data.editedBookView.chapter_title;
+                                    // viewChapterTitle.innerText = data.editedBookView.chapter_title;
                                     viewIsbnNo.innerText = data.editedBookView.isbn_no;
                                     viewPublicationPlace.innerText = data.editedBookView.publication_place;
                                     viewPublisherCategory.innerText = data.editedBookView.publisher_category
-                                    viewPageNumber.innerText = data.editedBookView.page_number;
+                                    // viewPageNumber.innerText = data.editedBookView.page_number;
                                     viewPublisherName.innerText = data.editedBookView.publisher_name;
                                     viewPublicationYear.innerText = data.editedBookView.publication_year;
                                     viewBookUrl.innerText = data.editedBookView.book_url;
@@ -1000,7 +980,7 @@
                                     viewNmimsAuthors.innerText = data.editedBookView.nmims_authors;
                                     viewNmimsCampusAuthors.innerText = data.editedBookView.nmims_campus_authors;
                                     viewNmimsSchoolAuthors.innerText = data.editedBookView.nmims_school_authors;
-                                    viewSupportingDocuments.innerText = data.editedBookView.supporting_documents;
+                                    // viewSupportingDocuments.innerText = data.editedBookView.supporting_documents;
                                 }
 
                             })
@@ -1015,10 +995,10 @@
                     const updatedEdition = document.getElementById('edition').value;
                     const updatedIsbnNo = document.getElementById('isbn-no').value;
                     const updatedEditorName = document.getElementById('editor-name').value;
-                    const updatedChapterTitle = document.getElementById('chapter-title').value;
+                    // const updatedChapterTitle = document.getElementById('chapter-title').value;
                     const updatedPublicationPlace = document.getElementById('publication-place').value;
                     const updatedPublisherCategory = document.querySelector('input[name="publisher-category"]:checked').value;
-                    const updatedPageNumber = document.getElementById('page-number').value;
+                    // const updatedPageNumber = document.getElementById('page-number').value;
                     const updatedPublisherName = document.getElementById('publisher-name').value;
                     const updatedPublicationYear = document.getElementById('publication-year').value;
                     const updatedBookUrl = document.getElementById('book-url').value;
@@ -1046,11 +1026,11 @@
                     updatededitedBook.append('bookTitle', updatedBookTitle);
                     updatededitedBook.append('edition', updatedEdition);
                     updatededitedBook.append('editorName', updatedEditorName);
-                    updatededitedBook.append('chapterTitle', updatedChapterTitle);
+                    // updatededitedBook.append('chapterTitle', updatedChapterTitle);
                     updatededitedBook.append('isbnNo', updatedIsbnNo);
                     updatededitedBook.append('publicationPlace', updatedPublicationPlace);
                     updatededitedBook.append('publisherCategory', updatedPublisherCategory);
-                    updatededitedBook.append('pageNumber', updatedPageNumber);
+                    // updatededitedBook.append('pageNumber', updatedPageNumber);
                     updatededitedBook.append('publisherName', updatedPublisherName);
                     updatededitedBook.append('publicationYear', updatedPublicationYear);
                     updatededitedBook.append('bookUrl', updatedBookUrl);
@@ -1070,26 +1050,26 @@
                         .then((data) => {
                             if (data.status === 'Done') {
                                 console.log('data ==>>', data);
-                                editedBookRowToBeUpdated.setAttribute('data-page-number', data.updatedEditedBook.pageNumber);
-                                editedBookRowToBeUpdated.setAttribute('data-edition', data.updatedEditedBook.edition);
-                                editedBookRowToBeUpdated.setAttribute('data-publication-place', data.updatedEditedBook.publicationPlace);
-                                editedBookRowToBeUpdated.setAttribute('data-publisher-category', data.updatedEditedBook.publisherCategory);
-                                editedBookRowToBeUpdated.setAttribute('data-editor-name', data.updatedEditedBook.editorName);
-                                editedBookRowToBeUpdated.setAttribute('data-chapter-title', data.updatedEditedBook.chapterTitle);
-                                editedBookRowToBeUpdated.setAttribute('data-book-url', data.updatedEditedBook.bookUrl);
-                                editedBookRowToBeUpdated.setAttribute('data-doi-book-id', data.updatedEditedBook.doiBookId);
-                                editedBookRowToBeUpdated.setAttribute('data-number-of-nmims-authors', data.updatedEditedBook.numberOfNmimsAuthors);
-                                editedBookRowToBeUpdated.setAttribute('data-nmims-authors', data.updatedEditedBook.nmimsAuthors);
-                                editedBookRowToBeUpdated.setAttribute('data-nmims-campus-authors', data.updatedEditedBook.nmimsCampusAuthors);
-                                editedBookRowToBeUpdated.setAttribute('data-nmims-school-authors', data.updatedEditedBook.nmimsSchoolAuthors);
-                                if (updateEditedFilesData) {
-                                    editedBookRowToBeUpdated.setAttribute('data-supporting-documents', data.updatedEditedBookFiles.supportingDocuments);
-                                }
-                                editedBookRowToBeUpdated.querySelector('.author-first-name').innerText = data.updatedEditedBook.authorName;
-                                editedBookRowToBeUpdated.querySelector('.book-title').innerText = data.updatedEditedBook.bookTitle;
-                                editedBookRowToBeUpdated.querySelector('.publisher-name').innerText = data.updatedEditedBook.publisherName;
-                                editedBookRowToBeUpdated.querySelector('.isbn-no').innerText = data.updatedEditedBook.isbnNo;
-                                editedBookRowToBeUpdated.querySelector('.publication-year').innerText = data.updatedEditedBook.publicationYear;
+                                // editedBookRowToBeUpdated.setAttribute('data-page-number', data.updatedEditedBook.pageNumber);
+                                // editedBookRowToBeUpdated.setAttribute('data-edition', data.updatedEditedBook.edition);
+                                // editedBookRowToBeUpdated.setAttribute('data-publication-place', data.updatedEditedBook.publicationPlace);
+                                // editedBookRowToBeUpdated.setAttribute('data-publisher-category', data.updatedEditedBook.publisherCategory);
+                                // editedBookRowToBeUpdated.setAttribute('data-editor-name', data.updatedEditedBook.editorName);
+                                // editedBookRowToBeUpdated.setAttribute('data-chapter-title', data.updatedEditedBook.chapterTitle);
+                                // editedBookRowToBeUpdated.setAttribute('data-book-url', data.updatedEditedBook.bookUrl);
+                                // editedBookRowToBeUpdated.setAttribute('data-doi-book-id', data.updatedEditedBook.doiBookId);
+                                // editedBookRowToBeUpdated.setAttribute('data-number-of-nmims-authors', data.updatedEditedBook.numberOfNmimsAuthors);
+                                // editedBookRowToBeUpdated.setAttribute('data-nmims-authors', data.updatedEditedBook.nmimsAuthors);
+                                // editedBookRowToBeUpdated.setAttribute('data-nmims-campus-authors', data.updatedEditedBook.nmimsCampusAuthors);
+                                // editedBookRowToBeUpdated.setAttribute('data-nmims-school-authors', data.updatedEditedBook.nmimsSchoolAuthors);
+                                // if (updateEditedFilesData) {
+                                //     editedBookRowToBeUpdated.setAttribute('data-supporting-documents', data.updatedEditedBookFiles.supportingDocuments);
+                                // }
+                                // editedBookRowToBeUpdated.querySelector('.author-first-name').innerText = data.updatedEditedBook.authorName;
+                                // editedBookRowToBeUpdated.querySelector('.book-title').innerText = data.updatedEditedBook.bookTitle;
+                                // editedBookRowToBeUpdated.querySelector('.publisher-name').innerText = data.updatedEditedBook.publisherName;
+                                // editedBookRowToBeUpdated.querySelector('.isbn-no').innerText = data.updatedEditedBook.isbnNo;
+                                // editedBookRowToBeUpdated.querySelector('.publication-year').innerText = data.updatedEditedBook.publicationYear;
                                 Swal.fire({
                                     position: "top-center",
                                     icon: "success",
@@ -1099,7 +1079,10 @@
                                     confirmButtonText: "OK",
                                     confirmButtonColor: "#DD6B55"
 
-                                });
+                                })
+                                .then(() => {
+                                                    location.reload();
+                                                });
                                 $('#edited-book-modal').modal('hide');
                             }
                             else {
@@ -1138,8 +1121,15 @@
                     formGroup = updateBtn.closest('.validate-input')
                     console.log("formGroup::::::::", formGroup)
                     formGroup.querySelectorAll('input[type="file"]')?.forEach(elm => {
-                        console.log("elm:::::::::", elm);
-                        elm.removeAttribute('data-validate')
+                        if(elm.files.length > 0){
+                            const validate = elm.getAttribute('data-validate');
+                            const elemVal = elm.value;
+                        }
+                        
+                        else{
+                            elm.removeAttribute('data-validate')
+                        }
+                        
                     })
                     const isValid = validateRequiredFormFields(submitBtn);
                     if (isValid) {
@@ -1235,6 +1225,14 @@
                     } else {
                         document.querySelector('#supporting-documents').classList.add('d-none');
                     }
+                });
+
+                document.getElementById('footer-close-view').addEventListener('click', () => {
+                    document.location.reload();
+                });
+
+                document.getElementById('close-cross-button').addEventListener('click', () => {
+                    document.location.reload();
                 });
 
             </script>

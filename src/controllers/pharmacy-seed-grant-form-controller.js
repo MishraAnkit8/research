@@ -1,10 +1,12 @@
 const pharmacyService = require('../services/pharmacy-seed-service')
+const { getRedisData } = require("../../utils/redis.utils");
 
 module.exports.renderPharmacySeedGrantform = async(req, res, next) => {
 
-    console.log('data in controller ')
-    const  userName = req.body.username;
-    console.log('userName in controller  ===>>>>>>', userName);
+    const sessionid = req.cookies.session;
+    let sessionData = await getRedisData(`${sessionid}:session`)
+    const  userName = sessionData.username;
+    console.log('userName in in dashboard controller  ===>>>>>>', userName);
 
     const pharmacySeedDetails = await pharmacyService.renderPharmacySeed(userName);
 
@@ -15,6 +17,7 @@ module.exports.renderPharmacySeedGrantform = async(req, res, next) => {
         message : pharmacySeedDetails.message,
         rowCount : pharmacySeedDetails.rowCount,
         pharmacyData : pharmacySeedDetails.pharmacyData,
+        userName : userName,
         errorCode : pharmacySeedDetails.errorCode
 
     })
@@ -23,8 +26,10 @@ module.exports.renderPharmacySeedGrantform = async(req, res, next) => {
 
 module.exports.insertInvestigationEducationalDetails = async(req, res, next) => {
     console.log('data commint from frontend ====>>>>', req.body.detailsContainerArray);
-    const  userName = req.body.username;
-    console.log('userName in controller  ===>>>>>>', userName);
+    const sessionid = req.cookies.session;
+    let sessionData = await getRedisData(`${sessionid}:session`)
+    const  userName = sessionData.username;
+    console.log('userName in in dashboard controller  ===>>>>>>', userName);
 
     const insertPharmacyInvestigatorEdu = await pharmacyService.insertInvestorEduCation(req.body, userName);
 
@@ -44,8 +49,10 @@ module.exports.insertInvestigationEducationalDetails = async(req, res, next) => 
 
 module.exports.investigatorExperience = async(req, res, next) => {
     console.log('experience dat in controller ===>>>>>', req.body);
-    const  userName = req.body.username;
-    console.log('userName in controller  ===>>>>>>', userName);
+    const sessionid = req.cookies.session;
+    let sessionData = await getRedisData(`${sessionid}:session`)
+    const  userName = sessionData.username;
+    console.log('userName in in dashboard controller  ===>>>>>>', userName);
 
 
     const insertExperience = await pharmacyService.insertInvestorExperience(req.body, userName);
@@ -66,8 +73,10 @@ module.exports.investigatorExperience = async(req, res, next) => {
 module.exports.investigatorBook = async(req, res, next) => {
     console.log('book data in controller ===>>>>>', req.body);
 
-    const  userName = req.body.username;
-    console.log('userName in controller  ===>>>>>>', userName);
+    const sessionid = req.cookies.session;
+    let sessionData = await getRedisData(`${sessionid}:session`)
+    const  userName = sessionData.username;
+    console.log('userName in in dashboard controller  ===>>>>>>', userName);
 
     const insertInvestigatorBook = await pharmacyService.insertInvestorBook(req.body, userName);
 
@@ -87,8 +96,10 @@ module.exports.investigatorBook = async(req, res, next) => {
 
 module.exports.investigatorBookChapter = async(req, res, next) => {
     console.log('book chapter data in controller ===>>>>>', req.body);
-    const  userName = req.body.username;
-    console.log('userName in controller  ===>>>>>>', userName);
+    const sessionid = req.cookies.session;
+    let sessionData = await getRedisData(`${sessionid}:session`)
+    const  userName = sessionData.username;
+    console.log('userName in in dashboard controller  ===>>>>>>', userName);
 
     const insertInvestigatorBookChapter = await pharmacyService.insertInvestorBookChapter(req.body, userName);
 
@@ -109,8 +120,10 @@ module.exports.investigatorBookChapter = async(req, res, next) => {
 module.exports.investigatorPatent = async(req, res, next) => {
     console.log('patent data in controller ===>>>>>', req.body);
 
-    const  userName = req.body.username;
-    console.log('userName in controller  ===>>>>>>', userName);
+    const sessionid = req.cookies.session;
+    let sessionData = await getRedisData(`${sessionid}:session`)
+    const  userName = sessionData.username;
+    console.log('userName in in dashboard controller  ===>>>>>>', userName);
 
     const insertInvestigatorPatent = await pharmacyService.insertInvestorPatent(req.body, userName);
 
@@ -131,8 +144,10 @@ module.exports.investigatorPatent = async(req, res, next) => {
 module.exports.investigatorPublication = async(req, res, next) => {
     console.log('publication data in controller ===>>>>>', req.body);
 
-    const  userName = req.body.username;
-    console.log('userName in controller  ===>>>>>>', userName);
+    const sessionid = req.cookies.session;
+    let sessionData = await getRedisData(`${sessionid}:session`)
+    const  userName = sessionData.username;
+    console.log('userName in in dashboard controller  ===>>>>>>', userName);
 
     const insertInvestigatorPublication = await pharmacyService.insertInvestorPublication(req.body, userName);
 
@@ -153,8 +168,10 @@ module.exports.investigatorPublication = async(req, res, next) => {
 module.exports.investigatorResearchImplementation = async(req, res, next) => {
     console.log('implementation dat in controller ===>>>>>', req.body);
 
-    const  userName = req.body.username;
-    console.log('userName in controller  ===>>>>>>', userName);
+    const sessionid = req.cookies.session;
+    let sessionData = await getRedisData(`${sessionid}:session`)
+    const  userName = sessionData.username;
+    console.log('userName in in dashboard controller  ===>>>>>>', userName);
 
     const insertInvestigatorResImple = await pharmacyService.insertInvestorResearchImplementation(req.body, userName);
 
@@ -175,8 +192,10 @@ module.exports.investigatorResearchImplementation = async(req, res, next) => {
 module.exports.investigatorResearchCompleted = async(req, res, next) => {
     console.log('research completed data in controller ===>>>>>', req.body);
 
-    const  userName = req.body.username;
-    console.log('userName in controller  ===>>>>>>', userName);
+    const sessionid = req.cookies.session;
+    let sessionData = await getRedisData(`${sessionid}:session`)
+    const  userName = sessionData.username;
+    console.log('userName in in dashboard controller  ===>>>>>>', userName);
 
     const insertInvestigatorResCompleted = await pharmacyService.insertInvestorResearchCompleted(req.body, userName);
 
@@ -197,8 +216,10 @@ module.exports.investigatorResearchCompleted = async(req, res, next) => {
 module.exports.insertPharmacySeedForms = async(req, res, next) => {
     console.log('data comming from frontend ====>>>>>', req.body);
 
-    const  userName = req.body.username;
-    console.log('userName in controller  ===>>>>>>', userName);
+    const sessionid = req.cookies.session;
+    let sessionData = await getRedisData(`${sessionid}:session`)
+    const  userName = sessionData.username;
+    console.log('userName in in dashboard controller  ===>>>>>>', userName);
 
     const pharmacyDataDetails = await pharmacyService.insertPharmacySeedDetials(req.body, userName);
 
@@ -218,8 +239,11 @@ module.exports.insertPharmacySeedForms = async(req, res, next) => {
 
 
 module.exports.viewPharmacySeedGrantData = async(req, res, next) => {
-    const  userName = req.body.username;
-    console.log('userName in controller  ===>>>>>>', userName);
+    const sessionid = req.cookies.session;
+    let sessionData = await getRedisData(`${sessionid}:session`)
+    const  userName = sessionData.username;
+    console.log('userName in in dashboard controller  ===>>>>>>', userName);
+
     const pharmacyId = req.body.pharmacyId;
     console.log('data is comming from frontend ====>>>>', req.body.pharmacyId);
 
@@ -274,8 +298,10 @@ module.exports.retriveDetailsDataPharamacy = async(req, res, next) => {
 
 module.exports.updatePharmacyDetailsData = async(req, res, next) => {
     console.log(' data in controller for update ===>>>>>', req.body);
-    const  userName = req.body.username;
-    console.log('userName in controller  ===>>>>>>', userName);
+    const sessionid = req.cookies.session;
+    let sessionData = await getRedisData(`${sessionid}:session`)
+    const  userName = sessionData.username;
+    console.log('userName in in dashboard controller  ===>>>>>>', userName);
 
     const updatePharmacyDetail = await pharmacyService.updatePharmacyData(req.body, userName);
 
@@ -293,8 +319,10 @@ module.exports.updatePharmacyDetailsData = async(req, res, next) => {
 
 module.exports.deleteEducationalDetails = async(req, res, next) => {
     console.log(' data in controller for deleteEducationalDetails ===>>>>>', req.body);
-    const  userName = req.body.username;
-    console.log('userName in controller  ===>>>>>>', userName);
+    const sessionid = req.cookies.session;
+    let sessionData = await getRedisData(`${sessionid}:session`)
+    const  userName = sessionData.username;
+    console.log('userName in in dashboard controller  ===>>>>>>', userName);
     const deleteEducationalResponce = await pharmacyService.deleteEducationalData(req.body, userName);
 
     console.log('deleteEducationalResponce ====>>>>', deleteEducationalResponce)

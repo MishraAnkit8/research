@@ -6,6 +6,11 @@ const upload = require('../../multer');
 // middlewre for valiadtion and errorHandler
 const { asyncErrorHandler } = require('../middleware/error.middleware');
 
+//middleware for backend validation
+const {validateBookPublication} = require('../middleware/express-validator/book-publication-validator');
+const {validateEditedBook} = require('../middleware/express-validator/edited-book.validator');
+const {validateBookChapter} = require('../middleware/express-validator/book-chapter.validator');
+
 //middleware for download file
 const downloadFileService = require('../middleware/download-file.middleware');
 
@@ -45,8 +50,8 @@ router.get('/book-publication/viewing/:fileName', downloadFileService.viewFile);
 //edited book publication
 
 router.get('/edited-book-publication',  asyncErrorHandler(authMiddleware), asyncErrorHandler(editedBookPublication.renderEdietedBookPublication));
-router.post('/edited-book-publication/insert',  asyncErrorHandler(authMiddleware),  upload.array('researchSupportingDocument', 5), asyncErrorHandler(editedBookPublication.insertEditedBookPublication));
-router.post('/edited-book-publication/update',  asyncErrorHandler(authMiddleware),  upload.array('researchSupportingDocument', 5), asyncErrorHandler(editedBookPublication.updateEditedBookPublication));
+router.post('/edited-book-publication/insert',  asyncErrorHandler(authMiddleware), upload.array('researchSupportingDocument', 5), asyncErrorHandler(editedBookPublication.insertEditedBookPublication));
+router.post('/edited-book-publication/update',  asyncErrorHandler(authMiddleware), upload.array('researchSupportingDocument', 5), asyncErrorHandler(editedBookPublication.updateEditedBookPublication));
 router.post('/edited-book-publication/view', asyncErrorHandler(authMiddleware),  asyncErrorHandler(editedBookPublication.viewEditedBookPublication));
 router.post('/edited-book-publication/delete', asyncErrorHandler(authMiddleware), asyncErrorHandler(editedBookPublication.deleteEditedBookPublication));
 router.get('/edited-book-publication/download/:fileName', downloadFileService.downloadFile);

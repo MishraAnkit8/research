@@ -23,7 +23,7 @@ module.exports.insertBookPublicationData = async (
   userName
 ) => {
   const {
-    authorLastName,
+    authorName,
     bookTitle,
     edition,
     publicationPlace,
@@ -39,14 +39,14 @@ module.exports.insertBookPublicationData = async (
     nmimsCampusAuthors,
     nmimsSchoolAuthors,
   } = bookPublicationData;
-  const doiBookIdParsed = doiBookId === "" ? null : parseInt(doiBookId, 10);
+  // const doiBookIdParsed = doiBookId === "" ? null : parseInt(doiBookId, 10);
 
   let sql = {
     text: `INSERT INTO book_publications ( author_last_name, book_title, edition, publication_place, publisher_category, volume_number, publisher_name, 
             publication_year, book_url, doi_id, isbn, number_of_nmims_authors, nmims_authors, nmims_campus_authors, nmims_school_authors, supporting_documents, created_by)
             VALUES ($1, $2 , $3 ,$4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17) RETURNING id `,
     values: [
-      authorLastName,
+      authorName,
       bookTitle,
       edition,
       publicationPlace,
@@ -55,7 +55,7 @@ module.exports.insertBookPublicationData = async (
       publisherName,
       publicationYear,
       bookUrl,
-      doiBookIdParsed,
+      doiBookId,
       isbnNo,
       numberOfNmimsAuthors,
       nmimsAuthors,
@@ -83,7 +83,7 @@ module.exports.insertBookPublicationData = async (
       console.log("error.message ====>>>", error.message);
       const message =
         error.code === "23505"
-          ? "Doi Id Of Book should be Unique"
+          ? "This WebLink /DOI No. already used with another form "
           : error.message;
       console.log("message =====>>>>>>", message);
       return {
@@ -101,7 +101,7 @@ module.exports.updatedBookPublication = async (
   userName
 ) => {
   const {
-    authorLastName,
+    authorName,
     bookTitle,
     edition,
     publicationPlace,
@@ -118,7 +118,7 @@ module.exports.updatedBookPublication = async (
     nmimsSchoolAuthors,
   } = updatedBookPublicationData;
 
-  const doiBookIdParsed = doiBookId === "" ? null : parseInt(doiBookId, 10);
+  // const doiBookIdParsed = doiBookId === "" ? null : parseInt(doiBookId, 10);
   const DataFileString = upadteDataFileString ? upadteDataFileString : null;
 
   let baseQuery = `UPDATE book_publications SET author_last_name = $2, book_title = $3, edition = $4, publication_place = $5, publisher_category = $6, volume_number = $7, publisher_name = $8, 
@@ -133,7 +133,7 @@ module.exports.updatedBookPublication = async (
   console.log("queryText ====>>>>", queryText);
   let values = [
     bookPublicationId,
-    authorLastName,
+    authorName,
     bookTitle,
     edition,
     publicationPlace,
@@ -142,7 +142,7 @@ module.exports.updatedBookPublication = async (
     publisherName,
     publicationYear,
     bookUrl,
-    doiBookIdParsed,
+    doiBookId,
     isbnNo,
     numberOfNmimsAuthors,
     nmimsAuthors,
@@ -173,7 +173,7 @@ module.exports.updatedBookPublication = async (
       console.log("error.constraint ====>>>>>", error.constraint);
       console.log("error.message ====>>>", error.message);
       const message =
-        error.code === "23505" ? "Doi Id Of Book should Unique" : error.message;
+        error.code === "23505" ? "This WebLink /DOI No. already used with another form " : error.message;
       console.log("message =====>>>>>>", message);
       return {
         status: "Failed",
@@ -196,12 +196,12 @@ module.exports.updatedBookPublication = async (
   // return researchDbW.query(sql)
   //  }
   //  else{
-  //     const { authorLastName, bookTitle, edition, publicationPlace, publisherCategory, volumeNumber, publisherName, publicationYear,
+  //     const { authorName, bookTitle, edition, publicationPlace, publisherCategory, volumeNumber, publisherName, publicationYear,
   //         bookUrl, doiBookId, isbnNo, numberOfNmimsAuthors, nmimsAuthors, nmimsCampusAuthors, nmimsSchoolAuthors} = updatedBookPublicationData;
   //     let sql = {
   //         text : `UPDATE book_publications SET  author_last_name = $2, book_title = $3, edition = $4, publication_place = $5, publisher_category = $6, volume_number = $7, publisher_name = $8,
   //                publication_year = $9, book_url = $10, doi_id = $11, isbn = $12, number_of_nmims_authors = $13, nmims_authors = $14, nmims_campus_authors = $15, nmims_school_authors = $16 WHERE id = $1`,
-  //         values : [bookPublicationId,  authorLastName, bookTitle, edition, publicationPlace, publisherCategory, volumeNumber, publisherName, publicationYear,
+  //         values : [bookPublicationId,  authorName, bookTitle, edition, publicationPlace, publisherCategory, volumeNumber, publisherName, publicationYear,
   //                   bookUrl, doiBookId, isbnNo, numberOfNmimsAuthors, nmimsAuthors, nmimsCampusAuthors, nmimsSchoolAuthors]
   //     }
 };

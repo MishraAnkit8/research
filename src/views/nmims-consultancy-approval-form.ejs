@@ -97,20 +97,18 @@
                                             <td class="col-lg-1 project-title"><%- consultancyData.title %></td>
                                             <td class="col-lg-1 year"><%- consultancyData.year %></td>
                                             <td class="col-lg-1 total-fees"><%- consultancyData.total_fees %></td>
-                                            <!-- <td class="col-lg-1">
-                                <label class="view" data-consultancy-id="<%- consultancyData.consultancy_id %>"
-                                    data-faculty-id="<%- consultancyData.faculty_id %>"><i
-                                        class="fa-solid fa-eye view text-danger"
-                                        data-consultancy-id="<%- consultancyData.consultancy_id %>"
-                                        data-faculty-id="<%- consultancyData.faculty_id %>"></i></label>
-                                <label class="edit" data-consultancy-id="<%- consultancyData.consultancy_id %>"><i
-                                        class="fa fa-edit edit text-danger"
-                                        data-consultancy-id="<%- consultancyData.consultancy_id %>"></i></label>
-                                <label class="delete" data-consultancy-id="<%- consultancyData.consultancy_id %>"><i
-                                        class="fa-solid fa-trash delete text-danger"
-                                        data-consultancy-id="<%- consultancyData.consultancy_id %>"></i></label>
-                            </td> -->
-                                            <td colspan="3px" style="display:flex;justify-content: center;">
+                                            <td class="col-lg-1">
+                                                <label class="view" data-consultancy-id="<%- consultancyData.consultancy_id %>"
+                                                    data-faculty-id="<%- consultancyData.faculty_id %>"><i class="fa-solid fa-eye view text-danger"
+                                                        data-consultancy-id="<%- consultancyData.consultancy_id %>"
+                                                        data-faculty-id="<%- consultancyData.faculty_id %>"></i></label>
+                                                <label class="edit" data-consultancy-id="<%- consultancyData.consultancy_id %>"><i
+                                                        class="fa fa-edit edit text-danger" data-consultancy-id="<%- consultancyData.consultancy_id %>"></i></label>
+                                                <label class="delete" data-consultancy-id="<%- consultancyData.consultancy_id %>"><i
+                                                        class="fa-solid fa-trash delete text-danger"
+                                                        data-consultancy-id="<%- consultancyData.consultancy_id %>"></i></label>
+                                            </td>
+                                            <!-- <td colspan="3px" style="display:flex;justify-content: center;">
                                                 <b title="View" class="view border-right-0" style="cursor: pointer;"
                                                     data-consultancy-id="<%- consultancyData.consultancy_id %>">
                                                     &#128065;
@@ -123,7 +121,7 @@
                                                     data-consultancy-id="<%- consultancyData.consultancy_id %>">
                                                     &#128465;
                                                 </b>
-                                            </td>
+                                            </td> -->
                                         </tr>
                                         <%}) %>
                                 </tbody>
@@ -216,7 +214,7 @@
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="campus" class=" sub-title fw-bold"> Title(Brief) </label>
                                     <input type="text" name="SchoolName" id="title"
-                                        data-validate="isEmpty,isNotNumber,isExist,isNotSpecialChar"
+                                        data-validate="isEmpty,isExist,isLength:2:255"
                                         data-err-msg="Provide Valid Input" class="form-control" required />
                                 </div>
                                 <!-- Faculty ID -->
@@ -231,7 +229,7 @@
                                     <label for="campus" class=" sub-title fw-bold"> Designation and address of Contact
                                         Person for Client </label>
                                     <input type="text" name="SchoolName" id="faculty-designation"
-                                        data-validate="isEmpty,isAlphabeticWords" data-err-msg="Provide Valid Input"
+                                        data-validate="isEmpty,isLength:2:255" data-err-msg="Provide Valid Input"
                                         class="form-control" required />
                                 </div>
                                 <!--Date of Commencement-->
@@ -319,16 +317,17 @@
                                             faculty)</h5>
                                     </div>
                                     <div>
-                                        <span>ADD</span>
-                                        <button id="" type="button" class="btn btn-primary add-modal">
-                                            <i class="fas fa-plus plus" id="insert-faculty-share-datails"></i></button>
+                                        
+                                        <button id="insert-faculty-share-datails" type="button" class="btn btn-primary add-modal">
+                                            <span >ADD</span> <i class="fas fa-plus plus"></i></button>
                                         </button>
                                     </div>
                                 </div>
-                                <table class="table vertical-lines custom-table table-responsive">
+                                <table class="table vertical-lines custom-table table-responsive research-pagination">
                                     <thead>
-                                        <th class="col-lg-1"> </th>
-                                        <th class="col-lg-1">Fees(RS.)</th>
+                                        <th class="col-lg-5 col-md-6 col-sm-12 mb-4">Faculty Name </th>
+                                        <th class="col-lg-5 col-md-6 col-sm-12 mb-4">Fees(RS.)</th>
+                                        <th class="col-lg-2 col-md-6 col-sm-12 mb-4">Actions</th>
 
                                     </thead>
                                     <tbody id="add-faculty-share-datails">
@@ -1387,8 +1386,15 @@
                     formGroup = updateBtn.closest('.validate-input')
                     console.log("formGroup::::::::", formGroup)
                     formGroup.querySelectorAll('input[type="file"]')?.forEach(elm => {
-                        console.log("elm:::::::::", elm);
-                        elm.removeAttribute('data-validate')
+                        if(elm.files.length > 0){
+                            const validate = elm.getAttribute('data-validate');
+                            const elemVal = elm.value;
+                        }
+                        
+                        else{
+                            elm.removeAttribute('data-validate')
+                        }
+                        
                     })
 
                     let commencementDate = document.getElementById('commencement-date').value;

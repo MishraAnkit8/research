@@ -1,152 +1,183 @@
-// const { check } = require("express-validator");
-// const { validationHandler } = require("./validation.handler");
+const { check } = require("express-validator");
+const { validationHandler } = require("./validation.handler");
 
-// //check if value is an integer
-// const isInt = (value) => {
-//   if (value && isNaN(value)) {
-//     return false;
-//   }
-//   return true;
-// };
+//check if value is an integer
+const isInt = (value) => {
+  if (value && isNaN(value)) {
+    return false;
+  }
+  return true;
+};
 
-// // validate org insert
-// module.exports.validateBookChapter = [
-//   check("bookChapter", "No data to be inserted.")
-//     .notEmpty()
-//     .withMessage("bookChapter should not be empty"),
+// Custom validator to check if the stringified array contains valid IDs
+const isStringifiedArray = (value) => {
+    try {
+      const parsed = JSON.parse(value);
+      if (parsed && Object.values(parsed).length === 1) {
+        const ids = Object.values(parsed)[0];
+        return Array.isArray(ids) && ids.every(id => typeof id === 'string' || typeof id === 'number');
+      }
+      return false;
+    } catch (e) {
+      return false;
+    }
+  };
 
-//   check("bookChapter.authorFirstName")
-//     .notEmpty()
-//     .withMessage("author first name  required")
-//     .bail()
-//     .isString()
-//     .withMessage("author first name should be string")
-//     .isLength({ min: 2 }),
 
-//  check("bookChapter.authorLastName")
-//     .notEmpty()
-//     .withMessage("author last name is required")
-//     .bail()
-//     .isString()
-//     .withMessage("author last name should be string")
-//     .isLength({ min: 2 }), 
+//   cunstom validation for file 
+const isValidFile = (files) => {
+    if (!files || files.length === 0) {
+      return false; 
+    }
+  
+    const allowedTypes = ["application/pdf", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/vnd.ms-excel.sheet.macroenabled.12", "application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"];
+    const maxSizeInBytes = 5 * 1024 * 1024; // 5MB
+  
+    for (const file of files) {
+      if (!allowedTypes.includes(file.mimetype)) {
+        return false; 
+      }
+  
+      if (file.size > maxSizeInBytes) {
+        return false; 
+      }
+    }
+  
+    return true;
+  };
+  
 
-//  check("bookChapter.bookTitle")
-//     .notEmpty()
-//     .withMessage("book title is required")
-//     .bail()
-//     .isString()
-//     .withMessage(" book title  should be string")
-//     .isLength({ min: 5 }), 
-     
-//  check("bookChapter.edition")
-//     .notEmpty()
-//     .withMessage("edition is required")
-//     .bail()
-//     .isAlphanumeric()
-//     .withMessage("edition  should be alphaNumeric"),
 
-//  check("bookChapter.isbnNo")
-//     .notEmpty()
-//     .withMessage("isbn no is required")
-//     .bail()
-//     .isInt()
-//     .withMessage("isbn no should be integer"),
+// validate org insert
+module.exports.validateBookChapter = [
+check('authorName')
+    .notEmpty()
+    .withMessage('All authors names is required')
+    .bail()
+    .isString()
+    .withMessage('All authors names should be a string')
+    .isLength({ min: 2 }),
 
-//  check("bookChapter.editorName")
-//     .notEmpty()
-//     .withMessage("editor name is required")
-//     .bail()
-//     .isString()
-//     .withMessage("editor name should be string")
-//     .isLength({ min: 2 }),
+check('nmimsSchoolAuthors')
+    .notEmpty()
+    .withMessage('NMIMS School - Author  is required')
+    .bail()
+    .isString()
+    .withMessage('NMIMS School - Author should be a string')
+    .isLength({ min: 2 }),
 
-//  check("bookChapter.chapterTitle")
-//     .notEmpty()
-//     .withMessage("chapter title is required")
-//     .bail()
-//     .isString()
-//     .withMessage("chapter title should be string")
-//     .isLength({ min : 5 }),
- 
-//  check("bookChapter.volumeNumber")
-//     .notEmpty()
-//     .withMessage("volume number count is required")
-//     .bail()
-//     .isInt()
-//     .withMessage("volume number should be integer"),
-    
-//  check("bookChapter.publisherCategory")
-//     .notEmpty()
-//     .withMessage("publisher category  is required"),
-    
-//  check("bookChapter.pageNumber")
-//     .notEmpty()
-//     .withMessage("page number is required")
-//     .bail()
-//     .isInt()
-//     .withMessage("page numberr  should be integer"),
+check('nmimsCampusAuthors')
+    .notEmpty()
+    .withMessage('NMIMS Campus - Author  is required')
+    .bail()
+    .isString()
+    .withMessage('NMIMS Campus - Author  should be a string')
+    .isLength({ min: 2 }),
 
-//  check("bookChapter.publisherName")
-//     .notEmpty()
-//     .withMessage("publisher name is required")
-//     .bail()
-//     .isString()
-//     .withMessage("publisher name should be string")
-//     .isLength({ min: 2 }), 
+check('chapterTitle')
+    .notEmpty()
+    .withMessage('Title Of Chapter  is required')
+    .bail()
+    .isString()
+    .withMessage('Title Of Chapter should be a string')
+    .isLength({ min: 2 }),
 
-//  check("bookChapter.publicationYear")
-//     .notEmpty()
-//     .withMessage("publication year is required")
-//     .bail()
-//     .isInt()
-//     .withMessage("publication year should be integer"),
+check('bookTitle')
+    .notEmpty()
+    .withMessage('Title Of The Book   is required')
+    .bail()
+    .isString()
+    .withMessage('Title Of The Book  should be a string')
+    .isLength({ min: 2 }),
 
-//  check("bookChapter.bookUrl")
-//     .notEmpty()
-//     .withMessage("book url is required")
-//     .bail()
-//     .isString()
-//     .withMessage("book url should be string")
-//     .isLength({ min : 5 }),
-    
-//  check("bookChapter.doiBookId")
-//     .notEmpty()
-//     .withMessage("doi book id is required")
-//     .bail()
-//     .bail()
-//     .isInt()
-//     .withMessage("doi book id should be integer"),
-    
-//  check("bookChapter.numberOfNmimsAuthors")
-//     .notEmpty()
-//     .withMessage("number of nmims authors is required")
-//     .bail()
-//     .isInt()
-//     .withMessage("number of nmims authors  should be integer"),
+ check('edition')
+    .notEmpty()
+    .withMessage('Edition is required')
+    .bail()
+    .isAlphanumeric()
+    .withMessage('Edition should be combination of alphanumeric '),
 
-//  check("bookChapter.nmimsAuthors")
-//     .notEmpty()
-//     .withMessage("nmims authors is required")
-//     .bail()
-//     .isString()
-//     .withMessage("nmims authors is should be integer")
-//     .isLength({ min : 2 }),
-    
-//  check("bookChapter.nmimsCampusAuthors")
-//     .notEmpty()
-//     .withMessage("nmims campus authors is required")
-//     .bail()
-//     .isString()
-//     .withMessage("nmims campus authors should be integer")
-//     .isLength({min : 5}),
+check('publisherName')
+    .notEmpty()
+    .withMessage('Publisher Name is required')
+    .bail()
+    .isString()
+    .withMessage('Publisher Name should be a string'),
 
-//  check("bookChapter.nmimsSchoolAuthors")
-//     .notEmpty()
-//     .withMessage("nmims school authors is required")
-//     .bail()
-//     .isString()
-//     .withMessage("webLink  should be string"),
+check('publisherCategory')
+    .notEmpty()
+    .withMessage('Publisher Category required')
+    .bail()
+    .isString()
+    .withMessage('Publisher Category should be a string'),
 
-//   validationHandler, // Handler for validation errors
-// ];
+check('publicationYear')
+    .notEmpty()
+    .withMessage('Publication Year is required')
+    .bail()
+    .isInt({ min: 1900, max: 3000 })
+    .withMessage('Publication Year should be an integer between 1900 to 3000'),
+
+check('isbnNo')
+    .notEmpty()
+    .withMessage('ISBN Number is required')
+    .bail()
+    .isString()
+    .withMessage('ISBN Number should be astring'),
+
+check('volumeNumber')
+    .notEmpty()
+    .withMessage('Volume Number  is required')
+    .bail()
+    .isString()
+    .withMessage('Volume Number  should be astring'),
+
+check('doiBookId')
+    .notEmpty()
+    .withMessage('Weblink Of the Book is required')
+    .bail()
+    .isString()
+    .withMessage('Weblink Of the Book should be a string'),
+
+
+check('bookEditor')
+    .notEmpty()
+    .withMessage('Editor(s) Of The Book required')
+    .bail()
+    .isString()
+    .withMessage('Editor(s) Of The Book should be a string'),
+
+check('bookUrl')
+    .notEmpty()
+    .withMessage('Weblink Of the Book required')
+    .bail()
+    .isString()
+    .withMessage('Weblink Of the Book should be a string'),
+
+
+check('numberOfNmimsAuthors')
+    .notEmpty()
+    .withMessage('No. Of NMIMS Authors is required')
+    .bail()
+    .isInt()
+    .withMessage('No. Of NMIMS Authors should be an integer'), 
+
+check('pageNumber')
+    .notEmpty()
+    .withMessage('Page numbers Of The Chapter is required')
+    .bail()
+    .isString()
+    .withMessage('Page numbers Of The Chapter should be string')
+    .isLength({ min : 2}),
+
+
+check('nmimsAuthors')
+    .notEmpty()
+    .withMessage('Name of NMIMS Authors is required')
+    .bail()
+    .isString()
+    .withMessage('Name of NMIMS Authors should be a string')
+    .isLength({ min: 2 }),
+
+  validationHandler, // Handler for validation errors
+];

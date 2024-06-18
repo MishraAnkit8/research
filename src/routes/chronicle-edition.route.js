@@ -9,7 +9,7 @@ const { authMiddleware } = require('../middleware/authMiddleware');
 const router = express.Router();
 
 //for render page
-router.get('/', chronicleController.renderChronicleEdition);
+router.get('/', asyncErrorHandler(authMiddleware),  chronicleController.renderChronicleEdition);
 
 //for inserting data route
 router.post('/submit-vc-data/insert', asyncErrorHandler(authMiddleware), asyncErrorHandler(chronicleController.insertVcData));

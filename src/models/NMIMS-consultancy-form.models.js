@@ -64,7 +64,7 @@ module.exports.viewConsultancyApprovalForm = async (
             JOIN 
                 consultancy_approval_form c ON f.id = c.faculty_table_id
             WHERE
-                c.id = $1 AND created_by = $2 and f.active=true and c.active=true
+                c.id = $1 AND c.created_by = $2 and f.active=true and c.active=true
             ORDER BY 
                 c.id`,
     values: [nmimsConsultancyFormId, userName],

@@ -13,13 +13,13 @@ const { authMiddleware } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
-router.use('/dashboard-page', dashboardRoute);
-router.use('/research', researchRoute);
-router.use('/teaching-excellance' , teachingExecellanceRoute);
-router.use('/meeting-stackholders' , meetingStackholdersRoute);
-router.use('/brandingAdvertising' , brandingAndAdvertisingRoute);
-router.use('/chronicle-edition' , chronicleRoutes);
-router.use('/chronicle-page' , chroniclePageRoutes);
+router.use('/dashboard-page',asyncErrorHandler(authMiddleware), dashboardRoute);
+router.use('/research', asyncErrorHandler(authMiddleware), researchRoute);
+router.use('/teaching-excellance' ,  asyncErrorHandler(authMiddleware), teachingExecellanceRoute);
+router.use('/meeting-stackholders' , asyncErrorHandler(authMiddleware),  meetingStackholdersRoute);
+router.use('/brandingAdvertising' , asyncErrorHandler(authMiddleware), brandingAndAdvertisingRoute);
+router.use('/chronicle-edition' , asyncErrorHandler(authMiddleware), chronicleRoutes);
+router.use('/chronicle-page' ,  asyncErrorHandler(authMiddleware), chroniclePageRoutes);
 router.use('/user' , userRegistrationRoutes);
 
 module.exports = router;

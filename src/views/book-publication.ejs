@@ -35,38 +35,13 @@
                             </div>
                         </div>
                         <div class="card-body table-responsive">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <!-- <label>Show Entries</label>
-                                    <select class="form-select" id="changeEntry">
-                                        <option value="5">5</option>
-                                        <option value="10">10</option>
-                                        <option value="25">25</option>
-                                        <option value="50">50</option>
-                                        <option value="100">100</option>
-                                        <option value="150">150</option>
-                                        <option value="200">200</option>
-                                        <option value="250">250</option>
-                                        <option value="300">300</option>
-                                        <option value="350">350</option>
-                                        <option value="400">400</option>
-                                        <option value="500">500</option>
-                                        <option value="800">800</option>
-                                        <option value="1000">1000</option>
-                                    </select> -->
-                                </div>
-                                <div>
-                                    <!-- <div class="table-searchbar-container">
-                                        <button type="button" id="searchBtn"><i class="fas fa-search"></i></button>
-                                        <input type="search" id="searchKeyword" placeholder="Enter keywords"
-                                            class="table-searchbar">
-                                    </div> -->
-                                </div>
-                            </div>
-                            <table class="table vertical-lines custom-table" id="book-Publication-list">
+                            
+                            <table class="table vertical-lines custom-table table-responsive" id="book-Publication-list">
                                 <thead>
                                     <th class="col-lg-1">Serial no</th>
                                     <th class="col-lg-1">Author's name</th>
+                                    <th class="col-lg-1">NMIMS Campus - Author</th>
+                                    <th class="col-lg-1">NMIMS School - Author</th>
                                     <th class="col-lg-1">Publication year</th>
                                     <th class="col-lg-1">Book title</th>
                                     <th class="col-lg-1">ISBN Number</th>
@@ -91,6 +66,10 @@
                                             <td class="row-count col-lg-1" id="rowCount"><%- index+1 %></td>
                                             <td class="author-last-name col-lg-1"><%- publication.author_last_name %>
                                             </td>
+                                            <td class="nmims-campus col-lg-1"><%- publication.nmims_campus_authors %>
+                                            </td>
+                                            <td class="nmims-school col-lg-1"><%- publication.nmims_school_authors %>
+                                            </td>
                                             <td class="publication-year col-lg-1"><%- publication.publication_year %>
                                             </td>
                                             <td class="book-title col-lg-1"><%- publication.book_title %></td>
@@ -107,7 +86,7 @@
                                         class="fa-solid fa-trash delete text-danger"
                                         data-publication-id="<%- publication.id %>"></i></label>
                             </td> -->
-                                            <td style="display:flex;justify-content:center;">
+                                            <!-- <td>
                                                 <b title="View" class="view border-right-0" style="cursor: pointer;"
                                                     id="label-cals" data-publication-id="<%- publication.id %>">
                                                     &#128065;
@@ -120,6 +99,30 @@
                                                     id="label-cals" data-publication-id="<%- publication.id %>">
                                                     &#128465;
                                                 </b>
+                                            </td> -->
+
+                                            <td>
+                                                <!-- <b style="cursor: pointer;" title="View" class="view border-right-0"
+                                                                                                                                            data-publication-id="<%- publication.id %>"> -->
+                                                <label class="view" data-publication-id="<%- publication.id %>">
+                                                    <i class="fa-solid fa-eye view text-danger" data-publication-id="<%- publication.id %>"></i>
+                                                </label>
+                                                <!-- &#128065;
+                                                                                                                                        </b>&ensp;&ensp;&ensp;
+                                                                                                                                        <b style="cursor: pointer;" title="Edit" class="edit border-right-0"
+                                                                                                                                            data-publication-id="<%- publication.id %>"> -->
+                                                <label class="edit" data-publication-id="<%- publication.id %>">
+                                                    <i class="fa fa-edit edit text-danger" data-publication-id="<%- publication.id %>"></i>
+                                                </label>
+                                                <!-- &#9998;
+                                                                                                                                        </b>&ensp;&ensp;&ensp;
+                                                                                                                                        <b style="cursor: pointer;" title="Delete" class="delete border-right-0"
+                                                                                                                                            data-publication-id="<%- publication.id %>"> -->
+                                                <label class="delete" data-publication-id="<%- publication.id %>">
+                                                    <i class="fa-solid fa-trash delete text-danger" data-publication-id="<%- publication.id %>"></i>
+                                                </label>
+                                                <!-- &#128465;
+                                                                                            </b> -->
                                             </td>
 
                                         </tr>
@@ -207,18 +210,36 @@
                         </div>
                         <div class="modal-body">
                             <div class="row">
+                                 <!--NMIMS School - Author-->
+                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="nmims-school-authors" class="form-label fw-bold ">NMIMS School - Author <i style="color: red;">*</i></label>
+                                    <input type="url" name="web-link" id="nmims-school-authors"
+                                        data-validate="isEmpty,isLength:2:255,isExist,isLength:2:255"
+                                        data-err-msg="Provide Valid Input" class="form-control" required />
+                                </div>
+                                <!-- NMIMS Campus - Author -->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="nmims-campus-authors" class="form-label fw-bold ">NMIMS Campus - Author <i style="color: red;">*</i></label>
+                                    <input type="url" name="web-link" id="nmims-campus-authors"
+                                        data-validate="isEmpty,isLength:2:255,isExist,isLength:2:255"
+                                        data-err-msg="Provide Valid Input" class="form-control" required />
+                                </div>
+                               
 
                                 <!-- Author's last name -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <label for="author-last-name" class="form-label  fw-bold">All authors names
-</label>
+                                    <label for="author-last-name" class="form-label  fw-bold">All Authors Names <i style="color: red;">*</i></label>
+                                    </label>
                                     <input type="text" name="lname" id="author-last-name" class="form-control"
-                                        data-validate="isEmpty,isAlphabeticWords,isLength:2:255"
+                                        data-validate="isEmpty,isLength:2:255,isLength:2:255"
                                         data-err-msg="Provide Valid Input" required>
                                 </div>
+
+                                
+
                                 <!-- Title of case study -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <label for="book-title" class="form-label fw-bold">Title Of Book</label>
+                                    <label for="book-title" class="form-label fw-bold">Title Of Book <i style="color: red;">*</i></label>
                                     <input type="text" name="titleOfBook" id="book-title" class="form-control"
                                         data-validate="isEmpty,isNotNumber,isExist,isLength:2:255"
                                         data-err-msg="Provide Valid Input" required>
@@ -226,29 +247,29 @@
                                 <!-- Edition -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="edition" class="form-label fw-bold">Edition (if it isn't the
-                                        first)</label>
+                                        first) <i style="color: red;">*</i></label>
                                     <input type="text" name="edition" id="edition" class="form-control"
-                                        data-validate="isEmpty,isAlphaNumeric"
+                                        data-validate="isEmpty,isLength:1:255"
                                         data-err-msg="AlphaNumeric value is required" required>
                                 </div>
                                 <!-- Volume number -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <label for="edition" class="form-label fw-bold">Volume Number</label>
+                                    <label for="edition" class="form-label fw-bold">Volume Number <i style="color: red;">*</i></label>
                                     <input type="text" name="volume-number" id="volume-number" class="form-control"
-                                        data-validate="isEmpty,isAlphaNumeric"
-                                        data-err-msg="AlphaNumeric value is required" required>
+                                        data-validate="isEmpty,isExist,isLength:1:255"
+                                        data-err-msg="Provide valid input" required>
                                 </div>
                                 <!-- Publisher Name -->
                                 <div class=" form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <label for="publisher-name" class="form-label fw-bold">Publisher Name</label>
+                                    <label for="publisher-name" class="form-label fw-bold">Publisher Name <i style="color: red;">*</i></label>
                                     <input type="text" name="vol" id="publisher-name" class="form-control"
-                                        data-validate="isEmpty,isAlphabeticWords,isLength:2:255"
+                                        data-validate="isEmpty,isLength:2:255"
                                         data-err-msg="Provide Valid Input" required>
                                 </div>
                                 <!-- Publisher Category  -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="publisher-category" id="publisher-category"
-                                        class="form-label fw-bold mb-3">Publisher Category</label><br>
+                                        class="form-label fw-bold mb-3">Publisher Category <i style="color: red;">*</i></label><br>
                                     <div class="form-check-inline">
                                         <label for="inter-national" class="form-check-label">
                                             <input type="radio" class="form-check-input" id="inter-national"
@@ -264,76 +285,61 @@
                                 </div>
                                 <!-- Publication Year -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <label for="publication-year" class="form-label fw-bold">Publication Year</label>
+                                    <label for="publication-year" class="form-label fw-bold">Publication Year <i style="color: red;">*</i></label>
                                     <input type="number" name="Year" id="publication-year"
                                         data-validate="isEmpty,isNumber,isValidYear"
                                         data-err-msg="Publication year is required" class="form-control" required>
                                 </div>
                                 <!-- URL of the book publication -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <label for="book-url" class="form-label fw-bold">Website link</label>
+                                    <label for="book-url" class="form-label fw-bold">Website link <i style="color: red;">*</i></label>
                                     <input type="text" name="URL" id="book-url" class="form-control"
-                                        data-validate="isEmpty,isLength:2:255" data-err-msg="Url is required." required>
+                                        data-validate="isEmpty,isLength:1:255" data-err-msg="Url is required." required>
                                 </div>
                                 <!-- ISBN Number -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <label for="isbn-no" class="form-label fw-bold">ISBN Number</label>
-                                    <input type="number" name="ISBN-Number" id="isbn-no" class="form-control"
-                                        data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required."
+                                    <label for="isbn-no" class="form-label fw-bold">ISBN Number <i style="color: red;">*</i></label>
+                                    <input type="text" name="ISBN-Number" id="isbn-no" class="form-control"
+                                        data-validate="isEmpty,isLength:1:255" data-err-msg="Provide valid input."
                                         required>
                                 </div>
                                 <!-- DOI of book -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <label for="doi-book-id" class="form-label fw-bold">DOI ID Of Book</label>
+                                    <label for="doi-book-id" class="form-label fw-bold">WebLink /DOI No.  <i style="color: red;">*</i></label>
                                     <input type="text" name="doi-book-id" id="doi-book-id" class="form-control"
-                                        data-validate="isEmpty,isExist,isLength:2:255"
+                                        data-validate="isEmpty,isExist,isLength:1:255"
                                         data-err-msg="Field value is required." required>
                                 </div>
                                 <!-- Place of Publication -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="publication-place" class="form-label fw-bold">Place Of
-                                        Publication</label>
+                                        Publication <i style="color: red;">*</i></label>
                                     <input type="text" name="publication-place" id="publication-place"
                                         class="form-control"
-                                        data-validate="isEmpty,isNotNumber,isExist,isLength:2:255,isAlphabet"
+                                        data-validate="isEmpty,isExist,isLength:2:255"
                                         data-err-msg="Provide Valid Input" required>
                                 </div>
                                 <!-- No. of NMIMS Authors -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="number-of-nmims-authors" class="form-label fw-bold ">No. Of NMIMS
-                                        Authors</label>
+                                        Authors <i style="color: red;">*</i></label>
                                     <input type="number" name="nmims-authors" id="number-of-nmims-authors"
                                         data-validate="isEmpty,isNumber" data-err-msg="Numeric value is required."
                                         class="form-control" required />
                                 </div>
                                 <!-- Name of NMIMS Authors -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <label for="nmims-authors" class="form-label fw-bold ">Name of NMIMS Authors</label>
+                                    <label for="nmims-authors" class="form-label fw-bold ">Name Of NMIMS Authors <i style="color: red;">*</i></label>
                                     <input type="text" name="web-link" id="nmims-authors"
-                                        data-validate="isEmpty,isAlphabeticWords,isLength:2:255"
+                                        data-validate="isEmpty,isLength:2:255,isLength:2:255"
                                         data-err-msg="Provide Valid Input" class="form-control" required />
                                 </div>
-                                <!-- NMIMS Campus - Author -->
-                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <label for="nmims-campus-authors" class="form-label fw-bold ">Campus of
-                                        Author</label>
-                                    <input type="url" name="web-link" id="nmims-campus-authors"
-                                        data-validate="isEmpty,isNotNumber,isExist,isLength:2:255,isAlphabet"
-                                        data-err-msg="Provide Valid Input" class="form-control" required />
-                                </div>
-                                <!--NMIMS School - Author-->
-                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <label for="nmims-school-authors" class="form-label fw-bold ">School of
-                                        Author</label>
-                                    <input type="url" name="web-link" id="nmims-school-authors"
-                                        data-validate="isEmpty,isNotNumber,isExist,isLength:2:255"
-                                        data-err-msg="Provide Valid Input" class="form-control" required />
-                                </div>
+                             
                                 <!-- Upload Supporting Documents-->
                                 <!-- <div class="form-group col-lg-6 col-md-8 col-sm-12 mb-4"> -->
                                 <div class="form-group col-lg-6 col-md-8 col-sm-12">
                                     <label class="form-label fw-bold ">
-                                        Upload the supporting documents
+                                        Upload the supporting documents<i style="color: red;">*</i>
                                         <div id="uploadNewSupportDocumentDiv">
                                             <label for="uploadNewSupportDocument"><small>Click to Upload New
                                                     File</small></label>
@@ -374,20 +380,37 @@
                     <div class="modal-content modal-content-data">
                         <div class="modal-header">
                             <h5 class="modal-title" id="book-publication-title"> BOOK PUBLICATION VIEW</h5>
-                            <div class="close" data-dismiss="modal" aria-label="Close">
-                                <span type="button" aria-hidden="true"><i class="fas fa-times "></i></span>
+                            <div class="close" id="close-cross-button" data-dismiss="modal" aria-label="Close">
+                                <span type="button"  aria-hidden="true"><i class="fas fa-times "></i></span>
                             </div>
                         </div>
                         <div class="modal-body">
                             <div class="row">
+                                <!-- NMIMS SCHOOL AUTHOR -->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="task-sub-title sub-title-text">NMIMS School - Author:</div>
+                                        <label class="view-content" id="view-nmims-school-authors"></label>
+                                    </div>
+                                </div>
+                                   <!-- NMIMS CAMPUS AUTHOR -->
+                                   <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="task-sub-title sub-title-text">NMIMS Campus - Author:</div>
+                                        <label class="view-content" id="view-nmims-campus-authors"></label>
+                                    </div>
+                                </div>
+                                
                                 <!-- Author's last name -->
                                 <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                                     <div class="box">
-                                        <div class="task-sub-title sub-title-text">Author's Last Name, First Initial :
+                                        <div class="task-sub-title sub-title-text">All Authors Names  :
                                         </div>
                                         <label class="view-content" id="view-last-name"></label>
                                     </div>
                                 </div>
+
+                               
                                 <!-- Title of case study -->
                                 <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                                     <div class="box">
@@ -426,7 +449,7 @@
                                 <!-- doi book id -->
                                 <div class="col-lg-4 col-md-6  col-sm-12 p-3 doi-book-id d-none">
                                     <div class="box">
-                                        <div class="task-sub-title sub-title-text">DOI ID Of Book :</div>
+                                        <div class="task-sub-title sub-title-text">WebLink /DOI No. :</div>
                                         <label class="view-content" id="view-doi-book-id"></label>
                                     </div>
                                 </div>
@@ -473,20 +496,7 @@
                                         <label class="view-content" id="view-nmims-authors"></label>
                                     </div>
                                 </div>
-                                <!-- NMIMS CAMPUS AUTHOR -->
-                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                                    <div class="box">
-                                        <div class="task-sub-title sub-title-text">NMIMS Campus Author:</div>
-                                        <label class="view-content" id="view-nmims-campus-authors"></label>
-                                    </div>
-                                </div>
-                                <!-- NMIMS SCHOOL AUTHOR -->
-                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
-                                    <div class="box">
-                                        <div class="task-sub-title sub-title-text">School of Author :</div>
-                                        <label class="view-content" id="view-nmims-school-authors"></label>
-                                    </div>
-                                </div>
+                              
                                 <!-- Supporting Document -->
                                 <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                                     <div class="box">
@@ -503,7 +513,7 @@
                         </div>
                         <!-- Add your modal footer buttons if needed -->
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-danger" id="footer-close-view" data-dismiss="modal">Close</button>
                         </div>
                     </div>
                 </div>
@@ -545,7 +555,7 @@
                         const bookPublicationDataFiles = document.querySelector('#book-publication-edit');
                         bookPublicationDataFiles.classList.add('d-none');
 
-                        const authorLastName = document.getElementById('author-last-name');
+                        const authorName = document.getElementById('author-last-name');
                         const bookTitle = document.getElementById('book-title');
                         const edition = document.getElementById('edition');
                         const isbnNo = document.getElementById('isbn-no');
@@ -564,7 +574,7 @@
                         const supportingDocuments = document.querySelector('input[type="file"]');
 
                         // 
-                        authorLastName.value = '';
+                        authorName.value = '';
                         bookTitle.value = '';
                         edition.value = '';
                         isbnNo.value = '';
@@ -585,7 +595,7 @@
                 const insertBookPublication = async (url) => {
 
                     const bookPublicationData = new FormData();
-                    const authorLastName = document.getElementById('author-last-name').value;
+                    const authorName = document.getElementById('author-last-name').value;
                     const bookTitle = document.getElementById('book-title').value;
                     const edition = document.getElementById('edition').value;
                     const isbnNo = document.getElementById('isbn-no').value;
@@ -612,7 +622,7 @@
 
 
                     // appending value
-                    bookPublicationData.append('authorLastName', authorLastName);
+                    bookPublicationData.append('authorName', authorName);
                     bookPublicationData.append('bookTitle', bookTitle);
                     bookPublicationData.append('edition', edition);
                     bookPublicationData.append('isbnNo', isbnNo);
@@ -658,7 +668,7 @@
                                 //         newBookPublication.setAttribute('data-supporting-documents', data.filename);
                                 //         newBookPublication.innerHTML = `
                                 // <td >${IndexEntry}</td>
-                                //     <td class="author-last-name">${data.bookPublicationData.authorLastName}</td>
+                                //     <td class="author-last-name">${data.bookPublicationData.authorName}</td>
                                 //     <td class="publication-year">${data.bookPublicationData.publicationYear}</td>
                                 //     <td class="book-title">${data.bookPublicationData.bookTitle}</td>
                                 //     <td class="isbn-no">${data.bookPublicationData.isbnNo}</td>
@@ -752,7 +762,7 @@
 
                         // fileView.classList.remove('d-none');
                         // modalImage.classList.remove('d-none');
-                        const authorLastName = document.getElementById('author-last-name');
+                        const authorName = document.getElementById('author-last-name');
                         const bookTitle = document.getElementById('book-title');
                         const edition = document.getElementById('edition');
                         const isbnNo = document.getElementById('isbn-no');
@@ -771,7 +781,7 @@
                         const supportingDocuments = bookPublicationRowToBeUpdated.getAttribute('data-supporting-documents');
                         console.log('supportingDocuments ==>>', supportingDocuments)
                         // assigning related row data value
-                        authorLastName.value = bookPublicationRowToBeUpdated.querySelector('.author-last-name').innerText;
+                        authorName.value = bookPublicationRowToBeUpdated.querySelector('.author-last-name').innerText;
                         bookTitle.value = bookPublicationRowToBeUpdated.querySelector('.book-title').innerText;
                         edition.value = bookPublicationRowToBeUpdated.getAttribute('data-edition');
                         publisherName.value = bookPublicationRowToBeUpdated.querySelector('.publisher-name').innerText;
@@ -990,7 +1000,7 @@
                         updatedBookPublicationData.append('researchSupportingDocument', bookPublicationDataFiles);
                     }
                     updatedBookPublicationData.append('bookPublicationId', bookPublicationId);
-                    updatedBookPublicationData.append('authorLastName', updatedaAuthorLastName);
+                    updatedBookPublicationData.append('authorName', updatedaAuthorLastName);
                     updatedBookPublicationData.append('bookTitle', updatedBookTitle);
                     updatedBookPublicationData.append('edition', updatedEdition);
                     updatedBookPublicationData.append('isbnNo', updatedIsbnNo);
@@ -1032,7 +1042,7 @@
                                 if (updatedDocuments.files) {
                                     bookPublicationRowToBeUpdated.setAttribute('data-supporting-documents', data.updatedFile);
                                 };
-                                bookPublicationRowToBeUpdated.querySelector('.author-last-name').innerText = data.updatedBookPublication.authorLastName;
+                                bookPublicationRowToBeUpdated.querySelector('.author-last-name').innerText = data.updatedBookPublication.authorName;
                                 bookPublicationRowToBeUpdated.querySelector('.book-title').innerText = data.updatedBookPublication.bookTitle;
                                 bookPublicationRowToBeUpdated.querySelector('.publisher-name').innerText = data.updatedBookPublication.publisherName;
                                 bookPublicationRowToBeUpdated.querySelector('.isbn-no').innerText = data.updatedBookPublication.isbnNo;
@@ -1090,8 +1100,15 @@
                     formGroup = updateBtn.closest('.validate-input')
                     console.log("formGroup::::::::", formGroup)
                     formGroup.querySelectorAll('input[type="file"]')?.forEach(elm => {
-                        console.log("elm:::::::::", elm);
-                        elm.removeAttribute('data-validate')
+                        if(elm.files.length > 0){
+                            const validate = elm.getAttribute('data-validate');
+                            const elemVal = elm.value;
+                        }
+                        
+                        else{
+                            elm.removeAttribute('data-validate')
+                        }
+                        
                     })
                     const isValid = validateRequiredFormFields(submitBtn);
                     if (isValid) {
@@ -1195,6 +1212,14 @@
                 document.getElementById('footerClose').addEventListener('click', () => {
                     document.location.reload();
                 })
+
+                document.getElementById('footer-close-view').addEventListener('click', () => {
+                    document.location.reload();
+                });
+
+                document.getElementById('close-cross-button').addEventListener('click', () => {
+                    document.location.reload();
+                });
 
 
 

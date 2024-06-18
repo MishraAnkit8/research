@@ -106,7 +106,18 @@
                                             <td class="col-lg-1 year"><%- grantSeedData.year %></td>
                                             <td class="col-lg-1 total-fees"><%- (grantSeedData.per_session_fees *
                                                     grantSeedData.session_count_per_days) %></td>
-                                            <td>
+                                            <td class="col-lg-1">
+                                                <label class="view" data-consultancy-id="<%- grantSeedData.consultancy_id %>"
+                                                    data-consultancy-id="<%- grantSeedData.consultancy_id %>"><i class="fa-solid fa-eye view text-danger"
+                                                    data-consultancy-id="<%- grantSeedData.consultancy_id %>"
+                                                    data-consultancy-id="<%- grantSeedData.consultancy_id %>"></i></label>
+                                                <label class="edit" data-consultancy-id="<%- grantSeedData.consultancy_id %>"><i
+                                                        class="fa fa-edit edit text-danger" data-consultancy-id="<%- grantSeedData.consultancy_id %>"></i></label>
+                                                <label class="delete" data-consultancy-id="<%- grantSeedData.consultancy_id %>"><i
+                                                        class="fa-solid fa-trash delete text-danger"
+                                                        data-consultancy-id="<%- grantSeedData.consultancy_id %>"></i></label>
+                                            </td>
+                                            <!-- <td>
                                                 <b title="View" class="view" style="cursor: pointer;"
                                                     data-consultancy-id="<%- grantSeedData.consultancy_id %>">
                                                     &#128065;
@@ -120,7 +131,7 @@
                                                     &#128465;
                                                 </b>
                                             </td>
-                                        </tr>
+                                        </tr> -->
                                         <% }) %>
                                 </tbody>
                                 <tr>
@@ -220,14 +231,14 @@
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="campus" class=" sub-title fw-bold"> Title(Brief) </label>
                                     <input type="text" name="SchoolName" id="title"
-                                        data-validate="isEmpty,isAllNumeric,isExist" data-err-msg="Provide Valid Input"
+                                        data-validate="isEmpty,isExist,isLength:2:255" data-err-msg="Provide Valid Input"
                                         class="form-control" required />
                                 </div>
                                 <!-- Faculty ID -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="faculty-id" class="form-label fw-bold ">Name of Faculty</label>
                                     <select id="faculty-id" class="select-option facultiesId"
-                                        data-validate="isEmpty,isExist" data-err-msg="This  field  is required."
+                                        data-validate="isEmpty,isExist,isLength:2:255" data-err-msg="This  field  is required."
                                         multiple required>
                                     </select>
                                 </div>
@@ -236,7 +247,7 @@
                                     <label for="" class=" sub-title fw-bold"> Designation and address of Contact Person
                                         for Client </label>
                                     <input type="text" name="" id="faculty-designation"
-                                        data-validate="isEmpty,isAlphabeticWords" data-err-msg="Provide Valid Input"
+                                        data-validate="isEmpty,isLength:2:255" data-err-msg="Provide Valid Input"
                                         class="form-control" required />
                                 </div>
                                 <!--Date of Commencement-->
@@ -325,17 +336,17 @@
                                             faculty)</h5>
                                     </div>
                                     <div>
-                                        <span>ADD</span>
-                                        <button id="" type="button" class="btn btn-primary add-modal">
-                                            <i class="fas fa-plus plus" id="insert-faculty-share-datails"></i></button>
+                                        
+                                        <button id="insert-faculty-share-datails" type="button" class="btn btn-primary add-modal">
+                                            <span>ADD</span> <i class="fas fa-plus plus" id="insert-faculty-share-datails"></i></button>
                                         </button>
                                     </div>
                                 </div>
-                                <table class="table vertical-lines custom-table table-responsive">
+                                <table class="table vertical-lines custom-table table-responsive research-pagination">
                                     <thead>
-                                        <th class="col-lg-1">Serial no</th>
-                                        <th class="col-lg-1"> </th>
-                                        <th class="col-lg-1">Fees(RS.)</th>
+                                        <th class="col-lg-5 col-md-6 col-sm-12 mb-4">Faculty Names </th>
+                                        <th class="col-lg-5 col-md-6 col-sm-12 mb-4">Fees(RS.)</th>
+                                        <th class="col-lg-2 col-md-6 col-sm-12 mb-4">Actions</th>
 
                                     </thead>
                                     <tbody id="add-faculty-share-datails">
@@ -722,7 +733,6 @@
                 document.querySelector('#insert-faculty-share-datails').addEventListener('click', function () {
                     let newRow = `
                             <tr>
-                                <td>1</td>
                                 <td><input type="text"  class="faculty-share-details"></td>
                                 <td><input type="text" class="faculty-share-details"></td>
                                 <td><button class="delete-row"><i class="fas fa-trash-alt text-danger"></i></button></td>

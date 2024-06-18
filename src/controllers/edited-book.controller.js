@@ -2,15 +2,18 @@ const { getRedisData } = require('../../utils/redis.utils');
 const editedBookPublication = require('../services/edited-book.service');
 
 module.exports.renderEdietedBookPublication = async(req, res, next) => {
-    const  userName = req.body.username;
- console.log('userName in controller  ===>>>>>>', userName);
+    const sessionid = req.cookies.session;
+    let sessionData = await getRedisData(`${sessionid}:session`)
+    const  userName = sessionData.username;
+    console.log('userName in in dashboard controller  ===>>>>>>', userName);
 
     const editedBookPublicationData = await editedBookPublication.fetchEditedBookPublicationData(userName);
     console.log('editeBookList  in controller ==>>', editedBookPublicationData);
     if(editedBookPublicationData){
         res.render('edited-book-publication' , {
             editedBookList : editedBookPublicationData.rows,
-            rowCount : editedBookPublicationData.rowCount
+            rowCount : editedBookPublicationData.rowCount,
+            userName : userName
         })
     }
 }
@@ -41,8 +44,10 @@ module.exports.insertEditedBookPublication = async(req, res, next) => {
     })
 }
 module.exports.updateEditedBookPublication = async(req, res, next) => {
-    const  userName = req.body.username;
-    console.log('userName in controller  ===>>>>>>', userName);
+    const sessionid = req.cookies.session;
+    let sessionData = await getRedisData(`${sessionid}:session`)
+    const  userName = sessionData.username;
+    console.log('userName in in dashboard controller  ===>>>>>>', userName);
 
     console.log('data comming from frontend ==>>', req.body);
     const editedBookId  = req.body.editedBookId;
@@ -77,8 +82,10 @@ module.exports.deleteEditedBookPublication = async(req, res, next) => {
 }
 
 module.exports.viewEditedBookPublication = async(req, res, next) => {
-    const  userName = req.body.username;
-    console.log('userName in controller  ===>>>>>>', userName);
+    const sessionid = req.cookies.session;
+    let sessionData = await getRedisData(`${sessionid}:session`)
+    const  userName = sessionData.username;
+    console.log('userName in in dashboard controller  ===>>>>>>', userName);
 
     const {editedBookId} = req.body;
     const editedBookView = await editedBookPublication.editedBookPublicationView(editedBookId, userName);

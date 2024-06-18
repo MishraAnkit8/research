@@ -7,7 +7,9 @@ function validateRequiredFormFields(actionBtn) {
   for (let elem of elemToBeValidated) {
     let isValidElem = true;
     const elemVal = elem.value.trim();
+    const multiFileUpload = elem.files;
 
+    console.log("fileName ==>>", multiFileUpload);
     console.log("elemVal ==>>", elemVal);
     const formGroup = elem.closest(".form-group");
     const isRequired = elem.required;
@@ -38,6 +40,43 @@ function validateRequiredFormFields(actionBtn) {
 
       if (validate === "isNumber") {
         const isValid = isNumber(elemVal);
+        if (!isValid) {
+          isValidElem = false;
+          validationState = false;
+          break;
+        }
+      }
+
+      if (validate === "isDecimalNumber") {
+        const isValid = isDecimalNumber(elemVal);
+        if (!isValid) {
+          isValidElem = false;
+          validationState = false;
+          break;
+        }
+      } 
+
+      if (validate === "isAlphaNumericWithSpaceNoLeadingSpace") {
+        const isValid = isAlphaNumericWithSpaceNoLeadingSpace(elemVal);
+        if (!isValid) {
+          isValidElem = false;
+          validationState = false;
+          break;
+        }
+      }
+
+      
+      if (validate === "isValidMobileNumber") {
+        const isValid = isValidMobileNumber(elemVal);
+        if (!isValid) {
+          isValidElem = false;
+          validationState = false;
+          break;
+        }
+      }
+
+      if (validate === "isSpecialSymbol") {
+        const isValid = isSpecialSymbol(elemVal);
         if (!isValid) {
           isValidElem = false;
           validationState = false;
@@ -144,17 +183,59 @@ function validateRequiredFormFields(actionBtn) {
       }
 
       if (validate.includes("isFile")) {
-        const arr = ["pdf", "xlsx", "xlsm", "xls","docx"]
-        let ext = elemVal.substring(elemVal.lastIndexOf('.') + 1);
-        let isValid = arr.includes(ext?.toLowerCase())
 
-        if(!isValid) {
-          isValidElem = false;
-          validationState = false;
-          errorMsg = `Invalid File Type only ${arr.join(", ")} are allowed`;
-          break;
+        const allowedExtensions = ["pdf", "xlsx", "xlsm", "xls", "docx"];
+        let ext = elemVal.substring(elemVal.lastIndexOf('.') + 1);
+        console.log('elemVal ====>>>>>>>', elemVal)
+        let isValidExtension = allowedExtensions.includes(ext?.toLowerCase());
+    
+        // Extract the file name from the full path
+        let fileName = elemVal.substring(elemVal.lastIndexOf('/') + 1);
+        let containsComma = fileName.includes(',');
+        
+
+        if(multiFileUpload){
+          for (const fl of multiFileUpload) {
+              let multiFileName = fl.name
+              let multiExt = multiFileName.substring(multiFileName.lastIndexOf('.') + 1);
+              let multiIsValidExtension = allowedExtensions.includes(multiExt?.toLowerCase());
+              let multiContainsComma = multiFileName.includes(',');
+              console.log("multiExt :::::::::::::::::",multiExt);
+              if (!multiIsValidExtension) {
+                isValidElem = false;
+                validationState = false;
+                errorMsg = `Invalid File Type. Only ${allowedExtensions.join(", ")} are allowed.`;
+                break;
+            }
+            if (multiContainsComma) {
+              isValidElem = false;
+              validationState = false;
+              errorMsg = "Invalid File Name. The file name should not contain a comma.";
+              break;
+          }
+          }
         }
-      }
+
+
+        
+        
+        
+    
+        if (!isValidExtension) {
+            isValidElem = false;
+            validationState = false;
+            errorMsg = `Invalid File Type. Only ${allowedExtensions.join(", ")} are allowed.`;
+            break;
+        }
+    
+        if (containsComma) {
+            isValidElem = false;
+            validationState = false;
+            errorMsg = "Invalid File Name. The file name should not contain a comma.";
+            break;
+        }
+    }
+    
 
       if (validate === "isNotSpecialChar") {
         const isValid = isNotSpecialChar(elemVal);
@@ -175,8 +256,34 @@ function validateRequiredFormFields(actionBtn) {
         }
       }
 
+      if (validate === "isAlphaNumericSpecial") {
+        const isValid = isAlphaNumericSpecial(elemVal);
+        if (!isValid) {
+          isValidElem = false;
+          validationState = false;
+          break;
+        }
+      }
+
+      if (validate === "isAlphaNumericWithSpace") {
+        const isValid = isAlphaNumericWithSpace(elemVal);
+        if (!isValid) {
+          isValidElem = false;
+          validationState = false;
+          break;
+        }
+      }
+
       if (validate === "isValidHttpUrl") {
         const isValid = isValidHttpUrl(elemVal);
+        if (!isValid) {
+          isValidElem = false;
+          validationState = false;
+          break;
+        }
+      }
+      if (validate === "isSpace") {
+        const isValid = isSpace(elemVal);
         if (!isValid) {
           isValidElem = false;
           validationState = false;
@@ -194,6 +301,9 @@ function validateRequiredFormFields(actionBtn) {
         }
       }
     }
+
+   
+  
 
     toggleErrorState(formGroup, errorMsg, errorElem, isValidElem);
   }
@@ -311,8 +421,156 @@ function isNumber(input) {
   return true;
 }
 
+function isDecimalNumber(input) {
+  if (!input || input === "") {
+    return false;
+  }
+
+  if (input.includes("-") || input.includes("*")) {
+    return false;
+  }
+
+  if (input.startsWith("+")) {
+    return false;
+  }
+
+  let decimalPointCount = 0;
+  for (let i = 0; i < input.length; i++) {
+    const charCode = input.charCodeAt(i);
+
+    if ((charCode < 48 || charCode > 57) && charCode !== 46) {
+      return false;
+    }
+
+    // Count the decimal points
+    if (charCode === 46) {
+      decimalPointCount++;
+    }
+
+    if (decimalPointCount > 1) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+
+function isSpecialSymbol(input) {
+  if (!input || input === "") {
+    return false;
+  }
+
+  for (let i = 0; i < input.length; i++) {
+    const charCode = input.charCodeAt(i);
+    
+    if ((charCode >= 32 && charCode <= 47) ||
+        (charCode >= 58 && charCode <= 64) || 
+        (charCode >= 91 && charCode <= 96) ||
+        (charCode >= 123 && charCode <= 126)) { 
+      continue; 
+    } else {
+      return false;
+    }
+  }
+
+  return true; 
+}
+
+function isAlphaNumericSpecial(input) {
+  if (!input || input === "") {
+    return false;
+  }
+
+  const firstChar = input.charCodeAt(0);
+  if (
+    // (firstChar >= 48 && firstChar <= 57) ||
+      (firstChar >= 32 && firstChar <= 47) ||
+      (firstChar >= 58 && firstChar <= 64) ||
+      (firstChar >= 91 && firstChar <= 96) || 
+      (firstChar >= 123 && firstChar <= 126)) {
+    return false;
+  }
+
+  for (let i = 0; i < input.length; i++) {
+    const charCode = input.charCodeAt(i);
+    if ((charCode >= 48 && charCode <= 57) ||
+        (charCode >= 65 && charCode <= 90) ||
+        (charCode >= 97 && charCode <= 122) ||
+        (charCode >= 32 && charCode <= 47) ||
+        (charCode >= 58 && charCode <= 64) ||
+        (charCode >= 91 && charCode <= 96) ||
+        (charCode >= 123 && charCode <= 126)) { 
+      continue;
+    } else {
+      return false;
+    }
+  }
+
+  return true;
+}
+
 function isNotNumber(input) {
   return !isNumber(input);
+}
+
+function isAlphaNumericWithSpace(input) {
+  if (!input || input === "") {
+    return false;
+  }
+
+
+  const firstChar = input.charCodeAt(0);
+  if (!((firstChar >= 65 && firstChar <= 90) || // A-Z
+        (firstChar >= 97 && firstChar <= 122))) { // a-z
+    return false;
+  }
+
+  for (let i = 0; i < input.length; i++) {
+    const charCode = input.charCodeAt(i);
+    if ((charCode >= 48 && charCode <= 57) || 
+        (charCode >= 65 && charCode <= 90) ||
+        (charCode >= 97 && charCode <= 122) || 
+        charCode === 32) { // space
+      continue;
+    } else {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+function isAlphaNumericWithSpaceNoLeadingSpace(input) {
+  if (!input || input === "") {
+    return false;
+  }
+
+  // Check if the first character is a space
+  if (input.charCodeAt(0) === 32) {
+    return false;
+  }
+
+  for (let i = 0; i < input.length; i++) {
+    const charCode = input.charCodeAt(i);
+    if (!((charCode >= 48 && charCode <= 57) || // 0-9
+          (charCode >= 65 && charCode <= 90) || // A-Z
+          (charCode >= 97 && charCode <= 122) || // a-z
+          charCode === 32 || // space
+          charCode === 44 || 
+          charCode  === 45)) { // comma
+      return false;
+    }
+  }
+
+  return true;
+}
+
+
+
+
+function isSpace(input) {
+  return input === ' ';
 }
 
 function isValidYear(year) {
@@ -363,6 +621,57 @@ function isAlphabet(input) {
   }
   return true;
 }
+
+function isValidEmail(email) {
+  if (typeof email !== 'string') {
+    return false;
+  }
+
+  const atIndex = email.indexOf('@');
+  if (atIndex === -1 || atIndex === 0 || atIndex === email.length - 1) {
+    return false;
+  }
+
+  if (email.indexOf('@', atIndex + 1) !== -1) {
+    return false;
+  }
+
+  const lastDotIndex = email.lastIndexOf('.');
+  if (lastDotIndex === -1 || lastDotIndex <= atIndex + 1 || lastDotIndex === email.length - 1) {
+    return false;
+  }
+
+  if (email.length - lastDotIndex - 1 < 2) {
+    return false;
+  }
+
+  return true;
+}
+
+
+function isValidMobileNumber(mobileNumber) {
+  if (typeof mobileNumber !== 'string') {
+    return false;
+  }
+
+  if (mobileNumber.length !== 10) {
+    return false;
+  }
+
+  const firstChar = mobileNumber.charAt(0);
+  if (firstChar < '6' || firstChar > '9') {
+    return false;
+  }
+  for (let i = 0; i < mobileNumber.length; i++) {
+    const charCode = mobileNumber.charCodeAt(i);
+    if (charCode < 48 || charCode > 57) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
 
 function isValidHttpUrl(string) {
   try {

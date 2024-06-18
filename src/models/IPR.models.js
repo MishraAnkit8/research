@@ -8,6 +8,8 @@ const moment = require("moment");
 const researchDbR = dbPoolManager.get("researchDbR", research_read_db);
 const researchDbW = dbPoolManager.get("researchDbW", research_write_db);
 
+const insertDbModels = require('./insert-update-records.models')
+
 module.exports.fetchIPRData = async (userName) => {
   let iPRSql = {
     text: `
@@ -23,16 +25,14 @@ module.exports.fetchIPRData = async (userName) => {
                 ipr.patent_published_date,
                 ipr.patent_publication_number,
                 ipr.patent_grant_number,
+                ipr.nmims_campus,
+                ipr.nmims_school,
+                ipr.supporting_documents,
                 ipr.institutional_affiliation,
                 string_agg(DISTINCT it.name, ', ') AS invention_types,
                 string_agg(DISTINCT it.id::text, ', ') AS invention_types_id,
                 string_agg(DISTINCT ps.name, ', ') AS patent_stage_statuses,
                 string_agg(DISTINCT ps.id::text, ', ') AS patent_stage_id,
-                string_agg(DISTINCT sd.documents_name, ', ') AS supporting_documents,
-                string_agg(DISTINCT ns.school_name, ', ') AS associated_schools,
-                string_agg(DISTINCT ns.id::text, ', ') AS school_id,
-                string_agg(DISTINCT nc.campus_name, ', ') AS associated_campuses,
-                string_agg(DISTINCT nc.id::text, ', ') AS campus_id,
                 string_agg(DISTINCT sdg.id::text, ', ') AS sdg_id,
                 string_agg(DISTINCT intr.id::text, ', ') AS faculty_id
             FROM
@@ -44,19 +44,7 @@ module.exports.fetchIPRData = async (userName) => {
             LEFT JOIN
                 ipr_status_type ist ON ipr.id = ist.ipr_id
             LEFT JOIN
-                pantent_stage_status ps ON ist.pantent_stage_status_id = ps.id
-            LEFT JOIN
-                ipr_supporting_documents isd ON ipr.id = isd.ipr_id
-            LEFT JOIN
-                supporting_documents sd ON isd.supporting_documents_id = sd.id
-            LEFT JOIN
-                ipr_nmims_school ins ON ipr.id = ins.ipr_id
-            LEFT JOIN
-                nmims_school ns ON ins.school_id = ns.id
-            LEFT JOIN
-                ipr_nmims_campus inc ON ipr.id = inc.ipr_id
-            LEFT JOIN
-                nmims_campus nc ON inc.campus_id = nc.id
+                pantent_stage_status ps ON ist.ipr_status_id = ps.id
             LEFT JOIN
               ipr_sdg_goals isdg ON ipr.id = isdg.ipr_id
             LEFT JOIN
@@ -68,8 +56,8 @@ module.exports.fetchIPRData = async (userName) => {
             
             WHERE
                 ipr.created_by = $1 and ipr.active=true and iit.active=true and it.active=true and 
-                ist.active=true and ps.active=true and isd.active=true and sd.active=true and ins.active=true and ns.active=true
-                and inc.active=true and nc.active=true and intr.faculty_type_id=1
+                ist.active=true and isdg.active=true and sdg.active=true and ps.active=true and
+                iprf.active=true and  intr.active=true
             GROUP BY
                 ipr.id,
                 ipr.patent_title,
@@ -79,6 +67,9 @@ module.exports.fetchIPRData = async (userName) => {
                 ipr.patent_published_date,
                 ipr.patent_publication_number,
                 ipr.patent_grant_number,
+                ipr.nmims_campus,
+                ipr.nmims_school,
+                ipr.supporting_documents,
                 ipr.institutional_affiliation
             ORDER BY
                 ipr.id desc
@@ -220,19 +211,13 @@ module.exports.fetchIPRData = async (userName) => {
 };
 
 module.exports.InsetIPRDataModels = async (
-  IprData,
-  iprFilesNamesArray,
-  FacultydataArray,
-  schoolIdsArray,
-  campusIdsArray,
-  inventionTypeIdsArray,
-  patentStatus,
-  sdgGoalsIdArray,
-  userName
+  IprData, iprFilesNamesArray, sdgGoalsIdArray, inventionIdsArray, patentStatus, facultyIdsContainer, externalFacultyData, userName
 ) => {
   console.log("iprFilesString in models ====>>>>", iprFilesNamesArray);
   console.log("patentStatus ===>>>>>", patentStatus);
   const {
+    nmimsCampus,
+    nmimsSchool,
     titleOfInvention,
     applicationNum,
     applicantName,
@@ -244,309 +229,73 @@ module.exports.InsetIPRDataModels = async (
     instituteAffiliation,
   } = IprData;
 
-  let iprSql = {
-    text: `INSERT INTO IPR (patent_title, patent_application_number, applicant_name, patent_filed_date, patent_published_date, patent_grant_date, patent_publication_number, patent_grant_number, institutional_affiliation, created_by, active)
-                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9 , $10, $11) RETURNING id`,
-    values: [
-      titleOfInvention,
-      applicationNum,
-      applicantName,
-      patentFiledDate,
-      patentPublishedDate,
-      patentGrantDate,
-      patentPublishedNumber,
-      patentGrantedNo,
-      instituteAffiliation,
-      userName,
-      true
-    ],
-  };
+  const iprFieldValues = [nmimsCampus, nmimsSchool, titleOfInvention, applicationNum, applicantName, patentFiledDate,
+    patentPublishedDate, patentGrantDate, patentPublishedNumber, patentGrantedNo, instituteAffiliation, iprFilesNamesArray, userName];
 
-  const insertDocumentPromises = iprFilesNamesArray
-    ? iprFilesNamesArray.map(async (fileName) => {
-        const documentInsertSql = {
-          text: `INSERT INTO supporting_documents (documents_name, created_at, updated_at) VALUES ($1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP) RETURNING id`,
-          values: [fileName],
-        };
-        const result = await researchDbW.query(documentInsertSql);
-        return result.rows[0].id;
-      })
-    : null;
+  const iprField = ['nmims_campus', 'nmims_school', 'patent_title', 'patent_application_number', 'applicant_name', 'patent_filed_date', 'patent_published_date', 'patent_grant_date', 'patent_publication_number', 'patent_grant_number', 'institutional_affiliation', 'supporting_documents', 'created_by']
 
-  const documentIds = await Promise.all(insertDocumentPromises);
-  console.log("documentIds ====>>>>", documentIds);
+  const insertIprData = await insertDbModels.insertRecordIntoMainDb('IPR', iprField, iprFieldValues, userName);
 
-  console.log("iprSql ====>>>>>>", iprSql);
+  console.log('insertIprData ===>>>>>>', insertIprData);
+  const iprId = insertIprData.insertedId;
+  console.log('iprId ===>>>>>', iprId)
 
-  const iprResult = await researchDbW.query(iprSql);
-  const iprId = iprResult.rows[0].id;
-  const iprRowCount = iprResult.rowCount;
+  // insert into external faculty
+  const facultyfield = ['faculty_type_id', 'faculty_name', 'designation', 'institution_name', 'address', 'created_by'];
+  const insertIntoFacultyTable = await insertDbModels.insertExternalFacultyRecord('faculties', facultyfield, externalFacultyData, userName);
 
-  const insertIprDocuments = documentIds.map((element) => {
-    const iprDocumentSql = {
-      text: `INSERT INTO ipr_supporting_documents (ipr_id, supporting_documents_id) VALUES ($1, $2) RETURNING id`,
-      values: [iprId, element],
+  console.log('insertIntoFacultyTable =====>>>>>', insertIntoFacultyTable);
+  const externalId = insertIntoFacultyTable.externalId;
+  console.log('externalId ===>>>>>', externalId);
+
+  // push external faculty ids into facultyIdsContainer
+  facultyIdsContainer.push(...externalId);
+  console.log('facultyIdsContainer in patent models ===>>>>>>', facultyIdsContainer);
+
+   //insert into patent faculties table 
+   const iprFacultyField = ['ipr_id', 'faculty_id', 'created_by'];
+
+   const insertIPRFaculty = await insertDbModels.insertIntoRelationalDb('ipr_faculty', iprFacultyField, iprId, facultyIdsContainer, userName);
+   console.log('insertIPRFaculty ===>>>>>>', insertIPRFaculty);
+
+     //insert into patent_submission_sdg_goals
+    const iprSdgGoalsFields = ['ipr_id', 'sdg_goals_id', 'created_by'];
+    const iprSdgGoals = await insertDbModels.insertIntoRelationalDb('ipr_sdg_goals', iprSdgGoalsFields, iprId, sdgGoalsIdArray, userName);
+
+    console.log('iprSdgGoals ====>>>>>', iprSdgGoals);
+
+    //insert into patent_submission_invention_type
+    const inventionFields = ['ipr_id', 'invention_type_id', 'created_by'];
+    const iprInvention = await insertDbModels.insertIntoRelationalDb('ipr_invention_type', inventionFields, iprId, inventionIdsArray, userName);
+    console.log('iprInvention ====>>>>>>>>', iprInvention);
+  
+    //insert into patent_submission_stage_status
+    const iprStatusField = ['ipr_id', 'ipr_status_id', 'created_by'];
+    const iprStatus = await insertDbModels.insertIntoRelationalDb('ipr_status_type', iprStatusField, iprId, patentStatus, userName);
+    console.log('iprStatus ===>>>>>>', iprStatus);
+
+      // Check if all insertions are successful
+  if (
+    insertIprData.status === 'Done' &&
+    insertIntoFacultyTable.status === 'Done' &&
+    insertIPRFaculty.status === 'Done' &&
+    iprSdgGoals.status === 'Done' &&
+    iprInvention.status === 'Done' &&
+    iprStatus.status === 'Done'
+  ) {
+    return {
+      status: 'Done',
+      message: 'All records inserted successfully'
     };
-    console.log("iprDocumentSql ===>>>>>", iprDocumentSql);
-    return researchDbW.query(iprDocumentSql);
-  });
-
-  const insertIprFacultyPromises = FacultydataArray.map((faculty_id) => {
-    const iprFacultySql = {
-      text: `INSERT INTO ipr_faculty (ipr_id, faculty_id) VALUES ($1, $2) RETURNING id`,
-      values: [iprId, faculty_id],
+  } else {
+    return {
+      status: 'Failed',
+      message: 'Failed to insert'
     };
-    console.log("iprFacultySql ===>>>>>", iprFacultySql);
-    return researchDbW.query(iprFacultySql);
-  });
-
-  const insertNmimsCampusPromises = campusIdsArray.map((campusId) => {
-    const iprCampusSql = {
-      text: `INSERT INTO ipr_nmims_campus (ipr_id, campus_id) VALUES ($1, $2) RETURNING id`,
-      values: [iprId, campusId],
-    };
-    console.log("iprCampusSql ===>>>>>", iprCampusSql);
-    return researchDbW.query(iprCampusSql);
-  });
-
-  const insertIprSchoolsPromises = schoolIdsArray.map((schoolId) => {
-    const iprSchool = {
-      text: `INSERT INTO ipr_nmims_school (ipr_id, school_id) VALUES ($1, $2) RETURNING id`,
-      values: [iprId, schoolId],
-    };
-    console.log("iprSchool ===>>>>>", iprSchool);
-    return researchDbW.query(iprSchool);
-  });
-
-  const insertInventionTypePromises = inventionTypeIdsArray.map((element) => {
-    const iprInventionsSql = {
-      text: `INSERT INTO ipr_invention_type (ipr_id, invention_type_id) VALUES ($1, $2) RETURNING id`,
-      values: [iprId, element],
-    };
-    console.log("iprInventionsSql ===>>>>>", iprInventionsSql);
-    return researchDbW.query(iprInventionsSql);
-  });
-
-  const insertIprStatusPromises = patentStatus.map((element) => {
-    const iprSatatusSql = {
-      text: `INSERT INTO ipr_status_type (ipr_id, pantent_stage_status_id) VALUES ($1, $2) RETURNING id`,
-      values: [iprId, element],
-    };
-    console.log("iprSatatusSql ===>>>>>", iprSatatusSql);
-    return researchDbW.query(iprSatatusSql);
-  });
-
-  const insertSdgGoalsPromises = sdgGoalsIdArray.map((element) => {
-    const SdgGoalsSql = {
-      text: `INSERT INTO ipr_sdg_goals (ipr_id, sdg_goals_id) VALUES ($1, $2) RETURNING id`,
-      values: [iprId, element]
-  };
-    console.log("SdgGoalsSql ===>>>>>", SdgGoalsSql);
-    return researchDbW.query(SdgGoalsSql);
-  });
-
-
-
-  const selectSchoolDataPromises = schoolIdsArray.map(async (schoolId) => {
-    const schoolSql = {
-      text: `SELECT * FROM nmims_school WHERE id = $1 and active=true `,
-      values: [schoolId],
-    };
-    const schoolResult = await researchDbR.query(schoolSql);
-    return schoolResult.rows;
-  });
-
-  const selectCampusDataPromises = campusIdsArray.map(async (campusId) => {
-    const campusSql = {
-      text: `SELECT * FROM nmims_campus WHERE id = $1 and active=true `,
-      values: [campusId],
-    };
-    const campusResult = await researchDbR.query(campusSql);
-    return campusResult.rows;
-  });
-
-  const selectInvetionTypePromises = inventionTypeIdsArray.map(
-    async (inventionTypId) => {
-      const inventionSql = {
-        text: `SELECT name AS invention_type FROM invention_type WHERE id = $1 and active=true `,
-        values: [inventionTypId],
-      };
-      const invetionResult = await researchDbR.query(inventionSql);
-      return invetionResult.rows;
-    }
-  );
-
-  const selectPatentSatatusPromises = patentStatus.map(async (statusId) => {
-    const statusSql = {
-      text: `SELECT name AS status_name FROM pantent_stage_status WHERE id = $1 and active=true `,
-      values: [statusId],
-    };
-    const statusResult = await researchDbR.query(statusSql);
-    return statusResult.rows;
-  });
-
-  // Waiting for all promises to resolve
-  return Promise.all([
-    ...insertIprDocuments,
-    ...insertIprFacultyPromises,
-    ...insertIprSchoolsPromises,
-    ...insertNmimsCampusPromises,
-    ...insertInventionTypePromises,
-    ...insertIprStatusPromises,
-    ...selectSchoolDataPromises,
-    ...selectCampusDataPromises,
-    ...selectInvetionTypePromises,
-    ...selectPatentSatatusPromises,
-    ...insertSdgGoalsPromises,
-  ])
-    .then((results) => {
-      console.log("Results:", results);
-      const iprDocumentsIds = results
-        .slice(0, iprFilesNamesArray.length)
-        .map((result) => result?.rows[0]?.id);
-      const insertIprFacultyIds = results
-        .slice(
-          iprFilesNamesArray.length,
-          iprFilesNamesArray.length + FacultydataArray.length
-        )
-        .map((result) => result?.rows[0]?.id);
-      const insertIprSchoolIds = results.slice(
-        iprFilesNamesArray.length + FacultydataArray.length,
-        iprFilesNamesArray.length +
-          FacultydataArray.length +
-          schoolIdsArray.length
-      );
-      const insertIprCampusIds = results
-        .slice(
-          iprFilesNamesArray.length +
-            FacultydataArray.length +
-            schoolIdsArray.length,
-          iprFilesNamesArray.length +
-            FacultydataArray.length +
-            schoolIdsArray.length +
-            campusIdsArray.length
-        )
-        .map((result) => result?.rows[0]?.id);
-      const insertIprInventiontypeIds = results
-        .slice(
-          iprFilesNamesArray.length +
-            FacultydataArray.length +
-            schoolIdsArray.length +
-            campusIdsArray.length,
-          iprFilesNamesArray.length +
-            FacultydataArray.length +
-            schoolIdsArray.length +
-            campusIdsArray.length +
-            inventionTypeIdsArray.length
-        )
-        .map((result) => result?.rows[0]?.id);
-      const insertIprStatusIds = results
-        .slice(
-          iprFilesNamesArray.length +
-            FacultydataArray.length +
-            schoolIdsArray.length +
-            campusIdsArray.length +
-            inventionTypeIdsArray.length,
-          iprFilesNamesArray.length +
-            FacultydataArray.length +
-            schoolIdsArray.length +
-            campusIdsArray.length +
-            inventionTypeIdsArray.length +
-            patentStatus.length
-        )
-        .map((result) => result?.rows[0]?.id);
-      const schoolDataList = results
-        .slice(
-          iprFilesNamesArray.length +
-            FacultydataArray.length +
-            schoolIdsArray.length +
-            campusIdsArray.length +
-            inventionTypeIdsArray.length +
-            patentStatus.length
-        )
-        .map((result) => result[0]);
-      const campusList = results
-        .slice(
-          iprFilesNamesArray.length +
-            FacultydataArray.length +
-            schoolIdsArray.length +
-            campusIdsArray.length +
-            inventionTypeIdsArray.length +
-            patentStatus.length
-        )
-        .map((result) => result[0]);
-      const invetionList = results
-        .slice(
-          iprFilesNamesArray.length +
-            FacultydataArray.length +
-            schoolIdsArray.length +
-            campusIdsArray.length +
-            inventionTypeIdsArray.length +
-            patentStatus.length
-        )
-        .map((result) => result[0]);
-      const statusList = results
-        .slice(
-          iprFilesNamesArray.length +
-            FacultydataArray.length +
-            schoolIdsArray.length +
-            campusIdsArray.length +
-            inventionTypeIdsArray.length +
-            patentStatus.length
-        )
-        .map((result) => result[0]);
-
-      console.log("schoolDataList ===>>>>>", schoolDataList);
-      console.log("campusList ===>>>>>", campusList);
-      console.log("invetionList ===>>>>>", invetionList);
-      console.log("statusList ===>>>>>", statusList);
-
-      const schoolNames = schoolDataList
-        .map((school) => school?.school_name)
-        .filter(Boolean)
-        .join(",");
-      const campusNames = campusList
-        .map((campus) => campus?.campus_name)
-        .filter(Boolean)
-        .join(",");
-      const invetionTypeNames = invetionList
-        .map((invetion) => invetion?.invention_type)
-        .filter(Boolean)
-        .join(",");
-      const statusTypeName = statusList
-        .map((status) => status?.status_name)
-        .filter(Boolean)
-        .join(",");
-      console.log("invetionTypeNames ===>>>>", invetionTypeNames);
-      console.log("statusTypeName ===>>>>", statusTypeName);
-
-      return {
-        status: "Done",
-        message: "Record Inserted Successfully",
-        iprId: iprId,
-        rowCount: iprRowCount,
-        iprDocumentsIds: iprDocumentsIds,
-        insertIprFacultyIds: insertIprFacultyIds,
-        insertIprSchoolIds: insertIprSchoolIds,
-        insertIprCampusIds: insertIprCampusIds,
-        insertIprInventiontypeIds: insertIprInventiontypeIds,
-        insertIprStatusIds: insertIprStatusIds,
-        schoolNames: schoolNames,
-        campusNames: campusNames,
-        documentIds: documentIds,
-        invetionTypeNames: invetionTypeNames,
-        statusTypeName: statusTypeName,
-      };
-    })
-    .catch((error) => {
-      console.log("Error:", error);
-      return {
-        status: "Failed",
-        message: error.message,
-        errorCode: error.code,
-      };
-    });
+  }
 };
+ 
+
 
 module.exports.deleteIPRData = async (iprId) => {
   console.log("iprId in models ===>>>>", iprId);
@@ -643,474 +392,369 @@ module.exports.deleteIPRData = async (iprId) => {
 };
 
 module.exports.updateIPRRecordData = async (
-  iprId,
-  updatedIPRData,
-  iprFilesNamesArray,
-  FacultydataArray,
-  schoolIdsArray,
-  campusIdsArray,
-  inventionTypeIdsArray,
-  patentStatus,
-  sdgGoalsIdArray,
-  userName
+  iprId, updatedIPRData, iprFilesNamesArray, sdgGoalsIdArray, inventionIdsArray, patentStatus,
+  externalFacultyData, updateExternalDetailsArray, facultyIdsContainer, userName
 ) => {
-  console.log("data in models for updation ===>>>>", updatedIPRData);
-  console.log("iprFilesNamesArray ===>>>>>>", iprFilesNamesArray);
+  console.log("Data for updating IPR:", updatedIPRData);
+  console.log("IPR Files Names Array:", iprFilesNamesArray);
 
-  console.log("schoolIdsArray ===>>>>", schoolIdsArray);
+  const { nmimsCampus, nmimsSchool, titleOfInvention, applicationNum, applicantName, patentFiledDate,
+    patentPublishedDate, patentGrantDate, patentPublishedNumber, patentGrantedNo, instituteAffiliation 
+  } = updatedIPRData; 
 
-  const {
-    titleOfInvention,
-    applicationNum,
-    applicantName,
-    patentFiledDate,
-    patentPublishedDate,
-    patentGrantDate,
-    patentPublishedNumber,
-    patentGrantedNo,
-    instituteAffiliation,
-  } = updatedIPRData;
+  try {
+   
 
-  let iprSql = {
-    text: `UPDATE IPR  SET patent_title = $2, patent_application_number = $3, applicant_name = $4, patent_filed_date = $5, patent_published_date = $6, patent_grant_date = $7, patent_publication_number = $8, patent_grant_number = $9, institutional_affiliation = $10,
-                updated_by = $11 WHERE id = $1`,
-    values: [
-      iprId,
-      titleOfInvention,
-      applicationNum,
-      applicantName,
-      patentFiledDate,
-      patentPublishedDate,
-      patentGrantDate,
-      patentPublishedNumber,
-      patentGrantedNo,
-      instituteAffiliation,
-      userName,
-    ],
-  };
-  console.log("iprSql ===>>>>", iprSql);
-  const iprResult = await researchDbW.query(iprSql);
-  const iprRowCount = iprResult.rowCount;
+    let updateIprData;
+    if (iprFilesNamesArray) {
+      const iprFieldValues = [nmimsCampus, nmimsSchool, titleOfInvention, applicationNum, applicantName, patentFiledDate,
+        patentPublishedDate, patentGrantDate, patentPublishedNumber, patentGrantedNo, instituteAffiliation, iprFilesNamesArray, userName , iprId];
+      const iprField = ['nmims_campus', 'nmims_school', 'patent_title', 'patent_application_number', 'applicant_name', 'patent_filed_date', 'patent_published_date', 'patent_grant_date', 'patent_publication_number', 'patent_grant_number', 'institutional_affiliation', 'supporting_documents', 'created_by']
 
-  const insertDocumentPromises = iprFilesNamesArray
-    ? iprFilesNamesArray.map(async (fileName) => {
-        const documentInsertSql = {
-          text: `INSERT INTO supporting_documents (documents_name, created_at, updated_at) VALUES ($1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP) RETURNING id`,
-          values: [fileName],
-        };
-        const result = await researchDbW.query(documentInsertSql);
-        return result.rows[0].id;
-      })
-    : null;
+      updateIprData = await insertDbModels.updateFieldWithFiles('IPR', iprField, iprFieldValues, userName);
+      console.log('updateIprData ===>>>>', updateIprData);
+    } else {
+      const iprFieldValues = [nmimsCampus, nmimsSchool, titleOfInvention, applicationNum, applicantName, patentFiledDate,
+        patentPublishedDate, patentGrantDate, patentPublishedNumber, patentGrantedNo, instituteAffiliation, userName , iprId];
+      const iprField = ['nmims_campus', 'nmims_school', 'patent_title', 'patent_application_number', 'applicant_name', 'patent_filed_date', 'patent_published_date', 'patent_grant_date', 'patent_publication_number', 'patent_grant_number', 'institutional_affiliation', 'created_by']
 
-  const documentIds = await Promise.all(insertDocumentPromises);
-  console.log("documentIds in models ====>>>>", documentIds);
+      updateIprData = await insertDbModels.updateFieldWithOutFiles('IPR', iprField, iprFieldValues, userName);
+      console.log('updateIprData ===>>>>', updateIprData);
+    }
 
-  const insertIprDocuments =
-    documentIds && Array.isArray(documentIds)
-      ? documentIds.map((element) => {
-          const iprDocumentSql = {
-            text: `INSERT INTO ipr_supporting_documents (ipr_id, supporting_documents_id) VALUES ($1, $2) RETURNING id`,
-            values: [iprId, element],
-          };
-          console.log("iprDocumentSql ===>>>>>", iprDocumentSql);
-          return researchDbW.query(iprDocumentSql);
-        })
-      : [];
+    // Insert into external faculty
+    const facultyField = ['faculty_type_id', 'faculty_name', 'designation', 'institution_name', 'address', 'created_by'];
+    const insertIntoFacultyTable = await insertDbModels.insertExternalFacultyRecord('faculties', facultyField, externalFacultyData, userName);
+    const externalIds = insertIntoFacultyTable.externalId;
 
-  console.log("insertIprDocuments ===>>>>>", insertIprDocuments);
+    // Append into faculty container
+    facultyIdsContainer.push(...externalIds);
 
-  const insertIprStatusPromises = patentStatus
-    ? patentStatus.map(async (pantent_stage_status_id) => {
-        const existingRecord = await researchDbW.query({
-          text: `SELECT id FROM ipr_status_type WHERE ipr_id = $1 AND pantent_stage_status_id = $2 and active=true`,
-          values: [iprId, pantent_stage_status_id],
-        });
+    // Update external faculty details
+    const updateFacultyField = ['faculty_name', 'designation', 'institution_name', 'address'];
+    const updateExternalFacultyData = await insertDbModels.updateExternalFacultyDetails('faculties', updateFacultyField, updateExternalDetailsArray, userName);
+    console.log('updateExternalFacultyData ====>>>>>>', updateExternalFacultyData);
 
-        return existingRecord.rows.length === 0
-          ? researchDbW.query({
-              text: `INSERT INTO ipr_status_type (ipr_id, pantent_stage_status_id) VALUES ($1, $2) RETURNING id`,
-              values: [iprId, pantent_stage_status_id],
-            })
-          : Promise.resolve({ rows: [{ id: existingRecord.rows[0].id }] });
-      })
-    : [];
+    // Update patent faculty tables
+    console.log('facultyIdsContainer in IPR models ===>>>>>>', facultyIdsContainer);
 
-    const insertSdgGoalsPromises = sdgGoalsIdArray.map(async sdg_goals_id => {
-      const existingRecord = await researchDbW.query({
-        text: `SELECT id FROM ipr_sdg_goals WHERE ipr_id = $1 AND sdg_goals_id = $2 and active=true`,
-        values: [iprId, sdg_goals_id]
-      });
+    // Insert into patent ipr_faculty table
+    const iprFacultyField = ['ipr_id', 'faculty_id', 'created_by'];
+    const updateIPRFaculty = await insertDbModels.insertIntoRelationalDb('ipr_faculty', iprFacultyField, iprId, facultyIdsContainer, userName);
+    console.log('updateIPRFaculty ===>>>>>>', updateIPRFaculty);
+
+    // Insert into ipr_sdg_goals
+    const iprSdgGoalsFields = ['ipr_id', 'sdg_goals_id', 'created_by'];
+    const updateIPRSdgGoals = await insertDbModels.insertIntoRelationalDb('ipr_sdg_goals', iprSdgGoalsFields, iprId, sdgGoalsIdArray, userName);
+    console.log('updateIPRSdgGoals ====>>>>>', updateIPRSdgGoals);
+
+    // Insert into ipr_invention_type
+    const inventionFields = ['ipr_id', 'invention_type_id', 'created_by'];
+    const updateIPRInvention = await insertDbModels.insertIntoRelationalDb('ipr_invention_type', inventionFields, iprId, inventionIdsArray, userName);
+    console.log('updateIPRInvention ====>>>>>>>>', updateIPRInvention);
+
+    // Insert into ipr_status_type
+    const iprStatusField = ['ipr_id', 'ipr_status_id', 'created_by'];
+    const updateIPRStatus = await insertDbModels.updateStatus('ipr_status_type', iprStatusField, iprId, patentStatus, userName);
+    console.log('updateIPRStatus ===>>>>>>', updateIPRStatus);
+
+    // Check if all updates are done
+    if (
+      updateIprData &&
+      updateExternalFacultyData &&
+      updateIPRSdgGoals &&
+      updateIPRInvention &&
+      updateIPRStatus &&
+      updateIPRFaculty
+    ) {
+      return {
+        status: 'Done',
+        message: 'All Records updated',
+      };
+    } else {
+      throw new Error('Some updates failed');
+    }
+  } catch (error) {
+    console.error('Error updating patent submission data:', error);
+
+    return {
+      status: 'error',
+      message: 'Failed to update records',
+      error: error.message,
+    };
+  }
+
+  // const supportingDocument = iprFilesNamesArray || null;
+
+  // let baseQuery;
+  // let values;
+  // if(supportingDocument){
+
+  //   baseQuery = `UPDATE IPR SET patent_title = $2, patent_application_number = $3, applicant_name = $4, patent_filed_date = $5, patent_published_date = $6, patent_grant_date = $7, patent_publication_number = $8, patent_grant_number = $9, institutional_affiliation = $10,
+  //   nmims_campus = $11, nmims_school = $12, updated_by = $13, supporting_documents = $14, updated_at=now() WHERE id = $1`;
+  //   values = [
+  //     iprId,
+  //     titleOfInvention,
+  //     applicationNum,
+  //     applicantName,
+  //     patentFiledDate,
+  //     patentPublishedDate,
+  //     patentGrantDate,
+  //     patentPublishedNumber,
+  //     patentGrantedNo,
+  //     instituteAffiliation,
+  //     nmimsCampus,
+  //     nmimsSchool,
+  //     userName,
+  //     supportingDocument,
+  //   ];
     
-      return existingRecord.rows.length === 0 ? (
-        researchDbW.query({
-          text: `INSERT INTO ipr_sdg_goals (ipr_id, sdg_goals_id) VALUES ($1, $2) RETURNING id`,
-          values: [iprId, sdg_goals_id]
-        })
-      ) : (
-        Promise.resolve({ rows: [{ id: existingRecord.rows[0].id }] })
-      );
-    });
+  // }else{
 
+  //   baseQuery = `UPDATE IPR SET patent_title = $2, patent_application_number = $3, applicant_name = $4, patent_filed_date = $5, patent_published_date = $6, patent_grant_date = $7, patent_publication_number = $8, patent_grant_number = $9, institutional_affiliation = $10,
+  //   nmims_campus = $11, nmims_school = $12, updated_by = $13, updated_at=now() WHERE id = $1`;
 
-  console.log("insertIprStatusPromises ===>>>>>", insertIprStatusPromises);
-  const insertInventionTypePromises = inventionTypeIdsArray
-    ? inventionTypeIdsArray.map(async (invention_type_id) => {
-        const existingRecord = await researchDbW.query({
-          text: `SELECT id FROM ipr_invention_type WHERE ipr_id = $1 AND invention_type_id = $2 and active=true`,
-          values: [iprId, invention_type_id],
-        });
+  //   values = [
+  //     iprId,
+  //     titleOfInvention,
+  //     applicationNum,
+  //     applicantName,
+  //     patentFiledDate,
+  //     patentPublishedDate,
+  //     patentGrantDate,
+  //     patentPublishedNumber,
+  //     patentGrantedNo,
+  //     instituteAffiliation,
+  //     nmimsCampus,
+  //     nmimsSchool,
+  //     userName,
+  //   ];
 
-        return existingRecord.rows.length === 0
-          ? researchDbW.query({
-              text: `INSERT INTO ipr_invention_type (ipr_id, invention_type_id) VALUES ($1, $2) RETURNING id`,
-              values: [iprId, invention_type_id],
-            })
-          : Promise.resolve({ rows: [{ id: existingRecord.rows[0].id }] });
-      })
-    : [];
+  // }
 
-  console.log(
-    "insertInventionTypePromises ==>>>>",
-    insertInventionTypePromises
-  );
+  // let baseQuery = `UPDATE IPR SET patent_title = $2, patent_application_number = $3, applicant_name = $4, patent_filed_date = $5, patent_published_date = $6, patent_grant_date = $7, patent_publication_number = $8, patent_grant_number = $9, institutional_affiliation = $10,
+  // nmims_campus = $11, nmims_school = $12, updated_by = $13, updated_at=now()`;
 
-  const insertIprFacultyPromises = FacultydataArray
-    ? FacultydataArray.map(async (faculty_id) => {
-        const existingRecord = await researchDbW.query({
-          text: `SELECT id FROM ipr_faculty WHERE ipr_id = $1 AND faculty_id = $2 and active=true`,
-          values: [iprId, faculty_id],
-        });
+  // let documentsQuery = supportingDocument ? `, supporting_documents = $14` : ``;
+  // let queryText = `${baseQuery}${documentsQuery} WHERE id = $1`;
 
-        return existingRecord.rows.length === 0
-          ? researchDbW.query({
-              text: `INSERT INTO ipr_faculty (ipr_id, faculty_id) VALUES ($1, $2) RETURNING id`,
-              values: [iprId, faculty_id],
-            })
-          : Promise.resolve({ rows: [{ id: existingRecord.rows[0].id }] });
-      })
-    : [];
+  // let values = [
+  //   iprId,
+  //   titleOfInvention,
+  //   applicationNum,
+  //   applicantName,
+  //   patentFiledDate,
+  //   patentPublishedDate,
+  //   patentGrantDate,
+  //   patentPublishedNumber,
+  //   patentGrantedNo,
+  //   instituteAffiliation,
+  //   nmimsCampus,
+  //   nmimsSchool,
+  //   userName,
+  //   supportingDocument,
+  // ].filter(Boolean);
 
-  const insertNmimsCampusPromises = campusIdsArray
-    ? campusIdsArray.map(async (campusId) => {
-        const existingRecord = await researchDbW.query({
-          text: `SELECT id FROM ipr_nmims_campus WHERE ipr_id = $1 AND campus_id = $2 and active=true`,
-          values: [iprId, campusId],
-        });
+  // const iprSql = {
+  //   text: baseQuery,
+  //   values: values,
+  // };
 
-        return existingRecord.rows.length === 0
-          ? researchDbW.query({
-              text: `INSERT INTO ipr_nmims_campus (ipr_id, campus_id) VALUES ($1, $2) RETURNING id`,
-              values: [iprId, campusId],
-            })
-          : Promise.resolve({ rows: [{ id: existingRecord.rows[0].id }] });
-      })
-    : [];
+  // console.log('IPR SQL:', iprSql);
 
-  const insertIprSchoolsPromises = schoolIdsArray
-    ? schoolIdsArray.map(async (schoolId) => {
-        const existingRecord = await researchDbW.query({
-          text: `SELECT id FROM ipr_nmims_school WHERE ipr_id = $1 AND school_id = $2 and active=true `,
-          values: [iprId, schoolId],
-        });
+  // const iprRowCount = await researchDbW.query(iprSql)
+  //   .then(result => result.rowCount)
+  //   .catch(error => {
+  //     console.error('Error executing query:', error);
+  //   });
 
-        return existingRecord.rows.length === 0
-          ? researchDbW.query({
-              text: `INSERT INTO ipr_nmims_school (ipr_id, school_id) VALUES ($1, $2) RETURNING id`,
-              values: [iprId, schoolId],
-            })
-          : Promise.resolve({ rows: [{ id: existingRecord.rows[0].id }] });
-      })
-    : [];
+  // console.log('IPR Row Count:', iprRowCount);
 
-  const selectSchoolDataPromises = schoolIdsArray
-    ? schoolIdsArray.map(async (schoolId) => {
-        const schoolSql = {
-          text: `SELECT * FROM nmims_school WHERE id = $1 and active=true `,
-          values: [schoolId],
-        };
-        const schoolResult = await researchDbR.query(schoolSql);
-        return schoolResult.rows;
-      })
-    : [];
+  // const insertexternalDetails = externalFacultyData ? externalFacultyData.map(async(detailsData) => {
+  //   console.log('External Faculty Data:', detailsData);
+  //   const [facultyName, facultyDsg, institutionName, facultyAddr] = detailsData;
 
-  const selectCampusDataPromises = campusIdsArray
-    ? campusIdsArray.map(async (campusId) => {
-        const campusSql = {
-          text: `SELECT * FROM nmims_campus WHERE id = $1 and active= true `,
-          values: [campusId],
-        };
-        const campusResult = await researchDbR.query(campusSql);
-        return campusResult.rows;
-      })
-    : [];
+  //   let sql = {
+  //     text: `INSERT INTO faculties (faculty_type_id, faculty_name, designation, institution_name, address, created_by) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`,
+  //     values: [2, facultyName, facultyDsg, institutionName, facultyAddr, userName],
+  //   };
 
-  const selectInvetionTypePromises = inventionTypeIdsArray
-    ? inventionTypeIdsArray.map(async (inventionTypId) => {
-        const inventionSql = {
-          text: `SELECT name AS invention_type FROM invention_type WHERE id = $1 and active= true`,
-          values: [inventionTypId],
-        };
-        const invetionResult = await researchDbR.query(inventionSql);
-        return invetionResult.rows;
-      })
-    : [];
+  //   console.log('SQL for external faculty data:', sql);
+  //   const externalResult = await researchDbW.query(sql);
+  //   return externalResult.rows[0].id;
+  // }) : null;
 
-  const selectPatentSatatusPromises = patentStatus
-    ? patentStatus.map(async (statusId) => {
-        const statusSql = {
-          text: `SELECT name AS status_name FROM pantent_stage_status WHERE id = $1 and active= true`,
-          values: [statusId],
-        };
-        const statusResult = await researchDbR.query(statusSql);
-        return statusResult.rows;
-      })
-    : [];
+  // const externalIds = await Promise.all(insertexternalDetails);
+  // console.log('External IDs:', externalIds);
 
-  console.log(
-    "selectPatentSatatusPromises ==>>>>>>",
-    selectPatentSatatusPromises
-  );
+  // facultyIdsContainer.push(...externalIds);
+  // console.log('Faculty IDs Container:', facultyIdsContainer);
 
-  // Waiting for all promises to resolve
-  return Promise.all([
-    ...insertIprDocuments,
-    ...insertIprFacultyPromises,
-    ...insertIprSchoolsPromises,
-    ...insertNmimsCampusPromises,
-    ...insertInventionTypePromises,
-    ...insertIprStatusPromises,
-    ...selectSchoolDataPromises,
-    ...selectCampusDataPromises,
-    ...selectInvetionTypePromises,
-    ...selectPatentSatatusPromises,
-    ...insertSdgGoalsPromises,
-  ])
-    .then((results) => {
-      console.log("Results:", results);
-      const iprDocumentsIds = results
-        .slice(0, iprFilesNamesArray.length)
-        .map((result) => result?.rows[0]?.id);
-      const insertIprFacultyIds = results
-        .slice(
-          iprFilesNamesArray.length,
-          iprFilesNamesArray.length + FacultydataArray.length
-        )
-        .map((result) => result?.rows[0]?.id);
-      const insertIprSchoolIds = results.slice(
-        iprFilesNamesArray.length + FacultydataArray.length,
-        iprFilesNamesArray.length +
-          FacultydataArray.length +
-          schoolIdsArray.length
-      );
-      const insertIprCampusIds = results
-        .slice(
-          iprFilesNamesArray.length +
-            FacultydataArray.length +
-            schoolIdsArray.length,
-          iprFilesNamesArray.length +
-            FacultydataArray.length +
-            schoolIdsArray.length +
-            campusIdsArray.length
-        )
-        .map((result) => result?.rows[0]?.id);
-      const insertIprInventiontypeIds = results
-        .slice(
-          iprFilesNamesArray.length +
-            FacultydataArray.length +
-            schoolIdsArray.length +
-            campusIdsArray.length,
-          iprFilesNamesArray.length +
-            FacultydataArray.length +
-            schoolIdsArray.length +
-            campusIdsArray.length +
-            inventionTypeIdsArray.length
-        )
-        .map((result) => result?.rows[0]?.id);
-      const insertIprStatusIds = results
-        .slice(
-          iprFilesNamesArray.length +
-            FacultydataArray.length +
-            schoolIdsArray.length +
-            campusIdsArray.length +
-            inventionTypeIdsArray.length,
-          iprFilesNamesArray.length +
-            FacultydataArray.length +
-            schoolIdsArray.length +
-            campusIdsArray.length +
-            inventionTypeIdsArray.length +
-            patentStatus.length
-        )
-        .map((result) => result?.rows[0]?.id);
-      const schoolDataList = results
-        .slice(
-          iprFilesNamesArray.length +
-            FacultydataArray.length +
-            schoolIdsArray.length +
-            campusIdsArray.length +
-            inventionTypeIdsArray.length +
-            patentStatus.length
-        )
-        .map((result) => result[0]);
-      const campusList = results
-        .slice(
-          iprFilesNamesArray.length +
-            FacultydataArray.length +
-            schoolIdsArray.length +
-            campusIdsArray.length +
-            inventionTypeIdsArray.length +
-            patentStatus.length
-        )
-        .map((result) => result[0]);
-      const invetionList = results
-        .slice(
-          iprFilesNamesArray.length +
-            FacultydataArray.length +
-            schoolIdsArray.length +
-            campusIdsArray.length +
-            inventionTypeIdsArray.length +
-            patentStatus.length
-        )
-        .map((result) => result[0]);
-      const statusList = results
-        .slice(
-          iprFilesNamesArray.length +
-            FacultydataArray.length +
-            schoolIdsArray.length +
-            campusIdsArray.length +
-            inventionTypeIdsArray.length +
-            patentStatus.length
-        )
-        .map((result) => result[0]);
+  // const insertFacultyPromises = facultyIdsContainer.map(async(faculty_id) => {
+  //   const sql = {
+  //     text: `INSERT INTO ipr_faculty (ipr_id, faculty_id, created_by) 
+  //            VALUES ($1, $2, $3) 
+  //            ON CONFLICT (ipr_id, faculty_id) DO NOTHING 
+  //            RETURNING id`,
+  //     values: [iprId, faculty_id, userName],
+  //   };
+  //   console.log("SQL for IPR Faculty:", sql);
+  //   const iprFaculty = await researchDbW.query(sql);
+  //   return iprFaculty.rows[0] ? iprFaculty.rows[0].id : null;
+  // });
 
-      console.log("schoolDataList ===>>>>>", schoolDataList);
-      console.log("campusList ===>>>>>", campusList);
-      console.log("invetionList ===>>>>>", invetionList);
-      console.log("statusList ===>>>>>", statusList);
-      const schoolNames = schoolDataList
-        .map((school) => school?.school_name)
-        .filter(Boolean)
-        .join(",");
-      const campusNames = campusList
-        .map((campus) => campus?.campus_name)
-        .filter(Boolean)
-        .join(",");
-      const invetionTypeNames = invetionList
-        .map((invetion) => invetion?.invention_type)
-        .filter(Boolean)
-        .join(",");
-      const statusTypeName = statusList
-        .map((status) => status?.status_name)
-        .filter(Boolean)
-        .join(",");
-      console.log("invetionTypeNames ===>>>>", invetionTypeNames);
-      console.log("statusTypeName ===>>>>", statusTypeName);
-      console.log("schoolNames ===>>>>>>", schoolNames);
+  // const insertSdgGoalsPromises = sdgGoalsIdArray.map(async(element) => {
+  //   const SdgGoalsSql = {
+  //     text: `INSERT INTO ipr_sdg_goals (ipr_id, sdg_goals_id) 
+  //            VALUES ($1, $2) 
+  //            ON CONFLICT (ipr_id, sdg_goals_id) DO NOTHING 
+  //            RETURNING id`,
+  //     values: [iprId, element],
+  //   };
+  //   console.log("SQL for SDG Goals:", SdgGoalsSql);
+  //   const sdgGoals = await researchDbW.query(SdgGoalsSql);
+  //   return sdgGoals.rows[0] ? sdgGoals.rows[0].id : null;
+  // });
 
-      return {
-        status: "Done",
-        message: "Record Updated Successfully",
-        iprId: iprId,
-        rowCount: iprRowCount,
-        iprDocumentsIds: iprDocumentsIds,
-        insertIprFacultyIds: insertIprFacultyIds,
-        insertIprSchoolIds: insertIprSchoolIds,
-        insertIprCampusIds: insertIprCampusIds,
-        insertIprInventiontypeIds: insertIprInventiontypeIds,
-        insertIprStatusIds: insertIprStatusIds,
-        schoolNames: schoolNames,
-        campusNames: campusNames,
-        documentIds: documentIds,
-        invetionTypeNames: invetionTypeNames,
-        statusTypeName: statusTypeName,
-      };
-    })
-    .catch((error) => {
-      console.log("Error:", error);
-      return {
-        status: "Failed",
-        message: error.message,
-        errorCode: error.code,
-      };
-    });
+  // const insertInventionTypePromises = inventionIdsArray.map(async(element) => {
+  //   const patentInventionsSql = {
+  //     text: `INSERT INTO ipr_invention_type (ipr_id, invention_type_id) 
+  //            VALUES ($1, $2) 
+  //            ON CONFLICT (ipr_id, invention_type_id) DO NOTHING 
+  //            RETURNING id`,
+  //     values: [iprId, element],
+  //   };
+  //   console.log("SQL for Patent Inventions:", patentInventionsSql);
+  //   const patentInvention = await researchDbW.query(patentInventionsSql);
+  //   return patentInvention.rows[0] ? patentInvention.rows[0].id : null;
+  // });
+
+  // const insertPatentStatusPromises = patentStatus.map(async(element) => {
+  //   const patentStatusSql = {
+  //     text: `INSERT INTO ipr_status_type (ipr_id, ipr_status_id) 
+  //            VALUES ($1, $2) 
+  //            ON CONFLICT (ipr_id, ipr_status_id) DO NOTHING 
+  //            RETURNING id`,
+  //     values: [iprId, element],
+  //   };
+  //   console.log("SQL for Patent Status:", patentStatusSql);
+  //   const patentStage = await researchDbW.query(patentStatusSql);
+  //   return patentStage.rows[0] ? patentStage.rows[0].id : null;
+  // });
+
+  // const updateExternalFaculty = updateExternalDetailsArray ? updateExternalDetailsArray.map(async(detailsData) => {
+  //   console.log('Details Data for Updating External Faculty:', detailsData);
+  //   const [facultyName, facultyDsg, institutionName,  facultyAddr, id] = detailsData;
+
+  //   let sql = {
+  //     text: `UPDATE faculties SET faculty_type_id = $1, faculty_name = $2, designation = $3, institution_name = $4,
+  //           address = $5, created_by = $6 WHERE id = $7 
+  //            RETURNING id`,
+  //     values: [2, facultyName, facultyDsg, institutionName, facultyAddr, userName, id],
+  //   };
+
+  //   console.log('SQL for updating external faculty data:', sql);
+  //   const externalResult = await researchDbW.query(sql);
+  //   return externalResult.rowCount;
+  // }) : null;
+
+  // const iprFacultyIds = await Promise.all(insertFacultyPromises);
+  // console.log('IPR Faculty IDs:', iprFacultyIds);
+
+  // const iprSdgGoalsIds = await Promise.all(insertSdgGoalsPromises);
+  // console.log('IPR SDG Goals IDs:', iprSdgGoalsIds);
+
+  // const iprInventionIds = await Promise.all(insertInventionTypePromises);
+  // console.log('IPR Invention IDs:', iprInventionIds);
+
+  // const iprStatusIds = await Promise.all(insertPatentStatusPromises);
+  // console.log('IPR Status IDs:', iprStatusIds);
+
+  // const updatedFacultyRowCount = await Promise.all(updateExternalFaculty);
+  // console.log('Updated Faculty Row:', updatedFacultyRowCount);
+
+  // const promises = [iprRowCount, iprFacultyIds, iprSdgGoalsIds, iprInventionIds, iprStatusIds, externalIds, updatedFacultyRowCount];
+  // console.log('Promises:', promises);
+
+  // return Promise.all(promises).then(([iprRowCount, iprFacultyIds, iprSdgGoalsIds, iprInventionIds, iprStatusIds, externalIds, updatedFacultyRowCount]) => {
+  //   return {
+  //     status: "Done",
+  //     message: "Record inserted successfully",
+  //     iprFacultyIds, iprSdgGoalsIds, iprInventionIds, iprStatusIds, externalIds,
+  //     iprRowCount: iprRowCount,
+  //     updatedFacultyRowCount : updatedFacultyRowCount
+  //   };
+  // }).catch((error) => {
+  //   console.error("Error:", error.message);
+  //   return {
+  //     status: "Failed",
+  //     message: error.message,
+  //     errorCode: error.code,
+  //   };
+  // });
 };
+
 
 module.exports.iprRecordToBeViewed = async (iprId, userName) => {
   let iprSql = {
     text: `SELECT
-            ipr.id AS ipr_id,
-            ipr.patent_title,
-            ipr.created_by AS created_by,
-            ipr.updated_by AS updated_by,
-            ipr.patent_application_number,
-            ipr.applicant_name,
-            ipr.patent_filed_date,
-            ipr.patent_grant_date,
-            ipr.patent_published_date,
-            ipr.patent_publication_number,
-            ipr.patent_grant_number,
-            ipr.institutional_affiliation,
-            f.faculty_name,
-            f.designation,
-            f.address,
-            f.employee_id,
-            
-            string_agg(DISTINCT it.name, ', ') AS invention_types,
-            string_agg(DISTINCT it.id::text, ', ') AS invention_types_id,
-            string_agg(DISTINCT ps.name, ', ') AS patent_stage_statuses,
-            string_agg(DISTINCT ps.id::text, ', ') AS patent_stage_id,
-            string_agg(DISTINCT sd.documents_name, ', ') AS supporting_documents,
-            string_agg(DISTINCT ns.school_name, ', ') AS associated_schools,
-            string_agg(DISTINCT ns.id::text, ', ') AS school_id,
-            string_agg(DISTINCT nc.campus_name, ', ') AS associated_campuses,
-            string_agg(DISTINCT nc.id::text, ', ') AS campus_id
-        FROM
-            IPR ipr
-        LEFT JOIN
-            ipr_faculty ipf ON ipr.id = ipf.ipr_id
-        LEFT JOIN
-            faculties f ON ipf.faculty_id = f.id
-        
-        LEFT JOIN
-            ipr_invention_type iit ON ipr.id = iit.ipr_id
-        LEFT JOIN
-            invention_type it ON iit.invention_type_id = it.id
-        LEFT JOIN
-            ipr_status_type ist ON ipr.id = ist.ipr_id
-        LEFT JOIN
-            pantent_stage_status ps ON ist.pantent_stage_status_id = ps.id
-        LEFT JOIN
-            ipr_supporting_documents isd ON ipr.id = isd.ipr_id
-        LEFT JOIN
-            supporting_documents sd ON isd.supporting_documents_id = sd.id
-        LEFT JOIN
-            ipr_nmims_school ins ON ipr.id = ins.ipr_id
-        LEFT JOIN
-            nmims_school ns ON ins.school_id = ns.id
-        LEFT JOIN
-            ipr_nmims_campus inc ON ipr.id = inc.ipr_id
-        LEFT JOIN
-            nmims_campus nc ON inc.campus_id = nc.id
-        WHERE
-            ipr.id = $1 AND ipr.created_by  = $2 and ipr.active=true
-            and ipf.active=true and f.active=true and iit.active=true and 
-            it.active = true and ist.active=true and ps.active=true and isd.active=true 
-            and sd.active=true and ins.active=true and ns.active=true and inc.active=true and nc.active=true 
-        GROUP BY
-            ipr.id,
-            ipr.patent_title,
-            ipr.patent_application_number,
-            ipr.applicant_name,
-            ipr.patent_filed_date,
-            ipr.patent_grant_date,
-            ipr.patent_published_date,
-            ipr.patent_publication_number,
-            ipr.patent_grant_number,
-            ipr.institutional_affiliation,
-            f.faculty_name,
-            f.designation,
-            f.address,
-            f.employee_id`,
+    ipr.id AS ipr_id,
+    ipr.created_by AS created_by,
+    ipr.updated_by AS updated_by,
+    ipr.patent_title,
+    ipr.patent_application_number,
+    ipr.applicant_name,
+    ipr.patent_filed_date,
+    ipr.patent_grant_date,
+    ipr.patent_published_date,
+    ipr.patent_publication_number,
+    ipr.patent_grant_number,
+    ipr.nmims_campus,
+    ipr.nmims_school,
+    ipr.supporting_documents,
+    ipr.institutional_affiliation,
+    string_agg(DISTINCT it.name, ', ') AS invention_types,
+    string_agg(DISTINCT it.id::text, ', ') AS invention_types_id,
+    string_agg(DISTINCT ps.name, ', ') AS patent_stage_statuses,
+    string_agg(DISTINCT ps.id::text, ', ') AS patent_stage_id,
+    string_agg(DISTINCT sdg.id::text, ', ') AS sdg_id,
+    string_agg(DISTINCT intr.id::text, ', ') AS faculty_id
+FROM
+    IPR ipr
+LEFT JOIN
+    ipr_invention_type iit ON ipr.id = iit.ipr_id
+LEFT JOIN
+    invention_type it ON iit.invention_type_id = it.id
+LEFT JOIN
+    ipr_status_type ist ON ipr.id = ist.ipr_id
+LEFT JOIN
+    pantent_stage_status ps ON ist.ipr_status_id = ps.id
+LEFT JOIN
+  ipr_sdg_goals isdg ON ipr.id = isdg.ipr_id
+LEFT JOIN
+    sdg_goals sdg ON isdg.sdg_goals_id = sdg.id
+LEFT JOIN
+  ipr_faculty iprf ON ipr.id = iprf.ipr_id
+LEFT JOIN
+      faculties intr ON iprf.faculty_id = intr.id
+
+WHERE
+     ipr.id = $1 and ipr.created_by = $2 and ipr.active=true and iit.active=true and it.active=true and 
+    ist.active=true and isdg.active=true and sdg.active=true and ps.active=true and
+    iprf.active=true and  intr.active=true
+GROUP BY
+    ipr.id,
+    ipr.patent_title,
+    ipr.patent_application_number,
+    ipr.applicant_name,
+    ipr.patent_filed_date,
+    ipr.patent_published_date,
+    ipr.patent_publication_number,
+    ipr.patent_grant_number,
+    ipr.nmims_campus,
+    ipr.nmims_school,
+    ipr.supporting_documents,
+    ipr.institutional_affiliation`,
 
     values: [iprId, userName],
   };
@@ -1119,8 +763,8 @@ module.exports.iprRecordToBeViewed = async (iprId, userName) => {
     text: `SELECT
                 f.faculty_name,
                 f.designation,
+                f.institution_name,
                 f.address,
-                f.employee_id,
                 ft.name AS faculty_type
             FROM
                 ipr_faculty ipf
@@ -1180,7 +824,7 @@ module.exports.iprRecordToBeViewed = async (iprId, userName) => {
                 FROM
                     ipr_status_type ipt 
                 JOIN 
-                    pantent_stage_status ps ON ipt.pantent_stage_status_id = ps.id
+                    pantent_stage_status ps ON ipt.ipr_status_id = ps.id
                 WHERE
                     ipt.ipr_id = $1 and ipt.active=true and ps.active=true `,
     values: [iprId],
@@ -1256,3 +900,199 @@ module.exports.iprRecordToBeViewed = async (iprId, userName) => {
       };
     });
 };
+
+
+module.exports.retriveExternalDetails = async(iprId, userName) => {
+  console.log('iprId and userName in models ====>>>>>>', iprId, userName);
+  
+  let facultiesSql = {
+    text: `
+    SELECT
+        f.faculty_name,
+        f.designation,
+        f.institution_name,
+        f.address,
+        f.id
+    FROM
+        faculties f
+    LEFT JOIN
+    ipr_faculty ipf ON f.id = ipf.faculty_id
+    LEFT JOIN
+    IPR  ipr ON ipf.ipr_id = ipr.id
+    WHERE
+        f.active = true AND
+        f.faculty_type_id = 2 AND
+        ipr.id = $1 AND f.created_by = $2
+    `,
+    values: [iprId, userName]
+};
+
+console.log('facultiesSql ====>>>>>>', facultiesSql);
+
+const externalData = await researchDbW.query(facultiesSql);
+
+const facultyPromises = [externalData];
+return Promise.all(facultyPromises).then(([externalData]) => {
+  return {
+    status : "Done",
+    message : "Retrived External Details",
+    exetrnalData : externalData.rows,
+    rowCount : externalData.rowCount,
+
+  }
+})
+.catch((error) => {
+  return {
+    status: "Failed",
+    message: error.message,
+    errorCode: error.code,
+  };
+});
+
+}
+
+module.exports.deletedPatentExternalDetails = async(externalId, userName) => {
+  console.log('externalId in models  =====>>>>>>>', externalId);
+
+  let externalSql = {
+    text : `UPDATE faculties SET active=false WHERE id = $1 AND created_by = $2`,
+    values : [externalId, userName]
+  }
+
+  const deleteExternalDetails = await researchDbW.query(externalSql);
+
+  const promises = [deleteExternalDetails];
+  return Promise.all(promises).then(([deleteExternalDetails]) => {
+    return {
+      status : "Done",
+      message : "Deleted successfully",
+      rowCount : deleteExternalDetails.rowCount
+    }
+  })
+  .catch((error) => {
+    return {
+      status: "Failed",
+      message: error.message,
+      errorCode: error.code,
+    };
+  });
+}
+
+
+module.exports.deleteInternalFaculty = async(internalId, iprId, userName) => {
+  console.log("internalId in models ====>>>>>>", internalId);
+
+  const internalNmimsDetails = internalId.map(async(internalId) => {
+    let sql = {
+      text: `UPDATE  ipr_faculty  SET active = false WHERE faculty_id = $1 And ipr_id = $2`,
+      values: [internalId, iprId],
+    };
+    console.log("sql ===>>>>>>>>>", sql);
+    return await researchDbW.query(sql)
+
+  })
+ 
+  return Promise.all(internalNmimsDetails).then((result) => {
+    return {
+      status : "Done",
+      message : "Record Deleted successfully",
+      result : result
+    } 
+  }).catch((error) => {
+    return {
+      status: "Failed",
+      message: error.message,
+      errorCode: error.code,
+    };
+  });
+
+}
+
+//nmims school
+module.exports.deleteIprSdgGoals = async (internalId, iprId, userName) => {
+  console.log("internalId in models ====>>>>>>", internalId);
+
+  const iprSdgGoals = internalId.map(async (id) => {
+    let sql = {
+      text: `UPDATE ipr_sdg_goals SET active = false WHERE sdg_goals_id = $1 And ipr_id = $2`,
+      values: [id, iprId],
+    };
+
+    console.log('sql sdg goals ====>>>>>', sql);
+    return await researchDbW.query(sql);
+  });
+
+  return await Promise.all(iprSdgGoals)
+    .then((result) => {
+      return {
+        status: "Done",
+        message: "Record Deleted successfully",
+        result: result,
+      };
+    })
+    .catch((error) => {
+      return {
+        status: "Failed",
+        message: error.message,
+        errorCode: error.code,
+      };
+    });
+};
+
+//nmims campus
+module.exports.deleteIprPatentStatus = async(internalId, iprId, userName) => {
+
+  console.log("internalId in models ====>>>>>>", internalId);
+  const iprPatentStatus = internalId.map(async(internalId) => {
+    let sql = {
+      text: `UPDATE  ipr_status_type  SET active = false WHERE ipr_status_id = $1 And ipr_id = $2`,
+      values: [internalId, iprId],
+    };
+    console.log("sql ===>>>>>>>>>", sql);
+    return await researchDbW.query(sql);
+
+  })
+  
+  return Promise.all(iprPatentStatus).then((result) => {
+    return {
+      status : "Done",
+      message : "Record Deleted successfully",
+      result : result
+    } 
+  }).catch((error) => {
+    return {
+      status: "Failed",
+      message: error.message,
+      errorCode: error.code,
+    };
+  });
+
+}
+//nmims policy cadre
+module.exports.deletIprInventionType = async(internalId, iprId, userName) => {
+  console.log('internalId in models ====>>>>>>', internalId);
+
+  const iprInventionType = internalId.map(async(internalId) => {
+    let sql = {
+      text: `UPDATE  ipr_invention_type  SET active = false WHERE invention_type_id = $1 And ipr_id = $2`,
+      values: [internalId, iprId]
+    };
+
+    console.log('sql ===>>>>>>', sql);
+    return await researchDbW.query(sql);
+  })
+
+  return Promise.all(iprInventionType).then((result) => {
+      return {
+        status : "Done",
+        message : "Record Deleted successfully",
+        result : result
+      } 
+    }).catch((error) => {
+      return {
+        status: "Failed",
+        message: error.message,
+        errorCode: error.code,
+      };
+    });
+}

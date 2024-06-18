@@ -1,8 +1,12 @@
 const consultancyFormService = require('../services/NMIMS-consultancy-form.service');
+const { getRedisData } = require("../../utils/redis.utils");
+
 
 module.exports.renderNmimsConsultancyForm = async(req, res, next) => {
-    const  userName = req.body.username;
-    console.log('userName in controller  ===>>>>>>', userName);
+    const sessionid = req.cookies.session;
+    let sessionData = await getRedisData(`${sessionid}:session`)
+    const  userName = sessionData.username;
+    console.log('userName in in dashboard controller  ===>>>>>>', userName);
 
     const renderConsultancyData = await consultancyFormService.fetchConsultancyFormData(userName);
     console.log('renderConsultancyData in controller ===>>>>', renderConsultancyData)
@@ -12,14 +16,17 @@ module.exports.renderNmimsConsultancyForm = async(req, res, next) => {
         consultancyFormData : renderConsultancyData.consultancyFormData,
         rowCount : renderConsultancyData.rowCount,
         facultyData : renderConsultancyData.facultyData,
+        userName : userName,
         errorCode : renderConsultancyData.errorCode ? renderConsultancyData.errorCode : null
     })
 }
 
 
 module.exports.viewConsultancyFormApprovalData = async(req, res, next) => {
-    const  userName = req.body.username;
-    console.log('userName in controller  ===>>>>>>', userName);
+    const sessionid = req.cookies.session;
+    let sessionData = await getRedisData(`${sessionid}:session`)
+    const  userName = sessionData.username;
+    console.log('userName in in dashboard controller  ===>>>>>>', userName);
 
     console.log('nmimsConsultancyFormId in controller ===>>>>', req.body);
 
@@ -51,8 +58,9 @@ module.exports.viewConsultancyFormApprovalData = async(req, res, next) => {
 
 
 module.exports.insertconsultancyFormData = async(req, res, next) => {
-    console.log('req.body in controller ankit ====>>>>>', req.body.consultancyObject);
-    const  userName = req.body.username;
+    const sessionid = req.cookies.session;
+    let sessionData = await getRedisData(`${sessionid}:session`)
+    const  userName = sessionData.username;
     console.log('userName in controller  ===>>>>>>', userName);
     console.log('files in controller ====>>>>>', req.files)
 
@@ -73,9 +81,10 @@ module.exports.insertconsultancyFormData = async(req, res, next) => {
 
 
 module.exports.updateConsultancyApprovalFormData = async(req, res, next) => {
-    console.log('ggggggggggggggggggggggggggggg');
-    const  userName = req.body.username;
-    console.log('userName in controller  ===>>>>>>', userName);
+    const sessionid = req.cookies.session;
+    let sessionData = await getRedisData(`${sessionid}:session`)
+    const  userName = sessionData.username;
+    console.log('userName in in dashboard controller  ===>>>>>>', userName);
     console.log('data in controller ====>>>>', req.body);
     console.log('req.files ======>>>>', req.files)
 

@@ -24,7 +24,6 @@ module.exports.insertDataIntoCaseStudies = async (
   console.log("caseStudyData in models ==>>", caseStudyData);
   const {
     authorsFirstName,
-    authorLastName,
     titleOfCaseStudy,
     edition,
     volumeNumber,
@@ -42,11 +41,10 @@ module.exports.insertDataIntoCaseStudies = async (
 const editionValue = edition !== '' ? edition : null;
 const volumeNumberValue = volumeNumber !== '' ? volumeNumber : null;
   let sql = {
-    text: `INSERT INTO case_studies (author_first_name, author_last_name, title_of_case_study, edition, volume_number, publisher_name, publication_year, page_number, url_of_case_study,
-                number_of_nmims_authors, nmims_authors, nmims_campus_authors, nmims_school_authors, publisher_category, supporting_documents, created_by) VALUES ($1, $2 , $3 ,$4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16) RETURNING id `,
+    text: `INSERT INTO case_studies (author_first_name, title_of_case_study, edition, volume_number, publisher_name, publication_year, page_number, url_of_case_study,
+                number_of_nmims_authors, nmims_authors, nmims_campus_authors, nmims_school_authors, publisher_category, supporting_documents, created_by) VALUES ($1, $2 , $3 ,$4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) RETURNING id `,
     values: [
       authorsFirstName,
-      authorLastName,
       titleOfCaseStudy,
       editionValue,
       volumeNumberValue,
@@ -116,7 +114,7 @@ module.exports.deleteCaseStudies = async ({ caseStudyId }) => {
 
 module.exports.viewCaseStudyData = async (caseStudyId, userName) => {
   let sql = {
-    text: `  SELECT author_first_name, author_last_name, title_of_case_study, edition, volume_number, publisher_name, publication_year, page_number, url_of_case_study,
+    text: `  SELECT author_first_name, title_of_case_study, edition, volume_number, publisher_name, publication_year, page_number, url_of_case_study,
         number_of_nmims_authors, nmims_authors, nmims_campus_authors, nmims_school_authors, publisher_category, supporting_documents, created_by  FROM case_studies WHERE  id = $1 AND created_by = $2 and active=true`,
     values: [caseStudyId, userName],
   };
@@ -149,7 +147,6 @@ module.exports.updateCaseStudies = async (
 ) => {
   const {
     authorsFirstName,
-    authorLastName,
     titleOfCaseStudy,
     edition,
     volumeNumber,
@@ -168,11 +165,11 @@ module.exports.updateCaseStudies = async (
 const volumeNumberValue = volumeNumber !== '' ? volumeNumber : null;
   const DataFileString = caseStudyFiles ? caseStudyFiles : null;
   let baseSql = ` UPDATE case_studies SET 
-                    author_first_name = $2, author_last_name = $3, title_of_case_study = $4, edition = $5, volume_number = $6, publisher_name = $7, publication_year = $8, page_number = $9, url_of_case_study = $10,
-                    number_of_nmims_authors = $11, nmims_authors = $12, nmims_campus_authors = $13, nmims_school_authors = $14, publisher_category = $15, updated_by = $16`;
+                    author_first_name = $2, title_of_case_study = $3, edition = $4, volume_number = $5, publisher_name = $6, publication_year = $7, page_number = $8, url_of_case_study = $9,
+                    number_of_nmims_authors = $10, nmims_authors = $11, nmims_campus_authors = $12, nmims_school_authors = $13, publisher_category = $14, updated_by = $15`;
 
   let supportingDocumentsUpdate = DataFileString
-    ? `, supporting_documents = $17`
+    ? `, supporting_documents = $16`
     : "";
 
   let queryText = baseSql + supportingDocumentsUpdate + ` WHERE id = $1`;
@@ -180,7 +177,6 @@ const volumeNumberValue = volumeNumber !== '' ? volumeNumber : null;
   let values = [
     caseStudyId,
     authorsFirstName,
-    authorLastName,
     titleOfCaseStudy,
     editionValue,
     volumeNumberValue,

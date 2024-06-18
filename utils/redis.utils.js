@@ -12,7 +12,7 @@ module.exports.getRedisData = async (key) => {
     const redisCLientConn = await redisClient
     const data = await redisCLientConn.get(key);
 
-    console.log('data in redis ===>>>>>', data);
+    // console.log('data in redis ===>>>>>', data);
     if(!data) {
         internalServerError()
     }
@@ -22,7 +22,7 @@ module.exports.getRedisData = async (key) => {
 
 module.exports.setRedisData = async (key, data) => {
     const redisConnection = await redisClient
-    console.log(' key and data in redis ===>>>>>>', key , data);
+    // console.log(' key and data in redis ===>>>>>>', key , data);
     await redisConnection.set(key, JSON.stringify(data))
 }
 
