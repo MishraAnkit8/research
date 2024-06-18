@@ -359,7 +359,59 @@ module.exports.updateStatus = async (tableName, fieldsName, mainId, idContainerA
         };
     }
 };
+ 
 
+
+module.exports.insertOrUpdateRelationalDb = async (tableName, fieldsName, mainId, idContainerArray, userName) => {
+  console.log('inside insertOrUpdateRelationalDb mainId ====>>>>>>', mainId);
+
+  try {
+      const currentTimestamp = moment().toISOString();
+
+      for (const id of idContainerArray) {
+         
+          const existingRecord = await researchDbW.query({
+              text: `SELECT id FROM ${tableName} WHERE ${fieldsName[0]} = $1 AND ${fieldsName[1]} = $2`,
+              values: [mainId, id],
+          });
+
+          if (existingRecord.rows.length === 0) {
+             
+              const sqlQuery = {
+                  text: `INSERT INTO ${tableName} (${fieldsName[0]}, ${fieldsName[1]}, ${fieldsName[2]}, created_at, updated_at, active) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`,
+                  values: [mainId, id, userName, currentTimestamp, currentTimestamp, true],
+              };
+              console.log('sqlQuery ====>>>>>>', sqlQuery);
+
+              const result = await researchDbW.query(sqlQuery);
+              console.log('Inserted record ID:', result.rows[0].id);
+          } else {
+              
+              const sqlQuery = {
+                  text: `UPDATE ${tableName} SET ${fieldsName[2]} = $1, updated_at = $2 WHERE id = $3`,
+                  values: [userName, currentTimestamp, existingRecord.rows[0].id],
+              };
+              console.log('sqlQuery ====>>>>>>', sqlQuery);
+
+              const result = await researchDbW.query(sqlQuery);
+              console.log('Updated record ID:', existingRecord.rows[0].id);
+          }
+      }
+
+      return {
+          status: 'success',
+          message: 'Records inserted or updated successfully',
+      };
+  } catch (error) {
+      console.error('Error inserting or updating records ====>>>>>>', error);
+
+      return {
+          status: 'error',
+          message: 'Failed to insert or update records',
+          error: error.message,
+      };
+  }
+};
 
 
 

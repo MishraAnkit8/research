@@ -172,13 +172,13 @@ module.exports.updatedIprData = async(iprId, body, files, userName) => {
     return iprDataToBeUpdated.status === "Done" ? {
         status : iprDataToBeUpdated.status,
         message : iprDataToBeUpdated.message,
-        iprFacultyIds : iprDataToBeUpdated.iprFacultyIds,
-        iprSdgGoalsIds : iprDataToBeUpdated.iprSdgGoalsIds,
-        iprInventionIds : iprDataToBeUpdated.iprInventionIds,
-        iprStatusIds : iprDataToBeUpdated.iprStatusIds,
-        externalIds : iprDataToBeUpdated.externalIds,
-        iprRowCount: iprDataToBeUpdated.iprRowCount, 
-        updatedFacultyRowCount: iprDataToBeUpdated.updatedFacultyRowCount       
+        // iprFacultyIds : iprDataToBeUpdated.iprFacultyIds,
+        // iprSdgGoalsIds : iprDataToBeUpdated.iprSdgGoalsIds,
+        // iprInventionIds : iprDataToBeUpdated.iprInventionIds,
+        // iprStatusIds : iprDataToBeUpdated.iprStatusIds,
+        // externalIds : iprDataToBeUpdated.externalIds,
+        // iprRowCount: iprDataToBeUpdated.iprRowCount, 
+        // updatedFacultyRowCount: iprDataToBeUpdated.updatedFacultyRowCount       
 
     } : {
         status : iprDataToBeUpdated.status,

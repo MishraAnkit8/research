@@ -91,8 +91,8 @@ module.exports.insertJournalPapper = async (body, files, userName) => {
     return newJournalPaper.status === "Done" ? {
         status : newJournalPaper.status,
         message : newJournalPaper.message,
-        rowCount : newJournalPaper.rowCount,
-        journalPaperId : newJournalPaper.journalPaperId,
+        // rowCount : newJournalPaper.rowCount,
+        // journalPaperId : newJournalPaper.journalPaperId,
         // documentIds: newJournalPaper.documentIds,
         // articledocumentsIds: newJournalPaper.articledocumentsIds,
         // articlImpactFactorIds: newJournalPaper.articlImpactFactorIds,

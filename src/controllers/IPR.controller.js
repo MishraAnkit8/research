@@ -97,13 +97,13 @@ module.exports.updateIPRRowData = async(req, res, next) => {
     res.status(statusCode).send({
         status : iprRowDataToBeUpdated.status,
         message : iprRowDataToBeUpdated.message,
-        iprFacultyIds : iprRowDataToBeUpdated.iprFacultyIds,
-        iprSdgGoalsIds : iprRowDataToBeUpdated.iprSdgGoalsIds,
-        iprInventionIds : iprRowDataToBeUpdated.iprInventionIds,
-        iprStatusIds : iprRowDataToBeUpdated.iprStatusIds,
-        externalIds : iprRowDataToBeUpdated.externalIds,
-        iprRowCount: iprRowDataToBeUpdated.iprRowCount, 
-        updatedFacultyRowCount: iprRowDataToBeUpdated.updatedFacultyRowCount ,
+        // iprFacultyIds : iprRowDataToBeUpdated.iprFacultyIds,
+        // iprSdgGoalsIds : iprRowDataToBeUpdated.iprSdgGoalsIds,
+        // iprInventionIds : iprRowDataToBeUpdated.iprInventionIds,
+        // iprStatusIds : iprRowDataToBeUpdated.iprStatusIds,
+        // externalIds : iprRowDataToBeUpdated.externalIds,
+        // iprRowCount: iprRowDataToBeUpdated.iprRowCount, 
+        // updatedFacultyRowCount: iprRowDataToBeUpdated.updatedFacultyRowCount ,
         errorCode : iprRowDataToBeUpdated.errorCode ? iprRowDataToBeUpdated.errorCode : null
     })
 }

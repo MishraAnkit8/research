@@ -250,17 +250,17 @@ module.exports.updatePatentsubmissionData = async (patentId, updatedPatentData, 
 
     // Insert into patent faculties table
     const patentFacultyField = ['patent_submission_grant_id', 'faculty_id', 'created_by'];
-    const updatePatentFaculty = await insertDbModels.insertIntoRelationalDb('patent_submission_faculty', patentFacultyField, patentId, facultyIdsContainer, userName);
+    const updatePatentFaculty = await insertDbModels.insertOrUpdateRelationalDb('patent_submission_faculty', patentFacultyField, patentId, facultyIdsContainer, userName);
     console.log('updatePatentFaculty ===>>>>>>', updatePatentFaculty);
 
     // Insert into patent_submission_sdg_goals
     const patentSdgGoalsFields = ['patent_submission_grant_id', 'sdg_goals_id', 'created_by'];
-    const updatePatentSdgGoals = await insertDbModels.insertIntoRelationalDb('patent_submission_sdg_goals', patentSdgGoalsFields, patentId, sdgGoalsIdArray, userName);
+    const updatePatentSdgGoals = await insertDbModels.insertOrUpdateRelationalDb('patent_submission_sdg_goals', patentSdgGoalsFields, patentId, sdgGoalsIdArray, userName);
     console.log('updatePatentSdgGoals ====>>>>>', updatePatentSdgGoals);
 
     // Insert into patent_submission_invention_type
     const inventionFields = ['patent_submission_grant_id', 'invention_type_id', 'created_by'];
-    const updatePatentInvention = await insertDbModels.insertIntoRelationalDb('patent_submission_invention_type', inventionFields, patentId, inventionIdsArray, userName);
+    const updatePatentInvention = await insertDbModels.insertOrUpdateRelationalDb('patent_submission_invention_type', inventionFields, patentId, inventionIdsArray, userName);
     console.log('updatePatentInvention ====>>>>>>>>', updatePatentInvention);
 
     // Insert into patent_submission_stage_status

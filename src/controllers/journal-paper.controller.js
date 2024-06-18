@@ -46,8 +46,8 @@ module.exports.insertJournalPapperDetails = async (req, res, next) => {
     res.status(statusCode).send({
         status : journalPaperData.status,
         message : journalPaperData.message,
-        rowCount : journalPaperData.rowCount,
-        journalPaperId : journalPaperData.journalPaperId,
+        // rowCount : journalPaperData.rowCount,
+        // journalPaperId : journalPaperData.journalPaperId,
         // documentIds: journalPaperData.documentIds,
         // articledocumentsIds: journalPaperData.articledocumentsIds,
         // articlImpactFactorIds: journalPaperData.articlImpactFactorIds,
