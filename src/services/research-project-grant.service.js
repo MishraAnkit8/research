@@ -76,7 +76,8 @@ module.exports.updateResearchConstant = async (consultantId, body, files, userNa
   console.log('updateExternalDetailsArray ====>>>>>>>', updateExternalDetailsArray);
 
 
-  const updatedConsultantFilesData = files ?.map((file) => file.filename).join(",");
+  const updatedConsultantFilesData = files ?.map(file => file.filename).join(',');
+  console.log('updatedConsultantFilesData ===>>>>>', updatedConsultantFilesData);
 
   const updateResearchProjectConstant = await researchCunsultancyModel.updateResearchConsultantData(consultantId, updatedResearchGrant, facultyIdsContainer, externalFacultyDataInsert, updateExternalDetailsArray,
     updatedConsultantFilesData, userName);

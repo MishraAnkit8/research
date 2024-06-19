@@ -5,10 +5,12 @@ const {
 const dbPoolManager = require("../../config/db-pool-manager");
 const moment = require("moment");
 
-const insertDbModels = require('./insert-update-records.models')
+
 
 const researchDbR = dbPoolManager.get("researchDbR", research_read_db);
 const researchDbW = dbPoolManager.get("researchDbW", research_write_db);
+
+const insertDbModels = require('./insert-update-records.models');
 
 // reomove for testinging and psg.active=true
 

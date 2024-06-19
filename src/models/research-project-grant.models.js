@@ -8,6 +8,8 @@ const moment = require("moment");
 const researchDbR = dbPoolManager.get("researchDbR", research_read_db);
 const researchDbW = dbPoolManager.get("researchDbW", research_write_db);
 
+const insertDbModels = require('./insert-update-records.models');
+
 module.exports.fetchResearchConsultancy = async (userName) => {
 
   let reseachSql = {
@@ -128,278 +130,146 @@ module.exports.fetchInternal = async () => {
 };
 
 module.exports.insertResearhcProjectConstancyData = async (researchCunsultancyData, consultancyDataFiles, facultyIdsContainer, externalFacultyData,  userName) => {
-  console.log(
-    "researchCunsultancyData inside models ===>>>",
-    researchCunsultancyData
-  );
+  console.log("researchCunsultancyData inside models ===>>>", researchCunsultancyData);
 
   const {
-    nmimsSchool,
-    nmimsCampus,
-    grantProposalCategory,
-    typeOfGrant,
-    titleOfProject,
-    thurstAreaOfResearch,
-    fundingAgency,
-    fundingAmount,
-    statusOfResearchProject,
-    submissionGrantDate,
-    scheme,
-    durationDate,
-    amountReceived,
-    annualPaymentDate,
+    nmimsSchool, nmimsCampus, grantProposalCategory, typeOfGrant, titleOfProject, thurstAreaOfResearch, fundingAgency,
+    fundingAmount, statusOfResearchProject, submissionGrantDate, scheme, durationDate, amountReceived, annualPaymentDate
   } = researchCunsultancyData;
 
-  let researchSql = {
-    text: `INSERT INTO research_project_grant (nmims_school, nmims_campus, grant_proposal_category, type_of_research_grant, title_of_project, thrust_area_of_research, name_of_funding_agency, funding_amount, status_of_research_project, submission_date, scheme, projectDuration, amountRecieved, paymentDate, supporting_documents, created_by) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16) RETURNING id`,
-    values: [
-      nmimsSchool,
-      nmimsCampus,
-      grantProposalCategory,
-      typeOfGrant,
-      titleOfProject,
-      thurstAreaOfResearch,
-      fundingAgency,
-      fundingAmount,
-      statusOfResearchProject,
-      submissionGrantDate,
-      scheme,
-      durationDate,
-      amountReceived,
-      annualPaymentDate,
-      consultancyDataFiles,
-      userName,
-   
-    ],
-  };
+  const researchValues = [nmimsSchool, nmimsCampus, grantProposalCategory, typeOfGrant, titleOfProject, thurstAreaOfResearch, fundingAgency,
+    fundingAmount, statusOfResearchProject, submissionGrantDate, scheme, durationDate, amountReceived, annualPaymentDate, consultancyDataFiles, userName];
 
-    
-  const consultantId = await researchDbW.query(researchSql)
-    .then(result => {
-      return result.rows[0].id;
-    })
-    const rowCount = await researchDbW.query(researchSql)
-    .then(result => {
-      return result.rowCount;
-    })
-    .catch(error => {
-      console.error('Error executing query:', error);
-    });
+  const researchFields = ['nmims_school', 'nmims_campus', 'grant_proposal_category', 'type_of_research_grant', 'title_of_project', 'thrust_area_of_research', 'name_of_funding_agency',
+     'funding_amount', 'status_of_research_project', 'submission_date', 'scheme', 'projectDuration', 'amountRecieved', 'paymentDate', 'supporting_documents', 'created_by'
+  ]
 
-  console.log('consultantId ===>>>>>>>', consultantId);
+  const insertResearchProject = await insertDbModels.insertRecordIntoMainDb('research_project_grant', researchFields, researchValues, userName);
+  console.log('insertResearchProject ====>>>>>>', insertResearchProject);
+  const grantId = insertResearchProject.insertedId;
+  console.log('grantId ===>>>>>', grantId)
 
-  // insert external faculty details
-  const insertexternalDetails = externalFacultyData ? externalFacultyData.map( async(detailsData) => {
-    console.log('detailsData ======>>>>>>>>>', detailsData);
-    const [facultyName, facultyEmpId, facultyDsg, facultyAddr ] = detailsData
-  
-    let sql = {
-        text: `INSERT INTO faculties (faculty_type_id, faculty_name, designation, institution_name, address, created_by) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`,
-        values: [2, facultyName,facultyEmpId, facultyDsg, facultyAddr, userName]
-    };
-  
-    console.log('sql external faculty data', sql);
-    const externalResult = await researchDbW.query(sql);
-    return externalResult.rows[0].id
-  
-  }) : null;
-  
-  const externalIds = await Promise.all(insertexternalDetails);
-  console.log('externalIds =======>>>>>>>>', externalIds);
+  // insert into external faculty
+  const facultyfield = ['faculty_type_id', 'faculty_name', 'designation', 'institution_name', 'address', 'created_by'];
+  const insertIntoFacultyTable = await insertDbModels.insertExternalFacultyRecord('faculties', facultyfield, externalFacultyData, userName);
 
-  facultyIdsContainer.push(...externalIds);
-  console.log('facultyIdsContainer ===>>>>', facultyIdsContainer);
+  console.log('insertIntoFacultyTable =====>>>>>', insertIntoFacultyTable);
+  const externalId = insertIntoFacultyTable.externalId;
+  console.log('externalId ===>>>>>', externalId);
 
-  const insertFacultyPromises = facultyIdsContainer ? facultyIdsContainer.map(async(faculty_id) => {
-    const sql = {
-        text: `INSERT INTO research_project_grant_faculty (research_project_grant_id, faculty_id, created_by) VALUES ($1, $2, $3) RETURNING id`,
-        values: [consultantId, faculty_id, userName],
-        };
-    console.log("sql ===>>>>>", sql);
-    const iprFaculty = await researchDbW.query(sql);
-    return iprFaculty.rows[0].id  
-}) : null;
+  // push external faculty ids into facultyIdsContainer
+  facultyIdsContainer.push(...externalId);
+  console.log('facultyIdsContainer in patent models ===>>>>>>', facultyIdsContainer);
 
-  const consultantFacultyIds = await Promise.all(insertFacultyPromises);
-  console.log('consultantFacultyIds ====>>>>>>>', consultantFacultyIds);
+  //insert into patent faculties table 
+  const reseacrhFacultyField = ['research_project_grant_id', 'faculty_id', 'created_by'];
 
+  const insertReseacrhFaculty = await insertDbModels.insertIntoRelationalDb('research_project_grant_faculty', reseacrhFacultyField, grantId, facultyIdsContainer, userName);
+  console.log('insertReseacrhFaculty ===>>>>>>', insertReseacrhFaculty);
 
-  const promises = [consultantId, consultantFacultyIds];
-  console.log('promises ===>>>>>>', promises);
-
-  return Promise.all(promises).then(([consultantId, consultantFacultyIds]) => {
+   // Check if all insertions are successful
+   if (
+    insertResearchProject.status === 'Done' &&
+    insertIntoFacultyTable.status === 'Done' &&
+    insertReseacrhFaculty.status === 'Done'
+  ) {
     return {
-      status : "Done",
-      message : "Record inserted successfully",
-      consultantId, consultantFacultyIds, externalIds,
-      rowCount : rowCount
-    }
-  })
-  .catch((error) => {
-    console.error("Error:", error.message);
-    return {
-      status: "Failed",
-      message: error.message,
-      errorCode: error.code,
+      status: 'Done',
+      message: 'All records inserted successfully'
     };
-  });
-
+  } else {
+    return {
+      status: 'Failed',
+      message: 'Failed to insert'
+    };
+  }
 
 };
 
 module.exports.updateResearchConsultantData = async (consultantId, updatedResearchGrant, facultyIdsContainer, externalFacultyDataInsert, updateExternalDetailsArray,
   updatedConsultantFilesData, userName) => {
   console.log("data in models ===>>>>", updatedResearchGrant);
-  const supportingDocuments = updatedConsultantFilesData
-    ? updatedConsultantFilesData
-    : null;
-  console.log("supportingDocuments ====>>>>", supportingDocuments);
 
-  const {
-    grantProposalCategory,
-    typeOfGrant,
-    titleOfProject,
-    thurstAreaOfResearch,
-    fundingAgency,
-    fundingAmount,
-    statusOfResearchProject,
-    submissionGrantDate,
-    scheme,
-    durationDate,
-    amountReceived,
-    annualPaymentDate,
-    nmimsSchool,
-    nmimsCampus,
+  console.log("updatedConsultantFilesData ====>>>>", updatedConsultantFilesData);
+
+  const {nmimsSchool, nmimsCampus, grantProposalCategory, typeOfGrant, titleOfProject, thurstAreaOfResearch, fundingAgency,
+    fundingAmount, statusOfResearchProject, submissionGrantDate, scheme, durationDate, amountReceived, annualPaymentDate
   } = updatedResearchGrant;
 
-  let baseQuery = `UPDATE research_project_grant SET  grant_proposal_category = $2, type_of_research_grant = $3, title_of_project = $4, thrust_area_of_research = $5, name_of_funding_agency = $6, funding_amount = $7, status_of_research_project = $8, submission_date = $9,
-  scheme=$10, projectDuration=$11, amountRecieved=$12, paymentDate=$13, nmims_school = $14, nmims_campus = $15, updated_by = $16`;
-  let documentsQuery = supportingDocuments
-    ? `, supporting_documents = $17`
-    : "";
-  console.log("documentsQuery ====>>>>", documentsQuery);
-  let queryText = baseQuery + documentsQuery + ` WHERE id = $1`;
-  console.log("queryText ===>>>>", queryText);
+  let updateResearchData;
 
-  let values = [
-    consultantId,
-    grantProposalCategory,
-    typeOfGrant,
-    titleOfProject,
-    thurstAreaOfResearch,
-    fundingAgency,
-    fundingAmount,
-    statusOfResearchProject,
-    submissionGrantDate,
-    scheme,
-    durationDate,
-    amountReceived,
-    annualPaymentDate,
-    nmimsSchool,
-    nmimsCampus,
-    userName,
-    ...(supportingDocuments ? [supportingDocuments] : []),
-  ];
+  try {
 
-  console.log("values ===>>>>", values);
-
-  let sql = {
-    text: queryText,
-    values: values,
-  };
-  console.log("sql ====>>>>>>>", sql);
-  const consultancyRowCount = await researchDbW.query(sql)
-  .then(result => result.rowCount)
-  .catch(error => {
-    console.error('Error executing query:', error);
-  });
-
-  console.log('consultancyRowCount =====>>>>>>>', consultancyRowCount);
-
-
-   // insert exeternal  faculty data if there any new
-  const insertexternalDetails = externalFacultyDataInsert ? externalFacultyDataInsert.map(async(detailsData) => {
-    console.log('External Faculty Data:', detailsData);
-    const [facultyName, facultyEmpId, facultyDsg, facultyAddr] = detailsData;
-
-    let sql = {
-      text: `INSERT INTO faculties (faculty_type_id, faculty_name, designation, institution_name, address, created_by) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`,
-      values: [2, facultyName, facultyEmpId, facultyDsg, facultyAddr, userName],
-    };
-
-    console.log('SQL for external faculty data:', sql);
-    const externalResult = await researchDbW.query(sql);
-    return externalResult.rows[0].id;
-  }) : null;
-
-  const externalIds = await Promise.all(insertexternalDetails);
-  console.log('External IDs:', externalIds);
-
-  facultyIdsContainer.push(...externalIds);
-  console.log('Faculty IDs Container:', facultyIdsContainer);
-
-   // insert research_project_grant_faculty faculty data if there any new
-   const insertFacultyPromises = facultyIdsContainer.map(async (faculty_id) => {
-    const sql = {
-      text: `INSERT INTO research_project_grant_faculty (research_project_grant_id, faculty_id, created_by) 
-             VALUES ($1, $2, $3) 
-             ON CONFLICT (research_project_grant_id, faculty_id) DO NOTHING 
-             RETURNING id`,
-      values: [consultantId, faculty_id, userName],
-    };
-    console.log("SQL for IPR Faculty:", sql);
+    if (updatedConsultantFilesData) {
+      const researchValues = [nmimsSchool, nmimsCampus, grantProposalCategory, typeOfGrant, titleOfProject, thurstAreaOfResearch, fundingAgency,
+        fundingAmount, statusOfResearchProject, submissionGrantDate, scheme, durationDate, amountReceived, annualPaymentDate, updatedConsultantFilesData, userName, consultantId];
     
-    const researchConsultancyFacultyIds = await researchDbW.query(sql);
-    return researchConsultancyFacultyIds.rows[0] ? researchConsultancyFacultyIds.rows[0].id : null;
-  });
-  
-  
+      const researchFields = ['nmims_school', 'nmims_campus', 'grant_proposal_category', 'type_of_research_grant', 'title_of_project', 'thrust_area_of_research', 'name_of_funding_agency',
+         'funding_amount', 'status_of_research_project', 'submission_date', 'scheme', 'projectDuration', 'amountRecieved', 'paymentDate', 'supporting_documents', 'created_by'
+      ];
+      updateResearchData = await insertDbModels.updateFieldWithFiles('research_project_grant', researchFields, researchValues, userName);
+      
+    } else {
+      const researchValues = [nmimsSchool, nmimsCampus, grantProposalCategory, typeOfGrant, titleOfProject, thurstAreaOfResearch, fundingAgency,
+        fundingAmount, statusOfResearchProject, submissionGrantDate, scheme, durationDate, amountReceived, annualPaymentDate, userName, consultantId];
+    
+      const researchFields = ['nmims_school', 'nmims_campus', 'grant_proposal_category', 'type_of_research_grant', 'title_of_project', 'thrust_area_of_research', 'name_of_funding_agency',
+         'funding_amount', 'status_of_research_project', 'submission_date', 'scheme', 'projectDuration', 'amountRecieved', 'paymentDate', 'created_by'
+      ];
 
-  
-  const consultantFacultyId = await Promise.all(insertFacultyPromises);
-  console.log('consultantFacultyId Faculty IDs:', consultantFacultyId);
+      updateResearchData = await insertDbModels.updateFieldWithOutFiles('research_project_grant', researchFields, researchValues, userName);
+      
+    }
+
+    console.log('updateResearchData ===>>>>', updateResearchData);
+
+    // Insert into external faculty
+    const facultyField = ['faculty_type_id', 'faculty_name', 'designation', 'institution_name', 'address', 'created_by'];
+    const insertIntoFacultyTable = await insertDbModels.insertExternalFacultyRecord('faculties', facultyField, externalFacultyDataInsert, userName);
+    const externalIds = insertIntoFacultyTable.externalId;
+    console.log('insertIntoFacultyTable ===>>>>>', insertIntoFacultyTable);
+
+    // Append into faculty container
+    facultyIdsContainer.push(...externalIds);
+
+    // Update external faculty details
+    const updateFacultyField = ['faculty_name', 'designation', 'institution_name', 'address'];
+    const updateExternalFacultyData = await insertDbModels.updateExternalFacultyDetails('faculties', updateFacultyField, updateExternalDetailsArray, userName);
+    console.log('updateExternalFacultyData ====>>>>>>', updateExternalFacultyData);
+
+    // Update patent faculty tables
+    console.log('facultyIdsContainer in patent models ===>>>>>>', facultyIdsContainer);
+
+    // Insert into patent faculties table
+    const researchFacultyField = ['research_project_grant_id', 'faculty_id', 'created_by'];
+    const updateResearchFaculty = await insertDbModels.insertOrUpdateRelationalDb('research_project_grant_faculty', researchFacultyField, consultantId, facultyIdsContainer, userName);
+    console.log('updateResearchFaculty ===>>>>>>', updateResearchFaculty);
 
 
-  // update external faculty data
-  const updateExternalFaculty = updateExternalDetailsArray ? updateExternalDetailsArray.map(async(detailsData) => {
-    console.log('Details Data for Updating External Faculty:', detailsData);
-    const [facultyName, facultyEmpId, facultyDsg, facultyAddr, id] = detailsData;
 
-    let sql = {
-      text: `UPDATE faculties SET faculty_type_id = $1, faculty_name = $2, designation = $3, institution_name = $4, 
-            address = $5, created_by = $6 WHERE id = $7 
-             RETURNING id`,
-      values: [2, facultyName, facultyEmpId, facultyDsg, facultyAddr, userName, id],
-    };
+    // Check if all updates are done
+    if (
+      updateResearchData.status === "Done" &&
+      updateExternalFacultyData.status === "Done" &&
+      updateResearchFaculty.status === "Done" &&
+      insertIntoFacultyTable.status === "Done"
+    ) {
+      return {
+        status: 'Done',
+        message: 'All Records updated',
+      };
+    } else {
+      throw new Error('Some updates failed');
+    }
+  } catch (error) {
+    console.error('Error updating research project grant data:', error);
 
-    console.log('SQL for updating external faculty data:', sql);
-    const externalResult = await researchDbW.query(sql);
-    return externalResult.rowCount;
-  }) : null;
-
-
-  const updatedFacultyRowCount = await Promise.all(updateExternalFaculty);
-  console.log('Updated Faculty Row:', updatedFacultyRowCount);
-
-  const promises = [consultancyRowCount, consultantFacultyId, externalIds, updatedFacultyRowCount];
-  console.log('Promises:', promises);
-
-  return Promise.all(promises).then(([consultancyRowCount, consultantFacultyId, externalIds, updatedFacultyRowCount]) => {
     return {
-      status: "Done",
-      message : 'Record updated successfully',
-      consultantFacultyId, externalIds,
-      consultancyRowCount: consultancyRowCount,
-      updatedFacultyRowCount : updatedFacultyRowCount
+      status: 'error',
+      message: 'Failed to update records',
+      error: error.message,
     };
-  }).catch((error) => {
-    console.error("Error:", error.message);
-    return {
-      status: "Failed",
-      message: error.message,
-      errorCode: error.code,
-    };
-  });
+  }
 };
 
 module.exports.deleteResearchConsultantData = async (consultantId) => {
