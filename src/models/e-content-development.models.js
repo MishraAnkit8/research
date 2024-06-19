@@ -8,6 +8,8 @@ const moment = require("moment");
 const researchDbR = dbPoolManager.get("researchDbR", research_read_db);
 const researchDbW = dbPoolManager.get("researchDbW", research_write_db);
 
+const insertDbModels = require('./insert-update-records.models');
+
 module.exports.fetchEContentDevelopmentData = async (userName) => {
   let sql = {
     text: `SELECT * FROM e_content_development WHERE created_by = $1 and active=true ORDER BY id desc`,
@@ -20,99 +22,46 @@ module.exports.fetchEContentDevelopmentData = async (userName) => {
 module.exports.insertEContentRecord = async (EcontentFormData, userName) => {
   console.log("EcontentData in models ===>>>>", EcontentFormData);
 
-  const {
-    facultyName,
-    moduleName,
-    platformName,
-    launchingDate,
-    documentLink,
-    eContentList,
-    MediaCenterLink,
+  const {facultyName, moduleName, platformName, launchingDate, documentLink, eContentList, MediaCenterLink
   } = EcontentFormData;
 
-  let sql = {
-    text: `INSERT INTO e_content_development(faculty_name, module_name, platform, launch_date, document_links, content_development_facilities, media_centre_video_link, created_by) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id`,
-    values: [
-      facultyName,
-      moduleName,
-      platformName,
-      launchingDate,
-      documentLink,
-      eContentList,
-      MediaCenterLink,
-      userName,
-    ],
-  };
+  const eContentAvlues = [facultyName, moduleName, platformName, launchingDate, documentLink, eContentList, MediaCenterLink, userName];
+  const eContentField = ['faculty_name', 'module_name', 'platform', 'launch_date', 'document_links', 'content_development_facilities', 'media_centre_video_link', 'created_by']
 
-  console.log("sql ===>>>>", sql);
+  const insertEContent = await insertDbModels.insertRecordIntoMainDb('e_content_development', eContentField, eContentAvlues, userName);
+  console.log('insertEContent ===>>>>>>', insertEContent);
 
-  const eContentDataPromis = await researchDbW.query(sql);
-  const response =
-    eContentDataPromis.rowCount > 0
-      ? {
-          status: "Done",
-          message: "Record Inserted Successfully",
-          eContentId: eContentDataPromis.rows[0].id,
-          rowCount: eContentDataPromis.rowCount,
-        }
-      : {
-          status: "Failed",
-          message:
-            error?.message ?? "An error occurred during record insertion.",
-          errorCode: error?.code,
-        };
+  return insertEContent.status === "Done" ? {
+      status : insertEContent.status,
+      message : insertEContent.message
+  } : {
+      status : insertEContent.status,
+      message : insertEContent.message,
+      errorCode : insertEContent.errorCode
+  }
 
-  return response;
 };
 
-module.exports.updateEcontentRow = async (
-  updatedEContentData,
-  eContentId,
-  userName
+module.exports.updateEcontentRow = async (updatedEContentData, eContentId, userName
 ) => {
-  const {
-    facultyName,
-    moduleName,
-    platformName,
-    launchingDate,
-    documentLink,
-    eContentList,
-    MediaCenterLink,
+  const {facultyName, moduleName, platformName, launchingDate, documentLink, eContentList, MediaCenterLink
   } = updatedEContentData;
 
-  let sql = {
-    text: `UPDATE e_content_development SET faculty_name = $2, module_name = $3, platform = $4, launch_date = $5, document_links = $6, content_development_facilities = $7, media_centre_video_link = $8, updated_by = $9 WHERE id = $1`,
-    values: [
-      eContentId,
-      facultyName,
-      moduleName,
-      platformName,
-      launchingDate,
-      documentLink,
-      eContentList,
-      MediaCenterLink,
-      userName,
-    ],
-  };
+  const eContentAvlues = [facultyName, moduleName, platformName, launchingDate, documentLink, eContentList, MediaCenterLink, userName, eContentId];
+  const eContentField = ['faculty_name', 'module_name', 'platform', 'launch_date', 'document_links', 'content_development_facilities', 'media_centre_video_link', 'created_by']
 
-  console.log("sql ===>>>>", sql);
+  const updateEContent = await insertDbModels.updateFieldWithOutFiles('e_content_development', eContentField, eContentAvlues, userName);
+  console.log('updateEContent ===>>>>>>', updateEContent);
 
-  const eContentDataPromis = await researchDbW.query(sql);
-  const response =
-    eContentDataPromis.rowCount > 0
-      ? {
-          status: "Done",
-          message: "Record Updated Successfully",
-          rowCount: eContentDataPromis.rowCount,
-        }
-      : {
-          status: "Failed",
-          message:
-            error?.message ?? "An error occurred during record insertion.",
-          errorCode: error?.code,
-        };
+  return updateEContent.status === "Done" ? {
+      status : updateEContent.status,
+      message : updateEContent.message
+  } : {
+      status : updateEContent.status,
+      message : updateEContent.message,
+      errorCode : updateEContent.errorCode
+  }
 
-  return response;
 };
 
 module.exports.deleteEContentRowData = async (eContentId) => {

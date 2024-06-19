@@ -5,6 +5,8 @@ const moment = require('moment');
 const researchDbR = dbPoolManager.get('researchDbR', research_read_db);
 const researchDbW = dbPoolManager.get('researchDbW', research_write_db);
 
+const insertDbModels = require('./insert-update-records.models');
+
 module.exports.fetchResearchAward = async(userName) => {
     let sql = {
         text : `SELECT * FROM research_award WHERE created_by = $1 and active=true ORDER BY id desc`,
@@ -12,7 +14,7 @@ module.exports.fetchResearchAward = async(userName) => {
     }
     console.log('sql ===>>>>>', sql);
 
-    return researchDbW.query(sql);
+    return researchDbR.query(sql);
 }
 
 
@@ -20,63 +22,56 @@ module.exports.insertResearchAwardRow = async(awardFiles, researchAwardData, use
 
     const {campus, school, facultyName, awardName, awardDetails, organisationName, awardDate, awardPlace, awardCategory} = researchAwardData;
 
-    let sql = {
-        text : `INSERT INTO research_award(nmims_campus, nmims_school, faculty_name, award_name, award_details, organisation_name_coferring_award, date,
-            place, award_category, supporting_documents, created_by) VALUES ($1, $2, $3, $4, $5, $6, $7, $8 , $9, $10, $11) RETURNING id`,
-        values : [campus, school, facultyName, awardName, awardDetails, organisationName, awardDate, awardPlace, awardCategory, awardFiles, userName]
+    const awardAvlues = [campus, school, facultyName, awardName, awardDetails, organisationName, awardDate, awardPlace, awardCategory, awardFiles, userName];
+    const awardField = ['nmims_campus', 'nmims_school', 'faculty_name', 'award_name', 'award_details', 'organisation_name_coferring_award', 'date',
+        'place', 'award_category', 'supporting_documents', 'created_by']
+
+    const insertResearchAward = await insertDbModels.insertRecordIntoMainDb('research_award', awardField, awardAvlues, userName);
+    console.log('insertResearchAward ===>>>>>>', insertResearchAward);
+
+    return insertResearchAward.status === "Done" ? {
+        status : insertResearchAward.status,
+        message : insertResearchAward.message
+    } : {
+        status : insertResearchAward.status,
+        message : insertResearchAward.message,
+        errorCode : insertResearchAward.errorCode
     }
-
-    console.log('sql ===>>>>', sql);
-
-    const researchAward = await researchDbW.query(sql);
-    const response = researchAward.rowCount > 0 
-        ? {
-            status: "Done",
-            message: "Record Inserted Successfully",
-            awardId: researchAward.rows[0].id,
-            rowCount: researchAward.rowCount
-        }
-        : {
-            status: "Failed",
-            message: error?.message ?? "An error occurred during record insertion.",
-            errorCode: error?.code
-        };
-    
-    return response;
 
 }
 
 module.exports.updatedResearchRowData = async(awardId, updatedReseachAwardDocuments, updatedAwardData, userName) => {{
-
     const {campus, school, facultyName, awardName, awardDetails, organisationName, awardDate, awardPlace, awardCategory} = updatedAwardData;
-    let baseQuery = `UPDATE research_award  SET nmims_campus = $2, nmims_school = $3, faculty_name = $4, award_name = $5, award_details = $6, organisation_name_coferring_award = $7, date = $8,
-    place = $9, award_category = $10, updated_by = $11`;
+    let updateResearchAward;
 
-    let supportingDocQuery = updatedReseachAwardDocuments ?  `, supporting_documents = $12` : '';
-    let values = [awardId, campus, school, facultyName, awardName, awardDetails, organisationName, awardDate, awardPlace, awardCategory, userName, ...(updatedReseachAwardDocuments ? [updatedReseachAwardDocuments] : [])];
-
-    let textQuery = baseQuery + supportingDocQuery + ` WHERE id = $1`;
-
-    let sql = {
-        text : textQuery,
-        values : values  
+    if(updatedReseachAwardDocuments){
+        const awardAvlues = [campus, school, facultyName, awardName, awardDetails, organisationName, awardDate, awardPlace, awardCategory, updatedReseachAwardDocuments, userName, awardId];
+        const awardField = ['nmims_campus', 'nmims_school', 'faculty_name', 'award_name', 'award_details', 'organisation_name_coferring_award', 'date',
+            'place', 'award_category', 'supporting_documents', 'created_by']
+    
+        updateResearchAward = await insertDbModels.updateFieldWithFiles('research_award', awardField, awardAvlues, userName);
+       
+    } 
+    else{
+        const awardAvlues = [campus, school, facultyName, awardName, awardDetails, organisationName, awardDate, awardPlace, awardCategory, userName, awardId];
+        const awardField = ['nmims_campus', 'nmims_school', 'faculty_name', 'award_name', 'award_details', 'organisation_name_coferring_award', 'date',
+            'place', 'award_category', 'created_by']
+    
+        updateResearchAward = await insertDbModels.updateFieldWithOutFiles('research_award', awardField, awardAvlues, userName);
+        
     }
 
-    console.log('sql ===>>>>', sql);
-    const researchAward = await researchDbW.query(sql);
-    const response = researchAward.rowCount > 0 
-        ? {
-            status: "Done",
-            message: "Record Updated Successfully",
-            rowCount: researchAward.rowCount
-        }
-        : {
-            status: "Failed",
-            message: error?.message ?? "An error occurred during record updation.",
-            errorCode: error?.code
-        };
-    
-    return response;
+    console.log('updateResearchAward ===>>>>>>', updateResearchAward);
+   
+
+    return updateResearchAward.status === "Done" ? {
+        status : updateResearchAward.status,
+        message : updateResearchAward.message
+    } : {
+        status : updateResearchAward.status,
+        message : updateResearchAward.message,
+        errorCode : updateResearchAward.errorCode
+    }
 
 }}
 
