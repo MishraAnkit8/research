@@ -9,55 +9,64 @@ const researchDbR = dbPoolManager.get("researchDbR", research_read_db);
 const researchDbW = dbPoolManager.get("researchDbW", research_write_db);
 
 module.exports.insertRecordIntoMainDb = async (tableName, insertField, valuesData, userName) => {
-    console.log('inside insertRecordIntoDb tableName folder ====>>>>>>', tableName);
-    console.log('inside insertRecordIntoDb insertField folder ====>>>>>>', insertField);
-    console.log('inside insertRecordIntoDb valuesData folder ====>>>>>>', valuesData);
-    console.log('inside insertRecordIntoDb userName folder ====>>>>>>', userName);
-  
-    // Add the new fields
-    const additionalFields = ['created_at', 'updated_at', 'active'];
-    const currentTimestamp = new Date().toISOString();
-    const activeValue = true;
-  
-    const allFieldsToBeInsert = [...insertField, ...additionalFields];
-  
-    const placeholders = allFieldsToBeInsert.map((_, index) => `$${index + 1}`).join(', ');
-  
-    const allValuesToBeInsert = [
-      ...valuesData,
-      currentTimestamp,
-      currentTimestamp,
-      activeValue 
-    ];
-  
-    const sqlQuery = {
-      text: `INSERT INTO ${tableName} (${allFieldsToBeInsert.join(', ')}) VALUES (${placeholders}) RETURNING id`,
-      values: allValuesToBeInsert,
+  console.log('inside insertRecordIntoDb tableName folder ====>>>>>>', tableName);
+  console.log('inside insertRecordIntoDb insertField folder ====>>>>>>', insertField);
+  console.log('inside insertRecordIntoDb valuesData folder ====>>>>>>', valuesData);
+  console.log('inside insertRecordIntoDb userName folder ====>>>>>>', userName);
+
+  // Add the new fields
+  const additionalFields = ['created_at', 'updated_at', 'active'];
+  const currentTimestamp = new Date().toISOString();
+  const activeValue = true;
+
+  const allFieldsToBeInsert = [...insertField, ...additionalFields];
+
+  const placeholders = allFieldsToBeInsert.map((_, index) => `$${index + 1}`).join(', ');
+  console.log('placeholders ===>>>>', placeholders);
+
+  const allValuesToBeInsert = [
+    ...valuesData,
+    currentTimestamp,
+    currentTimestamp,
+    activeValue 
+  ];
+
+  const sqlQuery = {
+    text: `INSERT INTO ${tableName} (${allFieldsToBeInsert.join(', ')}) VALUES (${placeholders}) RETURNING id`,
+    values: allValuesToBeInsert,
+  };
+
+  console.log('sqlQuery ====>>>>>>', sqlQuery);
+
+  try {
+    const result = await researchDbW.query(sqlQuery);
+
+    const insertedId = result.rows[0].id;
+    console.log('Inserted Record ID ====>>>>>>', insertedId);
+
+    return {
+      status: 'Done',
+      message: 'Record Inserted Successfully',
+      insertedId: insertedId,
     };
-  
-    console.log('sqlQuery ====>>>>>>', sqlQuery);
-  
-    try {
-      const result = await researchDbW.query(sqlQuery);
-  
-      const insertedId = result.rows[0].id;
-      console.log('Inserted Record ID ====>>>>>>', insertedId);
-  
-      return {
-        status: 'Done',
-        message: 'Record Inserted Successfully',
-        insertedId: insertedId,
-      };
-    } catch (error) {
-      console.error('Error inserting record ====>>>>>>', error);
-  
+  } catch (error) {
+    console.error('Error inserting record ====>>>>>>', error);
+
+    if (error.code === '23505') { 
       return {
         status: 'Failed',
-        message: error.message,
+        message: 'Unique constraint violation. Duplicate record exists.',
         errorCode: error.code,
       };
     }
-  };
+
+    return {
+      status: 'Failed',
+      message: error.message,
+      errorCode: error.code,
+    };
+  }
+};
   
 
 
@@ -209,6 +218,14 @@ module.exports.updateFieldWithOutFiles = async (tableName, updateField, valuesDa
         };
     } catch (error) {
         console.error('Error updating record ====>>>>>>', error);
+        if (error.code === '23505') { 
+          return {
+            status: 'Failed',
+            message: 'Unique constraint violation. Duplicate record exists.',
+            errorCode: error.code,
+          }
+         }
+
         return {
             status: 'Failed',
             message: error.message,
@@ -247,6 +264,14 @@ module.exports.updateFieldWithFiles = async (tableName, updateField, valuesData,
         };
     } catch (error) {
         console.error('Error updating record ====>>>>>>', error);
+        if (error.code === '23505') { 
+          return {
+            status: 'Failed',
+            message: 'Unique constraint violation. Duplicate record exists.',
+            errorCode: error.code,
+          };
+        }
+
         return {
             status: 'Failed',
             message: error.message,
@@ -295,6 +320,65 @@ module.exports.updateExternalFacultyDetails = async (tableName, updateField, arr
             errorCode: error.code
         };
     }
+}; 
+
+module.exports.updateFieldWithSomeFilesOrNotFiles = async (tableName, updateField, valuesData, userName) => {
+  console.log('inside updateFieldWithSomeFilesOrNotFiles tableName ====>>>>>>', tableName);
+  console.log('inside updateFieldWithSomeFilesOrNotFiles updateField ====>>>>>>', updateField);
+  console.log('inside updateFieldWithSomeFilesOrNotFiles valuesData ====>>>>>>', valuesData);
+  console.log('inside updateFieldWithSomeFilesOrNotFiles userName ====>>>>>>', userName);
+
+  // Dynamically create the setFields string and corresponding values array
+  let setFields = [];
+  let values = [];
+  updateField.forEach((field, index) => {
+    if (valuesData[index] !== null && valuesData[index] !== undefined) {
+      setFields.push(`${field} = $${values.length + 1}`);
+      values.push(valuesData[index]);
+    }
+  });
+
+  // Append additional fields
+  setFields.push(`updated_at = NOW()`);
+  setFields.push(`active = true`);
+
+
+  // Append ID to the values array
+  values.push(valuesData[valuesData.length - 1]);
+
+  const sqlQuery = {
+    text: `UPDATE ${tableName} SET ${setFields.join(', ')} WHERE id = $${values.length} RETURNING id`,
+    values: values,
+  };
+
+  console.log('sqlQuery ====>>>>>>', sqlQuery);
+
+  try {
+    const result = await researchDbW.query(sqlQuery);
+    const updatedId = result.rows[0].id;
+    console.log('Updated Record ID ====>>>>>>', updatedId);
+
+    return {
+      status: 'Done',
+      message: 'Record Updated Successfully',
+      updatedId: updatedId,
+    };
+  } catch (error) {
+    console.error('Error updating record ====>>>>>>', error);
+    if (error.code === '23505') { 
+      return {
+        status: 'Failed',
+        message: 'Unique constraint violation. Duplicate record exists.',
+        errorCode: error.code,
+      };
+    }
+
+    return {
+      status: 'Failed',
+      message: error.message,
+      errorCode: error.code,
+    };
+  }
 };
 
 
@@ -366,52 +450,62 @@ module.exports.insertOrUpdateRelationalDb = async (tableName, fieldsName, mainId
   console.log('inside insertOrUpdateRelationalDb mainId ====>>>>>>', mainId);
 
   try {
-      const currentTimestamp = moment().toISOString();
+    const currentTimestamp = moment().toISOString();
 
-      for (const id of idContainerArray) {
-         
-          const existingRecord = await researchDbW.query({
-              text: `SELECT id FROM ${tableName} WHERE ${fieldsName[0]} = $1 AND ${fieldsName[1]} = $2`,
-              values: [mainId, id],
-          });
+    for (const id of idContainerArray) {
+      const existingRecord = await researchDbW.query({
+        text: `SELECT id, active FROM ${tableName} WHERE ${fieldsName[0]} = $1 AND ${fieldsName[1]} = $2`,
+        values: [mainId, id],
+      });
 
-          if (existingRecord.rows.length === 0) {
-             
-              const sqlQuery = {
-                  text: `INSERT INTO ${tableName} (${fieldsName[0]}, ${fieldsName[1]}, ${fieldsName[2]}, created_at, updated_at, active) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`,
-                  values: [mainId, id, userName, currentTimestamp, currentTimestamp, true],
-              };
-              console.log('sqlQuery ====>>>>>>', sqlQuery);
+      console.log('existingRecord.rows ===>>>>>', existingRecord.rows);
 
-              const result = await researchDbW.query(sqlQuery);
-              console.log('Inserted record ID:', result.rows[0].id);
-          } else {
-              
-              const sqlQuery = {
-                  text: `UPDATE ${tableName} SET ${fieldsName[2]} = $1, updated_at = $2 WHERE id = $3`,
-                  values: [userName, currentTimestamp, existingRecord.rows[0].id],
-              };
-              console.log('sqlQuery ====>>>>>>', sqlQuery);
+      if (existingRecord.rows.length === 0) {
+        // No record found, insert new record
+        const sqlQuery = {
+          text: `INSERT INTO ${tableName} (${fieldsName[0]}, ${fieldsName[1]}, ${fieldsName[2]}, created_at, updated_at, active) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`,
+          values: [mainId, id, userName, currentTimestamp, currentTimestamp, true],
+        };
+        console.log('sqlQuery ====>>>>>>', sqlQuery);
 
-              const result = await researchDbW.query(sqlQuery);
-              console.log('Updated record ID:', existingRecord.rows[0].id);
-          }
+        const result = await researchDbW.query(sqlQuery);
+        console.log('Inserted record ID:', result.rows[0].id);
+      } else {
+        const record = existingRecord.rows[0];
+
+        if (record.active) {
+          // Record exists and is active, no need to insert
+          console.log(`Record with ID ${record.id} is already active. No update needed.`);
+        } else {
+          // Record exists but is not active, update it
+          const sqlQuery = {
+            text: `UPDATE ${tableName} SET ${fieldsName[2]} = $1, updated_at = $2, active = $3 WHERE id = $4`,
+            values: [userName, currentTimestamp, true, record.id],
+          };
+          console.log('sqlQuery ====>>>>>>', sqlQuery);
+
+          const result = await researchDbW.query(sqlQuery);
+          console.log('Updated record ID:', record.id);
+        }
       }
+    }
 
-      return {
-          status: 'success',
-          message: 'Records inserted or updated successfully',
-      };
+    return {
+      status: 'Done',
+      message: 'Records inserted or updated successfully',
+    };
   } catch (error) {
-      console.error('Error inserting or updating records ====>>>>>>', error);
+    console.error('Error inserting or updating records ====>>>>>>', error);
 
-      return {
-          status: 'error',
-          message: 'Failed to insert or update records',
-          error: error.message,
-      };
+    return {
+      status: 'error',
+      message: 'Failed to insert or update records',
+      error: error.message,
+    };
   }
 };
+
+
 
 
 

@@ -95,7 +95,7 @@ module.exports.fetchJournalPaper = async (userName) => {
                     jpa.web_link_doi,
                     jpa.article_supporting_documents
                 ORDER BY
-                    jpa.id desc`,
+                    article_id desc`,
     values: [userName],
   };
 

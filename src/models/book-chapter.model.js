@@ -8,6 +8,8 @@ const moment = require("moment");
 const researchDbR = dbPoolManager.get("researchDbR", research_read_db);
 const researchDbW = dbPoolManager.get("researchDbW", research_write_db);
 
+const insertDbModels = require('./insert-update-records.models');
+
 module.exports.fetchEditedBookPublication = async (userName) => {
   let sql = {
     text: `SELECT * FROM book_chapter_publications WHERE created_by = $1 and active=true ORDER BY id desc`,
@@ -17,164 +19,77 @@ module.exports.fetchEditedBookPublication = async (userName) => {
   return researchDbR.query(sql);
 };
 
-module.exports.insertBookChapterData = async (
-  bookChapter,
-  bookChapterDataFiles,
-  userName
-) => {
+module.exports.insertBookChapterData = async (bookChapter, bookChapterDataFiles, userName) => {
   console.log("user name in models ===>>>>>", userName);
   const {
-    authorName,
-    bookTitle,
-    edition,
-    // editorName,
-    bookEditor,
-    chapterTitle,
-    volumeNumber,
-    publisherCategory,
-    pageNumber,
-    publisherName,
-    publicationYear,
-    bookUrl,
-    doiBookId,
-    isbnNo,
-    numberOfNmimsAuthors,
-    nmimsAuthors,
-    nmimsCampusAuthors,
-    nmimsSchoolAuthors,
-  } = bookChapter;
-  // const doiBookIdParsed = doiBookId === "" ? null : parseInt(doiBookId, 10);
-  let sql = {
-    text: `INSERT INTO book_chapter_publications (author_name, book_title, edition, book_editor, chapter_title, volume_number, publisher_category, page_number, publisher_name, 
-            publication_year, book_url, doi_id, isbn, number_of_nmims_authors, nmims_authors, nmims_campus_authors, nmims_school_authors, supporting_documents, created_by)
-            VALUES ($1, $2 , $3 ,$4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19) RETURNING id `,
-    values: [
-      authorName,
-      bookTitle,
-      edition,
-      // editorName,
-      bookEditor,
-      chapterTitle,
-      volumeNumber,
-      publisherCategory,
-      pageNumber,
-      publisherName,
-      publicationYear,
-      bookUrl,
-      doiBookId,
-      isbnNo,
-      numberOfNmimsAuthors,
-      nmimsAuthors,
-      nmimsCampusAuthors,
-      nmimsSchoolAuthors,
-      bookChapterDataFiles,
-      userName,
-    ],
-  };
-  //handling by tre and catch
-  return researchDbW
-    .query(sql)
-    .then((result) => {
-      return {
-        status: "Done",
-        message: "Record Inserted Successfully",
-        rowCount: result.rowCount,
-        id: result.rows[0].id,
-      };
-    })
-    .catch((error) => {
-      console.log("error.code ====>>>", error.code);
-      console.log("error.constraint ====>>>>>", error.constraint);
-      console.log("error.message ====>>>", error.message);
-      const message =
-        error.code === "23505" ? " This WebLink /DOI No. already used with another form " : error.message;
-      console.log("message =====>>>>>>", message);
-      return {
-        status: "Failed",
-        message: message,
-        errorCode: error.code,
-      };
-    });
+    authorName, bookTitle, edition, bookEditor, chapterTitle, volumeNumber, publisherCategory, pageNumber,
+    publisherName, publicationYear, bookUrl, doiBookId, isbnNo, numberOfNmimsAuthors, nmimsAuthors, nmimsCampusAuthors,
+    nmimsSchoolAuthors} = bookChapter;
+  
+  const bookChapterValues = [authorName, bookTitle, edition, bookEditor, chapterTitle, volumeNumber, publisherCategory, pageNumber,
+    publisherName, publicationYear, bookUrl, doiBookId, isbnNo, numberOfNmimsAuthors, nmimsAuthors, nmimsCampusAuthors,
+    nmimsSchoolAuthors, bookChapterDataFiles, userName];
+
+  const bookChapterField = ['author_name', 'book_title', 'edition', 'book_editor', 'chapter_title', 'volume_number', 'publisher_category', 'page_number', 'publisher_name', 
+    'publication_year', 'book_url', 'doi_id', 'isbn', 'number_of_nmims_authors', 'nmims_authors', 'nmims_campus_authors', 'nmims_school_authors', 'supporting_documents', 'created_by'];
+
+    const insertBookChapter = await insertDbModels.insertRecordIntoMainDb('book_chapter_publications', bookChapterField, bookChapterValues, userName);
+
+    console.log('insertBookChapter ===>>>>>>', insertBookChapter);
+  
+    const message = insertBookChapter.errorCode === '23505' ? "This WebLink /DOI No. already used with another form" : insertBookChapter.message;
+  
+    return insertBookChapter.status === "Done" ? {
+      status : insertBookChapter.status,
+      message : insertBookChapter.message
+    } : {
+      status : insertBookChapter.status,
+      message : message,
+      errorCode : insertBookChapter.errorCode
+    }
 };
 
-module.exports.updatedBookChapter = async (
-  bookChapterId,
-  updatedBookChapterPublication,
-  updateBookChapterDataFiles,
-  userName
-) => {
+module.exports.updatedBookChapter = async (bookChapterId, updatedBookChapterPublication, updateBookChapterDataFiles,
+  userName) => {
   const {
-    authorName,
-    bookTitle,
-    edition,
-    bookEditor,
-    chapterTitle,
-    volumeNumber,
-    publisherCategory,
-    pageNumber,
-    publisherName,
-    publicationYear,
-    bookUrl,
-    doiBookId,
-    isbnNo,
-    numberOfNmimsAuthors,
-    nmimsAuthors,
-    nmimsCampusAuthors,
-    nmimsSchoolAuthors,
-  } = updatedBookChapterPublication;
+    authorName, bookTitle, edition, bookEditor, chapterTitle, volumeNumber, publisherCategory, pageNumber,
+    publisherName, publicationYear, bookUrl, doiBookId, isbnNo, numberOfNmimsAuthors, nmimsAuthors, nmimsCampusAuthors,
+    nmimsSchoolAuthors} = updatedBookChapterPublication;
+    let updateBookChapter ;
 
-  // const doiBookIdParsed = doiBookId === "" ? null : parseInt(doiBookId, 10);
-  const supportingDocuments = updateBookChapterDataFiles || null;
+    if(updateBookChapterDataFiles){
+      const bookChapterValues = [authorName, bookTitle, edition, bookEditor, chapterTitle, volumeNumber, publisherCategory, pageNumber,
+        publisherName, publicationYear, bookUrl, doiBookId, isbnNo, numberOfNmimsAuthors, nmimsAuthors, nmimsCampusAuthors,
+        nmimsSchoolAuthors, updateBookChapterDataFiles, userName, bookChapterId];
+    
+      const bookChapterField = ['author_name', 'book_title', 'edition', 'book_editor', 'chapter_title', 'volume_number', 'publisher_category', 'page_number', 'publisher_name', 
+        'publication_year', 'book_url', 'doi_id', 'isbn', 'number_of_nmims_authors', 'nmims_authors', 'nmims_campus_authors', 'nmims_school_authors', 'supporting_documents', 'updated_by'];
+    
+        updateBookChapter = await insertDbModels.updateFieldWithFiles('book_chapter_publications', bookChapterField, bookChapterValues, userName);
+      }
+      else{
+        const bookChapterValues = [authorName, bookTitle, edition, bookEditor, chapterTitle, volumeNumber, publisherCategory, pageNumber,
+          publisherName, publicationYear, bookUrl, doiBookId, isbnNo, numberOfNmimsAuthors, nmimsAuthors, nmimsCampusAuthors,
+          nmimsSchoolAuthors, updateBookChapterDataFiles, userName, bookChapterId];
+      
+        const bookChapterField = ['author_name', 'book_title', 'edition', 'book_editor', 'chapter_title', 'volume_number', 'publisher_category', 'page_number', 'publisher_name', 
+          'publication_year', 'book_url', 'doi_id', 'isbn', 'number_of_nmims_authors', 'nmims_authors', 'nmims_campus_authors', 'nmims_school_authors', 'supporting_documents', 'updated_by'];
+      
+        updateBookChapter = await insertDbModels.updateFieldWithOutFiles('book_chapter_publications', bookChapterField, bookChapterValues, userName);
 
-  const sql = {
-    text: `UPDATE book_chapter_publications SET author_name = $2, book_title = $3, edition = $4, book_editor = $5, chapter_title = $6, volume_number = $7, publisher_category = $8, page_number = $9, publisher_name = $10,
-               publication_year = $11, book_url = $12, doi_id = $13, isbn = $14, number_of_nmims_authors = $15, nmims_authors = $16, nmims_campus_authors = $17, nmims_school_authors = $18, supporting_documents = $19, updated_by = $20 WHERE id = $1`,
-    values: [
-      bookChapterId,
-      authorName,
-      bookTitle,
-      edition,
-      bookEditor,
-      chapterTitle,
-      volumeNumber,
-      publisherCategory,
-      pageNumber,
-      publisherName,
-      publicationYear,
-      bookUrl,
-      doiBookId,
-      isbnNo,
-      numberOfNmimsAuthors,
-      nmimsAuthors,
-      nmimsCampusAuthors,
-      nmimsSchoolAuthors,
-      supportingDocuments,
-      userName,
-    ],
-  };
-  return researchDbW
-    .query(sql)
-    .then((result) => {
-      console.log("sql ===>>>", sql);
-      return {
-        status: "Done",
-        message: "Record Updated Successfully",
-        rowCount: result.rowCount,
-      };
-    })
-    .catch((error) => {
-      console.log("error.code ====>>>", error.code);
-      console.log("error.constraint ====>>>>>", error.constraint);
-      console.log("error.message ====>>>", error.message);
-      const message =
-        error.code === "23505" ? "This WebLink /DOI No. already used with another form " : error.message;
-      console.log("message =====>>>>>>", message);
-      return {
-        status: "Failed",
-        message: message,
-        errorCode: error.code,
-      };
-    });
+      }
+        console.log('updateBookChapter ===>>>>>>', updateBookChapter);
+      
+        const message = updateBookChapter.errorCode === '23505' ? "This WebLink /DOI No. already used with another form" : updateBookChapter.message;
+      
+        return updateBookChapter.status === "Done" ? {
+          status : updateBookChapter.status,
+          message : updateBookChapter.message
+        } : {
+          status : updateBookChapter.status,
+          message : message,
+          errorCode : updateBookChapter.errorCode
+        }
 };
 
 module.exports.deleteBookChapter = async (bookChapterId) => {

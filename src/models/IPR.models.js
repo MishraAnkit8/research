@@ -736,7 +736,7 @@ module.exports.deletedPatentExternalDetails = async(externalId, userName) => {
   console.log('externalId in models  =====>>>>>>>', externalId);
 
   let externalSql = {
-    text : `UPDATE faculties SET active=false WHERE id = $1 AND created_by = $2`,
+    text : `UPDATE ipr_faculty SET active=false WHERE faculty_id = $1 AND created_by = $2`,
     values : [externalId, userName]
   }
 

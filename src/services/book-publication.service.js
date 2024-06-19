@@ -17,6 +17,7 @@ module.exports.insertBookPublication = async(body, files, userName) => {
   const insertBookPublication = await bookPublicationModel.insertBookPublicationData(bookPublicationData , bookPublicationfileData, userName);
 
   console.log('insertBookPublication in service ===>>>>', insertBookPublication);
+  
   return insertBookPublication.status === "Done" ? {
     status : insertBookPublication.status,
     message : insertBookPublication.message,

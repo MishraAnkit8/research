@@ -8,6 +8,8 @@ const moment = require("moment");
 const researchDbR = dbPoolManager.get("researchDbR", research_read_db);
 const researchDbW = dbPoolManager.get("researchDbW", research_write_db);
 
+const insertDbModels = require('./insert-update-records.models');
+
 module.exports.fetchConferencePublication = async (userName) => {
   let conferenceSql = {
     text: `
@@ -95,140 +97,87 @@ module.exports.fetchConferencePublication = async (userName) => {
 
 
 module.exports.insertConferencePublication = async (
-  conferencePublications,
-  conferenceDocument,
-  conferenceProofFile,
-  facultyIdsContainer,
-  externalFacultyData,
-  userName
+  conferencePublications, conferenceDocument, conferenceProofFile, 
+  facultyIdsContainer, externalFacultyData, userName
 ) => {
+
   const {
-    nmimsCampus,
-    nmimsSchool,
-    titleOfPaper,
-    conferenceName,
-    conferencePlace,
-    procedingDetail,
-    conferenceType,
-    isPresenter,
-    organizingBody,
-    // presentationAward,
-    volAndIssueNo,
-    issnIsbnNo,
-    doiWebLinkId,
-    sponsored,
-    spentAmount,
-    publicationDate,
-    presentingAuthor,
-    authorsName,
+    nmimsCampus, nmimsSchool, titleOfPaper, conferenceName, conferencePlace, procedingDetail, conferenceType, isPresenter, organizingBody, volAndIssueNo,
+    issnIsbnNo, doiWebLinkId, sponsored, spentAmount, publicationDate, presentingAuthor, authorsName
   } = conferencePublications;
-  console.log(
-    "conferencePublications data in models",
-    conferencePublications,
-    JSON.stringify(facultyIdsContainer)
-  );
 
-  console.log('externalFacultyData in models ====>>>>>>>>', externalFacultyData)
-  // const doiBookIdParsed =
-  //   doiWebLinkId === "" ? null : parseInt(doiWebLinkId, 10);
-  const conferenceProofFilesString =
-    conferenceProofFile === "" ? null : conferenceProofFile;
+  const conferenceValues = [nmimsCampus, nmimsSchool, titleOfPaper, conferenceName, conferencePlace, procedingDetail, conferenceType, isPresenter, organizingBody, volAndIssueNo,
+    issnIsbnNo, doiWebLinkId, sponsored, spentAmount, publicationDate, presentingAuthor, authorsName, conferenceDocument, conferenceProofFile, userName];
 
-  let conferenceSql = {
-    text: `INSERT INTO conference_presentation(nmims_campus, nmims_school, title_of_paper, conference_name, conference_place, proceedings_detail, conference_type,
-                        is_presenter, organizing_body, vol_and_issue_no, issn_isbn_no, doi_id,
-                        sponsored, spent_amount, publication_date, presenting_authors, authors_name, upload_proof, upload_files, created_by)
-                       VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20) RETURNING id `,
-    values: [
-      nmimsCampus,
-      nmimsSchool,
-      titleOfPaper,
-      conferenceName,
-      conferencePlace,
-      procedingDetail,
-      conferenceType,
-      isPresenter,
-      organizingBody,
-      // presentationAward,
-      volAndIssueNo,
-      issnIsbnNo,
-      doiWebLinkId,
-      sponsored,
-      spentAmount,
-      publicationDate,
-      presentingAuthor,
-      authorsName,
-      conferenceDocument,
-      conferenceProofFilesString,
-      userName,
-    ],
-  };
+  const conferenceField = ['nmims_campus', 'nmims_school', 'title_of_paper', 'conference_name', 'conference_place', 'proceedings_detail', 'conference_type',
+    'is_presenter', 'organizing_body', 'vol_and_issue_no', 'issn_isbn_no', 'doi_id',
+    'sponsored', 'spent_amount', 'publication_date', 'presenting_authors', 'authors_name', 'upload_files',  'upload_proof', 'created_by'];
 
-  console.log("conferenceSql ==>", conferenceSql);
-  const conferenceTable = await researchDbW.query(conferenceSql);
-  const conferenceId = conferenceTable.rows[0].id;
-  const rowCount = conferenceTable.rowCount;
+  try {
+    const insertConferencePresentation = await insertDbModels.insertRecordIntoMainDb('conference_presentation', conferenceField, conferenceValues, userName);
+    console.log('insertConferencePresentation ===>>>>', insertConferencePresentation);
 
-  // insert external faculties
-  const insertexternalDetails = externalFacultyData ? externalFacultyData.map( async(detailsData) => {
-    console.log('detailsData ======>>>>>>>>>', detailsData);
-    const [facultyName, facultyDsg, institutionName, facultyAddr ] = detailsData
+    if (insertConferencePresentation.status !== 'Done') {
+      const message = insertConferencePresentation.errorCode === '23505' ? "This WebLink / DOI No. is already used with another form" : insertConferencePresentation.message;
+      return {
+        status: 'Failed',
+        message: message,
+        errorCode: insertConferencePresentation.errorCode
+      };
+    }
 
-    let sql = {
-      text: `INSERT INTO faculties (faculty_type_id, faculty_name, designation, institution_name, address, created_by) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`,
-      values: [2, facultyName, facultyDsg, institutionName, facultyAddr, userName]
+    const conferenceId = insertConferencePresentation.insertedId;
+    console.log('conferenceId ===>>>>>', conferenceId);
+
+    // Insert into external faculty
+    const facultyField = ['faculty_type_id', 'faculty_name', 'designation', 'institution_name', 'address', 'created_by'];
+    const insertIntoFacultyTable = await insertDbModels.insertExternalFacultyRecord('faculties', facultyField, externalFacultyData, userName);
+    console.log('insertIntoFacultyTable =====>>>>>', insertIntoFacultyTable);
+
+    if (insertIntoFacultyTable.status !== 'Done') {
+      return {
+        status: 'Failed',
+        message: insertIntoFacultyTable.message,
+        errorCode: insertIntoFacultyTable.errorCode
+      };
+    }
+
+    const externalId = insertIntoFacultyTable.externalId;
+    console.log('externalId ===>>>>>', externalId);
+
+    // Push external faculty ids into facultyIdsContainer
+    facultyIdsContainer.push(...externalId);
+    console.log('facultyIdsContainer in patent models ===>>>>>>', facultyIdsContainer);
+
+    // Insert into conference_faculty table 
+    const conferenceFacultyField = ['conference_id', 'faculty_id', 'created_by'];
+    const insertConferenceFaculty = await insertDbModels.insertIntoRelationalDb('conference_faculty', conferenceFacultyField, conferenceId, facultyIdsContainer, userName);
+    console.log('insertConferenceFaculty ===>>>>>>', insertConferenceFaculty);
+
+    if (insertConferenceFaculty.status !== 'Done') {
+      return {
+        status: 'Failed',
+        message: insertConferenceFaculty.message,
+        errorCode: insertConferenceFaculty.errorCode
+      };
+    }
+
+    return {
+      status: 'Done',
+      message: 'Record Inserted Successfully'
     };
 
-    console.log('sql external faculty data', sql);
-    const externalResult = await researchDbW.query(sql);
-    return externalResult.rows[0].id
-
-  }) : null;
-
-  const externalIds = await Promise.all(insertexternalDetails);
-  console.log('externalIds =======>>>>>>>>', externalIds);
-  facultyIdsContainer.push(...externalIds);
-  // insert external conference  faculties
-  const insertConferenceFaculty = facultyIdsContainer ? facultyIdsContainer.map(async(element) => {
-    let sql = {
-      text: `INSERT INTO conference_faculty (conference_id, faculty_id, created_by, active) VALUES ($1, $2, $3, $4) RETURNING id`,
-      values: [conferenceId, element, userName, true]
-    }
-    console.log('SQL ======>>>>>>>>>', sql);
-    const confacultySql = await researchDbW.query(sql);
-    return confacultySql.rows[0].id
-
-  }) : null;
-
-  const extConFaculty = await Promise.all(insertConferenceFaculty);
-  console.log('extConFaculty =====>>>>>', extConFaculty);
-  // facultyIdsContainer.push(...extConFaculty);
-
-
-// insert internal conference  faculties
-//  const conferenceFacultiesIds = facultyIdsContainer ?    (facultyIdsContainer.map(async (element) => {
-//       let confacultySql = {
-//         text: `INSERT INTO conference_faculty (conference_id, faculty_id, created_by, active) VALUES ($1, $2, $3, $4) RETURNING id`,
-//         values: [conferenceId, element, userName, true],
-//       };
-//       let conferenceFaculty = await researchDbW.query(confacultySql);
-//       let conFacIds = conferenceFaculty.rows[0].id;
-//       conferenceFacultiesIds.push(conFacIds);
-//     })
-//   ) : null;
-
-  // const  conferencrFacultyIds = await Promise.all(conferenceFacultiesIds);
-  // console.log('conferencrFacultyIds ====>>>>>>', conferencrFacultyIds);
-
-
-  return {
-    status: "Done",
-    message: "Record Inserted Successfully",
-    conferenceId,
-    extConFaculty,
-    rowCount,
-  };
+  } catch (error) {
+    console.error('Error in insertConferencePublication ====>>>>>>', error);
+    return {
+      status: 'Failed',
+      message: 'Failed to insert new record',
+      errorCode: error.code
+    };
+  }
 };
+
+
 
 module.exports.DeleteConference = async ({ conferenceId }) => {
   console.log("conference Id in models ==>>", conferenceId);
@@ -258,7 +207,7 @@ module.exports.DeleteConference = async ({ conferenceId }) => {
 };
 
 module.exports.updateConferencePublication = async (
-  upadtedConferenceData, conferenceId, confernceDocString, conferenceProofString,
+  updatedConferenceData, conferenceId, conferenceDocString, conferenceProofString,
   insertExternalData, externalFacultyDataUpdate, facultyIdsContainer, userName
 ) => {
   console.log("Id for Updation in models ==>>>", conferenceId);
@@ -266,198 +215,99 @@ module.exports.updateConferencePublication = async (
   console.log('externalFacultyDataUpdate models ===>>>>>>>', externalFacultyDataUpdate);
   console.log('facultyIdsContainer models ===>>>>>>>', facultyIdsContainer);
 
-
   const {
-    nmimsCampus,
-    nmimsSchool,
-    titleOfPaper,
-    conferenceName,
-    conferencePlace,
-    procedingDetail,
-    conferenceType,
-    isPresenter,
-    organizingBody,
-    // presentationAward,
-    volAndIssueNo,
-    issnIsbnNo,
-    doiWebLinkId,
-    sponsored,
-    spentAmount,
-    publicationDate,
-    presentingAuthor,
-    authorsName,
-  } = upadtedConferenceData;
-  const conferenceFilesarray = { confernceDocString, conferenceProofString };
-  console.log("conferenceFiles  =>>", conferenceFilesarray);
-  
-  const conferenceDocument = confernceDocString || null;
-  const conferenceProofe = conferenceProofString || null;
-  
-  // Base query
-  let sql = {
-    text: `UPDATE conference_presentation SET 
-              nmims_campus = $2, 
-              nmims_school = $3, 
-              title_of_paper = $4, 
-              conference_name = $5, 
-              conference_place = $6, 
-              proceedings_detail = $7, 
-              conference_type = $8,
-              organizing_body = $9, 
-              vol_and_issue_no = $10, 
-              issn_isbn_no = $11, 
-              doi_id = $12,
-              sponsored = $13, 
-              spent_amount = $14, 
-              publication_date = $15, 
-              presenting_authors = $16, 
-              authors_name = $17, 
-              updated_by = $18`,
-    values: [
-      conferenceId,
-      nmimsCampus,
-      nmimsSchool,
-      titleOfPaper,
-      conferenceName,
-      conferencePlace,
-      procedingDetail,
-      conferenceType,
-      organizingBody,
-      volAndIssueNo,
-      issnIsbnNo,
-      doiWebLinkId,
-      sponsored,
-      spentAmount,
-      publicationDate,
-      presentingAuthor,
-      authorsName,
-      userName
-    ]
-  };
-  
-  let nextIndex = 19; 
+    nmimsCampus, nmimsSchool, titleOfPaper, conferenceName, conferencePlace, procedingDetail, conferenceType, isPresenter, organizingBody, volAndIssueNo,
+    issnIsbnNo, doiWebLinkId, sponsored, spentAmount, publicationDate, presentingAuthor, authorsName
+  } = updatedConferenceData;
 
-if (conferenceProofe) {
-  sql.text += `, upload_proof = $${nextIndex}`;
-  sql.values.push(conferenceProofe);
-  nextIndex++;
-}
+  const conferenceValues = [nmimsCampus, nmimsSchool, titleOfPaper, conferenceName, conferencePlace, procedingDetail, conferenceType, isPresenter, organizingBody, volAndIssueNo,
+    issnIsbnNo, doiWebLinkId, sponsored, spentAmount, publicationDate, presentingAuthor, authorsName, conferenceDocString, conferenceProofString, userName, conferenceId];
 
-if (conferenceDocument) {
-  sql.text += `, upload_files = $${nextIndex}`;
-  sql.values.push(conferenceDocument);
-}
+  const conferenceField = ['nmims_campus', 'nmims_school', 'title_of_paper', 'conference_name', 'conference_place', 'proceedings_detail', 'conference_type',
+    'is_presenter', 'organizing_body', 'vol_and_issue_no', 'issn_isbn_no', 'doi_id',
+    'sponsored', 'spent_amount', 'publication_date', 'presenting_authors', 'authors_name', 'upload_files', 'upload_proof', 'updated_by'];
 
-sql.text += ` WHERE id = $1`;
+  let updateConference;
+  try {
+    updateConference = await insertDbModels.updateFieldWithSomeFilesOrNotFiles('conference_presentation', conferenceField, conferenceValues, userName);
+    console.log('updateConference ====>>>>>>>', updateConference);
 
-console.log("SQL Query:", sql.text);
-console.log("SQL Values:", sql.values);
-  
-  console.log("SQL Query:", sql.text);
-  console.log("SQL Values:", sql.values);
-
-    const insertExternalDetails = insertExternalData ? insertExternalData.map(async (detailsData) => {
-      console.log('detailsData ======>>>>>>>>>', detailsData);
-      const [facultyName, facultyDsg, institutionName, facultyAddr] = detailsData;
-    
-      let sql = {
-        text: `INSERT INTO faculties (faculty_type_id, faculty_name, designation, institution_name, address, created_by) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`,
-        values: [2, facultyName, facultyDsg, institutionName, facultyAddr, userName]
-      };
-    
-      console.log('sql external faculty data', sql);
-      const externalResult = await researchDbW.query(sql);
-      return externalResult.rows[0].id;
-    }) : [];
-    
-    const insertedExternalIds = await Promise.all(insertExternalDetails);
-    console.log('insertedExternalIds ====>>>>>>>', insertedExternalIds);
-
-    
-    const updateExternalDetails = externalFacultyDataUpdate ? externalFacultyDataUpdate.map(async (detailsData) => {
-      console.log('detailsData ======>>>>>>>>>', detailsData);
-      const [facultyName, facultyDsg, institutionName, facultyAddr, id] = detailsData;
-    
-      let sql = {
-        text: `UPDATE faculties SET faculty_type_id = $1, faculty_name = $2, designation = $3, institution_name = $4,  address = $5 WHERE id = $6 AND updated_by = $7`,
-        values: [2, facultyName, facultyDsg, institutionName, facultyAddr, id, userName]
-      };
-    
-      console.log('sql external faculty data', sql);
-      const externalResult = await researchDbW.query(sql);
-      return externalResult.rowCount;
-    }) : [];
-    
-    const insertExConFaculty = insertedExternalIds.length > 0 ? insertedExternalIds.map(async (element) => {
-      let sql = {
-        text: `INSERT INTO conference_faculty (conference_id, faculty_id, created_by, active) VALUES ($1, $2, $3, $4) RETURNING id`,
-        values: [conferenceId, element, userName, true]
-      };
-      console.log('SQL ======>>>>>>>>>', sql);
-      const confacultySql = await researchDbW.query(sql);
-      return confacultySql.rows[0].id;
-    }) : [];
-    
-    const insertExCon = insertExConFaculty.length > 0 ? await Promise.all(insertExConFaculty) : [];
-    console.log('insertExCon ===>>>>>', insertExCon);
-    
-    const updateFaculty = updateExternalDetails.length > 0 ? await Promise.all(updateExternalDetails) : [];
-    console.log('updateFaculty =====>>>>>>', updateFaculty);
-    
-    // Error handling
-    if (insertExCon.length === 0 && updateFaculty.length === 0) {
-      console.error('Error: No data was inserted or updated.');
-    } else {
-      console.log('Operations completed successfully.');
+    if (updateConference.status !== 'Done') {
+      throw new Error('Error updating conference_presentation');
     }
-  
-  
 
-  // const externalIds = await Promise.all(insertedExternalIds)
+    // Update external faculty details
+    const updateFacultyField = ['faculty_name', 'designation', 'institution_name', 'address'];
+    const updateExternalFacultyData = await insertDbModels.updateExternalFacultyDetails('faculties', updateFacultyField, externalFacultyDataUpdate, userName);
+    console.log('updateExternalFacultyData ====>>>>>>', updateExternalFacultyData);
 
-  const insertConferenceFaculty = facultyIdsContainer && Array.isArray(facultyIdsContainer) ? facultyIdsContainer.map(async (element) => {
-    let sql = {
-      text: `INSERT INTO conference_faculty (conference_id, faculty_id, created_by, active) VALUES ($1, $2, $3, $4) RETURNING id`,
-      values: [conferenceId, element, userName, true]
+    if(updateExternalFacultyData.status !== 'Done'){
+      throw new Error('Error updating into faculties');
+    }
+
+    // Insert into external faculty
+    const facultyField = ['faculty_type_id', 'faculty_name', 'designation', 'institution_name', 'address', 'created_by'];
+    const insertIntoFacultyTable = await insertDbModels.insertExternalFacultyRecord('faculties', facultyField, insertExternalData, userName);
+    console.log('insertIntoFacultyTable =====>>>>>', insertIntoFacultyTable);
+
+    if (insertIntoFacultyTable.status !== 'Done') {
+      throw new Error('Error inserting into faculties');
+    }
+
+    const externalId = insertIntoFacultyTable.externalId;
+    console.log('externalId ===>>>>>', externalId);
+
+    // Push external faculty ids into facultyIdsContainer
+    facultyIdsContainer.push(...externalId);
+    console.log('facultyIdsContainer in patent models ===>>>>>>', facultyIdsContainer);
+
+    // Insert into conference_faculty table
+    const conferenceFacultyField = ['conference_id', 'faculty_id', 'created_by'];
+    const insertConferenceFaculty = await insertDbModels.insertOrUpdateRelationalDb('conference_faculty', conferenceFacultyField, conferenceId, facultyIdsContainer, userName);
+    console.log('insertConferenceFaculty ===>>>>>>', insertConferenceFaculty);
+
+    if (insertConferenceFaculty.status !== 'Done') {
+      throw new Error('Error inserting into conference_faculty');
+    }
+
+    return {
+      status: 'Done',
+      message: 'Record Updated Successfully'
     };
-    console.log('SQL ======>>>>>>>>>', sql);
-    const confacultySql = await researchDbW.query(sql);
-    return confacultySql.rows[0].id;
-  }) : [];
-  
-  const insertedExDetailsIds = insertConferenceFaculty.length > 0 ? await Promise.all(insertConferenceFaculty) : [];
-  
-  console.log('insertedExDetailsIds =====>>>>>>', insertedExDetailsIds);
-  
-  const conferenceTablePromise = researchDbW.query(sql)
-    .then((conferenceTable) => {
-      return conferenceTable;
-    })
-    .catch((error) => {
-      console.log("Error code:", error.code);
-      throw {
-        status: "Failed",
-        message:
-          error.constraint === "conference_presentation_doi_id_key"
-            ? "The DOI/Weblink of paper ID provided already exists. Please provide a unique DOI/Weblink of paper ID"
-            : error.message,
-        errorCode: error.code,
-      };
-    });
-  
-  return Promise.all([conferenceTablePromise])
-    .then(([conferenceTable]) => {
-      return {
-        status: "Done",
-        message: "Record Updated Successfully",
-        rowCount: conferenceTable.rowCount,
-      };
-    })
-    .catch((error) => {
-      console.log("error ===>>>", error);
-      return error;
-    });
+
+  } catch (error) {
+    console.error('Error in updateConferencePublication ====>>>>>>', error);
+
+    let errorMessage;
+    switch (error.message) {
+      case 'Error updating conference_presentation':
+        errorMessage = updateConference.errorCode === '23505' ? "This WebLink / DOI No. is already used with another form" : updateConference.message;
+        return {
+          status: 'Failed',
+          message: errorMessage,
+          errorCode: updateConference.errorCode
+        };
+      case 'Error inserting into faculties':
+        return {
+          status: 'Failed',
+          message: insertIntoFacultyTable.message,
+          errorCode: insertIntoFacultyTable.errorCode
+        };
+      case 'Error inserting into conference_faculty':
+        return {
+          status: 'Failed',
+          message: insertConferenceFaculty.message,
+          errorCode: insertConferenceFaculty.errorCode
+        };
+      default:
+        return {
+          status: 'Failed',
+          message: error.message,
+        };
+    }
+  }
 };
+
 
 module.exports.viewConferencePublication = async (conferenceId, userName) => {
   console.log("conference Id in models ", conferenceId);
@@ -568,7 +418,7 @@ module.exports.deletedExternalDetails = async(externalId, userName) => {
   console.log('externalId in models  =====>>>>>>>', externalId);
 
   let externalSql = {
-    text : `UPDATE faculties SET active=false WHERE id = $1 AND created_by = $2`,
+    text : `UPDATE conference_faculty SET active=false WHERE faculty_id = $1 AND created_by = $2`,
     values : [externalId, userName]
   }
 

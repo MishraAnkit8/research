@@ -8,6 +8,8 @@ const moment = require("moment");
 const researchDbR = dbPoolManager.get("researchDbR", research_read_db);
 const researchDbW = dbPoolManager.get("researchDbW", research_write_db);
 
+const insertDbModels = require('./insert-update-records.models');
+
 module.exports.fetchBookPublication = async (userName) => {
   let sql = {
     text: `SELECT * FROM book_publications WHERE created_by = $1 and active=true ORDER BY id desc`,
@@ -17,193 +19,80 @@ module.exports.fetchBookPublication = async (userName) => {
   return researchDbR.query(sql);
 };
 
-module.exports.insertBookPublicationData = async (
-  bookPublicationData,
-  bookPublicationfileData,
-  userName
-) => {
-  const {
-    authorName,
-    bookTitle,
-    edition,
-    publicationPlace,
-    publisherCategory,
-    volumeNumber,
-    publisherName,
-    publicationYear,
-    bookUrl,
-    doiBookId,
-    isbnNo,
-    numberOfNmimsAuthors,
-    nmimsAuthors,
-    nmimsCampusAuthors,
-    nmimsSchoolAuthors,
-  } = bookPublicationData;
-  // const doiBookIdParsed = doiBookId === "" ? null : parseInt(doiBookId, 10);
+module.exports.insertBookPublicationData = async (bookPublicationData, bookPublicationfileData, userName) => {
 
-  let sql = {
-    text: `INSERT INTO book_publications ( author_last_name, book_title, edition, publication_place, publisher_category, volume_number, publisher_name, 
-            publication_year, book_url, doi_id, isbn, number_of_nmims_authors, nmims_authors, nmims_campus_authors, nmims_school_authors, supporting_documents, created_by)
-            VALUES ($1, $2 , $3 ,$4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17) RETURNING id `,
-    values: [
-      authorName,
-      bookTitle,
-      edition,
-      publicationPlace,
-      publisherCategory,
-      volumeNumber,
-      publisherName,
-      publicationYear,
-      bookUrl,
-      doiBookId,
-      isbnNo,
-      numberOfNmimsAuthors,
-      nmimsAuthors,
-      nmimsCampusAuthors,
-      nmimsSchoolAuthors,
-      bookPublicationfileData,
-      userName,
-    ],
-  };
+  const { authorName, bookTitle, edition, publicationPlace, publisherCategory,
+    volumeNumber, publisherName, publicationYear, bookUrl, doiBookId, isbnNo, numberOfNmimsAuthors, nmimsAuthors, nmimsCampusAuthors,
+    nmimsSchoolAuthors} = bookPublicationData;
+ 
 
-  //handle promise and throw error in case of insert
-  return researchDbW
-    .query(sql)
-    .then((result) => {
-      return {
-        status: "Done",
-        message: "Record Inserted Successfully",
-        rowCount: result.rowCount,
-        id: result.rows[0].id,
-      };
-    })
-    .catch((error) => {
-      console.log("error.code ====>>>", error.code);
-      console.log("error.constraint ====>>>>>", error.constraint);
-      console.log("error.message ====>>>", error.message);
-      const message =
-        error.code === "23505"
-          ? "This WebLink /DOI No. already used with another form "
-          : error.message;
-      console.log("message =====>>>>>>", message);
-      return {
-        status: "Failed",
-        message: message,
-        errorCode: error.code,
-      };
-    });
+  const bookPublicationValues = [ authorName, bookTitle, edition, publicationPlace, publisherCategory,
+    volumeNumber, publisherName, publicationYear, bookUrl, doiBookId, isbnNo, numberOfNmimsAuthors, nmimsAuthors, nmimsCampusAuthors,
+    nmimsSchoolAuthors, bookPublicationfileData, userName];
+
+  const bookPublicationField = ['author_last_name', 'book_title', 'edition', 'publication_place', 'publisher_category', 'volume_number', 'publisher_name', 
+    'publication_year', 'book_url', 'doi_id', 'isbn', 'number_of_nmims_authors', 'nmims_authors', 'nmims_campus_authors', 'nmims_school_authors', 'supporting_documents', 'created_by'];
+
+  const insertBookPublication = await insertDbModels.insertRecordIntoMainDb('book_publications', bookPublicationField, bookPublicationValues, userName);
+
+  console.log('insertBookPublication ===>>>>>>', insertBookPublication);
+
+  const message = insertBookPublication.errorCode === '23505' ? "This WebLink /DOI No. already used with another form" : insertBookPublication.message;
+
+  return insertBookPublication.status === "Done" ? {
+    status : insertBookPublication.status,
+    message : insertBookPublication.message
+  } : {
+    status : insertBookPublication.status,
+    message : message,
+    errorCode : insertBookPublication.errorCode
+  }
+
 };
 
-module.exports.updatedBookPublication = async (
-  bookPublicationId,
-  updatedBookPublicationData,
-  upadteDataFileString,
-  userName
-) => {
-  const {
-    authorName,
-    bookTitle,
-    edition,
-    publicationPlace,
-    publisherCategory,
-    volumeNumber,
-    publisherName,
-    publicationYear,
-    bookUrl,
-    doiBookId,
-    isbnNo,
-    numberOfNmimsAuthors,
-    nmimsAuthors,
-    nmimsCampusAuthors,
-    nmimsSchoolAuthors,
-  } = updatedBookPublicationData;
+module.exports.updatedBookPublication = async (bookPublicationId, updatedBookPublicationData, upadteDataFileString,
+  userName) => {
 
-  // const doiBookIdParsed = doiBookId === "" ? null : parseInt(doiBookId, 10);
-  const DataFileString = upadteDataFileString ? upadteDataFileString : null;
+  const { authorName, bookTitle, edition, publicationPlace, publisherCategory,volumeNumber, publisherName,
+    publicationYear, bookUrl, doiBookId, isbnNo, numberOfNmimsAuthors, nmimsAuthors, nmimsCampusAuthors,
+    nmimsSchoolAuthors} = updatedBookPublicationData;
 
-  let baseQuery = `UPDATE book_publications SET author_last_name = $2, book_title = $3, edition = $4, publication_place = $5, publisher_category = $6, volume_number = $7, publisher_name = $8, 
-    publication_year = $9, book_url = $10, doi_id = $11, isbn = $12, number_of_nmims_authors = $13, nmims_authors = $14, nmims_campus_authors = $15, nmims_school_authors = $16, updated_by = $17`;
+  let updateBookPublication;
 
-  let supportingDocumentsUpdate = DataFileString
-    ? `, supporting_documents = $18`
-    : "";
-  //merge both query
-  let queryText = baseQuery + supportingDocumentsUpdate + ` WHERE id = $1`;
+  if(upadteDataFileString){
+    const bookPublicationValues = [ authorName, bookTitle, edition, publicationPlace, publisherCategory,
+      volumeNumber, publisherName, publicationYear, bookUrl, doiBookId, isbnNo, numberOfNmimsAuthors, nmimsAuthors, nmimsCampusAuthors,
+      nmimsSchoolAuthors, upadteDataFileString, userName, bookPublicationId];
+  
+    const bookPublicationField = ['author_last_name', 'book_title', 'edition', 'publication_place', 'publisher_category', 'volume_number', 'publisher_name', 
+      'publication_year', 'book_url', 'doi_id', 'isbn', 'number_of_nmims_authors', 'nmims_authors', 'nmims_campus_authors', 'nmims_school_authors', 'supporting_documents', 'updated_by'];
+  
+    updateBookPublication = await insertDbModels.updateFieldWithFiles('book_publications', bookPublicationField, bookPublicationValues, userName);
+  
+  } {
+    const bookPublicationValues = [ authorName, bookTitle, edition, publicationPlace, publisherCategory,
+      volumeNumber, publisherName, publicationYear, bookUrl, doiBookId, isbnNo, numberOfNmimsAuthors, nmimsAuthors, nmimsCampusAuthors,
+      nmimsSchoolAuthors, userName, bookPublicationId];
+  
+    const bookPublicationField = ['author_last_name', 'book_title', 'edition', 'publication_place', 'publisher_category', 'volume_number', 'publisher_name', 
+      'publication_year', 'book_url', 'doi_id', 'isbn', 'number_of_nmims_authors', 'nmims_authors', 'nmims_campus_authors', 'nmims_school_authors', 'updated_by'];
+  
+    updateBookPublication = await insertDbModels.updateFieldWithOutFiles('book_publications', bookPublicationField, bookPublicationValues, userName);
+  
+  }
+  
+  console.log('updateBookPublication ===>>>>>>', updateBookPublication);
 
-  console.log("queryText ====>>>>", queryText);
-  let values = [
-    bookPublicationId,
-    authorName,
-    bookTitle,
-    edition,
-    publicationPlace,
-    publisherCategory,
-    volumeNumber,
-    publisherName,
-    publicationYear,
-    bookUrl,
-    doiBookId,
-    isbnNo,
-    numberOfNmimsAuthors,
-    nmimsAuthors,
-    nmimsCampusAuthors,
-    nmimsSchoolAuthors,
-    userName,
-    ...(DataFileString ? [DataFileString] : []),
-  ];
+  const message = updateBookPublication.errorCode === '23505' ? "This WebLink /DOI No. already used with another form" : updateBookPublication.message;
 
-  let sql = {
-    text: queryText,
-    values: values,
-  };
-
-  //handle promise and throw error in case of Update
-  return researchDbW
-    .query(sql)
-    .then((result) => {
-      console.log("sql ===>>>", sql);
-      return {
-        status: "Done",
-        message: "Record Updated Successfully",
-        rowCount: result.rowCount,
-      };
-    })
-    .catch((error) => {
-      console.log("error.code ====>>>", error.code);
-      console.log("error.constraint ====>>>>>", error.constraint);
-      console.log("error.message ====>>>", error.message);
-      const message =
-        error.code === "23505" ? "This WebLink /DOI No. already used with another form " : error.message;
-      console.log("message =====>>>>>>", message);
-      return {
-        status: "Failed",
-        message: message,
-        errorCode: error.code,
-      };
-    });
-  // try {
-  //     const result = await researchDbW.query(sql);
-  //     console.log('sql inside try ====>>>>',sql)
-  //     console.log('Record Updated successfully');
-  //     return{status: 'Done', message : 'Record Updated successfully', rowCount : result.rowCount}
-
-  // } catch (error) {
-  //     const message = error.code === '23505' ? "DOI ID Of Book Publication Should Be Unique" : error.message;
-  //     const errorCode = error.code;
-  //     return{status : 'Failed', message : message , errorCode : errorCode}
-  // };
-
-  // return researchDbW.query(sql)
-  //  }
-  //  else{
-  //     const { authorName, bookTitle, edition, publicationPlace, publisherCategory, volumeNumber, publisherName, publicationYear,
-  //         bookUrl, doiBookId, isbnNo, numberOfNmimsAuthors, nmimsAuthors, nmimsCampusAuthors, nmimsSchoolAuthors} = updatedBookPublicationData;
-  //     let sql = {
-  //         text : `UPDATE book_publications SET  author_last_name = $2, book_title = $3, edition = $4, publication_place = $5, publisher_category = $6, volume_number = $7, publisher_name = $8,
-  //                publication_year = $9, book_url = $10, doi_id = $11, isbn = $12, number_of_nmims_authors = $13, nmims_authors = $14, nmims_campus_authors = $15, nmims_school_authors = $16 WHERE id = $1`,
-  //         values : [bookPublicationId,  authorName, bookTitle, edition, publicationPlace, publisherCategory, volumeNumber, publisherName, publicationYear,
-  //                   bookUrl, doiBookId, isbnNo, numberOfNmimsAuthors, nmimsAuthors, nmimsCampusAuthors, nmimsSchoolAuthors]
-  //     }
+  return updateBookPublication.status === "Done" ? {
+    status : updateBookPublication.status,
+    message : updateBookPublication.message
+  } : {
+    status : updateBookPublication.status,
+    message : message,
+    errorCode : updateBookPublication.errorCode
+  }
 };
 
 module.exports.deleteBookPublicationData = async (

@@ -4,23 +4,23 @@ module.exports.renderJournalPaper = async (userName) => {
 
     const fetchJournalArticle  = await journalPaperModel.fetchJournalPaper(userName);
 
-//    console.log('journalArticleData ===>>>>', fetchJournalArticle);
+   console.log('journalArticleData ===>>>>', fetchJournalArticle.journalArticleData);
    // makeing object based in article_id
-   const journalData = {};
-   fetchJournalArticle.journalArticleData.forEach(data => {
-       const id = data.article_id;
-       if (!journalData[id]) {
-           journalData[id] = data;
+//    const journalData = {};
+//    fetchJournalArticle.journalArticleData.forEach(data => {
+//        const id = data.article_id;
+//        if (!journalData[id]) {
+//            journalData[id] = data;
          
-       }
-   });
-   const journalArticleData = Object.values(journalData);
-   console.log('journalArticleData in service ===>>>>>>>', journalArticleData);
+//        }
+//    });
+//    const journalArticleData = Object.values(journalData);
+//    console.log('journalArticleData in service ===>>>>>>>', journalArticleData);
    
    return fetchJournalArticle.status === "Done" ? {
                 status : fetchJournalArticle.status,
                 message : fetchJournalArticle.message,
-                journalArticleData : journalArticleData,
+                journalArticleData : fetchJournalArticle.journalArticleData,
                 rowCount : fetchJournalArticle.rowCount,
                 nmimsSchool : fetchJournalArticle.nmimsSchool,
                 internalEmpList : fetchJournalArticle.internalEmpList,
