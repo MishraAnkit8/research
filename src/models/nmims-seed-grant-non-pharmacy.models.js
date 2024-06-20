@@ -8,6 +8,8 @@ const moment = require("moment");
 const researchDbR = dbPoolManager.get("researchDbR", research_read_db);
 const researchDbW = dbPoolManager.get("researchDbW", research_write_db);
 
+const insertDbModels = require('./insert-update-records.models');
+
 module.exports.renderSeedGrantNonFormacy = async (userName) => {
   let grantedSeedSql = {
     text: `SELECT f.id AS faculty_id, f.faculty_name, f.designation, f.address, c.id AS consultancy_id,
@@ -27,8 +29,8 @@ module.exports.renderSeedGrantNonFormacy = async (userName) => {
     values: [userName],
   };
   let facultySql = `SELECT id, faculty_name , designation FROM faculty_table ORDER BY id`;
-  const fetchSeedGrantFormData = await researchDbW.query(grantedSeedSql);
-  const facultyRecord = await researchDbW.query(facultySql);
+  const fetchSeedGrantFormData = await researchDbR.query(grantedSeedSql);
+  const facultyRecord = await researchDbR.query(facultySql);
   const promises = [fetchSeedGrantFormData, facultyRecord];
   return Promise.all(promises)
     .then(([fetchSeedGrantFormData, facultyRecord]) => {
@@ -68,7 +70,7 @@ module.exports.viewSeedGrantNonFormacy = async (grantedSeedId, userName) => {
   };
 
   console.log("sql ===>>>>>", grantedSeedId);
-  const nonFormacyformData = await researchDbW.query(sql);
+  const nonFormacyformData = await researchDbR.query(sql);
   const promises = [nonFormacyformData];
   return Promise.all(promises)
     .then(([nonFormacyformData]) => {
@@ -88,188 +90,72 @@ module.exports.viewSeedGrantNonFormacy = async (grantedSeedId, userName) => {
     });
 };
 
-module.exports.insertSeedGrantNonformacyForm = async (
-  seedGrantFormData,
-  pharmacyFiles,
-  userName
-) => {
-  const {
-    year,
-    title,
-    commencementDate,
-    completionDate,
-    sessionNumbers,
-    sessionsFees,
-    facultyShare,
-    nmimsShare,
-    researchStaffExpenses,
-    travlExpanses,
-    computerCharges,
-    faculityCharges,
-    miscellaneousContingencyCharges,
-    advancedPayment,
-    finalPayment,
-    totalFees,
-    grossFees,
-    facultyId,
-    totalAmount,
-    grandTotal,
-    facultyDsg,
-  } = seedGrantFormData;
-  let sql = {
-    text: `INSERT INTO nmims_seed_grant_non_formacy (year, title, commencement_date, completion_date, session_count_per_days,  per_session_fees,
-        faculty_shares, nmims_shares, research_staff_expenses, travel, computer_charges, nmims_facility_charges, miscellaneous_including_contingency, advanced_payment, final_payment, total_fees, gross_fees, faculty_table_id,
-        totalamount,grandtotal,faculty_dsg, supporting_documents, created_by, active)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24) RETURNING id`,
+module.exports.insertSeedGrantNonformacyForm = async (seedGrantFormData, pharmacyFiles, userName) => {
+  const {year, title, commencementDate, completionDate, sessionNumbers, sessionsFees, facultyShare, nmimsShare,
+    researchStaffExpenses, travlExpanses, computerCharges, faculityCharges, miscellaneousContingencyCharges, advancedPayment,
+    finalPayment, totalFees, grossFees, facultyId, totalAmount, grandTotal, facultyDsg} = seedGrantFormData;
 
-    values: [
-      year,
-      title,
-      commencementDate,
-      completionDate,
-      sessionNumbers,
-      sessionsFees,
-      facultyShare,
-      nmimsShare,
-      researchStaffExpenses,
-      travlExpanses,
-      computerCharges,
-      faculityCharges,
-      miscellaneousContingencyCharges,
-      advancedPayment,
-      finalPayment,
-      totalFees,
-      grossFees,
-      facultyId,
-      totalAmount,
-      grandTotal,
-      facultyDsg,
-      pharmacyFiles,
-      userName,
-      true,
-    ],
-  };
+  const seedGrantValues = [year, title, commencementDate, completionDate, sessionNumbers, sessionsFees, facultyShare, nmimsShare,
+    researchStaffExpenses, travlExpanses, computerCharges, faculityCharges, miscellaneousContingencyCharges, advancedPayment,
+    finalPayment, totalFees, grossFees, facultyId, totalAmount, grandTotal, facultyDsg, pharmacyFiles, userName];
 
-  console.log("sql ===>>>", sql);
-  const insertFormData = await researchDbW.query(sql);
-  const promises = [insertFormData];
-  return Promise.all(promises)
-    .then(([insertFormData]) => {
-      return {
-        status: "Done",
-        message: "Record Inserted Successfully",
-        grantedSeedId: insertFormData.rows[0].id,
-        rowCount: insertFormData.rowCount,
-      };
-    })
-    .catch((error) => {
-      return {
-        status: "Failed",
-        message: error.message,
-        errorCode: error.code,
-      };
-    });
+  const seedGrantFields = ['year', 'title', 'commencement_date', 'completion_date', 'session_count_per_days',  'per_session_fees',
+    'faculty_shares', 'nmims_shares', 'research_staff_expenses', 'travel', 'computer_charges', 'nmims_facility_charges', 'miscellaneous_including_contingency', 'advanced_payment', 'final_payment', 'total_fees', 'gross_fees', 'faculty_table_id',
+    'totalamount','grandtotal','faculty_dsg', 'supporting_documents', 'created_by'];
+  
+  const insertSeedGrantForm = await insertDbModels.insertRecordIntoMainDb('nmims_seed_grant_non_formacy', seedGrantFields, seedGrantValues, userName);
+
+  console.log('insertSeedGrantForm ===>>>>>>>', insertSeedGrantForm);
+  return insertSeedGrantForm.status === "Done" ? {
+    status : insertSeedGrantForm.status,
+    message : insertSeedGrantForm.message
+  } : {
+    status : insertSeedGrantForm.status,
+    message : insertSeedGrantForm.message,
+    errorCode : insertSeedGrantForm.errorCode
+  }
 };
 
-module.exports.updateSeedGrantNonformacyForm = async (
-  grantedSeedId,
-  updatedSeedGrantData,
-  pharmacyFiles,
-  userName
+module.exports.updateSeedGrantNonformacyForm = async (grantedSeedId, updatedSeedGrantData, pharmacyFiles,userName
 ) => {
-  const {
-    year,
-    title,
-    commencementDate,
-    completionDate,
-    sessionNumbers,
-    sessionsFees,
-    facultyShare,
-    nmimsShare,
-    researchStaffExpenses,
-    travlExpanses,
-    computerCharges,
-    faculityCharges,
-    miscellaneousContingencyCharges,
-    advancedPayment,
-    finalPayment,
-    totalFees,
-    grossFees,
-    facultyId,
-    totalAmount,
-    grandTotal,
-    facultyDsg,
-  } = updatedSeedGrantData;
+  const {year, title, commencementDate, completionDate, sessionNumbers, sessionsFees, facultyShare, nmimsShare,
+    researchStaffExpenses, travlExpanses, computerCharges, faculityCharges, miscellaneousContingencyCharges, advancedPayment,
+    finalPayment, totalFees, grossFees, facultyId, totalAmount, grandTotal, facultyDsg} = updatedSeedGrantData;
 
-  let baseSql = `UPDATE nmims_seed_grant_non_formacy  SET year = $2, title = $3, commencement_date = $4, completion_date = $5, session_count_per_days = $6,  per_session_fees = $7,
- faculty_shares = $8, nmims_shares = $9, research_staff_expenses = $10, travel = $11, computer_charges = $12, nmims_facility_charges = $13, miscellaneous_including_contingency = $14, advanced_payment = $15, final_payment = $16, total_fees = $17, gross_fees = $18, faculty_table_id = $19,
- totalamount = $20, grandtotal = $21, faculty_dsg = $22, updated_by = $23`;
+  let updateSeedGrantForm;
 
-  let supportingDocumentsUpdate = pharmacyFiles
-    ? `, supporting_documents = $24`
-    : "";
+  if(pharmacyFiles){
+    const seedGrantValues = [year, title, commencementDate, completionDate, sessionNumbers, sessionsFees, facultyShare, nmimsShare,
+      researchStaffExpenses, travlExpanses, computerCharges, faculityCharges, miscellaneousContingencyCharges, advancedPayment,
+      finalPayment, totalFees, grossFees, facultyId, totalAmount, grandTotal, facultyDsg, pharmacyFiles, userName, grantedSeedId];
+  
+  const seedGrantFields = ['year', 'title', 'commencement_date', 'completion_date', 'session_count_per_days',  'per_session_fees',
+      'faculty_shares', 'nmims_shares', 'research_staff_expenses', 'travel', 'computer_charges', 'nmims_facility_charges', 'miscellaneous_including_contingency', 'advanced_payment', 'final_payment', 'total_fees', 'gross_fees', 'faculty_table_id',
+      'totalamount','grandtotal','faculty_dsg', 'supporting_documents', 'created_by'];
 
-  let queryText = baseSql + supportingDocumentsUpdate + ` WHERE id = $1`;
+  updateSeedGrantForm = await insertDbModels.updateFieldWithFiles('nmims_seed_grant_non_formacy', seedGrantFields, seedGrantValues, userName)
+  } {
+    const seedGrantValues = [year, title, commencementDate, completionDate, sessionNumbers, sessionsFees, facultyShare, nmimsShare,
+      researchStaffExpenses, travlExpanses, computerCharges, faculityCharges, miscellaneousContingencyCharges, advancedPayment,
+      finalPayment, totalFees, grossFees, facultyId, totalAmount, grandTotal, facultyDsg, userName, grantedSeedId];
+  
+  const seedGrantFields = ['year', 'title', 'commencement_date', 'completion_date', 'session_count_per_days',  'per_session_fees',
+      'faculty_shares', 'nmims_shares', 'research_staff_expenses', 'travel', 'computer_charges', 'nmims_facility_charges', 'miscellaneous_including_contingency', 'advanced_payment', 'final_payment', 'total_fees', 'gross_fees', 'faculty_table_id',
+      'totalamount','grandtotal','faculty_dsg', 'created_by'];
 
-  let values = [
-    grantedSeedId,
-    year,
-    title,
-    commencementDate,
-    completionDate,
-    sessionNumbers,
-    sessionsFees,
-    facultyShare,
-    nmimsShare,
-    researchStaffExpenses,
-    travlExpanses,
-    computerCharges,
-    faculityCharges,
-    miscellaneousContingencyCharges,
-    advancedPayment,
-    finalPayment,
-    totalFees,
-    grossFees,
-    facultyId,
-    totalAmount,
-    grandTotal,
-    facultyDsg,
-    userName,
-    ...(pharmacyFiles ? [pharmacyFiles] : []),
-  ];
+  updateSeedGrantForm = await insertDbModels.updateFieldWithOutFiles('nmims_seed_grant_non_formacy', seedGrantFields, seedGrantValues, userName)
+  }
 
-  let sql = {
-    text: queryText,
-    values: values,
-  };
-  console.log("sql ====>>>>>>", sql);
+  console.log('updateSeedGrantForm ===>>>>', updateSeedGrantForm);
+  return updateSeedGrantForm.status === "Done" ? {
+    status : updateSeedGrantForm.status,
+    message : updateSeedGrantForm.message
+  } : {
+    status : updateSeedGrantForm.status,
+    message : updateSeedGrantForm.message,
+    errorCode : updateSeedGrantForm.errorCode
+  }
 
-  let facultySql = {
-    text: `SELECT * FROM faculty_table  WHERE id = $1 and active=true `,
-    values: [facultyId],
-  };
-
-  console.log("facultySql ===>>>>", facultySql);
-  console.log("sql ===>>>", sql);
-  const updatedGrantedSeedData = await researchDbW.query(sql);
-  const facultTableData = await researchDbW.query(facultySql);
-  const promises = [updatedGrantedSeedData, facultTableData];
-  return Promise.all(promises)
-    .then(([updatedGrantedSeedData, facultTableData]) => {
-      return {
-        status: "Done",
-        message: "Record updated Successfully",
-        rowCount: updatedGrantedSeedData.rowCount,
-        facultTableData: facultTableData.rows,
-      };
-    })
-    .catch((error) => {
-      return {
-        status: "Failed",
-        message: error.message,
-        errorCode: error.code,
-      };
-    });
 };
 
 module.exports.deleteSeedGrantNonFormacyForm = async (grantedSeedId) => {

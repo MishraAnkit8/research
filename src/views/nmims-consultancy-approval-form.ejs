@@ -221,7 +221,7 @@
 
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="faculty-id" class="form-label fw-bold ">Name of Faculty</label>
-                                    <select id="faculty-id" class="" required>
+                                    <select id="faculty-id" class="select-option" data-validate="isEmpty,isExist" data-err-msg="This  field  is required." required>
                                     </select>
                                 </div>
                                 <!-- Designation and address of Contact Person for Client -->
@@ -671,20 +671,7 @@
                 const totalRowCount = document.getElementById('total-row-count');
                 let rowIndex = rowCount.innerText;
                 let indexValue = parseInt(rowIndex, 10);
-                // document.getElementById('add-row-button').addEventListener('click', function () {
-                //     addRow();
-                // });
-
-                // function addRow() {
-                //     const dynamicRows = document.getElementById('dynamic-rows');
-
-                //     const newRow = document.createElement('tr');
-                //     newRow.innerHTML = `
-                //     <td><input type="text" class="input-field" ></td>
-                //     <td><input type="number" class="input-field"></td>
-                // `;
-                //     dynamicRows.appendChild(newRow);
-                // }
+               
 
                 const approvedFormList = document.getElementById('approved-consultancy-form-data-list');
                 const submitBtn = document.getElementById('submit-btn');
@@ -808,7 +795,7 @@
                     const facultyId = document.getElementById('faculty-id').value;
                     const faculityDsg = document.getElementById('faculty-designation').value
                     // consultancyObject.totalAmount = document.getElementById('total-amount').value;
-                    // consultancyObject.grandTotal = document.getElementById('grand-total').value;
+                    const grandTotal = document.getElementById('grand-total').value;
 
                     // ArunDocument 4
                     const consultancyDoc = document.getElementById('supporting-documents');
@@ -819,7 +806,7 @@
                         consultancyObject.append('consultancyFiles', consultancyFiles[i]);
                     }
 
-                    consultancyObject.append('year', year)
+                    consultancyObject.append('year', year);
                     consultancyObject.append('title', title)
                     consultancyObject.append('faculityDsg', faculityDsg)
                     consultancyObject.append('commencementDate', commencementDate)
@@ -838,7 +825,8 @@
                     consultancyObject.append('advancedPayment', advancedPayment)
                     consultancyObject.append('finalPayment', finalPayment)
                     consultancyObject.append('grossFees', grossFees)
-                    consultancyObject.append('facultyId', facultyId)
+                    consultancyObject.append('facultyId', facultyId);
+                    consultancyObject.append('grandTotal', grandTotal);
                     console.log('Before');
                     console.log('consultancyObjectconsultancyObject', consultancyObject);
                     console.log('AAAAAAAA', consultancyObject.title);
@@ -1190,21 +1178,7 @@
                     }
                 })
 
-                // const facultyDropDownList = document.getElementById("faculty-id");
-                // // Parse the JSON data
-                // const facultyListData = JSON.parse(document.getElementById('faculty-list-data').dataset.facultyList);
-
-                // // Construct an array of objects with id and faculty_name
-                // const facultyOptions = facultyListData.map(faculty => ({
-                //     value: faculty.id,
-                //     text: `  ${faculty.faculty_name} ${faculty.designation}`
-                // }));
-
-
-                // // Initialize TomSelect dropdown with options containing id and faculty_name
-                // new TomSelect("#faculty-id", {
-                //     options: facultyOptions
-                // });
+        
 
                 let facultyIdContainerArray;
 
@@ -1346,7 +1320,7 @@
                                     showConfirmButton: true,
                                     confirmButtonText: "OK",
                                     confirmButtonColor: "#DD6B55",
-                                    timer: 1500
+                                    // timer: 1500
                                 });
                                 $('#consultancy-modal-form').modal('hide');
                             }
@@ -1437,62 +1411,6 @@
                     "pageLength": 5,
                     "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
                 })
-
-
-                // document.getElementById('final-payment').addEventListener('input', () => {
-                //     let advancePayment = document.getElementById('advance-payment').value;
-                //     let finalPayment = document.getElementById('final-payment').value;
-                //     let totalAmount = document.getElementById('total-amount');
-
-                //     let advance = Number.parseInt(advancePayment)
-                //     let final = Number.parseInt(finalPayment);
-
-                //     let total = advance + final
-                //     totalAmount.value = total
-
-
-                //     console.log('advance and final ', finalPayment, advancePayment)
-                // })
-
-
-                // document.getElementById('miscellaneous-contingency').addEventListener('input', () => {
-
-                //     let grossFees = Number.parseInt(document.getElementById('gross-fees').value);
-                //     let researchStaffExpenses = Number.parseInt(document.getElementById('research-staff-expenses').value);
-                //     let travel = Number.parseInt(document.getElementById('travel').value);
-                //     let miscellaneous = Number.parseInt(document.getElementById('miscellaneous-contingency').value);
-                //     let computerCharges = Number.parseInt(document.getElementById('computer-charges').value);
-                //     let facultyCharges = Number.parseInt(document.getElementById('facility-charges').value);
-
-                //     let finalPayment = document.getElementById('final-payment').value;
-                //     let advancePayment = document.getElementById('advance-payment').value;
-
-
-                //     let advance = Number.parseInt(advancePayment)
-                //     let final = Number.parseInt(finalPayment);
-
-                //     console.log('advance and final ', advance, final)
-
-                //     let grandTotal = document.getElementById('grand-total')
-
-                //     let total = grossFees + computerCharges + miscellaneous + computerCharges + travel + researchStaffExpenses
-                //     let totalpayment = advance + final;
-
-                //     const gstCharges = totalpayment * 18 / 100;
-                //     console.log('gstCharges ====>>>>', gstCharges);
-
-                //     let totalFees = parseInt(document.getElementById('no-of-session').value) * parseInt(document.getElementById('sessions-fees').value);
-
-                //     const grandTotalAmount = total + gstCharges + totalFees;
-                //     console.log('grandTotalAmount ====>>>>', grandTotalAmount);
-                //     grandTotal.value = grandTotalAmount;
-                //     // let tr = document.getElementById('tableRow')
-                //     // console.log('tr ====>>>>', tr);
-
-                //     console.log('ggggggggggggggggggg ', grandTotalAmount)
-                //     document.querySelector('#tableRow').setAttribute('data-grand-total-amount', grandTotalAmount);
-
-                // })
 
 
 

@@ -47,7 +47,7 @@ module.exports.updatedResearchRowData = async(awardId, updatedReseachAwardDocume
     if(updatedReseachAwardDocuments){
         const awardAvlues = [campus, school, facultyName, awardName, awardDetails, organisationName, awardDate, awardPlace, awardCategory, updatedReseachAwardDocuments, userName, awardId];
         const awardField = ['nmims_campus', 'nmims_school', 'faculty_name', 'award_name', 'award_details', 'organisation_name_coferring_award', 'date',
-            'place', 'award_category', 'supporting_documents', 'created_by']
+            'place', 'award_category', 'supporting_documents', 'updated_by']
     
         updateResearchAward = await insertDbModels.updateFieldWithFiles('research_award', awardField, awardAvlues, userName);
        
@@ -55,7 +55,7 @@ module.exports.updatedResearchRowData = async(awardId, updatedReseachAwardDocume
     else{
         const awardAvlues = [campus, school, facultyName, awardName, awardDetails, organisationName, awardDate, awardPlace, awardCategory, userName, awardId];
         const awardField = ['nmims_campus', 'nmims_school', 'faculty_name', 'award_name', 'award_details', 'organisation_name_coferring_award', 'date',
-            'place', 'award_category', 'created_by']
+            'place', 'award_category', 'updated_by']
     
         updateResearchAward = await insertDbModels.updateFieldWithOutFiles('research_award', awardField, awardAvlues, userName);
         
