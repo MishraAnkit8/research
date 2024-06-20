@@ -26,43 +26,20 @@ module.exports.insertTeachingExecellance = async (req, res, next) => {
 
   console.log("data ===>>", req.body);
   const teachingExecellance = req.body;
-  // const {pedagogyInnovationFile, fdpProgramFile, workShopFile, invitingFacultyFile, programOrientationFile} = req.files
-  // console.log('pedagogyInnovationFile',  pedagogyInnovationFile[0].filename);
   console.log("files in controller ===>>>>", req.files);
-  const teachingExecellanceData =
-    await teachingExecellanceService.insertTeachingExecellance(
-      teachingExecellance,
-      req.files,
-      userName
-    );
+
+  const teachingExecellanceData = await teachingExecellanceService.insertTeachingExecellance(teachingExecellance,
+      req.files, userName);
+
   console.log("teachingExecellanceData ===>>>", teachingExecellanceData);
-  // files names also sending  by status
-  const pedagogyInnovationFile =
-    teachingExecellanceData.teachingFilesArrayData.pedagogyInnovationFileString;
-  const fdpProgramFile =
-    teachingExecellanceData.teachingFilesArrayData.fdpProgramFileString;
-  const workShopFile =
-    teachingExecellanceData.teachingFilesArrayData.workShopFileString;
-  const invitingFacultyFile =
-    teachingExecellanceData.teachingFilesArrayData.invitingFacultyFileString;
-  const programOrientationFile =
-    teachingExecellanceData.teachingFilesArrayData.programOrientationFileString;
 
-  console.log("ID in controller ==>>", teachingExecellanceData);
+  const statusCode = teachingExecellanceData.status === "Done" ? 200 : (teachingExecellanceData.errorCode ? 400 : 500);
 
-  if (teachingExecellanceData) {
-    res.status(200).send({
-      status: "done",
-      teachingId: teachingExecellanceData.teachingId,
-      teachingData: teachingExecellance,
-      pedagogyInnovationFile,
-      fdpProgramFile,
-      workShopFile,
-      invitingFacultyFile,
-      programOrientationFile,
-      rowCount: teachingExecellanceData.rowCount,
-    });
-  }
+  res.status(statusCode).send({
+    status : teachingExecellanceData.status,
+    message : teachingExecellanceData.message,
+    errorCode : teachingExecellanceData.errorCode ? teachingExecellanceData.errorCode : null
+  })
 };
 
 module.exports.updatTeachingData = async (req, res, next) => {
@@ -78,42 +55,20 @@ module.exports.updatTeachingData = async (req, res, next) => {
     "data for updation in controller  ==>>",
     updatedTeachingExecellance
   );
-  // const {pedagogyInnovationFile, fdpProgramFile, workShopFile, invitingFacultyFile, programOrientationFile} = req.files;
 
-  // const teachingDocumentToBeUpdate = {pedagogyInnovationFile, fdpProgramFile, workShopFile, invitingFacultyFile, programOrientationFile}
-  const updatedTeachingExecellanceData =
-    await teachingExecellanceService.updatedTeachingExecellance(
-      teachingId,
-      updatedTeachingExecellance,
-      req.files,
-      userName
-    );
-  const pedagogyInnovationFile =
-    updatedTeachingExecellanceData.teachingDocumentToBeUpdate
-      .pedagogyInnovationFileString;
-  const fdpProgramFile =
-    updatedTeachingExecellanceData.teachingDocumentToBeUpdate
-      .fdpProgramFileString;
-  const workShopFile =
-    updatedTeachingExecellanceData.teachingDocumentToBeUpdate
-      .workShopFileString;
-  const invitingFacultyFile =
-    updatedTeachingExecellanceData.teachingDocumentToBeUpdate
-      .invitingFacultyFileString;
-  const programOrientationFile =
-    updatedTeachingExecellanceData.teachingDocumentToBeUpdate
-      .programOrientationFileString;
-  if (updatedTeachingExecellanceData) {
-    res.status(200).send({
-      status: "done",
-      pedagogyInnovationFile,
-      fdpProgramFile,
-      workShopFile,
-      invitingFacultyFile,
-      programOrientationFile,
-      updatedTeachingExecellance: updatedTeachingExecellance,
-    });
-  }
+
+  const updatedTeachingExecellanceData = await teachingExecellanceService.updatedTeachingExecellance(teachingId,
+      updatedTeachingExecellance, req.files, userName);
+
+  console.log('updatedTeachingExecellanceData ====>>>>>>', updatedTeachingExecellanceData)
+  const statusCode = updatedTeachingExecellanceData.status === "Done" ? 200 : (updatedTeachingExecellanceData.errorCode ? 400 : 500);
+
+  res.status(statusCode).send({
+    status : updatedTeachingExecellanceData.status,
+    message : updatedTeachingExecellanceData.message,
+    errorCode : updatedTeachingExecellanceData.errorCode ? updatedTeachingExecellanceData.errorCode : null
+    })
+
 };
 
 module.exports.deleteTeachingExecellance = async (req, res, next) => {

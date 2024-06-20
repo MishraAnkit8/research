@@ -380,7 +380,7 @@ module.exports.updateJournalPaperData = async (
 
     const articleDbFields = ['nmims_school', 'nmims_campus', 'year', 'publisher', 'total_authors', 'journal_name', 'others_authers', 'pages', 'issn_no', 'scs_cite_score', 'wos_indexed',
       'abdc_indexed', 'ugc_indexed', 'web_link_doi', 'uid', 'date_of_publishing', 'title_of_paper', 'article_type', 'nmims_authors_count', 'gs_index', 'nmims_student_foreign_authors',
-      'foreign_authors_name', 'foreign_auhtor_no', 'no_nmims_student_author', 'scs_indexed', 'impact_factor', 'article_supporting_documents', 'created_by'];
+      'foreign_authors_name', 'foreign_auhtor_no', 'no_nmims_student_author', 'scs_indexed', 'impact_factor', 'article_supporting_documents', 'updated_by'];
 
       updateJournalArticles = await insertDbModels.updateFieldWithFiles('journal_paper_article', articleDbFields, journalArticleValues, userName);
     console.log('updateJournalArticles   =====>>>>>', updateJournalArticles);
@@ -397,7 +397,7 @@ module.exports.updateJournalPaperData = async (
 
     const articleDbFields = ['nmims_school', 'nmims_campus', 'year', 'publisher', 'total_authors', 'journal_name', 'others_authers', 'pages', 'issn_no', 'scs_cite_score', 'wos_indexed',
       'abdc_indexed', 'ugc_indexed', 'web_link_doi', 'uid', 'date_of_publishing', 'title_of_paper', 'article_type', 'nmims_authors_count', 'gs_index', 'nmims_student_foreign_authors',
-      'foreign_authors_name', 'foreign_auhtor_no', 'no_nmims_student_author', 'scs_indexed', 'impact_factor', 'created_by'];
+      'foreign_authors_name', 'foreign_auhtor_no', 'no_nmims_student_author', 'scs_indexed', 'impact_factor', 'updated_by'];
 
     updateJournalArticles = await insertDbModels.updateFieldWithOutFiles('journal_paper_article', articleDbFields, journalArticleValues, userName);
     console.log('updateJournalArticles   =====>>>>>', updateJournalArticles);
@@ -411,12 +411,12 @@ module.exports.updateJournalPaperData = async (
      console.log('updateArticlePolicyCadre ====>>>>>>>', updateArticlePolicyCadre);
  
      // insert intop all_article_authors
-     const articleAuthorsFields = ['journal_article_id', 'faculty_id', 'created_by']
+     const articleAuthorsFields = ['journal_article_id', 'faculty_id', 'updated_by']
      const updateAllArticleAuthors = await insertDbModels.insertOrUpdateRelationalDb('all_article_authors', articleAuthorsFields, journalPaperId, updateAllAuthorsArray, userName);
      console.log('updateAllArticleAuthors ====>>>>>', updateAllArticleAuthors)
  
      // insert intop nmims_faculties
-     const InternalAuthorsFields = ['journal_article_id', 'faculty_id', 'created_by']
+     const InternalAuthorsFields = ['journal_article_id', 'faculty_id', 'updated_by']
      const updateInternalAuthors = await insertDbModels.insertOrUpdateRelationalDb('nmims_faculties', InternalAuthorsFields, journalPaperId, updateNmimsAuthorsArray, userName);
      console.log('updateInternalAuthors ====>>>>>', updateInternalAuthors);
  

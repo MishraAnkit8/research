@@ -235,7 +235,7 @@ module.exports.updatePatentsubmissionData = async (patentId, updatedPatentData, 
     }
 
     // Insert into external faculty
-    const facultyField = ['faculty_type_id', 'faculty_name', 'designation', 'institution_name', 'address', 'created_by'];
+    const facultyField = ['faculty_type_id', 'faculty_name', 'designation', 'institution_name', 'address', 'updated_by'];
     const insertIntoFacultyTable = await insertDbModels.insertExternalFacultyRecord('faculties', facultyField, externalFacultyData, userName);
     const externalIds = insertIntoFacultyTable.externalId;
 

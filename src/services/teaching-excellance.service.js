@@ -71,16 +71,13 @@ module.exports.insertTeachingExecellance = async(teachingExecellance, files, use
 
     const teachingExecellanceData = await teachingExecellanceModel.insertTeachingExecellanceData(teachingExecellance, teachingFilesArrayData, userName);
     console.log('teachingExecellanceData ====>>>>>>>', teachingExecellanceData);
-    if(teachingExecellanceData){
-        return {
-            status : 'done',
-            teachingId : teachingExecellanceData.teachingId,
-            teachingFilesArrayData,
-            rowCount : teachingExecellanceData.rowCount,
-            teachingExecellance : teachingExecellance
 
-        }
+    return {
+      status : teachingExecellanceData.status,
+      message : teachingExecellanceData.message,
+      errorCode : teachingExecellanceData.errorCode ? teachingExecellanceData.errorCode : null
     }
+    
 }
 
 module.exports.updatedTeachingExecellance = async(teachingId, updatedTeachingExecellance, files, userName) => {
@@ -148,14 +145,13 @@ module.exports.updatedTeachingExecellance = async(teachingId, updatedTeachingExe
       console.log('updated teachingFilesArrayData ===>>', teachingDocumentToBeUpdate);
     }
     const updatedTeachingExecellanceData = await teachingExecellanceModel.updateTeachingExecellance(teachingId, updatedTeachingExecellance, teachingDocumentToBeUpdate, userName);
+    
     console.log('updated data in services ==>>>::::', updatedTeachingExecellanceData);
-    if(updatedTeachingExecellanceData && updatedTeachingExecellanceData.rowCount === 1){
-        return {
-            status : 'done',
-            massage : ' updated successfully',
-            teachingDocumentToBeUpdate
-        }
-    }    
+    return {
+      status : updatedTeachingExecellanceData.status,
+      message : updatedTeachingExecellanceData.message,
+      errorCode : updatedTeachingExecellanceData.errorCode ? updatedTeachingExecellanceData.errorCode : null
+    }
 
 }
 

@@ -332,7 +332,7 @@ module.exports.updateFieldWithSomeFilesOrNotFiles = async (tableName, updateFiel
   let setFields = [];
   let values = [];
   updateField.forEach((field, index) => {
-    if (valuesData[index] !== null && valuesData[index] !== undefined) {
+    if (valuesData[index] !== null && valuesData[index] !== undefined && valuesData[index] !== '') {
       setFields.push(`${field} = $${values.length + 1}`);
       values.push(valuesData[index]);
     }

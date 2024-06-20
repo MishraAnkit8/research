@@ -81,7 +81,7 @@ module.exports.updateRsearchSeminar = async (seminarId, updateSeminarDetails, up
 
         const seminarFields = ['year', 'school', 'campus', 'nmims_faculty', 'title_of_paper', 'journal_name', 'publisher', 'pages'
             ,'issn_no', 'publisher_category', 'date_of_publishing', 'impact_factor', 'scs_cite_score', 'scs_indexed', 'wos_indexed', 'gs_indexed',
-            'abdc_indexed', 'ugc_indexed', 'web_link', 'uid', 'supporting_documents', 'created_by'];
+            'abdc_indexed', 'ugc_indexed', 'web_link', 'uid', 'supporting_documents', 'updated_by'];
     
         updateResearchSeminar = await insertDbModels.updateFieldWithFiles('research_seminars', seminarFields, seminarValues, userName);
 
@@ -91,7 +91,7 @@ module.exports.updateRsearchSeminar = async (seminarId, updateSeminarDetails, up
 
         const seminarFields = ['year', 'school', 'campus', 'nmims_faculty', 'title_of_paper', 'journal_name', 'publisher', 'pages'
             ,'issn_no', 'publisher_category', 'date_of_publishing', 'impact_factor', 'scs_cite_score', 'scs_indexed', 'wos_indexed', 'gs_indexed',
-            'abdc_indexed', 'ugc_indexed', 'web_link', 'uid', 'created_by'];
+            'abdc_indexed', 'ugc_indexed', 'web_link', 'uid', 'updated_by'];
     
         updateResearchSeminar = await insertDbModels.updateFieldWithOutFiles('research_seminars', seminarFields, seminarValues, userName);
     }

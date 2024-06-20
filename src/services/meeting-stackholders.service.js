@@ -72,25 +72,10 @@ module.exports.insertMeetingStackholder = async(body, files, userName) => {
     const insertmMeetingStackholderData = await meetingModels.insertMeetingStackholders(meetingStackholderData, meetingFilesData, userName);
     console.log('insertmMeetingStackholderData ===>>>>>', insertmMeetingStackholderData)
 
-    // console.log('insertmMeetingStackholderData ==>>', insertmMeetingStackholderData.rows[0].id);
-    // const meetingId = insertmMeetingStackholderData.rows[0].id
-    // if(insertmMeetingStackholderData){
-    //     return {
-    //       meetingId,
-    //       meetingFilesData
-    //     }
-    // }
-    return insertmMeetingStackholderData.status ===  "Done" ? {
-        status : insertmMeetingStackholderData.status,
-        message : insertmMeetingStackholderData.message,
-        meetingId : insertmMeetingStackholderData.meetingId,
-        meetingStackholderData : meetingStackholderData,
-        meetingFilesData  : meetingFilesData,
-        rowCount : insertmMeetingStackholderData.rowCount
-    } : {
+    return {
       status : insertmMeetingStackholderData.status,
       message : insertmMeetingStackholderData.message,
-      errorCode : insertmMeetingStackholderData.errorCode
+      errorCode : insertmMeetingStackholderData.errorCode ? insertmMeetingStackholderData.errorCode : null
     }
 
 
@@ -160,12 +145,12 @@ module.exports.updateMeetingStackholders = async(meetingId, updateMeetingData, f
     }
     console.log('updatedMeetingFilesData in serices ==>>>', updatedMeetingFilesData)
     const updatedMeeting = await meetingModels.updateMeetingData(meetingId, updateMeetingData, updatedMeetingFilesData, userName);
-    if(updatedMeeting && updatedMeeting.rowCount === 1){
-        return{
-            status : 'done',
-            massage : 'data updated successfully',
-            updatedMeetingFilesData
-        }
+    
+    console.log('updated data in services ==>>>::::', updatedMeeting);
+    return {
+      status : updatedMeeting.status,
+      message : updatedMeeting.message,
+      errorCode : updatedMeeting.errorCode ? updatedMeeting.errorCode : null
     }
 }
 

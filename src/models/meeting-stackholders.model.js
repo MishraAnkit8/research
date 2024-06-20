@@ -5,6 +5,8 @@ const moment = require('moment');
 const researchDbR = dbPoolManager.get('researchDbR', research_read_db);
 const researchDbW = dbPoolManager.get('researchDbW', research_write_db);
 
+const insertDbModels = require('./insert-update-records.models');
+
 module.exports.fetchMeetingStackholdersData = async(userName) => {
     let sql = {
         text : `SELECT * FROM meeting_stackholders WHERE created_by = $1 and active=true ORDER BY id desc`,
@@ -15,135 +17,57 @@ module.exports.fetchMeetingStackholdersData = async(userName) => {
 }
 
 module.exports.insertMeetingStackholders = async(meetingStackholderData, meetingFilesData, userName) => {
+
     const {ranking, rankingLink, accreditation, accreditationLink, achievements, achievementsLink, convocation, convocationLink, 
         inauguralProgram, inauguralProgramLink, events, eventsLink } = meetingStackholderData;
-    console.log('Daoiooooooooooo',meetingStackholderData);
-        let sql = {
-        text : `INSERT INTO  meeting_stackholders (ranking, ranking_link, accreditation, accreditation_link, school_campus_achievements, 
-            achievements_link, convocation, convocation_link, inaugural_program, inaugural_program_link, events, events_link, 
-            ranking_documents, accreditation_documents, achievements_documents, convocation_documents, inaugural_program_documents, events_documents, created_by) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19) RETURNING id`,
-        values : [ranking, rankingLink, accreditation, accreditationLink, achievements, achievementsLink, convocation, convocationLink, 
-            inauguralProgram, inauguralProgramLink, events, eventsLink, meetingFilesData.rankingDocuments, meetingFilesData.accreditationFile, meetingFilesData.achievementsFile, meetingFilesData.convocationFile, meetingFilesData.inauguralProgramFile, meetingFilesData.eventFile, userName]
-    }
 
-    console.log('sql ==>>', sql)
-    const insertMeetingStackholdersRecord = await researchDbW.query(sql);
-    const promises = [insertMeetingStackholdersRecord];
-    return Promise.all(promises).then(([insertMeetingStackholdersRecord]) => {
-        return  { status : "Done" , message : "Record Inserted Successfully" ,  rowCount : insertMeetingStackholdersRecord.rowCount , meetingId : insertMeetingStackholdersRecord.rows[0].id}
-    })
-    .catch((error) => {
-        return{status : "Failed" , message : error.message , errorCode : error.code}
-    })
+    const meetingStackholderValues = [ranking, rankingLink, accreditation, accreditationLink, achievements, achievementsLink, convocation, convocationLink, 
+        inauguralProgram, inauguralProgramLink, events, eventsLink, meetingFilesData.rankingDocuments, meetingFilesData.accreditationFile, meetingFilesData.achievementsFile,
+         meetingFilesData.convocationFile, meetingFilesData.inauguralProgramFile, meetingFilesData.eventFile, userName];
+    
+    const meetingStackholderFields = [
+        'ranking', 'ranking_link', 'accreditation', 'accreditation_link', 'school_campus_achievements', 
+            'achievements_link', 'convocation', 'convocation_link', 'inaugural_program', 'inaugural_program_link', 'events', 'events_link', 
+            'ranking_documents', 'accreditation_documents', 'achievements_documents', 'convocation_documents', 'inaugural_program_documents', 'events_documents', 'created_by'];
+
+    const insertMeetingStackholders = await insertDbModels.insertRecordIntoMainDb('meeting_stackholders', meetingStackholderFields, meetingStackholderValues, userName);
+
+    return insertMeetingStackholders.status === "Done" ? {
+        status : insertMeetingStackholders.status,
+        message : insertMeetingStackholders.message
+        } : {
+        status : insertMeetingStackholders.status,
+        message : insertMeetingStackholders.message,
+        errorCode : insertMeetingStackholders.errorCode
+        }
+
 }
 
 module.exports.updateMeetingData = async(meetingId, updateMeetingData, updatedMeetingFilesData, userName) => {
     const {ranking, rankingLink, accreditation, accreditationLink, achievements, achievementsLink, convocation, convocationLink, 
         inauguralProgram, inauguralProgramLink, events, eventsLink } = updateMeetingData;
-    
-        const rankingDocuments = updatedMeetingFilesData.rankingDocuments ? updatedMeetingFilesData.rankingDocuments : null;
-        const accreditationFile = updatedMeetingFilesData.accreditationFile ? updatedMeetingFilesData.accreditationFile : null;
-        const achievementsFile = updatedMeetingFilesData.achievementsFile ? updatedMeetingFilesData.achievementsFile : null;
-        const convocationFile = updatedMeetingFilesData.convocationFile ? updatedMeetingFilesData.convocationFile : null;
-        const inauguralProgramFile = updatedMeetingFilesData.inauguralProgramFile ? updatedMeetingFilesData.inauguralProgramFile : null;
-        const eventFile = updatedMeetingFilesData.eventFile ? updatedMeetingFilesData.eventFile : null;
 
-        const filesArray = [
-            rankingDocuments,
-            accreditationFile,
-            achievementsFile,
-            convocationFile,
-            inauguralProgramFile,
-            eventFile
-        ]
-        console.log('filesArray ===>>>', filesArray);
-        const meetingFieldToBeUpdated = [
-            { field: 'ranking', value: ranking },
-            { field: 'ranking_documents', value: rankingDocuments },
-            { field: 'ranking_link', value: rankingLink },
-            { field: 'accreditation', value: accreditation },
-            { field: 'accreditation_documents', value: accreditationFile },
-            { field: 'accreditation_link', value: accreditationLink },
-            { field: 'school_campus_achievements', value: achievements },
-            { field: 'achievements_documents', value: achievementsFile },
-            { field: 'achievements_link', value: achievementsLink },
-            { field: 'convocation', value: convocation },
-            { field: 'convocation_documents', value: convocationFile },
-            { field: 'convocation_link', value: convocationLink },
-            { field: 'inaugural_program', value: inauguralProgram },
-            { field: 'inaugural_program_documents', value: inauguralProgramFile },
-            { field: 'inaugural_program_link', value: inauguralProgramLink },
-            { field: 'events', value: events },
-            { field: 'events_documents', value: eventFile },
-            { field: 'events_link', value: eventsLink },
-            { field: 'updated_by', value: userName }
-           
-        ]
-        
+        const meetingStackholderValues = [ranking, rankingLink, accreditation, accreditationLink, achievements, achievementsLink, convocation, convocationLink, 
+            inauguralProgram, inauguralProgramLink, events, eventsLink, updatedMeetingFilesData.rankingDocuments, updatedMeetingFilesData.accreditationFile, updatedMeetingFilesData.achievementsFile,
+            updatedMeetingFilesData.convocationFile, updatedMeetingFilesData.inauguralProgramFile, updatedMeetingFilesData.eventFile, userName, meetingId];
 
-        console.log('meetingFieldToBeUpdated ===>>> :::', meetingFieldToBeUpdated);
-        const setStatements = meetingFieldToBeUpdated
-            .filter(fieldInfo => fieldInfo.value !== null)
-            .map((fieldInfo, index) => {
-                console.log('dataCondition ===>>>:::::', fieldInfo.value);
-                console.log('index ==>>', index);
-                console.log('condition == ==>>>::::', true);
-                return { statement: `${fieldInfo.field} = $${index + 2}`, dataCondition: `${fieldInfo.value}` };
-            });
+        const meetingStackholderFields = [
+                'ranking', 'ranking_link', 'accreditation', 'accreditation_link', 'school_campus_achievements', 
+                'achievements_link', 'convocation', 'convocation_link', 'inaugural_program', 'inaugural_program_link', 'events', 'events_link', 
+                'ranking_documents', 'accreditation_documents', 'achievements_documents', 'convocation_documents', 'inaugural_program_documents', 'events_documents', 'updated_by'];
 
-        console.log('setStatements ==>>>', setStatements);
+        const updateMeetingStackholders = await insertDbModels.updateFieldWithSomeFilesOrNotFiles('meeting_stackholders', meetingStackholderFields, meetingStackholderValues, userName);
 
-        const updateDocument = meetingFieldToBeUpdated.map(fieldInfo => {
-            const condition = fieldInfo.value;
-            if(condition){
-                console.log('condition ==>>::::', condition)
-                console.log(`Condition for ${fieldInfo.field}: ${condition}`);
+        console.log('updateMeetingStackholders =====>>>>>>>', updateMeetingStackholders);
+
+        return updateMeetingStackholders.status === "Done" ? {
+            status : updateMeetingStackholders.status,
+            message : updateMeetingStackholders.message
+            } : {
+            status : updateMeetingStackholders.status,
+            message : updateMeetingStackholders.message,
+            errorCode : updateMeetingStackholders.errorCode
             }
-            else{
-                return null
-            }
-            
-            const value =  fieldInfo.value ;
-            if(value){
-                console.log(`Value for ${fieldInfo.field}: ${value}`);
-                return value;
-            }
-        }).filter(value => value !== null);
-
-        console.log('updateDocument ====::::>>>', updateDocument)
-        
-
-        const updateMeetingStackholdersData = [
-            meetingId,
-            ...updateDocument,
-        ];
-
-        console.log('updateMeetingStackholdersData ==>>>', updateMeetingStackholdersData);
-
-        const setStatementString = setStatements.map((item, index) => {
-            if (item.dataCondition !== 'null') {
-            return `${item.statement}`;
-            } else {
-            return '';
-            }
-        }).filter(Boolean).join(', ');
-        
-        console.log('setStatementString ==>>>', setStatementString);
-        
-        const sql = {
-            text: `UPDATE meeting_stackholders SET ${setStatementString} WHERE id = $1`,
-            values: updateMeetingStackholdersData,
-        };
-
-        console.log('sql ==>>', sql);
-        const updateMeetingStackholdersRecord = await researchDbW.query(sql);
-        const promises = [updateMeetingStackholdersRecord];
-        return Promise.all(promises).then(([updateMeetingStackholdersRecord]) => {
-            return  { status : "Done" , message : "Record Updated Successfully" ,  rowCount : updateMeetingStackholdersRecord.rowCount}
-        })
-        .catch((error) => {
-            return{status : "Failed" , message : error.message , errorCode : error.code}
-        })
 }
 
 module.exports.viewMeeting = async(meetingId, userName) => {

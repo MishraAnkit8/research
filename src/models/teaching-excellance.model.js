@@ -8,6 +8,8 @@ const moment = require("moment");
 const researchDbR = dbPoolManager.get("researchDbR", research_read_db);
 const researchDbW = dbPoolManager.get("researchDbW", research_write_db);
 
+const insertDbModels = require('./insert-update-records.models');
+
 module.exports.fetchTeachingExecellance = async (userName) => {
   let sql = {
     text: `SELECT * FROM teaching_execellance WHERE created_by = $1 and active=true ORDER BY id desc`,
@@ -16,224 +18,62 @@ module.exports.fetchTeachingExecellance = async (userName) => {
   return researchDbR.query(sql);
 };
 
-module.exports.insertTeachingExecellanceData = async (
-  teachingExecellance,
-  teachingFilesArrayData,
-  userName
-) => {
-  const {
-    pedagogyInnovation,
-    pedagogyLink,
-    fdpProgram,
-    fdpProgramLink,
-    workShopDetails,
-    workShopLink,
-    invitingFaculty,
-    invitingFacultyLink,
-    programOrientation,
-    programOrientationLink,
-  } = teachingExecellance;
-  let sql = {
-    text: `INSERT INTO teaching_execellance (pedagogy_innovation, pedagogy_innovation_link, fdp_program, fdp_program_link,workshop_details,
-             workshop_link, inviting_faculty, inviting_faculty_link, program_orientation, program_orientation_link,
-            pedagogy_innovation_file, fdp_program_file, workshop_file, inviting_faculty_file, program_orientation_file, created_by) VALUES($1, $2 , $3 ,$4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16) RETURNING id`,
-    values: [
-      pedagogyInnovation,
-      pedagogyLink,
-      fdpProgram,
-      fdpProgramLink,
-      workShopDetails,
-      workShopLink,
-      invitingFaculty,
-      invitingFacultyLink,
-      programOrientation,
-      programOrientationLink,
-      teachingFilesArrayData.pedagogyInnovationFileString,
-      teachingFilesArrayData.fdpProgramFileString,
-      teachingFilesArrayData.workShopFileString,
-      teachingFilesArrayData.invitingFacultyFileString,
-      teachingFilesArrayData.programOrientationFileString,
-      userName,
-    ],
-  };
-  console.log("data inserted successfully ==>>", sql);
-  // console.log('researchDbW.query(sql) in models ===>>', researchDbW.query(sql));
-  const InsertedTeachingExecellanceRecord = await researchDbW.query(sql);
-  const promises = [InsertedTeachingExecellanceRecord];
-  return Promise.all(promises)
-    .then(([InsertedTeachingExecellanceRecord]) => {
-      return {
-        status: "Done",
-        message: "Record Inserted Successfully",
-        rowCount: InsertedTeachingExecellanceRecord.rowCount,
-        teachingId: InsertedTeachingExecellanceRecord.rows[0].id,
-      };
-    })
-    .catch((error) => {
-      return {
-        status: "Failed",
-        message: error.message,
-        errorCode: error.code,
-      };
-    });
+module.exports.insertTeachingExecellanceData = async (teachingExecellance, teachingFilesArrayData, userName) => {
+  const {pedagogyInnovation, pedagogyLink, fdpProgram, fdpProgramLink, workShopDetails, workShopLink, invitingFaculty,
+        invitingFacultyLink, programOrientation, programOrientationLink} = teachingExecellance;
+
+  const teachingValues = [pedagogyInnovation, pedagogyLink, fdpProgram, fdpProgramLink, workShopDetails, workShopLink, invitingFaculty,
+    invitingFacultyLink, programOrientation, programOrientationLink, teachingFilesArrayData.pedagogyInnovationFileString,
+    teachingFilesArrayData.fdpProgramFileString, teachingFilesArrayData.workShopFileString, teachingFilesArrayData.invitingFacultyFileString,
+    teachingFilesArrayData.programOrientationFileString,userName];
+
+  const teachingFields = ['pedagogy_innovation', 'pedagogy_innovation_link', 'fdp_program', 'fdp_program_link', 'workshop_details',
+    'workshop_link', 'inviting_faculty', 'inviting_faculty_link', 'program_orientation', 'program_orientation_link',
+   'pedagogy_innovation_file', 'fdp_program_file', 'workshop_file', 'inviting_faculty_file', 'program_orientation_file', 'created_by'];
+
+  const insertTeachingExecellance = await insertDbModels.insertRecordIntoMainDb('teaching_execellance', teachingFields, teachingValues, userName);
+
+  console.log('insertTeachingExecellance ===>>>>>', insertTeachingExecellance);
+
+  return insertTeachingExecellance.status === "Done" ? {
+    status : insertTeachingExecellance.status,
+    message : insertTeachingExecellance.message
+    } : {
+    status : insertTeachingExecellance.status,
+    message : insertTeachingExecellance.message,
+    errorCode : insertTeachingExecellance.errorCode
+    }
 };
 
-module.exports.updateTeachingExecellance = async (
-  teachingId,
-  updatedTeachingExecellance,
-  teachingDocumentToBeUpdate,
-  userName
-) => {
+module.exports.updateTeachingExecellance = async (teachingId, updatedTeachingExecellance, teachingDocumentToBeUpdate,
+  userName) => {
 
   console.log('teachingDocumentToBeUpdate in models ==>>>>>', teachingDocumentToBeUpdate)
-  const {
-    pedagogyInnovation,
-    pedagogyLink,
-    fdpProgram,
-    fdpProgramLink,
-    workShopDetails,
-    workShopLink,
-    invitingFaculty,
-    invitingFacultyLink,
-    programOrientation,
-    programOrientationLink,
-    pedagogyInnovationDescription,
-    workshopDetailsDescription,
-    programOrientationDescription,
-    FdpProgramDescription,
-  } = updatedTeachingExecellance;
+  const {pedagogyInnovation, pedagogyLink, fdpProgram, fdpProgramLink, workShopDetails, workShopLink, invitingFaculty,
+    invitingFacultyLink, programOrientation, programOrientationLink} = updatedTeachingExecellance;
 
-  const pedagogyInnovationFile =
-    teachingDocumentToBeUpdate.pedagogyInnovationFileString
-      ? teachingDocumentToBeUpdate.pedagogyInnovationFileString
-      : null;
-  const fdpProgramFile = teachingDocumentToBeUpdate.fdpProgramFileString
-    ? teachingDocumentToBeUpdate.fdpProgramFileString
-    : null;
-  const workShopFile = teachingDocumentToBeUpdate.workShopFileString
-    ? teachingDocumentToBeUpdate.workShopFileString
-    : null;
-  const invitingFacultyFile =
-    teachingDocumentToBeUpdate.invitingFacultyFileString
-      ? teachingDocumentToBeUpdate.invitingFacultyFileString
-      : null;
-  const programOrientationFile =
-    teachingDocumentToBeUpdate.programOrientationFileString
-      ? teachingDocumentToBeUpdate.programOrientationFileString
-      : null;
+const teachingValues = [pedagogyInnovation, pedagogyLink, fdpProgram, fdpProgramLink, workShopDetails, workShopLink, invitingFaculty,
+invitingFacultyLink, programOrientation, programOrientationLink, teachingDocumentToBeUpdate.pedagogyInnovationFileString,
+teachingDocumentToBeUpdate.fdpProgramFileString, teachingDocumentToBeUpdate.workShopFileString, teachingDocumentToBeUpdate.invitingFacultyFileString,
+teachingDocumentToBeUpdate.programOrientationFileString, userName, teachingId];
 
-  const filesArray = [
-    pedagogyInnovationFile,
-    fdpProgramFile,
-    workShopFile,
-    invitingFacultyFile,
-    programOrientationFile,
-  ];
-  console.log("filesArray in teaching models ==>>>", filesArray);
+const teachingFields = ['pedagogy_innovation', 'pedagogy_innovation_link', 'fdp_program', 'fdp_program_link', 'workshop_details',
+'workshop_link', 'inviting_faculty', 'inviting_faculty_link', 'program_orientation', 'program_orientation_link',
+'pedagogy_innovation_file', 'fdp_program_file', 'workshop_file', 'inviting_faculty_file', 'program_orientation_file', 'updated_by'];
 
-  const teachingFieldsToUpdate = [
-    { field: "pedagogy_innovation", value: pedagogyInnovation },
-    { field: "pedagogy_innovation_file", value: pedagogyInnovationFile },
-    { field: "pedagogy_innovation_link", value: pedagogyLink },
-    { field: "fdp_program", value: fdpProgram },
-    { field: "fdp_program_file", value: fdpProgramFile },
-    { field: "fdp_program_link", value: fdpProgramLink },
-    { field: "workshop_details", value: workShopDetails },
-    { field: "workshop_file", value: workShopFile },
-    { field: "workshop_link", value: workShopLink },
-    { field: "inviting_faculty", value: invitingFaculty },
-    { field: "inviting_faculty_file", value: invitingFacultyFile },
-    { field: "inviting_faculty_link", value: invitingFacultyLink },
-    { field: "program_orientation", value: programOrientation },
-    { field: "program_orientation_file", value: programOrientationFile },
-    { field: "program_orientation_link", value: programOrientationLink },
-    { field: "updated_by", value: userName },
-  ];
+const updateTeachingExecellance = await insertDbModels.updateFieldWithSomeFilesOrNotFiles('teaching_execellance', teachingFields, teachingValues, userName);
 
-  console.log("teachingFieldsToUpdate ===>>>", teachingFieldsToUpdate);
+console.log('updateTeachingExecellance ===>>>>>', updateTeachingExecellance);
 
-  const setStatements = teachingFieldsToUpdate
-    .filter((fieldInfo) => fieldInfo.value !== null)
-    .map((fieldInfo, index) => {
-      console.log("dataCondition ===>>>:::::", fieldInfo.value);
-      console.log("index ==>>", index);
-      console.log("condition == ==>>>::::", true);
-      return {
-        statement: `${fieldInfo.field} = $${index + 2}`,
-        dataCondition: `${fieldInfo.value}`,
-      };
-    });
-
-  console.log("setStatements ==>>>", setStatements);
-
-  const updateDocument = teachingFieldsToUpdate
-    .map((fieldInfo) => {
-      const condition = fieldInfo.value;
-      if (condition) {
-        console.log("condition ==>>::::", condition);
-        console.log(`Condition for ${fieldInfo.field}: ${condition}`);
-      } else {
-        return null;
-      }
-
-      const value = fieldInfo.value;
-      if (value) {
-        console.log(`Value for ${fieldInfo.field}: ${value}`);
-        return value;
-      }
-    })
-    .filter((value) => value !== null);
-
-  console.log("updateDocument ====::::>>>", updateDocument);
-
-  const updateTeachingExecellanceData = [teachingId, ...updateDocument];
-
-  console.log(
-    "updateTeachingExecellanceData ==>>>",
-    updateTeachingExecellanceData
-  );
-
-  const setStatementString = setStatements
-    .map((item, index) => {
-      if (item.dataCondition !== "null") {
-        return `${item.statement}`;
-      } else {
-        return "";
-      }
-    })
-    .filter(Boolean)
-    .join(", ");
-
-  console.log("setStatementString ==>>>", setStatementString);
-
-  const placeholders = Array.from(
-    { length: updateDocument.length },
-    (_, i) => `$${i + 2}`
-  ).join(",");
-
-  const sql = {
-    text: `UPDATE teaching_execellance SET ${setStatementString} WHERE id = $1`,
-    values: updateTeachingExecellanceData,
-  };
-
-  console.log("sql ==>>", sql);
-  const updatedTeachingExecellanceRecord = await researchDbW.query(sql);
-  const promises = [updatedTeachingExecellanceRecord];
-  return Promise.all(promises)
-    .then(([updatedTeachingExecellanceRecord]) => {
-      return {
-        status: "Done",
-        message: "Record Updated Successfully",
-        rowCount: updatedTeachingExecellanceRecord.rowCount,
-      };
-    })
-    .catch((error) => {
-      return {
-        status: "Failed",
-        message: error.message,
-        errorCode: error.code,
-      };
-    });
+return updateTeachingExecellance.status === "Done" ? {
+status : updateTeachingExecellance.status,
+message : updateTeachingExecellance.message
+} : {
+status : updateTeachingExecellance.status,
+message : updateTeachingExecellance.message,
+errorCode : updateTeachingExecellance.errorCode
+}
+  
 };
 
 module.exports.deleteTeachingExecellance = async (teachingId) => {

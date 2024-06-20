@@ -205,7 +205,7 @@ module.exports.updateResearchConsultantData = async (consultantId, updatedResear
         fundingAmount, statusOfResearchProject, submissionGrantDate, scheme, durationDate, amountReceived, annualPaymentDate, updatedConsultantFilesData, userName, consultantId];
     
       const researchFields = ['nmims_school', 'nmims_campus', 'grant_proposal_category', 'type_of_research_grant', 'title_of_project', 'thrust_area_of_research', 'name_of_funding_agency',
-         'funding_amount', 'status_of_research_project', 'submission_date', 'scheme', 'projectDuration', 'amountRecieved', 'paymentDate', 'supporting_documents', 'created_by'
+         'funding_amount', 'status_of_research_project', 'submission_date', 'scheme', 'projectDuration', 'amountRecieved', 'paymentDate', 'supporting_documents', 'updated_by'
       ];
       updateResearchData = await insertDbModels.updateFieldWithFiles('research_project_grant', researchFields, researchValues, userName);
       
@@ -214,7 +214,7 @@ module.exports.updateResearchConsultantData = async (consultantId, updatedResear
         fundingAmount, statusOfResearchProject, submissionGrantDate, scheme, durationDate, amountReceived, annualPaymentDate, userName, consultantId];
     
       const researchFields = ['nmims_school', 'nmims_campus', 'grant_proposal_category', 'type_of_research_grant', 'title_of_project', 'thrust_area_of_research', 'name_of_funding_agency',
-         'funding_amount', 'status_of_research_project', 'submission_date', 'scheme', 'projectDuration', 'amountRecieved', 'paymentDate', 'created_by'
+         'funding_amount', 'status_of_research_project', 'submission_date', 'scheme', 'projectDuration', 'amountRecieved', 'paymentDate', 'updated_by'
       ];
 
       updateResearchData = await insertDbModels.updateFieldWithOutFiles('research_project_grant', researchFields, researchValues, userName);
@@ -224,7 +224,7 @@ module.exports.updateResearchConsultantData = async (consultantId, updatedResear
     console.log('updateResearchData ===>>>>', updateResearchData);
 
     // Insert into external faculty
-    const facultyField = ['faculty_type_id', 'faculty_name', 'designation', 'institution_name', 'address', 'created_by'];
+    const facultyField = ['faculty_type_id', 'faculty_name', 'designation', 'institution_name', 'address', 'updated_by'];
     const insertIntoFacultyTable = await insertDbModels.insertExternalFacultyRecord('faculties', facultyField, externalFacultyDataInsert, userName);
     const externalIds = insertIntoFacultyTable.externalId;
     console.log('insertIntoFacultyTable ===>>>>>', insertIntoFacultyTable);
@@ -409,7 +409,7 @@ module.exports.deletedExternalDetails = async(externalId, userName) => {
   console.log('externalId in models  =====>>>>>>>', externalId);
 
   let externalSql = {
-    text : `UPDATE faculties SET active=false WHERE id = $1 AND created_by = $2`,
+    text : `UPDATE research_project_grant_faculty SET active=false WHERE faculty_id = $1 AND created_by = $2`,
     values : [externalId, userName]
   }
 
