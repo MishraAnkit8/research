@@ -112,7 +112,6 @@ module.exports.userLogoutSession= async(req, res, next) => {
         if(userLogOutSession.status === "Done") {
             console.log('ankit ')
             res.clearCookie('session');
-
             res.redirect(`${process.env.BASE_URL}user`);
     
        }
