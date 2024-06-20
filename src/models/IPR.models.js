@@ -398,14 +398,14 @@ module.exports.updateIPRRecordData = async (
     if (iprFilesNamesArray) {
       const iprFieldValues = [nmimsCampus, nmimsSchool, titleOfInvention, applicationNum, applicantName, patentFiledDate,
         patentPublishedDate, patentGrantDate, patentPublishedNumber, patentGrantedNo, instituteAffiliation, iprFilesNamesArray, userName , iprId];
-      const iprField = ['nmims_campus', 'nmims_school', 'patent_title', 'patent_application_number', 'applicant_name', 'patent_filed_date', 'patent_published_date', 'patent_grant_date', 'patent_publication_number', 'patent_grant_number', 'institutional_affiliation', 'supporting_documents', 'created_by']
+      const iprField = ['nmims_campus', 'nmims_school', 'patent_title', 'patent_application_number', 'applicant_name', 'patent_filed_date', 'patent_published_date', 'patent_grant_date', 'patent_publication_number', 'patent_grant_number', 'institutional_affiliation', 'supporting_documents', 'updated_by']
 
       updateIprData = await insertDbModels.updateFieldWithFiles('IPR', iprField, iprFieldValues, userName);
       console.log('updateIprData ===>>>>', updateIprData);
     } else {
       const iprFieldValues = [nmimsCampus, nmimsSchool, titleOfInvention, applicationNum, applicantName, patentFiledDate,
         patentPublishedDate, patentGrantDate, patentPublishedNumber, patentGrantedNo, instituteAffiliation, userName , iprId];
-      const iprField = ['nmims_campus', 'nmims_school', 'patent_title', 'patent_application_number', 'applicant_name', 'patent_filed_date', 'patent_published_date', 'patent_grant_date', 'patent_publication_number', 'patent_grant_number', 'institutional_affiliation', 'created_by']
+      const iprField = ['nmims_campus', 'nmims_school', 'patent_title', 'patent_application_number', 'applicant_name', 'patent_filed_date', 'patent_published_date', 'patent_grant_date', 'patent_publication_number', 'patent_grant_number', 'institutional_affiliation', 'updated_by']
 
       updateIprData = await insertDbModels.updateFieldWithOutFiles('IPR', iprField, iprFieldValues, userName);
       console.log('updateIprData ===>>>>', updateIprData);

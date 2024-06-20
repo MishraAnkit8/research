@@ -48,7 +48,7 @@ module.exports.updateEcontentRow = async (updatedEContentData, eContentId, userN
   } = updatedEContentData;
 
   const eContentAvlues = [facultyName, moduleName, platformName, launchingDate, documentLink, eContentList, MediaCenterLink, userName, eContentId];
-  const eContentField = ['faculty_name', 'module_name', 'platform', 'launch_date', 'document_links', 'content_development_facilities', 'media_centre_video_link', 'created_by']
+  const eContentField = ['faculty_name', 'module_name', 'platform', 'launch_date', 'document_links', 'content_development_facilities', 'media_centre_video_link', 'updated_by']
 
   const updateEContent = await insertDbModels.updateFieldWithOutFiles('e_content_development', eContentField, eContentAvlues, userName);
   console.log('updateEContent ===>>>>>>', updateEContent);
