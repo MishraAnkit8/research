@@ -245,7 +245,7 @@ module.exports.updateRsearchSeminar = async (
 
 module.exports.viewRsearchSeminarData = async ({ seminarId }, userName) => {
   const sql = {
-    text: `SELECT  year, school, campus, nmims_faculty, publisher_category, title_of_paper, journal_name, publisher, 
+    text: `SELECT  TO_CHAR(year, 'DD-MM-YYYY') AS year, school, campus, nmims_faculty, publisher_category, title_of_paper, journal_name, publisher, 
         pages, issn_no, TO_CHAR(date_of_publishing, 'DD-MM-YYYY') as date_of_publishing, impact_factor, scs_cite_score, scs_indexed, wos_indexed, gs_indexed, abdc_indexed, ugc_indexed, web_link, uid, supporting_documents,topic,resource_person FROM research_seminars WHERE id = $1 AND created_by = $2 and active=true`,
     values: [seminarId, userName],
   };
