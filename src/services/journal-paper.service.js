@@ -27,7 +27,8 @@ module.exports.renderJournalPaper = async (userName) => {
                 nmimsCampus : fetchJournalArticle.nmimsCampus,
                 policyCadre : fetchJournalArticle.policyCadre,
                 impactFactor : fetchJournalArticle.impactFactor,
-                allAuthorList : fetchJournalArticle.allAuthorList
+                allAuthorList : fetchJournalArticle.allAuthorList,
+                paperType : fetchJournalArticle.paperType
    } : {
                 status : fetchJournalArticle.status,
                 message : fetchJournalArticle.message,

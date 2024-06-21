@@ -35,14 +35,14 @@
                             </div>
                         </div>
                         <div class="card-body table-responsive">
-                            
+
                             <table class="table vertical-lines custom-table table-responsive research-pagination"
                                 id="research-seminar-list">
                                 <thead>
                                     <th class="col-lg-1">Serial no</th>
                                     <th class="col-lg-1">NMIMS School</th>
                                     <th class="col-lg-1">NMIMS Campus</th>
-                                    <th class="col-lg-1">Year</th>
+                                    <th class="col-lg-1">Date</th>
                                     <th class="col-lg-1">Publisher</th>
                                     <th class="col-lg-1">Name Of NMIMS Faculty</th>
                                     <th class="col-lg-1">Journal Name</th>
@@ -62,23 +62,38 @@
                                             data-ugc-indexed="<%- seminar.ugc_indexed %>"
                                             data-web-link="<%- seminar.web_link %>" data-uid="<%- seminar.uid %>"
                                             data-date-of-publishing="<%- seminar.date_of_publishing %>"
-                                            data-supporting-documents="<%- seminar.supporting_documents %>">
+                                            data-supporting-documents="<%- seminar.supporting_documents %>"
+                                            data-topic="<%- seminar.topic  %>"
+                                            data-resourcePerson="<%- seminar.resource_person %>">
+                                            >
                                             <td class="col-lg-1"> <%- index+1 %> </td>
                                             <td class=" cell school col-lg-1"> <%- seminar.school %> </td>
                                             <td class=" cell campus col-lg-1"> <%- seminar.campus %> </td>
-                                            <td class=" cell year col-lg-1"> <%- seminar.year %> </td>
-                                            <td class=" cell publisher col-lg-1"><%- seminar.publisher %></td>
-                                            <td class=" cell nmims-faculty col-lg-1"><%- seminar.nmims_faculty %></td>
-                                            <td class=" cell journal-name col-lg-1"><%- seminar.journal_name %></td>
-                                            <td class="col-lg-1">
-                                                <label class=" view" data-seminar-id="<%- seminar.id %>"><i class="fa-solid fa-eye view text-danger"
-                                                        data-seminar-id="<%- seminar.id %>"></i></label>
-                                                <label class="edit" data-seminar-id="<%- seminar.id %>"><i class="fa fa-edit edit text-danger"
-                                                        data-seminar-id="<%- seminar.id %>"></i></label>
-                                                <label class="delete" data-seminar-id="<%- seminar.id %>"><i class="fa-solid fa-trash delete text-danger"
-                                                        data-seminar-id="<%- seminar.id %>"></i></label>
-                                            </td>
-                                            <!-- <td style="display:flex;justify-content: center;">
+
+                                            <% let yearDate=new Date(seminar.year); %>
+                                                <% const formattedDate=yearDate.getFullYear() + '-' + ('0' +
+                                                    (yearDate.getMonth() + 1)).slice(-2) + '-' + ('0' +
+                                                    yearDate.getDate()).slice(-2); %>
+                                                    <td class=" cell year col-lg-1">
+                                                        <%- formattedDate %>
+                                                    </td>
+                                                    <td class=" cell publisher col-lg-1"><%- seminar.publisher %></td>
+                                                    <td class=" cell nmims-faculty col-lg-1"><%- seminar.nmims_faculty
+                                                            %></td>
+                                                    <td class=" cell journal-name col-lg-1"><%- seminar.journal_name %>
+                                                    </td>
+                                                    <td class="col-lg-1">
+                                                        <label class=" view" data-seminar-id="<%- seminar.id %>"><i
+                                                                class="fa-solid fa-eye view text-danger"
+                                                                data-seminar-id="<%- seminar.id %>"></i></label>
+                                                        <label class="edit" data-seminar-id="<%- seminar.id %>"><i
+                                                                class="fa fa-edit edit text-danger"
+                                                                data-seminar-id="<%- seminar.id %>"></i></label>
+                                                        <label class="delete" data-seminar-id="<%- seminar.id %>"><i
+                                                                class="fa-solid fa-trash delete text-danger"
+                                                                data-seminar-id="<%- seminar.id %>"></i></label>
+                                                    </td>
+                                                    <!-- <td style="display:flex;justify-content: center;">
                                                 <b title="View" class="border-right-0 view" style="cursor: pointer;"
                                                     data-seminar-id="<%- seminar.id %>">
                                                     &#128065;
@@ -173,49 +188,69 @@
                         </div>
                         <div class="modal-body">
                             <div class="row">
-                                     <!-- school -->
-                                     <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                        <label for="school" class="form-label fw-bold"> NMIMS School: <i style="color: red;">*</i></label>
-                                        <input type="text" name="schoolname" id="school" class="form-control"
-                                            data-validate="isEmpty,isExist,isLength:2:255"
-                                            data-err-msg="Provide Valid Input" required>
-                                    </div>
-                                    <!-- Campus -->
-                                    <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                        <label for="campus" class="form-label fw-bold"> NMIMS Campus: <i style="color: red;">*</i></label>
-                                        <input type="text" name="campusname" id="campus" class="form-control"
-                                            data-validate="isEmpty,isExist,isLength:2:255"
-                                            data-err-msg="Provide Valid Input" required />
-                                    </div> 
+                                <!-- school -->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="school" class="form-label fw-bold"> NMIMS School: <i
+                                            style="color: red;">*</i></label>
+                                    <input type="text" name="schoolname" id="school" class="form-control"
+                                        data-validate="isEmpty,isExist,isLength:2:255"
+                                        data-err-msg="Provide Valid Input" required>
+                                </div>
+                                <!-- Campus -->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="campus" class="form-label fw-bold"> NMIMS Campus: <i
+                                            style="color: red;">*</i></label>
+                                    <input type="text" name="campusname" id="campus" class="form-control"
+                                        data-validate="isEmpty,isExist,isLength:2:255"
+                                        data-err-msg="Provide Valid Input" required />
+                                </div>
                                 <!-- year -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <label for="year" class="form-label fw-bold">Year <i style="color: red;">*</i></label>
-                                    <input type="number" name="year" id="year" class="form-control"
-                                        data-validate="isEmpty,isNumber,isValidYear" data-err-msg="Year is required."
-                                        required />
+                                    <label for="year" class="form-label fw-bold">Date: <i
+                                            style="color: red;">*</i></label>
+                                    <input type="date" name="year" id="year" class="form-control"
+                                        data-validate="isEmpty,isExist" data-err-msg="Date is required." required />
                                 </div>
-                           
+
+                                <!-- Topic -->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="topic" class="form-label fw-bold"> Topic: <i
+                                            style="color: red;">*</i></label>
+                                    <input type="text" name="topic" id="topic" class="form-control"
+                                        data-validate="isEmpty,isExist,isLength:2:255"
+                                        data-err-msg="Provide Valid Input" required>
+                                </div>
+
+                                <!-- resource person -->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                    <label for="resource-person" class="form-label fw-bold"> Resource Person: </label>
+                                    <input type="text" name="resource-person" id="resource-person" class="form-control"
+                                        data-validate="isLength:2:255" data-err-msg="Provide Valid Input">
+                                </div>
 
                                 <!-- Name of NMIMS faculty -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <label for="nmims-authors" class="form-label fw-bold">Name Of NMIMS Authors <i style="color: red;">*</i></label>
+                                    <label for="nmims-authors" class="form-label fw-bold">Name Of NMIMS Authors <i
+                                            style="color: red;">*</i></label>
                                     <input type="text" name="nmims-faculty" id="nmims-faculty"
                                         data-validate="isEmpty,isExist,isLength:2:255"
                                         data-err-msg="Provide Valid Input" class="form-control" required>
                                 </div>
                                 <!-- title-of-paper -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <label for="title-of-paper" class="form-label fw-bold">Title Of Paper <i style="color: red;">*</i></label>
+                                    <label for="title-of-paper" class="form-label fw-bold">Title Of Paper <i
+                                            style="color: red;">*</i></label>
                                     <input type="text" name="titleOfPaper" id="title-of-paper" class="form-control"
                                         data-validate="isEmpty,isExist,isLength:2:255"
                                         data-err-msg="Provide Valid Input" required>
                                 </div>
                                 <!-- Journal Name -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
-                                    <label for="journal-name" class="form-label fw-bold">Journal Name <i style="color: red;">*</i></label>
+                                    <label for="journal-name" class="form-label fw-bold">Journal Name <i
+                                            style="color: red;">*</i></label>
                                     <input type="text" name="journal-name" id="journal-name"
-                                        data-validate="isEmpty,isLength:2:255"
-                                        data-err-msg="Provide Valid Input" class="form-control" required>
+                                        data-validate="isEmpty,isLength:2:255" data-err-msg="Provide Valid Input"
+                                        class="form-control" required>
                                 </div>
 
                                 <!-- Publisher -->
@@ -224,8 +259,7 @@
                                         Publisher <i style="color: red;">*</i>
                                     </label>
                                     <input type="text" name="publisher" id="publisher"
-                                        data-validate="isEmpty,isExist,isLength:2:255" class="form-control"
-                                        required />
+                                        data-validate="isEmpty,isExist,isLength:2:255" class="form-control" required />
                                 </div>
                                 <!-- Publisher Category  -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
@@ -248,7 +282,8 @@
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="pages" class="form-label fw-bold">Vol,ISS,Pages</label>
                                     <input type="text" name="pages" id="pages" class="form-control"
-                                        data-validate="isEmpty,isExist,isLength:1:255" data-err-msg="Provide valid input">
+                                        data-validate="isEmpty,isExist,isLength:1:255"
+                                        data-err-msg="Provide valid input">
                                 </div>
 
                                 <!-- ISSN No. -->
@@ -263,22 +298,21 @@
                                     <label for="scs-cite-score" class="form-label fw-bold">Scopus Cite Score</label>
                                     <input type="text" name="scsCiteScores" id="scs-cite-score"
                                         data-validate="isEmpty,isExist:1:255" data-err-msg="Provide valid input."
-                                        class="form-control" >
+                                        class="form-control">
                                 </div>
                                 <!-- Impact Factor -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="impact-factor" class="form-label fw-bold">Impact Factor</label>
                                     <input type="number" name="impactFactors" id="impact-factor"
-                                        data-validate="isEmpty,isDecimal"
-                                        data-err-msg="Provide Valid Input" class="form-control" >
+                                        data-validate="isEmpty,isDecimal" data-err-msg="Provide Valid Input"
+                                        class="form-control">
                                 </div>
 
                                 <!-- SCS Indexed -->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="scs-indexed" class="form-label fw-bold">Scopus Indexed</label>
                                     <input type="text" name="scs-indexed" id="scs-indexed" class="form-control"
-                                        data-validate="isEmpty,isLength:1:255" data-err-msg="Provide valid input."
-                                        >
+                                        data-validate="isEmpty,isLength:1:255" data-err-msg="Provide valid input.">
                                 </div>
 
                                 <!-- WoS Indexed -->
@@ -309,8 +343,7 @@
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="gs-indexed" class="form-label fw-bold">GS Indexed</label>
                                     <input type="text" name="gs-indexed" id="gs-indexed" class="form-control"
-                                        data-validate="isEmpty,isLength:1:255" data-err-msg="Provide valid input."
-                                        >
+                                        data-validate="isEmpty,isLength:1:255" data-err-msg="Provide valid input.">
                                 </div>
 
                                 <!-- ABDC Indexed -->
@@ -341,8 +374,8 @@
                                         required>
                                 </div> -->
 
-                                  <!-- UGC Indexed -->
-                                  <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
+                                <!-- UGC Indexed -->
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="ugc-indexed" class="form-label fw-bold mb-3">UGC Indexed</label><br>
                                     <div class="form-check-inline">
                                         <label for="ugc-index-yes" class="form-check-label">
@@ -362,7 +395,8 @@
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label for="web-link" class="form-label fw-bold">WebLink /DOI No.</label>
                                     <input type="text" name="webLinks" id="web-link" class="form-control"
-                                        data-validate="isEmpty,isExist,isLength:1:255" data-err-msg="Provide valid input." >
+                                        data-validate="isEmpty,isExist,isLength:1:255"
+                                        data-err-msg="Provide valid input.">
                                 </div>
 
                                 <!-- UID -->
@@ -382,7 +416,7 @@
                                         data-err-msg="Date is required" required>
                                 </div>
 
-                             
+
                                 <!-- Upload Supporting Documents-->
                                 <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-4">
                                     <label class="form-label fw-bold ">
@@ -441,15 +475,31 @@
                                         <label id="view-campus"></label>
                                     </div>
                                 </div>
-                            
+
                                 <!-- Year -->
                                 <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                                     <div class="box">
-                                        <div class="sub-title-text sub-title">Year:</div>
+                                        <div class="sub-title-text sub-title">Date:</div>
                                         <label id="view-year"></label>
                                     </div>
                                 </div>
-                            
+
+                                <!-- topic -->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="sub-title-text sub-title">Topic:</div>
+                                        <label id="view-topic"></label>
+                                    </div>
+                                </div>
+
+                                <!-- resource-person -->
+                                <div class="col-lg-4 col-md-6  col-sm-12 p-3">
+                                    <div class="box">
+                                        <div class="sub-title-text sub-title">Resource Person:</div>
+                                        <label id="view-resource-person"></label>
+                                    </div>
+                                </div>
+
                                 <!-- All authors -->
                                 <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                                     <div class="box">
@@ -564,7 +614,7 @@
                                         <label id="view-date-of-publishing"></label>
                                     </div>
                                 </div>
-                                
+
                                 <!--Publisher Category -->
                                 <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                                     <div class="box">
@@ -575,7 +625,8 @@
                                 <div class="col-lg-4 col-md-6  col-sm-12 p-3">
                                     <div class="box">
                                         <div class="sub-title-text sub-title">
-                                            <button class="btn btn-primary h-10 w-10 download-file" id="supporting-document">
+                                            <button class="btn btn-primary h-10 w-10 download-file"
+                                                id="supporting-document">
                                                 <i class="fas fa-download text-danger"></i> Seminar Documents
                                             </button>
                                         </div>
@@ -691,6 +742,12 @@
                     const uid = document.getElementById('uid').value;
                     const dateOfPublishing = document.getElementById('date-of-publishing').value;
                     const titleOfPaper = document.getElementById('title-of-paper').value;
+                    const topic = document.getElementById('topic').value;
+                    // const resourcePerson = document.getElementById('resource-person').value != undefined ? document.getElementById('resource-person').value : undefined;
+                    const resourcePerson = document.getElementById('resource-person').value;
+
+
+                    console.log('topic and person ', topic, resourcePerson)
 
                     seminarDetails.append('year', year)
                     seminarDetails.append('school', school)
@@ -712,6 +769,8 @@
                     seminarDetails.append('uid', uid)
                     seminarDetails.append('dateOfPublishing', dateOfPublishing)
                     seminarDetails.append('titleOfPaper', titleOfPaper)
+                    seminarDetails.append('topic', topic);
+                    seminarDetails.append('resourcePerson', resourcePerson);
 
                     fetch(url, {
                         method: 'POST',
@@ -975,6 +1034,8 @@
                         const ugcIndexed = seminarRowToBeUpdated.getAttribute('data-ugc-indexed');
                         const ugcIndexedYes = document.getElementById('ugc-index-yes');
                         const ugcIndexedNo = document.getElementById('ugc-index-no');
+                        const topic = seminarRowToBeUpdated.getAttribute('data-topic');
+                        const resourcePerson = seminarRowToBeUpdated.getAttribute('data-resourcePerson');
 
                         ugcIndexedYes.checked = ugcIndexed === 'Yes';
                         ugcIndexedNo.checked = ugcIndexed !== 'Yes';
@@ -993,7 +1054,12 @@
                             publisherCategoryInternational.checked = true;
                         }
                         document.getElementById('year').value = year.innerText.trim();
-                        console.log('====>>>>', year.innerText.trim())
+
+                        const yearDate = new Date(year.innerText.trim());
+                        const formattedYearDate = formatDateToYYYYMMDD(yearDate);
+
+                        console.log('====>>>>', formattedYearDate)
+                        document.getElementById('year').value = formattedYearDate.replace(/\//g, '-');
                         document.getElementById('school').value = school.innerText.trim();
                         document.getElementById('campus').value = campus.innerText.trim();
                         document.getElementById('publisher').value = publisher.innerText.trim();
@@ -1012,6 +1078,8 @@
                         document.getElementById('web-link').value = webLink.trim();
                         // document.getElementById('uid').value = uid.trim();
                         document.getElementById('scs-indexed').value = scsIndexed.trim();
+                        document.getElementById('topic').value = topic.trim();
+                        document.getElementById('resource-person').value = resourcePerson.trim();
 
                         $('#research-seminar-modal').modal('show');
                     }
@@ -1046,6 +1114,8 @@
                         const viewUid = document.getElementById('view-uid');
                         const viewTitle = document.getElementById('view-title-of-paper');
                         const viewPublisherCategory = document.getElementById('view-publisher-category');
+                        const viewTopic = document.getElementById('view-topic');
+                        const viewResourcePerson = document.getElementById('view-resource-person');
 
                         fetch('<%- BASE_URL %>research/researchSeminar/view', {
                             method: 'POST',
@@ -1063,7 +1133,7 @@
                             .then((data) => {
                                 setFileNameInButtons(data);
                                 console.log('data is viewing', JSON.stringify(data));
-                                viewYear.innerText = data.seminarData[0].year;
+                                viewYear.innerText = data.seminarData[0].year.split('T')[0];
                                 viewCampus.innerText = data.seminarData[0].campus;
                                 viewJournalName.innerText = data.seminarData[0].journal_name;
                                 viewNmimsFaculty.innerText = data.seminarData[0].nmims_faculty;
@@ -1084,6 +1154,8 @@
                                 viewPublisherCategory.innerText = data.seminarData[0].publisher_category;
                                 viewWosIndexed.innerText = data.seminarData[0].wos_indexed;
                                 viewUid.innerText = data.seminarData[0].uid;
+                                viewTopic.innerText = data.seminarData[0].topic;
+                                viewResourcePerson.innerText = data.seminarData[0].resource_person != '' ? data.seminarData[0].resource_person : 'No Person Found !';
 
                             }).catch((error) => {
                                 console.log('error:', error);
@@ -1126,6 +1198,8 @@
                     const uid = document.getElementById('uid').value;
                     const dateOfPublishing = document.getElementById('date-of-publishing').value;
                     const titleOfPaper = document.getElementById('title-of-paper').value;
+                    const topic = document.getElementById('topic').value;
+                    const resourcePerson = document.getElementById('resource-person').value;
 
                     console.log('titleOfPaper ====>>>>>>', titleOfPaper)
                     console.log('seminarId ====>>>>>>', seminarId);
@@ -1151,6 +1225,8 @@
                     updateSeminarDetails.append('uid', uid)
                     updateSeminarDetails.append('dateOfPublishing', dateOfPublishing)
                     updateSeminarDetails.append('titleOfPaper', titleOfPaper)
+                    updateSeminarDetails.append('topic', topic)
+                    updateSeminarDetails.append('resourcePerson', resourcePerson)
 
                     // sending  updated data to database by fetch api for update the value in db
                     fetch(url, {
@@ -1200,7 +1276,7 @@
                                 confirmButtonColor: "#DD6B55"
                                 // timer: 1500
                             })
-                            .then(() => {
+                                .then(() => {
                                     document.location.reload()
                                 });;
                             $('#research-seminar-modal').modal('hide');
@@ -1243,15 +1319,15 @@
                     formGroup = updateBtn.closest('.validate-input')
                     console.log("formGroup::::::::", formGroup)
                     formGroup.querySelectorAll('input[type="file"]')?.forEach(elm => {
-                        if(elm.files.length > 0){
+                        if (elm.files.length > 0) {
                             const validate = elm.getAttribute('data-validate');
                             const elemVal = elm.value;
                         }
-                        
-                        else{
+
+                        else {
                             elm.removeAttribute('data-validate')
                         }
-                        
+
                     })
 
                     const isValid = validateRequiredFormFields(submitBtn);

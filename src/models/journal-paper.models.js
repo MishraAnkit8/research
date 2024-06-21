@@ -40,6 +40,7 @@ module.exports.fetchJournalPaper = async (userName) => {
                     jpa.foreign_auhtor_no,
                     jpa.article_supporting_documents,
                     jpa.no_nmims_student_author,
+                    jpa.paper_type,
                     string_agg(DISTINCT sd.documents_name, ', ') AS supporting_documents,
                     string_agg(DISTINCT sd.id::text, ', ') AS supporting_documents_ids,
                     string_agg(DISTINCT pc.cadre_name, ', ') AS policy_cadre,
@@ -72,6 +73,7 @@ module.exports.fetchJournalPaper = async (userName) => {
                 and jad.active=true and a.active=true and aa.active=true and f.active=true 
                 and nf.active=true
                 and jpa.active=true
+            
                    
                 GROUP BY
                     jpa.id,
@@ -98,7 +100,8 @@ module.exports.fetchJournalPaper = async (userName) => {
                     jpa.foreign_auhtor_no,
                     jpa.no_nmims_student_author,
                     jpa.web_link_doi,
-                    jpa.article_supporting_documents
+                    jpa.article_supporting_documents,
+                    jpa.paper_type
                 ORDER BY
                     jpa.id desc`,
     values: [userName],
@@ -136,6 +139,10 @@ module.exports.fetchJournalPaper = async (userName) => {
     text: `select *  FROM impact_factor where active=true  ORDER BY id`,
   };
 
+  let paperTypeSql = {
+    text: `select * from paper_type where active=true order by id `,
+  };
+
   console.log("sql ==>>", sql);
   const journalArticleData = await researchDbR.query(sql);
   const nmimsSchool = await researchDbR.query(nmimsSchoolSql);
@@ -145,6 +152,7 @@ module.exports.fetchJournalPaper = async (userName) => {
   const impactFactor = await researchDbR.query(impactFactorSql);
   const journalPaper = await researchDbR.query(journalPaperSql);
   const allAuthorList = await researchDbR.query(allAuthorsSql);
+  const paperType = await researchDbR.query(paperTypeSql);
 
   const promises = [
     journalArticleData,
@@ -155,6 +163,7 @@ module.exports.fetchJournalPaper = async (userName) => {
     impactFactor,
     journalPaper,
     allAuthorList,
+    paperType,
   ];
 
   return Promise.all(promises)
@@ -168,6 +177,7 @@ module.exports.fetchJournalPaper = async (userName) => {
         impactFactor,
         journalPaper,
         allAuthorList,
+        paperType,
       ]) => {
         return {
           status: "Done",
@@ -180,6 +190,7 @@ module.exports.fetchJournalPaper = async (userName) => {
           policyCadre: policyCadre.rows,
           impactFactor: impactFactor.rows,
           allAuthorList: allAuthorList.rows,
+          paperType: paperType.rows,
         };
       }
     )
@@ -230,13 +241,14 @@ module.exports.insertJournalArticle = async (
     noNmimsStudentAuthor,
     scsIndex,
     impactFactor,
+    paperType,
   } = journalDetails;
 
   let articleSql = {
     text: `INSERT INTO journal_paper_article (nmims_school, nmims_campus, year, publisher, total_authors, journal_name, others_authers, pages, issn_no, scs_cite_score, wos_indexed,
                 abdc_indexed, ugc_indexed, web_link_doi, uid, date_of_publishing, title_of_paper, article_type, nmims_authors_count, gs_index, nmims_student_foreign_authors,
-                foreign_authors_name, foreign_auhtor_no, no_nmims_student_author, scs_indexed, article_supporting_documents, impact_factor, created_by)
-                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28) RETURNING id`,
+                foreign_authors_name, foreign_auhtor_no, no_nmims_student_author, scs_indexed, article_supporting_documents, impact_factor, created_by,paper_type)
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28,$29) RETURNING id`,
 
     values: [
       nmimsSchool,
@@ -267,6 +279,7 @@ module.exports.insertJournalArticle = async (
       journalFiles,
       impactFactor,
       userName,
+      paperType,
     ],
   };
 
@@ -324,7 +337,7 @@ module.exports.insertJournalArticle = async (
   //     values: [journalPaperId, element],
   //   };
 
-    // console.log('journalSchoolSql ===>>>>>>', journalSchoolSql);
+  // console.log('journalSchoolSql ===>>>>>>', journalSchoolSql);
   //   return researchDbW.query(journalSchoolSql);
   // });
 
@@ -423,7 +436,7 @@ module.exports.insertJournalArticle = async (
       // );
       const articlePolicyCadreIds = extractIds(
         articleFileLength,
-        policyCadreLength  
+        policyCadreLength
       );
       // const articleSchoolIds = extractIds(
       //   articleFileLength  + policyCadreLength,
@@ -436,14 +449,11 @@ module.exports.insertJournalArticle = async (
       //   campusIdsLength
       // );
       const journalAuthorsIds = extractIds(
-        articleFileLength +
-          policyCadreLength,
+        articleFileLength + policyCadreLength,
         nmimsAuthorsLength
       );
       const allArticleAuthorIds = extractIds(
-        articleFileLength +
-          policyCadreLength +
-          nmimsAuthorsLength,
+        articleFileLength + policyCadreLength + nmimsAuthorsLength,
         allAuthorsIdsLength
       );
 
@@ -661,59 +671,63 @@ module.exports.updateJournalPaperData = async (
     scsIndex,
     impactFactor,
     nmimsSchool,
-    nmimsCampus
+    nmimsCampus,
+    paperType,
   } = updateJournalDetails;
 
   // const supportingDocument = journalFiles || null;
 
-  let baseQuery =  `UPDATE journal_paper_article 
-                SET year = $2, publisher = $3, total_authors = $4,journal_name = $5,others_authers = $6,
+  let baseQuery = `UPDATE journal_paper_article 
+                   SET year = $2, publisher = $3, total_authors = $4,journal_name = $5,others_authers = $6,
                     pages = $7,issn_no = $8,scs_cite_score = $9,wos_indexed = $10,abdc_indexed = $11,
                     ugc_indexed = $12, web_link_doi = $13,uid = $14,date_of_publishing = $15,
                     title_of_paper = $16,article_type = $17,nmims_authors_count = $18,gs_index = $19,
                     foreign_auhtor_no = $20, foreign_authors_name = $21, no_nmims_student_author = $22, nmims_student_foreign_authors = $23,
-                    scs_indexed = $24 , impact_factor = $25, nmims_school = $26, nmims_campus = $27, updated_by = $28`;
+                    scs_indexed = $24 , impact_factor = $25, nmims_school = $26, nmims_campus = $27, updated_by = $28,paper_type=$29`;
 
- let documentsQuery = journalFiles ?  `, article_supporting_documents = $29` : '';
- let queryText = baseQuery + documentsQuery + ` WHERE id = $1`;
+  let documentsQuery = journalFiles
+    ? `, article_supporting_documents = $30`
+    : "";
+  let queryText = baseQuery + documentsQuery + ` WHERE id = $1`;
 
-let values = [
-                      journalPaperId,
-                      year,
-                      publisher,
-                      totalAuthors,
-                      journalName,
-                      otherAuthorsNames,
-                      pages,
-                      issnNo,
-                      scsCiteScore,
-                      wosIndexedCategory,
-                      abdcIndexedCategory,
-                      ugcIndexedCategory,
-                      webLinkNumber,
-                      uid,
-                      dateOfPublishing,
-                      titleOfPaper,
-                      journalCategory,
-                      nmimsAuthorsCount,
-                      gsIndex,
-                      foreignAuhtorNo,
-                      foreignAuthorsName,
-                      noNmimsStudentAuthor,
-                      nmimsStudentForeignAuthors,
-                      scsIndex,
-                      impactFactor,
-                      nmimsSchool,
-                      nmimsCampus,
-                      userName,
-                      ...(journalFiles ? [journalFiles] : [])
-                    ]
+  let values = [
+    journalPaperId,
+    year,
+    publisher,
+    totalAuthors,
+    journalName,
+    otherAuthorsNames,
+    pages,
+    issnNo,
+    scsCiteScore,
+    wosIndexedCategory,
+    abdcIndexedCategory,
+    ugcIndexedCategory,
+    webLinkNumber,
+    uid,
+    dateOfPublishing,
+    titleOfPaper,
+    journalCategory,
+    nmimsAuthorsCount,
+    gsIndex,
+    foreignAuhtorNo,
+    foreignAuthorsName,
+    noNmimsStudentAuthor,
+    nmimsStudentForeignAuthors,
+    scsIndex,
+    impactFactor,
+    nmimsSchool,
+    nmimsCampus,
+    userName,
+    paperType,
+    ...(journalFiles ? [journalFiles] : []),
+  ];
 
   let sql = {
     text: queryText,
     values: values,
   };
-   
+
   const updateJournalarticles = await researchDbW.query(sql);
   console.log("AFTER UPDATE>>>>>>>>>>>>");
   const insertDocumentPromises = updatedArticleFilesNameArray
@@ -906,9 +920,7 @@ let values = [
       };
 
       const articledocumentsIds = extractIds(0, articleFileLength);
-      const articlImpactFactorIds = extractIds(
-        articleFileLength
-      );
+      const articlImpactFactorIds = extractIds(articleFileLength);
       const articlePolicyCadreIds = extractIds(
         articleFileLength,
         policyCadreLength
@@ -924,14 +936,11 @@ let values = [
       //   campusIdsLength
       // );
       const journalAuthorsIds = extractIds(
-        articleFileLength +
-          policyCadreLength,
+        articleFileLength + policyCadreLength,
         nmimsAuthorsLength
       );
       const allArticleAuthorIds = extractIds(
-        articleFileLength +
-          policyCadreLength +
-          nmimsAuthorsLength,
+        articleFileLength + policyCadreLength + nmimsAuthorsLength,
         allAuthorsIdsLength
       );
 
@@ -1040,6 +1049,7 @@ module.exports.viewJournalPaperData = async (journalPaperId, userName) => {
                     jpa.foreign_auhtor_no,
                     jpa.article_supporting_documents,
                     jpa.no_nmims_student_author,
+                    pt.paper_name,
                     string_agg(DISTINCT pc.cadre_name, ', ') AS policy_cadre,
                     string_agg(DISTINCT pc.id::text, ', ') AS policy_cadre_ids,
                     string_agg(DISTINCT f.faculty_name, ', ') AS internal_faculty_names,
@@ -1060,10 +1070,13 @@ module.exports.viewJournalPaperData = async (journalPaperId, userName) => {
                     journal_article_policy_cadre japc ON jpa.id = japc.journal_article_id
                 LEFT JOIN
                     policy_cadre pc ON japc.policy_cadre_id = pc.id
+                LEFT JOIN 
+				            paper_type pt ON pt.id = jpa.paper_type    
                 WHERE 
                          jpa.id = $1 AND jpa.created_by = $2 
                          and pc.active = true and japc.active = true and a.active = true 
                          and f.active = true and nf.active = true and jpa.active = true
+                         and pt.active=true
                 GROUP BY
                     jpa.id,
                     jpa.title_of_paper,
@@ -1091,8 +1104,8 @@ module.exports.viewJournalPaperData = async (journalPaperId, userName) => {
                     jpa.foreign_authors_name,
                     jpa.foreign_auhtor_no,
                     jpa.no_nmims_student_author,
-                    jpa.article_supporting_documents`,
-                   
+                    jpa.article_supporting_documents,
+                    pt.paper_name`,
 
     values: [journalPaperId, userName],
   };
@@ -1133,14 +1146,14 @@ module.exports.viewJournalPaperData = async (journalPaperId, userName) => {
   };
 
   // const factorSql = {
-  //   text: `SELECT 
+  //   text: `SELECT
   //                   imf.impact_factor,
   //                   imf.id
-  //               FROM 
-  //               journal_article_impact_factor aimf 
-  //               JOIN 
+  //               FROM
+  //               journal_article_impact_factor aimf
+  //               JOIN
   //               impact_factor imf ON aimf.impact_factor_id =  imf.id
-  //               WHERE 
+  //               WHERE
   //               aimf.journal_article_id = $1 and aimf.active = true and imf.active = true `,
   //   values: [journalPaperId],
   // };
@@ -1252,70 +1265,81 @@ module.exports.viewJournalPaperData = async (journalPaperId, userName) => {
     });
 };
 
-//all authors 
-module.exports.deleteAllAuthorsDetails = async(externalId, journalPaperId, userName) => {
-  console.log('externalId in models  =====>>>>>>>', externalId);
+//all authors
+module.exports.deleteAllAuthorsDetails = async (
+  externalId,
+  journalPaperId,
+  userName
+) => {
+  console.log("externalId in models  =====>>>>>>>", externalId);
 
-  const allAuthorsDetails = externalId.map(async(externalId) => {
+  const allAuthorsDetails = externalId.map(async (externalId) => {
     let externalSql = {
-      text : `UPDATE all_article_authors SET active=false WHERE faculty_id = $1 AND journal_article_id = $2`,
-      values : [externalId, journalPaperId]
-    }
-    console.log('externalSql', externalSql);
-  
-    return await researchDbW.query(externalSql);
-
-  });
-
-  return Promise.all(allAuthorsDetails).then((result) => {
-    return {
-      status : "Done",
-      message : "Record Deleted successfully",
-      result : result
-    } 
-  }).catch((error) => {
-    return {
-      status: "Failed",
-      message: error.message,
-      errorCode: error.code,
+      text: `UPDATE all_article_authors SET active=false WHERE faculty_id = $1 AND journal_article_id = $2`,
+      values: [externalId, journalPaperId],
     };
+    console.log("externalSql", externalSql);
+
+    return await researchDbW.query(externalSql);
   });
 
+  return Promise.all(allAuthorsDetails)
+    .then((result) => {
+      return {
+        status: "Done",
+        message: "Record Deleted successfully",
+        result: result,
+      };
+    })
+    .catch((error) => {
+      return {
+        status: "Failed",
+        message: error.message,
+        errorCode: error.code,
+      };
+    });
+};
 
-}
-
-//nmims internal  authors 
-module.exports.deleteInternalFaculty = async(internalId, journalPaperId, userName) => {
+//nmims internal  authors
+module.exports.deleteInternalFaculty = async (
+  internalId,
+  journalPaperId,
+  userName
+) => {
   console.log("internalId in models ====>>>>>>", internalId);
 
-  const internalNmimsDetails = internalId.map(async(internalId) => {
+  const internalNmimsDetails = internalId.map(async (internalId) => {
     let sql = {
       text: `UPDATE  nmims_faculties  SET active = false WHERE faculty_id = $1 And journal_article_id = $2`,
       values: [internalId, journalPaperId],
     };
     console.log("sql ===>>>>>>>>>", sql);
-    return await researchDbW.query(sql)
-
-  })
- 
-  return Promise.all(internalNmimsDetails).then((result) => {
-    return {
-      status : "Done",
-      message : "Record Deleted successfully",
-      result : result
-    } 
-  }).catch((error) => {
-    return {
-      status: "Failed",
-      message: error.message,
-      errorCode: error.code,
-    };
+    return await researchDbW.query(sql);
   });
 
-}
+  return Promise.all(internalNmimsDetails)
+    .then((result) => {
+      return {
+        status: "Done",
+        message: "Record Deleted successfully",
+        result: result,
+      };
+    })
+    .catch((error) => {
+      return {
+        status: "Failed",
+        message: error.message,
+        errorCode: error.code,
+      };
+    });
+};
 
 //nmims school
-module.exports.deleteNmimsSchool = async (internalId, journalPaperId, userName) => {
+module.exports.deleteNmimsSchool = async (
+  internalId,
+  journalPaperId,
+  userName
+) => {
   console.log("internalId in models ====>>>>>>", internalId);
 
   const nmimsArticleSchoolsPromises = internalId.map(async (id) => {
@@ -1345,59 +1369,68 @@ module.exports.deleteNmimsSchool = async (internalId, journalPaperId, userName) 
 };
 
 //nmims campus
-module.exports.deleteNmimsCampus = async(internalId, journalPaperId, userName) => {
-
+module.exports.deleteNmimsCampus = async (
+  internalId,
+  journalPaperId,
+  userName
+) => {
   console.log("internalId in models ====>>>>>>", internalId);
-  const articleCampus = internalId.map(async(internalId) => {
+  const articleCampus = internalId.map(async (internalId) => {
     let sql = {
       text: `UPDATE  journal_article_campus  SET active = false WHERE campus_id = $1 And journal_article_id = $2`,
       values: [internalId, journalPaperId],
     };
     console.log("sql ===>>>>>>>>>", sql);
     return await researchDbW.query(sql);
-
-  })
-  
-  return Promise.all(articleCampus).then((result) => {
-    return {
-      status : "Done",
-      message : "Record Deleted successfully",
-      result : result
-    } 
-  }).catch((error) => {
-    return {
-      status: "Failed",
-      message: error.message,
-      errorCode: error.code,
-    };
   });
 
-}
-//nmims policy cadre
-module.exports.deletPolicyCadre = async(internalId, journalPaperId, userName) => {
-  console.log('internalId in models ====>>>>>>', internalId);
-
-  const articlePolicyCadre = internalId.map(async(internalId) => {
-    let policysql = {
-      text: `UPDATE  journal_article_policy_cadre  SET active = false WHERE policy_cadre_id = $1 And journal_article_id = $2`,
-      values: [internalId, journalPaperId]
-    };
-
-    console.log('policysql ===>>>>>>', policysql);
-    return await researchDbW.query(policysql);
-  })
-
-  return Promise.all(articlePolicyCadre).then((result) => {
+  return Promise.all(articleCampus)
+    .then((result) => {
       return {
-        status : "Done",
-        message : "Record Deleted successfully",
-        result : result
-      } 
-    }).catch((error) => {
+        status: "Done",
+        message: "Record Deleted successfully",
+        result: result,
+      };
+    })
+    .catch((error) => {
       return {
         status: "Failed",
         message: error.message,
         errorCode: error.code,
       };
     });
-}
+};
+//nmims policy cadre
+module.exports.deletPolicyCadre = async (
+  internalId,
+  journalPaperId,
+  userName
+) => {
+  console.log("internalId in models ====>>>>>>", internalId);
+
+  const articlePolicyCadre = internalId.map(async (internalId) => {
+    let policysql = {
+      text: `UPDATE  journal_article_policy_cadre  SET active = false WHERE policy_cadre_id = $1 And journal_article_id = $2`,
+      values: [internalId, journalPaperId],
+    };
+
+    console.log("policysql ===>>>>>>", policysql);
+    return await researchDbW.query(policysql);
+  });
+
+  return Promise.all(articlePolicyCadre)
+    .then((result) => {
+      return {
+        status: "Done",
+        message: "Record Deleted successfully",
+        result: result,
+      };
+    })
+    .catch((error) => {
+      return {
+        status: "Failed",
+        message: error.message,
+        errorCode: error.code,
+      };
+    });
+};
