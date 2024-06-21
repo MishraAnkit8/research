@@ -8,6 +8,67 @@ const {
 const researchDbR = dbPoolManager.get("researchDbR", research_read_db);
 const researchDbW = dbPoolManager.get("researchDbW", research_write_db);
 
+module.exports.insertRecordIntoDbByUsingFunction = async (tableName, insertField, valuesData, userName) => {
+  console.log('inside insertRecordIntoDb tableName folder ====>>>>>>', tableName);
+  console.log('inside insertRecordIntoDb insertField folder ====>>>>>>', insertField);
+  console.log('inside insertRecordIntoDb valuesData folder ====>>>>>>', valuesData);
+  console.log('inside insertRecordIntoDb userName folder ====>>>>>>', userName);
+
+  // Add the new fields
+  const additionalFields = ['created_at', 'updated_at', 'active'];
+  const currentTimestamp = moment().toISOString();
+  const activeValue = true;
+
+  const allFieldsToBeInsert = [...insertField, ...additionalFields];
+  const allValuesToBeInsert = [
+    ...valuesData,
+    currentTimestamp,
+    currentTimestamp,
+    activeValue 
+  ];
+
+  // Construct the SQL query to call the PostgreSQL function
+  const sqlQuery = {
+    text: 'SELECT insert_single_value($1, $2, $3)',
+    values: [
+      tableName,
+      allFieldsToBeInsert.join(', '),
+      allValuesToBeInsert,
+    ],
+  };
+
+  console.log('sqlQuery ====>>>>>>', sqlQuery);
+
+  try {
+    const result = await researchDbW.query(sqlQuery);
+
+    const insertedId = result.rows[0].insert_single_value;
+    console.log('Inserted Record ID ====>>>>>>', insertedId);
+
+    return {
+      status: 'Done',
+      message: 'Record Inserted Successfully',
+      insertedId: insertedId,
+    };
+  } catch (error) {
+    console.error('Error inserting record ====>>>>>>', error);
+
+    if (error.code === '23505') { 
+      return {
+        status: 'Failed',
+        message: 'Unique constraint violation. Duplicate record exists.',
+        errorCode: error.code,
+      };
+    }
+
+    return {
+      status: 'Failed',
+      message: error.message,
+      errorCode: error.code,
+    };
+  }
+};
+
 module.exports.insertRecordIntoMainDb = async (tableName, insertField, valuesData, userName) => {
   console.log('inside insertRecordIntoDb tableName folder ====>>>>>>', tableName);
   console.log('inside insertRecordIntoDb insertField folder ====>>>>>>', insertField);
@@ -68,7 +129,6 @@ module.exports.insertRecordIntoMainDb = async (tableName, insertField, valuesDat
   }
 };
   
-
 
 module.exports.insertExternalFacultyRecord = async (tableName, insertField, arrayData, userName) => {
     console.log('inside insertRecordIntoDb tableName ====>>>>>>', tableName);

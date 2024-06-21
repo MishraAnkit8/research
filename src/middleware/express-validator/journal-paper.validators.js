@@ -119,7 +119,6 @@ check('titleOfPaper')
     .withMessage('Title of paper should be a string')
     .isLength({ min: 2 }),
 
-  // Optional fields
 
 check('otherAuthorsNames')
         .optional({ checkFalsy: true })
@@ -173,10 +172,7 @@ check('noNmimsStudentAuthor')
     .isInt()
     .withMessage('No. of NMIMS student authors should be an integer'), 
 
-// check('articlesDocuments')
-//     .custom(isValidFile)
-//     .withMessage('Invalid file. Please upload a valid file (JPEG, PNG, or PDF format, maximum size 5MB).'),
 
 
-  validationHandler, // Handler for validation errors
+  validationHandler,
 ];
